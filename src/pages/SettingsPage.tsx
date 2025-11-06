@@ -15,7 +15,21 @@ const editableVocabs = {
   leagues: 'Leagues',
 };
 
-type ActiveTab = 'prompts' | 'vocab' | 'brands' | 'ai' | 'export';
+// Define the type for an automation rule
+type Rule = {
+  condition: string;
+  action: string;
+  status: 'Active' | 'Paused';
+};
+
+// Mock data for the rules table
+const mockRules: Rule[] = [
+  { condition: "IF Department = Footwear", action: "SET Category = Shoes", status: "Active" },
+  { condition: "IF Brand = Nike", action: "SET Department = Footwear", status: "Active" },
+  { condition: "IF Category = Hoodies", action: "SET Department = Apparel", status: "Paused" },
+];
+
+type ActiveTab = 'prompts' | 'vocab' | 'rules' | 'brands' | 'ai' | 'export';
 
 const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('vocab');
@@ -118,6 +132,7 @@ const SettingsPage: React.FC = () => {
         <nav className="-mb-px flex space-x-4" aria-label="Tabs">
           <TabButton tabName="prompts" label="AI Prompts" />
           <TabButton tabName="vocab" label="Vocab / Dropdowns" />
+          <TabButton tabName="rules" label="Rules" />
           <TabButton tabName="brands" label="Brands" />
           <TabButton tabName="ai" label="AI Settings" />
           <TabButton tabName="export" label="Export Settings" />
@@ -131,6 +146,43 @@ const SettingsPage: React.FC = () => {
                 <VocabEditor key={key} vocabKey={key as VocabKey} title={title} />
             ))}
           </div>
+        )}
+        {activeTab === 'rules' && (
+           <div className="bg-white p-6 rounded-lg shadow">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Attribute Automation Rules</h2>
+                    <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Add New Rule
+                    </button>
+                </div>
+
+                <div className="overflow-x-auto border rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition (IF)</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action (THEN)</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {mockRules.map((rule, index) => (
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-mono">{rule.condition}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-mono">{rule.action}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                            rule.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                        }`}>
+                                            {rule.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         )}
         {activeTab === 'prompts' && <PlaceholderTab title="Manage AI Prompts" />}
         {activeTab === 'brands' && <PlaceholderTab title="Manage Brands" />}

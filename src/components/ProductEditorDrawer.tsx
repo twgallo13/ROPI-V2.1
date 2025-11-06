@@ -9,16 +9,25 @@ interface ProductEditorDrawerProps {
   product: Product | null;
 }
 
-type ActiveTab = 'core' | 'context' | 'generation' | 'variants';
+type ActiveTab = 'core' | 'context' | 'generation' | 'variants' | 'history';
+
+// Mock history data for the new tab
+const mockHistory = [
+    "Version 3: AI Generation (11/06/2025)",
+    "Version 2: Manual Edit by admin@... (11/05/2025)",
+    "Version 1: Product Imported (11/04/2025)"
+];
 
 const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClose, product }) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('core');
   const [editableProduct, setEditableProduct] = useState<Product | null>(product);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number; } | null>(null);
 
   useEffect(() => {
     setEditableProduct(product);
     setActiveTab('core');
+    setAiScore(null); // Reset score when product changes
   }, [product]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -80,6 +89,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   
   const handleGenerateClick = async () => {
     setIsGenerating(true);
+    setAiScore(null); // Clear previous score
     try {
       const result = await mockGenerateDescription();
       if (editableProduct) {
@@ -93,6 +103,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
             paragraphDraft: result.paragraphDraft,
           },
         });
+        setAiScore(result.score);
       }
     } catch (error) {
       console.error("AI Generation failed:", error);
@@ -165,6 +176,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <TabButton tabName="context" label="AI Context" />
                         <TabButton tabName="generation" label="AI Generation" />
                         <TabButton tabName="variants" label="Variants" />
+                        <TabButton tabName="history" label="History" />
                     </div>
                 </nav>
 
@@ -247,6 +259,17 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                 {isGenerating ? 'Generating...' : '✨ Generate with AI'}
                             </button>
                         </div>
+
+                         {aiScore && (
+                            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <h3 className="text-md font-semibold text-gray-800">AI Quality Score</h3>
+                                <div className="flex items-baseline mt-2">
+                                    <p className="text-4xl font-bold text-indigo-600">{aiScore.overall}</p>
+                                    <p className="text-xl text-gray-500">/10</p>
+                                </div>
+                            </div>
+                        )}
+
                         <FormField label="Generated Title"><div className="p-2 bg-gray-100 rounded-md min-h-[40px]">{editableProduct.marketing.title}</div></FormField>
                         <FormField label="Generated Bullets"><ul className="p-2 pl-6 bg-gray-100 rounded-md min-h-[80px] list-disc space-y-1">{editableProduct.marketing.bullets.map((bullet, i) => <li key={i}>{bullet}</li>)}</ul></FormField>
                         <FormField label="Generated SEO Description"><div className="p-2 bg-gray-100 rounded-md min-h-[60px]">{editableProduct.marketing.seo}</div></FormField>
@@ -270,6 +293,24 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                       </tbody>
                     </table>
                   </div>
+                )}
+                {activeTab === 'history' && (
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-800">Product Change History</h3>
+                        <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
+                           {mockHistory.map((entry, index) => (
+                                <li key={index} className="px-4 py-3 flex justify-between items-center hover:bg-gray-50">
+                                    <span className="text-sm text-gray-700">{entry}</span>
+                                    <button
+                                        type="button"
+                                        className="px-3 py-1 text-sm font-medium text-indigo-600 bg-indigo-100 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    >
+                                        Restore
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 )}
               </div>
               

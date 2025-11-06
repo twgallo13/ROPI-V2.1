@@ -3,6 +3,11 @@ export interface AIGenerationResult {
   bullets: string[];
   seo: string;
   paragraphDraft: string;
+  score: {
+    overall: number;
+    tone: number;
+    seo: number;
+  };
 }
 
 /**
@@ -19,7 +24,8 @@ export const mockGenerateDescription = async (): Promise<AIGenerationResult> => 
         title: 'Mock AI Title',
         bullets: ['Mock bullet 1'],
         seo: 'Mock SEO desc',
-        paragraphDraft: 'This is the mock AI-generated paragraph.'
+        paragraphDraft: 'This is the mock AI-generated paragraph.',
+        score: { overall: 9, tone: 8, seo: 10 },
       });
     }, 1000); // Simulate a 1-second network delay
   });
