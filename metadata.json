@@ -1,0 +1,5 @@
+{
+  "name": "React TypeScript Starter",
+  "description": "A basic React and TypeScript application that renders 'Hello World!' using an import map and a robust DOM loader.",
+  "requestFramePermissions": []
+}
