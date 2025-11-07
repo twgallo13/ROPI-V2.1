@@ -12,7 +12,7 @@ import ImportPage from './pages/ImportPage';
 import PromptsPage from './pages/settings/Prompts';
 
 function App() {
-  const { isAuthenticated, role } = useAuth();
+  const { user, role } = useAuth();
 
   return (
     <BrowserRouter>
@@ -24,7 +24,7 @@ function App() {
         <Route 
           path="/intake"
           element={
-            isAuthenticated ? (
+            user ? (
               <MainLayout>
                 <IntakeQueuePage />
               </MainLayout>
@@ -36,7 +36,7 @@ function App() {
         <Route 
           path="/complete"
           element={
-            isAuthenticated ? (
+            user ? (
               <MainLayout>
                 <CompleteQueuePage />
               </MainLayout>
@@ -50,40 +50,40 @@ function App() {
         <Route 
           path="/import"
           element={
-            isAuthenticated && role === 'admin' ? (
+            user && role === 'admin' ? (
               <MainLayout>
                 <ImportPage />
               </MainLayout>
             ) : (
               // If you're logged in but not an admin, go to intake
               // If you're not logged in, go to home
-              <Navigate to={isAuthenticated ? "/intake" : "/"} />
+              <Navigate to={user ? "/intake" : "/"} />
             )
           } 
         />
         <Route 
           path="/settings"
           element={
-            isAuthenticated && role === 'admin' ? (
+            user && role === 'admin' ? (
               <MainLayout>
                 <SettingsPage />
               </MainLayout>
             ) : (
               // If you're logged in but not an admin, go to intake
               // If you're not logged in, go to home
-              <Navigate to={isAuthenticated ? "/intake" : "/"} />
+              <Navigate to={user ? "/intake" : "/"} />
             )
           } 
         />
         <Route 
           path="/settings/prompts"
           element={
-            isAuthenticated && role === 'admin' ? (
+            user && role === 'admin' ? (
               <MainLayout>
                 <PromptsPage />
               </MainLayout>
             ) : (
-              <Navigate to={isAuthenticated ? "/intake" : "/"} />
+              <Navigate to={user ? "/intake" : "/"} />
             )
           }
         />
