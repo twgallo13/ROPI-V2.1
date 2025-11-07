@@ -1,10 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useMockProductData, mockVocabulary } from '../mockData';
 import { Product } from '../types';
+import Toast from '../components/Toast';
+import { exportProductsToCSV } from '../utils/csvExport';
+
+type ToastState = {
+  show: boolean;
+  message: string;
+  type: 'success' | 'error';
+};
 
 const CompleteQueuePage: React.FC = () => {
   const products = useMockProductData();
   const [selectedIds, setSelectedIds] = useState(new Set<string>());
+  const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
 
   // State for the filters (similar to Intake Queue)
   const [statusFilter, setStatusFilter] = useState('all');
@@ -12,6 +21,14 @@ const CompleteQueuePage: React.FC = () => {
   const [departmentFilter, setDepartmentFilter] = useState('all');
   
   const headerCheckboxRef = useRef<HTMLInputElement>(null);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ show: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast({ ...toast, show: false });
+  };
 
   useEffect(() => {
     if (headerCheckboxRef.current) {
@@ -40,8 +57,28 @@ const CompleteQueuePage: React.FC = () => {
   };
 
   const handleExport = () => {
-    console.log("Mock Exporting...", Array.from(selectedIds));
-    // In a real app, you would generate and download a CSV here.
+    try {
+      // Get selected products
+      const selectedProducts = products.filter(p => selectedIds.has(p.id));
+      
+      if (selectedProducts.length === 0) {
+        showToast('No products selected for export', 'error');
+        return;
+      }
+
+      // Export to CSV
+      exportProductsToCSV(selectedProducts);
+      
+      // Show success toast
+      const variantCount = selectedProducts.reduce((sum, p) => sum + (p.variants?.length || 0), 0);
+      showToast(
+        `Successfully exported ${selectedProducts.length} product${selectedProducts.length !== 1 ? 's' : ''} (${variantCount} variant${variantCount !== 1 ? 's' : ''}) to CSV`,
+        'success'
+      );
+    } catch (error) {
+      console.error('Export error:', error);
+      showToast('Failed to export CSV. Please try again.', 'error');
+    }
   };
 
   // Prepare data for the filter dropdowns
@@ -139,6 +176,10 @@ const CompleteQueuePage: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {toast.show && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
     </div>
   );
 };
