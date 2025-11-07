@@ -27,7 +27,7 @@ export type ParseResult = {
 
 // Synonym mappings for auto-detection
 const HEADER_SYNONYMS: Record<string, string[]> = {
-  product_id: ['product_id', 'style', 'style_id', 'parent_sku', 'style_code', 'mpn', 'model'],
+  product_id: ['product_id', 'style', 'style_id', 'styleid', 'parent_sku', 'style_code', 'mpn'],
   sku: ['sku', 'variant_id', 'child_sku', 'upc', 'variant_sku'],
   name: ['name', 'title', 'product_name', 'product_title', 'description'],
   brand: ['brand', 'manufacturer', 'vendor'],
@@ -325,16 +325,16 @@ function parseCSVLine(line: string): string[] {
  */
 export function generateErrorCSV(
   headers: string[],
-  errorRows: Array<{ rowNumber: number; data: string[]; errors: string[] }>
+  errorRows: Array<{ rowNumber: number; reason: string; raw: string[] }>
 ): string {
   const csvLines: string[] = [];
   
   // Add header with error column
-  csvLines.push([...headers, 'Import Errors'].map(escapeCSVValue).join(','));
+  csvLines.push([...headers, 'Import Error'].map(escapeCSVValue).join(','));
   
   // Add error rows
   for (const row of errorRows) {
-    const rowData = [...row.data, row.errors.join('; ')];
+    const rowData = [...row.raw, row.reason];
     csvLines.push(rowData.map(escapeCSVValue).join(','));
   }
   

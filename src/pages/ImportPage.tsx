@@ -17,7 +17,8 @@ const ImportPage: React.FC = () => {
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [mappings, setMappings] = useState<ColumnMapping[]>([]);
   const [fileName, setFileName] = useState<string>('');
-  const [importProgress, setImportProgress] = useState({ success: 0, failed: 0 });
+  const [importProgress, setImportProgress] = useState({ imported: 0, skipped: 0 });
+  const [errorCSV, setErrorCSV] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -87,19 +88,20 @@ const ImportPage: React.FC = () => {
       // Import to Firestore
       const result = await importToFirestore(mappedRows, parseResult.rawData);
       
-      setImportProgress({ success: result.success, failed: result.failed });
+      setImportProgress({ imported: result.imported, skipped: result.skipped });
       setStep('complete');
 
-      // Generate error CSV if there were failures
-      if (result.errorRows.length > 0) {
-        const errorCSV = generateErrorCSV(parseResult.headers, result.errorRows);
-        downloadFile(errorCSV, `import-errors-${Date.now()}.csv`);
+      // Generate error CSV if there were validation errors
+      if (result.errors.length > 0) {
+        const errorCSV = generateErrorCSV(parseResult.headers, result.errors);
+        setErrorCSV(errorCSV);
         showToast(
-          `Import completed with ${result.success} successful and ${result.failed} failed rows. Error CSV downloaded.`,
-          result.failed > 0 ? 'error' : 'success'
+          `Import completed: ${result.imported} imported, ${result.skipped} skipped. ${result.errors.length} errors - download CSV for details.`,
+          result.errors.length > 0 ? 'error' : 'success'
         );
       } else {
-        showToast(`Successfully imported ${result.success} rows!`, 'success');
+        setErrorCSV(null);
+        showToast(`Successfully imported ${result.imported} rows! ${result.skipped} skipped (duplicates or empty rows).`, 'success');
       }
     } catch (error) {
       showToast(`Import failed: ${error}`, 'error');
@@ -113,9 +115,16 @@ const ImportPage: React.FC = () => {
     setParseResult(null);
     setMappings([]);
     setFileName('');
-    setImportProgress({ success: 0, failed: 0 });
+    setImportProgress({ imported: 0, skipped: 0 });
+    setErrorCSV(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDownloadErrors = () => {
+    if (errorCSV) {
+      downloadFile(errorCSV, `import-errors-${Date.now()}.csv`);
     }
   };
 
@@ -211,24 +220,30 @@ const ImportPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <div className="text-green-800">
-                  <div className="text-3xl font-bold">{importProgress.success}</div>
-                  <div className="text-sm">Successful Imports</div>
+                  <div className="text-3xl font-bold">{importProgress.imported}</div>
+                  <div className="text-sm">Imported</div>
                 </div>
               </div>
               
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="text-red-800">
-                  <div className="text-3xl font-bold">{importProgress.failed}</div>
-                  <div className="text-sm">Failed Imports</div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div className="text-gray-800">
+                  <div className="text-3xl font-bold">{importProgress.skipped}</div>
+                  <div className="text-sm">Skipped</div>
                 </div>
               </div>
             </div>
 
-            {importProgress.failed > 0 && (
+            {errorCSV && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                <p className="text-sm text-yellow-800">
-                  An error CSV file has been downloaded with details about the failed rows.
+                <p className="text-sm text-yellow-800 mb-3">
+                  Some rows had validation errors and were not imported.
                 </p>
+                <button
+                  onClick={handleDownloadErrors}
+                  className="px-4 py-2 bg-yellow-600 text-white font-medium rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                >
+                  Download Error CSV
+                </button>
               </div>
             )}
 
