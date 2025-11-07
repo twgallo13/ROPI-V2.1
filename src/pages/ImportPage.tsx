@@ -1,14 +1,123 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import MappingReview from '../components/MappingReview';
+import Toast from '../components/Toast';
+import { parseCSV, generateErrorCSV, downloadFile, type ColumnMapping, type ParseResult } from '../utils/csvParser';
+import { importToFirestore, type ImportRow } from '../utils/firestoreImport';
+
+type ImportStep = 'upload' | 'mapping' | 'importing' | 'complete';
+
+type ToastState = {
+  show: boolean;
+  message: string;
+  type: 'success' | 'error';
+};
 
 const ImportPage: React.FC = () => {
-  // Mock data for the mapping preview table
-  const mockMapping = [
-    { csvHeader: 'Mpn', targetField: 'mpn' },
-    { csvHeader: 'Brand', targetField: 'brand' },
-    { csvHeader: 'RICS Category', targetField: 'category' },
-    { csvHeader: 'Name', targetField: 'name' },
-    { csvHeader: 'Price', targetField: 'variants.price' },
-  ];
+  const [step, setStep] = useState<ImportStep>('upload');
+  const [parseResult, setParseResult] = useState<ParseResult | null>(null);
+  const [mappings, setMappings] = useState<ColumnMapping[]>([]);
+  const [fileName, setFileName] = useState<string>('');
+  const [importProgress, setImportProgress] = useState({ success: 0, failed: 0 });
+  const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ show: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast({ ...toast, show: false });
+  };
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setFileName(file.name);
+      const content = await file.text();
+      const result = parseCSV(content);
+      
+      setParseResult(result);
+      setMappings(result.mappings);
+      setStep('mapping');
+      
+      showToast(`Parsed ${result.rows.length} rows from CSV`, 'success');
+    } catch (error) {
+      showToast(`Error parsing CSV: ${error}`, 'error');
+      console.error('CSV parse error:', error);
+    }
+  };
+
+  const handleMappingChange = (index: number, newTargetField: string | null) => {
+    const updatedMappings = [...mappings];
+    updatedMappings[index] = {
+      ...updatedMappings[index],
+      targetField: newTargetField,
+    };
+    setMappings(updatedMappings);
+  };
+
+  const handleConfirmImport = async () => {
+    if (!parseResult) return;
+
+    try {
+      setStep('importing');
+      setImportProgress({ success: 0, failed: 0 });
+
+      // Apply mappings to rows
+      const mappedRows: ImportRow[] = parseResult.rows.map((row) => {
+        const mappedData: Record<string, any> = {};
+        
+        mappings.forEach((mapping, index) => {
+          if (mapping.targetField) {
+            const value = row.data[parseResult.headers[index]];
+            if (value !== undefined) {
+              mappedData[mapping.targetField] = value;
+            }
+          }
+        });
+
+        return {
+          rowNumber: row.rowNumber,
+          data: mappedData,
+        };
+      });
+
+      // Import to Firestore
+      const result = await importToFirestore(mappedRows, parseResult.rawData);
+      
+      setImportProgress({ success: result.success, failed: result.failed });
+      setStep('complete');
+
+      // Generate error CSV if there were failures
+      if (result.errorRows.length > 0) {
+        const errorCSV = generateErrorCSV(parseResult.headers, result.errorRows);
+        downloadFile(errorCSV, `import-errors-${Date.now()}.csv`);
+        showToast(
+          `Import completed with ${result.success} successful and ${result.failed} failed rows. Error CSV downloaded.`,
+          result.failed > 0 ? 'error' : 'success'
+        );
+      } else {
+        showToast(`Successfully imported ${result.success} rows!`, 'success');
+      }
+    } catch (error) {
+      showToast(`Import failed: ${error}`, 'error');
+      console.error('Import error:', error);
+      setStep('mapping');
+    }
+  };
+
+  const handleReset = () => {
+    setStep('upload');
+    setParseResult(null);
+    setMappings([]);
+    setFileName('');
+    setImportProgress({ success: 0, failed: 0 });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   return (
     <div>
@@ -21,67 +130,123 @@ const ImportPage: React.FC = () => {
 
       <div className="space-y-8">
         {/* Step 1: Upload */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Step 1: Upload File</h2>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-            <div className="space-y-1 text-center">
-              <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <div className="flex text-sm text-gray-600">
-                <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                  <span>Upload a file</span>
-                  <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                </label>
-                <p className="pl-1">or drag and drop</p>
+        {step === 'upload' && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Step 1: Upload File</h2>
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
+              <div className="space-y-1 text-center">
+                <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <div className="flex text-sm text-gray-600">
+                  <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                    <span>Upload a file</span>
+                    <input
+                      ref={fileInputRef}
+                      id="file-upload"
+                      name="file-upload"
+                      type="file"
+                      accept=".csv"
+                      onChange={handleFileSelect}
+                      className="sr-only"
+                    />
+                  </label>
+                  <p className="pl-1">or drag and drop</p>
+                </div>
+                <p className="text-xs text-gray-500">CSV up to 10MB</p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Expected columns: product_id, sku, name, brand, price, size, color, etc.
+                </p>
               </div>
-              <p className="text-xs text-gray-500">
-                CSV up to 10MB
-              </p>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Step 2: Mapping Preview */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Step 2: Auto-Map Preview</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            Review the automatically detected column mappings. Mappings can be adjusted in the settings.
-          </p>
-          <div className="overflow-x-auto border rounded-lg">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    CSV Header
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Target Field
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {mockMapping.map((mapping, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{mapping.csvHeader}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{mapping.targetField}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Step 2: Mapping Review */}
+        {step === 'mapping' && parseResult && (
+          <>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-blue-800">
+                    File: {fileName}
+                  </h3>
+                  <div className="mt-2 text-sm text-blue-700">
+                    <p>Parsed {parseResult.rows.length} rows with {parseResult.headers.length} columns</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <MappingReview
+              mappings={mappings}
+              onMappingChange={handleMappingChange}
+              onConfirm={handleConfirmImport}
+              onCancel={handleReset}
+            />
+          </>
+        )}
+
+        {/* Step 3: Importing */}
+        {step === 'importing' && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Importing...</h2>
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600"></div>
+            </div>
+            <p className="text-center text-gray-600">Processing your import. Please wait...</p>
           </div>
-        </div>
-        
-        {/* Step 3: Confirm */}
-        <div className="flex justify-end">
-           <button
-              type="button"
-              className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Confirm & Import
-            </button>
-        </div>
+        )}
+
+        {/* Step 4: Complete */}
+        {step === 'complete' && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Import Complete</h2>
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="text-green-800">
+                  <div className="text-3xl font-bold">{importProgress.success}</div>
+                  <div className="text-sm">Successful Imports</div>
+                </div>
+              </div>
+              
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="text-red-800">
+                  <div className="text-3xl font-bold">{importProgress.failed}</div>
+                  <div className="text-sm">Failed Imports</div>
+                </div>
+              </div>
+            </div>
+
+            {importProgress.failed > 0 && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-yellow-800">
+                  An error CSV file has been downloaded with details about the failed rows.
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleReset}
+                className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Import Another File
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      {toast.show && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
     </div>
   );
 };
