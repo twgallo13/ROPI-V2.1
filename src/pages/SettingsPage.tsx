@@ -1,5 +1,8 @@
 import React, { useState, ChangeEvent } from 'react';
 import { mockVocabulary } from '../mockData';
+import AISettingsTab from './settings/AISettingsTab';
+import VocabSettingsTab from './settings/VocabSettingsTab';
+import Toast from '../components/Toast';
 
 // Define the types for the keys we'll be managing
 type VocabKey = keyof typeof editableVocabs;
@@ -29,11 +32,18 @@ const mockRules: Rule[] = [
   { condition: "IF Category = Hoodies", action: "SET Department = Apparel", status: "Paused" },
 ];
 
-type ActiveTab = 'prompts' | 'vocab' | 'rules' | 'brands' | 'ai' | 'export';
+type ActiveTab = 'prompts' | 'vocab' | 'vocabManaged' | 'rules' | 'brands' | 'ai' | 'export';
+
+type ToastState = {
+  show: boolean;
+  message: string;
+  type: 'success' | 'error';
+};
 
 const SettingsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('vocab');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('ai');
   const [vocabulary, setVocabulary] = useState(mockVocabulary);
+  const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
   const [newItems, setNewItems] = useState({
     departments: '',
     classes: '',
@@ -45,6 +55,14 @@ const SettingsPage: React.FC = () => {
     sportsTeams: '',
     leagues: '',
   });
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ show: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast({ ...toast, show: false });
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>, key: VocabKey) => {
     const { value } = e.target;
@@ -130,16 +148,19 @@ const SettingsPage: React.FC = () => {
 
       <div className="border-b border-gray-200 mb-6">
         <nav className="-mb-px flex space-x-4" aria-label="Tabs">
+          <TabButton tabName="ai" label="AI Settings" />
+          <TabButton tabName="vocabManaged" label="Vocab (Managed)" />
           <TabButton tabName="prompts" label="AI Prompts" />
           <TabButton tabName="vocab" label="Vocab / Dropdowns" />
           <TabButton tabName="rules" label="Rules" />
           <TabButton tabName="brands" label="Brands" />
-          <TabButton tabName="ai" label="AI Settings" />
           <TabButton tabName="export" label="Export Settings" />
         </nav>
       </div>
 
       <main>
+        {activeTab === 'ai' && <AISettingsTab onShowToast={showToast} />}
+        {activeTab === 'vocabManaged' && <VocabSettingsTab onShowToast={showToast} />}
         {activeTab === 'vocab' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(editableVocabs).map(([key, title]) => (
@@ -186,9 +207,12 @@ const SettingsPage: React.FC = () => {
         )}
         {activeTab === 'prompts' && <PlaceholderTab title="Manage AI Prompts" />}
         {activeTab === 'brands' && <PlaceholderTab title="Manage Brands" />}
-        {activeTab === 'ai' && <PlaceholderTab title="Manage AI Settings" />}
         {activeTab === 'export' && <PlaceholderTab title="Manage Export Settings" />}
       </main>
+
+      {toast.show && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
     </div>
   );
 };
