@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Product } from '../types';
-import { mockGenerateDescription } from '../services/mockAIService';
+// Replaced mock AI service with Gemini client
+import { generateProductMarketing } from '../services/geminiService';
 import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -150,24 +151,28 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   
   const handleGenerateClick = async () => {
     setIsGenerating(true);
-    setAiScore(null); // Clear previous score
+    setAiScore(null);
     try {
-      const result = await mockGenerateDescription();
-      if (editableProduct) {
-        setEditableProduct({
-          ...editableProduct,
-          marketing: {
-            ...editableProduct.marketing,
-            title: result.title,
-            bullets: result.bullets,
-            seo: result.seo,
-            paragraphDraft: result.paragraphDraft,
-          },
-        });
-        setAiScore(result.score);
-      }
-    } catch (error) {
-      console.error("AI Generation failed:", error);
+      if (!editableProduct) return;
+      const result = await generateProductMarketing({ product: editableProduct });
+      setEditableProduct({
+        ...editableProduct,
+        marketing: {
+          ...editableProduct.marketing,
+          title: result.title,
+          bullets: result.bullets,
+          seo: result.seo,
+          paragraphDraft: result.paragraphDraft,
+        },
+      });
+      setAiScore(result.score);
+    } catch (e) {
+      console.error('[drawer] AI generation failed', e);
+      // Basic fallback toast via optimistic paragraph
+      setEditableProduct(p => p ? ({
+        ...p,
+        marketing: { ...p.marketing, paragraphDraft: p.marketing.paragraphDraft || 'Generation failed.' }
+      }) : p);
     } finally {
       setIsGenerating(false);
     }

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, type User } from 'firebase/auth';
-import { auth, provider } from '../firebase';
+import { auth, provider, db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 type Role = 'admin' | 'specialist';
 
@@ -13,14 +14,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ALLOWED_DOMAIN = '@shiekhshoes.org';
-
-// Determine role based on email (you can adjust this logic)
-const determineRole = (email: string | null): Role => {
-  // For now, all @shiekhshoes.org users are admins
-  // You can add more sophisticated logic here
-  return 'admin';
-};
+// Role is loaded from Firestore: /users/{uid} -> { role: 'admin' | 'specialist' }
+// If missing, default to 'specialist'.
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -29,25 +24,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const email = firebaseUser.email || '';
-        
-        // Check if email ends with allowed domain
-        if (email.endsWith(ALLOWED_DOMAIN)) {
+      try {
+        if (firebaseUser) {
           setUser(firebaseUser);
-          setRole(determineRole(email));
+          // Load role from Firestore
+          const userRef = doc(db, 'users', firebaseUser.uid);
+          const snap = await getDoc(userRef);
+          const data = snap.exists() ? (snap.data() as { role?: Role }) : {};
+          setRole((data.role as Role) ?? 'specialist');
         } else {
-          // Sign out user if not from allowed domain
-          await firebaseSignOut(auth);
           setUser(null);
           setRole(null);
-          alert(`Access restricted to ${ALLOWED_DOMAIN} emails only.`);
         }
-      } else {
-        setUser(null);
-        setRole(null);
+      } catch (e) {
+        console.error('[auth] failed to load role', e);
+        setUser(firebaseUser || null);
+        setRole('specialist');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -55,16 +50,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      const email = result.user.email || '';
-      
-      // Double-check domain after sign-in
-      if (!email.endsWith(ALLOWED_DOMAIN)) {
-        await firebaseSignOut(auth);
-        setUser(null);
-        setRole(null);
-        alert(`Access restricted to ${ALLOWED_DOMAIN} emails only.`);
-      }
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error('Login error:', error);
       alert('Failed to sign in. Please try again.');

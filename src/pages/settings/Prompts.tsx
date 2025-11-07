@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 // NOTE: ShadCN UI is not installed in this workspace. We'll use a minimal tabs UI
 // that can be swapped for shadcn/ui Tabs later without changing behavior.
 
 type TabKey = 'templates' | 'preview' | 'history';
 
-// Simple local persistence as a stand-in for Firestore: /settings/ai/prompts
-const STORAGE_KEY = 'settings.ai.prompts';
+// Firestore path: we store prompts under collection 'settings', doc id 'ai.prompts'
+// Assumption: Using a single doc at settings/ai.prompts rather than a subcollection path.
+const FS_DOC = doc(db, 'settings', 'ai.prompts');
 
 const defaultTemplate = `You are an expert retail copywriter for athletic footwear.
 Write a concise, on-brand product description.
@@ -27,20 +30,37 @@ const PromptsPage: React.FC = () => {
   const [template, setTemplate] = useState<string>('');
   const [status, setStatus] = useState<string>('');
 
-  // Simulate Firestore load
+  // Load from Firestore
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setTemplate(saved);
-    } else {
-      setTemplate(defaultTemplate);
-    }
+    (async () => {
+      try {
+        const snap = await getDoc(FS_DOC);
+        if (snap.exists()) {
+          const data = snap.data() as { template?: string };
+          setTemplate(data.template || defaultTemplate);
+        } else {
+          setTemplate(defaultTemplate);
+        }
+      } catch (e) {
+        console.error('[prompts] load failed', e);
+        setTemplate(defaultTemplate);
+        setStatus('Failed to load from Firestore — using defaults');
+        setTimeout(() => setStatus(''), 2000);
+      }
+    })();
   }, []);
 
-  const onSave = () => {
-    localStorage.setItem(STORAGE_KEY, template);
-    setStatus('Saved.');
-    setTimeout(() => setStatus(''), 1500);
+  const onSave = async () => {
+    try {
+      const cleaned = JSON.parse(JSON.stringify({ template }));
+      await setDoc(FS_DOC, cleaned, { merge: true });
+      setStatus('Saved.');
+    } catch (e) {
+      console.error('[prompts] save failed', e);
+      setStatus('Save failed');
+    } finally {
+      setTimeout(() => setStatus(''), 1500);
+    }
   };
 
   const exampleData = {
