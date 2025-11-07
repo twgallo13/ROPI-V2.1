@@ -77,7 +77,11 @@ const ExportSettingsTab: React.FC<ExportSettingsTabProps> = ({ onShowToast }) =>
     try {
       setSaving(true);
       const docRef = doc(db, 'settings', 'export');
-      await setDoc(docRef, settings);
+      
+      // Remove any undefined values before saving
+      const cleanedSettings = JSON.parse(JSON.stringify(settings));
+      
+      await setDoc(docRef, cleanedSettings, { merge: true });
       onShowToast('Export settings saved successfully', 'success');
     } catch (err: any) {
       const errorCode = err?.code || 'unknown';
