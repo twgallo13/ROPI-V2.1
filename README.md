@@ -44,5 +44,27 @@ To seed initial settings data to Firestore:
 This will create the following documents in Firestore:
 - `/settings/ai` - AI model configuration (model, temperature, tone, etc.)
 - `/settings/vocab` - Vocabulary settings (banned words, synonyms)
+- `/settings/attributes` - Product attributes (departments, classes, categories, etc.)
+
+### Seeding Product Attributes
+
+To seed product attribute dropdowns (departments, classes, categories, etc.):
+
+```bash
+npm run seed:attributes
+```
+
+This creates `/settings/attributes` with starter data for:
+- departments (Footwear, Apparel, Accessories)
+- classes (Running, Basketball, Lifestyle, Tops, etc.)
+- categories (Shoes, Tops, Hoodies, etc.)
+- ageGroups (Adult, Youth, Toddler)
+- genders (Mens, Womens, Unisex)
+- statuses (intake, in-progress, validated, uploaded)
+- websites (Shiekh.com, Karmaloop.com)
+- sportsTeams (Lakers, Dodgers, Raiders, 49ers)
+- leagues (NBA, MLB, NFL)
+
+Users can add/edit/delete these values through the Settings → Vocab/Dropdowns tab in the UI.
 
 You only need to run this once to initialize your Firestore database with default settings.

@@ -1,8 +1,9 @@
 import React, { useState, ChangeEvent } from 'react';
-import { mockVocabulary } from '../mockData';
 import AISettingsTab from './settings/AISettingsTab';
 import VocabSettingsTab from './settings/VocabSettingsTab';
 import Toast from '../components/Toast';
+import { useAttributesSettings, type AttributeKey } from '../hooks/useAttributesSettings';
+import { useAuth } from '../contexts/AuthContext';
 
 // Define the types for the keys we'll be managing
 type VocabKey = keyof typeof editableVocabs;
@@ -42,7 +43,8 @@ type ToastState = {
 
 const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('ai');
-  const [vocabulary, setVocabulary] = useState(mockVocabulary);
+  const { user } = useAuth();
+  const attributes = useAttributesSettings();
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
   const [newItems, setNewItems] = useState({
     departments: '',
@@ -55,6 +57,8 @@ const SettingsPage: React.FC = () => {
     sportsTeams: '',
     leagues: '',
   });
+  const [editingItem, setEditingItem] = useState<{ key: AttributeKey; index: number } | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ show: true, message, type });
@@ -69,18 +73,67 @@ const SettingsPage: React.FC = () => {
     setNewItems(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleAddItem = (key: VocabKey) => {
+  const handleAddItem = async (key: VocabKey) => {
+    if (!user) {
+      showToast('Please sign in to edit settings', 'error');
+      return;
+    }
+
     const newItem = newItems[key].trim();
-    if (newItem) {
-      // Ensure readonly arrays from mock data are treated as mutable string arrays
-      const currentList = Array.from(vocabulary[key]);
-      if (!currentList.includes(newItem)) {
-        setVocabulary(prev => ({
-          ...prev,
-          [key]: [...currentList, newItem],
-        }));
-        setNewItems(prev => ({ ...prev, [key]: '' })); // Clear input after adding
-      }
+    if (!newItem) return;
+
+    const result = await attributes.addItem(key as AttributeKey, newItem);
+    
+    if (result.success) {
+      setNewItems(prev => ({ ...prev, [key]: '' }));
+      showToast('Saved', 'success');
+    } else {
+      showToast(result.error || 'Couldn\'t save — try again', 'error');
+    }
+  };
+
+  const startEdit = (key: AttributeKey, index: number, currentValue: string) => {
+    setEditingItem({ key, index });
+    setEditValue(currentValue);
+  };
+
+  const cancelEdit = () => {
+    setEditingItem(null);
+    setEditValue('');
+  };
+
+  const saveEdit = async () => {
+    if (!editingItem || !user) {
+      cancelEdit();
+      return;
+    }
+
+    const result = await attributes.editItem(editingItem.key, editingItem.index, editValue);
+    
+    if (result.success) {
+      showToast('Saved', 'success');
+      cancelEdit();
+    } else {
+      showToast(result.error || 'Couldn\'t save — try again', 'error');
+    }
+  };
+
+  const handleDelete = async (key: AttributeKey, index: number) => {
+    if (!user) {
+      showToast('Please sign in to edit settings', 'error');
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete this item?')) {
+      return;
+    }
+
+    const result = await attributes.deleteItem(key, index);
+    
+    if (result.success) {
+      showToast('Deleted', 'success');
+    } else {
+      showToast(result.error || 'Couldn\'t delete — try again', 'error');
     }
   };
   
@@ -88,7 +141,15 @@ const SettingsPage: React.FC = () => {
     if (e.key === 'Enter') {
       handleAddItem(key);
     }
-  }
+  };
+
+  const handleEditKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      saveEdit();
+    } else if (e.key === 'Escape') {
+      cancelEdit();
+    }
+  };
 
   const TabButton: React.FC<{ tabName: ActiveTab; label: string }> = ({ tabName, label }) => (
     <button
@@ -103,32 +164,86 @@ const SettingsPage: React.FC = () => {
     </button>
   );
 
-  const VocabEditor: React.FC<{ vocabKey: VocabKey; title: string }> = ({ vocabKey, title }) => (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
-      <ul className="space-y-2 h-48 overflow-y-auto border rounded-md p-3 bg-gray-50 mb-4">
-        {vocabulary[vocabKey].map((item, index) => (
-          <li key={index} className="text-gray-700">{item}</li>
-        ))}
-      </ul>
-      <div className="flex space-x-2">
-        <input
-          type="text"
-          value={newItems[vocabKey]}
-          onChange={(e) => handleInputChange(e, vocabKey)}
-          onKeyPress={(e) => handleKeyPress(e, vocabKey)}
-          placeholder="Add new..."
-          className="flex-grow block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-        />
-        <button
-          onClick={() => handleAddItem(vocabKey)}
-          className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Add
-        </button>
+  const VocabEditor: React.FC<{ vocabKey: VocabKey; title: string }> = ({ vocabKey, title }) => {
+    const items = attributes.data[vocabKey as AttributeKey] || [];
+    const isEditing = (index: number) => editingItem?.key === vocabKey && editingItem?.index === index;
+
+    return (
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
+        
+        {attributes.loading ? (
+          <div className="h-48 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : (
+          <>
+            <ul className="space-y-2 h-48 overflow-y-auto border rounded-md p-3 bg-gray-50 mb-4">
+              {items.length === 0 ? (
+                <li className="text-gray-400 text-sm italic">No items yet</li>
+              ) : (
+                items.map((item, index) => (
+                  <li 
+                    key={index} 
+                    className="flex items-center justify-between group hover:bg-white px-2 py-1 rounded transition-colors"
+                  >
+                    {isEditing(index) ? (
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={handleEditKeyPress}
+                        onBlur={cancelEdit}
+                        autoFocus
+                        className="flex-grow border-indigo-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                      />
+                    ) : (
+                      <>
+                        <span 
+                          className="text-gray-700 flex-grow cursor-pointer"
+                          onClick={() => user && startEdit(vocabKey as AttributeKey, index, item)}
+                          title="Click to edit"
+                        >
+                          {item}
+                        </span>
+                        <button
+                          onClick={() => handleDelete(vocabKey as AttributeKey, index)}
+                          className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity ml-2"
+                          disabled={attributes.saving}
+                          title="Delete"
+                        >
+                          ×
+                        </button>
+                      </>
+                    )}
+                  </li>
+                ))
+              )}
+            </ul>
+            
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={newItems[vocabKey]}
+                onChange={(e) => handleInputChange(e, vocabKey)}
+                onKeyPress={(e) => handleKeyPress(e, vocabKey)}
+                placeholder="Add new..."
+                disabled={attributes.saving}
+                className="flex-grow block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+              />
+              <button
+                onClick={() => handleAddItem(vocabKey)}
+                disabled={attributes.saving || !newItems[vocabKey].trim()}
+                className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {attributes.saving ? 'Saving...' : 'Add'}
+              </button>
+            </div>
+          </>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   const PlaceholderTab: React.FC<{ title: string }> = ({ title }) => (
     <div className="bg-white p-6 rounded-lg shadow">
