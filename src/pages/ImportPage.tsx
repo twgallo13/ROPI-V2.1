@@ -164,7 +164,7 @@ const ImportPage: React.FC = () => {
                 </div>
                 <p className="text-xs text-gray-500">CSV up to 10MB</p>
                 <p className="text-xs text-gray-500 mt-2">
-                  <strong>Required:</strong> Product ID (or MPN) and SKU
+                  <strong>Required:</strong> MPN and SKU
                 </p>
                 <p className="text-xs text-gray-500">
                   Optional: name, brand, price, size, color, etc.

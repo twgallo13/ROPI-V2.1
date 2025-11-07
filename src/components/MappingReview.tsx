@@ -74,7 +74,6 @@ const MappingReview: React.FC<MappingReviewProps> = ({
                     className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                   >
                     <option value="">-- Ignore this column --</option>
-                    <option value="product_id">Product ID</option>
                     <option value="mpn">MPN</option>
                     <option value="sku">SKU</option>
                     <option value="name">Name</option>
