@@ -120,9 +120,11 @@ export function useAttributesSettings() {
         await setDoc(docRef, INITIAL_ATTRIBUTES);
         setData(INITIAL_ATTRIBUTES);
       }
-    } catch (err) {
-      console.error('Error loading attributes:', err);
-      setError('Failed to load attributes');
+    } catch (err: any) {
+      const errorCode = err?.code || 'unknown';
+      const errorMessage = err?.message || 'Unknown error';
+      console.error('[settings] load failed', errorCode, errorMessage);
+      setError(`Could not load settings (${errorCode})`);
     } finally {
       setLoading(false);
     }

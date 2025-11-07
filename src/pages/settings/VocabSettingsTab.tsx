@@ -35,9 +35,11 @@ const VocabSettingsTab: React.FC<VocabSettingsTabProps> = ({ onShowToast }) => {
       if (docSnap.exists()) {
         setSettings(docSnap.data() as VocabSettings);
       }
-    } catch (error) {
-      console.error('Error loading vocabulary settings:', error);
-      onShowToast('Failed to load vocabulary settings', 'error');
+    } catch (err: any) {
+      const errorCode = err?.code || 'unknown';
+      const errorMessage = err?.message || 'Unknown error';
+      console.error('[settings] load failed', errorCode, errorMessage);
+      onShowToast(`Could not load vocabulary settings (${errorCode})`, 'error');
     } finally {
       setLoading(false);
     }

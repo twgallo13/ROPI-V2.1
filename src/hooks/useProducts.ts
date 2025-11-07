@@ -41,9 +41,11 @@ export function useProducts(): UseProductsResult {
       });
 
       setProducts(loadedProducts);
-    } catch (err) {
-      console.error('Error loading products:', err);
-      setError('Failed to load products from Firestore');
+    } catch (err: any) {
+      const errorCode = err?.code || 'unknown';
+      const errorMessage = err?.message || 'Unknown error';
+      console.error('[products] load failed', errorCode, errorMessage);
+      setError(`Could not load products (${errorCode})`);
     } finally {
       setLoading(false);
     }
