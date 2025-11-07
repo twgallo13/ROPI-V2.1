@@ -2,7 +2,7 @@
  * Unit tests for CSV Parser mapping functionality
  */
 
-import { parseCSV } from '../csvParser';
+import { parseCSV, getDelimiterName } from '../csvParser';
 
 describe('CSV Parser - Header Mapping', () => {
   test('SKU maps to sku field, not product_id', () => {
@@ -139,5 +139,102 @@ describe('CSV Parser - Header Mapping', () => {
     // 'Product SKU' contains 'sku' as a word boundary
     expect(result.mappings[0].targetField).toBe('sku');
     expect(result.mappings[0].confidence).toBe('synonym');
+  });
+});
+
+describe('CSV Parser - Delimiter Detection', () => {
+  test('detects comma delimiter', () => {
+    const csv = 'MPN,SKU,Name,Price\n123,ABC,Product,10.00';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe(',');
+  });
+
+  test('detects tab delimiter', () => {
+    const csv = 'MPN\tSKU\tName\tPrice\n123\tABC\tProduct\t10.00';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe('\t');
+  });
+
+  test('detects semicolon delimiter', () => {
+    const csv = 'MPN;SKU;Name;Price\n123;ABC;Product;10.00';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe(';');
+  });
+
+  test('detects pipe delimiter', () => {
+    const csv = 'MPN|SKU|Name|Price\n123|ABC|Product|10.00';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe('|');
+  });
+
+  test('defaults to comma when no delimiters found', () => {
+    const csv = 'SingleColumn\nValue1\nValue2';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe(',');
+  });
+
+  test('ignores delimiters inside quotes', () => {
+    const csv = '"Product,Name",SKU,Price\n"Test,Product",ABC,10.00';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe(',');
+    expect(result.headers[0]).toBe('Product,Name');
+  });
+
+  test('chooses delimiter with highest count', () => {
+    // More commas than semicolons
+    const csv = 'A,B,C;D\n1,2,3;4';
+    const result = parseCSV(csv);
+    expect(result.delimiter).toBe(',');
+  });
+
+  test('parses tab-delimited lines correctly', () => {
+    const csv = 'MPN\tSKU\tName\n123\tABC\tTest Product';
+    const result = parseCSV(csv);
+    expect(result.headers).toEqual(['MPN', 'SKU', 'Name']);
+    expect(result.rows[0].data.mpn).toBe('123');
+    expect(result.rows[0].data.sku).toBe('ABC');
+  });
+
+  test('parses semicolon-delimited lines correctly', () => {
+    const csv = 'MPN;SKU;Name\n456;DEF;Another Product';
+    const result = parseCSV(csv);
+    expect(result.headers).toEqual(['MPN', 'SKU', 'Name']);
+    expect(result.rows[0].data.mpn).toBe('456');
+    expect(result.rows[0].data.sku).toBe('DEF');
+  });
+
+  test('parses pipe-delimited lines correctly', () => {
+    const csv = 'MPN|SKU|Name\n789|GHI|Third Product';
+    const result = parseCSV(csv);
+    expect(result.headers).toEqual(['MPN', 'SKU', 'Name']);
+    expect(result.rows[0].data.mpn).toBe('789');
+    expect(result.rows[0].data.sku).toBe('GHI');
+  });
+
+  test('handles quoted values with tabs', () => {
+    const csv = 'MPN\tSKU\tName\n123\tABC\t"Product with\ttab"';
+    const result = parseCSV(csv);
+    expect(result.headers).toEqual(['MPN', 'SKU', 'Name']);
+    expect(result.rows[0].data.name).toBe('Product with\ttab');
+  });
+
+  test('handles quoted values with semicolons', () => {
+    const csv = 'MPN;SKU;Name\n123;ABC;"Product; with semicolon"';
+    const result = parseCSV(csv);
+    expect(result.headers).toEqual(['MPN', 'SKU', 'Name']);
+    expect(result.rows[0].data.name).toBe('Product; with semicolon');
+  });
+});
+
+describe('getDelimiterName', () => {
+  test('returns friendly names for delimiters', () => {
+    expect(getDelimiterName(',')).toBe('comma');
+    expect(getDelimiterName('\t')).toBe('tab');
+    expect(getDelimiterName(';')).toBe('semicolon');
+    expect(getDelimiterName('|')).toBe('pipe');
+  });
+
+  test('defaults to comma for unknown delimiters', () => {
+    expect(getDelimiterName('~')).toBe('comma');
   });
 });

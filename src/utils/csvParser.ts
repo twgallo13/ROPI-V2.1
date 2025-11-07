@@ -23,6 +23,7 @@ export type ParseResult = {
   mappings: ColumnMapping[];
   rows: ParsedRow[];
   rawData: string[][];
+  delimiter: string;
 };
 
 // Synonym mappings for auto-detection
@@ -71,6 +72,50 @@ const DEFAULT_IGNORE = [
   'whs inv',
   'kl post date',
 ];
+
+/**
+ * Detect the most likely delimiter in a CSV line
+ */
+function detectDelimiter(headerLine: string): string {
+  const delimiters = [',', '\t', ';', '|'];
+  const counts: Record<string, number> = {};
+  
+  let inQuotes = false;
+  
+  for (const char of headerLine) {
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (!inQuotes && delimiters.includes(char)) {
+      counts[char] = (counts[char] || 0) + 1;
+    }
+  }
+  
+  // Find delimiter with highest count
+  let maxCount = 0;
+  let bestDelimiter = ','; // default to comma
+  
+  for (const delimiter of delimiters) {
+    if ((counts[delimiter] || 0) > maxCount) {
+      maxCount = counts[delimiter];
+      bestDelimiter = delimiter;
+    }
+  }
+  
+  return bestDelimiter;
+}
+
+/**
+ * Get friendly name for delimiter
+ */
+export function getDelimiterName(delimiter: string): string {
+  switch (delimiter) {
+    case ',': return 'comma';
+    case '\t': return 'tab';
+    case ';': return 'semicolon';
+    case '|': return 'pipe';
+    default: return 'comma';
+  }
+}
 
 /**
  * Calculate Levenshtein distance between two strings
@@ -241,8 +286,11 @@ export function parseCSV(csvContent: string): ParseResult {
     throw new Error('CSV file is empty');
   }
   
+  // Detect delimiter from header line
+  const delimiter = detectDelimiter(lines[0]);
+  
   // Parse headers
-  const headers = parseCSVLine(lines[0]);
+  const headers = parseCSVLine(lines[0], delimiter);
   
   // Auto-map headers
   const mappings = headers.map((header, index) => autoMapHeader(header, headers, index));
@@ -252,7 +300,7 @@ export function parseCSV(csvContent: string): ParseResult {
   const rows: ParsedRow[] = [];
   
   for (let i = 1; i < lines.length; i++) {
-    const values = parseCSVLine(lines[i]);
+    const values = parseCSVLine(lines[i], delimiter);
     rawData.push(values);
     
     const rowData: Record<string, any> = {};
@@ -278,18 +326,25 @@ export function parseCSV(csvContent: string): ParseResult {
     });
   }
   
+  // Check if parsing might have failed (all rows have exactly 1 field)
+  const allSingleField = headers.length === 1 && rows.length > 0;
+  if (allSingleField && lines.length > 1) {
+    console.warn(`Delimiter detection: detected '${delimiter}' (${getDelimiterName(delimiter)}), but all rows parsed as single field. File might use a different delimiter.`);
+  }
+  
   return {
     headers,
     mappings,
     rows,
     rawData,
+    delimiter,
   };
 }
 
 /**
  * Parse a single CSV line handling quoted values
  */
-function parseCSVLine(line: string): string[] {
+function parseCSVLine(line: string, delimiter: string = ','): string[] {
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
@@ -306,7 +361,7 @@ function parseCSVLine(line: string): string[] {
         // Toggle quote state
         inQuotes = !inQuotes;
       }
-    } else if (char === ',' && !inQuotes) {
+    } else if (char === delimiter && !inQuotes) {
       // Field separator
       result.push(current);
       current = '';
