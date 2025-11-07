@@ -33,6 +33,28 @@ function sanitizeDocId(id: string): string {
 }
 
 /**
+ * Recursively remove undefined values from an object
+ * Firestore doesn't accept undefined values
+ */
+function stripUndefined<T>(obj: T): T {
+  if (obj && typeof obj === 'object') {
+    const out: any = Array.isArray(obj) ? [] : {};
+    Object.entries(obj as any).forEach(([k, v]) => {
+      if (v === undefined) return;
+      if (v && typeof v === 'object') {
+        const cleaned = stripUndefined(v);
+        if (Array.isArray(cleaned)) out[k] = cleaned;
+        else if (Object.keys(cleaned).length > 0 || !Array.isArray(cleaned)) out[k] = cleaned;
+      } else {
+        out[k] = v;
+      }
+    });
+    return out;
+  }
+  return obj;
+}
+
+/**
  * Validate required fields for a product row
  */
 function validateProductRow(data: Record<string, any>): string | null {
@@ -75,13 +97,13 @@ function transformToProduct(data: Record<string, any>): Partial<Product> {
     gender: data.gender || '',
     materialFabric: data.material || '',
     fit: data.fit || '',
-    sportsTeam: data.sports_team,
-    league: data.league,
+    sportsTeam: data.sports_team || '',
+    league: data.league || '',
     shipping: {
-      height: data.height || null,
-      width: data.width || null,
-      length: data.length || null,
-      weight: data.weight || null,
+      height: data.height ?? null,
+      width: data.width ?? null,
+      length: data.length ?? null,
+      weight: data.weight ?? null,
     },
     ricsCategory: data.rics_category || '',
     ricsLongDesc: data.rics_long_desc || '',
@@ -191,7 +213,7 @@ export async function importToFirestore(
   // Process each product and its variants
   for (const [mpn, productRows] of groupedRows) {
     const firstRow = productRows[0].row;
-    const productData = transformToProduct(firstRow.data);
+    const productData = stripUndefined(transformToProduct(firstRow.data));
     const productRef = doc(db, 'products', mpn);
     
     // Write product document
@@ -214,7 +236,7 @@ export async function importToFirestore(
     
     // Write variant documents
     for (const { row, sku } of productRows) {
-      const variant = transformToVariant(row.data);
+      const variant = stripUndefined(transformToVariant(row.data));
       const variantRef = doc(db, 'products', mpn, 'variants', sku);
       
       try {
