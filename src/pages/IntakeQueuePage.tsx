@@ -4,12 +4,15 @@ import { Product } from '../types';
 import ProductEditorDrawer from '../components/ProductEditorDrawer';
 import { useProducts } from '../hooks/useProducts';
 import Toast from '../components/Toast';
+import { exportAndDownload } from '../utils/exporter';
 
 const IntakeQueuePage: React.FC = () => {
   const { products, loading, error } = useProducts();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showErrorToast, setShowErrorToast] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   // State for the new filters
   const [statusFilter, setStatusFilter] = useState('all');
@@ -33,6 +36,44 @@ const IntakeQueuePage: React.FC = () => {
     }
   }, [error]);
 
+  // Handle CSV export
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      setExportMessage(null);
+      
+      const { successCount, errorCount } = await exportAndDownload();
+      
+      if (successCount > 0 && errorCount === 0) {
+        setExportMessage({
+          text: `Successfully exported ${successCount} row(s)`,
+          type: 'success',
+        });
+      } else if (successCount > 0 && errorCount > 0) {
+        setExportMessage({
+          text: `Exported ${successCount} row(s). ${errorCount} product(s) had errors (see error CSV)`,
+          type: 'success',
+        });
+      } else if (errorCount > 0) {
+        setExportMessage({
+          text: `Export failed: ${errorCount} product(s) missing required fields (see error CSV)`,
+          type: 'error',
+        });
+      }
+    } catch (err: any) {
+      console.error('[intake] export failed', err);
+      setExportMessage({
+        text: err.message || 'Failed to export products',
+        type: 'error',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Count validated products
+  const validatedCount = products.filter(p => p.status === 'validated').length;
+
   // Prepare data for the filter dropdowns
   const uniqueBrands = [...new Set(products.map(p => p.brand))];
   const departments = mockVocabulary.departments;
@@ -40,11 +81,31 @@ const IntakeQueuePage: React.FC = () => {
 
   return (
     <div>
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Intake Queue</h1>
-        <p className="text-gray-600 mt-1">
-          {loading ? 'Loading...' : `${products.length} products waiting for processing.`}
-        </p>
+      <header className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Intake Queue</h1>
+          <p className="text-gray-600 mt-1">
+            {loading ? 'Loading...' : `${products.length} products waiting for processing.`}
+          </p>
+        </div>
+        <button
+          onClick={handleExport}
+          disabled={isExporting || loading || validatedCount === 0}
+          className="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          title={validatedCount === 0 ? 'No validated products to export' : 'Export validated products to CSV'}
+        >
+          {isExporting ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Exporting...
+            </>
+          ) : (
+            <>📥 Export CSV ({validatedCount})</>
+          )}
+        </button>
       </header>
 
       {/* Filter Bar */}
@@ -189,6 +250,14 @@ const IntakeQueuePage: React.FC = () => {
           message={error} 
           type="error" 
           onClose={() => setShowErrorToast(false)} 
+        />
+      )}
+
+      {exportMessage && (
+        <Toast 
+          message={exportMessage.text} 
+          type={exportMessage.type} 
+          onClose={() => setExportMessage(null)} 
         />
       )}
     </div>
