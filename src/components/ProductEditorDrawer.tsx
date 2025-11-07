@@ -4,6 +4,7 @@ import { mockGenerateDescription } from '../services/mockAIService';
 import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import Toast from './Toast';
 
 interface ProductEditorDrawerProps {
   isOpen: boolean;
@@ -36,14 +37,16 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const [editableProduct, setEditableProduct] = useState<Product | null>(product);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number; } | null>(null);
+  const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     setEditableProduct(product);
     setActiveTab('core');
     setAiScore(null); // Reset score when product changes
+    setToastMessage(null); // Reset toast when product changes
   }, [product]);
 
-  const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}) => {
+  const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
     e.preventDefault();
     if (!product) return;
     const fd = new FormData(e.currentTarget);
@@ -67,7 +70,25 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     });
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
-    onClose(); // close drawer
+    
+    // Update local state optimistically
+    if (editableProduct) {
+      setEditableProduct({
+        ...editableProduct,
+        ...payload,
+        status: extra.status || editableProduct.status,
+      });
+    }
+    
+    // Show toast if requested
+    if (options.showToast) {
+      setToastMessage({ text: options.showToast, type: 'success' });
+    }
+    
+    // Close drawer unless keepOpen is true
+    if (!options.keepOpen) {
+      onClose();
+    }
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -370,12 +391,39 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
               
               <footer className="flex-shrink-0 px-4 py-4 flex justify-end border-t border-gray-200 bg-gray-50">
                 <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
-                <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                {activeTab === 'core' ? (
+                  <>
+                    <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                    <button 
+                      type="button" 
+                      onClick={(e) => {
+                        const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
+                        saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
+                          status: 'validated',
+                          validatedAt: serverTimestamp(),
+                        }, { showToast: 'Approved', keepOpen: true });
+                      }}
+                      className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                    >
+                      Approve
+                    </button>
+                  </>
+                ) : (
+                  <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                )}
               </footer>
             </form>
           </div>
         </section>
       </div>
+      
+      {toastMessage && (
+        <Toast 
+          message={toastMessage.text} 
+          type={toastMessage.type} 
+          onClose={() => setToastMessage(null)} 
+        />
+      )}
     </div>
   );
 };
