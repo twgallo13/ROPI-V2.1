@@ -2,9 +2,13 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches: [ main ]
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
+      PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,9 +19,7 @@ jobs:
       - name: Build (Vite)
         run: npm run build
       - name: Deploy Hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
-          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        if: ${{ env.FIREBASE_TOKEN != '' && env.PROJECT_ID != '' }}
         run: |
           npm i -g firebase-tools
           firebase use "$PROJECT_ID"
