@@ -9,6 +9,7 @@ import IntakeQueuePage from './pages/IntakeQueuePage';
 import CompleteQueuePage from './pages/CompleteQueuePage';
 import SettingsPage from './pages/SettingsPage';
 import ImportPage from './pages/ImportPage';
+import PromptsPage from './pages/settings/Prompts';
 
 function App() {
   const { isAuthenticated, role } = useAuth();
@@ -73,6 +74,18 @@ function App() {
               <Navigate to={isAuthenticated ? "/intake" : "/"} />
             )
           } 
+        />
+        <Route 
+          path="/settings/prompts"
+          element={
+            isAuthenticated && role === 'admin' ? (
+              <MainLayout>
+                <PromptsPage />
+              </MainLayout>
+            ) : (
+              <Navigate to={isAuthenticated ? "/intake" : "/"} />
+            )
+          }
         />
         
         {/* Catch-all for any other bad URL */}

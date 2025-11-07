@@ -1,0 +1,10 @@
+{
+  "name": "ROPI v2 DevContainer",
+  "forwardPorts": [3000, 5173, 5000, 5001, 8080, 8085, 9099, 4000],
+  "postCreateCommand": "npm install",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+product_id,sku,name,brand,category,price,images,size,color
+P001,SKU001,Air Zoom Alpha,Nike,Footwear,129.99,"https://img/1.jpg|https://img/2.jpg",M 9,Black
+P001,SKU002,Air Zoom Alpha,Nike,Footwear,129.99,"https://img/1.jpg|https://img/2.jpg",M 10,Black
+P002,SKU003,Ultraboost 22,adidas,Footwear,180.00,"https://img/3.jpg,https://img/4.jpg",M 9,White
+P003,SKU004,Classic Hoodie,Champion,Apparel,59.50,https://img/5.jpg,L,Gray
+P004,SKU005,Court Royale,Nike,Footwear,$74.99,https://img/6.jpg,M 8,White
+P005,SKU006,Club C 85,Reebok,Footwear,89.00,https://img/7.jpg,M 9,Green
+P006,SKU007,Essentials Tee,adidas,Apparel,25,https://img/8.jpg,M,Blue
+P007,SKU008,Chuck Taylor High,Converse,Footwear,65,https://img/9.jpg,M 10,Black
+P008,SKU009,Tech Fleece Joggers,Nike,Apparel,110.00,https://img/10.jpg,L,Black
+P009,SKU010,Old Skool,Vans,Footwear,69.99,https://img/11.jpg,M 9,Black
