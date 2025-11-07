@@ -2,6 +2,8 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Product } from '../types';
 import { mockGenerateDescription } from '../services/mockAIService';
 import { mockVocabulary } from '../mockData';
+import { db } from '../firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 interface ProductEditorDrawerProps {
   isOpen: boolean;
@@ -10,6 +12,17 @@ interface ProductEditorDrawerProps {
 }
 
 type ActiveTab = 'core' | 'context' | 'generation' | 'variants' | 'history';
+
+// Helper to clean data for Firestore
+function cleanForFirestore<T extends Record<string, any>>(obj: T): Partial<T> {
+  const out: Record<string, any> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === undefined) continue;                              // omit undefined (Firestore rejects it)
+    if (typeof v === 'string' && v.trim() === '') out[k] = null; // empty -> null
+    else out[k] = v;
+  }
+  return out as Partial<T>;
+}
 
 // Mock history data for the new tab
 const mockHistory = [
@@ -29,6 +42,33 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     setActiveTab('core');
     setAiScore(null); // Reset score when product changes
   }, [product]);
+
+  const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}) => {
+    e.preventDefault();
+    if (!product) return;
+    const fd = new FormData(e.currentTarget);
+    const get = (k: string) => (fd.get(k) as string | null) ?? null;
+
+    const payload = cleanForFirestore({
+      name: get('name'),
+      brand: get('brand'),
+      mpn: get('mpn'),
+      status: get('status') || product.status,
+      department: get('department'),
+      class: get('class'),
+      category: get('category'),
+      ageGroup: get('ageGroup'),
+      gender: get('gender'),
+      website: get('website'),
+      league: get('league'),
+      sportsTeam: get('sportsTeam'),
+      updatedAt: serverTimestamp(),
+      ...extra,
+    });
+
+    await setDoc(doc(db, 'products', product.id), payload, { merge: true });
+    onClose(); // close drawer
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (!editableProduct) return;
@@ -156,7 +196,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         <div className="absolute inset-0 bg-gray-500 bg-opacity-75" onClick={onClose} aria-hidden="true"></div>
         <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
           <div className={`w-screen max-w-3xl ${drawerPanelClasses}`}>
-            <form className="h-full flex flex-col bg-white shadow-xl">
+            <form className="h-full flex flex-col bg-white shadow-xl" onSubmit={(e) => saveFromForm(e)}>
               <header className="p-4 bg-gray-50 border-b border-gray-200">
                 <div className="flex items-start justify-between">
                     <div>
@@ -274,7 +314,21 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <FormField label="Generated Bullets"><ul className="p-2 pl-6 bg-gray-100 rounded-md min-h-[80px] list-disc space-y-1">{editableProduct.marketing.bullets.map((bullet, i) => <li key={i}>{bullet}</li>)}</ul></FormField>
                         <FormField label="Generated SEO Description"><div className="p-2 bg-gray-100 rounded-md min-h-[60px]">{editableProduct.marketing.seo}</div></FormField>
                         <FormField label="Generated Paragraph Draft"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
-                        <div className="flex justify-end pt-4"><button type="button" className="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">Approve</button></div>
+                        <div className="flex justify-end pt-4">
+                          <button 
+                            type="button" 
+                            onClick={(e) => {
+                              const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
+                              saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
+                                status: 'validated',
+                                validatedAt: serverTimestamp(),
+                              });
+                            }}
+                            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
+                          >
+                            Approve
+                          </button>
+                        </div>
                     </div>
                 )}
                 {activeTab === 'variants' && (
