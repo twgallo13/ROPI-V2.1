@@ -189,45 +189,94 @@ export async function exportValidatedProducts(): Promise<ExportResult> {
     
     const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
     
-    // Separate products into success and error buckets
-    const successRows: Record<string, any>[] = [];
-    const errorRows: Record<string, any>[] = [];
-    
-    for (const product of products) {
-      const { valid, missing } = hasRequiredFields(product, settings.requiredFields);
-      
-      if (valid) {
-        // Expand product into rows (one per variant)
-        const rows = expandProductRows(product, settings.columnMappings, settings.includeAIEnrichment);
-        successRows.push(...rows);
-      } else {
-        // Add to error CSV with missing fields info
-        const errorRow = {
-          'Product ID': product.id,
-          'MPN': product.mpn || '',
-          'Name': product.name || '',
-          'Brand': product.brand || '',
-          'Missing Fields': missing.join(', '),
-          'Status': product.status,
-        };
-        errorRows.push(errorRow);
-      }
-    }
-    
-    // Generate CSV strings
-    const successCsv = rowsToCsv(successRows);
-    const errorCsv = rowsToCsv(errorRows);
-    
-    return {
-      successCsv,
-      errorCsv,
-      successCount: successRows.length,
-      errorCount: errorRows.length,
-    };
+    return processProductsForExport(products, settings);
   } catch (error) {
     console.error('[exporter] export failed', error);
     throw error;
   }
+}
+
+/**
+ * Export specific products by IDs
+ */
+export async function exportSelectedProducts(productIds: string[]): Promise<ExportResult> {
+  try {
+    // Load export settings
+    const settingsRef = doc(db, 'settings', 'export');
+    const settingsSnap = await getDoc(settingsRef);
+    
+    if (!settingsSnap.exists()) {
+      throw new Error('Export settings not found. Please configure export settings first.');
+    }
+    
+    const settings = settingsSnap.data() as ExportSettings;
+    
+    if (productIds.length === 0) {
+      throw new Error('No products selected for export.');
+    }
+    
+    // Fetch selected products
+    const productsRef = collection(db, 'products');
+    const products: Product[] = [];
+    
+    // Fetch each product by ID
+    for (const id of productIds) {
+      const productDoc = await getDoc(doc(db, 'products', id));
+      if (productDoc.exists()) {
+        products.push({ id: productDoc.id, ...productDoc.data() } as Product);
+      }
+    }
+    
+    if (products.length === 0) {
+      throw new Error('No products found to export.');
+    }
+    
+    return processProductsForExport(products, settings);
+  } catch (error) {
+    console.error('[exporter] export selected failed', error);
+    throw error;
+  }
+}
+
+/**
+ * Process products for export (shared logic)
+ */
+function processProductsForExport(products: Product[], settings: ExportSettings): ExportResult {
+  // Separate products into success and error buckets
+  const successRows: Record<string, any>[] = [];
+  const errorRows: Record<string, any>[] = [];
+  
+  for (const product of products) {
+    const { valid, missing } = hasRequiredFields(product, settings.requiredFields);
+    
+    if (valid) {
+      // Expand product into rows (one per variant)
+      const rows = expandProductRows(product, settings.columnMappings, settings.includeAIEnrichment);
+      successRows.push(...rows);
+    } else {
+      // Add to error CSV with missing fields info
+      const errorRow = {
+        'Product ID': product.id,
+        'MPN': product.mpn || '',
+        'Name': product.name || '',
+        'Brand': product.brand || '',
+        'Missing Fields': missing.join(', '),
+        'Status': product.status,
+      };
+      errorRows.push(errorRow);
+    }
+  }
+  
+  // Generate CSV strings
+  const successCsv = rowsToCsv(successRows);
+  const errorCsv = rowsToCsv(errorRows);
+  
+  return {
+    successCsv,
+    errorCsv,
+    successCount: successRows.length,
+    errorCount: errorRows.length,
+  };
 }
 
 /**
@@ -252,8 +301,10 @@ export function downloadCsv(csvContent: string, filename: string): void {
 /**
  * Main export function - exports validated products and triggers downloads
  */
-export async function exportAndDownload(): Promise<{ successCount: number; errorCount: number }> {
-  const result = await exportValidatedProducts();
+export async function exportAndDownload(productIds?: string[]): Promise<{ successCount: number; errorCount: number }> {
+  const result = productIds && productIds.length > 0 
+    ? await exportSelectedProducts(productIds)
+    : await exportValidatedProducts();
   
   // Download success CSV if any
   if (result.successCount > 0) {
