@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { useMockProductData, mockVocabulary } from '../mockData';
+import { mockVocabulary } from '../mockData';
 import { Product } from '../types';
 import ProductEditorDrawer from '../components/ProductEditorDrawer';
+import { useProducts } from '../hooks/useProducts';
+import Toast from '../components/Toast';
 
 const IntakeQueuePage: React.FC = () => {
-  const products = useMockProductData();
+  const { products, loading, error } = useProducts();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showErrorToast, setShowErrorToast] = useState(false);
 
   // State for the new filters
   const [statusFilter, setStatusFilter] = useState('all');
@@ -23,6 +26,13 @@ const IntakeQueuePage: React.FC = () => {
     setSelectedProduct(null); // Clear selection on close
   };
 
+  // Show error toast if there's an error
+  React.useEffect(() => {
+    if (error) {
+      setShowErrorToast(true);
+    }
+  }, [error]);
+
   // Prepare data for the filter dropdowns
   const uniqueBrands = [...new Set(products.map(p => p.brand))];
   const departments = mockVocabulary.departments;
@@ -33,7 +43,7 @@ const IntakeQueuePage: React.FC = () => {
       <header className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Intake Queue</h1>
         <p className="text-gray-600 mt-1">
-          {products.length} products waiting for processing.
+          {loading ? 'Loading...' : `${products.length} products waiting for processing.`}
         </p>
       </header>
 
@@ -94,8 +104,16 @@ const IntakeQueuePage: React.FC = () => {
         </div>
       </div>
       
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full divide-y divide-gray-200">
+      {loading ? (
+        <div className="bg-white rounded-lg shadow p-12">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          </div>
+          <p className="text-center text-gray-600 mt-4">Loading products...</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
@@ -134,13 +152,22 @@ const IntakeQueuePage: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
+        </div>
+      )}
 
       <ProductEditorDrawer 
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         product={selectedProduct}
       />
+
+      {showErrorToast && error && (
+        <Toast 
+          message={error} 
+          type="error" 
+          onClose={() => setShowErrorToast(false)} 
+        />
+      )}
     </div>
   );
 };

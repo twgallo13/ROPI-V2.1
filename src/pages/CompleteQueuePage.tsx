@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useMockProductData, mockVocabulary } from '../mockData';
+import { mockVocabulary } from '../mockData';
 import { Product } from '../types';
 import Toast from '../components/Toast';
 import { exportProductsToCSV } from '../utils/csvExport';
+import { useProducts } from '../hooks/useProducts';
 
 type ToastState = {
   show: boolean;
@@ -11,7 +12,7 @@ type ToastState = {
 };
 
 const CompleteQueuePage: React.FC = () => {
-  const products = useMockProductData();
+  const { products, loading, error } = useProducts();
   const [selectedIds, setSelectedIds] = useState(new Set<string>());
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
 
@@ -29,6 +30,12 @@ const CompleteQueuePage: React.FC = () => {
   const hideToast = () => {
     setToast({ ...toast, show: false });
   };
+
+  useEffect(() => {
+    if (error) {
+      showToast(error, 'error');
+    }
+  }, [error]);
 
   useEffect(() => {
     if (headerCheckboxRef.current) {
@@ -92,7 +99,7 @@ const CompleteQueuePage: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Complete Queue</h1>
           <p className="text-gray-600 mt-1">
-            {products.length} products ready for export.
+            {loading ? 'Loading...' : `${products.length} products ready for export.`}
           </p>
         </div>
         <button
@@ -128,54 +135,60 @@ const CompleteQueuePage: React.FC = () => {
           </select>
         </div>
       </div>
-      
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                <input
-                  ref={headerCheckboxRef}
-                  type="checkbox"
-                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                  onChange={handleSelectAll}
-                  checked={products.length > 0 && selectedIds.size === products.length}
-                />
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MPN / Style</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {products.map((product) => (
-              <tr key={product.id} className={`hover:bg-gray-50 ${selectedIds.has(product.id) ? 'bg-indigo-50' : ''}`}>
-                <td className="px-6 py-4">
-                   <input
+
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  <input
+                    ref={headerCheckboxRef}
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                    checked={selectedIds.has(product.id)}
-                    onChange={(e) => handleSelectOne(e, product.id)}
-                   />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.brand}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.mpn}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      product.status === 'intake' ? 'bg-blue-100 text-blue-800' : 
-                      product.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                      product.status === 'validated' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {product.status}
-                  </span>
-                </td>
+                    onChange={handleSelectAll}
+                    checked={products.length > 0 && selectedIds.size === products.length}
+                  />
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MPN / Style</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {products.map((product) => (
+                <tr key={product.id} className={`hover:bg-gray-50 ${selectedIds.has(product.id) ? 'bg-indigo-50' : ''}`}>
+                  <td className="px-6 py-4">
+                     <input
+                      type="checkbox"
+                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                      checked={selectedIds.has(product.id)}
+                      onChange={(e) => handleSelectOne(e, product.id)}
+                     />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.brand}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.mpn}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        product.status === 'intake' ? 'bg-blue-100 text-blue-800' : 
+                        product.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                        product.status === 'validated' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {product.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {toast.show && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
