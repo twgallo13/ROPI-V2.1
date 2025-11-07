@@ -27,8 +27,7 @@ export type ParseResult = {
 
 // Synonym mappings for auto-detection
 const HEADER_SYNONYMS: Record<string, string[]> = {
-  product_id: ['product_id', 'style', 'style_id', 'styleid', 'parent_sku', 'style_code', 'product.id'],
-  mpn: ['mpn', 'model', 'mpn_code', 'manufacturer_part_number'],
+  mpn: ['mpn', 'model', 'mpn_code', 'manufacturer_part_number', 'product_id', 'style', 'style_id', 'styleid', 'parent_sku', 'style_code', 'product.id'],
   sku: ['sku', 'variant_id', 'child_sku', 'upc', 'variant_sku'],
   name: ['name', 'title', 'product_name', 'product_title', 'description'],
   brand: ['brand', 'manufacturer', 'vendor'],

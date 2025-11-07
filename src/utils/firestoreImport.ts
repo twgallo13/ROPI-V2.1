@@ -26,9 +26,9 @@ export type ImportResult = {
  * Validate required fields for a product row
  */
 function validateProductRow(data: Record<string, any>): string | null {
-  // Require product_id OR mpn
-  if (!data.product_id && !data.mpn) {
-    return 'Missing required field: product_id or MPN';
+  // Require MPN
+  if (!data.mpn) {
+    return 'Missing required field: MPN';
   }
   
   // Require at least one SKU
@@ -50,14 +50,9 @@ function validateProductRow(data: Record<string, any>): string | null {
  * Transform row data into Product structure
  */
 function transformToProduct(data: Record<string, any>): Partial<Product> {
-  // Use product_id if available, otherwise fall back to mpn
-  const productId = data.product_id || data.mpn;
-  // Keep both values on the product record
-  const mpn = data.mpn || data.product_id;
-  
   return {
-    id: productId || '',
-    mpn: mpn || '',
+    id: data.mpn || '',
+    mpn: data.mpn || '',
     name: data.name || '',
     brand: data.brand || '',
     department: data.department || '',
@@ -116,19 +111,19 @@ function transformToVariant(data: Record<string, any>): Partial<Variant> {
 }
 
 /**
- * Group rows by product_id
+ * Group rows by MPN
  */
 function groupRowsByProduct(rows: ImportRow[]): Map<string, ImportRow[]> {
   const grouped = new Map<string, ImportRow[]>();
   
   for (const row of rows) {
-    const productId = row.data.product_id;
-    if (!productId) continue;
+    const mpn = row.data.mpn;
+    if (!mpn) continue;
     
-    if (!grouped.has(productId)) {
-      grouped.set(productId, []);
+    if (!grouped.has(mpn)) {
+      grouped.set(mpn, []);
     }
-    grouped.get(productId)!.push(row);
+    grouped.get(mpn)!.push(row);
   }
   
   return grouped;
@@ -148,7 +143,7 @@ export async function importToFirestore(
   };
   
   const BATCH_SIZE = 400;
-  const validatedRows: Array<{ row: ImportRow; productId: string }> = [];
+  const validatedRows: Array<{ row: ImportRow; mpn: string }> = [];
   
   // Validate all rows first
   for (const row of rows) {
@@ -162,28 +157,27 @@ export async function importToFirestore(
       });
       continue;
     }
-    // Use product_id if available, otherwise mpn
-    const productId = row.data.product_id || row.data.mpn;
-    validatedRows.push({ row, productId });
+    const mpn = row.data.mpn;
+    validatedRows.push({ row, mpn });
   }
   
-  // Group by product_id
+  // Group by MPN
   const groupedRows = new Map<string, ImportRow[]>();
-  for (const { row, productId } of validatedRows) {
-    if (!groupedRows.has(productId)) {
-      groupedRows.set(productId, []);
+  for (const { row, mpn } of validatedRows) {
+    if (!groupedRows.has(mpn)) {
+      groupedRows.set(mpn, []);
     }
-    groupedRows.get(productId)!.push(row);
+    groupedRows.get(mpn)!.push(row);
   }
   
   // Process in batches
   const allWrites: Array<() => Promise<void>> = [];
   
-  for (const [productId, productRows] of groupedRows) {
+  for (const [mpn, productRows] of groupedRows) {
     try {
       const firstRow = productRows[0];
       const productData = transformToProduct(firstRow.data);
-      const productRef = doc(db, 'products', productId);
+      const productRef = doc(db, 'products', mpn);
       
       // Add product write
       allWrites.push(async () => {
@@ -193,14 +187,14 @@ export async function importToFirestore(
       // Add variant writes
       for (const row of productRows) {
         const variant = transformToVariant(row.data);
-        const variantRef = doc(db, 'products', productId, 'variants', variant.sku!);
+        const variantRef = doc(db, 'products', mpn, 'variants', variant.sku!);
         allWrites.push(async () => {
           await setDoc(variantRef, variant);
         });
         result.imported++;
       }
     } catch (error) {
-      console.error(`Error preparing product ${productId}:`, error);
+      console.error(`Error preparing product ${mpn}:`, error);
       result.skipped += productRows.length;
       for (const row of productRows) {
         result.errors.push({
