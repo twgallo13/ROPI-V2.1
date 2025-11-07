@@ -3,6 +3,9 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
+// Debug: verify Vite env loading
+console.log('Loaded env:', import.meta.env);
+
 // Build config from Vite env with sensible defaults for project ropi-bccee
 const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID ?? 'ropi-bccee';
 
