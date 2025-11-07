@@ -7,6 +7,9 @@
     "build": "tsc -p tsconfig.json",
     "deploy": "firebase deploy --only functions"
   },
+  "engines": {
+    "node": "20"
+  },
   "dependencies": {
     "firebase-functions": "^5.0.0",
     "firebase-admin": "^13.6.0",
