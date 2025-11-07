@@ -54,9 +54,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     const get = (k: string) => (fd.get(k) as string | null) ?? null;
 
     const payload = cleanForFirestore({
-      name: get('name'),
+      // Preserve read-only fields if not present in form
+      name: get('name') ?? product.name,
       brand: get('brand'),
-      mpn: get('mpn'),
+      mpn: get('mpn') ?? product.mpn,
       status: get('status') || product.status,
       department: get('department'),
       class: get('class'),
@@ -250,8 +251,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 {activeTab === 'core' && (
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                             <FormField label="Name"><input type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="MPN"><input type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
+                             <FormField label="Name"><input name="name" type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
+                             <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                              
                              <SelectField label="Department" name="department" value={editableProduct.department} options={mockVocabulary.departments} />
