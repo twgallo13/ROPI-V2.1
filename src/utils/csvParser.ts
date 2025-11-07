@@ -28,7 +28,7 @@ export type ParseResult = {
 
 // Synonym mappings for auto-detection
 const HEADER_SYNONYMS: Record<string, string[]> = {
-  mpn: ['mpn', 'model', 'mpn_code', 'manufacturer_part_number', 'product_id', 'style', 'style_id', 'styleid', 'parent_sku', 'style_code', 'product.id'],
+  mpn: ['mpn', 'model', 'mpn_code', 'manufacturer_part_number', 'product_id', 'style', 'style_id', 'styleid', 'parent_sku', 'style_code', 'product.id', 'product_code'],
   sku: ['sku', 'variant_id', 'child_sku', 'upc', 'variant_sku'],
   name: ['name', 'title', 'product_name', 'product_title', 'description'],
   brand: ['brand', 'manufacturer', 'vendor'],
@@ -43,21 +43,23 @@ const HEADER_SYNONYMS: Record<string, string[]> = {
   age_group: ['age_group', 'agegroup', 'age', 'age_category'],
   gender: ['gender', 'sex', 'for'],
   material: ['material', 'fabric', 'material_fabric', 'composition'],
-  fit: ['fit', 'fitting', 'product_fit'],
+  fit: ['fit', 'fitting', 'product_fit', 'size_fit'],
   featured: ['featured', 'is_featured', 'highlight'],
-  map: ['map', 'minimum_advertised_price', 'map_pricing'],
+  map: ['map', 'minimum_advertised_price', 'map_pricing', 'min_price'],
   promo: ['promo', 'promotion', 'is_promo', 'promotional'],
-  hype: ['hype', 'trending', 'hot', 'is_hype'],
+  hype: ['hype', 'trending', 'hot', 'is_hype', 'popular'],
   fastfashion: ['fastfashion', 'fast_fashion', 'quick_fashion'],
-  height: ['height', 'h'],
-  width: ['width', 'w'],
-  length: ['length', 'l'],
-  weight: ['weight', 'wght', 'wt'],
+  height: ['height', 'h', 'ship_height', 'shipping_height'],
+  width: ['width', 'w', 'ship_width', 'shipping_width'],
+  length: ['length', 'l', 'ship_length', 'shipping_length'],
+  weight: ['weight', 'wght', 'wt', 'ship_weight', 'shipping_weight'],
   rics_category: ['rics_category'],
   rics_long_desc: ['rics_long_desc', 'rics_long_description'],
   sports_team: ['sports_team', 'team'],
-  keywords: ['keywords', 'tags'],
-  website: ['website', 'site'],
+  league: ['league', 'sports_league'],
+  keywords: ['keywords', 'tags', 'search_terms'],
+  website: ['website', 'site', 'store'],
+  taxclass: ['taxclass', 'tax_class', 'tax_code', 'tax', 'tax_category'],
 };
 
 // Headers that should be ignored by default

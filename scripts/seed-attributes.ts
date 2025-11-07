@@ -56,6 +56,8 @@ const attributesData = {
   websites: ['Shiekh.com', 'Karmaloop.com'],
   sportsTeams: ['Lakers', 'Dodgers', 'Raiders', '49ers'],
   leagues: ['NBA', 'MLB', 'NFL'],
+  fits: ['Regular', 'Slim', 'Relaxed', 'Oversized'],
+  taxClasses: ['Taxable', 'Non-Taxable', 'Reduced Rate'],
 };
 
 async function seedAttributes() {
