@@ -1,4 +1,5 @@
 import React from 'react';
+import './src/firebase';
 // This import is for React 19
 import { createRoot } from 'react-dom/client';
 import { AuthProvider } from './src/contexts/AuthContext';
