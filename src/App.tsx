@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import MainLayout from './components/MainLayout';
+import DebugPill from './components/DebugPill';
 
 // Import all our pages
 import LaunchPage from './pages/LaunchPage';
@@ -91,6 +92,7 @@ function App() {
         {/* Catch-all for any other bad URL */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <DebugPill />
     </BrowserRouter>
   );
 }

@@ -19,20 +19,30 @@ export type ImportResult = {
     rowNumber: number;
     reason: string;
     raw: string[];
+    mpn?: string;
+    sku?: string;
   }>;
 };
+
+/**
+ * Sanitize a string for use as a Firestore document ID
+ * Trims whitespace and removes invalid characters
+ */
+function sanitizeDocId(id: string): string {
+  return id.trim().replace(/[\/\x00]/g, '_');
+}
 
 /**
  * Validate required fields for a product row
  */
 function validateProductRow(data: Record<string, any>): string | null {
   // Require MPN
-  if (!data.mpn) {
+  if (!data.mpn || !data.mpn.trim()) {
     return 'Missing required field: MPN';
   }
   
   // Require at least one SKU
-  if (!data.sku) {
+  if (!data.sku || !data.sku.trim()) {
     return 'Missing required field: sku';
   }
   
@@ -50,9 +60,12 @@ function validateProductRow(data: Record<string, any>): string | null {
  * Transform row data into Product structure
  */
 function transformToProduct(data: Record<string, any>): Partial<Product> {
+  // Sanitize MPN for use as document ID
+  const sanitizedMpn = sanitizeDocId(data.mpn || '');
+  
   return {
-    id: data.mpn || '',
-    mpn: data.mpn || '',
+    id: sanitizedMpn,
+    mpn: sanitizedMpn,
     name: data.name || '',
     brand: data.brand || '',
     department: data.department || '',
@@ -101,9 +114,12 @@ function transformToProduct(data: Record<string, any>): Partial<Product> {
  * Transform row data into Variant structure
  */
 function transformToVariant(data: Record<string, any>): Partial<Variant> {
+  // Sanitize SKU for use as document ID
+  const sanitizedSku = sanitizeDocId(data.sku || '');
+  
   return {
-    variantId: data.sku || `var-${Date.now()}`,
-    sku: data.sku || '',
+    variantId: sanitizedSku,
+    sku: sanitizedSku,
     size: data.size || '',
     color: data.color || '',
     price: data.price || 0,
@@ -142,8 +158,7 @@ export async function importToFirestore(
     errors: [],
   };
   
-  const BATCH_SIZE = 400;
-  const validatedRows: Array<{ row: ImportRow; mpn: string }> = [];
+  const validatedRows: Array<{ row: ImportRow; mpn: string; sku: string }> = [];
   
   // Validate all rows first
   for (const row of rows) {
@@ -154,71 +169,68 @@ export async function importToFirestore(
         rowNumber: row.rowNumber,
         reason: error,
         raw: rawData[row.rowNumber - 1] || [],
+        mpn: row.data.mpn,
+        sku: row.data.sku,
       });
       continue;
     }
-    const mpn = row.data.mpn;
-    validatedRows.push({ row, mpn });
+    const mpn = sanitizeDocId(row.data.mpn);
+    const sku = sanitizeDocId(row.data.sku);
+    validatedRows.push({ row, mpn, sku });
   }
   
   // Group by MPN
-  const groupedRows = new Map<string, ImportRow[]>();
-  for (const { row, mpn } of validatedRows) {
+  const groupedRows = new Map<string, Array<{ row: ImportRow; sku: string }>>();
+  for (const { row, mpn, sku } of validatedRows) {
     if (!groupedRows.has(mpn)) {
       groupedRows.set(mpn, []);
     }
-    groupedRows.get(mpn)!.push(row);
+    groupedRows.get(mpn)!.push({ row, sku });
   }
   
-  // Process in batches
-  const allWrites: Array<() => Promise<void>> = [];
-  
+  // Process each product and its variants
   for (const [mpn, productRows] of groupedRows) {
+    const firstRow = productRows[0].row;
+    const productData = transformToProduct(firstRow.data);
+    const productRef = doc(db, 'products', mpn);
+    
+    // Write product document
     try {
-      const firstRow = productRows[0];
-      const productData = transformToProduct(firstRow.data);
-      const productRef = doc(db, 'products', mpn);
-      
-      // Add product write
-      allWrites.push(async () => {
-        await setDoc(productRef, productData, { merge: true });
-      });
-      
-      // Add variant writes
-      for (const row of productRows) {
-        const variant = transformToVariant(row.data);
-        const variantRef = doc(db, 'products', mpn, 'variants', variant.sku!);
-        allWrites.push(async () => {
-          await setDoc(variantRef, variant);
-        });
-        result.imported++;
-      }
+      await setDoc(productRef, productData, { merge: true });
     } catch (error) {
-      console.error(`Error preparing product ${mpn}:`, error);
+      console.error(`Error writing product ${mpn}:`, error);
       result.skipped += productRows.length;
-      for (const row of productRows) {
+      for (const { row, sku } of productRows) {
         result.errors.push({
           rowNumber: row.rowNumber,
-          reason: `Preparation failed: ${error}`,
+          reason: `Product write failed: ${error instanceof Error ? error.message : String(error)}`,
           raw: rawData[row.rowNumber - 1] || [],
+          mpn,
+          sku,
         });
       }
+      continue; // Skip variants if product write fails
     }
-  }
-  
-  // Execute writes in batches
-  for (let i = 0; i < allWrites.length; i += BATCH_SIZE) {
-    const batchWrites = allWrites.slice(i, i + BATCH_SIZE);
-    const batch = writeBatch(db);
     
-    try {
-      // Execute all writes in this batch
-      for (const write of batchWrites) {
-        await write();
+    // Write variant documents
+    for (const { row, sku } of productRows) {
+      const variant = transformToVariant(row.data);
+      const variantRef = doc(db, 'products', mpn, 'variants', sku);
+      
+      try {
+        await setDoc(variantRef, variant);
+        result.imported++;
+      } catch (error) {
+        console.error(`Error writing variant ${sku} for product ${mpn}:`, error);
+        result.skipped++;
+        result.errors.push({
+          rowNumber: row.rowNumber,
+          reason: `Variant write failed: ${error instanceof Error ? error.message : String(error)}`,
+          raw: rawData[row.rowNumber - 1] || [],
+          mpn,
+          sku,
+        });
       }
-    } catch (error) {
-      console.error('Batch write error:', error);
-      // Continue with next batch
     }
   }
   
