@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMockProductData } from '../mockData';
+import { useMockProductData, mockVocabulary } from '../mockData';
 import { Product } from '../types';
 import ProductEditorDrawer from '../components/ProductEditorDrawer';
 
@@ -7,6 +7,11 @@ const IntakeQueuePage: React.FC = () => {
   const products = useMockProductData();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // State for the new filters
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [brandFilter, setBrandFilter] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
 
   const handleEditProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -18,6 +23,11 @@ const IntakeQueuePage: React.FC = () => {
     setSelectedProduct(null); // Clear selection on close
   };
 
+  // Prepare data for the filter dropdowns
+  const uniqueBrands = [...new Set(products.map(p => p.brand))];
+  const departments = mockVocabulary.departments;
+  const statuses = ['Intake', 'In-Progress', 'Validated'];
+
   return (
     <div>
       <header className="mb-6">
@@ -26,6 +36,63 @@ const IntakeQueuePage: React.FC = () => {
           {products.length} products waiting for processing.
         </p>
       </header>
+
+      {/* Filter Bar */}
+      <div className="mb-6 p-4 bg-white rounded-lg shadow flex flex-col md:flex-row items-center md:space-x-4 space-y-4 md:space-y-0">
+        <div className="w-full md:flex-1">
+          <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700">
+            Filter by Status
+          </label>
+          <select
+            id="status-filter"
+            name="status"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            {statuses.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="w-full md:flex-1">
+          <label htmlFor="brand-filter" className="block text-sm font-medium text-gray-700">
+            Filter by Brand
+          </label>
+          <select
+            id="brand-filter"
+            name="brand"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            value={brandFilter}
+            onChange={(e) => setBrandFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            {uniqueBrands.map(brand => (
+              <option key={brand} value={brand}>{brand}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="w-full md:flex-1">
+          <label htmlFor="department-filter" className="block text-sm font-medium text-gray-700">
+            Filter by Department
+          </label>
+          <select
+            id="department-filter"
+            name="department"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            value={departmentFilter}
+            onChange={(e) => setDepartmentFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            {departments.map(dept => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
+        </div>
+      </div>
       
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="min-w-full divide-y divide-gray-200">
@@ -47,7 +114,11 @@ const IntakeQueuePage: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.mpn}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      product.status === 'intake' ? 'bg-blue-100 text-blue-800' : 
+                      product.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                      product.status === 'validated' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
                     {product.status}
                   </span>
                 </td>

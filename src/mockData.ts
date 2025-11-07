@@ -22,30 +22,31 @@ export const mockVocabulary = {
 
 
 export const useMockLaunchProducts = (): Feature[] => {
+  const oneDay = 86400000; // milliseconds in a day
   return [
     {
       id: 'feat-001',
       name: 'Project "Aurora" - Fall Collection',
       heroImageUrl: 'https://placehold.co/600x600/7B341D/FFFFFF?text=Aurora',
-      launchAt: '2024-10-15',
+      launchAt: new Date(Date.now() + oneDay * 60).toISOString(), // ~60 days in the future
     },
     {
       id: 'feat-002',
       name: 'Winter Activewear "Summit" Line',
       heroImageUrl: 'https://placehold.co/600x600/1D4ED8/FFFFFF?text=Summit',
-      launchAt: '2024-11-01',
+      launchAt: new Date(Date.now() + oneDay * 90).toISOString(), // ~90 days in the future
     },
     {
       id: 'feat-003',
       name: '"Oasis" Summer Swimwear',
       heroImageUrl: 'https://placehold.co/600x600/F59E0B/FFFFFF?text=Oasis',
-      launchAt: '2025-01-20',
+      launchAt: new Date(Date.now() - oneDay * 180).toISOString(), // ~180 days in the past
     },
      {
       id: 'feat-004',
       name: 'Special Edition "Cosmos" Footwear',
       heroImageUrl: 'https://placehold.co/600x600/1F2937/FFFFFF?text=Cosmos',
-      launchAt: '2025-03-01',
+      launchAt: new Date(Date.now() - oneDay * 120).toISOString(), // ~120 days in the past
     },
   ];
 };

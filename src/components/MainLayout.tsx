@@ -21,11 +21,16 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             Complete Queue
           </Link>
           
-          {/* Admin-Only Link */}
+          {/* Admin-Only Links */}
           {role === 'admin' && (
-            <Link to="/settings" className="block p-2 rounded hover:bg-gray-700">
-              Settings
-            </Link>
+            <>
+              <Link to="/import" className="block p-2 rounded hover:bg-gray-700">
+                Import
+              </Link>
+              <Link to="/settings" className="block p-2 rounded hover:bg-gray-700">
+                Settings
+              </Link>
+            </>
           )}
         </nav>
       </div>

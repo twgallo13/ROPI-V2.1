@@ -8,6 +8,7 @@ import LaunchPage from './pages/LaunchPage';
 import IntakeQueuePage from './pages/IntakeQueuePage';
 import CompleteQueuePage from './pages/CompleteQueuePage';
 import SettingsPage from './pages/SettingsPage';
+import ImportPage from './pages/ImportPage';
 
 function App() {
   const { isAuthenticated, role } = useAuth();
@@ -44,7 +45,21 @@ function App() {
           } 
         />
 
-        {/* Protected Admin-Only Route */}
+        {/* Protected Admin-Only Routes */}
+        <Route 
+          path="/import"
+          element={
+            isAuthenticated && role === 'admin' ? (
+              <MainLayout>
+                <ImportPage />
+              </MainLayout>
+            ) : (
+              // If you're logged in but not an admin, go to intake
+              // If you're not logged in, go to home
+              <Navigate to={isAuthenticated ? "/intake" : "/"} />
+            )
+          } 
+        />
         <Route 
           path="/settings"
           element={
