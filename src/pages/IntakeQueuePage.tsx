@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { mockVocabulary } from '../mockData';
 import { Product } from '../types';
 import ProductEditorDrawer from '../components/ProductEditorDrawer';
@@ -13,6 +13,8 @@ const IntakeQueuePage: React.FC = () => {
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportMessage, setExportMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [selectedIds, setSelectedIds] = useState(new Set<string>());
+  const headerCheckboxRef = useRef<HTMLInputElement>(null);
 
   // State for the new filters
   const [statusFilter, setStatusFilter] = useState('all');
@@ -29,6 +31,26 @@ const IntakeQueuePage: React.FC = () => {
     setSelectedProduct(null); // Clear selection on close
   };
 
+  // Count validated products (from all products, not filtered)
+  const validatedCount = products.filter(p => p.status === 'validated').length;
+
+  // Apply filters to get the filtered product list
+  const filtered = products.filter(product => {
+    // Status filter - map display names to internal status values
+    const statusMatch = statusFilter === 'all' || 
+      (statusFilter === 'Intake' && product.status === 'intake') ||
+      (statusFilter === 'In-Progress' && product.status === 'in-progress') ||
+      (statusFilter === 'Validated' && product.status === 'validated');
+    
+    // Brand filter
+    const brandMatch = brandFilter === 'all' || product.brand === brandFilter;
+    
+    // Department filter
+    const departmentMatch = departmentFilter === 'all' || product.department === departmentFilter;
+    
+    return statusMatch && brandMatch && departmentMatch;
+  });
+
   // Show error toast if there's an error
   React.useEffect(() => {
     if (error) {
@@ -36,13 +58,42 @@ const IntakeQueuePage: React.FC = () => {
     }
   }, [error]);
 
+  // Update indeterminate state for header checkbox
+  useEffect(() => {
+    if (headerCheckboxRef.current) {
+      const isIndeterminate = selectedIds.size > 0 && selectedIds.size < filtered.length;
+      headerCheckboxRef.current.indeterminate = isIndeterminate;
+    }
+  }, [selectedIds, filtered.length]);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIds = new Set(filtered.map(p => p.id));
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const newSelectedIds = new Set(selectedIds);
+    if (e.target.checked) {
+      newSelectedIds.add(id);
+    } else {
+      newSelectedIds.delete(id);
+    }
+    setSelectedIds(newSelectedIds);
+  };
+
   // Handle CSV export
   const handleExport = async () => {
     try {
       setIsExporting(true);
       setExportMessage(null);
       
-      const { successCount, errorCount } = await exportAndDownload();
+      // Use selected IDs if any, otherwise export all validated
+      const selectedIdsArray = selectedIds.size > 0 ? Array.from(selectedIds) as string[] : undefined;
+      const { successCount, errorCount } = await exportAndDownload(selectedIdsArray);
       
       if (successCount > 0 && errorCount === 0) {
         setExportMessage({
@@ -71,26 +122,6 @@ const IntakeQueuePage: React.FC = () => {
     }
   };
 
-  // Count validated products (from all products, not filtered)
-  const validatedCount = products.filter(p => p.status === 'validated').length;
-
-  // Apply filters to get the filtered product list
-  const filtered = products.filter(product => {
-    // Status filter - map display names to internal status values
-    const statusMatch = statusFilter === 'all' || 
-      (statusFilter === 'Intake' && product.status === 'intake') ||
-      (statusFilter === 'In-Progress' && product.status === 'in-progress') ||
-      (statusFilter === 'Validated' && product.status === 'validated');
-    
-    // Brand filter
-    const brandMatch = brandFilter === 'all' || product.brand === brandFilter;
-    
-    // Department filter
-    const departmentMatch = departmentFilter === 'all' || product.department === departmentFilter;
-    
-    return statusMatch && brandMatch && departmentMatch;
-  });
-
   // Prepare data for the filter dropdowns
   const uniqueBrands = [...new Set(products.map(p => p.brand))];
   const departments = mockVocabulary.departments;
@@ -107,9 +138,9 @@ const IntakeQueuePage: React.FC = () => {
         </div>
         <button
           onClick={handleExport}
-          disabled={isExporting || loading || validatedCount === 0}
+          disabled={isExporting || loading || (selectedIds.size === 0 && validatedCount === 0)}
           className="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          title={validatedCount === 0 ? 'No validated products to export' : 'Export validated products to CSV'}
+          title={selectedIds.size > 0 ? `Export ${selectedIds.size} selected product(s)` : validatedCount === 0 ? 'No validated products to export' : 'Export validated products to CSV'}
         >
           {isExporting ? (
             <>
@@ -119,8 +150,10 @@ const IntakeQueuePage: React.FC = () => {
               </svg>
               Exporting...
             </>
+          ) : selectedIds.size > 0 ? (
+            <>📥 Export selected ({selectedIds.size})</>
           ) : (
-            <>📥 Export CSV ({validatedCount})</>
+            <>📥 Export CSV (validated {validatedCount})</>
           )}
         </button>
       </header>
@@ -217,6 +250,15 @@ const IntakeQueuePage: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              <th scope="col" className="px-6 py-3">
+                <input
+                  ref={headerCheckboxRef}
+                  type="checkbox"
+                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                  onChange={handleSelectAll}
+                  checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                />
+              </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MPN / Style</th>
@@ -228,7 +270,15 @@ const IntakeQueuePage: React.FC = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filtered.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50">
+              <tr key={product.id} className={`hover:bg-gray-50 ${selectedIds.has(product.id) ? 'bg-indigo-50' : ''}`}>
+                <td className="px-6 py-4">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    checked={selectedIds.has(product.id)}
+                    onChange={(e) => handleSelectOne(e, product.id)}
+                  />
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.brand}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.mpn}</td>
