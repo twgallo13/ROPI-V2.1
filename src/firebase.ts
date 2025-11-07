@@ -1,6 +1,6 @@
 import { initializeApp, getApp, getApps, type FirebaseOptions } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 // Build config from Vite env with sensible defaults for project ropi-bccee
@@ -23,13 +23,31 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+// Production guard: warn if running prod build with demo credentials
+if (import.meta.env.PROD && (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'demo-api-key')) {
+  console.error('[ROPI] Missing/invalid VITE_FIREBASE_API_KEY at build time.');
+}
+
 // Initialize (idempotent across HMR)
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 // Modular exports
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false,
+} as any);
 const storage = getStorage(app);
+
+// Expose debug handle for DevTools inspection
+if (typeof window !== 'undefined') {
+  (window as any).__ROPI = {
+    app,
+    auth,
+    db,
+    options: (app as any).options,
+  };
+}
 
 export { app, auth, provider, db, storage };
