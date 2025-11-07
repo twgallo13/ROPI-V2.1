@@ -78,7 +78,16 @@ function transformToProduct(data: Record<string, any>): Partial<Product> {
     fit: data.fit || '',
     sportsTeam: data.sports_team,
     league: data.league,
-    websites: [], // Will be populated from settings or defaults
+    shipping: {
+      height: data.height || null,
+      width: data.width || null,
+      length: data.length || null,
+      weight: data.weight || null,
+    },
+    ricsCategory: data.rics_category || '',
+    ricsLongDesc: data.rics_long_desc || '',
+    keywords: data.keywords ? (Array.isArray(data.keywords) ? data.keywords : [data.keywords]) : [],
+    websites: Array.isArray(data.website) ? data.website : (data.website ? [data.website] : []),
     featured: data.featured || false,
     map: data.map || false,
     promo: data.promo || false,
