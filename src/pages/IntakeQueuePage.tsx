@@ -71,8 +71,25 @@ const IntakeQueuePage: React.FC = () => {
     }
   };
 
-  // Count validated products
+  // Count validated products (from all products, not filtered)
   const validatedCount = products.filter(p => p.status === 'validated').length;
+
+  // Apply filters to get the filtered product list
+  const filtered = products.filter(product => {
+    // Status filter - map display names to internal status values
+    const statusMatch = statusFilter === 'all' || 
+      (statusFilter === 'Intake' && product.status === 'intake') ||
+      (statusFilter === 'In-Progress' && product.status === 'in-progress') ||
+      (statusFilter === 'Validated' && product.status === 'validated');
+    
+    // Brand filter
+    const brandMatch = brandFilter === 'all' || product.brand === brandFilter;
+    
+    // Department filter
+    const departmentMatch = departmentFilter === 'all' || product.department === departmentFilter;
+    
+    return statusMatch && brandMatch && departmentMatch;
+  });
 
   // Prepare data for the filter dropdowns
   const uniqueBrands = [...new Set(products.map(p => p.brand))];
@@ -85,7 +102,7 @@ const IntakeQueuePage: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Intake Queue</h1>
           <p className="text-gray-600 mt-1">
-            {loading ? 'Loading...' : `${products.length} products waiting for processing.`}
+            {loading ? 'Loading...' : `${filtered.length} products waiting for processing.`}
           </p>
         </div>
         <button
@@ -210,7 +227,7 @@ const IntakeQueuePage: React.FC = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {products.map((product) => (
+            {filtered.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.brand}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
