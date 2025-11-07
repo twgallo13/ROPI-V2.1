@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import AISettingsTab from './settings/AISettingsTab';
 import VocabSettingsTab from './settings/VocabSettingsTab';
+import ExportSettingsTab from './settings/ExportSettingsTab';
 import Toast from '../components/Toast';
 import { useAttributesSettings, type AttributeKey } from '../hooks/useAttributesSettings';
 import { useAuth } from '../contexts/AuthContext';
@@ -379,7 +380,7 @@ const SettingsPage: React.FC = () => {
         )}
         {activeTab === 'prompts' && <PlaceholderTab title="Manage AI Prompts" />}
         {activeTab === 'brands' && <PlaceholderTab title="Manage Brands" />}
-        {activeTab === 'export' && <PlaceholderTab title="Manage Export Settings" />}
+        {activeTab === 'export' && <ExportSettingsTab onShowToast={showToast} />}
       </main>
 
       {toast.show && (
