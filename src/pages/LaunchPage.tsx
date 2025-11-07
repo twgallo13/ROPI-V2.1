@@ -4,13 +4,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { useMockLaunchProducts } from '../mockData';
 
 const LaunchPage: React.FC = () => {
-  const { login, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const features = useMockLaunchProducts();
   const [view, setView] = useState<'upcoming' | 'past'>('upcoming');
-
-  const handleLogin = (role: 'admin' | 'specialist') => {
-    login(role);
-  };
 
   const now = new Date();
   const filteredFeatures = features.filter(feature => {
@@ -27,7 +23,7 @@ const LaunchPage: React.FC = () => {
         <header className="flex flex-col sm:flex-row justify-between items-center mb-12">
           <h1 className="text-4xl font-bold mb-4 sm:mb-0">ROPI v2 Launch Hub</h1>
           <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
+            {user ? (
               <Link
                 to="/intake"
                 className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
@@ -35,22 +31,9 @@ const LaunchPage: React.FC = () => {
                 Go to Dashboard
               </Link>
             ) : (
-              <>
-                <button
-                  onClick={() => handleLogin('specialist')}
-                  className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-                  aria-label="Sign in as Specialist"
-                >
-                  Sign in as Specialist
-                </button>
-                <button
-                  onClick={() => handleLogin('admin')}
-                  className="bg-gray-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300"
-                  aria-label="Sign in as Admin"
-                >
-                  Sign in as Admin
-                </button>
-              </>
+              <div className="text-gray-400">
+                Sign in from the dashboard to access admin features
+              </div>
             )}
           </div>
         </header>
