@@ -48,7 +48,29 @@ const HEADER_SYNONYMS: Record<string, string[]> = {
   promo: ['promo', 'promotion', 'is_promo', 'promotional'],
   hype: ['hype', 'trending', 'hot', 'is_hype'],
   fastfashion: ['fastfashion', 'fast_fashion', 'quick_fashion'],
+  height: ['height', 'h'],
+  width: ['width', 'w'],
+  length: ['length', 'l'],
+  weight: ['weight', 'wght', 'wt'],
+  rics_category: ['rics_category'],
+  rics_long_desc: ['rics_long_desc', 'rics_long_description'],
+  sports_team: ['sports_team', 'team'],
+  keywords: ['keywords', 'tags'],
+  website: ['website', 'site'],
 };
+
+// Headers that should be ignored by default
+const DEFAULT_IGNORE = [
+  'status',
+  'last_received',
+  'store 1',
+  'store inv',
+  'warehouse inv',
+  'store 4',
+  'total inv',
+  'whs inv',
+  'kl post date',
+];
 
 /**
  * Calculate Levenshtein distance between two strings
@@ -87,21 +109,61 @@ function levenshteinDistance(str1: string, str2: string): number {
 /**
  * Auto-map a CSV header to a target field
  */
-function autoMapHeader(csvHeader: string): ColumnMapping {
+function autoMapHeader(csvHeader: string, allHeaders: string[], headerIndex: number): ColumnMapping {
   const normalized = csvHeader.toLowerCase().replace(/[^a-z0-9]/g, '_');
   
-  // Check for exact matches in synonym lists
+  // Check if this is a duplicate header (appears earlier in the list)
+  const isDuplicate = allHeaders.slice(0, headerIndex).some(
+    h => h.toLowerCase().replace(/[^a-z0-9]/g, '_') === normalized
+  );
+  
+  if (isDuplicate) {
+    return {
+      csvHeader,
+      targetField: null,
+      confidence: 'unmapped',
+    };
+  }
+  
+  // Check if header should be ignored by default
+  if (DEFAULT_IGNORE.includes(normalized) || DEFAULT_IGNORE.includes(csvHeader.toLowerCase())) {
+    return {
+      csvHeader,
+      targetField: null,
+      confidence: 'unmapped',
+    };
+  }
+  
+  // Priority 1: Exact equality check against synonyms
   for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
-    if (synonyms.some(syn => normalized.includes(syn) || syn.includes(normalized))) {
-      return {
-        csvHeader,
-        targetField,
-        confidence: 'exact',
-      };
+    for (const synonym of synonyms) {
+      const synonymNormalized = synonym.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      if (normalized === synonymNormalized) {
+        return {
+          csvHeader,
+          targetField,
+          confidence: 'exact',
+        };
+      }
     }
   }
   
-  // Try fuzzy matching with Levenshtein distance
+  // Priority 2: Word-boundary regex match
+  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
+    for (const synonym of synonyms) {
+      // Create word-boundary regex pattern
+      const pattern = new RegExp('\\b' + synonym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (pattern.test(csvHeader)) {
+        return {
+          csvHeader,
+          targetField,
+          confidence: 'synonym',
+        };
+      }
+    }
+  }
+  
+  // Priority 3: Levenshtein distance fuzzy matching (distance <= 2)
   const fuzzyMatches: Array<{ field: string; distance: number }> = [];
   
   for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
@@ -152,8 +214,8 @@ function coerceValue(value: string, targetField: string): any {
     return false;
   }
   
-  // Price and numeric fields
-  if (['price', 'stock'].includes(targetField)) {
+  // Price and numeric fields (including shipping dimensions)
+  if (['price', 'stock', 'height', 'width', 'length', 'weight'].includes(targetField)) {
     // Remove currency symbols and commas
     const cleaned = trimmed.replace(/[$,]/g, '');
     const parsed = parseFloat(cleaned);
@@ -183,7 +245,7 @@ export function parseCSV(csvContent: string): ParseResult {
   const headers = parseCSVLine(lines[0]);
   
   // Auto-map headers
-  const mappings = headers.map(header => autoMapHeader(header));
+  const mappings = headers.map((header, index) => autoMapHeader(header, headers, index));
   
   // Parse data rows
   const rawData: string[][] = [];

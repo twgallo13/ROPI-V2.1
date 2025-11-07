@@ -32,6 +32,21 @@ export type Product = {
   hype: boolean;
   fastfashion: boolean;
 
+  // Shipping dimensions
+  shipping?: {
+    height: number | null;
+    width: number | null;
+    length: number | null;
+    weight: number | null;
+  };
+
+  // RICS fields
+  ricsCategory?: string;
+  ricsLongDesc?: string;
+  
+  // Keywords/tags
+  keywords?: string[];
+
   // For the "AI Context" tab
   aiContext: {
     keywords: string[];
