@@ -188,32 +188,59 @@ const SettingsPage: React.FC = () => {
                     className="flex items-center justify-between group hover:bg-white px-2 py-1 rounded transition-colors"
                   >
                     {isEditing(index) ? (
-                      <input
-                        type="text"
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                        onKeyDown={handleEditKeyPress}
-                        onBlur={cancelEdit}
-                        autoFocus
-                        className="flex-grow border-indigo-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                      />
+                      <div className="flex items-center gap-2 flex-grow">
+                        <input
+                          type="text"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={handleEditKeyPress}
+                          autoFocus
+                          className="flex-grow border-indigo-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                        />
+                        <button
+                          type="button"
+                          onClick={saveEdit}
+                          className="text-green-600 hover:text-green-800 font-bold text-lg"
+                          title="Save (or press Enter)"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={cancelEdit}
+                          className="text-gray-500 hover:text-gray-700 font-bold text-lg"
+                          title="Cancel (or press Esc)"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     ) : (
                       <>
                         <span 
-                          className="text-gray-700 flex-grow cursor-pointer"
-                          onClick={() => user && startEdit(vocabKey as AttributeKey, index, item)}
-                          title="Click to edit"
+                          className="text-gray-700 flex-grow"
                         >
                           {item}
                         </span>
-                        <button
-                          onClick={() => handleDelete(vocabKey as AttributeKey, index)}
-                          className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity ml-2"
-                          disabled={attributes.saving}
-                          title="Delete"
-                        >
-                          ×
-                        </button>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => user && startEdit(vocabKey as AttributeKey, index, item)}
+                            className="text-indigo-500 hover:text-indigo-700 text-sm font-medium px-2 py-1"
+                            disabled={attributes.saving}
+                            title="Edit"
+                          >
+                            ✎
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(vocabKey as AttributeKey, index)}
+                            className="text-red-500 hover:text-red-700 text-lg font-bold px-2 py-1"
+                            disabled={attributes.saving}
+                            title="Delete"
+                          >
+                            ×
+                          </button>
+                        </div>
                       </>
                     )}
                   </li>
