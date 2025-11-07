@@ -36,9 +36,11 @@ const AISettingsTab: React.FC<AISettingsTabProps> = ({ onShowToast }) => {
       if (docSnap.exists()) {
         setSettings(docSnap.data() as AISettings);
       }
-    } catch (error) {
-      console.error('Error loading AI settings:', error);
-      onShowToast('Failed to load AI settings', 'error');
+    } catch (err: any) {
+      const errorCode = err?.code || 'unknown';
+      const errorMessage = err?.message || 'Unknown error';
+      console.error('[settings] load failed', errorCode, errorMessage);
+      onShowToast(`Could not load AI settings (${errorCode})`, 'error');
     } finally {
       setLoading(false);
     }
