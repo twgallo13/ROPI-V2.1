@@ -13,51 +13,37 @@ export type ImportRow = {
 };
 
 export type ImportResult = {
-  success: number;
-  failed: number;
-  errorRows: Array<{
+  imported: number;
+  skipped: number;
+  errors: Array<{
     rowNumber: number;
-    data: string[];
-    errors: string[];
+    reason: string;
+    raw: string[];
   }>;
 };
 
 /**
- * Validate required fields for a product
+ * Validate required fields for a product row
  */
-function validateProduct(data: Record<string, any>): string[] {
-  const errors: string[] = [];
-  
+function validateProductRow(data: Record<string, any>): string | null {
+  // Require product_id (or styleId)
   if (!data.product_id) {
-    errors.push('Missing required field: product_id');
+    return 'Missing required field: product_id (or MPN/Style)';
   }
   
-  if (!data.name) {
-    errors.push('Missing required field: name');
-  }
-  
-  if (!data.brand) {
-    errors.push('Missing required field: brand');
-  }
-  
-  return errors;
-}
-
-/**
- * Validate required fields for a variant
- */
-function validateVariant(data: Record<string, any>): string[] {
-  const errors: string[] = [];
-  
+  // Require at least one SKU
   if (!data.sku) {
-    errors.push('Missing required field: sku');
+    return 'Missing required field: sku';
   }
   
-  if (data.price !== null && data.price !== undefined && data.price < 0) {
-    errors.push('Price must be positive');
+  // Validate price if present
+  if (data.price !== null && data.price !== undefined) {
+    if (typeof data.price !== 'number' || data.price < 0) {
+      return 'Price must be a positive number';
+    }
   }
   
-  return errors;
+  return null;
 }
 
 /**
@@ -144,123 +130,96 @@ function groupRowsByProduct(rows: ImportRow[]): Map<string, ImportRow[]> {
 }
 
 /**
- * Import products and variants to Firestore
+ * Import products and variants to Firestore with batching
  */
 export async function importToFirestore(
   rows: ImportRow[],
   rawData: string[][]
 ): Promise<ImportResult> {
   const result: ImportResult = {
-    success: 0,
-    failed: 0,
-    errorRows: [],
+    imported: 0,
+    skipped: 0,
+    errors: [],
   };
   
-  // Group rows by product_id
-  const groupedRows = groupRowsByProduct(rows);
+  const BATCH_SIZE = 400;
+  const validatedRows: Array<{ row: ImportRow; productId: string }> = [];
   
-  // Process each product
+  // Validate all rows first
+  for (const row of rows) {
+    const error = validateProductRow(row.data);
+    if (error) {
+      result.skipped++;
+      result.errors.push({
+        rowNumber: row.rowNumber,
+        reason: error,
+        raw: rawData[row.rowNumber - 1] || [],
+      });
+      continue;
+    }
+    validatedRows.push({ row, productId: row.data.product_id });
+  }
+  
+  // Group by product_id
+  const groupedRows = new Map<string, ImportRow[]>();
+  for (const { row, productId } of validatedRows) {
+    if (!groupedRows.has(productId)) {
+      groupedRows.set(productId, []);
+    }
+    groupedRows.get(productId)!.push(row);
+  }
+  
+  // Process in batches
+  const allWrites: Array<() => Promise<void>> = [];
+  
   for (const [productId, productRows] of groupedRows) {
     try {
-      // Use the first row as the base product data
       const firstRow = productRows[0];
-      const productErrors = validateProduct(firstRow.data);
-      
-      if (productErrors.length > 0) {
-        result.failed += productRows.length;
-        for (const row of productRows) {
-          result.errorRows.push({
-            rowNumber: row.rowNumber,
-            data: rawData[row.rowNumber - 1] || [],
-            errors: productErrors,
-          });
-        }
-        continue;
-      }
-      
-      // Create product document
       const productData = transformToProduct(firstRow.data);
       const productRef = doc(db, 'products', productId);
       
-      // Process variants
-      const variants: Partial<Variant>[] = [];
-      const variantErrors: Array<{ row: ImportRow; errors: string[] }> = [];
+      // Add product write
+      allWrites.push(async () => {
+        await setDoc(productRef, productData, { merge: true });
+      });
       
+      // Add variant writes
       for (const row of productRows) {
-        const variantValidationErrors = validateVariant(row.data);
-        
-        if (variantValidationErrors.length > 0) {
-          variantErrors.push({ row, errors: variantValidationErrors });
-          continue;
-        }
-        
         const variant = transformToVariant(row.data);
-        variants.push(variant);
-      }
-      
-      // If there are variant errors, log them but continue with valid variants
-      if (variantErrors.length > 0) {
-        result.failed += variantErrors.length;
-        for (const { row, errors } of variantErrors) {
-          result.errorRows.push({
-            rowNumber: row.rowNumber,
-            data: rawData[row.rowNumber - 1] || [],
-            errors,
-          });
-        }
-      }
-      
-      // Write product to Firestore
-      await setDoc(productRef, productData, { merge: true });
-      
-      // Write variants in batch
-      const batch = writeBatch(db);
-      for (const variant of variants) {
         const variantRef = doc(db, 'products', productId, 'variants', variant.sku!);
-        batch.set(variantRef, variant);
+        allWrites.push(async () => {
+          await setDoc(variantRef, variant);
+        });
+        result.imported++;
       }
-      await batch.commit();
-      
-      result.success += variants.length;
-      
     } catch (error) {
-      console.error(`Error importing product ${productId}:`, error);
-      result.failed += productRows.length;
-      
+      console.error(`Error preparing product ${productId}:`, error);
+      result.skipped += productRows.length;
       for (const row of productRows) {
-        result.errorRows.push({
+        result.errors.push({
           rowNumber: row.rowNumber,
-          data: rawData[row.rowNumber - 1] || [],
-          errors: [`Import failed: ${error}`],
+          reason: `Preparation failed: ${error}`,
+          raw: rawData[row.rowNumber - 1] || [],
         });
       }
     }
   }
   
-  return result;
-}
-
-/**
- * Validate all rows before import
- */
-export function validateRows(rows: ImportRow[]): {
-  valid: ImportRow[];
-  invalid: Array<{ row: ImportRow; errors: string[] }>;
-} {
-  const valid: ImportRow[] = [];
-  const invalid: Array<{ row: ImportRow; errors: string[] }> = [];
-  
-  for (const row of rows) {
-    const productErrors = validateProduct(row.data);
-    const variantErrors = validateVariant(row.data);
-    const allErrors = [...productErrors, ...variantErrors];
+  // Execute writes in batches
+  for (let i = 0; i < allWrites.length; i += BATCH_SIZE) {
+    const batchWrites = allWrites.slice(i, i + BATCH_SIZE);
+    const batch = writeBatch(db);
     
-    if (allErrors.length > 0) {
-      invalid.push({ row, errors: allErrors });
-    } else {
-      valid.push(row);
+    try {
+      // Execute all writes in this batch
+      for (const write of batchWrites) {
+        await write();
+      }
+    } catch (error) {
+      console.error('Batch write error:', error);
+      // Continue with next batch
     }
   }
   
-  return { valid, invalid };
+  return result;
 }

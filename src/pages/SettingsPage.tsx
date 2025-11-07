@@ -232,6 +232,7 @@ const SettingsPage: React.FC = () => {
                 className="flex-grow block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
               />
               <button
+                type="button"
                 onClick={() => handleAddItem(vocabKey)}
                 disabled={attributes.saving || !newItems[vocabKey].trim()}
                 className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
