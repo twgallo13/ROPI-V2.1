@@ -17,6 +17,8 @@ const editableVocabs = {
   websites: 'Websites',
   sportsTeams: 'Sports Teams',
   leagues: 'Leagues',
+  fits: 'Fits',
+  taxClasses: 'Tax Classes',
 };
 
 // Define the type for an automation rule
@@ -56,6 +58,8 @@ const SettingsPage: React.FC = () => {
     websites: '',
     sportsTeams: '',
     leagues: '',
+    fits: '',
+    taxClasses: '',
   });
   const [editingItem, setEditingItem] = useState<{ key: AttributeKey; index: number } | null>(null);
   const [editValue, setEditValue] = useState('');

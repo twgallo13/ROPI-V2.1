@@ -247,7 +247,7 @@ const ImportPage: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Import Complete</h2>
             
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <div className="text-green-800">
                   <div className="text-3xl font-bold">{importProgress.imported}</div>
@@ -261,23 +261,46 @@ const ImportPage: React.FC = () => {
                   <div className="text-sm">Skipped</div>
                 </div>
               </div>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="text-yellow-800">
+                  <div className="text-3xl font-bold">{errorCSV ? parseResult?.rows.length - importProgress.imported || 0 : 0}</div>
+                  <div className="text-sm">Errors</div>
+                </div>
+              </div>
             </div>
 
             {errorCSV && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                 <p className="text-sm text-yellow-800 mb-3">
-                  Some rows had validation errors and were not imported.
+                  Some rows had validation errors and were not imported. Download the error report for details (includes MPN references).
                 </p>
                 <button
                   onClick={handleDownloadErrors}
                   className="px-4 py-2 bg-yellow-600 text-white font-medium rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                 >
-                  Download Error CSV
+                  Download Error Report (CSV)
                 </button>
               </div>
             )}
 
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h3 className="text-sm font-medium text-blue-800 mb-2">Import Summary</h3>
+              <ul className="text-sm text-blue-700 space-y-1">
+                <li>• All products are keyed by MPN (Manufacturer Part Number)</li>
+                <li>• Variants are grouped under their parent MPN</li>
+                <li>• Products are in "intake" status and ready for review</li>
+              </ul>
+            </div>
+
             <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleDownloadErrors}
+                disabled={!errorCSV}
+                className="px-6 py-2 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Download Error Report
+              </button>
               <button
                 onClick={handleReset}
                 className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
