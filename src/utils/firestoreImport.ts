@@ -26,9 +26,9 @@ export type ImportResult = {
  * Validate required fields for a product row
  */
 function validateProductRow(data: Record<string, any>): string | null {
-  // Require product_id (or styleId)
-  if (!data.product_id) {
-    return 'Missing required field: product_id (or MPN/Style)';
+  // Require product_id OR mpn
+  if (!data.product_id && !data.mpn) {
+    return 'Missing required field: product_id or MPN';
   }
   
   // Require at least one SKU
@@ -50,9 +50,14 @@ function validateProductRow(data: Record<string, any>): string | null {
  * Transform row data into Product structure
  */
 function transformToProduct(data: Record<string, any>): Partial<Product> {
+  // Use product_id if available, otherwise fall back to mpn
+  const productId = data.product_id || data.mpn;
+  // Keep both values on the product record
+  const mpn = data.mpn || data.product_id;
+  
   return {
-    id: data.product_id || '',
-    mpn: data.product_id || '',
+    id: productId || '',
+    mpn: mpn || '',
     name: data.name || '',
     brand: data.brand || '',
     department: data.department || '',
@@ -157,7 +162,9 @@ export async function importToFirestore(
       });
       continue;
     }
-    validatedRows.push({ row, productId: row.data.product_id });
+    // Use product_id if available, otherwise mpn
+    const productId = row.data.product_id || row.data.mpn;
+    validatedRows.push({ row, productId });
   }
   
   // Group by product_id

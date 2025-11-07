@@ -75,6 +75,7 @@ const MappingReview: React.FC<MappingReviewProps> = ({
                   >
                     <option value="">-- Ignore this column --</option>
                     <option value="product_id">Product ID</option>
+                    <option value="mpn">MPN</option>
                     <option value="sku">SKU</option>
                     <option value="name">Name</option>
                     <option value="brand">Brand</option>
