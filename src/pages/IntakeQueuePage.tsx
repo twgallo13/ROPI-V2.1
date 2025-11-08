@@ -7,7 +7,8 @@ import Toast from '../components/Toast';
 import { exportAndDownload } from '../utils/exporter';
 
 const IntakeQueuePage: React.FC = () => {
-  const { products, loading, error } = useProducts();
+  const { products: firestoreProducts, loading, error } = useProducts();
+  const [localProducts, setLocalProducts] = useState<Product[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showErrorToast, setShowErrorToast] = useState(false);
@@ -15,6 +16,14 @@ const IntakeQueuePage: React.FC = () => {
   const [exportMessage, setExportMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [selectedIds, setSelectedIds] = useState(new Set<string>());
   const headerCheckboxRef = useRef<HTMLInputElement>(null);
+
+  // Sync Firestore products to local state (eventual consistency)
+  useEffect(() => {
+    setLocalProducts(firestoreProducts);
+  }, [firestoreProducts]);
+
+  // Use local products for rendering (allows optimistic updates)
+  const products = localProducts;
 
   // State for the new filters
   const [statusFilter, setStatusFilter] = useState('all');
@@ -29,6 +38,22 @@ const IntakeQueuePage: React.FC = () => {
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
     setSelectedProduct(null); // Clear selection on close
+  };
+
+  const handleProductSaved = (productId: string, updates: Partial<Product>) => {
+    // Optimistic update: merge updates into local products list
+    setLocalProducts(prev => 
+      prev.map(p => 
+        p.id === productId 
+          ? { ...p, ...updates } 
+          : p
+      )
+    );
+    
+    // Also update selectedProduct if it's the same one
+    if (selectedProduct?.id === productId) {
+      setSelectedProduct(prev => prev ? { ...prev, ...updates } : null);
+    }
   };
 
   // Count validated products (from all products, not filtered)
@@ -310,6 +335,7 @@ const IntakeQueuePage: React.FC = () => {
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         product={selectedProduct}
+        onSaved={handleProductSaved}
       />
 
       {showErrorToast && error && (
