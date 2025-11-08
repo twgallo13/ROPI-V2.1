@@ -48,6 +48,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const lastActiveField = useRef<{ name?: string; start?: number; end?: number }>({});
 
   useEffect(() => {
     // Only reset editableProduct when the product ID changes (not when fields update)
@@ -151,9 +152,6 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
       try {
         setSavingState('saving');
-        // Focus guard: capture currently focused element within the form
-        const activeEl = (typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null);
-        const shouldRestoreFocus = !!(activeEl && formRef.current && formRef.current.contains(activeEl));
         
         // Build payload with only changed fields
         const payload = cleanForFirestore({
@@ -212,12 +210,18 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           setSavingState('idle');
         }, 1000);
 
-        // Restore focus if it was inside the form before save
-        if (shouldRestoreFocus && activeEl) {
-          try {
-            activeEl.focus();
-          } catch {}
-        }
+        // Restore focus by field name + caret position
+        const restore = () => {
+          const { name, start, end } = lastActiveField.current || {};
+          if (!name || !formRef.current) return;
+          const el = formRef.current.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
+          if (!el) return;
+          el.focus();
+          if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
+            try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+          }
+        };
+        restore();
       } catch (error) {
         console.error('[drawer] autosave failed', error);
         setSavingState('idle');
@@ -313,6 +317,19 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       setSavingState('idle');
     }, 1000);
     
+    // Restore focus by field name + caret position
+    const restore = () => {
+      const { name, start, end } = lastActiveField.current || {};
+      if (!name || !formRef.current) return;
+      const el = formRef.current.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
+      if (!el) return;
+      el.focus();
+      if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
+        try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+      }
+    };
+    restore();
+    
     // Show toast if requested
     if (options.showToast) {
       setToastMessage({ text: options.showToast, type: 'success' });
@@ -327,6 +344,15 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (!editableProduct) return;
     const { name, value, type } = e.target;
+    
+    // Capture field name and caret position for focus restoration
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      lastActiveField.current = {
+        name: e.target.name,
+        start: e.target.selectionStart ?? undefined,
+        end: e.target.selectionEnd ?? undefined,
+      };
+    }
     
     // Track that this field changed
     setChangedFields(prev => new Set(prev).add(name));
@@ -389,6 +415,15 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   ) => {
     if (!editableProduct) return;
     const { name, value } = e.target;
+
+    // Capture field name and caret position for focus restoration
+    if (e.target instanceof HTMLTextAreaElement) {
+      lastActiveField.current = {
+        name: e.target.name,
+        start: e.target.selectionStart ?? undefined,
+        end: e.target.selectionEnd ?? undefined,
+      };
+    }
 
     // Track that aiContext changed
     setChangedFields(prev => new Set(prev).add('aiContext'));
@@ -561,7 +596,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                              <FormField label="Name"><input name="name" type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                              
                              <FormField label="Department">
                                <Select 
@@ -706,9 +741,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'context' && (
                     <div className="space-y-6">
-                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={editableProduct.aiContext.keywords.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={editableProduct.aiContext.featureBullets.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={handleBlur} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={editableProduct.aiContext.keywords.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={editableProduct.aiContext.featureBullets.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                     </div>
                 )}
                 {activeTab === 'generation' && (
