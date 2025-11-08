@@ -41,18 +41,27 @@ const IntakeQueuePage: React.FC = () => {
   };
 
   const handleProductSaved = (productId: string, updates: Partial<Product>) => {
-    // Optimistic update: merge updates into local products list
+    // Optimistic update: shallow-merge into existing object to prevent remounting
     setLocalProducts(prev => 
-      prev.map(p => 
-        p.id === productId 
-          ? { ...p, ...updates } 
-          : p
-      )
+      prev.map(p => {
+        if (p.id === productId) {
+          // Shallow merge into the SAME object reference to avoid remounting children
+          Object.assign(p, updates);
+          return p;
+        }
+        return p;
+      })
     );
     
-    // Also update selectedProduct if it's the same one
+    // Also update selectedProduct if it's the same one (shallow merge)
     if (selectedProduct?.id === productId) {
-      setSelectedProduct(prev => prev ? { ...prev, ...updates } : null);
+      setSelectedProduct(prev => {
+        if (prev) {
+          Object.assign(prev, updates);
+          return prev;
+        }
+        return null;
+      });
     }
   };
 
@@ -332,6 +341,7 @@ const IntakeQueuePage: React.FC = () => {
       )}
 
       <ProductEditorDrawer 
+        key={selectedProduct?.id}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         product={selectedProduct}

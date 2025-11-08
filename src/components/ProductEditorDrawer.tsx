@@ -64,6 +64,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
   useEffect(() => {
     // Only reset editableProduct when the product ID changes (not when fields update)
+    // This prevents overwriting local typing with every Firestore snapshot
     if (product?.id !== lastProductId) {
       setEditableProduct(product);
       setActiveTab('core');
@@ -73,7 +74,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       setChangedFields(new Set());
       setSavingState('idle');
     }
-  }, [product, lastProductId]);
+  }, [product?.id, lastProductId]); // Sync on ID only, not the entire product object
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -196,6 +197,13 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
           onSaved(product.id, filtered as Partial<Product>);
         }
+        
+        // Update local editableProduct with filtered merge (preserve fields being typed)
+        if (editableProduct) {
+          const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
+          // Shallow merge into existing object to preserve any local changes
+          setEditableProduct(prev => prev ? { ...prev, ...filtered } : null);
+        }
 
         // Update local editableProduct with filtered merge (preserve fields being typed)
         if (editableProduct) {
@@ -215,7 +223,17 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         }, 1000);
 
         // Restore focus by field name + caret position
-        restoreFocus();
+        const restore = () => {
+          const { name, start, end } = lastActiveField.current || {};
+          if (!name || !formRef.current) return;
+          const el = formRef.current.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
+          if (!el) return;
+          el.focus();
+          if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
+            try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+          }
+        };
+        restore();
       } catch (error) {
         console.error('[drawer] autosave failed', error);
         setSavingState('idle');
@@ -289,14 +307,16 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       onSaved(product.id, filtered as Partial<Product>);
     }
     
-    // Update local state optimistically (avoid overwriting with undefined)
+    // Update local state with filtered merge (avoid overwriting with undefined)
     if (editableProduct) {
       const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-      setEditableProduct({
-        ...editableProduct,
+      // Include any extra fields like status from the options
+      const mergedUpdate = {
         ...filtered,
-        status: (extra.status as any) || editableProduct.status,
-      });
+        ...(extra.status && { status: extra.status }),
+        ...(extra.validatedAt && { validatedAt: extra.validatedAt }),
+      };
+      setEditableProduct(prev => prev ? { ...prev, ...mergedUpdate } : null);
     }
     
     // Clear changed fields after manual save
@@ -310,7 +330,17 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }, 1000);
     
     // Restore focus by field name + caret position
-    restoreFocus();
+    const restore = () => {
+      const { name, start, end } = lastActiveField.current || {};
+      if (!name || !formRef.current) return;
+      const el = formRef.current.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
+      if (!el) return;
+      el.focus();
+      if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
+        try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+      }
+    };
+    restore();
     
     // Show toast if requested
     if (options.showToast) {
