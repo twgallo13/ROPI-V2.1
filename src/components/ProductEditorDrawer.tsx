@@ -77,12 +77,13 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
     
-    // Update local state optimistically
+    // Update local state optimistically (avoid overwriting with undefined)
     if (editableProduct) {
+      const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
       setEditableProduct({
         ...editableProduct,
-        ...payload,
-        status: extra.status || editableProduct.status,
+        ...filtered,
+        status: (extra.status as any) || editableProduct.status,
       });
     }
     
