@@ -151,6 +151,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
       try {
         setSavingState('saving');
+        // Focus guard: capture currently focused element within the form
+        const activeEl = (typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null);
+        const shouldRestoreFocus = !!(activeEl && formRef.current && formRef.current.contains(activeEl));
         
         // Build payload with only changed fields
         const payload = cleanForFirestore({
@@ -192,6 +195,13 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           setEditableProduct(prev => prev ? { ...prev, ...filtered } : null);
         }
 
+        // Update local editableProduct with filtered merge (preserve fields being typed)
+        if (editableProduct) {
+          const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
+          // Shallow merge into existing object to preserve any local changes
+          setEditableProduct(prev => prev ? { ...prev, ...filtered } : null);
+        }
+
         // Clear changed fields after successful save
         setChangedFields(new Set());
         setSavingState('saved');
@@ -201,11 +211,18 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         savedTimeoutRef.current = setTimeout(() => {
           setSavingState('idle');
         }, 1000);
+
+        // Restore focus if it was inside the form before save
+        if (shouldRestoreFocus && activeEl) {
+          try {
+            activeEl.focus();
+          } catch {}
+        }
       } catch (error) {
         console.error('[drawer] autosave failed', error);
         setSavingState('idle');
       }
-    }, 400); // 400ms debounce
+    }, 500); // 500ms debounce per requirements
   }, [product, editableProduct, changedFields, onSaved]);
 
   const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
@@ -321,6 +338,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }
 
     setEditableProduct({ ...editableProduct, [name]: value });
+    // Schedule debounced autosave (does not save every keystroke due to debounce)
+    debouncedAutosave();
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -330,6 +349,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     setChangedFields(prev => new Set(prev).add(name));
     
     setEditableProduct({ ...editableProduct, [name]: value });
+    // Schedule debounced autosave
+    debouncedAutosave();
   };
 
   const handleBlur = () => {
@@ -358,7 +379,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         websites: Array.from(currentWebsites)
     });
     
-    // Autosave on website toggle
+    // Autosave on website toggle (debounced)
     debouncedAutosave();
   };
 
@@ -380,7 +401,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 ...editableProduct[section],
                 [name]: valueAsArray,
             },
-        });
+    });
     } else {
         setEditableProduct({
             ...editableProduct,
@@ -390,6 +411,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
             },
         });
     }
+  // Schedule debounced autosave for context changes
+  debouncedAutosave();
   };
   
   const handleGenerateClick = async () => {
