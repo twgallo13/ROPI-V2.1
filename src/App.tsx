@@ -17,6 +17,7 @@ import VocabDropdownsPage from './pages/settings/VocabDropdownsPage';
 import RulesPage from './pages/settings/RulesPage';
 import BrandsPage from './pages/settings/BrandsPage';
 import ExportSettingsPage from './pages/settings/ExportSettingsPage';
+import UsersAdminPage from './pages/admin/UsersAdminPage';
 
 function App() {
   const { user, role } = useAuth();
@@ -90,6 +91,20 @@ function App() {
           <Route path="brands" element={<BrandsPage />} />
           <Route path="export" element={<ExportSettingsPage />} />
         </Route>
+
+        {/* Admin: Users Management */}
+        <Route 
+          path="/admin/users"
+          element={
+            user && role === 'admin' ? (
+              <MainLayout>
+                <UsersAdminPage />
+              </MainLayout>
+            ) : (
+              <Navigate to={user ? "/intake" : "/"} />
+            )
+          }
+        />
         
         {/* Catch-all for any other bad URL */}
         <Route path="*" element={<Navigate to="/" />} />

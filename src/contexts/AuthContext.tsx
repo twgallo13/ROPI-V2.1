@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, type User } from 'firebase/auth';
 import { auth, provider, db } from '../firebase';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, getDoc } from 'firebase/firestore';
 
 type Role = 'admin' | 'specialist';
 
@@ -32,9 +32,47 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         if (firebaseUser) {
           setUser(firebaseUser);
+          const email = (firebaseUser.email || '').toLowerCase();
+          const userRef = doc(db, 'users', firebaseUser.uid);
+
+          // One-time seed rules based on email domain and Theo admin override
+          try {
+            const snap = await getDoc(userRef);
+            const isTheo = email === 'theo@shiekhshoes.org';
+            const isShiekhDomain = email.endsWith('@shiekhshoes.org');
+
+            if (!snap.exists()) {
+              if (isTheo) {
+                await setDoc(userRef, {
+                  email,
+                  displayName: firebaseUser.displayName || '',
+                  role: 'admin',
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                }, { merge: true });
+              } else if (isShiekhDomain) {
+                await setDoc(userRef, {
+                  email,
+                  displayName: firebaseUser.displayName || '',
+                  role: 'specialist',
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                }, { merge: true });
+              }
+            } else {
+              const data = snap.data() as { role?: Role };
+              if (isTheo && data.role !== 'admin') {
+                await setDoc(userRef, {
+                  role: 'admin',
+                  updatedAt: new Date().toISOString(),
+                }, { merge: true });
+              }
+            }
+          } catch (seedErr) {
+            console.warn('[auth] Seeding user document failed or skipped:', seedErr);
+          }
           
           // Subscribe to role changes via onSnapshot
-          const userRef = doc(db, 'users', firebaseUser.uid);
           const unsubscribeRole = onSnapshot(
             userRef,
             async (snap) => {
@@ -42,8 +80,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               const newRole = (data.role as Role) || 'specialist';
               
               // Check if this is an admin email without a role set
-              const adminEmails = import.meta.env.VITE_ADMIN_EMAILS?.split(',').map((e: string) => e.trim()) || [];
-              const isAdminEmail = adminEmails.includes(firebaseUser.email || '');
+              const adminEmails = import.meta.env.VITE_ADMIN_EMAILS?.split(',').map((e: string) => e.trim().toLowerCase()) || [];
+              const isAdminEmail = adminEmails.includes((firebaseUser.email || '').toLowerCase());
               
               if (!snap.exists() || !data.role) {
                 if (isAdminEmail) {
