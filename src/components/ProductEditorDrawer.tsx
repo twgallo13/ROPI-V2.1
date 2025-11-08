@@ -75,6 +75,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       ...extra,
     });
 
+    // Temporary debug: verify outgoing payload (remove before final merge)
+    console.log('[drawer] payload to Firestore', payload);
+
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
     
     // Update local state optimistically (avoid overwriting with undefined)
