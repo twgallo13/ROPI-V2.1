@@ -1,26 +1,21 @@
 import React from 'react';
-import { NavLink, Outlet, useLocation, Navigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
 const tabs = [
+  { to: 'export', label: 'Export Settings' },
   { to: 'ai', label: 'AI Settings' },
-  { to: 'vocab-managed', label: 'Vocab (Managed)' },
   { to: 'prompts', label: 'AI Prompts' },
+  { to: 'vocab-managed', label: 'Vocab (Managed)' },
   { to: 'vocab', label: 'Vocab / Dropdowns' },
   { to: 'rules', label: 'Rules' },
   { to: 'brands', label: 'Brands' },
-  { to: 'export', label: 'Export Settings' },
 ];
 
 const SettingsPage: React.FC = () => {
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const current = parts[1] === 'settings' ? parts[2] : undefined;
-  const currentLabel = tabs.find(t => t.to === current)?.label || 'AI Settings';
-
-  // Redirect bare /settings to default subroute
-  if (parts[0] === 'settings' && !current) {
-    return <Navigate to="/settings/ai" replace />;
-  }
+  const currentLabel = tabs.find(t => t.to === current)?.label || 'Export Settings';
 
   return (
     <div>
