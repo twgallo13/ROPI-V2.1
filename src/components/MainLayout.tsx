@@ -41,7 +41,15 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <header className="bg-white shadow-md p-4 flex justify-end items-center gap-4">
           {user ? (
             <>
-              <span className="text-gray-700">{user.email}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-700">{user.email}</span>
+                {role && (
+                  <span className={`px-2 py-0.5 text-xs font-semibold rounded-full border ${role === 'admin' ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-gray-100 text-gray-600 border-gray-300'}`}
+                        title={`Role: ${role}`}>
+                    {role}
+                  </span>
+                )}
+              </div>
               <button 
                 onClick={logout} 
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"

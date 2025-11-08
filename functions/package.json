@@ -1,0 +1,23 @@
+{
+  "name": "ropi-functions",
+  "private": true,
+  "engines": { "node": "20" },
+  "type": "commonjs",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf lib",
+    "lint": "echo skip"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.5.0",
+    "firebase-functions": "^4.7.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.10",
+    "rimraf": "^5.0.5"
+  }
+}

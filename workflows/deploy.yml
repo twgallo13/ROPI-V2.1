@@ -1,4 +1,4 @@
-name: Deploy Firebase (Hosting)
+name: Deploy Firebase (Hosting + Functions)
 
 on:
   push:
@@ -24,10 +24,11 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy to Firebase Hosting
+      - name: Deploy Hosting & Functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
           PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
           firebase use "$PROJECT_ID"
-          firebase deploy --only hosting
+          cd functions && npm ci && npm run build && cd ..
+          firebase deploy --only hosting,functions

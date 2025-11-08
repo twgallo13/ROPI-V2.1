@@ -14,8 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install deps
+      - name: Install root deps
         run: npm ci
+      - name: Install functions deps
+        run: npm run install:functions
       - name: Build (Vite)
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
@@ -25,9 +27,11 @@ jobs:
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
         run: npm run build
-      - name: Deploy Hosting
+      - name: Build Functions
+        run: npm run build:functions
+      - name: Deploy Hosting + Functions
         if: ${{ env.FIREBASE_TOKEN != '' && env.PROJECT_ID != '' }}
         run: |
           npm i -g firebase-tools
           firebase use "$PROJECT_ID"
-          firebase deploy --only hosting
+          firebase deploy --only hosting,functions

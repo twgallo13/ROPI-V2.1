@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Product } from '../types';
-import { mockGenerateDescription } from '../services/mockAIService';
+// Replaced mock AI service with Gemini client
+import { generateProductMarketing } from '../services/geminiService';
 import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -50,12 +51,17 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     e.preventDefault();
     if (!product) return;
     const fd = new FormData(e.currentTarget);
-    const get = (k: string) => (fd.get(k) as string | null) ?? null;
+    // Return undefined when a field is missing so cleanForFirestore will drop it;
+    // this prevents overwriting existing Firestore values with null inadvertently.
+    const get = (k: string) => {
+      const v = fd.get(k);
+      return v === null ? undefined : (v as string);
+    };
 
     const payload = cleanForFirestore({
-      name: get('name'),
+      name: get('name') ?? product.name,
       brand: get('brand'),
-      mpn: get('mpn'),
+      mpn: get('mpn') ?? product.mpn,
       status: get('status') || product.status,
       department: get('department'),
       class: get('class'),
@@ -69,14 +75,18 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       ...extra,
     });
 
+    // Temporary debug: verify outgoing payload (remove before final merge)
+    console.log('[drawer] payload to Firestore', payload);
+
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
     
-    // Update local state optimistically
+    // Update local state optimistically (avoid overwriting with undefined)
     if (editableProduct) {
+      const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
       setEditableProduct({
         ...editableProduct,
-        ...payload,
-        status: extra.status || editableProduct.status,
+        ...filtered,
+        status: (extra.status as any) || editableProduct.status,
       });
     }
     
@@ -150,24 +160,28 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   
   const handleGenerateClick = async () => {
     setIsGenerating(true);
-    setAiScore(null); // Clear previous score
+    setAiScore(null);
     try {
-      const result = await mockGenerateDescription();
-      if (editableProduct) {
-        setEditableProduct({
-          ...editableProduct,
-          marketing: {
-            ...editableProduct.marketing,
-            title: result.title,
-            bullets: result.bullets,
-            seo: result.seo,
-            paragraphDraft: result.paragraphDraft,
-          },
-        });
-        setAiScore(result.score);
-      }
-    } catch (error) {
-      console.error("AI Generation failed:", error);
+      if (!editableProduct) return;
+      const result = await generateProductMarketing({ product: editableProduct });
+      setEditableProduct({
+        ...editableProduct,
+        marketing: {
+          ...editableProduct.marketing,
+          title: result.title,
+          bullets: result.bullets,
+          seo: result.seo,
+          paragraphDraft: result.paragraphDraft,
+        },
+      });
+      setAiScore(result.score);
+    } catch (e) {
+      console.error('[drawer] AI generation failed', e);
+      // Basic fallback toast via optimistic paragraph
+      setEditableProduct(p => p ? ({
+        ...p,
+        marketing: { ...p.marketing, paragraphDraft: p.marketing.paragraphDraft || 'Generation failed.' }
+      }) : p);
     } finally {
       setIsGenerating(false);
     }
@@ -245,8 +259,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 {activeTab === 'core' && (
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                             <FormField label="Name"><input type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="MPN"><input type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
+                             <FormField label="Name"><input name="name" type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
+                             <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                              
                              <SelectField label="Department" name="department" value={editableProduct.department} options={mockVocabulary.departments} />

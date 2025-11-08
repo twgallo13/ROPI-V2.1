@@ -11,6 +11,12 @@ import CompleteQueuePage from './pages/CompleteQueuePage';
 import SettingsPage from './pages/SettingsPage';
 import ImportPage from './pages/ImportPage';
 import PromptsPage from './pages/settings/Prompts';
+import AISettingsPage from './pages/settings/AISettingsPage';
+import VocabManagedPage from './pages/settings/VocabManagedPage';
+import VocabDropdownsPage from './pages/settings/VocabDropdownsPage';
+import RulesPage from './pages/settings/RulesPage';
+import BrandsPage from './pages/settings/BrandsPage';
+import ExportSettingsPage from './pages/settings/ExportSettingsPage';
 
 function App() {
   const { user, role } = useAuth();
@@ -63,31 +69,27 @@ function App() {
           } 
         />
         <Route 
-          path="/settings"
+          path="/settings/*"
           element={
             user && role === 'admin' ? (
               <MainLayout>
                 <SettingsPage />
               </MainLayout>
             ) : (
-              // If you're logged in but not an admin, go to intake
-              // If you're not logged in, go to home
-              <Navigate to={user ? "/intake" : "/"} />
-            )
-          } 
-        />
-        <Route 
-          path="/settings/prompts"
-          element={
-            user && role === 'admin' ? (
-              <MainLayout>
-                <PromptsPage />
-              </MainLayout>
-            ) : (
               <Navigate to={user ? "/intake" : "/"} />
             )
           }
-        />
+        >
+          {/* Default redirect to AI settings handled in SettingsPage, but define index as fallback */}
+          <Route index element={<AISettingsPage />} />
+          <Route path="ai" element={<AISettingsPage />} />
+          <Route path="vocab-managed" element={<VocabManagedPage />} />
+          <Route path="prompts" element={<PromptsPage />} />
+          <Route path="vocab" element={<VocabDropdownsPage />} />
+          <Route path="rules" element={<RulesPage />} />
+          <Route path="brands" element={<BrandsPage />} />
+          <Route path="export" element={<ExportSettingsPage />} />
+        </Route>
         
         {/* Catch-all for any other bad URL */}
         <Route path="*" element={<Navigate to="/" />} />
