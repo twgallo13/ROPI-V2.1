@@ -46,6 +46,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   useEffect(() => {
     // Only reset editableProduct when the product ID changes (not when fields update)
@@ -67,6 +69,75 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
     };
   }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+      // Cmd/Ctrl + S: Save
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (formRef.current) {
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+          formRef.current.dispatchEvent(submitEvent);
+        }
+        return;
+      }
+
+      // Esc: Close drawer
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      // A: Approve (only when not typing)
+      if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        if (formRef.current && product) {
+          saveFromForm({ preventDefault(){}, currentTarget: formRef.current } as any, {
+            status: 'validated',
+            validatedAt: serverTimestamp(),
+          }, { showToast: 'Approved', keepOpen: true });
+        }
+        return;
+      }
+
+      // Alt + Up/Down: Navigate fields
+      if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        e.preventDefault();
+        const focusableElements = formRef.current?.querySelectorAll(
+          'input:not([readonly]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button[role="combobox"]'
+        );
+        
+        if (!focusableElements || focusableElements.length === 0) return;
+        
+        const currentIndex = Array.from(focusableElements).indexOf(target as Element);
+        
+        if (currentIndex === -1) {
+          // Not currently focused on a field, focus first
+          (focusableElements[0] as HTMLElement).focus();
+        } else {
+          let nextIndex;
+          if (e.key === 'ArrowDown') {
+            nextIndex = (currentIndex + 1) % focusableElements.length;
+          } else {
+            nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+          }
+          (focusableElements[nextIndex] as HTMLElement).focus();
+        }
+        return;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose, product]);
 
   // Debounced autosave function
   const debouncedAutosave = useCallback(() => {
@@ -377,6 +448,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
           <div className={`w-screen max-w-3xl ${drawerPanelClasses}`}>
             <form
+              ref={formRef}
               className="h-full flex flex-col bg-white shadow-xl"
               onSubmit={(e) => saveFromForm(e)}
               onKeyDown={(e) => {
@@ -391,9 +463,47 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
             >
               <header className="p-4 bg-gray-50 border-b border-gray-200">
                 <div className="flex items-start justify-between">
-                    <div>
-                        <h2 className="text-lg font-medium text-gray-900">{editableProduct.name}</h2>
-                        <p className="mt-1 text-sm text-gray-500">{editableProduct.brand} - {editableProduct.mpn}</p>
+                    <div className="flex items-center gap-3">
+                        <div>
+                            <h2 className="text-lg font-medium text-gray-900">{editableProduct.name}</h2>
+                            <p className="mt-1 text-sm text-gray-500">{editableProduct.brand} - {editableProduct.mpn}</p>
+                        </div>
+                        {/* Keyboard shortcuts help button */}
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onMouseEnter={() => setShowShortcuts(true)}
+                                onMouseLeave={() => setShowShortcuts(false)}
+                                onClick={() => setShowShortcuts(!showShortcuts)}
+                                className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                title="Keyboard shortcuts"
+                            >
+                                <span className="text-sm font-bold">?</span>
+                            </button>
+                            {showShortcuts && (
+                                <div className="absolute left-0 top-8 z-50 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg">
+                                    <h3 className="font-semibold mb-2 text-sm">Keyboard Shortcuts</h3>
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-300">Cmd/Ctrl + S</span>
+                                            <span>Save</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-300">A</span>
+                                            <span>Approve</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-300">Esc</span>
+                                            <span>Close</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-300">Alt + ↑/↓</span>
+                                            <span>Navigate fields</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                   <button type="button" className="p-1 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" onClick={onClose}>
                     <span className="sr-only">Close panel</span>
