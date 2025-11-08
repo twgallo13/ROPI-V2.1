@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, useRef, useCallback } from 'react';
 import { Product } from '../types';
 // Replaced mock AI service with Gemini client
 import { generateProductMarketing } from '../services/geminiService';
@@ -41,6 +41,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number; } | null>(null);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [lastProductId, setLastProductId] = useState<string | null>(product?.id || null);
+  const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Only reset editableProduct when the product ID changes (not when fields update)
@@ -50,12 +54,91 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       setAiScore(null);
       setToastMessage(null);
       setLastProductId(product?.id || null);
+      setChangedFields(new Set());
+      setSavingState('idle');
     }
   }, [product, lastProductId]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
+    };
+  }, []);
+
+  // Debounced autosave function
+  const debouncedAutosave = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      if (!product || !editableProduct || changedFields.size === 0) return;
+
+      try {
+        setSavingState('saving');
+        
+        // Build payload with only changed fields
+        const payload = cleanForFirestore({
+          ...(changedFields.has('name') && { name: editableProduct.name }),
+          ...(changedFields.has('brand') && { brand: editableProduct.brand }),
+          ...(changedFields.has('mpn') && { mpn: editableProduct.mpn }),
+          ...(changedFields.has('status') && { status: editableProduct.status }),
+          ...(changedFields.has('department') && { department: editableProduct.department }),
+          ...(changedFields.has('class') && { class: editableProduct.class }),
+          ...(changedFields.has('category') && { category: editableProduct.category }),
+          ...(changedFields.has('ageGroup') && { ageGroup: editableProduct.ageGroup }),
+          ...(changedFields.has('gender') && { gender: editableProduct.gender }),
+          ...(changedFields.has('materialFabric') && { materialFabric: editableProduct.materialFabric }),
+          ...(changedFields.has('fit') && { fit: editableProduct.fit }),
+          ...(changedFields.has('websites') && { websites: editableProduct.websites }),
+          ...(changedFields.has('featured') && { featured: editableProduct.featured }),
+          ...(changedFields.has('map') && { map: editableProduct.map }),
+          ...(changedFields.has('promo') && { promo: editableProduct.promo }),
+          ...(changedFields.has('hype') && { hype: editableProduct.hype }),
+          ...(changedFields.has('fastfashion') && { fastfashion: editableProduct.fastfashion }),
+          ...(changedFields.has('league') && { league: editableProduct.league }),
+          ...(changedFields.has('sportsTeam') && { sportsTeam: editableProduct.sportsTeam }),
+          ...(changedFields.has('aiContext') && { aiContext: editableProduct.aiContext }),
+          updatedAt: serverTimestamp(),
+        });
+
+        await setDoc(doc(db, 'products', product.id), payload, { merge: true });
+        
+        // Call onSaved callback for optimistic UI update
+        if (onSaved) {
+          const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
+          onSaved(product.id, filtered as Partial<Product>);
+        }
+
+        // Clear changed fields after successful save
+        setChangedFields(new Set());
+        setSavingState('saved');
+
+        // Reset to idle after 1 second
+        if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
+        savedTimeoutRef.current = setTimeout(() => {
+          setSavingState('idle');
+        }, 1000);
+      } catch (error) {
+        console.error('[drawer] autosave failed', error);
+        setSavingState('idle');
+      }
+    }, 400); // 400ms debounce
+  }, [product, editableProduct, changedFields, onSaved]);
 
   const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
     e.preventDefault();
     if (!product) return;
+    
+    // Cancel any pending autosave
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    setSavingState('saving');
+    
     const fd = new FormData(e.currentTarget);
     // Return undefined when a field is missing so cleanForFirestore will drop it;
     // this prevents overwriting existing Firestore values with null inadvertently.
@@ -121,6 +204,16 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       });
     }
     
+    // Clear changed fields after manual save
+    setChangedFields(new Set());
+    setSavingState('saved');
+    
+    // Reset to idle after 1 second
+    if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
+    savedTimeoutRef.current = setTimeout(() => {
+      setSavingState('idle');
+    }, 1000);
+    
     // Show toast if requested
     if (options.showToast) {
       setToastMessage({ text: options.showToast, type: 'success' });
@@ -136,6 +229,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     if (!editableProduct) return;
     const { name, value, type } = e.target;
     
+    // Track that this field changed
+    setChangedFields(prev => new Set(prev).add(name));
+    
     if (type === 'checkbox') {
         const { checked } = e.target as HTMLInputElement;
         setEditableProduct({ ...editableProduct, [name]: checked });
@@ -145,9 +241,19 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     setEditableProduct({ ...editableProduct, [name]: value });
   };
 
+  const handleBlur = () => {
+    // Trigger autosave when field loses focus
+    if (changedFields.size > 0) {
+      debouncedAutosave();
+    }
+  };
+
   const handleWebsiteChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!editableProduct) return;
     const { value: websiteName, checked } = e.target;
+    
+    // Track that websites changed
+    setChangedFields(prev => new Set(prev).add('websites'));
     
     const currentWebsites = new Set(editableProduct.websites);
     if (checked) {
@@ -160,6 +266,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         ...editableProduct,
         websites: Array.from(currentWebsites)
     });
+    
+    // Autosave on website toggle
+    debouncedAutosave();
   };
 
   const handleNestedChange = (
@@ -168,6 +277,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   ) => {
     if (!editableProduct) return;
     const { name, value } = e.target;
+
+    // Track that aiContext changed
+    setChangedFields(prev => new Set(prev).add('aiContext'));
 
     if (name === 'keywords' || name === 'featureBullets') {
         const valueAsArray = value.split('\n').map(item => item.trim()).filter(item => item);
@@ -240,7 +352,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   
   const SelectField: React.FC<{label: string; name: keyof Product; options: readonly string[]; value: string;}> = ({label, name, options, value}) => (
       <FormField label={label}>
-        <select name={name} value={value} onChange={handleInputChange} className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <select name={name} value={value} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
         </select>
       </FormField>
@@ -304,7 +416,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                              <FormField label="Name"><input name="name" type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                              
                              <SelectField label="Department" name="department" value={editableProduct.department} options={mockVocabulary.departments} />
                              <SelectField label="Class" name="class" value={editableProduct.class} options={mockVocabulary.classes} />
@@ -312,8 +424,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <SelectField label="Age Group" name="ageGroup" value={editableProduct.ageGroup} options={mockVocabulary.ageGroups} />
                              <SelectField label="Gender" name="gender" value={editableProduct.gender} options={mockVocabulary.genders} />
                              
-                             <FormField label="Material/Fabric"><input type="text" name="materialFabric" value={editableProduct.materialFabric} onChange={handleInputChange} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                             <FormField label="Fit"><input type="text" name="fit" value={editableProduct.fit} onChange={handleInputChange} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Material/Fabric"><input type="text" name="materialFabric" value={editableProduct.materialFabric} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Fit"><input type="text" name="fit" value={editableProduct.fit} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
 
                              <SelectField label="Sports Team" name="sportsTeam" value={editableProduct.sportsTeam || ''} options={['', ...mockVocabulary.sportsTeams]} />
                              <SelectField label="League" name="league" value={editableProduct.league || ''} options={['', ...mockVocabulary.leagues]} />
@@ -365,9 +477,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'context' && (
                     <div className="space-y-6">
-                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={editableProduct.aiContext.keywords.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={editableProduct.aiContext.featureBullets.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes} onChange={(e) => handleNestedChange(e, 'aiContext')} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={editableProduct.aiContext.keywords.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={editableProduct.aiContext.featureBullets.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={handleBlur} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                     </div>
                 )}
                 {activeTab === 'generation' && (
@@ -446,28 +558,51 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
               </div>
               
-              <footer className="flex-shrink-0 px-4 py-4 flex justify-end border-t border-gray-200 bg-gray-50">
-                <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
-                {activeTab === 'core' ? (
-                  <>
-                    <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
-                    <button 
-                      type="button" 
-                      onClick={(e) => {
-                        const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
-                        saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
-                          status: 'validated',
-                          validatedAt: serverTimestamp(),
-                        }, { showToast: 'Approved', keepOpen: true });
-                      }}
-                      className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
-                    >
-                      Approve
-                    </button>
-                  </>
-                ) : (
-                  <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
-                )}
+              <footer className="flex-shrink-0 px-4 py-4 flex justify-between items-center border-t border-gray-200 bg-gray-50">
+                {/* Saving indicator */}
+                <div className="flex items-center">
+                  {savingState === 'saving' && (
+                    <span className="text-sm text-gray-600 flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Saving...
+                    </span>
+                  )}
+                  {savingState === 'saved' && (
+                    <span className="text-sm text-green-600 flex items-center">
+                      <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                      </svg>
+                      Saved ✓
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex space-x-2">
+                  <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
+                  {activeTab === 'core' ? (
+                    <>
+                      <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                      <button 
+                        type="button" 
+                        onClick={(e) => {
+                          const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
+                          saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
+                            status: 'validated',
+                            validatedAt: serverTimestamp(),
+                          }, { showToast: 'Approved', keepOpen: true });
+                        }}
+                        className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                      >
+                        Approve
+                      </button>
+                    </>
+                  ) : (
+                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                  )}
+                </div>
               </footer>
             </form>
           </div>
