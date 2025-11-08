@@ -13,11 +13,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
+          cache: 'npm'
       - name: Install root deps
         run: npm ci
       - name: Install functions deps
-        run: npm run install:functions
+        run: npm --prefix functions ci
       - name: Build (Vite)
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
