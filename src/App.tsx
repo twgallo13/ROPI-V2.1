@@ -90,21 +90,8 @@ function App() {
           <Route path="vocab" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabDropdownsPage /></Suspense>} />
           <Route path="rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><RulesPage /></Suspense>} />
           <Route path="brands" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><BrandsPage /></Suspense>} />
+          <Route path="admin-users" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><UsersAdminPage /></Suspense>} />
         </Route>
-
-        {/* Admin: Users Management */}
-        <Route 
-          path="/admin/users"
-          element={
-            user && role === 'admin' ? (
-              <MainLayout>
-                <UsersAdminPage />
-              </MainLayout>
-            ) : (
-              <Navigate to={user ? "/intake" : "/"} />
-            )
-          }
-        />
         
         {/* Catch-all for any other bad URL */}
         <Route path="*" element={<Navigate to="/" />} />
