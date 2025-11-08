@@ -51,10 +51,14 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     e.preventDefault();
     if (!product) return;
     const fd = new FormData(e.currentTarget);
-    const get = (k: string) => (fd.get(k) as string | null) ?? null;
+    // Return undefined when a field is missing so cleanForFirestore will drop it;
+    // this prevents overwriting existing Firestore values with null inadvertently.
+    const get = (k: string) => {
+      const v = fd.get(k);
+      return v === null ? undefined : (v as string);
+    };
 
     const payload = cleanForFirestore({
-      // Preserve read-only fields if not present in form
       name: get('name') ?? product.name,
       brand: get('brand'),
       mpn: get('mpn') ?? product.mpn,
