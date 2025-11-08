@@ -331,12 +331,15 @@ const IntakeQueuePage: React.FC = () => {
         </div>
       )}
 
-      <ProductEditorDrawer 
-        isOpen={isDrawerOpen}
-        onClose={handleCloseDrawer}
-        product={selectedProduct}
-        onSaved={handleProductSaved}
-      />
+      {selectedProduct && (
+        <ProductEditorDrawer 
+          key={selectedProduct.id}
+          isOpen={isDrawerOpen}
+          onClose={handleCloseDrawer}
+          product={selectedProduct}
+          onSaved={handleProductSaved}
+        />
+      )}
 
       {showErrorToast && error && (
         <Toast 
