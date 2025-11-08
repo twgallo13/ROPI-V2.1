@@ -576,14 +576,14 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 {activeTab === 'core' && (
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                             <FormField label="Name"><input name="name" type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Name"><input name="name" type="text" value={editableProduct.name ?? ''} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
+                             <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn ?? ''} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
+                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand ?? ''} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                              
                              <FormField label="Department">
                                <Select 
                                  name="department"
-                                 value={editableProduct.department} 
+                                 value={editableProduct.department ?? ''} 
                                  onChange={(val) => handleSelectChange('department', val)} 
                                  onBlur={handleBlur}
                                  options={mockVocabulary.departments} 
@@ -592,7 +592,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Class">
                                <Select 
                                  name="class"
-                                 value={editableProduct.class} 
+                                 value={editableProduct.class ?? ''} 
                                  onChange={(val) => handleSelectChange('class', val)} 
                                  onBlur={handleBlur}
                                  options={mockVocabulary.classes} 
@@ -601,7 +601,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Category">
                                <Select 
                                  name="category"
-                                 value={editableProduct.category} 
+                                 value={editableProduct.category ?? ''} 
                                  onChange={(val) => handleSelectChange('category', val)} 
                                  onBlur={handleBlur}
                                  options={mockVocabulary.categories} 
@@ -610,7 +610,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Age Group">
                                <Select 
                                  name="ageGroup"
-                                 value={editableProduct.ageGroup} 
+                                 value={editableProduct.ageGroup ?? ''} 
                                  onChange={(val) => handleSelectChange('ageGroup', val)} 
                                  onBlur={handleBlur}
                                  options={mockVocabulary.ageGroups} 
@@ -619,7 +619,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Gender">
                                <Select 
                                  name="gender"
-                                 value={editableProduct.gender} 
+                                 value={editableProduct.gender ?? ''} 
                                  onChange={(val) => handleSelectChange('gender', val)} 
                                  onBlur={handleBlur}
                                  options={mockVocabulary.genders} 
@@ -629,7 +629,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Material/Fabric">
                                <Select 
                                  name="materialFabric"
-                                 value={editableProduct.materialFabric} 
+                                 value={editableProduct.materialFabric ?? ''} 
                                  onChange={(val) => handleSelectChange('materialFabric', val)} 
                                  onBlur={handleBlur}
                                  options={['', ...mockVocabulary.materials]}
@@ -639,7 +639,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Fit">
                                <Select 
                                  name="fit"
-                                 value={editableProduct.fit} 
+                                 value={editableProduct.fit ?? ''} 
                                  onChange={(val) => handleSelectChange('fit', val)} 
                                  onBlur={handleBlur}
                                  options={['', ...mockVocabulary.fits]}
@@ -650,7 +650,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Sports Team">
                                <Select 
                                  name="sportsTeam"
-                                 value={editableProduct.sportsTeam || ''} 
+                                 value={editableProduct.sportsTeam ?? ''} 
                                  onChange={(val) => handleSelectChange('sportsTeam', val)} 
                                  onBlur={handleBlur}
                                  options={['', ...mockVocabulary.sportsTeams]}
@@ -660,7 +660,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="League">
                                <Select 
                                  name="league"
-                                 value={editableProduct.league || ''} 
+                                 value={editableProduct.league ?? ''} 
                                  onChange={(val) => handleSelectChange('league', val)} 
                                  onBlur={handleBlur}
                                  options={['', ...mockVocabulary.leagues]}
@@ -671,7 +671,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="Status">
                                <Select 
                                  name="status"
-                                 value={editableProduct.status} 
+                                 value={editableProduct.status ?? ''} 
                                  onChange={(val) => handleSelectChange('status', val)} 
                                  onBlur={handleBlur}
                                  options={mockVocabulary.statuses as readonly string[]} 
@@ -723,9 +723,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'context' && (
                     <div className="space-y-6">
-                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={editableProduct.aiContext.keywords.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={editableProduct.aiContext.featureBullets.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={(editableProduct.aiContext.keywords ?? []).join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={(editableProduct.aiContext.featureBullets ?? []).join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes ?? ''} onChange={(e) => handleNestedChange(e, 'aiContext')} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                     </div>
                 )}
                 {activeTab === 'generation' && (
