@@ -50,6 +50,18 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const [showShortcuts, setShowShortcuts] = useState(false);
   const lastActiveField = useRef<{ name?: string; start?: number; end?: number }>({});
 
+  // Helper to restore focus by field name + caret position
+  const restoreFocus = useCallback(() => {
+    const { name, start, end } = lastActiveField.current || {};
+    if (!name || !formRef.current) return;
+    const el = formRef.current.elements.namedItem(name) as (HTMLInputElement | HTMLTextAreaElement | null);
+    if (!el) return;
+    el.focus();
+    if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
+      try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+    }
+  }, []);
+
   useEffect(() => {
     // Only reset editableProduct when the product ID changes (not when fields update)
     // This prevents overwriting local typing with every Firestore snapshot
@@ -227,7 +239,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         setSavingState('idle');
       }
     }, 500); // 500ms debounce per requirements
-  }, [product, editableProduct, changedFields, onSaved]);
+  }, [product, editableProduct, changedFields, onSaved, restoreFocus]);
 
   const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
     e.preventDefault();
