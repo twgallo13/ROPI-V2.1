@@ -27,9 +27,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <Link to="/import" className="block p-2 rounded hover:bg-gray-700">
                 Import
               </Link>
-              <Link to="/admin/users" className="block p-2 rounded hover:bg-gray-700">
-                Admin: Users
-              </Link>
               <Link to="/settings" className="block p-2 rounded hover:bg-gray-700">
                 Settings
               </Link>
