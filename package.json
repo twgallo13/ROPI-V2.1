@@ -13,11 +13,11 @@
     "build:functions": "npm --prefix functions run build"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "firebase": "^12.5.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^6.25.1",
-    "@google/generative-ai": "^0.21.0"
+    "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

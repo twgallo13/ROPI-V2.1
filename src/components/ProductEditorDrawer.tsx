@@ -11,6 +11,7 @@ interface ProductEditorDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   product: Product | null;
+  onSaved?: (productId: string, updates: Partial<Product>) => void;
 }
 
 type ActiveTab = 'core' | 'context' | 'generation' | 'variants' | 'history';
@@ -33,19 +34,24 @@ const mockHistory = [
     "Version 1: Product Imported (11/04/2025)"
 ];
 
-const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClose, product }) => {
+const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClose, product, onSaved }) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('core');
   const [editableProduct, setEditableProduct] = useState<Product | null>(product);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number; } | null>(null);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [lastProductId, setLastProductId] = useState<string | null>(product?.id || null);
 
   useEffect(() => {
-    setEditableProduct(product);
-    setActiveTab('core');
-    setAiScore(null); // Reset score when product changes
-    setToastMessage(null); // Reset toast when product changes
-  }, [product]);
+    // Only reset editableProduct when the product ID changes (not when fields update)
+    if (product?.id !== lastProductId) {
+      setEditableProduct(product);
+      setActiveTab('core');
+      setAiScore(null);
+      setToastMessage(null);
+      setLastProductId(product?.id || null);
+    }
+  }, [product, lastProductId]);
 
   const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
     e.preventDefault();
@@ -98,6 +104,12 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     console.log('[drawer] payload to Firestore', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
+    
+    // Call onSaved callback for optimistic UI update in parent
+    if (onSaved) {
+      const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
+      onSaved(product.id, filtered as Partial<Product>);
+    }
     
     // Update local state optimistically (avoid overwriting with undefined)
     if (editableProduct) {
