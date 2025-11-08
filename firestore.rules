@@ -4,6 +4,20 @@ service cloud.firestore {
     function signedIn() {
       return request.auth != null;
     }
+    
+    function isAdmin() {
+      return signedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Users collection: read own doc, admins can read/write all
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+    
+    // All other collections: any authenticated user can read/write
     match /{document=**} {
       allow read, write: if signedIn();
     }
