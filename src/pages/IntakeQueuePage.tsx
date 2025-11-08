@@ -42,17 +42,13 @@ const IntakeQueuePage: React.FC = () => {
 
   const handleProductSaved = (productId: string, updates: Partial<Product>) => {
     // Optimistic update: merge updates into local products list
-    setLocalProducts(prev => 
-      prev.map(p => 
-        p.id === productId 
-          ? { ...p, ...updates } 
-          : p
-      )
+    setLocalProducts(prev =>
+      prev.map(p => (p.id === productId ? { ...p, ...updates } : p))
     );
     
     // Also update selectedProduct if it's the same one
     if (selectedProduct?.id === productId) {
-      setSelectedProduct(prev => prev ? { ...prev, ...updates } : null);
+      setSelectedProduct(prev => (prev ? { ...prev, ...updates } : null));
     }
   };
 

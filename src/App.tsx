@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import MainLayout from './components/MainLayout';
@@ -81,30 +81,17 @@ function App() {
             )
           }
         >
-          {/* Default redirect to AI settings handled in SettingsPage, but define index as fallback */}
-          <Route index element={<AISettingsPage />} />
-          <Route path="ai" element={<AISettingsPage />} />
-          <Route path="vocab-managed" element={<VocabManagedPage />} />
-          <Route path="prompts" element={<PromptsPage />} />
-          <Route path="vocab" element={<VocabDropdownsPage />} />
-          <Route path="rules" element={<RulesPage />} />
-          <Route path="brands" element={<BrandsPage />} />
-          <Route path="export" element={<ExportSettingsPage />} />
+          {/* Default redirect to export settings */}
+          <Route index element={<Navigate to="export" replace />} />
+          <Route path="export" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><ExportSettingsPage /></Suspense>} />
+          <Route path="ai" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AISettingsPage /></Suspense>} />
+          <Route path="prompts" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><PromptsPage /></Suspense>} />
+          <Route path="vocab-managed" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabManagedPage /></Suspense>} />
+          <Route path="vocab" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabDropdownsPage /></Suspense>} />
+          <Route path="rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><RulesPage /></Suspense>} />
+          <Route path="brands" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><BrandsPage /></Suspense>} />
+          <Route path="admin-users" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><UsersAdminPage /></Suspense>} />
         </Route>
-
-        {/* Admin: Users Management */}
-        <Route 
-          path="/admin/users"
-          element={
-            user && role === 'admin' ? (
-              <MainLayout>
-                <UsersAdminPage />
-              </MainLayout>
-            ) : (
-              <Navigate to={user ? "/intake" : "/"} />
-            )
-          }
-        />
         
         {/* Catch-all for any other bad URL */}
         <Route path="*" element={<Navigate to="/" />} />
