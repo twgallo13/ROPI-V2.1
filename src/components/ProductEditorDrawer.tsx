@@ -250,7 +250,19 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         <div className="absolute inset-0 bg-gray-500 bg-opacity-75" onClick={onClose} aria-hidden="true"></div>
         <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
           <div className={`w-screen max-w-3xl ${drawerPanelClasses}`}>
-            <form className="h-full flex flex-col bg-white shadow-xl" onSubmit={(e) => saveFromForm(e)}>
+            <form
+              className="h-full flex flex-col bg-white shadow-xl"
+              onSubmit={(e) => saveFromForm(e)}
+              onKeyDown={(e) => {
+                if (
+                  e.key === 'Enter' &&
+                  e.target instanceof HTMLElement &&
+                  (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')
+                ) {
+                  e.preventDefault();
+                }
+              }}
+            >
               <header className="p-4 bg-gray-50 border-b border-gray-200">
                 <div className="flex items-start justify-between">
                     <div>
