@@ -68,9 +68,28 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       category: get('category'),
       ageGroup: get('ageGroup'),
       gender: get('gender'),
+      // core text fields
+      materialFabric: get('materialFabric'),
+      fit: get('fit'),
+      // single value (if you keep it), else remove
       website: get('website'),
+      // multi-select from local state (checkboxes)
+      websites: editableProduct.websites,
+      // flags/toggles (checkboxes submit 'on' when checked)
+      featured: (fd.get('featured') as string | null) === 'on' ? true : editableProduct.featured,
+      map: (fd.get('map') as string | null) === 'on' ? true : editableProduct.map,
+      promo: (fd.get('promo') as string | null) === 'on' ? true : editableProduct.promo,
+      hype: (fd.get('hype') as string | null) === 'on' ? true : editableProduct.hype,
+      fastfashion: (fd.get('fastfashion') as string | null) === 'on' ? true : editableProduct.fastfashion,
       league: get('league'),
       sportsTeam: get('sportsTeam'),
+      // nested AI context (flatten update)
+      aiContext: {
+        ...editableProduct.aiContext,
+        keywords: (fd.get('keywords') ? String(fd.get('keywords')).split('\n').map(s => s.trim()).filter(Boolean) : editableProduct.aiContext.keywords),
+        featureBullets: (fd.get('featureBullets') ? String(fd.get('featureBullets')).split('\n').map(s => s.trim()).filter(Boolean) : editableProduct.aiContext.featureBullets),
+        designNotes: (fd.get('designNotes') ? String(fd.get('designNotes')) : editableProduct.aiContext.designNotes),
+      },
       updatedAt: serverTimestamp(),
       ...extra,
     });
