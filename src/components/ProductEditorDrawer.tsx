@@ -6,6 +6,7 @@ import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import Toast from './Toast';
+import Select from './ui/Select';
 
 interface ProductEditorDrawerProps {
   isOpen: boolean;
@@ -241,6 +242,15 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     setEditableProduct({ ...editableProduct, [name]: value });
   };
 
+  const handleSelectChange = (name: string, value: string) => {
+    if (!editableProduct) return;
+    
+    // Track that this field changed
+    setChangedFields(prev => new Set(prev).add(name));
+    
+    setEditableProduct({ ...editableProduct, [name]: value });
+  };
+
   const handleBlur = () => {
     // Trigger autosave when field loses focus
     if (changedFields.size > 0) {
@@ -349,14 +359,6 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       {children}
     </div>
   );
-  
-  const SelectField: React.FC<{label: string; name: keyof Product; options: readonly string[]; value: string;}> = ({label, name, options, value}) => (
-      <FormField label={label}>
-        <select name={name} value={value} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
-      </FormField>
-  );
 
   const drawerContainerClasses = `fixed inset-0 overflow-hidden z-50 transition-opacity ${
     isOpen ? 'ease-out duration-300 opacity-100' : 'ease-in duration-200 opacity-0 pointer-events-none'
@@ -418,19 +420,103 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
                              
-                             <SelectField label="Department" name="department" value={editableProduct.department} options={mockVocabulary.departments} />
-                             <SelectField label="Class" name="class" value={editableProduct.class} options={mockVocabulary.classes} />
-                             <SelectField label="Category" name="category" value={editableProduct.category} options={mockVocabulary.categories} />
-                             <SelectField label="Age Group" name="ageGroup" value={editableProduct.ageGroup} options={mockVocabulary.ageGroups} />
-                             <SelectField label="Gender" name="gender" value={editableProduct.gender} options={mockVocabulary.genders} />
+                             <FormField label="Department">
+                               <Select 
+                                 name="department"
+                                 value={editableProduct.department} 
+                                 onChange={(val) => handleSelectChange('department', val)} 
+                                 onBlur={handleBlur}
+                                 options={mockVocabulary.departments} 
+                               />
+                             </FormField>
+                             <FormField label="Class">
+                               <Select 
+                                 name="class"
+                                 value={editableProduct.class} 
+                                 onChange={(val) => handleSelectChange('class', val)} 
+                                 onBlur={handleBlur}
+                                 options={mockVocabulary.classes} 
+                               />
+                             </FormField>
+                             <FormField label="Category">
+                               <Select 
+                                 name="category"
+                                 value={editableProduct.category} 
+                                 onChange={(val) => handleSelectChange('category', val)} 
+                                 onBlur={handleBlur}
+                                 options={mockVocabulary.categories} 
+                               />
+                             </FormField>
+                             <FormField label="Age Group">
+                               <Select 
+                                 name="ageGroup"
+                                 value={editableProduct.ageGroup} 
+                                 onChange={(val) => handleSelectChange('ageGroup', val)} 
+                                 onBlur={handleBlur}
+                                 options={mockVocabulary.ageGroups} 
+                               />
+                             </FormField>
+                             <FormField label="Gender">
+                               <Select 
+                                 name="gender"
+                                 value={editableProduct.gender} 
+                                 onChange={(val) => handleSelectChange('gender', val)} 
+                                 onBlur={handleBlur}
+                                 options={mockVocabulary.genders} 
+                               />
+                             </FormField>
                              
-                             <FormField label="Material/Fabric"><input type="text" name="materialFabric" value={editableProduct.materialFabric} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                             <FormField label="Fit"><input type="text" name="fit" value={editableProduct.fit} onChange={handleInputChange} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Material/Fabric">
+                               <Select 
+                                 name="materialFabric"
+                                 value={editableProduct.materialFabric} 
+                                 onChange={(val) => handleSelectChange('materialFabric', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...mockVocabulary.materials]}
+                                 placeholder="Select material..."
+                               />
+                             </FormField>
+                             <FormField label="Fit">
+                               <Select 
+                                 name="fit"
+                                 value={editableProduct.fit} 
+                                 onChange={(val) => handleSelectChange('fit', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...mockVocabulary.fits]}
+                                 placeholder="Select fit..."
+                               />
+                             </FormField>
 
-                             <SelectField label="Sports Team" name="sportsTeam" value={editableProduct.sportsTeam || ''} options={['', ...mockVocabulary.sportsTeams]} />
-                             <SelectField label="League" name="league" value={editableProduct.league || ''} options={['', ...mockVocabulary.leagues]} />
+                             <FormField label="Sports Team">
+                               <Select 
+                                 name="sportsTeam"
+                                 value={editableProduct.sportsTeam || ''} 
+                                 onChange={(val) => handleSelectChange('sportsTeam', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...mockVocabulary.sportsTeams]}
+                                 placeholder="None"
+                               />
+                             </FormField>
+                             <FormField label="League">
+                               <Select 
+                                 name="league"
+                                 value={editableProduct.league || ''} 
+                                 onChange={(val) => handleSelectChange('league', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...mockVocabulary.leagues]}
+                                 placeholder="None"
+                               />
+                             </FormField>
 
-                             <SelectField label="Status" name="status" value={editableProduct.status} options={mockVocabulary.statuses} />
+                             <FormField label="Status">
+                               <Select 
+                                 name="status"
+                                 value={editableProduct.status} 
+                                 onChange={(val) => handleSelectChange('status', val)} 
+                                 onBlur={handleBlur}
+                                 options={mockVocabulary.statuses as readonly string[]} 
+                               />
+                             </FormField>
                         </div>
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                           <FormField label="Websites">

@@ -17,7 +17,9 @@ export const mockVocabulary = {
   statuses: ['intake', 'in-progress', 'validated', 'uploaded'] as const,
   websites: ['Shiekh.com', 'Karmaloop.com'],
   sportsTeams: ['Lakers', 'Dodgers', 'Raiders', '49ers'],
-  leagues: ['NBA', 'MLB', 'NFL']
+  leagues: ['NBA', 'MLB', 'NFL'],
+  materials: ['Cotton', 'Polyester', 'Nylon', 'Leather', 'Suede', 'Mesh', 'Canvas', 'Wool', 'Spandex', 'Synthetic'],
+  fits: ['Regular', 'Slim', 'Relaxed', 'Athletic', 'Oversized', 'Tailored', 'Loose']
 };
 
 
