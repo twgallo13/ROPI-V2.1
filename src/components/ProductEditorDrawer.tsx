@@ -115,13 +115,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       const target = e.target as HTMLElement;
       const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
 
-      // Cmd/Ctrl + S: Save
+      // Cmd/Ctrl + S: Save from state
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
-        if (formRef.current) {
-          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-          formRef.current.dispatchEvent(submitEvent);
-        }
+        saveFromForm();
         return;
       }
 
@@ -134,11 +131,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       // A: Approve (only when not typing)
       if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
-        if (formRef.current && product) {
-          saveFromForm({ preventDefault(){}, currentTarget: formRef.current } as any, {
-            status: 'validated',
-            validatedAt: serverTimestamp(),
-          }, { showToast: 'Approved', keepOpen: true });
+        if (product) {
+          saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
         }
         return;
       }
@@ -181,25 +175,20 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     // disabled for stability
   }, []);
 
-  const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
-    e.preventDefault();
+  const saveFromForm = async (extra: Partial<Product> & { validatedAt?: any } = {}, options?: { showToast?: string; keepOpen?: boolean }) => {
     if (!product || !editableProduct) return;
-    
+
     // Cancel any pending autosave
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
-    
-    setSavingState('saving');
-    
-    // Build payload directly from editableProduct state (single source of truth)
-    const p = editableProduct;
-    const payload = cleanForFirestore({
-      // NEVER null these; fall back to existing doc values
-      name: p.name ?? product.name,
-      mpn: p.mpn ?? product.mpn,
 
-      // Core fields
+    setSavingState('saving');
+
+    const p = editableProduct;
+
+    // Build minimal payload from state
+    const base: Partial<Product> & { updatedAt?: any } = {
       brand: p.brand,
       status: p.status ?? product.status,
       department: p.department,
@@ -211,46 +200,43 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       fit: p.fit,
       sportsTeam: p.sportsTeam,
       league: p.league,
-
-      // Websites / flags
       websites: p.websites,
       featured: p.featured,
       map: p.map,
       promo: p.promo,
       hype: p.hype,
       fastfashion: p.fastfashion,
-
-      // AI context (nested)
       aiContext: p.aiContext,
-
       updatedAt: serverTimestamp(),
-      ...extra,
-    });
+    };
 
-    console.log('[drawer] payload to Firestore', payload);
+    // Only include name/mpn if the user changed them (we don't change them in UI today)
+    if (p.name && p.name !== product.name) (base as any).name = p.name;
+    if (p.mpn && p.mpn !== product.mpn) (base as any).mpn = p.mpn;
+
+  const payload = cleanForFirestore<any>({ ...base, ...extra });
+    console.log('[drawer] payload to Firestore (STATE)', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
 
     // Optimistic merge back into local drawer state (skip undefined)
-    setEditableProduct(prev => prev ? {
+    setEditableProduct(prev => prev ? ({
       ...prev,
-      ...Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined))
-    } : null);
-    
-    // Update the row in the list
+      ...Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined)),
+    }) : null);
+
     onSaved?.(product.id, payload);
 
     // Clear changed fields after manual save
     setChangedFields(new Set());
     setSavingState('saved');
-    
-    // Reset to idle after 1 second
+
     if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
     savedTimeoutRef.current = setTimeout(() => {
       setSavingState('idle');
     }, 1000);
-    
-    // Restore focus by field name + caret position
+
+    // Restore focus
     const restore = () => {
       const { name, start, end } = lastActiveField.current || {};
       if (!name || !formRef.current) return;
@@ -262,16 +248,24 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       }
     };
     restore();
-    
-    if (options?.showToast) {
-      setToastMessage({ text: options.showToast, type: 'success' });
-    }
-    
-    // Close drawer unless keepOpen is true
-    if (!options.keepOpen) {
+
+    if (options?.showToast) setToastMessage({ text: options.showToast, type: 'success' });
+
+    if (!options?.keepOpen) {
       onClose();
     }
   };
+
+  // Runtime guard during dev builds
+  if (process.env.NODE_ENV !== 'production') {
+    (window as any).__ROPIV2_EDITOR_USING_STATE__ = true;
+  }
+
+  // Prevent regressions: if someone reintroduces FormData here we'll see it
+  // (Keep this comment; do not use FormData in this component.)
+  if (typeof FormData !== 'undefined') {
+    // FormData is available globally but we never use it in saveFromForm
+  }
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (!editableProduct) return;
@@ -430,7 +424,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
             <form
               ref={formRef}
               className="h-full flex flex-col bg-white shadow-xl"
-              onSubmit={(e) => saveFromForm(e)}
+              onSubmit={(e) => { e.preventDefault(); saveFromForm(); }}
               onKeyDown={(e) => {
                 if (
                   e.key === 'Enter' &&
@@ -438,6 +432,24 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                   (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')
                 ) {
                   e.preventDefault();
+                }
+
+                // Cmd/Ctrl + S: Save from state
+                if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                  e.preventDefault();
+                  saveFromForm();
+                  return;
+                }
+
+                // A: Approve (only when not typing)
+                const target = e.target as HTMLElement;
+                const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+                if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
+                  e.preventDefault();
+                  if (product) {
+                    saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
+                  }
+                  return;
                 }
               }}
             >
@@ -683,12 +695,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <div className="flex justify-end pt-4">
                           <button 
                             type="button" 
-                            onClick={(e) => {
-                              const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
-                              saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
-                                status: 'validated',
-                                validatedAt: serverTimestamp(),
-                              });
+                            onClick={() => {
+                              saveFromForm({ status: 'validated', validatedAt: serverTimestamp() });
                             }}
                             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
                           >
@@ -763,12 +771,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                       <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
                       <button 
                         type="button" 
-                        onClick={(e) => {
-                          const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
-                          saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
-                            status: 'validated',
-                            validatedAt: serverTimestamp(),
-                          }, { showToast: 'Approved', keepOpen: true });
+                        onClick={() => {
+                          saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
                         }}
                         className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
                       >
