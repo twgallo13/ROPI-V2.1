@@ -1,0 +1,126 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.exportRulesPreview = exports.setUserRole = exports.apiExporter = exports.apiDescribe = exports.apiImport = void 0;
+const functions = __importStar(require("firebase-functions"));
+const admin = __importStar(require("firebase-admin"));
+const import_1 = __importDefault(require("./routes/import"));
+const describe_1 = __importDefault(require("./routes/describe"));
+const exporter_1 = __importDefault(require("./routes/exporter"));
+admin.initializeApp();
+exports.apiImport = functions.https.onRequest(import_1.default);
+exports.apiDescribe = functions.https.onRequest(describe_1.default);
+exports.apiExporter = functions.https.onRequest(exporter_1.default);
+/**
+ * Cloud function to set user role (admin or specialist)
+ * Only callable by theo@shiekhshoes.org
+ */
+exports.setUserRole = functions.https.onCall(async (data, context) => {
+    const callerEmail = context.auth?.token?.email?.toLowerCase();
+    if (!callerEmail) {
+        throw new functions.https.HttpsError('unauthenticated', 'Sign in required');
+    }
+    if (callerEmail !== 'theo@shiekhshoes.org') {
+        throw new functions.https.HttpsError('permission-denied', 'Only Theo can modify roles');
+    }
+    const { uid, role } = data;
+    if (!uid || !['admin', 'specialist'].includes(role)) {
+        throw new functions.https.HttpsError('invalid-argument', 'Bad params');
+    }
+    await admin.auth().setCustomUserClaims(uid, { admin: role === 'admin' });
+    await admin.firestore().doc(`users/${uid}`).set({
+        role,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    return { ok: true };
+});
+/**
+ * Cloud function to preview export rules
+ * Returns sample product data with applied filters and transforms
+ */
+exports.exportRulesPreview = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'Sign in required');
+    }
+    const { schema, filters, transforms, limit = 5 } = data;
+    if (!schema || !Array.isArray(schema)) {
+        throw new functions.https.HttpsError('invalid-argument', 'Schema must be an array of field names');
+    }
+    // Fetch sample products
+    const snap = await admin.firestore().collection('products').limit(limit).get();
+    let rows = snap.docs.map(d => d.data());
+    // Apply filters
+    if (filters && Object.keys(filters).length > 0) {
+        rows = rows.filter(row => Object.entries(filters).every(([k, v]) => row[k] === v));
+    }
+    // Apply transforms
+    if (transforms && Array.isArray(transforms)) {
+        for (const t of transforms) {
+            if (t.type === 'uppercase' && t.field) {
+                const field = t.field;
+                rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().toUpperCase() }));
+            }
+            else if (t.type === 'lowercase' && t.field) {
+                const field = t.field;
+                rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().toLowerCase() }));
+            }
+            else if (t.type === 'trim' && t.field) {
+                const field = t.field;
+                rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().trim() }));
+            }
+            else if (t.type === 'map' && t.field) {
+                const field = t.field;
+                // support either explicit from/to or a map object
+                if (t.map && typeof t.map === 'object') {
+                    const mapObj = t.map;
+                    rows = rows.map(r => {
+                        const val = (r[field] ?? '').toString();
+                        return { ...r, [field]: mapObj[val] ?? val };
+                    });
+                }
+                else if (t.from !== undefined && t.to !== undefined) {
+                    const { from, to } = t;
+                    rows = rows.map(r => ({ ...r, [field]: r[field] === from ? to : r[field] }));
+                }
+            }
+        }
+    }
+    // Project only requested fields
+    const output = rows.map(r => schema.reduce((acc, f) => ({ ...acc, [f]: r[f] ?? '' }), {}));
+    return { rows: output };
+});

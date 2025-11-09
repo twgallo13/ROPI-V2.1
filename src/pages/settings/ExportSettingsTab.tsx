@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useExportRules } from '../../hooks/useExportRules';
 
 type ColumnMapping = {
   exportName: string;
@@ -46,6 +47,8 @@ const ExportSettingsTab: React.FC<ExportSettingsTabProps> = ({ onShowToast }) =>
   const [settings, setSettings] = useState<ExportSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const { runPreview, previewing } = useExportRules();
+  const [previewRows, setPreviewRows] = useState<Record<string, any>[] | null>(null);
 
   useEffect(() => {
     loadSettings();
@@ -273,15 +276,58 @@ const ExportSettingsTab: React.FC<ExportSettingsTabProps> = ({ onShowToast }) =>
 
         {/* Save Button */}
         <div className="pt-4">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {saving ? 'Saving...' : 'Save Export Settings'}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={async () => {
+                // Build simple schema from column mappings productField values
+                const schema = settings.columnMappings.map(m => m.productField).filter(Boolean);
+                const result = await runPreview(schema, {}, [], 5);
+                if (result.success && result.rows) {
+                  setPreviewRows(result.rows);
+                }
+              }}
+              disabled={previewing}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {previewing ? 'Loading...' : 'Preview (5 rows)'}
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {saving ? 'Saving...' : 'Save Export Settings'}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Preview Table */}
+      {previewRows && previewRows.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-6 mt-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Preview ({previewRows.length} rows)</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  {settings.columnMappings.map((m, idx) => (
+                    <th key={idx} className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{m.productField}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {previewRows.map((row, idx) => (
+                  <tr key={idx}>
+                    {settings.columnMappings.map((m, j) => (
+                      <td key={j} className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{(row[m.productField] as any) ?? '—'}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

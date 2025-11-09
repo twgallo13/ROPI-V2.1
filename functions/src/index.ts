@@ -86,11 +86,20 @@ export const exportRulesPreview = functions.https.onCall(async (data, context) =
       } else if (t.type === 'trim' && t.field) {
         const field = t.field;
         rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().trim() }));
-      } else if (t.type === 'map' && t.field && t.from !== undefined && t.to !== undefined) {
-        const field = t.field;
-        const { from, to } = t;
-        rows = rows.map(r => ({ ...r, [field]: r[field] === from ? to : r[field] }));
-      }
+          } else if (t.type === 'map' && t.field) {
+            const field = t.field;
+            // support either explicit from/to or a map object
+            if ((t as any).map && typeof (t as any).map === 'object') {
+              const mapObj = (t as any).map as Record<string, string>;
+              rows = rows.map(r => {
+                const val = (r[field] ?? '').toString();
+                return { ...r, [field]: mapObj[val] ?? val };
+              });
+            } else if ((t as any).from !== undefined && (t as any).to !== undefined) {
+              const { from, to } = t as any;
+              rows = rows.map(r => ({ ...r, [field]: r[field] === from ? to : r[field] }));
+            }
+          }
     }
   }
 
