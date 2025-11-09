@@ -3,6 +3,15 @@ import { collection, query, getDocs, doc, setDoc, deleteDoc, serverTimestamp } f
 import { httpsCallable } from 'firebase/functions';
 import { db, functions } from '../firebase';
 
+/**
+ * Standalone preview function callable without hook
+ */
+export async function runPreview(config: any) {
+  const call = httpsCallable(functions, 'exportRulesPreview');
+  const res: any = await call(config);
+  return res.data?.rows ?? [];
+}
+
 export interface ExportRuleTransform {
   type: 'uppercase' | 'lowercase' | 'trim' | 'map';
   field?: string;

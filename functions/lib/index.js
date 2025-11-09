@@ -43,6 +43,7 @@ const import_1 = __importDefault(require("./routes/import"));
 const describe_1 = __importDefault(require("./routes/describe"));
 const exporter_1 = __importDefault(require("./routes/exporter"));
 admin.initializeApp();
+const r = functions.region('us-central1');
 exports.apiImport = functions.https.onRequest(import_1.default);
 exports.apiDescribe = functions.https.onRequest(describe_1.default);
 exports.apiExporter = functions.https.onRequest(exporter_1.default);
@@ -50,7 +51,7 @@ exports.apiExporter = functions.https.onRequest(exporter_1.default);
  * Cloud function to set user role (admin or specialist)
  * Only callable by theo@shiekhshoes.org
  */
-exports.setUserRole = functions.https.onCall(async (data, context) => {
+exports.setUserRole = r.https.onCall(async (data, context) => {
     const callerEmail = context.auth?.token?.email?.toLowerCase();
     if (!callerEmail) {
         throw new functions.https.HttpsError('unauthenticated', 'Sign in required');
@@ -73,54 +74,32 @@ exports.setUserRole = functions.https.onCall(async (data, context) => {
  * Cloud function to preview export rules
  * Returns sample product data with applied filters and transforms
  */
-exports.exportRulesPreview = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'Sign in required');
-    }
+exports.exportRulesPreview = r.https.onCall(async (data, _ctx) => {
     const { schema, filters, transforms, limit = 5 } = data;
-    if (!schema || !Array.isArray(schema)) {
-        throw new functions.https.HttpsError('invalid-argument', 'Schema must be an array of field names');
-    }
-    // Fetch sample products
     const snap = await admin.firestore().collection('products').limit(limit).get();
     let rows = snap.docs.map(d => d.data());
-    // Apply filters
-    if (filters && Object.keys(filters).length > 0) {
-        rows = rows.filter(row => Object.entries(filters).every(([k, v]) => row[k] === v));
+    if (filters && Object.keys(filters).length) {
+        rows = rows.filter(r => Object.entries(filters).every(([k, v]) => r[k] === v));
     }
-    // Apply transforms
-    if (transforms && Array.isArray(transforms)) {
+    if (Array.isArray(transforms)) {
         for (const t of transforms) {
-            if (t.type === 'uppercase' && t.field) {
-                const field = t.field;
-                rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().toUpperCase() }));
-            }
-            else if (t.type === 'lowercase' && t.field) {
-                const field = t.field;
-                rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().toLowerCase() }));
-            }
-            else if (t.type === 'trim' && t.field) {
-                const field = t.field;
-                rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().trim() }));
-            }
-            else if (t.type === 'map' && t.field) {
-                const field = t.field;
-                // support either explicit from/to or a map object
-                if (t.map && typeof t.map === 'object') {
-                    const mapObj = t.map;
-                    rows = rows.map(r => {
-                        const val = (r[field] ?? '').toString();
-                        return { ...r, [field]: mapObj[val] ?? val };
-                    });
-                }
-                else if (t.from !== undefined && t.to !== undefined) {
-                    const { from, to } = t;
-                    rows = rows.map(r => ({ ...r, [field]: r[field] === from ? to : r[field] }));
-                }
-            }
+            if (!t?.field)
+                continue;
+            const field = t.field;
+            rows = rows.map(r => {
+                const val = (r[field] ?? '').toString();
+                if (t.type === 'uppercase')
+                    return { ...r, [field]: val.toUpperCase() };
+                if (t.type === 'lowercase')
+                    return { ...r, [field]: val.toLowerCase() };
+                if (t.type === 'trim')
+                    return { ...r, [field]: val.trim() };
+                if (t.type === 'map' && t.map)
+                    return { ...r, [field]: t.map[val] ?? val };
+                return r;
+            });
         }
     }
-    // Project only requested fields
     const output = rows.map(r => schema.reduce((acc, f) => ({ ...acc, [f]: r[f] ?? '' }), {}));
     return { rows: output };
 });

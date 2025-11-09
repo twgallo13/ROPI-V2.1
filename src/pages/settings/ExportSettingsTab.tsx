@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { useExportRules } from '../../hooks/useExportRules';
+import { runPreview } from '../../hooks/useExportRules';
 
 type ColumnMapping = {
   exportName: string;
@@ -47,7 +47,7 @@ const ExportSettingsTab: React.FC<ExportSettingsTabProps> = ({ onShowToast }) =>
   const [settings, setSettings] = useState<ExportSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const { runPreview, previewing } = useExportRules();
+  const [previewing, setPreviewing] = useState(false);
   const [previewRows, setPreviewRows] = useState<Record<string, any>[] | null>(null);
 
   useEffect(() => {
@@ -279,17 +279,27 @@ const ExportSettingsTab: React.FC<ExportSettingsTabProps> = ({ onShowToast }) =>
           <div className="flex gap-3">
             <button
               onClick={async () => {
-                // Build simple schema from column mappings productField values
-                const schema = settings.columnMappings.map(m => m.productField).filter(Boolean);
-                const result = await runPreview(schema, {}, [], 5);
-                if (result.success && result.rows) {
-                  setPreviewRows(result.rows);
+                try {
+                  setPreviewing(true);
+                  // Build config from column mappings
+                  const schema = settings.columnMappings.map(m => m.productField).filter(Boolean);
+                  const config = { schema, filters: {}, transforms: [], limit: 5 };
+                  const rows = await runPreview(config);
+                  setPreviewRows(rows);
+                  if (rows.length === 0) {
+                    onShowToast('No products found for preview', 'error');
+                  }
+                } catch (err: any) {
+                  onShowToast(err?.message || 'Preview failed', 'error');
+                  setPreviewRows(null);
+                } finally {
+                  setPreviewing(false);
                 }
               }}
               disabled={previewing}
               className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
             >
-              {previewing ? 'Loading...' : 'Preview (5 rows)'}
+              {previewing ? 'Loading...' : 'Run Preview'}
             </button>
             <button
               onClick={handleSave}
