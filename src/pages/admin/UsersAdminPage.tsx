@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { collection, onSnapshot, orderBy, query, setDoc, doc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
+import { db, functions } from '../../firebase';
 
 interface UserRow {
   id: string;
@@ -8,6 +9,8 @@ interface UserRow {
   displayName?: string;
   role?: 'admin' | 'specialist';
 }
+
+const setUserRoleCallable = httpsCallable(functions, 'setUserRole');
 
 const UsersAdminPage: React.FC = () => {
   const [users, setUsers] = useState<UserRow[]>([]);
@@ -28,10 +31,10 @@ const UsersAdminPage: React.FC = () => {
   const updateRole = async (id: string, role: 'admin' | 'specialist') => {
     try {
       setUpdatingId(id);
-      await setDoc(doc(db, 'users', id), { role, updatedAt: new Date().toISOString() }, { merge: true });
-    } catch (e) {
+      await setUserRoleCallable({ uid: id, role });
+    } catch (e: any) {
       console.error('[admin-users] Failed to update role', e);
-      alert('Failed to update role');
+      alert(e?.message || 'Failed to update role');
     } finally {
       setUpdatingId(null);
     }

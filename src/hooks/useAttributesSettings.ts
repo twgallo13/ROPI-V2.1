@@ -3,9 +3,20 @@
  * Handles CRUD operations for /settings/attributes
  */
 
-import { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useState, useEffect, useRef } from 'react';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
+
+/**
+ * Debounce helper
+ */
+function debounce<F extends (...args: any[]) => void>(fn: F, wait = 500) {
+  let t: any;
+  return (...args: Parameters<F>) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
 
 export type AttributeKey = 
   | 'departments' 
@@ -91,12 +102,59 @@ export function useAttributesSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dirtyRef = useRef(false);
 
   const docRef = doc(db, 'settings', 'attributes');
 
-  // Load data on mount
+  // Debounced save function
+  const saveDataDebounced = useRef(
+    debounce(async (newData: AttributesData) => {
+      await saveData(newData);
+      dirtyRef.current = false;
+    }, 500)
+  ).current;
+
+  // Load data on mount and listen for changes
   useEffect(() => {
-    loadData();
+    setLoading(true);
+    setError(null);
+
+    const unsubscribe = onSnapshot(
+      docRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const loadedData = docSnap.data() as AttributesData;
+          // Only update from remote if not currently editing
+          if (!dirtyRef.current) {
+            const cleanedData: AttributesData = { ...INITIAL_ATTRIBUTES };
+            Object.keys(INITIAL_ATTRIBUTES).forEach((key) => {
+              const attrKey = key as AttributeKey;
+              cleanedData[attrKey] = deduplicateArray(loadedData[attrKey] || []);
+            });
+            setData(cleanedData);
+          }
+        } else {
+          // Document doesn't exist, create it
+          if (!dirtyRef.current) {
+            setDoc(docRef, INITIAL_ATTRIBUTES).catch((err) => {
+              console.error('[settings] Failed to create initial doc:', err);
+              setError('Failed to initialize settings');
+            });
+            setData(INITIAL_ATTRIBUTES);
+          }
+        }
+        setLoading(false);
+      },
+      (err) => {
+        const errorCode = err?.code || 'unknown';
+        const errorMessage = err?.message || 'Unknown error';
+        console.error('[settings] snapshot failed', errorCode, errorMessage);
+        setError(`Could not load settings (${errorCode})`);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
   const loadData = async () => {
@@ -115,10 +173,12 @@ export function useAttributesSettings() {
           cleanedData[attrKey] = deduplicateArray(loadedData[attrKey] || []);
         });
         setData(cleanedData);
+        dirtyRef.current = false;
       } else {
         // Document doesn't exist, create it with empty arrays
         await setDoc(docRef, INITIAL_ATTRIBUTES);
         setData(INITIAL_ATTRIBUTES);
+        dirtyRef.current = false;
       }
     } catch (err: any) {
       const errorCode = err?.code || 'unknown';
@@ -262,6 +322,17 @@ export function useAttributesSettings() {
     return { success: true };
   };
 
+  /**
+   * Update an attribute array with debounced save
+   * Marks data as dirty to prevent remote overwrites during editing
+   */
+  const updateAttributeArray = (key: AttributeKey, nextArray: string[]) => {
+    dirtyRef.current = true;
+    const merged = { ...data, [key]: nextArray };
+    setData(merged);
+    saveDataDebounced(merged);
+  };
+
   return {
     data,
     loading,
@@ -270,6 +341,7 @@ export function useAttributesSettings() {
     addItem,
     editItem,
     deleteItem,
+    updateAttributeArray,
     reload: loadData,
   };
 }
