@@ -237,13 +237,6 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           setEditableProduct(prev => prev ? { ...prev, ...filtered } : null);
         }
 
-        // Update local editableProduct with filtered merge (preserve fields being typed)
-        if (editableProduct) {
-          const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-          // Shallow merge into existing object to preserve any local changes
-          setEditableProduct(prev => prev ? { ...prev, ...filtered } : null);
-        }
-
         // Clear changed fields after successful save
         setChangedFields(new Set());
         setSavingState('saved');
@@ -385,7 +378,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (!editableProduct) return;
     const { name, value, type } = e.target;
     
@@ -410,9 +403,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     setEditableProduct({ ...editableProduct, [name]: value });
     // Schedule debounced autosave (does not save every keystroke due to debounce)
     debouncedAutosave();
-  };
+  }, [editableProduct, debouncedAutosave]);
 
-  const handleSelectChange = (name: string, value: string) => {
+  const handleSelectChange = useCallback((name: string, value: string) => {
     if (!editableProduct) return;
     
     // Track that this field changed
@@ -421,16 +414,16 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     setEditableProduct({ ...editableProduct, [name]: value });
     // Schedule debounced autosave
     debouncedAutosave();
-  };
+  }, [editableProduct, debouncedAutosave]);
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     // Trigger autosave when field loses focus
     if (changedFields.size > 0) {
       debouncedAutosave();
     }
-  };
+  }, [changedFields, debouncedAutosave]);
 
-  const handleWebsiteChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleWebsiteChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     if (!editableProduct) return;
     const { value: websiteName, checked } = e.target;
     
@@ -451,9 +444,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     
     // Autosave on website toggle (debounced)
     debouncedAutosave();
-  };
+  }, [editableProduct, debouncedAutosave]);
 
-  const handleNestedChange = (
+  const handleNestedChange = useCallback((
     e: ChangeEvent<HTMLTextAreaElement>,
     section: 'aiContext'
   ) => {
@@ -492,9 +485,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }
   // Schedule debounced autosave for context changes
   debouncedAutosave();
-  };
+  }, [editableProduct, debouncedAutosave]);
   
-  const handleGenerateClick = async () => {
+  const handleGenerateClick = useCallback(async () => {
     setIsGenerating(true);
     setAiScore(null);
     try {
@@ -521,7 +514,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [editableProduct]);
 
   const drawerContainerClasses = `fixed inset-0 overflow-hidden z-50 transition-opacity ${
     isOpen ? 'ease-out duration-300 opacity-100' : 'ease-in duration-200 opacity-0 pointer-events-none'
@@ -908,4 +901,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   );
 };
 
-export default ProductEditorDrawer;
+// Prevent unnecessary remounts
+export default React.memo(ProductEditorDrawer, (prev, next) => 
+  prev.product?.id === next.product?.id && prev.isOpen === next.isOpen
+);
