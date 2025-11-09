@@ -94,19 +94,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }
   }, []);
 
+  // Sync local state only when product.id changes
   useEffect(() => {
-    // Only reset editableProduct when the product ID changes (not when fields update)
-    // This prevents overwriting local typing with every Firestore snapshot
-    if (product?.id !== lastProductId) {
-      setEditableProduct(product);
-      setActiveTab('core');
-      setAiScore(null);
-      setToastMessage(null);
-      setLastProductId(product?.id || null);
-      setChangedFields(new Set());
-      setSavingState('idle');
-    }
-  }, [product?.id, lastProductId]); // Sync on ID only, not the entire product object
+    setEditableProduct(product);
+  }, [product?.id]);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -185,90 +176,14 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     };
   }, [isOpen, onClose, product]);
 
-  // Debounced autosave function
+  // Temporarily disable idle autosave for stability
   const debouncedAutosave = useCallback(() => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = setTimeout(async () => {
-      if (!product || !editableProduct || changedFields.size === 0) return;
-
-      try {
-        setSavingState('saving');
-        
-        // Build payload with only changed fields
-        const payload = cleanForFirestore({
-          ...(changedFields.has('name') && { name: editableProduct.name }),
-          ...(changedFields.has('brand') && { brand: editableProduct.brand }),
-          ...(changedFields.has('mpn') && { mpn: editableProduct.mpn }),
-          ...(changedFields.has('status') && { status: editableProduct.status }),
-          ...(changedFields.has('department') && { department: editableProduct.department }),
-          ...(changedFields.has('class') && { class: editableProduct.class }),
-          ...(changedFields.has('category') && { category: editableProduct.category }),
-          ...(changedFields.has('ageGroup') && { ageGroup: editableProduct.ageGroup }),
-          ...(changedFields.has('gender') && { gender: editableProduct.gender }),
-          ...(changedFields.has('materialFabric') && { materialFabric: editableProduct.materialFabric }),
-          ...(changedFields.has('fit') && { fit: editableProduct.fit }),
-          ...(changedFields.has('websites') && { websites: editableProduct.websites }),
-          ...(changedFields.has('featured') && { featured: editableProduct.featured }),
-          ...(changedFields.has('map') && { map: editableProduct.map }),
-          ...(changedFields.has('promo') && { promo: editableProduct.promo }),
-          ...(changedFields.has('hype') && { hype: editableProduct.hype }),
-          ...(changedFields.has('fastfashion') && { fastfashion: editableProduct.fastfashion }),
-          ...(changedFields.has('league') && { league: editableProduct.league }),
-          ...(changedFields.has('sportsTeam') && { sportsTeam: editableProduct.sportsTeam }),
-          ...(changedFields.has('aiContext') && { aiContext: editableProduct.aiContext }),
-          updatedAt: serverTimestamp(),
-        });
-
-        await setDoc(doc(db, 'products', product.id), payload, { merge: true });
-        
-        // Call onSaved callback for optimistic UI update
-        if (onSaved) {
-          const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-          onSaved(product.id, filtered as Partial<Product>);
-        }
-        
-        // Update local editableProduct with filtered merge (preserve fields being typed)
-        if (editableProduct) {
-          const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-          // Shallow merge into existing object to preserve any local changes
-          setEditableProduct(prev => prev ? { ...prev, ...filtered } : null);
-        }
-
-        // Clear changed fields after successful save
-        setChangedFields(new Set());
-        setSavingState('saved');
-
-        // Reset to idle after 1 second
-        if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
-        savedTimeoutRef.current = setTimeout(() => {
-          setSavingState('idle');
-        }, 1000);
-
-        // Restore focus by field name + caret position
-        const restore = () => {
-          const { name, start, end } = lastActiveField.current || {};
-          if (!name || !formRef.current) return;
-          const el = formRef.current.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
-          if (!el) return;
-          el.focus();
-          if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
-            try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
-          }
-        };
-        restore();
-      } catch (error) {
-        console.error('[drawer] autosave failed', error);
-        setSavingState('idle');
-      }
-    }, 500); // 500ms debounce per requirements
-  }, [product, editableProduct, changedFields, onSaved, restoreFocus]);
+    // disabled for stability
+  }, []);
 
   const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
     e.preventDefault();
-    if (!product) return;
+    if (!product || !editableProduct) return;
     
     // Cancel any pending autosave
     if (saveTimeoutRef.current) {
@@ -277,73 +192,54 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     
     setSavingState('saving');
     
-    const fd = new FormData(e.currentTarget);
-    // Return undefined when a field is missing so cleanForFirestore will drop it;
-    // this prevents overwriting existing Firestore values with null inadvertently.
-    const get = (k: string) => {
-      const v = fd.get(k);
-      return v === null ? undefined : (v as string);
-    };
-
+    // Build payload directly from editableProduct state (single source of truth)
+    const p = editableProduct;
     const payload = cleanForFirestore({
-      name: get('name') ?? product.name,
-      brand: get('brand'),
-      mpn: get('mpn') ?? product.mpn,
-      status: get('status') || product.status,
-      department: get('department'),
-      class: get('class'),
-      category: get('category'),
-      ageGroup: get('ageGroup'),
-      gender: get('gender'),
-      // core text fields
-      materialFabric: get('materialFabric'),
-      fit: get('fit'),
-      // single value (if you keep it), else remove
-      website: get('website'),
-      // multi-select from local state (checkboxes)
-      websites: editableProduct.websites,
-      // flags/toggles (checkboxes submit 'on' when checked)
-      featured: (fd.get('featured') as string | null) === 'on' ? true : editableProduct.featured,
-      map: (fd.get('map') as string | null) === 'on' ? true : editableProduct.map,
-      promo: (fd.get('promo') as string | null) === 'on' ? true : editableProduct.promo,
-      hype: (fd.get('hype') as string | null) === 'on' ? true : editableProduct.hype,
-      fastfashion: (fd.get('fastfashion') as string | null) === 'on' ? true : editableProduct.fastfashion,
-      league: get('league'),
-      sportsTeam: get('sportsTeam'),
-      // nested AI context (flatten update)
-      aiContext: {
-        ...editableProduct.aiContext,
-        keywords: (fd.get('keywords') ? String(fd.get('keywords')).split('\n').map(s => s.trim()).filter(Boolean) : editableProduct.aiContext.keywords),
-        featureBullets: (fd.get('featureBullets') ? String(fd.get('featureBullets')).split('\n').map(s => s.trim()).filter(Boolean) : editableProduct.aiContext.featureBullets),
-        designNotes: (fd.get('designNotes') ? String(fd.get('designNotes')) : editableProduct.aiContext.designNotes),
-      },
+      // NEVER null these; fall back to existing doc values
+      name: p.name ?? product.name,
+      mpn: p.mpn ?? product.mpn,
+
+      // Core fields
+      brand: p.brand,
+      status: p.status ?? product.status,
+      department: p.department,
+      class: p.class,
+      category: p.category,
+      ageGroup: p.ageGroup,
+      gender: p.gender,
+      materialFabric: p.materialFabric,
+      fit: p.fit,
+      sportsTeam: p.sportsTeam,
+      league: p.league,
+
+      // Websites / flags
+      websites: p.websites,
+      featured: p.featured,
+      map: p.map,
+      promo: p.promo,
+      hype: p.hype,
+      fastfashion: p.fastfashion,
+
+      // AI context (nested)
+      aiContext: p.aiContext,
+
       updatedAt: serverTimestamp(),
       ...extra,
     });
 
-    // Temporary debug: verify outgoing payload (remove before final merge)
     console.log('[drawer] payload to Firestore', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
+
+    // Optimistic merge back into local drawer state (skip undefined)
+    setEditableProduct(prev => prev ? {
+      ...prev,
+      ...Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined))
+    } : null);
     
-    // Call onSaved callback for optimistic UI update in parent
-    if (onSaved) {
-      const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-      onSaved(product.id, filtered as Partial<Product>);
-    }
-    
-    // Update local state with filtered merge (avoid overwriting with undefined)
-    if (editableProduct) {
-      const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-      // Include any extra fields like status from the options
-      const mergedUpdate = {
-        ...filtered,
-        ...(extra.status && { status: extra.status }),
-        ...(extra.validatedAt && { validatedAt: extra.validatedAt }),
-      };
-      setEditableProduct(prev => prev ? { ...prev, ...mergedUpdate } : null);
-    }
-    
+    // Update the row in the list
+    onSaved?.(product.id, payload);
+
     // Clear changed fields after manual save
     setChangedFields(new Set());
     setSavingState('saved');
@@ -367,8 +263,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     };
     restore();
     
-    // Show toast if requested
-    if (options.showToast) {
+    if (options?.showToast) {
       setToastMessage({ text: options.showToast, type: 'success' });
     }
     
