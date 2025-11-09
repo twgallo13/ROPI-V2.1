@@ -850,43 +850,45 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Saved AI Descriptions</h4>
                                 <p className="text-xs text-gray-500 mb-3">Saved drafts live here. Generate again to create another version.</p>
-                                {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
-                                    <div key={channel} className="mb-4 last:mb-0">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
-                                                <span className="text-sm font-medium text-indigo-600">{channel}</span>
-                                                {data.meta && (
-                                                    <span className="ml-2 text-xs text-gray-500">
-                                                        {data.meta.tone} · {data.meta.length}
-                                                    </span>
-                                                )}
+                                <div className="max-h-96 overflow-y-auto">
+                                    {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
+                                        <div key={channel} className="mb-4 last:mb-0">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <span className="text-sm font-medium text-indigo-600">{channel}</span>
+                                                    {data.meta && (
+                                                        <span className="ml-2 text-xs text-gray-500">
+                                                            {data.meta.tone} · {data.meta.length}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        // Apply to paragraphDraft field
+                                                        if (editableProduct) {
+                                                            setEditableProduct({
+                                                                ...editableProduct,
+                                                                marketing: {
+                                                                    ...editableProduct.marketing,
+                                                                    paragraphDraft: data.text,
+                                                                },
+                                                            });
+                                                            setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
+                                                            setToastMessage({ text: 'Applied to Paragraph Draft', type: 'success' });
+                                                        }
+                                                    }}
+                                                    className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
+                                                >
+                                                    Apply to Draft
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    // Apply to paragraphDraft field
-                                                    if (editableProduct) {
-                                                        setEditableProduct({
-                                                            ...editableProduct,
-                                                            marketing: {
-                                                                ...editableProduct.marketing,
-                                                                paragraphDraft: data.text,
-                                                            },
-                                                        });
-                                                        setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
-                                                        setToastMessage({ text: `Applied ${channel} description to Paragraph Draft`, type: 'success' });
-                                                    }
-                                                }}
-                                                className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
-                                            >
-                                                Apply to Draft
-                                            </button>
+                                            <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
+                                                {data.text}
+                                            </div>
                                         </div>
-                                        <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
-                                            {data.text}
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         )}
 

@@ -21,6 +21,7 @@ const DescribePage: React.FC = () => {
     message: '',
     type: 'success',
   });
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   // Check URL params for productId
   useEffect(() => {
@@ -54,7 +55,11 @@ const DescribePage: React.FC = () => {
 
       if (result.text) {
         setGeneratedText(result.text);
-        showToast('Description generated successfully', 'success');
+        showToast('Generated draft ready', 'success');
+        // Auto-focus the textarea
+        setTimeout(() => {
+          textareaRef.current?.focus();
+        }, 100);
       } else {
         showToast('No text returned from API', 'error');
       }
@@ -94,7 +99,7 @@ const DescribePage: React.FC = () => {
         { merge: true }
       );
 
-      showToast(`Description saved to products/${productId}/descriptions/${channel}`, 'success');
+      showToast(`Saved to Descriptions · ${channel}`, 'success');
     } catch (err: any) {
       console.error('[DescribePage] Insert failed:', err);
       showToast(err?.message || 'Failed to save description', 'error');
@@ -194,13 +199,13 @@ const DescribePage: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <button
             onClick={handleGenerate}
             disabled={generating || !productId.trim()}
             className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {generating ? 'Generating...' : 'Generate'}
+            {generating ? 'Generating...' : '✨ Generate with AI'}
           </button>
 
           <button
@@ -224,6 +229,7 @@ const DescribePage: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Generated Description</label>
             <textarea
+              ref={textareaRef}
               readOnly
               value={generatedText}
               rows={12}
