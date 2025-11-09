@@ -4,7 +4,7 @@ import { Product } from '../types';
 import { generateProductMarketing } from '../services/geminiService';
 import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
 import Toast from './Toast';
 import Select from './ui/Select';
 
@@ -81,6 +81,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const formRef = useRef<HTMLFormElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const lastActiveField = useRef<{ name?: string; start?: number; end?: number }>({});
+  
+  // AI Descriptions from subcollection
+  type AIDescription = { text: string; meta?: { tone: string; length: string; generatedAt: any } };
+  const [aiDescriptions, setAiDescriptions] = useState<Record<string, AIDescription>>({});
 
   // Helper to restore focus by field name + caret position
   const restoreFocus = useCallback(() => {
@@ -97,6 +101,32 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   // Sync local state only when product.id changes
   useEffect(() => {
     setEditableProduct(product);
+  }, [product?.id]);
+
+  // Load AI descriptions from subcollection
+  useEffect(() => {
+    if (!product?.id) {
+      setAiDescriptions({});
+      return;
+    }
+
+    const loadDescriptions = async () => {
+      try {
+        const descriptionsRef = collection(db, 'products', product.id, 'descriptions');
+        const snapshot = await getDocs(descriptionsRef);
+        const descriptions: Record<string, AIDescription> = {};
+        
+        snapshot.forEach((doc) => {
+          descriptions[doc.id] = doc.data() as AIDescription;
+        });
+        
+        setAiDescriptions(descriptions);
+      } catch (error) {
+        console.error('[drawer] Failed to load AI descriptions:', error);
+      }
+    };
+
+    loadDescriptions();
   }, [product?.id]);
 
   // Cleanup timeouts on unmount
@@ -672,10 +702,27 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'generation' && (
                     <div className="space-y-6">
-                        <div className="flex justify-end">
-                            <button type="button" onClick={handleGenerateClick} disabled={isGenerating} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed">
-                                {isGenerating ? 'Generating...' : '✨ Generate with AI'}
-                            </button>
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-semibold text-gray-800">AI-Generated Descriptions</h3>
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        window.open(`/ai/describe?productId=${editableProduct?.id || ''}`, '_blank');
+                                    }}
+                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                                >
+                                    🔗 Open AI Describe
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleGenerateClick}
+                                    disabled={isGenerating}
+                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                                >
+                                    {isGenerating ? 'Generating...' : '✨ Generate with AI'}
+                                </button>
+                            </div>
                         </div>
 
                          {aiScore && (
@@ -685,6 +732,50 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                     <p className="text-4xl font-bold text-indigo-600">{aiScore.overall}</p>
                                     <p className="text-xl text-gray-500">/10</p>
                                 </div>
+                            </div>
+                        )}
+
+                        {/* AI Descriptions from subcollection */}
+                        {Object.keys(aiDescriptions).length > 0 && (
+                            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                <h4 className="text-sm font-semibold text-gray-700 mb-3">Saved AI Descriptions</h4>
+                                {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
+                                    <div key={channel} className="mb-4 last:mb-0">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div>
+                                                <span className="text-sm font-medium text-indigo-600">{channel}</span>
+                                                {data.meta && (
+                                                    <span className="ml-2 text-xs text-gray-500">
+                                                        {data.meta.tone} · {data.meta.length}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    // Apply to paragraphDraft field
+                                                    if (editableProduct) {
+                                                        setEditableProduct({
+                                                            ...editableProduct,
+                                                            marketing: {
+                                                                ...editableProduct.marketing,
+                                                                paragraphDraft: data.text,
+                                                            },
+                                                        });
+                                                        setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
+                                                        setToastMessage({ text: `Applied ${channel} description to Paragraph Draft`, type: 'success' });
+                                                    }
+                                                }}
+                                                className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
+                                            >
+                                                Apply to Draft
+                                            </button>
+                                        </div>
+                                        <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
+                                            {data.text}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         )}
 
