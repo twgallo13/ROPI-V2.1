@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { describeProduct } from '../../services/describe';
@@ -21,6 +21,15 @@ const DescribePage: React.FC = () => {
     message: '',
     type: 'success',
   });
+
+  // Check URL params for productId
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlProductId = params.get('productId');
+    if (urlProductId) {
+      setProductId(urlProductId);
+    }
+  }, []);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ show: true, message, type });
