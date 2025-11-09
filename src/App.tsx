@@ -22,7 +22,12 @@ import UsersAdminPage from './pages/admin/UsersAdminPage';
 import DescribePage from './pages/ai/DescribePage';
 
 function App() {
-  const { user, role } = useAuth();
+  const { user, role, authReady } = useAuth();
+
+  // Wait for auth to be ready before evaluating routes
+  if (!authReady) {
+    return <div className="flex items-center justify-center h-screen text-sm text-gray-500">Loading…</div>;
+  }
 
   return (
     <BrowserRouter>
