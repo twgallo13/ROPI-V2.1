@@ -2,6 +2,7 @@ import { initializeApp, getApp, getApps, type FirebaseOptions } from 'firebase/a
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getFunctions } from 'firebase/functions';
 
 // Debug: verify Vite env loading
 console.log('Loaded env:', import.meta.env);
@@ -42,6 +43,7 @@ const db = initializeFirestore(app, {
   useFetchStreams: false,
 } as any);
 const storage = getStorage(app);
+const functions = getFunctions(app);
 
 // Expose debug handle for DevTools inspection
 if (typeof window !== 'undefined') {
@@ -53,4 +55,4 @@ if (typeof window !== 'undefined') {
   };
 }
 
-export { app, auth, provider, db, storage };
+export { app, auth, provider, db, storage, functions };

@@ -1,4 +1,5 @@
 import React from 'react';
+import './src/index.css';
 import './src/firebase';
 // This import is for React 19
 import { createRoot } from 'react-dom/client';
