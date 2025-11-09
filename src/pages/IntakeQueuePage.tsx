@@ -41,15 +41,11 @@ const IntakeQueuePage: React.FC = () => {
   };
 
   const handleProductSaved = (productId: string, updates: Partial<Product>) => {
-    // Optimistic update: merge updates into local products list
+    // Optimistic update: merge updates into local products list only
     setLocalProducts(prev =>
       prev.map(p => (p.id === productId ? { ...p, ...updates } : p))
     );
-    
-    // Also update selectedProduct if it's the same one
-    if (selectedProduct?.id === productId) {
-      setSelectedProduct(prev => (prev ? { ...prev, ...updates } : null));
-    }
+    // Do NOT touch selectedProduct here; the drawer owns its local state
   };
 
   // Count validated products (from all products, not filtered)

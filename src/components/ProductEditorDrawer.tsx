@@ -1,6 +1,5 @@
-import React, { useState, useEffect, ChangeEvent, useCallback } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Product } from '../types';
-// Replaced mock AI service with Gemini client
 import { generateProductMarketing } from '../services/geminiService';
 import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
@@ -11,6 +10,7 @@ interface ProductEditorDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   product: Product | null;
+  onSaved?: (id: string, updates: Partial<Product>) => void;
 }
 
 type ActiveTab = 'core' | 'context' | 'generation' | 'variants' | 'history';
@@ -19,8 +19,8 @@ type ActiveTab = 'core' | 'context' | 'generation' | 'variants' | 'history';
 function cleanForFirestore<T extends Record<string, any>>(obj: T): Partial<T> {
   const out: Record<string, any> = {};
   for (const [k, v] of Object.entries(obj)) {
-    if (v === undefined) continue;                              // omit undefined (Firestore rejects it)
-    if (typeof v === 'string' && v.trim() === '') out[k] = null; // empty -> null
+    if (v === undefined) continue;
+    if (typeof v === 'string' && v.trim() === '') out[k] = null;
     else out[k] = v;
   }
   return out as Partial<T>;
@@ -33,134 +33,112 @@ const mockHistory = [
     "Version 1: Product Imported (11/04/2025)"
 ];
 
-const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClose, product }) => {
+const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClose, product, onSaved }) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('core');
   const [editableProduct, setEditableProduct] = useState<Product | null>(product);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number; } | null>(null);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
+  // Only reset editableProduct when product.id changes
   useEffect(() => {
     setEditableProduct(product);
+  }, [product?.id]);
+
+  // Reset tab and score when opening a new product
+  useEffect(() => {
     setActiveTab('core');
-    setAiScore(null); // Reset score when product changes
-    setToastMessage(null); // Reset toast when product changes
-  }, [product]);
+    setAiScore(null);
+    setToastMessage(null);
+  }, [product?.id]);
 
-  // debouncedAutosave: temporarily disabled (we’ll re-enable after typing is stable)
-  const debouncedAutosave = useCallback(() => {
-    return; // ← disable idle autosave for now
-  }, []);
+  // Manual save function - only called when Save button is clicked
+  const saveFromForm = async () => {
+    if (!product || !editableProduct) return;
 
-  // Restore focus by field name + caret after a save
-  const saveOnBlur = useCallback(
-    async (el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) => {
-      const form = el.form;
-      if (!form) return;
-
-      const name = el.name;
-      const caret = (el as HTMLInputElement).selectionStart ?? null;
-
-      await saveFromForm(
-        { preventDefault() {}, currentTarget: form } as any,
-        {},
-        { showToast: 'Saved', keepOpen: true }
-      );
-
-      // Try to restore focus and caret
-      if (name) {
-        const target = form.elements.namedItem(name) as
-          | HTMLInputElement
-          | HTMLTextAreaElement
-          | HTMLSelectElement
-          | null;
-        if (target && typeof (target as any).focus === 'function') {
-          (target as any).focus();
-          if (
-            caret !== null &&
-            typeof (target as any).setSelectionRange === 'function'
-          ) {
-            (target as any).setSelectionRange(caret, caret);
-          }
-        }
-      }
-    },
-    []
-  );
-
-  const saveFromForm = async (e: React.FormEvent<HTMLFormElement>, extra: Record<string, any> = {}, options: { showToast?: string; keepOpen?: boolean } = {}) => {
-    e.preventDefault();
-    if (!product) return;
-    const fd = new FormData(e.currentTarget);
-    // Return undefined when a field is missing so cleanForFirestore will drop it;
-    // this prevents overwriting existing Firestore values with null inadvertently.
-    const get = (k: string) => {
-      const v = fd.get(k);
-      return v === null ? undefined : (v as string);
-    };
-
+    // Build payload from editableProduct state only
     const payload = cleanForFirestore({
-      name: get('name') ?? product.name,
-      brand: get('brand'),
-      mpn: get('mpn') ?? product.mpn,
-      status: get('status') || product.status,
-      department: get('department'),
-      class: get('class'),
-      category: get('category'),
-      ageGroup: get('ageGroup'),
-      gender: get('gender'),
-      // core text fields
-      materialFabric: get('materialFabric'),
-      fit: get('fit'),
-      // single value (if you keep it), else remove
-      website: get('website'),
-      // multi-select from local state (checkboxes)
+      name: editableProduct.name,
+      brand: editableProduct.brand,
+      mpn: editableProduct.mpn,
+      status: editableProduct.status,
+      department: editableProduct.department,
+      class: editableProduct.class,
+      category: editableProduct.category,
+      ageGroup: editableProduct.ageGroup,
+      gender: editableProduct.gender,
+      materialFabric: editableProduct.materialFabric,
+      fit: editableProduct.fit,
+      website: editableProduct.website,
       websites: editableProduct.websites,
-      // flags/toggles (checkboxes submit 'on' when checked)
-      featured: (fd.get('featured') as string | null) === 'on' ? true : editableProduct.featured,
-      map: (fd.get('map') as string | null) === 'on' ? true : editableProduct.map,
-      promo: (fd.get('promo') as string | null) === 'on' ? true : editableProduct.promo,
-      hype: (fd.get('hype') as string | null) === 'on' ? true : editableProduct.hype,
-      fastfashion: (fd.get('fastfashion') as string | null) === 'on' ? true : editableProduct.fastfashion,
-      league: get('league'),
-      sportsTeam: get('sportsTeam'),
-      // nested AI context (flatten update)
-      aiContext: {
-        ...editableProduct.aiContext,
-        keywords: (fd.get('keywords') ? String(fd.get('keywords')).split('\n').map(s => s.trim()).filter(Boolean) : editableProduct.aiContext.keywords),
-        featureBullets: (fd.get('featureBullets') ? String(fd.get('featureBullets')).split('\n').map(s => s.trim()).filter(Boolean) : editableProduct.aiContext.featureBullets),
-        designNotes: (fd.get('designNotes') ? String(fd.get('designNotes')) : editableProduct.aiContext.designNotes),
-      },
+      featured: editableProduct.featured,
+      map: editableProduct.map,
+      promo: editableProduct.promo,
+      hype: editableProduct.hype,
+      fastfashion: editableProduct.fastfashion,
+      league: editableProduct.league,
+      sportsTeam: editableProduct.sportsTeam,
+      aiContext: editableProduct.aiContext,
+      marketing: editableProduct.marketing,
       updatedAt: serverTimestamp(),
-      ...extra,
     });
-
-    // Temporary debug: verify outgoing payload (remove before final merge)
-    console.log('[drawer] payload to Firestore', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
     
-    // Update local state optimistically (avoid overwriting with undefined)
-    if (editableProduct) {
-      const filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
-      setEditableProduct({
-        ...editableProduct,
-        ...filtered,
-        status: (extra.status as any) || editableProduct.status,
-      });
-    }
+    // Notify parent to update the table
+    onSaved?.(product.id, payload);
     
-    // Show toast if requested
-    if (options.showToast) {
-      setToastMessage({ text: options.showToast, type: 'success' });
-    }
-    
-    // Close drawer unless keepOpen is true
-    if (!options.keepOpen) {
-      onClose();
-    }
+    // Show success toast
+    setToastMessage({ text: 'Saved', type: 'success' });
   };
 
+  // Save with approval (mark as validated)
+  const saveAndApprove = async () => {
+    if (!product || !editableProduct) return;
+
+    const payload = cleanForFirestore({
+      name: editableProduct.name,
+      brand: editableProduct.brand,
+      mpn: editableProduct.mpn,
+      status: 'validated',
+      department: editableProduct.department,
+      class: editableProduct.class,
+      category: editableProduct.category,
+      ageGroup: editableProduct.ageGroup,
+      gender: editableProduct.gender,
+      materialFabric: editableProduct.materialFabric,
+      fit: editableProduct.fit,
+      website: editableProduct.website,
+      websites: editableProduct.websites,
+      featured: editableProduct.featured,
+      map: editableProduct.map,
+      promo: editableProduct.promo,
+      hype: editableProduct.hype,
+      fastfashion: editableProduct.fastfashion,
+      league: editableProduct.league,
+      sportsTeam: editableProduct.sportsTeam,
+      aiContext: editableProduct.aiContext,
+      marketing: editableProduct.marketing,
+      validatedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    await setDoc(doc(db, 'products', product.id), payload, { merge: true });
+    
+    // Update local state
+    setEditableProduct({
+      ...editableProduct,
+      status: 'validated',
+    });
+    
+    // Notify parent to update the table
+    onSaved?.(product.id, payload);
+    
+    // Show success toast
+    setToastMessage({ text: 'Approved', type: 'success' });
+  };
+
+  // Fully controlled input handler
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (!editableProduct) return;
     const { name, value, type } = e.target;
@@ -237,7 +215,6 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       setAiScore(result.score);
     } catch (e) {
       console.error('[drawer] AI generation failed', e);
-      // Basic fallback toast via optimistic paragraph
       setEditableProduct(p => p ? ({
         ...p,
         marketing: { ...p.marketing, paragraphDraft: p.marketing.paragraphDraft || 'Generation failed.' }
@@ -249,6 +226,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
   const TabButton: React.FC<{ tabName: ActiveTab; label: string }> = ({ tabName, label }) => (
     <button
+      type="button"
       onClick={() => setActiveTab(tabName)}
       className={`px-4 py-2 text-sm font-medium rounded-md ${
         activeTab === tabName
@@ -269,7 +247,12 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   
   const SelectField: React.FC<{label: string; name: keyof Product; options: readonly string[]; value: string;}> = ({label, name, options, value}) => (
       <FormField label={label}>
-        <select name={name} value={value} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <select 
+          name={name} 
+          value={value ?? ''} 
+          onChange={handleInputChange} 
+          className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        >
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
         </select>
       </FormField>
@@ -291,9 +274,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         <div className="absolute inset-0 bg-gray-500 bg-opacity-75" onClick={onClose} aria-hidden="true"></div>
         <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
           <div className={`w-screen max-w-3xl ${drawerPanelClasses}`}>
-            <form
+            <div
               className="h-full flex flex-col bg-white shadow-xl"
-              onSubmit={(e) => saveFromForm(e)}
               onKeyDown={(e) => {
                 if (
                   e.key === 'Enter' &&
@@ -331,9 +313,33 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 {activeTab === 'core' && (
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                             <FormField label="Name"><input name="name" type="text" value={editableProduct.name} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Name">
+                               <input 
+                                 name="name" 
+                                 type="text" 
+                                 value={editableProduct.name ?? ''} 
+                                 readOnly 
+                                 className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" 
+                               />
+                             </FormField>
+                             <FormField label="MPN">
+                               <input 
+                                 name="mpn" 
+                                 type="text" 
+                                 value={editableProduct.mpn ?? ''} 
+                                 readOnly 
+                                 className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" 
+                               />
+                             </FormField>
+                             <FormField label="Brand">
+                               <input 
+                                 type="text" 
+                                 name="brand" 
+                                 value={editableProduct.brand ?? ''} 
+                                 onChange={handleInputChange} 
+                                 className="block w-full border-gray-300 rounded-md shadow-sm" 
+                               />
+                             </FormField>
                              
                              <SelectField label="Department" name="department" value={editableProduct.department} options={mockVocabulary.departments} />
                              <SelectField label="Class" name="class" value={editableProduct.class} options={mockVocabulary.classes} />
@@ -341,8 +347,24 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                              <SelectField label="Age Group" name="ageGroup" value={editableProduct.ageGroup} options={mockVocabulary.ageGroups} />
                              <SelectField label="Gender" name="gender" value={editableProduct.gender} options={mockVocabulary.genders} />
                              
-                             <FormField label="Material/Fabric"><input type="text" name="materialFabric" value={editableProduct.materialFabric} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                             <FormField label="Fit"><input type="text" name="fit" value={editableProduct.fit} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Material/Fabric">
+                               <input 
+                                 type="text" 
+                                 name="materialFabric" 
+                                 value={editableProduct.materialFabric ?? ''} 
+                                 onChange={handleInputChange} 
+                                 className="block w-full border-gray-300 rounded-md shadow-sm" 
+                               />
+                             </FormField>
+                             <FormField label="Fit">
+                               <input 
+                                 type="text" 
+                                 name="fit" 
+                                 value={editableProduct.fit ?? ''} 
+                                 onChange={handleInputChange} 
+                                 className="block w-full border-gray-300 rounded-md shadow-sm" 
+                               />
+                             </FormField>
 
                              <SelectField label="Sports Team" name="sportsTeam" value={editableProduct.sportsTeam || ''} options={['', ...mockVocabulary.sportsTeams]} />
                              <SelectField label="League" name="league" value={editableProduct.league || ''} options={['', ...mockVocabulary.leagues]} />
@@ -354,7 +376,14 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                             <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
                               {mockVocabulary.websites.map(website => (
                                 <div key={website} className="flex items-center">
-                                  <input id={`website-${website}`} type="checkbox" value={website} checked={editableProduct.websites.includes(website)} onChange={handleWebsiteChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                  <input 
+                                    id={`website-${website}`} 
+                                    type="checkbox" 
+                                    value={website} 
+                                    checked={editableProduct.websites.includes(website)} 
+                                    onChange={handleWebsiteChange} 
+                                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                  />
                                   <label htmlFor={`website-${website}`} className="ml-2 block text-sm text-gray-900">{website}</label>
                                 </div>
                               ))}
@@ -363,7 +392,14 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                            <FormField label="Featured on Launch Hub">
                               <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
                                 <div className="flex items-center">
-                                  <input id="featured" name="featured" type="checkbox" checked={editableProduct.featured} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                  <input 
+                                    id="featured" 
+                                    name="featured" 
+                                    type="checkbox" 
+                                    checked={editableProduct.featured} 
+                                    onChange={handleInputChange} 
+                                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                  />
                                   <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">Make this a featured product</label>
                                 </div>
                                </div>
@@ -373,19 +409,47 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                             <h3 className="text-md font-medium text-gray-900">Product Flags</h3>
                             <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-md border border-gray-200">
                                 <div className="flex items-center">
-                                    <input id="map" name="map" type="checkbox" checked={editableProduct.map} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <input 
+                                      id="map" 
+                                      name="map" 
+                                      type="checkbox" 
+                                      checked={editableProduct.map} 
+                                      onChange={handleInputChange} 
+                                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                    />
                                     <label htmlFor="map" className="ml-3 block text-sm font-medium text-gray-900">MAP</label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input id="promo" name="promo" type="checkbox" checked={editableProduct.promo} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <input 
+                                      id="promo" 
+                                      name="promo" 
+                                      type="checkbox" 
+                                      checked={editableProduct.promo} 
+                                      onChange={handleInputChange} 
+                                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                    />
                                     <label htmlFor="promo" className="ml-3 block text-sm font-medium text-gray-900">Promo</label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input id="hype" name="hype" type="checkbox" checked={editableProduct.hype} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <input 
+                                      id="hype" 
+                                      name="hype" 
+                                      type="checkbox" 
+                                      checked={editableProduct.hype} 
+                                      onChange={handleInputChange} 
+                                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                    />
                                     <label htmlFor="hype" className="ml-3 block text-sm font-medium text-gray-900">HYPE</label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input id="fastfashion" name="fastfashion" type="checkbox" checked={editableProduct.fastfashion} onChange={handleInputChange} onBlur={(e) => saveOnBlur(e.currentTarget)} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <input 
+                                      id="fastfashion" 
+                                      name="fastfashion" 
+                                      type="checkbox" 
+                                      checked={editableProduct.fastfashion} 
+                                      onChange={handleInputChange} 
+                                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                    />
                                     <label htmlFor="fastfashion" className="ml-3 block text-sm font-medium text-gray-900">Fast Fashion</label>
                                 </div>
                             </div>
@@ -394,15 +458,44 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'context' && (
                     <div className="space-y-6">
-                        <FormField label="Keywords (one per line)"><textarea name="keywords" value={editableProduct.aiContext.keywords.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={(e) => saveOnBlur(e.currentTarget)} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Feature Bullets (one per line)"><textarea name="featureBullets" value={editableProduct.aiContext.featureBullets.join('\n')} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={(e) => saveOnBlur(e.currentTarget)} rows={4} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
-                        <FormField label="Design Notes"><textarea name="designNotes" value={editableProduct.aiContext.designNotes} onChange={(e) => handleNestedChange(e, 'aiContext')} onBlur={(e) => saveOnBlur(e.currentTarget)} rows={6} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                        <FormField label="Keywords (one per line)">
+                          <textarea 
+                            name="keywords" 
+                            value={editableProduct.aiContext.keywords.join('\n')} 
+                            onChange={(e) => handleNestedChange(e, 'aiContext')} 
+                            rows={4} 
+                            className="block w-full border-gray-300 rounded-md shadow-sm" 
+                          />
+                        </FormField>
+                        <FormField label="Feature Bullets (one per line)">
+                          <textarea 
+                            name="featureBullets" 
+                            value={editableProduct.aiContext.featureBullets.join('\n')} 
+                            onChange={(e) => handleNestedChange(e, 'aiContext')} 
+                            rows={4} 
+                            className="block w-full border-gray-300 rounded-md shadow-sm" 
+                          />
+                        </FormField>
+                        <FormField label="Design Notes">
+                          <textarea 
+                            name="designNotes" 
+                            value={editableProduct.aiContext.designNotes} 
+                            onChange={(e) => handleNestedChange(e, 'aiContext')} 
+                            rows={6} 
+                            className="block w-full border-gray-300 rounded-md shadow-sm" 
+                          />
+                        </FormField>
                     </div>
                 )}
                 {activeTab === 'generation' && (
                     <div className="space-y-6">
                         <div className="flex justify-end">
-                            <button type="button" onClick={handleGenerateClick} disabled={isGenerating} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed">
+                            <button 
+                              type="button" 
+                              onClick={handleGenerateClick} 
+                              disabled={isGenerating} 
+                              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                            >
                                 {isGenerating ? 'Generating...' : '✨ Generate with AI'}
                             </button>
                         </div>
@@ -424,13 +517,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <div className="flex justify-end pt-4">
                           <button 
                             type="button" 
-                            onClick={(e) => {
-                              const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
-                              saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
-                                status: 'validated',
-                                validatedAt: serverTimestamp(),
-                              });
-                            }}
+                            onClick={saveAndApprove}
                             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
                           >
                             Approve
@@ -476,29 +563,41 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
               </div>
               
               <footer className="flex-shrink-0 px-4 py-4 flex justify-end border-t border-gray-200 bg-gray-50">
-                <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
+                <button 
+                  type="button" 
+                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" 
+                  onClick={onClose}
+                >
+                  Cancel
+                </button>
                 {activeTab === 'core' ? (
                   <>
-                    <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                    <button 
+                      type="button"
+                      onClick={saveFromForm}
+                      className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      Save
+                    </button>
                     <button 
                       type="button" 
-                      onClick={(e) => {
-                        const form = (e.currentTarget as HTMLButtonElement).closest('form')!;
-                        saveFromForm({ preventDefault(){}, currentTarget: form } as any, {
-                          status: 'validated',
-                          validatedAt: serverTimestamp(),
-                        }, { showToast: 'Approved', keepOpen: true });
-                      }}
+                      onClick={saveAndApprove}
                       className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
                     >
                       Approve
                     </button>
                   </>
                 ) : (
-                  <button type="submit" className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                  <button 
+                    type="button"
+                    onClick={saveFromForm}
+                    className="ml-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Save
+                  </button>
                 )}
               </footer>
-            </form>
+            </div>
           </div>
         </section>
       </div>
@@ -514,4 +613,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   );
 };
 
-export default ProductEditorDrawer;
+// Prevent unnecessary remounts
+export default React.memo(ProductEditorDrawer, (prev, next) => 
+  prev.product?.id === next.product?.id && prev.isOpen === next.isOpen
+);
