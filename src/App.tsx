@@ -19,6 +19,7 @@ import BrandsPage from './pages/settings/BrandsPage';
 import ExportSettingsPage from './pages/settings/ExportSettingsPage';
 import ExportRulesPage from './pages/settings/ExportRulesPage';
 import UsersAdminPage from './pages/admin/UsersAdminPage';
+import DescribePage from './pages/ai/DescribePage';
 
 function App() {
   const { user, role } = useAuth();
@@ -66,6 +67,18 @@ function App() {
             ) : (
               // If you're logged in but not an admin, go to intake
               // If you're not logged in, go to home
+              <Navigate to={user ? "/intake" : "/"} />
+            )
+          } 
+        />
+        <Route 
+          path="/ai/describe"
+          element={
+            user && role === 'admin' ? (
+              <MainLayout>
+                <DescribePage />
+              </MainLayout>
+            ) : (
               <Navigate to={user ? "/intake" : "/"} />
             )
           } 
