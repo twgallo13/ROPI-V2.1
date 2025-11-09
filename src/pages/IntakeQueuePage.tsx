@@ -41,11 +41,20 @@ const IntakeQueuePage: React.FC = () => {
   };
 
   const handleProductSaved = (productId: string, updates: Partial<Product>) => {
-    // Optimistic update: merge updates into local products list only
+    // Optimistic update: merge updates into local products list
     setLocalProducts(prev =>
       prev.map(p => (p.id === productId ? { ...p, ...updates } : p))
     );
-    // Do NOT touch selectedProduct here; the drawer owns its local state
+    
+    // ** THE FIX IS HERE **
+    // We no longer update selectedProduct while the drawer is open,
+    // as this was causing the drawer to re-render and lose focus.
+    // The drawer is responsible for its own state once opened.
+    
+    // Also update selectedProduct if it's the same one
+    // if (selectedProduct?.id === productId) {
+    //   setSelectedProduct(prev => (prev ? { ...prev, ...updates } : null));
+    // }
   };
 
   // Count validated products (from all products, not filtered)
