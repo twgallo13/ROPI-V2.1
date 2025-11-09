@@ -19,9 +19,15 @@ import BrandsPage from './pages/settings/BrandsPage';
 import ExportSettingsPage from './pages/settings/ExportSettingsPage';
 import ExportRulesPage from './pages/settings/ExportRulesPage';
 import UsersAdminPage from './pages/admin/UsersAdminPage';
+import DescribePage from './pages/ai/DescribePage';
 
 function App() {
-  const { user, role } = useAuth();
+  const { user, role, authReady } = useAuth();
+
+  // Wait for auth to be ready before evaluating routes
+  if (!authReady) {
+    return <div className="flex items-center justify-center h-screen text-sm text-gray-500">Loading…</div>;
+  }
 
   return (
     <BrowserRouter>
@@ -66,6 +72,18 @@ function App() {
             ) : (
               // If you're logged in but not an admin, go to intake
               // If you're not logged in, go to home
+              <Navigate to={user ? "/intake" : "/"} />
+            )
+          } 
+        />
+        <Route 
+          path="/ai/describe"
+          element={
+            user && role === 'admin' ? (
+              <MainLayout>
+                <DescribePage />
+              </MainLayout>
+            ) : (
               <Navigate to={user ? "/intake" : "/"} />
             )
           } 

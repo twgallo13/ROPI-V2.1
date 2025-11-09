@@ -8,6 +8,7 @@ type Role = 'admin' | 'specialist';
 interface AuthContextType {
   user: User | null;
   role: Role | null;
+  authReady: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
   refreshRole: () => Promise<void>;
@@ -25,6 +26,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
   const [missingAdminRole, setMissingAdminRole] = useState(false);
 
   useEffect(() => {
@@ -128,6 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setMissingAdminRole(false);
       } finally {
         setLoading(false);
+        setAuthReady(true);
       }
     });
 
@@ -148,6 +151,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await firebaseSignOut(auth);
       setUser(null);
       setRole(null);
+      setAuthReady(false);
       setMissingAdminRole(false);
     } catch (error) {
       console.error('Logout error:', error);
@@ -186,7 +190,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, login, logout, refreshRole, missingAdminRole, setAdminRole }}>
+    <AuthContext.Provider value={{ user, role, authReady, login, logout, refreshRole, missingAdminRole, setAdminRole }}>
       {missingAdminRole && user && (
         <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
