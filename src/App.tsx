@@ -17,6 +17,7 @@ import VocabDropdownsPage from './pages/settings/VocabDropdownsPage';
 import RulesPage from './pages/settings/RulesPage';
 import BrandsPage from './pages/settings/BrandsPage';
 import ExportSettingsPage from './pages/settings/ExportSettingsPage';
+import ExportRulesPage from './pages/settings/ExportRulesPage';
 import UsersAdminPage from './pages/admin/UsersAdminPage';
 
 function App() {
@@ -90,6 +91,7 @@ function App() {
           <Route path="vocab" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabDropdownsPage /></Suspense>} />
           <Route path="rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><RulesPage /></Suspense>} />
           <Route path="brands" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><BrandsPage /></Suspense>} />
+          <Route path="export-rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><ExportRulesPage /></Suspense>} />
           <Route path="admin-users" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><UsersAdminPage /></Suspense>} />
         </Route>
         
