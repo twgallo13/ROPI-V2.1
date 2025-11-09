@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import MainLayout from './components/MainLayout';
 import DebugPill from './components/DebugPill';
@@ -21,8 +21,27 @@ import ExportRulesPage from './pages/settings/ExportRulesPage';
 import UsersAdminPage from './pages/admin/UsersAdminPage';
 import DescribePage from './pages/ai/DescribePage';
 
-function App() {
+function RouteManager() {
   const { user, role, authReady } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Save current route to sessionStorage on route changes
+  useEffect(() => {
+    if (authReady && user && location.pathname !== '/') {
+      sessionStorage.setItem('lastRoute', location.pathname);
+    }
+  }, [authReady, user, location.pathname]);
+
+  // Restore last route once auth is ready
+  useEffect(() => {
+    if (authReady && user) {
+      const lastRoute = sessionStorage.getItem('lastRoute');
+      if (lastRoute && lastRoute !== '/' && location.pathname === '/') {
+        navigate(lastRoute, { replace: true });
+      }
+    }
+  }, [authReady, user, navigate, location.pathname]);
 
   // Wait for auth to be ready before evaluating routes
   if (!authReady) {
@@ -30,7 +49,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <>
       <Routes>
         {/* Public-facing Launch Hub */}
         <Route path="/" element={<LaunchPage />} />
@@ -117,6 +136,14 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <DebugPill />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <RouteManager />
     </BrowserRouter>
   );
 }
