@@ -2,6 +2,7 @@ import React, { useState, useEffect, ChangeEvent, useRef, useCallback } from 're
 import { Product } from '../types';
 // Replaced mock AI service with Gemini client
 import { generateProductMarketing } from '../services/geminiService';
+import { describeProduct } from '../services/describe';
 import { mockVocabulary } from '../mockData';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
@@ -85,6 +86,12 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   // AI Descriptions from subcollection
   type AIDescription = { text: string; meta?: { tone: string; length: string; generatedAt: any } };
   const [aiDescriptions, setAiDescriptions] = useState<Record<string, AIDescription>>({});
+  
+  // Inline AI generation controls
+  const [aiChannel, setAiChannel] = useState('RetailOps');
+  const [aiTone, setAiTone] = useState('Clean');
+  const [aiLength, setAiLength] = useState('Medium');
+  const [generatingInline, setGeneratingInline] = useState(false);
 
   // Helper to restore focus by field name + caret position
   const restoreFocus = useCallback(() => {
@@ -128,6 +135,63 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
     loadDescriptions();
   }, [product?.id]);
+
+  // Inline AI generation handler
+  const handleInlineGenerate = async () => {
+    if (!editableProduct?.id) {
+      setToastMessage({ text: 'Product ID required', type: 'error' });
+      return;
+    }
+
+    try {
+      setGeneratingInline(true);
+      
+      // Call describeProduct service
+      const result = await describeProduct({
+        productId: editableProduct.id,
+        channel: aiChannel,
+        tone: aiTone,
+        length: aiLength,
+      });
+
+      if (!result.text) {
+        setToastMessage({ text: 'No text returned from API', type: 'error' });
+        return;
+      }
+
+      // Write to Firestore subcollection
+      const descRef = doc(db, 'products', editableProduct.id, 'descriptions', aiChannel);
+      await setDoc(
+        descRef,
+        {
+          text: result.text,
+          meta: {
+            tone: aiTone,
+            length: aiLength,
+            generatedAt: serverTimestamp(),
+          },
+        },
+        { merge: true }
+      );
+
+      // Reload descriptions to show the new one
+      const descriptionsRef = collection(db, 'products', editableProduct.id, 'descriptions');
+      const snapshot = await getDocs(descriptionsRef);
+      const descriptions: Record<string, AIDescription> = {};
+      
+      snapshot.forEach((doc) => {
+        descriptions[doc.id] = doc.data() as AIDescription;
+      });
+      
+      setAiDescriptions(descriptions);
+      setToastMessage({ text: `Generated ${aiChannel} description`, type: 'success' });
+    } catch (error: any) {
+      console.error('[drawer] Inline generation failed:', error);
+      setToastMessage({ text: error?.message || 'Failed to generate description', type: 'error' });
+    } finally {
+      setGeneratingInline(false);
+    }
+  };
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -702,27 +766,73 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'generation' && (
                     <div className="space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-gray-800">AI-Generated Descriptions</h3>
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        window.open(`/ai/describe?productId=${editableProduct?.id || ''}`, '_blank');
-                                    }}
-                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        {/* Inline Generation Controls */}
+                        <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 className="text-base font-semibold text-gray-800">Generate AI Description</h3>
+                                    <p className="text-sm text-gray-500 mt-1">Create a new description for this product</p>
+                                </div>
+                                <a
+                                    href={`/ai/describe?productId=${editableProduct?.id || ''}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-indigo-600 hover:text-indigo-800 underline"
                                 >
-                                    🔗 Open AI Describe
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleGenerateClick}
-                                    disabled={isGenerating}
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
-                                >
-                                    {isGenerating ? 'Generating...' : '✨ Generate with AI'}
-                                </button>
+                                    More options →
+                                </a>
                             </div>
+                            
+                            <div className="grid grid-cols-3 gap-3 mb-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Channel</label>
+                                    <select
+                                        value={aiChannel}
+                                        onChange={(e) => setAiChannel(e.target.value)}
+                                        disabled={generatingInline}
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+                                    >
+                                        <option value="RetailOps">RetailOps</option>
+                                        <option value="Shopify">Shopify</option>
+                                        <option value="PDP">PDP</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Tone</label>
+                                    <select
+                                        value={aiTone}
+                                        onChange={(e) => setAiTone(e.target.value)}
+                                        disabled={generatingInline}
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+                                    >
+                                        <option value="Clean">Clean</option>
+                                        <option value="Hype">Hype</option>
+                                        <option value="Technical">Technical</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Length</label>
+                                    <select
+                                        value={aiLength}
+                                        onChange={(e) => setAiLength(e.target.value)}
+                                        disabled={generatingInline}
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+                                    >
+                                        <option value="Short">Short</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Long">Long</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button
+                                type="button"
+                                onClick={handleInlineGenerate}
+                                disabled={generatingInline || !editableProduct?.id}
+                                className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                            >
+                                {generatingInline ? 'Generating...' : '✨ Generate with AI'}
+                            </button>
                         </div>
 
                          {aiScore && (
@@ -738,7 +848,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         {/* AI Descriptions from subcollection */}
                         {Object.keys(aiDescriptions).length > 0 && (
                             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-3">Saved AI Descriptions</h4>
+                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Saved AI Descriptions</h4>
+                                <p className="text-xs text-gray-500 mb-3">Saved drafts live here. Generate again to create another version.</p>
                                 {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
                                     <div key={channel} className="mb-4 last:mb-0">
                                         <div className="flex justify-between items-start mb-2">
