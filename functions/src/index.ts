@@ -42,3 +42,62 @@ export const setUserRole = functions.https.onCall(async (data, context) => {
   
   return { ok: true };
 });
+
+/**
+ * Cloud function to preview export rules
+ * Returns sample product data with applied filters and transforms
+ */
+export const exportRulesPreview = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Sign in required');
+  }
+
+  const { schema, filters, transforms, limit = 5 } = data as {
+    schema: string[];
+    filters?: Record<string, any>;
+    transforms?: Array<{ type: string; field?: string; from?: any; to?: any }>;
+    limit?: number;
+  };
+
+  if (!schema || !Array.isArray(schema)) {
+    throw new functions.https.HttpsError('invalid-argument', 'Schema must be an array of field names');
+  }
+
+  // Fetch sample products
+  const snap = await admin.firestore().collection('products').limit(limit).get();
+  let rows = snap.docs.map(d => d.data());
+
+  // Apply filters
+  if (filters && Object.keys(filters).length > 0) {
+    rows = rows.filter(row => 
+      Object.entries(filters).every(([k, v]) => row[k] === v)
+    );
+  }
+
+  // Apply transforms
+  if (transforms && Array.isArray(transforms)) {
+    for (const t of transforms) {
+      if (t.type === 'uppercase' && t.field) {
+        const field = t.field;
+        rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().toUpperCase() }));
+      } else if (t.type === 'lowercase' && t.field) {
+        const field = t.field;
+        rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().toLowerCase() }));
+      } else if (t.type === 'trim' && t.field) {
+        const field = t.field;
+        rows = rows.map(r => ({ ...r, [field]: (r[field] || '').toString().trim() }));
+      } else if (t.type === 'map' && t.field && t.from !== undefined && t.to !== undefined) {
+        const field = t.field;
+        const { from, to } = t;
+        rows = rows.map(r => ({ ...r, [field]: r[field] === from ? to : r[field] }));
+      }
+    }
+  }
+
+  // Project only requested fields
+  const output = rows.map(r => 
+    schema.reduce((acc, f) => ({ ...acc, [f]: r[f] ?? '' }), {} as Record<string, any>)
+  );
+
+  return { rows: output };
+});

@@ -14,6 +14,7 @@ const tabs = [
   { to: '/settings/rules', label: 'Rules' },
   { to: '/settings/brands', label: 'Brands' },
   { to: '/settings/export', label: 'Export Settings' },
+  { to: '/settings/export-rules', label: 'Export Rules' },
 ];
 
 interface SettingsLayoutProps {
