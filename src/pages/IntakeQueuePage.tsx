@@ -46,10 +46,15 @@ const IntakeQueuePage: React.FC = () => {
       prev.map(p => (p.id === productId ? { ...p, ...updates } : p))
     );
     
+    // ** THE FIX IS HERE **
+    // We no longer update selectedProduct while the drawer is open,
+    // as this was causing the drawer to re-render and lose focus.
+    // The drawer is responsible for its own state once opened.
+    
     // Also update selectedProduct if it's the same one
-    if (selectedProduct?.id === productId) {
-      setSelectedProduct(prev => (prev ? { ...prev, ...updates } : null));
-    }
+    // if (selectedProduct?.id === productId) {
+    //   setSelectedProduct(prev => (prev ? { ...prev, ...updates } : null));
+    // }
   };
 
   // Count validated products (from all products, not filtered)
