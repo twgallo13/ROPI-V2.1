@@ -106,11 +106,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                   await firebaseUser.getIdToken(true);
                 }
               }
+              
+              // Set authReady after role is loaded
+              setAuthReady(true);
             },
             (error) => {
               console.error('[auth] Failed to subscribe to role:', error);
               setRole('specialist');
               setMissingAdminRole(false);
+              setAuthReady(true);
             }
           );
           
@@ -122,15 +126,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setUser(null);
           setRole(null);
           setMissingAdminRole(false);
+          setAuthReady(true);
         }
       } catch (e) {
         console.error('[auth] Failed to load role:', e);
         setUser(firebaseUser || null);
         setRole('specialist');
         setMissingAdminRole(false);
+        setAuthReady(true);
       } finally {
         setLoading(false);
-        setAuthReady(true);
       }
     });
 
