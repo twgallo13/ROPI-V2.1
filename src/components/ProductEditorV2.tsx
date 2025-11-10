@@ -478,22 +478,22 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
     <div className="fixed inset-0 overflow-hidden z-50" role="dialog" aria-modal="true">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gray-500 bg-opacity-75" onClick={onClose} aria-hidden="true"></div>
-        <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex sm:pl-16">
-          <div className="w-screen max-w-3xl">
+        <section className="absolute inset-y-0 right-0 max-w-full flex w-full sm:w-auto sm:pl-10">
+          <div className="w-full sm:w-screen sm:max-w-3xl">
             <div className="h-full flex flex-col bg-white shadow-xl">
               {/* Header */}
-              <header className="p-4 bg-gray-50 border-b border-gray-200">
+              <header className="p-3 sm:p-4 bg-gray-50 border-b border-gray-200">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="text-lg font-medium text-gray-900">{editableProduct.name}</h2>
-                    <p className="mt-1 text-sm text-gray-500">{editableProduct.brand} - {editableProduct.mpn}</p>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-base sm:text-lg font-medium text-gray-900 truncate">{editableProduct.name}</h2>
+                    <p className="mt-1 text-xs sm:text-sm text-gray-500 truncate">{editableProduct.brand} - {editableProduct.mpn}</p>
                   </div>
                   <button 
                     type="button" 
-                    className="p-1 rounded-md text-gray-400 hover:text-gray-500" 
+                    className="ml-3 p-2 rounded-md text-gray-400 hover:text-gray-500 flex-shrink-0 touch-manipulation" 
                     onClick={onClose}
                   >
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -501,12 +501,12 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
               </header>
 
               {/* Tabs */}
-              <nav className="px-4 py-2 border-b border-gray-200 bg-white">
-                <div className="flex space-x-2">
+              <nav className="px-2 sm:px-4 py-2 border-b border-gray-200 bg-white overflow-x-auto">
+                <div className="flex space-x-1 sm:space-x-2 min-w-max">
                   <button
                     type="button"
                     onClick={() => setActiveTab('attributes')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md ${
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md whitespace-nowrap touch-manipulation ${
                       activeTab === 'attributes'
                         ? 'bg-indigo-100 text-indigo-700'
                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
@@ -517,7 +517,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                   <button
                     type="button"
                     onClick={() => setActiveTab('facts')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md ${
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md whitespace-nowrap touch-manipulation ${
                       activeTab === 'facts'
                         ? 'bg-indigo-100 text-indigo-700'
                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
@@ -528,7 +528,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                   <button
                     type="button"
                     onClick={() => setActiveTab('ai')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md ${
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md whitespace-nowrap touch-manipulation ${
                       activeTab === 'ai'
                         ? 'bg-indigo-100 text-indigo-700'
                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
@@ -540,52 +540,52 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
               </nav>
 
               {/* Content */}
-              <div className="relative flex-1 p-6 overflow-y-auto">
+              <div className="relative flex-1 p-3 sm:p-6 overflow-y-auto -webkit-overflow-scrolling-touch pb-24 sm:pb-6">
                 {activeTab === 'attributes' && (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {vocab.loading && (
-                      <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded text-xs sm:text-sm text-blue-800">
                         Loading vocabulary...
                       </div>
                     )}
                     
-                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-y-4 sm:gap-y-6 sm:gap-x-4 sm:grid-cols-2">
                       {/* Name & MPN (read-only) */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Name</label>
                         <input 
                           type="text" 
                           value={editableProduct.name ?? ''} 
                           readOnly 
-                          className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" 
+                          className="block w-full text-sm sm:text-base border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed py-2.5" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">MPN</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">MPN</label>
                         <input 
                           type="text" 
                           value={editableProduct.mpn ?? ''} 
                           readOnly 
-                          className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" 
+                          className="block w-full text-sm sm:text-base border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed py-2.5" 
                         />
                       </div>
 
                       {/* Brand */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Brand</label>
                         <input 
                           type="text" 
                           name="brand" 
                           value={editableProduct.brand ?? ''} 
                           onChange={handleInputChange}
                           disabled={vocab.loading}
-                          className="block w-full border-gray-300 rounded-md shadow-sm disabled:bg-gray-100" 
+                          className="block w-full text-sm sm:text-base border-gray-300 rounded-md shadow-sm disabled:bg-gray-100 py-2.5" 
                         />
                       </div>
 
                       {/* Department */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Department</label>
                         <Select 
                           name="department"
                           value={editableProduct.department ?? ''} 
@@ -597,7 +597,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Class */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Class</label>
                         <Select 
                           name="class"
                           value={editableProduct.class ?? ''} 
@@ -609,7 +609,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Category */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Category</label>
                         <Select 
                           name="category"
                           value={editableProduct.category ?? ''} 
@@ -621,7 +621,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Age Group */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Age Group</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Age Group</label>
                         <Select 
                           name="ageGroup"
                           value={editableProduct.ageGroup ?? ''} 
@@ -633,7 +633,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Gender */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Gender</label>
                         <Select 
                           name="gender"
                           value={editableProduct.gender ?? ''} 
@@ -645,7 +645,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Material */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Material/Fabric</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Material/Fabric</label>
                         <Select 
                           name="materialFabric"
                           value={editableProduct.materialFabric ?? ''} 
@@ -658,7 +658,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Fit */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Fit</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Fit</label>
                         <Select 
                           name="fit"
                           value={editableProduct.fit ?? ''} 
@@ -671,7 +671,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Sports Team */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Sports Team</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Sports Team</label>
                         <Select 
                           name="sportsTeam"
                           value={editableProduct.sportsTeam ?? ''} 
@@ -684,7 +684,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* League */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">League</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">League</label>
                         <Select 
                           name="league"
                           value={editableProduct.league ?? ''} 
@@ -697,7 +697,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                       {/* Status */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Status</label>
                         <Select 
                           name="status"
                           value={editableProduct.status ?? ''} 
@@ -710,10 +710,10 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
                     {/* Websites */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Websites</label>
-                      <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Websites</label>
+                      <div className="space-y-3 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
                         {vocab.loading ? (
-                          <div className="text-sm text-gray-500">Loading...</div>
+                          <div className="text-xs sm:text-sm text-gray-500">Loading...</div>
                         ) : (
                           vocab.websites.map(website => (
                             <div key={website.value} className="flex items-center">
@@ -723,9 +723,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 value={website.value} 
                                 checked={editableProduct.websites.includes(website.value)} 
                                 onChange={handleWebsiteChange} 
-                                className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                className="h-5 w-5 text-indigo-600 border-gray-300 rounded touch-manipulation" 
                               />
-                              <label htmlFor={`website-${website.value}`} className="ml-2 block text-sm text-gray-900">
+                              <label htmlFor={`website-${website.value}`} className="ml-3 block text-xs sm:text-sm text-gray-900">
                                 {website.label}
                               </label>
                             </div>
@@ -735,9 +735,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     </div>
 
                     {/* Product Flags */}
-                    <div className="pt-6 border-t border-gray-200">
-                      <h3 className="text-md font-medium text-gray-900 mb-4">Product Flags</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-md border border-gray-200">
+                    <div className="pt-4 sm:pt-6 border-t border-gray-200">
+                      <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-3 sm:mb-4">Product Flags</h3>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-md border border-gray-200">
                         <div className="flex items-center">
                           <input 
                             id="map" 
@@ -745,9 +745,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             type="checkbox" 
                             checked={editableProduct.map} 
                             onChange={handleInputChange} 
-                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                            className="h-5 w-5 text-indigo-600 border-gray-300 rounded touch-manipulation" 
                           />
-                          <label htmlFor="map" className="ml-3 block text-sm font-medium text-gray-900">MAP</label>
+                          <label htmlFor="map" className="ml-3 block text-xs sm:text-sm font-medium text-gray-900">MAP</label>
                         </div>
                         <div className="flex items-center">
                           <input 
@@ -756,9 +756,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             type="checkbox" 
                             checked={editableProduct.promo} 
                             onChange={handleInputChange} 
-                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                            className="h-5 w-5 text-indigo-600 border-gray-300 rounded touch-manipulation" 
                           />
-                          <label htmlFor="promo" className="ml-3 block text-sm font-medium text-gray-900">Promo</label>
+                          <label htmlFor="promo" className="ml-3 block text-xs sm:text-sm font-medium text-gray-900">Promo</label>
                         </div>
                         <div className="flex items-center">
                           <input 
@@ -767,9 +767,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             type="checkbox" 
                             checked={editableProduct.hype} 
                             onChange={handleInputChange} 
-                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                            className="h-5 w-5 text-indigo-600 border-gray-300 rounded touch-manipulation" 
                           />
-                          <label htmlFor="hype" className="ml-3 block text-sm font-medium text-gray-900">HYPE</label>
+                          <label htmlFor="hype" className="ml-3 block text-xs sm:text-sm font-medium text-gray-900">HYPE</label>
                         </div>
                         <div className="flex items-center">
                           <input 
@@ -778,16 +778,16 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             type="checkbox" 
                             checked={editableProduct.fastfashion} 
                             onChange={handleInputChange} 
-                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                            className="h-5 w-5 text-indigo-600 border-gray-300 rounded touch-manipulation" 
                           />
-                          <label htmlFor="fastfashion" className="ml-3 block text-sm font-medium text-gray-900">Fast Fashion</label>
+                          <label htmlFor="fastfashion" className="ml-3 block text-xs sm:text-sm font-medium text-gray-900">Fast Fashion</label>
                         </div>
                       </div>
                     </div>
 
                     {/* Featured */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Featured on Launch Hub</label>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Featured on Launch Hub</label>
                       <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
                         <div className="flex items-center">
                           <input 
@@ -796,9 +796,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             type="checkbox" 
                             checked={editableProduct.featured} 
                             onChange={handleInputChange} 
-                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                            className="h-5 w-5 text-indigo-600 border-gray-300 rounded touch-manipulation" 
                           />
-                          <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">
+                          <label htmlFor="featured" className="ml-3 block text-xs sm:text-sm text-gray-900">
                             Make this a featured product
                           </label>
                         </div>
@@ -1099,11 +1099,11 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
               </div>
 
               {/* Footer */}
-              <footer className="flex-shrink-0 px-4 py-4 flex justify-between items-center border-t border-gray-200 bg-gray-50">
-                <div className="flex items-center">
+              <footer className="fixed sm:relative bottom-0 left-0 right-0 sm:flex-shrink-0 px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center border-t border-gray-200 bg-white shadow-lg sm:shadow-none z-10 space-y-2 sm:space-y-0">
+                <div className="flex items-center justify-center sm:justify-start order-2 sm:order-1">
                   {savingState === 'saving' && (
-                    <span className="text-sm text-gray-600 flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <span className="text-xs sm:text-sm text-gray-600 flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-3 w-3 sm:h-4 sm:w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -1111,8 +1111,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     </span>
                   )}
                   {savingState === 'saved' && (
-                    <span className="text-sm text-green-600 flex items-center">
-                      <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <span className="text-xs sm:text-sm text-green-600 flex items-center">
+                      <svg className="mr-1 h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                       </svg>
                       Saved ✓
@@ -1120,9 +1120,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                   )}
                 </div>
                 
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-col items-stretch sm:items-end gap-2 order-1 sm:order-2">
                   {!canApprove() && getMissingFields().length > 0 && (
-                    <div className="text-xs text-red-600">
+                    <div className="text-xs text-red-600 text-center sm:text-right">
                       Missing: {getMissingFields().join(', ')}
                     </div>
                   )}
@@ -1130,7 +1130,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                   <div className="flex space-x-2">
                     <button 
                       type="button" 
-                      className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" 
+                      className="flex-1 sm:flex-none bg-white py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 touch-manipulation" 
                       onClick={onClose}
                     >
                       Cancel
@@ -1138,7 +1138,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     <button 
                       type="button"
                       onClick={() => saveProduct()}
-                      className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                      className="flex-1 sm:flex-none inline-flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 touch-manipulation"
                     >
                       Save
                     </button>
@@ -1146,7 +1146,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                       type="button" 
                       onClick={handleApprove}
                       disabled={!canApprove()}
-                      className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      className="flex-1 sm:flex-none inline-flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed touch-manipulation"
                       title={!canApprove() ? `Missing: ${getMissingFields().join(', ')}` : 'Approve & mark validated'}
                     >
                       Approve
