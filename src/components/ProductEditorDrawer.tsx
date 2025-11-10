@@ -262,6 +262,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           category: editableProduct.category,
           gender: editableProduct.gender,
           ageGroup: editableProduct.ageGroup,
+          price: (editableProduct as any).price ?? null
         }
       });
 
