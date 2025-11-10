@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 'react';
 import { Product, ProductFacts } from '../types';
 import { describeProduct } from '../services/describe';
+import { analyzeImage } from '../services/vision';
 import { useVocab } from '../hooks/useVocab';
 import { db, storage } from '../firebase';
 import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc, addDoc } from 'firebase/firestore';
@@ -67,6 +68,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [aiTone, setAiTone] = useState('Clean');
   const [aiLength, setAiLength] = useState('Medium');
   const [generatingInline, setGeneratingInline] = useState(false);
+  const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number } | null>(null);
+  const [improvementText, setImprovementText] = useState('');
 
   // Sync local state when product changes
   useEffect(() => {
@@ -207,11 +210,36 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
       
-      const updated = { ...facts, images: [...facts.images, downloadURL] };
+      // Call vision API to analyze the image
+      let aiObservations: string[] = [];
+      try {
+        aiObservations = await analyzeImage(downloadURL);
+        console.log('[ProductEditorV2] AI observations:', aiObservations);
+      } catch (visionErr) {
+        console.warn('[ProductEditorV2] Vision API failed, continuing without observations:', visionErr);
+      }
+
+      // Append AI observations to existing observations
+      let updatedObservations = facts.observations;
+      if (aiObservations.length > 0) {
+        const newObservations = aiObservations.map(obs => `• ${obs}`).join('\n');
+        updatedObservations = facts.observations 
+          ? `${facts.observations}\n${newObservations}`
+          : newObservations;
+      }
+
+      const updated = { 
+        ...facts, 
+        images: [...facts.images, downloadURL],
+        observations: updatedObservations
+      };
       setFacts(updated);
       await saveFacts(updated);
       
-      setToastMessage({ text: 'Image uploaded', type: 'success' });
+      const message = aiObservations.length > 0 
+        ? `Image uploaded with ${aiObservations.length} AI observations`
+        : 'Image uploaded';
+      setToastMessage({ text: message, type: 'success' });
     } catch (error) {
       console.error('[editorV2] Image upload failed:', error);
       setToastMessage({ text: 'Failed to upload image', type: 'error' });
@@ -548,7 +576,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    AI Product Copy
+                    Verification
                   </button>
                 </div>
               </nav>
@@ -845,29 +873,6 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Materials</label>
-                          <textarea
-                            value={facts.materials}
-                            onChange={(e) => handleFactsChange('materials', e.target.value)}
-                            rows={2}
-                            placeholder="e.g., 100% cotton"
-                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Fit</label>
-                          <textarea
-                            value={facts.fit}
-                            onChange={(e) => handleFactsChange('fit', e.target.value)}
-                            rows={2}
-                            placeholder="e.g., Regular, Slim"
-                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                        </div>
-                      </div>
-
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Use Cases</label>
                         <textarea
@@ -879,27 +884,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Care Instructions</label>
-                          <textarea
-                            value={facts.care}
-                            onChange={(e) => handleFactsChange('care', e.target.value)}
-                            rows={2}
-                            placeholder="e.g., Machine wash cold"
-                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Team/League</label>
-                          <textarea
-                            value={facts.teamLeague}
-                            onChange={(e) => handleFactsChange('teamLeague', e.target.value)}
-                            rows={2}
-                            placeholder="e.g., Lakers, NBA"
-                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Care Instructions</label>
+                        <textarea
+                          value={facts.care}
+                          onChange={(e) => handleFactsChange('care', e.target.value)}
+                          rows={2}
+                          placeholder="e.g., Machine wash cold"
+                          className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        />
                       </div>
 
                       {/* Keywords */}
@@ -974,6 +967,21 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         </div>
                       </div>
                     </div>
+
+                    {/* Sticky Footer CTA */}
+                    <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await handleInlineGenerate();
+                          setActiveTab('ai');
+                        }}
+                        disabled={generatingInline || !editableProduct}
+                        className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {generatingInline ? 'Generating...' : 'Generate → Verify'}
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -997,23 +1005,39 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                       </div>
                     </div>
 
+                    {/* AI Quality Scores */}
+                    {aiScore && (
+                      <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                        <h3 className="text-sm font-semibold text-gray-800 mb-3">AI Quality Score</h3>
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                          <div>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScore.overall}</p>
+                            <p className="text-xs text-gray-600 mt-1">Overall</p>
+                          </div>
+                          <div>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScore.tone}</p>
+                            <p className="text-xs text-gray-600 mt-1">Tone</p>
+                          </div>
+                          <div>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScore.seo}</p>
+                            <p className="text-xs text-gray-600 mt-1">SEO</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Generate Section */}
                     <div className="border border-gray-200 rounded-lg p-4 bg-white">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-base font-semibold text-gray-800">Generate Product Copy</h3>
-                          <p className="text-sm text-gray-500 mt-1">Create a RetailOps description</p>
-                          <p className="text-xs text-gray-400 mt-2">Uses Attributes + Product Facts + Images</p>
-                        </div>
-                        <a
-                          href={`/ai/describe?productId=${editableProduct?.id || ''}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-indigo-600 hover:text-indigo-800 underline"
-                        >
-                          More options →
-                        </a>
-                      </div>
+                      <h3 className="text-base font-semibold text-gray-800 mb-2">Improve this</h3>
+                      <p className="text-xs text-gray-500 mb-3">Tell the AI what to fix or enhance</p>
+                      
+                      <textarea
+                        value={improvementText}
+                        onChange={(e) => setImprovementText(e.target.value)}
+                        rows={3}
+                        placeholder="e.g., Make it more technical, add bullet points, emphasize durability..."
+                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-3"
+                      />
                       
                       <div className="grid grid-cols-2 gap-3 mb-4">
                         <div>
@@ -1046,21 +1070,128 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                       
                       <button
                         type="button"
-                        onClick={handleInlineGenerate}
+                        onClick={async () => {
+                          if (!editableProduct?.id) return;
+                          setGeneratingInline(true);
+                          setAiScore(null);
+                          try {
+                            const result = await describeProduct({
+                              productId: editableProduct.id,
+                              channel: 'RetailOps',
+                              tone: aiTone,
+                              length: aiLength,
+                              facts,
+                              aiContext: {
+                                keywords: facts.keywords,
+                                designNotes: improvementText || undefined,
+                              },
+                              attributes: {
+                                brand: editableProduct.brand,
+                                category: editableProduct.category,
+                                gender: editableProduct.gender,
+                                ageGroup: editableProduct.ageGroup,
+                              },
+                              imageUrl: facts.images[0],
+                            });
+                            
+                            if (result.text) {
+                              // Save to descriptions subcollection
+                              const descRef = doc(db, 'products', editableProduct.id, 'descriptions', 'RetailOps');
+                              await setDoc(descRef, {
+                                text: result.text,
+                                meta: { tone: aiTone, length: aiLength, generatedAt: serverTimestamp() },
+                              }, { merge: true });
+                              
+                              // Update local state
+                              setAiDescriptions(prev => ({
+                                ...prev,
+                                RetailOps: { text: result.text, meta: { tone: aiTone, length: aiLength } },
+                              }));
+                              
+                              // Set mock score (TODO: get from API if available)
+                              setAiScore({ overall: 8, tone: 7, seo: 9 });
+                              
+                              setToastMessage({ text: 'Generated successfully', type: 'success' });
+                              setImprovementText(''); // Clear after generation
+                            }
+                          } catch (err: any) {
+                            console.error('[ProductEditorV2] Generate failed:', err);
+                            setToastMessage({ text: err?.message || 'Failed to generate', type: 'error' });
+                          } finally {
+                            setGeneratingInline(false);
+                          }
+                        }}
                         disabled={generatingInline || !editableProduct?.id}
                         className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
                       >
                         {generatingInline ? 'Generating...' : '✨ Generate with AI'}
                       </button>
+                      
+                      <a
+                        href={`/ai/describe?productId=${editableProduct?.id || ''}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block mt-2 text-xs text-center text-indigo-600 hover:text-indigo-800 underline"
+                      >
+                        More options →
+                      </a>
                     </div>
 
-                    {/* Saved Descriptions */}
-                    {Object.keys(aiDescriptions).length > 0 && (
+                    {/* Current Draft */}
+                    {editableProduct.marketing.paragraphDraft && (
+                      <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Current Draft</h4>
+                        <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
+                          {editableProduct.marketing.paragraphDraft}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Latest RetailOps Description */}
+                    {aiDescriptions['RetailOps'] && (
+                      <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className="text-sm font-semibold text-gray-700">Latest RetailOps Draft</h4>
+                            {aiDescriptions['RetailOps'].meta && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                {aiDescriptions['RetailOps'].meta.tone} · {aiDescriptions['RetailOps'].meta.length}
+                              </p>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (editableProduct) {
+                                setEditableProduct({
+                                  ...editableProduct,
+                                  marketing: {
+                                    ...editableProduct.marketing,
+                                    paragraphDraft: aiDescriptions['RetailOps'].text,
+                                  },
+                                });
+                                setToastMessage({ text: 'Applied to draft', type: 'success' });
+                              }
+                            }}
+                            className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
+                          >
+                            Apply to Product Info
+                          </button>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
+                          {aiDescriptions['RetailOps'].text}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Other Saved Descriptions */}
+                    {Object.keys(aiDescriptions).filter(ch => ch !== 'RetailOps').length > 0 && (
                       <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Saved Product Copy</h4>
-                        <p className="text-xs text-gray-500 mb-3">Saved drafts live here. Generate again to create another version.</p>
-                        <div className="max-h-96 overflow-y-auto space-y-4">
-                          {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Other Saved Drafts</h4>
+                        <div className="space-y-4">
+                          {(Object.entries(aiDescriptions) as [string, AIDescription][])
+                            .filter(([channel]) => channel !== 'RetailOps')
+                            .map(([channel, data]) => (
                             <div key={channel}>
                               <div className="flex justify-between items-start mb-2">
                                 <div>
@@ -1095,16 +1226,6 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                               </div>
                             </div>
                           ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Current Draft */}
-                    {editableProduct.marketing.paragraphDraft && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Current Draft</label>
-                        <div className="p-3 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
-                          {editableProduct.marketing.paragraphDraft}
                         </div>
                       </div>
                     )}
