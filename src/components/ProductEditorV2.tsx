@@ -3,7 +3,7 @@ import { Product, ProductFacts } from '../types';
 import { describeProduct } from '../services/describe';
 import { useVocab } from '../hooks/useVocab';
 import { db, storage } from '../firebase';
-import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Toast from './Toast';
 import Select from './ui/Select';
@@ -463,6 +463,20 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       },
       { showToast: 'Approved & ready to export', keepOpen: true }
     );
+
+    // Enqueue for RetailOps export
+    try {
+      await addDoc(collection(db, 'exportQueue'), {
+        productId: editableProduct.id,
+        channel: 'RetailOps',
+        requestedAt: serverTimestamp(),
+        requestedBy: 'system', // TODO: get from auth context
+      });
+      console.log('[ProductEditorV2] Enqueued for export:', editableProduct.id);
+    } catch (err) {
+      console.error('[ProductEditorV2] Failed to enqueue export:', err);
+      // Don't block approval if queue fails
+    }
   }, [editableProduct, product, aiDescriptions, getMissingFields, saveProduct]);
 
   // Cleanup timeouts
