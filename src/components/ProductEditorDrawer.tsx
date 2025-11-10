@@ -249,7 +249,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       // Always use RetailOps channel for primary inline generation
       const channel = 'RetailOps';
       
-      // Call describeProduct service with facts, aiContext, and attributes
+      // Call describeProduct service with facts, aiContext, attributes, and first image if available
       const result = await describeProduct({
         productId: editableProduct.id,
         channel,
@@ -263,7 +263,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           gender: editableProduct.gender,
           ageGroup: editableProduct.ageGroup,
           price: (editableProduct as any).price ?? null
-        }
+        },
+        imageUrl: facts.images[0] // first image if available
       });
 
       if (!result.text) {
