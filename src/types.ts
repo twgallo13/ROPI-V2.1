@@ -7,6 +7,20 @@ export type Variant = {
   price: number;
 };
 
+// Product Facts stored in products/{id}/facts subcollection
+export type ProductFacts = {
+  observations: string;
+  materials: string;
+  fit: string;
+  useCases: string;
+  care: string;
+  teamLeague: string;
+  keywords: string[];
+  images: string[]; // downloadURLs from Firebase Storage
+  updatedBy: string;
+  updatedAt: any; // Firestore Timestamp
+};
+
 // Based on Section 3.3 / C.1 and expanded
 export type Product = {
   id: string; // This is the 'styleId'

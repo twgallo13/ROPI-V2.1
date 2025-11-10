@@ -3,6 +3,16 @@ export async function describeProduct(payload: {
   channel: string;
   tone: string;
   length: string;
+  facts?: {
+    observations?: string;
+    materials?: string;
+    fit?: string;
+    useCases?: string;
+    care?: string;
+    teamLeague?: string;
+    keywords?: string[];
+  };
+  imageUrl?: string;
 }) {
   const timeout = 10000; // 10 seconds
   const retryDelay = 500; // 500ms before retry
