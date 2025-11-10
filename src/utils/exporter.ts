@@ -127,13 +127,13 @@ function buildRow(
   
   // Add AI enrichment fields if enabled
   if (includeAI && product.marketing) {
-    row['AI Title'] = product.marketing.title || '';
-    row['AI Bullets'] = Array.isArray(product.marketing.bullets) 
+    row['SEO Title'] = product.marketing.title || '';
+    row['SEO Keywords'] = Array.isArray(product.marketing.bullets) 
       ? product.marketing.bullets.join(' | ') 
       : '';
-    row['AI SEO'] = product.marketing.seo || '';
-    row['AI Paragraph Draft'] = product.marketing.paragraphDraft || '';
-    row['AI Paragraph Final'] = product.marketing.paragraphFinal || '';
+    row['SEO Description'] = product.marketing.seo || '';
+    row['Marketing Description (Draft)'] = product.marketing.paragraphDraft || '';
+    row['Marketing Description (Final)'] = product.marketing.paragraphFinal || '';
   }
   
   return row;

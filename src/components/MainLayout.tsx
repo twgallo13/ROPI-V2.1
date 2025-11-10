@@ -28,7 +28,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 Import
               </Link>
               <Link to="/ai/describe" className="block p-2 rounded hover:bg-gray-700">
-                AI Describe
+                AI Product Copy
               </Link>
               <Link to="/settings" className="block p-2 rounded hover:bg-gray-700">
                 Settings

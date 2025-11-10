@@ -1,10 +1,12 @@
 import React, { useState, useEffect, ChangeEvent, useRef, useCallback } from 'react';
-import { Product } from '../types';
+import { Product, ProductFacts } from '../types';
 // Replaced mock AI service with Gemini client
 import { generateProductMarketing } from '../services/geminiService';
+import { describeProduct } from '../services/describe';
 import { mockVocabulary } from '../mockData';
-import { db } from '../firebase';
-import { doc, setDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
+import { db, storage } from '../firebase';
+import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Toast from './Toast';
 import Select from './ui/Select';
 
@@ -85,6 +87,35 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   // AI Descriptions from subcollection
   type AIDescription = { text: string; meta?: { tone: string; length: string; generatedAt: any } };
   const [aiDescriptions, setAiDescriptions] = useState<Record<string, AIDescription>>({});
+  
+  // Inline AI generation controls
+  const [aiChannel, setAiChannel] = useState('RetailOps');
+  const [aiTone, setAiTone] = useState('Clean');
+  const [aiLength, setAiLength] = useState('Medium');
+  const [generatingInline, setGeneratingInline] = useState(false);
+
+  // Product Facts state
+  const [facts, setFacts] = useState<ProductFacts>({
+    observations: '',
+    materials: '',
+    fit: '',
+    useCases: '',
+    care: '',
+    teamLeague: '',
+    keywords: [],
+    images: [],
+    updatedBy: '',
+    updatedAt: null,
+  });
+  const [factsSaving, setFactsSaving] = useState(false);
+  const [factsLastSaved, setFactsLastSaved] = useState<Date | null>(null);
+  const [factsFirstSave, setFactsFirstSave] = useState(true);
+  const [keywordInput, setKeywordInput] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [brandCheatSheet, setBrandCheatSheet] = useState<any>(null);
+  const [cheatSheetExpanded, setCheatSheetExpanded] = useState(false);
+  const factsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Helper to restore focus by field name + caret position
   const restoreFocus = useCallback(() => {
@@ -129,11 +160,277 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     loadDescriptions();
   }, [product?.id]);
 
+  // Load Product Facts
+  useEffect(() => {
+    if (!product?.id) {
+      setFacts({
+        observations: '',
+        materials: '',
+        fit: '',
+        useCases: '',
+        care: '',
+        teamLeague: '',
+        keywords: [],
+        images: [],
+        updatedBy: '',
+        updatedAt: null,
+      });
+      setFactsFirstSave(true);
+      return;
+    }
+
+    const loadFacts = async () => {
+      try {
+        const factsRef = doc(db, 'products', product.id, 'facts', 'data');
+        const snapshot = await getDoc(factsRef);
+        
+        if (snapshot.exists()) {
+          setFacts(snapshot.data() as ProductFacts);
+          setFactsFirstSave(false);
+        } else {
+          setFacts({
+            observations: '',
+            materials: '',
+            fit: '',
+            useCases: '',
+            care: '',
+            teamLeague: '',
+            keywords: [],
+            images: [],
+            updatedBy: '',
+            updatedAt: null,
+          });
+          setFactsFirstSave(true);
+        }
+      } catch (error) {
+        console.error('[drawer] Failed to load facts:', error);
+      }
+    };
+
+    loadFacts();
+  }, [product?.id]);
+
+  // Load Brand Cheat Sheet
+  useEffect(() => {
+    if (!product?.brand) {
+      setBrandCheatSheet(null);
+      return;
+    }
+
+    const loadCheatSheet = async () => {
+      try {
+        const cheatRef = doc(db, 'brand_rules', product.brand, 'commonFacts', 'data');
+        const snapshot = await getDoc(cheatRef);
+        
+        if (snapshot.exists()) {
+          setBrandCheatSheet(snapshot.data());
+        } else {
+          setBrandCheatSheet(null);
+        }
+      } catch (error) {
+        console.error('[drawer] Failed to load brand cheat sheet:', error);
+        setBrandCheatSheet(null);
+      }
+    };
+
+    loadCheatSheet();
+  }, [product?.brand]);
+
+  // Inline AI generation handler
+  const handleInlineGenerate = async () => {
+    if (!editableProduct?.id) {
+      setToastMessage({ text: 'Product ID required', type: 'error' });
+      return;
+    }
+
+    try {
+      setGeneratingInline(true);
+      
+      // Always use RetailOps channel for primary inline generation
+      const channel = 'RetailOps';
+      
+      // Call describeProduct service with facts and image
+      const result = await describeProduct({
+        productId: editableProduct.id,
+        channel,
+        tone: aiTone,
+        length: aiLength,
+        facts: {
+          observations: facts.observations,
+          materials: facts.materials,
+          fit: facts.fit,
+          useCases: facts.useCases,
+          care: facts.care,
+          teamLeague: facts.teamLeague,
+          keywords: facts.keywords,
+        },
+        imageUrl: facts.images[0], // Include first image if available
+      });
+
+      if (!result.text) {
+        setToastMessage({ text: 'No text returned from API', type: 'error' });
+        return;
+      }
+
+      // Write to Firestore subcollection
+      const descRef = doc(db, 'products', editableProduct.id, 'descriptions', channel);
+      await setDoc(
+        descRef,
+        {
+          text: result.text,
+          meta: {
+            tone: aiTone,
+            length: aiLength,
+            generatedAt: serverTimestamp(),
+          },
+        },
+        { merge: true }
+      );
+
+      // Auto-apply to paragraphDraft field
+      setEditableProduct({
+        ...editableProduct,
+        marketing: {
+          ...editableProduct.marketing,
+          paragraphDraft: result.text,
+        },
+      });
+      setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
+
+      // Reload descriptions to show the new one
+      const descriptionsRef = collection(db, 'products', editableProduct.id, 'descriptions');
+      const snapshot = await getDocs(descriptionsRef);
+      const descriptions: Record<string, AIDescription> = {};
+      
+      snapshot.forEach((doc) => {
+        descriptions[doc.id] = doc.data() as AIDescription;
+      });
+      
+      setAiDescriptions(descriptions);
+      setToastMessage({ text: 'Generated and applied to Product Info', type: 'success' });
+    } catch (error: any) {
+      console.error('[drawer] Inline generation failed:', error);
+      setToastMessage({ text: error?.message || 'Failed to generate description', type: 'error' });
+    } finally {
+      setGeneratingInline(false);
+    }
+  };
+
+  // Save facts with debounce
+  const saveFacts = async (updatedFacts: ProductFacts) => {
+    if (!product?.id) return;
+
+    try {
+      setFactsSaving(true);
+      const factsRef = doc(db, 'products', product.id, 'facts', 'data');
+      await setDoc(factsRef, {
+        ...updatedFacts,
+        updatedAt: serverTimestamp(),
+        updatedBy: 'current-user', // TODO: Get from auth context
+      }, { merge: true });
+      
+      setFactsLastSaved(new Date());
+      
+      if (factsFirstSave) {
+        setToastMessage({ text: 'Product information saved', type: 'success' });
+        setFactsFirstSave(false);
+      }
+    } catch (error) {
+      console.error('[drawer] Failed to save facts:', error);
+      setToastMessage({ text: 'Failed to save product information', type: 'error' });
+    } finally {
+      setFactsSaving(false);
+    }
+  };
+
+  // Handle facts field changes with debounce
+  const handleFactsChange = (field: keyof ProductFacts, value: string) => {
+    const updated = { ...facts, [field]: value };
+    setFacts(updated);
+
+    if (factsTimeoutRef.current) clearTimeout(factsTimeoutRef.current);
+    factsTimeoutRef.current = setTimeout(() => {
+      saveFacts(updated);
+    }, 500);
+  };
+
+  // Add keyword
+  const handleAddKeyword = () => {
+    if (!keywordInput.trim()) return;
+    const updated = { ...facts, keywords: [...facts.keywords, keywordInput.trim()] };
+    setFacts(updated);
+    setKeywordInput('');
+    saveFacts(updated);
+  };
+
+  // Remove keyword
+  const handleRemoveKeyword = (index: number) => {
+    const updated = { ...facts, keywords: facts.keywords.filter((_, i) => i !== index) };
+    setFacts(updated);
+    saveFacts(updated);
+  };
+
+  // Handle image upload
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!product?.id || !e.target.files || e.target.files.length === 0) return;
+
+    const file = e.target.files[0];
+    setUploading(true);
+
+    try {
+      const storageRef = ref(storage, `products/${product.id}/images/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      const updated = { ...facts, images: [...facts.images, downloadURL] };
+      setFacts(updated);
+      await saveFacts(updated);
+      
+      setToastMessage({ text: 'Image uploaded', type: 'success' });
+    } catch (error) {
+      console.error('[drawer] Image upload failed:', error);
+      setToastMessage({ text: 'Failed to upload image', type: 'error' });
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  // Remove image
+  const handleRemoveImage = async (imageUrl: string, index: number) => {
+    if (!product?.id) return;
+
+    try {
+      // Delete from Storage
+      const imageRef = ref(storage, imageUrl);
+      await deleteObject(imageRef);
+      
+      // Update facts
+      const updated = { ...facts, images: facts.images.filter((_, i) => i !== index) };
+      setFacts(updated);
+      await saveFacts(updated);
+      
+      setToastMessage({ text: 'Image removed', type: 'success' });
+    } catch (error) {
+      console.error('[drawer] Failed to remove image:', error);
+      setToastMessage({ text: 'Failed to remove image', type: 'error' });
+    }
+  };
+
+  // Copy from brand cheat sheet
+  const handleCopyFromCheatSheet = (field: keyof ProductFacts, value: string) => {
+    const updated = { ...facts, [field]: value };
+    setFacts(updated);
+    saveFacts(updated);
+    setToastMessage({ text: `Copied to ${field}`, type: 'success' });
+  };
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
       if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
+      if (factsTimeoutRef.current) clearTimeout(factsTimeoutRef.current);
     };
   }, []);
 
@@ -702,27 +999,248 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'generation' && (
                     <div className="space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-gray-800">AI-Generated Descriptions</h3>
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        window.open(`/ai/describe?productId=${editableProduct?.id || ''}`, '_blank');
-                                    }}
-                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                                >
-                                    🔗 Open AI Describe
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleGenerateClick}
-                                    disabled={isGenerating}
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
-                                >
-                                    {isGenerating ? 'Generating...' : '✨ Generate with AI'}
-                                </button>
+                        {/* Product Information (Facts) */}
+                        <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                            <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-base font-semibold text-gray-800">Product Information</h3>
+                                <div className="flex items-center gap-2 text-xs text-gray-500">
+                                    {factsSaving && <span>Saving...</span>}
+                                    {!factsSaving && factsLastSaved && (
+                                        <span>Saved · {Math.floor((Date.now() - factsLastSaved.getTime()) / 1000)}s ago</span>
+                                    )}
+                                </div>
                             </div>
+
+                            {/* Brand Cheat Sheet */}
+                            {brandCheatSheet && (
+                                <div className="mb-4 border border-indigo-200 rounded-lg bg-indigo-50">
+                                    <button
+                                        type="button"
+                                        onClick={() => setCheatSheetExpanded(!cheatSheetExpanded)}
+                                        className="w-full px-3 py-2 flex justify-between items-center text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+                                    >
+                                        <span>💡 {product?.brand} Brand Cheat Sheet</span>
+                                        <span>{cheatSheetExpanded ? '▼' : '▶'}</span>
+                                    </button>
+                                    {cheatSheetExpanded && (
+                                        <div className="px-3 pb-3 space-y-2">
+                                            {Object.entries(brandCheatSheet).map(([key, value]) => (
+                                                <div key={key} className="flex justify-between items-start gap-2 text-xs">
+                                                    <div className="flex-1">
+                                                        <strong className="text-gray-700">{key}:</strong>
+                                                        <p className="text-gray-600">{String(value)}</p>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleCopyFromCheatSheet(key as keyof ProductFacts, String(value))}
+                                                        className="px-2 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                                    >
+                                                        Copy
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Observations</label>
+                                    <textarea
+                                        value={facts.observations}
+                                        onChange={(e) => handleFactsChange('observations', e.target.value)}
+                                        rows={3}
+                                        placeholder="What stands out about this product?"
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">Materials</label>
+                                        <textarea
+                                            value={facts.materials}
+                                            onChange={(e) => handleFactsChange('materials', e.target.value)}
+                                            rows={2}
+                                            placeholder="e.g., 100% cotton, polyester blend"
+                                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">Fit</label>
+                                        <textarea
+                                            value={facts.fit}
+                                            onChange={(e) => handleFactsChange('fit', e.target.value)}
+                                            rows={2}
+                                            placeholder="e.g., Regular, Slim, Oversized"
+                                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Use Cases</label>
+                                    <textarea
+                                        value={facts.useCases}
+                                        onChange={(e) => handleFactsChange('useCases', e.target.value)}
+                                        rows={2}
+                                        placeholder="e.g., Athletic, Casual, Work"
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">Care Instructions</label>
+                                        <textarea
+                                            value={facts.care}
+                                            onChange={(e) => handleFactsChange('care', e.target.value)}
+                                            rows={2}
+                                            placeholder="e.g., Machine wash cold"
+                                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">Team/League</label>
+                                        <textarea
+                                            value={facts.teamLeague}
+                                            onChange={(e) => handleFactsChange('teamLeague', e.target.value)}
+                                            rows={2}
+                                            placeholder="e.g., Lakers, NBA"
+                                            className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Keywords */}
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Keywords</label>
+                                    <div className="flex gap-2 mb-2">
+                                        <input
+                                            type="text"
+                                            value={keywordInput}
+                                            onChange={(e) => setKeywordInput(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddKeyword())}
+                                            placeholder="Add keyword..."
+                                            className="flex-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleAddKeyword}
+                                            className="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {facts.keywords.map((keyword, i) => (
+                                            <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                                                {keyword}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveKeyword(i)}
+                                                    className="text-gray-500 hover:text-red-600"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Image Upload */}
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Product Images</label>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        capture="environment"
+                                        onChange={handleImageUpload}
+                                        disabled={uploading}
+                                        className="hidden"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={uploading}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100"
+                                    >
+                                        {uploading ? 'Uploading...' : '📷 Upload / Take Photo'}
+                                    </button>
+                                    <div className="mt-2 grid grid-cols-4 gap-2">
+                                        {facts.images.map((url, i) => (
+                                            <div key={i} className="relative group">
+                                                <img src={url} alt={`Product ${i + 1}`} className="w-full h-20 object-cover rounded border border-gray-200" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveImage(url, i)}
+                                                    className="absolute top-0 right-0 p-1 bg-red-600 text-white text-xs rounded-bl opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Inline Generation Controls */}
+                        <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 className="text-base font-semibold text-gray-800">Generate Product Copy</h3>
+                                    <p className="text-sm text-gray-500 mt-1">Create a RetailOps description for this product</p>
+                                </div>
+                                <a
+                                    href={`/ai/describe?productId=${editableProduct?.id || ''}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-indigo-600 hover:text-indigo-800 underline"
+                                >
+                                    More options →
+                                </a>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3 mb-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Tone</label>
+                                    <select
+                                        value={aiTone}
+                                        onChange={(e) => setAiTone(e.target.value)}
+                                        disabled={generatingInline}
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+                                    >
+                                        <option value="Clean">Clean</option>
+                                        <option value="Hype">Hype</option>
+                                        <option value="Technical">Technical</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Length</label>
+                                    <select
+                                        value={aiLength}
+                                        onChange={(e) => setAiLength(e.target.value)}
+                                        disabled={generatingInline}
+                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+                                    >
+                                        <option value="Short">Short</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Long">Long</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button
+                                type="button"
+                                onClick={handleInlineGenerate}
+                                disabled={generatingInline || !editableProduct?.id}
+                                className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                            >
+                                {generatingInline ? 'Generating...' : '✨ Generate with AI'}
+                            </button>
                         </div>
 
                          {aiScore && (
@@ -738,51 +1256,54 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         {/* AI Descriptions from subcollection */}
                         {Object.keys(aiDescriptions).length > 0 && (
                             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-3">Saved AI Descriptions</h4>
-                                {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
-                                    <div key={channel} className="mb-4 last:mb-0">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
-                                                <span className="text-sm font-medium text-indigo-600">{channel}</span>
-                                                {data.meta && (
-                                                    <span className="ml-2 text-xs text-gray-500">
-                                                        {data.meta.tone} · {data.meta.length}
-                                                    </span>
-                                                )}
+                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Saved Product Copy</h4>
+                                <p className="text-xs text-gray-500 mb-3">Saved drafts live here. Generate again to create another version.</p>
+                                <div className="max-h-96 overflow-y-auto">
+                                    {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
+                                        <div key={channel} className="mb-4 last:mb-0">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <span className="text-sm font-medium text-indigo-600">{channel}</span>
+                                                    {data.meta && (
+                                                        <span className="ml-2 text-xs text-gray-500">
+                                                            {data.meta.tone} · {data.meta.length}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        // Apply to paragraphDraft field
+                                                        if (editableProduct) {
+                                                            setEditableProduct({
+                                                                ...editableProduct,
+                                                                marketing: {
+                                                                    ...editableProduct.marketing,
+                                                                    paragraphDraft: data.text,
+                                                                },
+                                                            });
+                                                            setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
+                                                            setToastMessage({ text: 'Applied to Product Info', type: 'success' });
+                                                        }
+                                                    }}
+                                                    className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
+                                                >
+                                                    Apply to Product Info
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    // Apply to paragraphDraft field
-                                                    if (editableProduct) {
-                                                        setEditableProduct({
-                                                            ...editableProduct,
-                                                            marketing: {
-                                                                ...editableProduct.marketing,
-                                                                paragraphDraft: data.text,
-                                                            },
-                                                        });
-                                                        setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
-                                                        setToastMessage({ text: `Applied ${channel} description to Paragraph Draft`, type: 'success' });
-                                                    }
-                                                }}
-                                                className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
-                                            >
-                                                Apply to Draft
-                                            </button>
+                                            <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
+                                                {data.text}
+                                            </div>
                                         </div>
-                                        <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
-                                            {data.text}
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         )}
 
                         <FormField label="Generated Title"><div className="p-2 bg-gray-100 rounded-md min-h-[40px]">{editableProduct.marketing.title}</div></FormField>
                         <FormField label="Generated Bullets"><ul className="p-2 pl-6 bg-gray-100 rounded-md min-h-[80px] list-disc space-y-1">{editableProduct.marketing.bullets.map((bullet, i) => <li key={i}>{bullet}</li>)}</ul></FormField>
                         <FormField label="Generated SEO Description"><div className="p-2 bg-gray-100 rounded-md min-h-[60px]">{editableProduct.marketing.seo}</div></FormField>
-                        <FormField label="Generated Paragraph Draft"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
+                        <FormField label="Marketing Description"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
                         <div className="flex justify-end pt-4">
                           <button 
                             type="button" 
