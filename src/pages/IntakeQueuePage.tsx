@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { mockVocabulary } from '../mockData';
 import { Product } from '../types';
+import ProductEditorDrawer from '../components/ProductEditorDrawer';
 import ProductEditorV2 from '../components/ProductEditorV2';
 import { useProducts } from '../hooks/useProducts';
 import Toast from '../components/Toast';
 import { exportAndDownload } from '../utils/exporter';
+
+// Feature flag: use V2 editor if environment variable is set
+const USE_EDITOR_V2 = import.meta.env.VITE_EDITOR_V2 === 'true';
 
 const IntakeQueuePage: React.FC = () => {
   const { products: firestoreProducts, loading, error } = useProducts();
