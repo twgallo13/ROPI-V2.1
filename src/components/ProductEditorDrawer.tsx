@@ -9,6 +9,7 @@ import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc } from 'fireb
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Toast from './Toast';
 import Select from './ui/Select';
+import { useVocab } from '../hooks/useVocab';
 
 interface ProductEditorDrawerProps {
   isOpen: boolean;
@@ -83,6 +84,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const formRef = useRef<HTMLFormElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const lastActiveField = useRef<{ name?: string; start?: number; end?: number }>({});
+  
+  // Live vocabulary from Firestore
+  const vocab = useVocab();
   
   // AI Descriptions from subcollection
   type AIDescription = { text: string; meta?: { tone: string; length: string; generatedAt: any } };
@@ -844,10 +848,15 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
               <div className="relative flex-1 p-6 overflow-y-auto">
                 {activeTab === 'core' && (
                     <div className="space-y-6">
+                        {vocab.loading && (
+                            <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+                                Loading vocabulary...
+                            </div>
+                        )}
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                              <FormField label="Name"><input name="name" type="text" value={editableProduct.name ?? ''} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn ?? ''} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand ?? ''} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand ?? ''} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} disabled={vocab.loading} className="block w-full border-gray-300 rounded-md shadow-sm disabled:bg-gray-100" /></FormField>
                              
                              <FormField label="Department">
                                <Select 
@@ -855,7 +864,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.department ?? ''} 
                                  onChange={(val) => handleSelectChange('department', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.departments} 
+                                 options={vocab.departments.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Class">
@@ -864,7 +874,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.class ?? ''} 
                                  onChange={(val) => handleSelectChange('class', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.classes} 
+                                 options={vocab.classes.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Category">
@@ -873,7 +884,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.category ?? ''} 
                                  onChange={(val) => handleSelectChange('category', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.categories} 
+                                 options={vocab.categories.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Age Group">
@@ -882,7 +894,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.ageGroup ?? ''} 
                                  onChange={(val) => handleSelectChange('ageGroup', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.ageGroups} 
+                                 options={vocab.ageGroups.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Gender">
@@ -891,7 +904,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.gender ?? ''} 
                                  onChange={(val) => handleSelectChange('gender', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.genders} 
+                                 options={vocab.genders.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              
@@ -901,8 +915,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.materialFabric ?? ''} 
                                  onChange={(val) => handleSelectChange('materialFabric', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.materials]}
+                                 options={['', ...vocab.materials.map(v => v.value)]}
                                  placeholder="Select material..."
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Fit">
@@ -911,8 +926,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.fit ?? ''} 
                                  onChange={(val) => handleSelectChange('fit', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.fits]}
+                                 options={['', ...vocab.fits.map(v => v.value)]}
                                  placeholder="Select fit..."
+                                 disabled={vocab.loading}
                                />
                              </FormField>
 
@@ -922,8 +938,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.sportsTeam ?? ''} 
                                  onChange={(val) => handleSelectChange('sportsTeam', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.sportsTeams]}
+                                 options={['', ...vocab.sportsTeams.map(v => v.value)]}
                                  placeholder="None"
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="League">
@@ -932,8 +949,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.league ?? ''} 
                                  onChange={(val) => handleSelectChange('league', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.leagues]}
+                                 options={['', ...vocab.leagues.map(v => v.value)]}
                                  placeholder="None"
+                                 disabled={vocab.loading}
                                />
                              </FormField>
 
@@ -943,19 +961,24 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.status ?? ''} 
                                  onChange={(val) => handleSelectChange('status', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.statuses as readonly string[]} 
+                                 options={vocab.statuses.map(v => v.value) as readonly string[]}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                         </div>
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                           <FormField label="Websites">
                             <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
-                              {mockVocabulary.websites.map(website => (
-                                <div key={website} className="flex items-center">
-                                  <input id={`website-${website}`} type="checkbox" value={website} checked={editableProduct.websites.includes(website)} onChange={handleWebsiteChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
-                                  <label htmlFor={`website-${website}`} className="ml-2 block text-sm text-gray-900">{website}</label>
-                                </div>
-                              ))}
+                              {vocab.loading ? (
+                                <div className="text-sm text-gray-500">Loading...</div>
+                              ) : (
+                                vocab.websites.map(website => (
+                                  <div key={website.value} className="flex items-center">
+                                    <input id={`website-${website.value}`} type="checkbox" value={website.value} checked={editableProduct.websites.includes(website.value)} onChange={handleWebsiteChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <label htmlFor={`website-${website.value}`} className="ml-2 block text-sm text-gray-900">{website.label}</label>
+                                  </div>
+                                ))
+                              )}
                             </div>
                           </FormField>
                            <FormField label="Featured on Launch Hub">
