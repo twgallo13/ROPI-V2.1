@@ -307,7 +307,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       });
       
       setAiDescriptions(descriptions);
-      setToastMessage({ text: 'Generated and applied to Paragraph Draft', type: 'success' });
+      setToastMessage({ text: 'Generated and applied to Product Info', type: 'success' });
     } catch (error: any) {
       console.error('[drawer] Inline generation failed:', error);
       setToastMessage({ text: error?.message || 'Failed to generate description', type: 'error' });
@@ -1191,7 +1191,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <div className="border border-gray-200 rounded-lg p-4 bg-white">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <h3 className="text-base font-semibold text-gray-800">Generate AI Description</h3>
+                                    <h3 className="text-base font-semibold text-gray-800">Generate Product Copy</h3>
                                     <p className="text-sm text-gray-500 mt-1">Create a RetailOps description for this product</p>
                                 </div>
                                 <a
@@ -1256,7 +1256,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         {/* AI Descriptions from subcollection */}
                         {Object.keys(aiDescriptions).length > 0 && (
                             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Saved AI Descriptions</h4>
+                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Saved Product Copy</h4>
                                 <p className="text-xs text-gray-500 mb-3">Saved drafts live here. Generate again to create another version.</p>
                                 <div className="max-h-96 overflow-y-auto">
                                     {(Object.entries(aiDescriptions) as [string, AIDescription][]).map(([channel, data]) => (
@@ -1283,12 +1283,12 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                                                 },
                                                             });
                                                             setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
-                                                            setToastMessage({ text: 'Applied to Paragraph Draft', type: 'success' });
+                                                            setToastMessage({ text: 'Applied to Product Info', type: 'success' });
                                                         }
                                                     }}
                                                     className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
                                                 >
-                                                    Apply to Draft
+                                                    Apply to Product Info
                                                 </button>
                                             </div>
                                             <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
@@ -1303,7 +1303,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <FormField label="Generated Title"><div className="p-2 bg-gray-100 rounded-md min-h-[40px]">{editableProduct.marketing.title}</div></FormField>
                         <FormField label="Generated Bullets"><ul className="p-2 pl-6 bg-gray-100 rounded-md min-h-[80px] list-disc space-y-1">{editableProduct.marketing.bullets.map((bullet, i) => <li key={i}>{bullet}</li>)}</ul></FormField>
                         <FormField label="Generated SEO Description"><div className="p-2 bg-gray-100 rounded-md min-h-[60px]">{editableProduct.marketing.seo}</div></FormField>
-                        <FormField label="Generated Paragraph Draft"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
+                        <FormField label="Marketing Description"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
                         <div className="flex justify-end pt-4">
                           <button 
                             type="button" 
