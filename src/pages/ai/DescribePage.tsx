@@ -15,7 +15,7 @@ const DescribePage: React.FC = () => {
   const [length, setLength] = useState('Medium');
   const [generatedText, setGeneratedText] = useState('');
   const [generating, setGenerating] = useState(false);
-  const [inserting, setInserting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
     show: false,
     message: '',
@@ -72,19 +72,19 @@ const DescribePage: React.FC = () => {
     }
   };
 
-  const handleInsert = async () => {
+  const handleSave = async () => {
     if (!productId.trim()) {
       showToast('Product ID is required', 'error');
       return;
     }
 
     if (!generatedText) {
-      showToast('No generated text to insert', 'error');
+      showToast('No generated text to save', 'error');
       return;
     }
 
     try {
-      setInserting(true);
+      setSaving(true);
       const descRef = doc(db, 'products', productId.trim(), 'descriptions', channel);
       await setDoc(
         descRef,
@@ -101,10 +101,10 @@ const DescribePage: React.FC = () => {
 
       showToast(`Saved to Descriptions · ${channel}`, 'success');
     } catch (err: any) {
-      console.error('[DescribePage] Insert failed:', err);
+      console.error('[DescribePage] Save failed:', err);
       showToast(err?.message || 'Failed to save description', 'error');
     } finally {
-      setInserting(false);
+      setSaving(false);
     }
   };
 
@@ -113,7 +113,7 @@ const DescribePage: React.FC = () => {
       <div className="bg-white rounded-lg shadow p-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">AI Describe</h1>
         <p className="text-gray-600 mb-6">
-          Generate AI-powered product descriptions using the existing apiDescribe function.
+          Power tool: Generate AI descriptions with advanced controls. Drafts are saved to the product's descriptions subcollection and can be applied in the Product Editor.
         </p>
 
         {/* Form Controls */}
@@ -209,11 +209,11 @@ const DescribePage: React.FC = () => {
           </button>
 
           <button
-            onClick={handleInsert}
-            disabled={inserting || !generatedText || !productId.trim()}
+            onClick={handleSave}
+            disabled={saving || !generatedText || !productId.trim()}
             className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {inserting ? 'Saving...' : 'Insert to Product'}
+            {saving ? 'Saving...' : 'Save Draft'}
           </button>
         </div>
 
