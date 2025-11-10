@@ -462,9 +462,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       // A: Approve (only when not typing)
       if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
-        if (product) {
-          saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
-        }
+        handleApprove();
         return;
       }
 
@@ -545,7 +543,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     if (p.name && p.name !== product.name) (base as any).name = p.name;
     if (p.mpn && p.mpn !== product.mpn) (base as any).mpn = p.mpn;
 
-  const payload = cleanForFirestore<any>({ ...base, ...extra });
+    // Merge extra fields (like marketing, status from Approve)
+    const payload = cleanForFirestore<any>({ ...base, ...extra });
     console.log('[drawer] payload to Firestore (STATE)', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
@@ -736,6 +735,78 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }
   }, [editableProduct]);
 
+  // Check if product is ready to approve
+  const canApprove = useCallback(() => {
+    if (!editableProduct) return false;
+    
+    // Required fields
+    const hasName = !!editableProduct.name?.trim();
+    const hasBrand = !!editableProduct.brand?.trim();
+    const hasCategory = !!editableProduct.category?.trim();
+    
+    // Need at least one of: paragraphDraft or a saved AI description
+    const hasDraft = !!editableProduct.marketing.paragraphDraft?.trim();
+    const hasSavedDescription = Object.keys(aiDescriptions).length > 0;
+    const hasDescription = hasDraft || hasSavedDescription;
+    
+    return hasName && hasBrand && hasCategory && hasDescription;
+  }, [editableProduct, aiDescriptions]);
+
+  // Get missing fields for approval
+  const getMissingFields = useCallback(() => {
+    if (!editableProduct) return [];
+    const missing: string[] = [];
+    
+    if (!editableProduct.name?.trim()) missing.push('Name');
+    if (!editableProduct.brand?.trim()) missing.push('Brand');
+    if (!editableProduct.category?.trim()) missing.push('Category');
+    
+    const hasDraft = !!editableProduct.marketing.paragraphDraft?.trim();
+    const hasSavedDescription = Object.keys(aiDescriptions).length > 0;
+    if (!hasDraft && !hasSavedDescription) {
+      missing.push('Marketing Description (generate or apply a saved description)');
+    }
+    
+    return missing;
+  }, [editableProduct, aiDescriptions]);
+
+  // Handle Approve action
+  const handleApprove = useCallback(async () => {
+    if (!editableProduct || !product) return;
+    
+    // Check if ready to approve
+    const missing = getMissingFields();
+    if (missing.length > 0) {
+      setToastMessage({ 
+        text: `Cannot approve: Missing ${missing.join(', ')}`, 
+        type: 'error' 
+      });
+      return;
+    }
+    
+    // Determine final description
+    let finalDescription = editableProduct.marketing.paragraphDraft || '';
+    
+    // If no draft but we have saved descriptions, use the first one
+    if (!finalDescription && Object.keys(aiDescriptions).length > 0) {
+      const firstChannel = Object.keys(aiDescriptions)[0];
+      finalDescription = aiDescriptions[firstChannel].text;
+    }
+    
+    // Save with validated status and final description
+    await saveFromForm(
+      { 
+        status: 'validated',
+        marketing: {
+          ...editableProduct.marketing,
+          paragraphFinal: finalDescription,
+        },
+      },
+      { showToast: 'Approved & ready to export', keepOpen: true }
+    );
+  }, [editableProduct, product, aiDescriptions, getMissingFields, saveFromForm]);
+
+
   const drawerContainerClasses = `fixed inset-0 overflow-hidden z-50 transition-opacity ${
     isOpen ? 'ease-out duration-300 opacity-100' : 'ease-in duration-200 opacity-0 pointer-events-none'
   }`;
@@ -777,9 +848,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
                 if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
                   e.preventDefault();
-                  if (product) {
-                    saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
-                  }
+                  handleApprove();
                   return;
                 }
               }}
@@ -1409,24 +1478,27 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                   )}
                 </div>
                 
-                <div className="flex space-x-2">
-                  <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
-                  {activeTab === 'core' ? (
-                    <>
-                      <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
-                        }}
-                        className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
-                      >
-                        Approve
-                      </button>
-                    </>
-                  ) : (
-                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                <div className="flex flex-col items-end gap-2">
+                  {/* Missing fields warning */}
+                  {!canApprove() && getMissingFields().length > 0 && (
+                    <div className="text-xs text-red-600">
+                      Missing: {getMissingFields().join(', ')}
+                    </div>
                   )}
+                  
+                  <div className="flex space-x-2">
+                    <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
+                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                    <button 
+                      type="button" 
+                      onClick={handleApprove}
+                      disabled={!canApprove()}
+                      className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      title={!canApprove() ? `Missing: ${getMissingFields().join(', ')}` : 'Approve & mark validated'}
+                    >
+                      Approve
+                    </button>
+                  </div>
                 </div>
               </footer>
             </form>
