@@ -998,6 +998,26 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'generation' && (
                     <div className="space-y-6">
+                        {/* Read-only Attribute Preview */}
+                        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                            <h3 className="text-sm font-semibold text-gray-700 mb-3">Product Attributes (read-only)</h3>
+                            <p className="text-xs text-gray-500 mb-3">Edit these in the Core Information tab</p>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div><strong>Brand:</strong> {editableProduct.brand || '—'}</div>
+                                <div><strong>Department:</strong> {editableProduct.department || '—'}</div>
+                                <div><strong>Category:</strong> {editableProduct.category || '—'}</div>
+                                <div><strong>Class:</strong> {editableProduct.class || '—'}</div>
+                                <div><strong>Age Group:</strong> {editableProduct.ageGroup || '—'}</div>
+                                <div><strong>Gender:</strong> {editableProduct.gender || '—'}</div>
+                                <div><strong>Material:</strong> {editableProduct.materialFabric || '—'}</div>
+                                <div><strong>Fit:</strong> {editableProduct.fit || '—'}</div>
+                                {editableProduct.sportsTeam && <div><strong>Team:</strong> {editableProduct.sportsTeam}</div>}
+                                {editableProduct.league && <div><strong>League:</strong> {editableProduct.league}</div>}
+                                <div><strong>Status:</strong> {editableProduct.status || '—'}</div>
+                                <div><strong>Websites:</strong> {editableProduct.websites.join(', ') || '—'}</div>
+                            </div>
+                        </div>
+
                         {/* Product Information (Facts) */}
                         <div className="border border-gray-200 rounded-lg p-4 bg-white">
                             <div className="flex justify-between items-center mb-3">
@@ -1192,6 +1212,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                 <div>
                                     <h3 className="text-base font-semibold text-gray-800">Generate Product Copy</h3>
                                     <p className="text-sm text-gray-500 mt-1">Create a RetailOps description for this product</p>
+                                    <p className="text-xs text-gray-400 mt-2">Uses Attributes + Product Information + Images</p>
                                 </div>
                                 <a
                                     href={`/ai/describe?productId=${editableProduct?.id || ''}`}
@@ -1303,17 +1324,6 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <FormField label="Generated Bullets"><ul className="p-2 pl-6 bg-gray-100 rounded-md min-h-[80px] list-disc space-y-1">{editableProduct.marketing.bullets.map((bullet, i) => <li key={i}>{bullet}</li>)}</ul></FormField>
                         <FormField label="Generated SEO Description"><div className="p-2 bg-gray-100 rounded-md min-h-[60px]">{editableProduct.marketing.seo}</div></FormField>
                         <FormField label="Marketing Description"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
-                        <div className="flex justify-end pt-4">
-                          <button 
-                            type="button" 
-                            onClick={() => {
-                              saveFromForm({ status: 'validated', validatedAt: serverTimestamp() });
-                            }}
-                            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
-                          >
-                            Approve
-                          </button>
-                        </div>
                     </div>
                 )}
                 {activeTab === 'variants' && (
