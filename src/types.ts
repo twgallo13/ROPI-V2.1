@@ -16,7 +16,7 @@ export type ProductFacts = {
   care: string;
   teamLeague: string;
   keywords: string[];
-  images: string[]; // downloadURLs from Firebase Storage
+  images: Array<{ url: string; storagePath: string }>; // Firebase Storage downloads with paths for deletion
   updatedBy: string;
   updatedAt: any; // Firestore Timestamp
 };

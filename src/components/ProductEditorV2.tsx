@@ -3,6 +3,7 @@ import { Product, ProductFacts } from '../types';
 import { describeProduct } from '../services/describe';
 import { analyzeImage } from '../services/vision';
 import { useVocab } from '../hooks/useVocab';
+import { useAuth } from '../contexts/AuthContext';
 import { db, storage } from '../firebase';
 import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -40,8 +41,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   
-  // Live vocabulary
+  // Live vocabulary & auth
   const vocab = useVocab();
+  const { user } = useAuth();
   
   // Product Facts state
   const [facts, setFacts] = useState<ProductFacts>({
@@ -70,6 +72,22 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [generatingInline, setGeneratingInline] = useState(false);
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number } | null>(null);
   const [improvementText, setImprovementText] = useState('');
+  
+  // Vocab rules (banned words, synonyms)
+  const [vocabRules, setVocabRules] = useState<{ banned?: string[]; synonyms?: Record<string, string> } | null>(null);
+
+  // Load vocab rules once
+  useEffect(() => {
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'vocab'));
+        setVocabRules(snap.exists() ? (snap.data() as any) : {});
+      } catch (e) {
+        console.warn('[editorV2] vocab rules missing', e);
+        setVocabRules({});
+      }
+    })();
+  }, []);
 
   // Sync local state when product changes
   useEffect(() => {
@@ -159,7 +177,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       await setDoc(factsRef, {
         ...updatedFacts,
         updatedAt: serverTimestamp(),
-        updatedBy: 'current-user', // TODO: Get from auth context
+        updatedBy: user?.email || user?.uid || 'anonymous',
       }, { merge: true });
       
       setFactsLastSaved(new Date());
@@ -206,7 +224,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
     setUploading(true);
 
     try {
-      const storageRef = ref(storage, `products/${product.id}/images/${Date.now()}_${file.name}`);
+      const storagePath = `products/${product.id}/images/${Date.now()}_${file.name}`;
+      const storageRef = ref(storage, storagePath);
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
       
@@ -230,7 +249,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
       const updated = { 
         ...facts, 
-        images: [...facts.images, downloadURL],
+        images: [...facts.images, { url: downloadURL, storagePath }],
         observations: updatedObservations
       };
       setFacts(updated);
@@ -250,11 +269,12 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   };
 
   // Remove image
-  const handleRemoveImage = async (imageUrl: string, index: number) => {
+  const handleRemoveImage = async (index: number) => {
     if (!product?.id) return;
 
     try {
-      const imageRef = ref(storage, imageUrl);
+      const imageToRemove = facts.images[index];
+      const imageRef = ref(storage, imageToRemove.storagePath);
       await deleteObject(imageRef);
       
       const updated = { ...facts, images: facts.images.filter((_, i) => i !== index) };
@@ -324,13 +344,24 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         facts,
         aiContext: editableProduct.aiContext,
         attributes: {
+          name: editableProduct.name,
           brand: editableProduct.brand,
+          mpn: editableProduct.mpn,
+          department: editableProduct.department,
+          class: editableProduct.class,
           category: editableProduct.category,
-          gender: editableProduct.gender,
           ageGroup: editableProduct.ageGroup,
+          gender: editableProduct.gender,
+          material: editableProduct.materialFabric,
+          fit: editableProduct.fit,
+          sportsTeam: editableProduct.sportsTeam,
+          league: editableProduct.league,
+          status: editableProduct.status,
+          websites: editableProduct.websites,
           price: (editableProduct as any).price ?? null
         },
-        imageUrl: facts.images[0]
+        imageUrl: facts.images[0]?.url,
+        rules: vocabRules
       });
 
       if (!result.text) {
@@ -387,45 +418,51 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
     setSavingState('saving');
 
-    const payload = cleanForFirestore<any>({
-      brand: editableProduct.brand,
-      status: editableProduct.status,
-      department: editableProduct.department,
-      class: editableProduct.class,
-      category: editableProduct.category,
-      ageGroup: editableProduct.ageGroup,
-      gender: editableProduct.gender,
-      materialFabric: editableProduct.materialFabric,
-      fit: editableProduct.fit,
-      sportsTeam: editableProduct.sportsTeam,
-      league: editableProduct.league,
-      websites: editableProduct.websites,
-      featured: editableProduct.featured,
-      map: editableProduct.map,
-      promo: editableProduct.promo,
-      hype: editableProduct.hype,
-      fastfashion: editableProduct.fastfashion,
-      aiContext: editableProduct.aiContext,
-      updatedAt: serverTimestamp(),
-      ...extra,
-    });
+    try {
+      const payload = cleanForFirestore<any>({
+        brand: editableProduct.brand,
+        status: editableProduct.status,
+        department: editableProduct.department,
+        class: editableProduct.class,
+        category: editableProduct.category,
+        ageGroup: editableProduct.ageGroup,
+        gender: editableProduct.gender,
+        materialFabric: editableProduct.materialFabric,
+        fit: editableProduct.fit,
+        sportsTeam: editableProduct.sportsTeam,
+        league: editableProduct.league,
+        websites: editableProduct.websites,
+        featured: editableProduct.featured,
+        map: editableProduct.map,
+        promo: editableProduct.promo,
+        hype: editableProduct.hype,
+        fastfashion: editableProduct.fastfashion,
+        aiContext: editableProduct.aiContext,
+        updatedAt: serverTimestamp(),
+        ...extra,
+      });
 
-    await setDoc(doc(db, 'products', product.id), payload, { merge: true });
+      await setDoc(doc(db, 'products', product.id), payload, { merge: true });
 
-    setEditableProduct(prev => prev ? ({
-      ...prev,
-      ...Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined)),
-    }) : null);
+      setEditableProduct(prev => prev ? ({
+        ...prev,
+        ...Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined)),
+      }) : null);
 
-    onSaved?.(product.id, payload);
+      onSaved?.(product.id, payload);
 
-    setSavingState('saved');
-    setTimeout(() => setSavingState('idle'), 1000);
+      setSavingState('saved');
+      setTimeout(() => setSavingState('idle'), 1000);
 
-    if (options?.showToast) setToastMessage({ text: options.showToast, type: 'success' });
+      if (options?.showToast) setToastMessage({ text: options.showToast, type: 'success' });
 
-    if (!options?.keepOpen) {
-      onClose();
+      if (!options?.keepOpen) {
+        onClose();
+      }
+    } catch (error) {
+      console.error('[editorV2] Failed to save product:', error);
+      setToastMessage({ text: 'Failed to save product', type: 'error' });
+      setSavingState('idle');
     }
   };
 
@@ -498,7 +535,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         productId: editableProduct.id,
         channel: 'RetailOps',
         requestedAt: serverTimestamp(),
-        requestedBy: 'system', // TODO: get from auth context
+        requestedBy: user?.email || user?.uid || 'anonymous',
       });
       console.log('[ProductEditorV2] Enqueued for export:', editableProduct.id);
     } catch (err) {
@@ -590,6 +627,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         Loading vocabulary...
                       </div>
                     )}
+                    
+                    {!vocab.loading && console.log('[vocab]', {
+                      departments: vocab.departments,
+                      classes: vocab.classes,
+                      categories: vocab.categories,
+                      materials: vocab.materials,
+                      fits: vocab.fits,
+                    })}
                     
                     <div className="grid grid-cols-1 gap-y-4 sm:gap-y-6 sm:gap-x-4 sm:grid-cols-2">
                       {/* Name & MPN (read-only) */}
@@ -952,12 +997,12 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           {uploading ? 'Uploading...' : '📷 Upload / Take Photo'}
                         </button>
                         <div className="mt-2 grid grid-cols-4 gap-2">
-                          {facts.images.map((url, i) => (
+                          {facts.images.map((image, i) => (
                             <div key={i} className="relative group">
-                              <img src={url} alt={`Product ${i + 1}`} className="w-full h-20 object-cover rounded border border-gray-200" />
+                              <img src={image.url} alt={`Product ${i + 1}`} className="w-full h-20 object-cover rounded border border-gray-200" />
                               <button
                                 type="button"
-                                onClick={() => handleRemoveImage(url, i)}
+                                onClick={() => handleRemoveImage(i)}
                                 className="absolute top-0 right-0 p-1 bg-red-600 text-white text-xs rounded-bl opacity-0 group-hover:opacity-100 transition-opacity"
                               >
                                 ×
@@ -1086,12 +1131,24 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 designNotes: improvementText || undefined,
                               },
                               attributes: {
+                                name: editableProduct.name,
                                 brand: editableProduct.brand,
+                                mpn: editableProduct.mpn,
+                                department: editableProduct.department,
+                                class: editableProduct.class,
                                 category: editableProduct.category,
-                                gender: editableProduct.gender,
                                 ageGroup: editableProduct.ageGroup,
+                                gender: editableProduct.gender,
+                                material: editableProduct.materialFabric,
+                                fit: editableProduct.fit,
+                                sportsTeam: editableProduct.sportsTeam,
+                                league: editableProduct.league,
+                                status: editableProduct.status,
+                                websites: editableProduct.websites,
+                                price: (editableProduct as any).price ?? null
                               },
-                              imageUrl: facts.images[0],
+                              imageUrl: facts.images[0]?.url,
+                              rules: vocabRules
                             });
                             
                             if (result.text) {

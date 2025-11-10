@@ -1,10 +1,10 @@
 /**
  * Hook for managing product attributes in Firestore
- * Handles CRUD operations for /settings/attributes
+ * Handles CRUD operations for /settings/<key>/items subcollections
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /**
@@ -102,116 +102,49 @@ export function useAttributesSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const dirtyRef = useRef(false);
 
-  const docRef = doc(db, 'settings', 'attributes');
-
-  // Debounced save function
-  const saveDataDebounced = useRef(
-    debounce(async (newData: AttributesData) => {
-      await saveData(newData);
-      dirtyRef.current = false;
-    }, 500)
-  ).current;
-
-  // Load data on mount and listen for changes
+  // Subscribe to all vocab subcollections
   useEffect(() => {
+    const unsubscribers: (() => void)[] = [];
     setLoading(true);
-    setError(null);
 
-    const unsubscribe = onSnapshot(
-      docRef,
-      (docSnap) => {
-        if (docSnap.exists()) {
-          const loadedData = docSnap.data() as AttributesData;
-          // Only update from remote if not currently editing
-          if (!dirtyRef.current) {
-            const cleanedData: AttributesData = { ...INITIAL_ATTRIBUTES };
-            Object.keys(INITIAL_ATTRIBUTES).forEach((key) => {
-              const attrKey = key as AttributeKey;
-              cleanedData[attrKey] = deduplicateArray(loadedData[attrKey] || []);
-            });
-            setData(cleanedData);
-          }
-        } else {
-          // Document doesn't exist, create it
-          if (!dirtyRef.current) {
-            setDoc(docRef, INITIAL_ATTRIBUTES).catch((err) => {
-              console.error('[settings] Failed to create initial doc:', err);
-              setError('Failed to initialize settings');
-            });
-            setData(INITIAL_ATTRIBUTES);
-          }
+    const keys: AttributeKey[] = [
+      'departments', 'classes', 'categories', 'ageGroups', 'genders',
+      'statuses', 'websites', 'sportsTeams', 'leagues', 'fits', 'taxClasses'
+    ];
+
+    keys.forEach(key => {
+      const colRef = collection(db, 'settings', key, 'items');
+      const unsubscribe = onSnapshot(
+        colRef,
+        (snapshot) => {
+          const items = snapshot.docs.map(doc => doc.data().value || doc.id);
+          setData(prev => ({ ...prev, [key]: deduplicateArray(items) }));
+        },
+        (err) => {
+          console.error(`[useAttributesSettings] Failed to load ${key}:`, err);
         }
-        setLoading(false);
-      },
-      (err) => {
-        const errorCode = err?.code || 'unknown';
-        const errorMessage = err?.message || 'Unknown error';
-        console.error('[settings] snapshot failed', errorCode, errorMessage);
-        setError(`Could not load settings (${errorCode})`);
-        setLoading(false);
-      }
-    );
+      );
+      unsubscribers.push(unsubscribe);
+    });
 
-    return () => unsubscribe();
+    setTimeout(() => setLoading(false), 500);
+
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
   }, []);
 
   const loadData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const docSnap = await getDoc(docRef);
-      
-      if (docSnap.exists()) {
-        const loadedData = docSnap.data() as AttributesData;
-        // Ensure all keys exist and deduplicate on load
-        const cleanedData: AttributesData = { ...INITIAL_ATTRIBUTES };
-        Object.keys(INITIAL_ATTRIBUTES).forEach((key) => {
-          const attrKey = key as AttributeKey;
-          cleanedData[attrKey] = deduplicateArray(loadedData[attrKey] || []);
-        });
-        setData(cleanedData);
-        dirtyRef.current = false;
-      } else {
-        // Document doesn't exist, create it with empty arrays
-        await setDoc(docRef, INITIAL_ATTRIBUTES);
-        setData(INITIAL_ATTRIBUTES);
-        dirtyRef.current = false;
-      }
-    } catch (err: any) {
-      const errorCode = err?.code || 'unknown';
-      const errorMessage = err?.message || 'Unknown error';
-      console.error('[settings] load failed', errorCode, errorMessage);
-      setError(`Could not load settings (${errorCode})`);
-    } finally {
-      setLoading(false);
-    }
+    // Placeholder for compatibility - data is loaded via subscriptions
+    setLoading(true);
+    setTimeout(() => setLoading(false), 100);
   };
 
   const saveData = async (newData: AttributesData): Promise<boolean> => {
-    try {
-      setSaving(true);
-      setError(null);
-      
-      // Deduplicate all arrays before saving
-      const cleanedData: AttributesData = { ...INITIAL_ATTRIBUTES };
-      Object.keys(newData).forEach((key) => {
-        const attrKey = key as AttributeKey;
-        cleanedData[attrKey] = deduplicateArray(newData[attrKey]);
-      });
-      
-      await setDoc(docRef, cleanedData);
-      setData(cleanedData);
-      return true;
-    } catch (err) {
-      console.error('Error saving attributes:', err);
-      setError('Failed to save attributes');
-      return false;
-    } finally {
-      setSaving(false);
-    }
+    // This method is deprecated but kept for compatibility
+    // Individual operations now save directly to subcollections
+    return true;
   };
 
   const addItem = async (key: AttributeKey, value: string): Promise<{ success: boolean; error?: string }> => {
@@ -227,24 +160,20 @@ export function useAttributesSettings() {
       return { success: false, error: 'Item already exists' };
     }
     
-    // Optimistic update
-    const newData = {
-      ...data,
-      [key]: [...currentItems, validation.cleaned],
-    };
-    
-    setData(newData);
-    
-    // Save to Firestore
-    const success = await saveData(newData);
-    
-    if (!success) {
-      // Rollback on failure
-      setData(data);
+    try {
+      setSaving(true);
+      const colRef = collection(db, 'settings', key, 'items');
+      await addDoc(colRef, {
+        value: validation.cleaned,
+        label: validation.cleaned,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error('[useAttributesSettings] Failed to add item:', err);
       return { success: false, error: 'Failed to save' };
+    } finally {
+      setSaving(false);
     }
-    
-    return { success: true };
   };
 
   const editItem = async (
@@ -270,27 +199,30 @@ export function useAttributesSettings() {
       return { success: false, error: 'Item already exists' };
     }
     
-    // Optimistic update
-    const newItems = [...currentItems];
-    newItems[index] = validation.cleaned;
-    
-    const newData = {
-      ...data,
-      [key]: newItems,
-    };
-    
-    setData(newData);
-    
-    // Save to Firestore
-    const success = await saveData(newData);
-    
-    if (!success) {
-      // Rollback on failure
-      setData(data);
+    try {
+      setSaving(true);
+      // Load all docs to find the one at this index
+      const colRef = collection(db, 'settings', key, 'items');
+      const snapshot = await getDocs(colRef);
+      const docs = snapshot.docs;
+      
+      if (index >= docs.length) {
+        return { success: false, error: 'Invalid index' };
+      }
+      
+      const docToEdit = docs[index];
+      await setDoc(doc(db, 'settings', key, 'items', docToEdit.id), {
+        value: validation.cleaned,
+        label: validation.cleaned,
+      });
+      
+      return { success: true };
+    } catch (err) {
+      console.error('[useAttributesSettings] Failed to edit item:', err);
       return { success: false, error: 'Failed to save' };
+    } finally {
+      setSaving(false);
     }
-    
-    return { success: true };
   };
 
   const deleteItem = async (key: AttributeKey, index: number): Promise<{ success: boolean; error?: string }> => {
@@ -300,37 +232,56 @@ export function useAttributesSettings() {
       return { success: false, error: 'Invalid index' };
     }
     
-    // Optimistic update
-    const newItems = currentItems.filter((_, i) => i !== index);
-    
-    const newData = {
-      ...data,
-      [key]: newItems,
-    };
-    
-    setData(newData);
-    
-    // Save to Firestore
-    const success = await saveData(newData);
-    
-    if (!success) {
-      // Rollback on failure
-      setData(data);
+    try {
+      setSaving(true);
+      // Load all docs to find the one at this index
+      const colRef = collection(db, 'settings', key, 'items');
+      const snapshot = await getDocs(colRef);
+      const docs = snapshot.docs;
+      
+      if (index >= docs.length) {
+        return { success: false, error: 'Invalid index' };
+      }
+      
+      const docToDelete = docs[index];
+      await deleteDoc(doc(db, 'settings', key, 'items', docToDelete.id));
+      
+      return { success: true };
+    } catch (err) {
+      console.error('[useAttributesSettings] Failed to delete item:', err);
       return { success: false, error: 'Failed to save' };
+    } finally {
+      setSaving(false);
     }
-    
-    return { success: true };
   };
 
   /**
-   * Update an attribute array with debounced save
-   * Marks data as dirty to prevent remote overwrites during editing
+   * Update an attribute array - now saves each item to subcollection
    */
-  const updateAttributeArray = (key: AttributeKey, nextArray: string[]) => {
-    dirtyRef.current = true;
-    const merged = { ...data, [key]: nextArray };
-    setData(merged);
-    saveDataDebounced(merged);
+  const updateAttributeArray = async (key: AttributeKey, nextArray: string[]) => {
+    try {
+      setSaving(true);
+      const colRef = collection(db, 'settings', key, 'items');
+      
+      // Get existing docs
+      const snapshot = await getDocs(colRef);
+      const existingDocs = snapshot.docs;
+      
+      // Delete all existing
+      await Promise.all(existingDocs.map(d => deleteDoc(d.ref)));
+      
+      // Add new items
+      await Promise.all(
+        nextArray.map(item => 
+          addDoc(colRef, { value: item, label: item })
+        )
+      );
+    } catch (err) {
+      console.error('[useAttributesSettings] Failed to update array:', err);
+      setError('Failed to update');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return {
