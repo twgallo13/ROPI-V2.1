@@ -72,6 +72,22 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [generatingInline, setGeneratingInline] = useState(false);
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number } | null>(null);
   const [improvementText, setImprovementText] = useState('');
+  
+  // Vocab rules (banned words, synonyms)
+  const [vocabRules, setVocabRules] = useState<{ banned?: string[]; synonyms?: Record<string, string> } | null>(null);
+
+  // Load vocab rules once
+  useEffect(() => {
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'vocab'));
+        setVocabRules(snap.exists() ? (snap.data() as any) : {});
+      } catch (e) {
+        console.warn('[editorV2] vocab rules missing', e);
+        setVocabRules({});
+      }
+    })();
+  }, []);
 
   // Sync local state when product changes
   useEffect(() => {
@@ -328,13 +344,24 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         facts,
         aiContext: editableProduct.aiContext,
         attributes: {
+          name: editableProduct.name,
           brand: editableProduct.brand,
+          mpn: editableProduct.mpn,
+          department: editableProduct.department,
+          class: editableProduct.class,
           category: editableProduct.category,
-          gender: editableProduct.gender,
           ageGroup: editableProduct.ageGroup,
+          gender: editableProduct.gender,
+          material: editableProduct.materialFabric,
+          fit: editableProduct.fit,
+          sportsTeam: editableProduct.sportsTeam,
+          league: editableProduct.league,
+          status: editableProduct.status,
+          websites: editableProduct.websites,
           price: (editableProduct as any).price ?? null
         },
-        imageUrl: facts.images[0]?.url
+        imageUrl: facts.images[0]?.url,
+        rules: vocabRules
       });
 
       if (!result.text) {
@@ -600,6 +627,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         Loading vocabulary...
                       </div>
                     )}
+                    
+                    {!vocab.loading && console.log('[vocab]', {
+                      departments: vocab.departments,
+                      classes: vocab.classes,
+                      categories: vocab.categories,
+                      materials: vocab.materials,
+                      fits: vocab.fits,
+                    })}
                     
                     <div className="grid grid-cols-1 gap-y-4 sm:gap-y-6 sm:gap-x-4 sm:grid-cols-2">
                       {/* Name & MPN (read-only) */}
@@ -1096,12 +1131,24 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 designNotes: improvementText || undefined,
                               },
                               attributes: {
+                                name: editableProduct.name,
                                 brand: editableProduct.brand,
+                                mpn: editableProduct.mpn,
+                                department: editableProduct.department,
+                                class: editableProduct.class,
                                 category: editableProduct.category,
-                                gender: editableProduct.gender,
                                 ageGroup: editableProduct.ageGroup,
+                                gender: editableProduct.gender,
+                                material: editableProduct.materialFabric,
+                                fit: editableProduct.fit,
+                                sportsTeam: editableProduct.sportsTeam,
+                                league: editableProduct.league,
+                                status: editableProduct.status,
+                                websites: editableProduct.websites,
+                                price: (editableProduct as any).price ?? null
                               },
                               imageUrl: facts.images[0]?.url,
+                              rules: vocabRules
                             });
                             
                             if (result.text) {

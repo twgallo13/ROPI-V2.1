@@ -7,6 +7,7 @@ export async function describeProduct(payload: {
   aiContext?: any;        // keywords, featureBullets, designNotes
   attributes?: any;       // brand, category, gender, ageGroup, price, etc.
   imageUrl?: string;      // optional primary image URL
+  rules?: any;            // vocab rules (banned words, synonyms)
 }) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), 10000);
