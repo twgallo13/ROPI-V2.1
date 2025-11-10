@@ -249,22 +249,20 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       // Always use RetailOps channel for primary inline generation
       const channel = 'RetailOps';
       
-      // Call describeProduct service with facts and image
+      // Call describeProduct service with facts, aiContext, and attributes
       const result = await describeProduct({
         productId: editableProduct.id,
         channel,
         tone: aiTone,
         length: aiLength,
-        facts: {
-          observations: facts.observations,
-          materials: facts.materials,
-          fit: facts.fit,
-          useCases: facts.useCases,
-          care: facts.care,
-          teamLeague: facts.teamLeague,
-          keywords: facts.keywords,
-        },
-        imageUrl: facts.images[0], // Include first image if available
+        facts,                                  // from facts state/doc
+        aiContext: editableProduct.aiContext,   // keywords, featureBullets, designNotes
+        attributes: {
+          brand: editableProduct.brand,
+          category: editableProduct.category,
+          gender: editableProduct.gender,
+          ageGroup: editableProduct.ageGroup,
+        }
       });
 
       if (!result.text) {
@@ -834,8 +832,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 <nav className="px-4 py-2 border-b border-gray-200 bg-white">
                     <div className="flex space-x-2">
                         <TabButton tabName="core" label="Core Information" activeTab={activeTab} setActiveTab={setActiveTab} />
-                        <TabButton tabName="context" label="AI Context" activeTab={activeTab} setActiveTab={setActiveTab} />
-                        <TabButton tabName="generation" label="AI Generation" activeTab={activeTab} setActiveTab={setActiveTab} />
+                        <TabButton tabName="context" label="Product Information" activeTab={activeTab} setActiveTab={setActiveTab} />
+                        <TabButton tabName="generation" label="AI Product Copy" activeTab={activeTab} setActiveTab={setActiveTab} />
                         <TabButton tabName="variants" label="Variants" activeTab={activeTab} setActiveTab={setActiveTab} />
                         <TabButton tabName="history" label="History" activeTab={activeTab} setActiveTab={setActiveTab} />
                     </div>

@@ -128,10 +128,11 @@ function buildRow(
   // Add AI enrichment fields if enabled
   if (includeAI && product.marketing) {
     row['SEO Title'] = product.marketing.title || '';
-    row['SEO Keywords'] = Array.isArray(product.marketing.bullets) 
+    row['Bullets'] = Array.isArray(product.marketing.bullets) 
       ? product.marketing.bullets.join(' | ') 
       : '';
     row['SEO Description'] = product.marketing.seo || '';
+    row['SEO Keywords'] = ''; // Placeholder for keywords field
     row['Marketing Description (Draft)'] = product.marketing.paragraphDraft || '';
     row['Marketing Description (Final)'] = product.marketing.paragraphFinal || '';
   }
