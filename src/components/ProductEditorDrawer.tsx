@@ -9,6 +9,7 @@ import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc } from 'fireb
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Toast from './Toast';
 import Select from './ui/Select';
+import { useVocab } from '../hooks/useVocab';
 
 interface ProductEditorDrawerProps {
   isOpen: boolean;
@@ -83,6 +84,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const formRef = useRef<HTMLFormElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const lastActiveField = useRef<{ name?: string; start?: number; end?: number }>({});
+  
+  // Live vocabulary from Firestore
+  const vocab = useVocab();
   
   // AI Descriptions from subcollection
   type AIDescription = { text: string; meta?: { tone: string; length: string; generatedAt: any } };
@@ -249,7 +253,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       // Always use RetailOps channel for primary inline generation
       const channel = 'RetailOps';
       
-      // Call describeProduct service with facts, aiContext, and attributes
+      // Call describeProduct service with facts, aiContext, attributes, and first image if available
       const result = await describeProduct({
         productId: editableProduct.id,
         channel,
@@ -263,7 +267,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           gender: editableProduct.gender,
           ageGroup: editableProduct.ageGroup,
           price: (editableProduct as any).price ?? null
-        }
+        },
+        imageUrl: facts.images[0] // first image if available
       });
 
       if (!result.text) {
@@ -457,9 +462,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       // A: Approve (only when not typing)
       if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
-        if (product) {
-          saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
-        }
+        handleApprove();
         return;
       }
 
@@ -540,7 +543,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     if (p.name && p.name !== product.name) (base as any).name = p.name;
     if (p.mpn && p.mpn !== product.mpn) (base as any).mpn = p.mpn;
 
-  const payload = cleanForFirestore<any>({ ...base, ...extra });
+    // Merge extra fields (like marketing, status from Approve)
+    const payload = cleanForFirestore<any>({ ...base, ...extra });
     console.log('[drawer] payload to Firestore (STATE)', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
@@ -731,6 +735,78 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     }
   }, [editableProduct]);
 
+  // Check if product is ready to approve
+  const canApprove = useCallback(() => {
+    if (!editableProduct) return false;
+    
+    // Required fields
+    const hasName = !!editableProduct.name?.trim();
+    const hasBrand = !!editableProduct.brand?.trim();
+    const hasCategory = !!editableProduct.category?.trim();
+    
+    // Need at least one of: paragraphDraft or a saved AI description
+    const hasDraft = !!editableProduct.marketing.paragraphDraft?.trim();
+    const hasSavedDescription = Object.keys(aiDescriptions).length > 0;
+    const hasDescription = hasDraft || hasSavedDescription;
+    
+    return hasName && hasBrand && hasCategory && hasDescription;
+  }, [editableProduct, aiDescriptions]);
+
+  // Get missing fields for approval
+  const getMissingFields = useCallback(() => {
+    if (!editableProduct) return [];
+    const missing: string[] = [];
+    
+    if (!editableProduct.name?.trim()) missing.push('Name');
+    if (!editableProduct.brand?.trim()) missing.push('Brand');
+    if (!editableProduct.category?.trim()) missing.push('Category');
+    
+    const hasDraft = !!editableProduct.marketing.paragraphDraft?.trim();
+    const hasSavedDescription = Object.keys(aiDescriptions).length > 0;
+    if (!hasDraft && !hasSavedDescription) {
+      missing.push('Marketing Description (generate or apply a saved description)');
+    }
+    
+    return missing;
+  }, [editableProduct, aiDescriptions]);
+
+  // Handle Approve action
+  const handleApprove = useCallback(async () => {
+    if (!editableProduct || !product) return;
+    
+    // Check if ready to approve
+    const missing = getMissingFields();
+    if (missing.length > 0) {
+      setToastMessage({ 
+        text: `Cannot approve: Missing ${missing.join(', ')}`, 
+        type: 'error' 
+      });
+      return;
+    }
+    
+    // Determine final description
+    let finalDescription = editableProduct.marketing.paragraphDraft || '';
+    
+    // If no draft but we have saved descriptions, use the first one
+    if (!finalDescription && Object.keys(aiDescriptions).length > 0) {
+      const firstChannel = Object.keys(aiDescriptions)[0];
+      finalDescription = aiDescriptions[firstChannel].text;
+    }
+    
+    // Save with validated status and final description
+    await saveFromForm(
+      { 
+        status: 'validated',
+        marketing: {
+          ...editableProduct.marketing,
+          paragraphFinal: finalDescription,
+        },
+      },
+      { showToast: 'Approved & ready to export', keepOpen: true }
+    );
+  }, [editableProduct, product, aiDescriptions, getMissingFields, saveFromForm]);
+
+
   const drawerContainerClasses = `fixed inset-0 overflow-hidden z-50 transition-opacity ${
     isOpen ? 'ease-out duration-300 opacity-100' : 'ease-in duration-200 opacity-0 pointer-events-none'
   }`;
@@ -772,9 +848,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
                 if (e.key === 'a' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
                   e.preventDefault();
-                  if (product) {
-                    saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
-                  }
+                  handleApprove();
                   return;
                 }
               }}
@@ -843,10 +917,15 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
               <div className="relative flex-1 p-6 overflow-y-auto">
                 {activeTab === 'core' && (
                     <div className="space-y-6">
+                        {vocab.loading && (
+                            <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+                                Loading vocabulary...
+                            </div>
+                        )}
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                              <FormField label="Name"><input name="name" type="text" value={editableProduct.name ?? ''} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
                              <FormField label="MPN"><input name="mpn" type="text" value={editableProduct.mpn ?? ''} readOnly className="block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed" /></FormField>
-                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand ?? ''} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} className="block w-full border-gray-300 rounded-md shadow-sm" /></FormField>
+                             <FormField label="Brand"><input type="text" name="brand" value={editableProduct.brand ?? ''} onChange={handleInputChange} onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} onBlur={handleBlur} disabled={vocab.loading} className="block w-full border-gray-300 rounded-md shadow-sm disabled:bg-gray-100" /></FormField>
                              
                              <FormField label="Department">
                                <Select 
@@ -854,7 +933,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.department ?? ''} 
                                  onChange={(val) => handleSelectChange('department', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.departments} 
+                                 options={vocab.departments.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Class">
@@ -863,7 +943,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.class ?? ''} 
                                  onChange={(val) => handleSelectChange('class', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.classes} 
+                                 options={vocab.classes.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Category">
@@ -872,7 +953,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.category ?? ''} 
                                  onChange={(val) => handleSelectChange('category', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.categories} 
+                                 options={vocab.categories.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Age Group">
@@ -881,7 +963,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.ageGroup ?? ''} 
                                  onChange={(val) => handleSelectChange('ageGroup', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.ageGroups} 
+                                 options={vocab.ageGroups.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Gender">
@@ -890,7 +973,8 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.gender ?? ''} 
                                  onChange={(val) => handleSelectChange('gender', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.genders} 
+                                 options={vocab.genders.map(v => v.value)}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              
@@ -900,8 +984,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.materialFabric ?? ''} 
                                  onChange={(val) => handleSelectChange('materialFabric', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.materials]}
+                                 options={['', ...vocab.materials.map(v => v.value)]}
                                  placeholder="Select material..."
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="Fit">
@@ -910,8 +995,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.fit ?? ''} 
                                  onChange={(val) => handleSelectChange('fit', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.fits]}
+                                 options={['', ...vocab.fits.map(v => v.value)]}
                                  placeholder="Select fit..."
+                                 disabled={vocab.loading}
                                />
                              </FormField>
 
@@ -921,8 +1007,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.sportsTeam ?? ''} 
                                  onChange={(val) => handleSelectChange('sportsTeam', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.sportsTeams]}
+                                 options={['', ...vocab.sportsTeams.map(v => v.value)]}
                                  placeholder="None"
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                              <FormField label="League">
@@ -931,8 +1018,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.league ?? ''} 
                                  onChange={(val) => handleSelectChange('league', val)} 
                                  onBlur={handleBlur}
-                                 options={['', ...mockVocabulary.leagues]}
+                                 options={['', ...vocab.leagues.map(v => v.value)]}
                                  placeholder="None"
+                                 disabled={vocab.loading}
                                />
                              </FormField>
 
@@ -942,19 +1030,24 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                  value={editableProduct.status ?? ''} 
                                  onChange={(val) => handleSelectChange('status', val)} 
                                  onBlur={handleBlur}
-                                 options={mockVocabulary.statuses as readonly string[]} 
+                                 options={vocab.statuses.map(v => v.value) as readonly string[]}
+                                 disabled={vocab.loading}
                                />
                              </FormField>
                         </div>
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                           <FormField label="Websites">
                             <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
-                              {mockVocabulary.websites.map(website => (
-                                <div key={website} className="flex items-center">
-                                  <input id={`website-${website}`} type="checkbox" value={website} checked={editableProduct.websites.includes(website)} onChange={handleWebsiteChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
-                                  <label htmlFor={`website-${website}`} className="ml-2 block text-sm text-gray-900">{website}</label>
-                                </div>
-                              ))}
+                              {vocab.loading ? (
+                                <div className="text-sm text-gray-500">Loading...</div>
+                              ) : (
+                                vocab.websites.map(website => (
+                                  <div key={website.value} className="flex items-center">
+                                    <input id={`website-${website.value}`} type="checkbox" value={website.value} checked={editableProduct.websites.includes(website.value)} onChange={handleWebsiteChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <label htmlFor={`website-${website.value}`} className="ml-2 block text-sm text-gray-900">{website.label}</label>
+                                  </div>
+                                ))
+                              )}
                             </div>
                           </FormField>
                            <FormField label="Featured on Launch Hub">
@@ -998,6 +1091,26 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                 )}
                 {activeTab === 'generation' && (
                     <div className="space-y-6">
+                        {/* Read-only Attribute Preview */}
+                        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                            <h3 className="text-sm font-semibold text-gray-700 mb-3">Product Attributes (read-only)</h3>
+                            <p className="text-xs text-gray-500 mb-3">Edit these in the Core Information tab</p>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div><strong>Brand:</strong> {editableProduct.brand || '—'}</div>
+                                <div><strong>Department:</strong> {editableProduct.department || '—'}</div>
+                                <div><strong>Category:</strong> {editableProduct.category || '—'}</div>
+                                <div><strong>Class:</strong> {editableProduct.class || '—'}</div>
+                                <div><strong>Age Group:</strong> {editableProduct.ageGroup || '—'}</div>
+                                <div><strong>Gender:</strong> {editableProduct.gender || '—'}</div>
+                                <div><strong>Material:</strong> {editableProduct.materialFabric || '—'}</div>
+                                <div><strong>Fit:</strong> {editableProduct.fit || '—'}</div>
+                                {editableProduct.sportsTeam && <div><strong>Team:</strong> {editableProduct.sportsTeam}</div>}
+                                {editableProduct.league && <div><strong>League:</strong> {editableProduct.league}</div>}
+                                <div><strong>Status:</strong> {editableProduct.status || '—'}</div>
+                                <div><strong>Websites:</strong> {editableProduct.websites.join(', ') || '—'}</div>
+                            </div>
+                        </div>
+
                         {/* Product Information (Facts) */}
                         <div className="border border-gray-200 rounded-lg p-4 bg-white">
                             <div className="flex justify-between items-center mb-3">
@@ -1192,6 +1305,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                 <div>
                                     <h3 className="text-base font-semibold text-gray-800">Generate Product Copy</h3>
                                     <p className="text-sm text-gray-500 mt-1">Create a RetailOps description for this product</p>
+                                    <p className="text-xs text-gray-400 mt-2">Uses Attributes + Product Information + Images</p>
                                 </div>
                                 <a
                                     href={`/ai/describe?productId=${editableProduct?.id || ''}`}
@@ -1303,17 +1417,6 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                         <FormField label="Generated Bullets"><ul className="p-2 pl-6 bg-gray-100 rounded-md min-h-[80px] list-disc space-y-1">{editableProduct.marketing.bullets.map((bullet, i) => <li key={i}>{bullet}</li>)}</ul></FormField>
                         <FormField label="Generated SEO Description"><div className="p-2 bg-gray-100 rounded-md min-h-[60px]">{editableProduct.marketing.seo}</div></FormField>
                         <FormField label="Marketing Description"><div className="p-2 bg-gray-100 rounded-md min-h-[120px] whitespace-pre-wrap">{editableProduct.marketing.paragraphDraft}</div></FormField>
-                        <div className="flex justify-end pt-4">
-                          <button 
-                            type="button" 
-                            onClick={() => {
-                              saveFromForm({ status: 'validated', validatedAt: serverTimestamp() });
-                            }}
-                            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
-                          >
-                            Approve
-                          </button>
-                        </div>
                     </div>
                 )}
                 {activeTab === 'variants' && (
@@ -1375,24 +1478,27 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                   )}
                 </div>
                 
-                <div className="flex space-x-2">
-                  <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
-                  {activeTab === 'core' ? (
-                    <>
-                      <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          saveFromForm({ status: 'validated', validatedAt: serverTimestamp() }, { showToast: 'Approved', keepOpen: true });
-                        }}
-                        className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
-                      >
-                        Approve
-                      </button>
-                    </>
-                  ) : (
-                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                <div className="flex flex-col items-end gap-2">
+                  {/* Missing fields warning */}
+                  {!canApprove() && getMissingFields().length > 0 && (
+                    <div className="text-xs text-red-600">
+                      Missing: {getMissingFields().join(', ')}
+                    </div>
                   )}
+                  
+                  <div className="flex space-x-2">
+                    <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
+                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                    <button 
+                      type="button" 
+                      onClick={handleApprove}
+                      disabled={!canApprove()}
+                      className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      title={!canApprove() ? `Missing: ${getMissingFields().join(', ')}` : 'Approve & mark validated'}
+                    >
+                      Approve
+                    </button>
+                  </div>
                 </div>
               </footer>
             </form>

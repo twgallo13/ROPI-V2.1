@@ -6,6 +6,7 @@ export async function describeProduct(payload: {
   facts?: any;            // product facts doc (observations, materials, ...)
   aiContext?: any;        // keywords, featureBullets, designNotes
   attributes?: any;       // brand, category, gender, ageGroup, price, etc.
+  imageUrl?: string;      // optional primary image URL
 }) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), 10000);
@@ -22,7 +23,14 @@ export async function describeProduct(payload: {
     if (!res.ok || !ct.includes('application/json')) {
       throw new Error(`Describe failed: ${res.status}`);
     }
-    return res.json() as Promise<{ text: string; title?: string; bullets?: string[]; seoTitle?: string; metaDescription?: string; keywords?: string[] }>;
+    return res.json() as Promise<{ 
+      text: string; 
+      title?: string; 
+      bullets?: string[]; 
+      seoTitle?: string; 
+      metaDescription?: string; 
+      keywords?: string[] 
+    }>;
   };
 
   // Primary via Hosting rewrite, fallback to CF URL
