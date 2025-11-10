@@ -146,10 +146,13 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     try {
       setGeneratingInline(true);
       
+      // Always use RetailOps channel for primary inline generation
+      const channel = 'RetailOps';
+      
       // Call describeProduct service
       const result = await describeProduct({
         productId: editableProduct.id,
-        channel: aiChannel,
+        channel,
         tone: aiTone,
         length: aiLength,
       });
@@ -160,7 +163,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       }
 
       // Write to Firestore subcollection
-      const descRef = doc(db, 'products', editableProduct.id, 'descriptions', aiChannel);
+      const descRef = doc(db, 'products', editableProduct.id, 'descriptions', channel);
       await setDoc(
         descRef,
         {
@@ -174,6 +177,16 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
         { merge: true }
       );
 
+      // Auto-apply to paragraphDraft field
+      setEditableProduct({
+        ...editableProduct,
+        marketing: {
+          ...editableProduct.marketing,
+          paragraphDraft: result.text,
+        },
+      });
+      setChangedFields(prev => new Set(prev).add('marketing.paragraphDraft'));
+
       // Reload descriptions to show the new one
       const descriptionsRef = collection(db, 'products', editableProduct.id, 'descriptions');
       const snapshot = await getDocs(descriptionsRef);
@@ -184,7 +197,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       });
       
       setAiDescriptions(descriptions);
-      setToastMessage({ text: `Generated ${aiChannel} description`, type: 'success' });
+      setToastMessage({ text: 'Generated and applied to Paragraph Draft', type: 'success' });
     } catch (error: any) {
       console.error('[drawer] Inline generation failed:', error);
       setToastMessage({ text: error?.message || 'Failed to generate description', type: 'error' });
@@ -771,7 +784,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h3 className="text-base font-semibold text-gray-800">Generate AI Description</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Create a new description for this product</p>
+                                    <p className="text-sm text-gray-500 mt-1">Create a RetailOps description for this product</p>
                                 </div>
                                 <a
                                     href={`/ai/describe?productId=${editableProduct?.id || ''}`}
@@ -783,20 +796,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                 </a>
                             </div>
                             
-                            <div className="grid grid-cols-3 gap-3 mb-4">
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-700 mb-1">Channel</label>
-                                    <select
-                                        value={aiChannel}
-                                        onChange={(e) => setAiChannel(e.target.value)}
-                                        disabled={generatingInline}
-                                        className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
-                                    >
-                                        <option value="RetailOps">RetailOps</option>
-                                        <option value="Shopify">Shopify</option>
-                                        <option value="PDP">PDP</option>
-                                    </select>
-                                </div>
+                            <div className="grid grid-cols-2 gap-3 mb-4">
                                 <div>
                                     <label className="block text-xs font-medium text-gray-700 mb-1">Tone</label>
                                     <select
