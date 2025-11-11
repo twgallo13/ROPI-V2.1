@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 import importer from './routes/import';
 import describe from './routes/describe';
 import exporter from './routes/exporter';
+import { seedSettingsVocabHandler } from './seedVocab';
 
 admin.initializeApp();
 
@@ -11,6 +12,7 @@ const r = functions.region('us-central1');
 export const apiImport = functions.https.onRequest(importer);
 export const apiDescribe = functions.https.onRequest(describe);
 export const apiExporter = functions.https.onRequest(exporter);
+export const seedSettingsVocab = r.https.onRequest(seedSettingsVocabHandler);
 
 /**
  * Cloud function to set user role (admin or specialist)

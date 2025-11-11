@@ -40,6 +40,12 @@ export function useVocab(): VocabData {
     ageGroups: [],
     genders: [],
     materials: [],
+    primaryColors: [],
+    descriptiveColors: [],
+    cutTypes: [],
+    closureTypes: [],
+    heelHeights: [],
+    platformHeights: [],
     fits: [],
     statuses: [],
     websites: [],
@@ -78,12 +84,12 @@ export function useVocab(): VocabData {
     subscribe('ageGroups', 'ageGroups');
     subscribe('genders', 'genders');
     subscribe('materials', 'materials');
-  subscribe('primaryColors', 'primaryColors');
-  subscribe('descriptiveColors', 'descriptiveColors');
-  subscribe('cutTypes', 'cutTypes');
-  subscribe('closureTypes', 'closureTypes');
-  subscribe('heelHeights', 'heelHeights');
-  subscribe('platformHeights', 'platformHeights');
+    subscribe('primaryColors', 'primaryColors');
+    subscribe('descriptiveColors', 'descriptiveColors');
+    subscribe('cutTypes', 'cutTypes');
+    subscribe('closureTypes', 'closureTypes');
+    subscribe('heelHeights', 'heelHeights');
+    subscribe('platformHeights', 'platformHeights');
     subscribe('fits', 'fits');
     subscribe('statuses', 'statuses');
     subscribe('websites', 'websites');
