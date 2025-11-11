@@ -66,7 +66,7 @@ function selectAudienceTemplate(gender, ageGroup) {
  */
 function buildPrompt(payload) {
     const { attributes = {}, facts = {}, aiContext = {}, tone = 'Clean', length = 'Medium', } = payload;
-    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, primaryColor, descriptiveColor, } = attributes;
+    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, } = attributes;
     // Select audience-specific template
     const audienceTemplate = selectAudienceTemplate(gender, ageGroup);
     console.log(`[describe] Using audience template: ${audienceTemplate} (gender=${gender}, ageGroup=${ageGroup})`);
@@ -100,11 +100,13 @@ function buildPrompt(payload) {
     // Build color context
     let colorContext = '';
     if (descriptiveColor) {
-        colorContext = `Color: ${descriptiveColor}`;
+        colorContext = `Descriptive Color (brand story context): ${descriptiveColor}`;
     }
     else if (primaryColor) {
-        colorContext = `Color: ${primaryColor}`;
+        colorContext = `Primary Color: ${primaryColor}`;
     }
+    // Build materials context (HIGH WEIGHT)
+    const materialsContext = materials.length > 0 ? `Materials (use verbatim): ${materials.join(', ')}` : '';
     // Design notes from AI context
     const designNotes = aiContext.designNotes || '';
     // Audience-specific prompt intro
@@ -134,7 +136,8 @@ Product Details:
 - Audience: ${gender}, Age Group: ${ageGroup}
 ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
-${material ? `- Material: ${material}` : ''}
+${materialsContext ? `- ${materialsContext}` : ''}
+${material ? `- Legacy Material: ${material}` : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
 ${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
@@ -145,26 +148,30 @@ ${priorDraft}
 Hard requirements:
 - Rewrite the paragraph; do not append. Output exactly one paragraph.
 - Use observation facts verbatim when present; no invented claims.
+- Use materials exactly as provided where relevant; no inventions.
+- Descriptive color can appear once for style/branding, not as a filter.
 - Respect tone & length; keep brand/product naming intact (Name is managed in UI).
+- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.
+- Never duplicate brand more than once in meta_title or meta_description.
 
 Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
 {
   "description": "<single rewritten paragraph>",
   "scores": {
-    "overall": 0,
-    "factual": 0,
-    "tone": 0,
-    "seo": 0,
-    "clarity": 0
+    "overall": <number 0-10, rate the overall quality>,
+    "factual": <number 0-10, accuracy and use of provided facts>,
+    "tone": <number 0-10, matches requested tone and audience>,
+    "seo": <number 0-10, keyword optimization and meta readiness>,
+    "clarity": <number 0-10, readability and customer clarity>
   },
   "coach": {
-    "reasons": ["..."],
-    "actions": ["..."],
-    "next_questions": ["..."]
+    "reasons": ["<why this score>", "..."],
+    "actions": ["<specific improvement to reach 10>", "..."],
+    "next_questions": ["<clarifying question>", "..."]
   },
   "seo": {
-    "meta_title": "<= 60 chars",
-    "meta_description": "<= 155 chars",
+    "meta_title": "<= 60 chars>",
+    "meta_description": "<= 155 chars>",
     "meta_keywords": ["lowercase", "5-8", "from attributes & observations"]
   },
   "facts_used": ["fit", "observations:heel_height", "materials"]
@@ -237,8 +244,20 @@ app.post('*', async (req, res) => {
         if (!parsed || !parsed.description) {
             return res.status(502).json({ error: 'AI returned invalid JSON' });
         }
-        // If server overall not provided, compute client can still compute; return as-is
-        res.json(parsed);
+        // Determine which template was used
+        const usedTemplate = selectAudienceTemplate(payload.attributes?.gender, payload.attributes?.ageGroup);
+        // Build response with template metadata
+        const response = {
+            description: parsed.description,
+            scores: parsed.scores,
+            coach: parsed.coach,
+            seo: parsed.seo,
+            used_template: usedTemplate,
+            facts_used: parsed.facts_used || [],
+        };
+        // Debug log for monitoring
+        console.log("[apiDescribe] used_template:", usedTemplate, "scores:", response?.scores);
+        res.status(200).json(response);
     }
     catch (error) {
         console.error('[describe] Gemini error:', error);
