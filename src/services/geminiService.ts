@@ -1,4 +1,4 @@
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Product } from '../types';
 
@@ -33,10 +33,19 @@ async function loadAIConfig(): Promise<{ model: string; temperature: number; ton
   return { model: 'gemini-1.5-flash', temperature: 0.4, tone: 'neutral' };
 }
 
-// Fetch prompt template from Firestore: settings/ai.prompts
-async function loadPromptTemplate(): Promise<string> {
+function selectAudienceId(gender?: string, ageGroup?: string): 'default' | 'mens' | 'womens' | 'gradeSchool' | 'toddler' {
+  if (ageGroup && /Grade-?School/i.test(ageGroup)) return 'gradeSchool';
+  if (ageGroup && /Toddler|Infant/i.test(ageGroup)) return 'toddler';
+  if (gender && /Women/i.test(gender)) return 'womens';
+  if (gender && /Men/i.test(gender)) return 'mens';
+  return 'default';
+}
+
+// Fetch prompt template from Firestore subcollection: /settings/ai/prompts/{audienceId}
+async function loadPromptTemplate(audienceId: string): Promise<string> {
   try {
-    const snap = await getDoc(doc(db, 'settings', 'ai.prompts'));
+    const col = collection(db, 'settings', 'ai', 'prompts');
+    const snap = await getDoc(doc(col, audienceId));
     if (snap.exists()) {
       const data = snap.data() as any;
       if (data.template) return data.template as string;
@@ -51,7 +60,8 @@ async function loadPromptTemplate(): Promise<string> {
 export async function generateProductMarketing(opts: GenerateOptions): Promise<GeminiGenerationResult> {
   const { product, variantIndex } = opts;
   const config = await loadAIConfig();
-  const template = await loadPromptTemplate();
+  const audience = selectAudienceId(product.gender, (product as any).ageGroup);
+  const template = await loadPromptTemplate(audience);
   const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
 
   // Build context values

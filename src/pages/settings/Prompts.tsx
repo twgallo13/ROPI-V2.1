@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 // NOTE: ShadCN UI is not installed in this workspace. We'll use a minimal tabs UI
 // that can be swapped for shadcn/ui Tabs later without changing behavior.
 
 type TabKey = 'templates' | 'preview' | 'history';
+type AudienceId = 'default' | 'mens' | 'womens' | 'gradeSchool' | 'toddler';
 
-// Firestore path: we store prompts under collection 'settings', doc id 'ai.prompts'
-// Assumption: Using a single doc at settings/ai.prompts rather than a subcollection path.
-const FS_DOC = doc(db, 'settings', 'ai.prompts');
+// Firestore path: /settings/ai/prompts/{audienceId}
+const PROMPTS_COL = collection(db, 'settings', 'ai', 'prompts');
 
 const defaultTemplate = `You are an expert retail copywriter for athletic footwear.
 Write a concise, on-brand product description.
@@ -28,13 +28,14 @@ Avoid: superlatives, clichés, and repeated brand mentions.`;
 const PromptsPage: React.FC = () => {
   const [active, setActive] = useState<TabKey>('templates');
   const [template, setTemplate] = useState<string>('');
+  const [audience, setAudience] = useState<AudienceId>('default');
   const [status, setStatus] = useState<string>('');
 
-  // Load from Firestore
+  // Load selected audience template from Firestore
   useEffect(() => {
     (async () => {
       try {
-        const snap = await getDoc(FS_DOC);
+        const snap = await getDoc(doc(PROMPTS_COL, audience));
         if (snap.exists()) {
           const data = snap.data() as { template?: string };
           setTemplate(data.template || defaultTemplate);
@@ -48,12 +49,12 @@ const PromptsPage: React.FC = () => {
         setTimeout(() => setStatus(''), 2000);
       }
     })();
-  }, []);
+  }, [audience]);
 
   const onSave = async () => {
     try {
       const cleaned = JSON.parse(JSON.stringify({ template }));
-      await setDoc(FS_DOC, cleaned, { merge: true });
+      await setDoc(doc(PROMPTS_COL, audience), cleaned, { merge: true });
       setStatus('Saved.');
     } catch (e) {
       console.error('[prompts] save failed', e);
@@ -116,7 +117,21 @@ const PromptsPage: React.FC = () => {
 
       {active === 'templates' && (
         <section className="bg-white p-6 rounded-lg shadow">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Default Product Prompt</label>
+          <div className="flex items-center gap-3 mb-2">
+            <label className="text-sm font-medium text-gray-700">Audience</label>
+            <select
+              className="border rounded px-2 py-1"
+              value={audience}
+              onChange={(e) => setAudience(e.target.value as AudienceId)}
+            >
+              <option value="default">Default</option>
+              <option value="mens">Mens</option>
+              <option value="womens">Womens</option>
+              <option value="gradeSchool">Grade School</option>
+              <option value="toddler">Toddler</option>
+            </select>
+          </div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Product Prompt</label>
           <textarea
             value={template}
             onChange={(e) => setTemplate(e.target.value)}
