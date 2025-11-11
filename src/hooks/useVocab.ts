@@ -14,6 +14,12 @@ export interface VocabData {
   ageGroups: VocabOption[];
   genders: VocabOption[];
   materials: VocabOption[];
+  primaryColors: VocabOption[];
+  descriptiveColors: VocabOption[];
+  cutTypes: VocabOption[];
+  closureTypes: VocabOption[];
+  heelHeights: VocabOption[];
+  platformHeights: VocabOption[];
   fits: VocabOption[];
   statuses: VocabOption[];
   websites: VocabOption[];
@@ -72,6 +78,12 @@ export function useVocab(): VocabData {
     subscribe('ageGroups', 'ageGroups');
     subscribe('genders', 'genders');
     subscribe('materials', 'materials');
+  subscribe('primaryColors', 'primaryColors');
+  subscribe('descriptiveColors', 'descriptiveColors');
+  subscribe('cutTypes', 'cutTypes');
+  subscribe('closureTypes', 'closureTypes');
+  subscribe('heelHeights', 'heelHeights');
+  subscribe('platformHeights', 'platformHeights');
     subscribe('fits', 'fits');
     subscribe('statuses', 'statuses');
     subscribe('websites', 'websites');
