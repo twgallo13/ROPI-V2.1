@@ -201,20 +201,20 @@ Output ONLY a strict JSON object in this exact schema (no extra text, no markdow
 {
   "description": "<single rewritten paragraph>",
   "scores": {
-    "overall": 0,
-    "factual": 0,
-    "tone": 0,
-    "seo": 0,
-    "clarity": 0
+    "overall": <number 0-10, rate the overall quality>,
+    "factual": <number 0-10, accuracy and use of provided facts>,
+    "tone": <number 0-10, matches requested tone and audience>,
+    "seo": <number 0-10, keyword optimization and meta readiness>,
+    "clarity": <number 0-10, readability and customer clarity>
   },
   "coach": {
-    "reasons": ["..."],
-    "actions": ["..."],
-    "next_questions": ["..."]
+    "reasons": ["<why this score>", "..."],
+    "actions": ["<specific improvement to reach 10>", "..."],
+    "next_questions": ["<clarifying question>", "..."]
   },
   "seo": {
-    "meta_title": "<= 60 chars",
-    "meta_description": "<= 155 chars",
+    "meta_title": "<= 60 chars>",
+    "meta_description": "<= 155 chars>",
     "meta_keywords": ["lowercase", "5-8", "from attributes & observations"]
   },
   "facts_used": ["fit", "observations:heel_height", "materials"]
@@ -308,6 +308,9 @@ app.post('*', async (req, res) => {
       used_template: usedTemplate,
       facts_used: parsed.facts_used || [],
     };
+    
+    // Debug log for monitoring
+    console.log("[apiDescribe] used_template:", usedTemplate, "scores:", response?.scores);
     
     res.status(200).json(response);
   } catch (error: any) {
