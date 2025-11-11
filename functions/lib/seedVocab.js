@@ -36,8 +36,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedSettingsVocab = void 0;
 const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
-// Use default initialized app (initialized in index.ts)
-const db = admin.firestore();
 // Vocab sets to seed
 const sets = {
     primaryColors: ['Black', 'White', 'Red', 'Blue'],
@@ -60,6 +58,7 @@ exports.seedSettingsVocab = functions.https.onRequest(async (req, res) => {
             res.status(401).json({ ok: false, error: 'unauthorized' });
             return;
         }
+        const db = admin.firestore();
         const counts = {};
         for (const [key, items] of Object.entries(sets)) {
             let n = 0;

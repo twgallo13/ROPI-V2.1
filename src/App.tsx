@@ -14,6 +14,7 @@ import PromptsPage from './pages/settings/Prompts';
 import AISettingsPage from './pages/settings/AISettingsPage';
 import VocabManagedPage from './pages/settings/VocabManagedPage';
 import VocabDropdownsPage from './pages/settings/VocabDropdownsPage';
+import VocabAttributesPage from './pages/settings/VocabAttributesPage';
 import RulesPage from './pages/settings/RulesPage';
 import BrandsPage from './pages/settings/BrandsPage';
 import ExportSettingsPage from './pages/settings/ExportSettingsPage';
@@ -126,6 +127,7 @@ function RouteManager() {
           <Route path="prompts" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><PromptsPage /></Suspense>} />
           <Route path="vocab-managed" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabManagedPage /></Suspense>} />
           <Route path="vocab" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabDropdownsPage /></Suspense>} />
+          <Route path="vocab-attributes" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabAttributesPage /></Suspense>} />
           <Route path="rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><RulesPage /></Suspense>} />
           <Route path="brands" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><BrandsPage /></Suspense>} />
           <Route path="export-rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><ExportRulesPage /></Suspense>} />

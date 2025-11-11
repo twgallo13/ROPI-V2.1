@@ -1,9 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-// Use default initialized app (initialized in index.ts)
-const db = admin.firestore();
-
 // Vocab sets to seed
 const sets: Record<string, string[]> = {
   primaryColors: ['Black', 'White', 'Red', 'Blue'],
@@ -30,6 +27,7 @@ export const seedSettingsVocab = functions.https.onRequest(async (req, res) => {
       return;
     }
 
+    const db = admin.firestore();
     const counts: Record<string, number> = {};
 
     for (const [key, items] of Object.entries(sets)) {
