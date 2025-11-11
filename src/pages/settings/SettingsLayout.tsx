@@ -11,7 +11,6 @@ const tabs = [
   { to: '/settings/vocab-managed', label: 'Vocab (Managed)' },
   { to: '/settings/prompts', label: 'AI Prompts' },
   { to: '/settings/vocab', label: 'Vocab / Dropdowns' },
-  { to: '/settings/vocab-attributes', label: 'Shoe Attributes' },
   { to: '/settings/rules', label: 'Rules' },
   { to: '/settings/brands', label: 'Brands' },
   { to: '/settings/export', label: 'Export Settings' },
