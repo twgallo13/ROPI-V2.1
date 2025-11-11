@@ -33,60 +33,52 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seedSettingsVocabHandler = seedSettingsVocabHandler;
+exports.seedSettingsVocab = void 0;
+const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
-// Ensure default app is initialized elsewhere (index.ts). Using the default app here.
+// Use default initialized app (initialized in index.ts)
 const db = admin.firestore();
-// Tiny slug helper: lowercase, trim, replace non-alphanumerics with hyphens
-function slugify(input) {
-    return (input || '')
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
-async function seedSettingsVocabHandler(req, res) {
+// Vocab sets to seed
+const sets = {
+    primaryColors: ['Black', 'White', 'Red', 'Blue'],
+    descriptiveColors: ['Rose Gold', 'Patent-leather'],
+    cutTypes: ['Low', 'Mid', 'High'],
+    closureTypes: ['Lace-up', 'Buckle', 'Zip-up'],
+    heelHeights: ['0–1"', '2–3"', '4–5"', '5"+'],
+    platformHeights: ['Flat', 'Medium (1–2")', 'High (2–3")'],
+};
+// slug helper
+const slug = (s) => (s || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+exports.seedSettingsVocab = functions.https.onRequest(async (req, res) => {
     try {
-        if (req.method !== 'POST') {
-            res.status(405).json({ ok: false, error: 'Method Not Allowed' });
-            return;
-        }
         const token = req.header('x-seed-token');
-        if (!token || token !== process.env.SEED_TOKEN) {
-            res.status(401).json({ ok: false });
+        if (token !== process.env.SEED_TOKEN) {
+            res.status(401).json({ ok: false, error: 'unauthorized' });
             return;
         }
-        // Defaults to seed
-        const payload = {
-            primaryColors: ['Black', 'White', 'Red', 'Blue'],
-            descriptiveColors: ['Rose Gold', 'Patent-leather'],
-            cutTypes: ['Low', 'Mid', 'High'],
-            closureTypes: ['Lace-up', 'Buckle', 'Zip-up'],
-            heelHeights: ['0–1"', '2–3"', '4–5"', '5"+'],
-            platformHeights: ['Flat', 'Medium (1–2")', 'High (2–3")'],
-        };
         const counts = {};
-        for (const [key, values] of Object.entries(payload)) {
+        for (const [key, items] of Object.entries(sets)) {
             let n = 0;
-            for (const label of values) {
-                const value = label; // Store as-is
-                const slug = slugify(value);
-                const ref = db.doc(`settings/${key}/items/${slug}`);
-                await ref.set({
-                    value,
+            for (const label of items) {
+                const id = slug(label);
+                await db.doc(`settings/${key}/items/${id}`).set({
+                    value: label,
                     label,
                     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
                 }, { merge: true });
-                n += 1;
+                n++;
             }
             counts[key] = n;
         }
         res.json({ ok: true, counts });
         return;
     }
-    catch (err) {
-        console.error('[seedSettingsVocab] Error:', err);
-        res.status(500).json({ ok: false, error: 'Internal Error' });
+    catch (e) {
+        res.status(500).json({ ok: false, error: String(e?.message || e) });
         return;
     }
-}
+});
