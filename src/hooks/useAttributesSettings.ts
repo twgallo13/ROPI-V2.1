@@ -122,7 +122,8 @@ export function useAttributesSettings() {
 
     const keys: AttributeKey[] = [
       'departments', 'classes', 'categories', 'ageGroups', 'genders',
-      'statuses', 'websites', 'sportsTeams', 'leagues', 'fits', 'taxClasses'
+      'statuses', 'websites', 'sportsTeams', 'leagues', 'fits', 'taxClasses',
+      'primaryColors', 'descriptiveColors', 'cutTypes', 'closureTypes', 'heelHeights', 'platformHeights'
     ];
 
     keys.forEach(key => {
