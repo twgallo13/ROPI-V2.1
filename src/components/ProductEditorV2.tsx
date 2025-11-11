@@ -458,6 +458,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
           ageGroup: editableProduct.ageGroup,
           gender: editableProduct.gender,
           material: editableProduct.materialFabric,
+          materials: editableProduct.materials || [],
           fit: editableProduct.fit,
           sportsTeam: editableProduct.sportsTeam,
           league: editableProduct.league,
@@ -585,7 +586,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         ageGroup: editableProduct.ageGroup,
         gender: editableProduct.gender,
         materialFabric: editableProduct.materialFabric,
+        materials: editableProduct.materials || [],
         fit: editableProduct.fit,
+        primaryColor: editableProduct.primaryColor,
+        descriptiveColor: editableProduct.descriptiveColor,
+        cutType: editableProduct.cutType,
+        closureType: editableProduct.closureType,
+        heelHeight: editableProduct.heelHeight,
+        platformHeight: editableProduct.platformHeight,
         sportsTeam: editableProduct.sportsTeam,
         league: editableProduct.league,
         websites: editableProduct.websites,
@@ -888,18 +896,63 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         />
                       </div>
 
-                      {/* Material */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Material/Fabric</label>
-                        <Select 
-                          name="materialFabric"
-                          value={editableProduct.materialFabric ?? ''} 
-                          onChange={(val) => handleSelectChange('materialFabric', val)}
-                          options={['', ...vocab.materials.map(v => v.value)]}
-                          placeholder="Select material..."
-                          disabled={vocab.loading}
-                        />
+                      {/* Materials (multi-select chips) */}
+                      <div className="md:col-span-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Materials</label>
+                        <div className="border border-gray-300 rounded-md p-2 bg-white min-h-[42px]">
+                          {/* Selected materials as removable chips */}
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            {(editableProduct.materials || []).map((mat, idx) => (
+                              <span
+                                key={idx}
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
+                              >
+                                {mat}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = [...(editableProduct.materials || [])];
+                                    updated.splice(idx, 1);
+                                    setEditableProduct(p => p ? { ...p, materials: updated } : null);
+                                  }}
+                                  className="ml-1.5 inline-flex items-center justify-center text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                                  aria-label={`Remove ${mat}`}
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                          {/* Dropdown to add materials */}
+                          <select
+                            className="w-full border-0 focus:ring-0 text-sm text-gray-700 bg-transparent"
+                            value=""
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              if (val && !(editableProduct.materials || []).includes(val)) {
+                                setEditableProduct(p => p ? {
+                                  ...p,
+                                  materials: [...(p.materials || []), val]
+                                } : null);
+                              }
+                            }}
+                            disabled={vocab.loading}
+                          >
+                            <option value="">Add material...</option>
+                            {vocab.materials
+                              .filter(m => !(editableProduct.materials || []).includes(m.value))
+                              .map((m) => (
+                                <option key={m.value} value={m.value}>
+                                  {m.label}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+                        <p className="mt-1 text-xs text-gray-500">Select multiple materials from the dropdown</p>
                       </div>
+
+                      {/* Keep old materialFabric for backward compatibility (hidden) */}
+                      <input type="hidden" name="materialFabric" value={editableProduct.materialFabric ?? ''} />
 
                       {/* Primary Color */}
                       <div>
@@ -914,17 +967,18 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         />
                       </div>
 
-                      {/* Descriptive Color */}
+                      {/* Descriptive Color (free-text) */}
                       <div>
                         <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Descriptive Color</label>
-                        <Select
+                        <input
+                          type="text"
                           name="descriptiveColor"
                           value={(editableProduct as any).descriptiveColor ?? ''}
-                          onChange={(val) => handleSelectChange('descriptiveColor', val)}
-                          options={['', ...((vocab as any).descriptiveColors ?? []).map((v: any) => v.value)]}
-                          placeholder="Select descriptive color..."
-                          disabled={vocab.loading}
+                          onChange={(e) => setEditableProduct(p => p ? { ...p, descriptiveColor: e.target.value } : null)}
+                          placeholder="e.g., 'Sail/University Red', 'Rose Gold', 'Icy Mint'"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                         />
+                        <p className="mt-1 text-xs text-gray-500">Manufacturer's descriptive color text</p>
                       </div>
 
                       {/* Fit */}

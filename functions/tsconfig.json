@@ -6,8 +6,9 @@
     "outDir": "lib",
     "rootDir": "src",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "strict": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.json"]
 }

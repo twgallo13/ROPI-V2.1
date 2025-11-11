@@ -6,6 +6,7 @@ export type VocabKey =
   | 'categories'
   | 'ageGroups'
   | 'genders'
+  | 'materials'
   | 'statuses'
   | 'websites'
   | 'sportsTeams'
