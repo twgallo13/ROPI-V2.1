@@ -4,6 +4,7 @@ import importer from './routes/import';
 import describe from './routes/describe';
 import exporter from './routes/exporter';
 export { seedSettingsVocab } from './seedVocab';
+export { seedMaterials } from './seed/seedMaterials';
 
 admin.initializeApp();
 

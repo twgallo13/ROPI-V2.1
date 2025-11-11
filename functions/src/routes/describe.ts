@@ -40,8 +40,9 @@ interface DescribePayload {
     sportsTeam?: string;
     league?: string;
     material?: string;
+    materials?: string[]; // multi-select from vocab
     primaryColor?: string;
-    descriptiveColor?: string;
+    descriptiveColor?: string; // free-text manufacturer color
   };
   imageUrl?: string;
   temperature?: number;
@@ -103,6 +104,7 @@ function buildPrompt(payload: DescribePayload): string {
     sportsTeam,
     league,
     material,
+    materials = [],
     primaryColor,
     descriptiveColor,
   } = attributes;
@@ -140,10 +142,13 @@ function buildPrompt(payload: DescribePayload): string {
   // Build color context
   let colorContext = '';
   if (descriptiveColor) {
-    colorContext = `Color: ${descriptiveColor}`;
+    colorContext = `Descriptive Color (brand story context): ${descriptiveColor}`;
   } else if (primaryColor) {
-    colorContext = `Color: ${primaryColor}`;
+    colorContext = `Primary Color: ${primaryColor}`;
   }
+
+  // Build materials context (HIGH WEIGHT)
+  const materialsContext = materials.length > 0 ? `Materials (use verbatim): ${materials.join(', ')}` : '';
 
   // Design notes from AI context
   const designNotes = aiContext.designNotes || '';
@@ -174,7 +179,8 @@ Product Details:
 - Audience: ${gender}, Age Group: ${ageGroup}
 ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
-${material ? `- Material: ${material}` : ''}
+${materialsContext ? `- ${materialsContext}` : ''}
+${material ? `- Legacy Material: ${material}` : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
 ${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
@@ -185,7 +191,11 @@ ${priorDraft}
 Hard requirements:
 - Rewrite the paragraph; do not append. Output exactly one paragraph.
 - Use observation facts verbatim when present; no invented claims.
+- Use materials exactly as provided where relevant; no inventions.
+- Descriptive color can appear once for style/branding, not as a filter.
 - Respect tone & length; keep brand/product naming intact (Name is managed in UI).
+- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.
+- Never duplicate brand more than once in meta_title or meta_description.
 
 Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
 {

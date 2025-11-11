@@ -28,8 +28,9 @@ export interface DescribeProductPayload {
     sportsTeam?: string;
     league?: string;
     material?: string;
+    materials?: string[]; // multi-select from vocab
     primaryColor?: string;
-    descriptiveColor?: string;
+    descriptiveColor?: string; // free-text manufacturer color
     cutType?: string;
     closureType?: string;
     heelHeight?: string;

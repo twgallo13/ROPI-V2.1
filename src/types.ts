@@ -32,10 +32,11 @@ export type Product = {
   category: string;
   ageGroup: string;
   gender: string;
-  materialFabric: string;
+  materialFabric: string; // deprecated in favor of materials array
+  materials?: string[]; // multi-select from vocab
   fit: string;
   primaryColor?: string;
-  descriptiveColor?: string;
+  descriptiveColor?: string; // free-text (manufacturer descriptive color)
   cutType?: string;
   closureType?: string;
   heelHeight?: string;
