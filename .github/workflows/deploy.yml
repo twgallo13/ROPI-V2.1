@@ -32,7 +32,10 @@ jobs:
         run: npm run build:functions
       - name: Deploy Hosting + Functions
         if: ${{ env.FIREBASE_TOKEN != '' && env.PROJECT_ID != '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           npm i -g firebase-tools
           firebase use "$PROJECT_ID"
+          export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
           firebase deploy --only hosting,functions

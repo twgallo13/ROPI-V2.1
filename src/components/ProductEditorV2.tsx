@@ -493,6 +493,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
     try {
       const payload = cleanForFirestore<any>({
+        name: editableProduct.name,
         brand: editableProduct.brand,
         status: editableProduct.status,
         department: editableProduct.department,
@@ -710,14 +711,16 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     })}
                     
                     <div className="grid grid-cols-1 gap-y-4 sm:gap-y-6 sm:gap-x-4 sm:grid-cols-2">
-                      {/* Name & MPN (read-only) */}
+                      {/* Name & MPN */}
                       <div>
                         <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Name</label>
                         <input 
                           type="text" 
                           value={editableProduct.name ?? ''} 
-                          readOnly 
-                          className="block w-full text-sm sm:text-base border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed py-2.5" 
+                          onChange={(e) =>
+                            setEditableProduct((p) => p ? ({ ...p, name: e.target.value }) : null)
+                          }
+                          className="block w-full text-sm sm:text-base border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 py-2.5" 
                         />
                       </div>
                       <div>

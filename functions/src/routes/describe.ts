@@ -1,5 +1,14 @@
 import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import * as functions from "firebase-functions";
+
+// Read Gemini key from Firebase Functions config first, then env as fallback
+const GEMINI_API_KEY =
+  (functions.config().gemini && functions.config().gemini.api_key) ||
+  process.env.GEMINI_API_KEY;
+
+// Optional: single safe log to confirm presence (not the key value)
+console.log("GEMINI_KEY_PRESENT", Boolean(GEMINI_API_KEY));
 
 const app = express();
 app.use(express.json());
@@ -45,6 +54,18 @@ interface DescribeResponse {
 }
 
 /**
+ * Select audience-specific prompt template based on gender and age group
+ * Templates: default, mens, womens, gradeSchool, toddler
+ */
+function selectAudienceTemplate(gender?: string, ageGroup?: string): string {
+  if (ageGroup && /Grade[\s-]?School/i.test(ageGroup)) return "gradeSchool";
+  if (ageGroup && /Toddler|Infant/i.test(ageGroup)) return "toddler";
+  if (gender && /Women/i.test(gender)) return "womens";
+  if (gender && /Men/i.test(gender)) return "mens";
+  return "default";
+}
+
+/**
  * Build dynamic prompt using product attributes and observations
  */
 function buildPrompt(payload: DescribePayload): string {
@@ -70,7 +91,11 @@ function buildPrompt(payload: DescribePayload): string {
     descriptiveColor,
   } = attributes;
 
-  // Build weighted observations summary
+  // Select audience-specific template
+  const audienceTemplate = selectAudienceTemplate(gender, ageGroup);
+  console.log(`[describe] Using audience template: ${audienceTemplate} (gender=${gender}, ageGroup=${ageGroup})`);
+
+  // Build weighted observations summary (HIGH WEIGHT)
   const obsParts: string[] = [];
   if (facts.observations) obsParts.push(`Observations: ${facts.observations}`);
   if (facts.materials) obsParts.push(`Materials: ${facts.materials}`);
@@ -107,31 +132,50 @@ function buildPrompt(payload: DescribePayload): string {
   // Design notes from AI context
   const designNotes = aiContext.designNotes || '';
 
+  // Audience-specific prompt intro
+  let audienceGuidance = '';
+  if (audienceTemplate === 'mens') {
+    audienceGuidance = 'Write for adult male customers. Focus on performance, durability, and practical benefits.';
+  } else if (audienceTemplate === 'womens') {
+    audienceGuidance = 'Write for adult female customers. Balance style and function, emphasizing versatility and quality.';
+  } else if (audienceTemplate === 'gradeSchool') {
+    audienceGuidance = 'Write for parents shopping for grade school kids (ages 6-12). Focus on durability, comfort, and age-appropriate style.';
+  } else if (audienceTemplate === 'toddler') {
+    audienceGuidance = 'Write for parents shopping for toddlers/infants. Emphasize safety, comfort, and ease of care.';
+  }
+
   return `You are ROPI AI — an expert retail storyteller for ${brand}.
 Create a product description for ${name}.
 Use tone: ${tone}, length: ${length}.
+${audienceGuidance}
 
-Base it on:
+Product Details:
 - Category: ${category}
 - Fit: ${fit}
 - Audience: ${gender}, Age Group: ${ageGroup}
 ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${material ? `- Material: ${material}` : ''}
-${obsSummary ? `- ${obsSummary}` : ''}
-${keywords.length > 0 ? `- Material/Performance Keywords: ${keywords.join(', ')}` : ''}
+
+${obsSummary ? `**Observations (HIGH WEIGHT - Use these facts verbatim):**
+${obsSummary}
+` : ''}
+${keywords.length > 0 ? `- Keywords: ${keywords.join(', ')}` : ''}
 ${featureBullets.length > 0 ? `- Features: ${featureBullets.join(', ')}` : ''}
 ${designNotes ? `- Design Notes: ${designNotes}` : ''}
 
-Optimize for clarity, SEO, and emotional resonance.
-Output 1 paragraph of clean, customer-first copy.
+CRITICAL RULES:
+- Use observation facts verbatim when present
+- Never invent performance claims
+- Prioritize observations over generic descriptions
+- Match the specified tone and length
 
 IMPORTANT: Respond with ONLY a valid JSON object in this exact format:
 {
   "description": "Your generated product description paragraph here...",
   "seo_score": 9,
   "tone_score": 8,
-  "facts_used": ["fit", "team", "league", "materials"]
+  "facts_used": ["fit", "observations", "materials"]
 }
 
 Do not include any text before or after the JSON object.`;
@@ -173,23 +217,15 @@ app.post('*', async (req, res) => {
     return res.status(400).json({ error: 'productId required' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  
-  // If no API key, return mock response
-  if (!apiKey) {
-    const mockResponse: DescribeResponse = {
-      description: `Premium ${payload.attributes?.name || 'product'} by ${payload.attributes?.brand || 'brand'} offers exceptional comfort and style. Perfect for ${payload.attributes?.gender || 'everyone'}, this ${payload.attributes?.category || 'item'} features quality materials and reliable performance for everyday wear.`,
-      seo_score: 8,
-      tone_score: 7,
-      facts_used: ['brand', 'category', 'gender'],
-    };
-    return res.json(mockResponse);
+  // If no API key, return clear error
+  if (!GEMINI_API_KEY) {
+    return res.status(500).json({ error: "Missing Gemini API key" });
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       generationConfig: {
         temperature: payload.temperature ?? 0.6,
         maxOutputTokens: 500,
