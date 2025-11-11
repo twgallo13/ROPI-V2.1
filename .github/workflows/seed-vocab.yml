@@ -9,6 +9,8 @@ on:
 jobs:
   seed:
     runs-on: ubuntu-latest
+    env:
+      SEED_TOKEN: ${{ secrets.SEED_TOKEN }}
     steps:
       - name: Call seed function
         run: |
@@ -17,7 +19,7 @@ jobs:
           echo "POST $URL"
           RESP=$(curl -sS -w "\n%{http_code}" -X POST "$URL" \
             -H "Content-Type: application/json" \
-            -H "x-seed-token: ${{ secrets.SEED_TOKEN }}" \
+            -H "x-seed-token: $SEED_TOKEN" \
             --data '{}')
           BODY=$(echo "$RESP" | head -n -1)
           CODE=$(echo "$RESP" | tail -n 1)

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef, useCallback, ChangeEvent, useMemo } from 'react';
 import { Product, ProductFacts } from '../types';
-import { describeProduct } from '../services/describe';
+import { describeProduct, DescribeProductPayload } from '../services/describe';
 import { analyzeImage } from '../services/vision';
-import { useVocab } from '../hooks/useVocab';
+import { useVocab, VocabData } from '../hooks/useVocab';
 import { useAuth } from '../contexts/AuthContext';
 import { db, storage } from '../firebase';
 import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc, addDoc } from 'firebase/firestore';
@@ -33,6 +33,42 @@ function cleanForFirestore<T extends Record<string, any>>(obj: T): Partial<T> {
     else out[k] = v;
   }
   return out as Partial<T>;
+}
+
+/**
+ * Build vocabulary normalization map from live vocab data
+ * Maps all vocab values to their canonical labels for AI consistency
+ */
+function buildVocabMap(vocab: VocabData): Record<string, string> {
+  const map: Record<string, string> = {};
+  
+  // Helper to add vocab options to map
+  const addOptions = (options: Array<{ value: string; label: string }>) => {
+    options.forEach(opt => {
+      if (opt.value !== opt.label) {
+        map[opt.value] = opt.label;
+      }
+    });
+  };
+  
+  // Add all vocabulary collections
+  addOptions(vocab.genders);
+  addOptions(vocab.ageGroups);
+  addOptions(vocab.fits);
+  addOptions(vocab.materials);
+  addOptions(vocab.primaryColors);
+  addOptions(vocab.descriptiveColors);
+  addOptions(vocab.cutTypes);
+  addOptions(vocab.closureTypes);
+  addOptions(vocab.heelHeights);
+  addOptions(vocab.platformHeights);
+  addOptions(vocab.sportsTeams);
+  addOptions(vocab.leagues);
+  addOptions(vocab.categories);
+  addOptions(vocab.departments);
+  addOptions(vocab.classes);
+  
+  return map;
 }
 
 const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, product, onSaved }) => {
@@ -69,9 +105,13 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [aiDescriptions, setAiDescriptions] = useState<Record<string, AIDescription>>({});
   const [aiTone, setAiTone] = useState('Clean');
   const [aiLength, setAiLength] = useState('Medium');
+  const [aiTemperature, setAiTemperature] = useState(0.6);
   const [generatingInline, setGeneratingInline] = useState(false);
   const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number } | null>(null);
   const [improvementText, setImprovementText] = useState('');
+  
+  // Build vocab normalization map from live vocab data
+  const vocabMap = useMemo(() => buildVocabMap(vocab), [vocab]);
   
   // Vocab rules (banned words, synonyms)
   const [vocabRules, setVocabRules] = useState<{ banned?: string[]; synonyms?: Record<string, string> } | null>(null);
@@ -333,16 +373,27 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
     try {
       setGeneratingInline(true);
+      setAiScore(null);
       
       const channel = 'RetailOps';
       
-      const result = await describeProduct({
+      const payload: DescribeProductPayload = {
         productId: editableProduct.id,
         channel,
         tone: aiTone,
         length: aiLength,
-        facts,
-        aiContext: editableProduct.aiContext,
+        temperature: aiTemperature,
+        facts: {
+          observations: facts.observations,
+          materials: facts.materials,
+          fit: facts.fit,
+          keywords: facts.keywords,
+        },
+        aiContext: {
+          keywords: editableProduct.aiContext?.keywords || [],
+          featureBullets: editableProduct.aiContext?.featureBullets || [],
+          designNotes: editableProduct.aiContext?.designNotes || '',
+        },
         attributes: {
           name: editableProduct.name,
           brand: editableProduct.brand,
@@ -356,23 +407,35 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
           fit: editableProduct.fit,
           sportsTeam: editableProduct.sportsTeam,
           league: editableProduct.league,
-          primaryColor: (editableProduct as any).primaryColor ?? null,
-          descriptiveColor: (editableProduct as any).descriptiveColor ?? null,
-          cutType: (editableProduct as any).cutType ?? null,
-          closureType: (editableProduct as any).closureType ?? null,
-          heelHeight: (editableProduct as any).heelHeight ?? null,
-          platformHeight: (editableProduct as any).platformHeight ?? null,
+          primaryColor: (editableProduct as any).primaryColor ?? undefined,
+          descriptiveColor: (editableProduct as any).descriptiveColor ?? undefined,
+          cutType: (editableProduct as any).cutType ?? undefined,
+          closureType: (editableProduct as any).closureType ?? undefined,
+          heelHeight: (editableProduct as any).heelHeight ?? undefined,
+          platformHeight: (editableProduct as any).platformHeight ?? undefined,
           status: editableProduct.status,
           websites: editableProduct.websites,
-          price: (editableProduct as any).price ?? null
+          price: (editableProduct as any).price ?? undefined,
         },
         imageUrl: facts.images[0]?.url,
-        rules: vocabRules
-      });
+      };
+      
+      const result = await describeProduct(payload, vocabMap);
 
-      if (!result.text) {
-        setToastMessage({ text: 'No text returned from API', type: 'error' });
+      const description = result.description || result.text || '';
+      
+      if (!description) {
+        setToastMessage({ text: 'No description returned from API', type: 'error' });
         return;
+      }
+
+      // Update AI scores if available
+      if (result.seo_score || result.tone_score) {
+        setAiScore({
+          overall: Math.round((result.seo_score + result.tone_score) / 2),
+          seo: result.seo_score,
+          tone: result.tone_score,
+        });
       }
 
       // Write to Firestore subcollection
@@ -380,10 +443,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       await setDoc(
         descRef,
         {
-          text: result.text,
+          text: description,
+          seo_score: result.seo_score,
+          tone_score: result.tone_score,
+          facts_used: result.facts_used,
           meta: {
             tone: aiTone,
             length: aiLength,
+            temperature: aiTemperature,
             generatedAt: serverTimestamp(),
           },
         },
@@ -395,7 +462,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         ...editableProduct,
         marketing: {
           ...editableProduct.marketing,
-          paragraphDraft: result.text,
+          paragraphDraft: description,
         },
       });
 
@@ -1167,7 +1234,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-3"
                       />
                       
-                      <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="grid grid-cols-2 gap-3 mb-3">
                         <div>
                           <label className="block text-xs font-medium text-gray-700 mb-1">Tone</label>
                           <select
@@ -1196,6 +1263,27 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         </div>
                       </div>
                       
+                      <div className="mb-4">
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                          Creativity (Temperature: {aiTemperature.toFixed(1)})
+                        </label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={aiTemperature}
+                          onChange={(e) => setAiTemperature(parseFloat(e.target.value))}
+                          disabled={generatingInline}
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
+                        />
+                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                          <span>Consistent</span>
+                          <span>Balanced</span>
+                          <span>Creative</span>
+                        </div>
+                      </div>
+                      
                       <button
                         type="button"
                         onClick={async () => {
@@ -1203,14 +1291,21 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           setGeneratingInline(true);
                           setAiScore(null);
                           try {
-                            const result = await describeProduct({
+                            const payload: DescribeProductPayload = {
                               productId: editableProduct.id,
                               channel: 'RetailOps',
                               tone: aiTone,
                               length: aiLength,
-                              facts,
+                              temperature: aiTemperature,
+                              facts: {
+                                observations: facts.observations,
+                                materials: facts.materials,
+                                fit: facts.fit,
+                                keywords: facts.keywords,
+                              },
                               aiContext: {
                                 keywords: facts.keywords,
+                                featureBullets: editableProduct.aiContext?.featureBullets || [],
                                 designNotes: improvementText || undefined,
                               },
                               attributes: {
@@ -1226,36 +1321,53 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 fit: editableProduct.fit,
                                 sportsTeam: editableProduct.sportsTeam,
                                 league: editableProduct.league,
-                                primaryColor: (editableProduct as any).primaryColor ?? null,
-                                descriptiveColor: (editableProduct as any).descriptiveColor ?? null,
-                                cutType: (editableProduct as any).cutType ?? null,
-                                closureType: (editableProduct as any).closureType ?? null,
-                                heelHeight: (editableProduct as any).heelHeight ?? null,
-                                platformHeight: (editableProduct as any).platformHeight ?? null,
+                                primaryColor: (editableProduct as any).primaryColor ?? undefined,
+                                descriptiveColor: (editableProduct as any).descriptiveColor ?? undefined,
+                                cutType: (editableProduct as any).cutType ?? undefined,
+                                closureType: (editableProduct as any).closureType ?? undefined,
+                                heelHeight: (editableProduct as any).heelHeight ?? undefined,
+                                platformHeight: (editableProduct as any).platformHeight ?? undefined,
                                 status: editableProduct.status,
                                 websites: editableProduct.websites,
-                                price: (editableProduct as any).price ?? null
+                                price: (editableProduct as any).price ?? undefined,
                               },
                               imageUrl: facts.images[0]?.url,
-                              rules: vocabRules
-                            });
+                            };
                             
-                            if (result.text) {
-                              // Save to descriptions subcollection
+                            const result = await describeProduct(payload, vocabMap);
+                            
+                            const description = result.description || result.text || '';
+                            
+                            if (description) {
+                              // Save to descriptions subcollection with scores
                               const descRef = doc(db, 'products', editableProduct.id, 'descriptions', 'RetailOps');
                               await setDoc(descRef, {
-                                text: result.text,
-                                meta: { tone: aiTone, length: aiLength, generatedAt: serverTimestamp() },
+                                text: description,
+                                seo_score: result.seo_score,
+                                tone_score: result.tone_score,
+                                facts_used: result.facts_used,
+                                meta: { 
+                                  tone: aiTone, 
+                                  length: aiLength, 
+                                  temperature: aiTemperature,
+                                  generatedAt: serverTimestamp() 
+                                },
                               }, { merge: true });
                               
                               // Update local state
                               setAiDescriptions(prev => ({
                                 ...prev,
-                                RetailOps: { text: result.text, meta: { tone: aiTone, length: aiLength } },
+                                RetailOps: { text: description, meta: { tone: aiTone, length: aiLength } },
                               }));
                               
-                              // Set mock score (TODO: get from API if available)
-                              setAiScore({ overall: 8, tone: 7, seo: 9 });
+                              // Set scores from API response
+                              if (result.seo_score || result.tone_score) {
+                                setAiScore({
+                                  overall: Math.round((result.seo_score + result.tone_score) / 2),
+                                  seo: result.seo_score,
+                                  tone: result.tone_score,
+                                });
+                              }
                               
                               setToastMessage({ text: 'Generated successfully', type: 'success' });
                               setImprovementText(''); // Clear after generation
