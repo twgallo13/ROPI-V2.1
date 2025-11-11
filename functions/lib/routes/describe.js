@@ -121,10 +121,12 @@ function buildPrompt(payload) {
     else if (audienceTemplate === 'toddler') {
         audienceGuidance = 'Write for parents shopping for toddlers/infants. Emphasize safety, comfort, and ease of care.';
     }
+    const priorDraft = aiContext.priorDraft ? `Previous Draft (for rewrite, do NOT append):
+${aiContext.priorDraft}
+` : '';
     return `You are ROPI AI — an expert retail storyteller for ${brand}.
-Create a product description for ${name}.
-Use tone: ${tone}, length: ${length}.
-${audienceGuidance}
+Your job: REWRITE the product paragraph for ${name} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.
+Use tone: ${tone}, length: ${length}. ${audienceGuidance}
 
 Product Details:
 - Category: ${category}
@@ -134,53 +136,79 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${material ? `- Material: ${material}` : ''}
 
-${obsSummary ? `**Observations (HIGH WEIGHT - Use these facts verbatim):**
-${obsSummary}
-` : ''}
-${keywords.length > 0 ? `- Keywords: ${keywords.join(', ')}` : ''}
-${featureBullets.length > 0 ? `- Features: ${featureBullets.join(', ')}` : ''}
-${designNotes ? `- Design Notes: ${designNotes}` : ''}
+${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
+${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
+${featureBullets.length > 0 ? `FEATURES: ${featureBullets.join(', ')}` : ''}
+${designNotes ? `IMPROVEMENTS REQUESTED: ${designNotes}` : ''}
+${priorDraft}
 
-CRITICAL RULES:
-- Use observation facts verbatim when present
-- Never invent performance claims
-- Prioritize observations over generic descriptions
-- Match the specified tone and length
+Hard requirements:
+- Rewrite the paragraph; do not append. Output exactly one paragraph.
+- Use observation facts verbatim when present; no invented claims.
+- Respect tone & length; keep brand/product naming intact (Name is managed in UI).
 
-IMPORTANT: Respond with ONLY a valid JSON object in this exact format:
+Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
 {
-  "description": "Your generated product description paragraph here...",
-  "seo_score": 9,
-  "tone_score": 8,
-  "facts_used": ["fit", "observations", "materials"]
-}
-
-Do not include any text before or after the JSON object.`;
+  "description": "<single rewritten paragraph>",
+  "scores": {
+    "overall": 0,
+    "factual": 0,
+    "tone": 0,
+    "seo": 0,
+    "clarity": 0
+  },
+  "coach": {
+    "reasons": ["..."],
+    "actions": ["..."],
+    "next_questions": ["..."]
+  },
+  "seo": {
+    "meta_title": "<= 60 chars",
+    "meta_description": "<= 155 chars",
+    "meta_keywords": ["lowercase", "5-8", "from attributes & observations"]
+  },
+  "facts_used": ["fit", "observations:heel_height", "materials"]
+}`;
 }
 /**
  * Parse JSON response from Gemini, with fallback
  */
 function parseGeminiResponse(text) {
     try {
-        // Try to extract JSON from markdown code blocks if present
+        // Strict JSON only; optionally strip markdown fences if present
         const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
-        const jsonText = jsonMatch ? jsonMatch[1] : text.trim();
+        const jsonText = (jsonMatch ? jsonMatch[1] : text).trim();
         const parsed = JSON.parse(jsonText);
+        const scores = parsed.scores || {};
+        const coach = parsed.coach || {};
+        const seo = parsed.seo || {};
+        const facts_used = Array.isArray(parsed.facts_used) ? parsed.facts_used : [];
+        // Safe fallbacks
         return {
-            description: parsed.description || text,
-            seo_score: parsed.seo_score || 7,
-            tone_score: parsed.tone_score || 7,
-            facts_used: Array.isArray(parsed.facts_used) ? parsed.facts_used : [],
+            description: typeof parsed.description === 'string' ? parsed.description : '',
+            scores: {
+                overall: typeof scores.overall === 'number' ? scores.overall : undefined,
+                factual: typeof scores.factual === 'number' ? scores.factual : undefined,
+                tone: typeof scores.tone === 'number' ? scores.tone : undefined,
+                seo: typeof scores.seo === 'number' ? scores.seo : undefined,
+                clarity: typeof scores.clarity === 'number' ? scores.clarity : undefined,
+            },
+            coach: {
+                reasons: Array.isArray(coach.reasons) ? coach.reasons : [],
+                actions: Array.isArray(coach.actions) ? coach.actions : [],
+                next_questions: Array.isArray(coach.next_questions) ? coach.next_questions : [],
+            },
+            seo: {
+                meta_title: typeof seo.meta_title === 'string' ? seo.meta_title : undefined,
+                meta_description: typeof seo.meta_description === 'string' ? seo.meta_description : undefined,
+                meta_keywords: Array.isArray(seo.meta_keywords) ? seo.meta_keywords : undefined,
+            },
+            facts_used,
         };
     }
-    catch {
-        // Fallback: treat entire response as description
-        return {
-            description: text.trim(),
-            seo_score: 7,
-            tone_score: 7,
-            facts_used: [],
-        };
+    catch (e) {
+        console.error('[describe] JSON parse failed', e);
+        return null;
     }
 }
 app.post('*', async (req, res) => {
@@ -199,13 +227,17 @@ app.post('*', async (req, res) => {
             model: 'gemini-2.0-flash',
             generationConfig: {
                 temperature: payload.temperature ?? 0.6,
-                maxOutputTokens: 500,
+                maxOutputTokens: 800,
             },
         });
         const prompt = buildPrompt(payload);
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         const parsed = parseGeminiResponse(text);
+        if (!parsed || !parsed.description) {
+            return res.status(502).json({ error: 'AI returned invalid JSON' });
+        }
+        // If server overall not provided, compute client can still compute; return as-is
         res.json(parsed);
     }
     catch (error) {
