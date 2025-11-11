@@ -10,6 +10,7 @@ import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc, addDoc } fro
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Toast from './Toast';
 import Select from './ui/Select';
+import { sanitizeFirestoreData } from '../utils/firestoreSafe.ts';
 
 interface ProductEditorV2Props {
   isOpen: boolean;
@@ -500,41 +501,42 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         if (snap.exists()) existing = snap.data();
       } catch {}
 
+      // Build history entry with client timestamp (arrays cannot contain serverTimestamp)
       const newEntry = {
         text: description,
         scores: result.scores || null,
         coach: result.coach || null,
         seo: result.seo || null,
         facts_used: result.facts_used || [],
+        at: Date.now(),
+      };
+
+      const prevHistoryRaw = Array.isArray(existing?.history) ? existing.history : [];
+      const prevHistory = prevHistoryRaw
+        .map((entry: any) => ({ ...entry, at: typeof entry?.at === 'object' ? Date.now() : entry?.at }))
+        .slice(-2);
+
+      const writePayload = {
+        text: description,
+        scores: result.scores || undefined,
+        coach: result.coach || undefined,
+        seo: result.seo || undefined,
+        facts_used: result.facts_used || [],
         meta: {
           tone: aiTone,
           length: aiLength,
           temperature: aiTemperature,
+          generatedAt: serverTimestamp(),
+          title: result.seo?.meta_title,
+          description: result.seo?.meta_description,
+          keywords: result.seo?.meta_keywords,
         },
-        generatedAt: serverTimestamp(),
-      };
-
-      const prevHistory = Array.isArray(existing?.history) ? existing.history.slice(-2) : [];
+        history: [...prevHistory, newEntry],
+      } as const;
 
       await setDoc(
         descRefInline,
-        {
-          text: description,
-          scores: result.scores || undefined,
-          coach: result.coach || undefined,
-          seo: result.seo || undefined,
-          facts_used: result.facts_used || [],
-          meta: {
-            tone: aiTone,
-            length: aiLength,
-            temperature: aiTemperature,
-            generatedAt: serverTimestamp(),
-            title: result.seo?.meta_title,
-            description: result.seo?.meta_description,
-            keywords: result.seo?.meta_keywords,
-          },
-          history: [...prevHistory, newEntry],
-        },
+        sanitizeFirestoreData(writePayload),
         { merge: true }
       );
 
@@ -1526,17 +1528,19 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 const snap2 = await getDoc(descRef2);
                                 if (snap2.exists()) existing2 = snap2.data();
                               } catch {}
-                              const history2 = Array.isArray(existing2?.history) ? existing2.history.slice(-2) : [];
+                              const history2raw = Array.isArray(existing2?.history) ? existing2.history : [];
+                              const history2 = history2raw
+                                .map((entry: any) => ({ ...entry, at: typeof entry?.at === 'object' ? Date.now() : entry?.at }))
+                                .slice(-2);
                               const entry2 = {
                                 text: description,
                                 scores: result.scores || null,
                                 coach: result.coach || null,
                                 seo: result.seo || null,
                                 facts_used: result.facts_used || [],
-                                meta: { tone: aiTone, length: aiLength, temperature: aiTemperature },
-                                generatedAt: serverTimestamp(),
+                                at: Date.now(),
                               };
-                              await setDoc(descRef2, {
+                              const writePayload2 = {
                                 text: description,
                                 scores: result.scores || undefined,
                                 coach: result.coach || undefined,
@@ -1552,7 +1556,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                   keywords: result.seo?.meta_keywords,
                                 },
                                 history: [...history2, entry2],
-                              }, { merge: true });
+                              } as const;
+                              await setDoc(descRef2, sanitizeFirestoreData(writePayload2), { merge: true });
                               
                               // Update local state
                               setAiDescriptions(prev => ({

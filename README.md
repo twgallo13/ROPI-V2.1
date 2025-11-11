@@ -1,3 +1,23 @@
+Every task must end with:
+1. `git add -A && git commit -m "<type>: <title> (Prompt #)"`
+2. `git push -u origin feat/...` (or fix/...)
+3. Open PR, ensure CI/build passes, merge (squash) and share PR link.
+4. Deploy: `npm run build && npm run build:functions && firebase deploy --only hosting,functions`
+
+Firestore Safety:
+- Never place `serverTimestamp()` inside array elements. Use `Date.now()` for history arrays.
+- Use `sanitizeFirestoreData()` helper before `setDoc` when writing dynamic nested structures.
+
+---
+Every task must end with:
+1. `git add -A && git commit -m "<type>: <title> (Prompt #)"`
+2. `git push -u origin feat/...` (or fix/...)
+3. Open PR, ensure CI/build passes, merge (squash) and share PR link.
+4. Deploy: `npm run build && npm run build:functions && firebase deploy --only hosting,functions`
+
+Firestore Safety:
+- Never place `serverTimestamp()` inside array elements. Use `Date.now()` for history arrays.
+- Use `sanitizeFirestoreData()` helper before `setDoc` when writing dynamic nested structures.
 <div align="center">
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
