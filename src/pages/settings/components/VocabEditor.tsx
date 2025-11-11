@@ -11,7 +11,13 @@ export type VocabKey =
   | 'sportsTeams'
   | 'leagues'
   | 'fits'
-  | 'taxClasses';
+  | 'taxClasses'
+  | 'primaryColors'
+  | 'descriptiveColors'
+  | 'cutTypes'
+  | 'closureTypes'
+  | 'heelHeights'
+  | 'platformHeights';
 
 type Props = {
   title: string;
@@ -31,6 +37,7 @@ type Props = {
   editValue: string;
   setEditValue(v: string): void;
   onReload?(): void;
+  showAdminHint?: boolean;
 };
 
 const VocabEditor: React.FC<Props> = ({
@@ -51,6 +58,7 @@ const VocabEditor: React.FC<Props> = ({
   editValue,
   setEditValue,
   onReload,
+  showAdminHint,
 }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const lastActive = useRef<{ name?: string; start?: number; end?: number }>({});
@@ -158,7 +166,14 @@ const VocabEditor: React.FC<Props> = ({
         <form ref={formRef}>
           <ul className="space-y-2 h-48 overflow-y-auto border rounded-md p-3 bg-gray-50 mb-4">
             {items.length === 0 ? (
-              <li className="text-gray-400 text-sm italic">No items yet</li>
+              <li className="text-gray-400 text-sm italic">
+                No items yet
+                {showAdminHint && (
+                  <div className="mt-2 text-xs text-indigo-600">
+                    💡 Run <strong>Actions → Seed Settings Vocab</strong>
+                  </div>
+                )}
+              </li>
             ) : (
               items.map((item, index) => (
                 <li

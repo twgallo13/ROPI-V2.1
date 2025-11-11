@@ -29,7 +29,13 @@ export type AttributeKey =
   | 'sportsTeams' 
   | 'leagues'
   | 'fits'
-  | 'taxClasses';
+  | 'taxClasses'
+  | 'primaryColors'
+  | 'descriptiveColors'
+  | 'cutTypes'
+  | 'closureTypes'
+  | 'heelHeights'
+  | 'platformHeights';
 
 export type AttributesData = Record<AttributeKey, string[]>;
 
@@ -45,6 +51,12 @@ const INITIAL_ATTRIBUTES: AttributesData = {
   leagues: [],
   fits: [],
   taxClasses: [],
+  primaryColors: [],
+  descriptiveColors: [],
+  cutTypes: [],
+  closureTypes: [],
+  heelHeights: [],
+  platformHeights: [],
 };
 
 const MAX_ITEM_LENGTH = 80;
