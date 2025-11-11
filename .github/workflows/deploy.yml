@@ -37,5 +37,5 @@ jobs:
         run: |
           npm i -g firebase-tools
           firebase use "$PROJECT_ID"
-          export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
+          export GEMINI_API_KEY="${GEMINI_API_KEY}"
           firebase deploy --only hosting,functions
