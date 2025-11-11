@@ -60,6 +60,7 @@ export interface DescribeProductResponse {
   coach?: AICoach;
   seo?: AISEO;
   facts_used?: string[];
+  used_template?: string;
   // Legacy fields for backward compatibility
   seo_score?: number;
   tone_score?: number;

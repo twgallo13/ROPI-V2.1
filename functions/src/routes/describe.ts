@@ -296,8 +296,20 @@ app.post('*', async (req, res) => {
       return res.status(502).json({ error: 'AI returned invalid JSON' });
     }
 
-    // If server overall not provided, compute client can still compute; return as-is
-    res.json(parsed);
+    // Determine which template was used
+    const usedTemplate = selectAudienceTemplate(payload.attributes?.gender, payload.attributes?.ageGroup);
+    
+    // Build response with template metadata
+    const response = {
+      description: parsed.description,
+      scores: parsed.scores,
+      coach: parsed.coach,
+      seo: parsed.seo,
+      used_template: usedTemplate,
+      facts_used: parsed.facts_used || [],
+    };
+    
+    res.status(200).json(response);
   } catch (error: any) {
     console.error('[describe] Gemini error:', error);
     res.status(500).json({ 

@@ -125,6 +125,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [aiScores, setAiScores] = useState<AIScores | null>(null);
   const [aiCoach, setAiCoach] = useState<AICoach | null>(null);
   const [aiSEO, setAiSEO] = useState<AISEO | null>(null);
+  const [usedTemplate, setUsedTemplate] = useState<string | null>(null);
   const [improvementText, setImprovementText] = useState('');
   const [qaOpen, setQaOpen] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
@@ -424,9 +425,10 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
     try {
       setGeneratingInline(true);
-  setAiScores(null);
-  setAiCoach(null);
-  setAiSEO(null);
+      setAiScores(null);
+      setAiCoach(null);
+      setAiSEO(null);
+      setUsedTemplate(null);
       
       const channel = 'RetailOps';
       
@@ -491,6 +493,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       }
       setAiCoach(result.coach || null);
       setAiSEO(result.seo || null);
+      setUsedTemplate((result as any).used_template || null);
 
       // Write to Firestore subcollection
       const descRef = doc(db, 'products', editableProduct.id, 'descriptions', channel);
@@ -1340,7 +1343,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     {/* AI Quality Scores */}
                     {aiScores && (
                       <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
-                        <h3 className="text-sm font-semibold text-gray-800 mb-3">AI Quality Score</h3>
+                        <div className="flex justify-between items-center mb-3">
+                          <h3 className="text-sm font-semibold text-gray-800">AI Quality Score</h3>
+                          {usedTemplate && (
+                            <span className="text-xs text-indigo-600 font-medium px-2 py-1 bg-indigo-100 rounded">
+                              Template: {usedTemplate}
+                            </span>
+                          )}
+                        </div>
                         <div className="grid grid-cols-5 gap-2 sm:gap-4 text-center">
                           <div>
                             <p className="text-3xl font-bold text-indigo-600">{aiScores.overall ?? 0}</p>
@@ -1437,6 +1447,50 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             )}
                           </div>
                         ) : null}
+                      </div>
+                    )}
+
+                    {/* SEO Diagnostics */}
+                    {aiSEO && (aiSEO.meta_title || aiSEO.meta_description || (aiSEO.meta_keywords && aiSEO.meta_keywords.length > 0)) && (
+                      <div className="border border-green-200 rounded-lg p-4 bg-green-50">
+                        <div className="flex justify-between items-center mb-3">
+                          <h3 className="text-sm font-semibold text-gray-800">SEO Metadata</h3>
+                          <button
+                            type="button"
+                            onClick={() => setSeoOpen(v => !v)}
+                            className="text-xs text-green-700 underline"
+                          >
+                            {seoOpen ? 'Hide' : 'Show'} Details
+                          </button>
+                        </div>
+                        {seoOpen && (
+                          <div className="space-y-2">
+                            {aiSEO.meta_title && (
+                              <div className="p-2 bg-white rounded border border-green-200">
+                                <p className="text-xs font-medium text-gray-700">Meta Title ({aiSEO.meta_title.length} chars)</p>
+                                <p className="text-sm text-gray-900 mt-1">{aiSEO.meta_title}</p>
+                              </div>
+                            )}
+                            {aiSEO.meta_description && (
+                              <div className="p-2 bg-white rounded border border-green-200">
+                                <p className="text-xs font-medium text-gray-700">Meta Description ({aiSEO.meta_description.length} chars)</p>
+                                <p className="text-sm text-gray-900 mt-1">{aiSEO.meta_description}</p>
+                              </div>
+                            )}
+                            {aiSEO.meta_keywords && aiSEO.meta_keywords.length > 0 && (
+                              <div className="p-2 bg-white rounded border border-green-200">
+                                <p className="text-xs font-medium text-gray-700 mb-1">Meta Keywords</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {aiSEO.meta_keywords.map((kw, i) => (
+                                    <span key={i} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                                      {kw}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
 
