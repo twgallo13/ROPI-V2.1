@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, ChangeEvent, useMemo } from 'react';
 import { Product, ProductFacts } from '../types';
 import { describeProduct, DescribeProductPayload } from '../services/describe';
+import type { AIScores, AICoach, AISEO, DescribeProductResponse } from '../services/describe';
 import { analyzeImage } from '../services/vision';
 import { useVocab, VocabData } from '../hooks/useVocab';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,9 +20,22 @@ interface ProductEditorV2Props {
 
 type ActiveTab = 'attributes' | 'facts' | 'ai';
 
-type AIDescription = { 
-  text: string; 
-  meta?: { tone: string; length: string; generatedAt: any } 
+type AIDescription = {
+  text: string;
+  scores?: { overall?: number; factual?: number; tone?: number; seo?: number; clarity?: number };
+  coach?: { reasons?: string[]; actions?: string[]; next_questions?: string[] };
+  seo?: { meta_title?: string; meta_description?: string; meta_keywords?: string[] };
+  facts_used?: string[];
+  meta?: {
+    tone?: string;
+    length?: string;
+    temperature?: number;
+    generatedAt?: any;
+    updatedAt?: any;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  };
 };
 
 // Helper to clean data for Firestore
@@ -107,8 +121,25 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [aiLength, setAiLength] = useState('Medium');
   const [aiTemperature, setAiTemperature] = useState(0.6);
   const [generatingInline, setGeneratingInline] = useState(false);
-  const [aiScore, setAiScore] = useState<{ overall: number; tone: number; seo: number } | null>(null);
+  const [aiScores, setAiScores] = useState<AIScores | null>(null);
+  const [aiCoach, setAiCoach] = useState<AICoach | null>(null);
+  const [aiSEO, setAiSEO] = useState<AISEO | null>(null);
   const [improvementText, setImprovementText] = useState('');
+  const [qaOpen, setQaOpen] = useState(false);
+  const [seoOpen, setSeoOpen] = useState(false);
+  const [pendingQuestion, setPendingQuestion] = useState<string | null>(null);
+  const [pendingAnswer, setPendingAnswer] = useState('');
+  const [seoEdit, setSeoEdit] = useState<{ title: string; description: string; keywords: string[] }>({ title: '', description: '', keywords: [] });
+
+  useEffect(() => {
+    if (aiSEO) {
+      setSeoEdit({
+        title: aiSEO.meta_title || '',
+        description: aiSEO.meta_description || '',
+        keywords: Array.isArray(aiSEO.meta_keywords) ? aiSEO.meta_keywords : [],
+      });
+    }
+  }, [aiSEO]);
   
   // Build vocab normalization map from live vocab data
   const vocabMap = useMemo(() => buildVocabMap(vocab), [vocab]);
@@ -199,6 +230,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         });
         
         setAiDescriptions(descriptions);
+        // Initialize SEO edit fields from saved meta (RetailOps doc) if present
+        const retailOps = descriptions['RetailOps'];
+        if (retailOps?.meta) {
+          setSeoEdit({
+            title: retailOps.meta.title || '',
+            description: retailOps.meta.description || '',
+            keywords: Array.isArray(retailOps.meta.keywords) ? retailOps.meta.keywords : [],
+          });
+        }
       } catch (error) {
         console.error('[editorV2] Failed to load AI descriptions:', error);
       }
@@ -365,6 +405,16 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   }, [editableProduct]);
 
   // AI generation handler
+  const computeOverall = (scores?: AIScores | null) => {
+    if (!scores) return undefined;
+    if (typeof scores.overall === 'number') return scores.overall;
+    const factual = scores.factual ?? 0;
+    const tone = scores.tone ?? 0;
+    const seo = scores.seo ?? 0;
+    const clarity = scores.clarity ?? 0;
+    return Math.round(0.4 * factual + 0.3 * tone + 0.2 * seo + 0.1 * clarity);
+  };
+
   const handleInlineGenerate = async () => {
     if (!editableProduct?.id) {
       setToastMessage({ text: 'Product ID required', type: 'error' });
@@ -373,7 +423,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
 
     try {
       setGeneratingInline(true);
-      setAiScore(null);
+  setAiScores(null);
+  setAiCoach(null);
+  setAiSEO(null);
       
       const channel = 'RetailOps';
       
@@ -393,6 +445,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
           keywords: editableProduct.aiContext?.keywords || [],
           featureBullets: editableProduct.aiContext?.featureBullets || [],
           designNotes: editableProduct.aiContext?.designNotes || '',
+          priorDraft: editableProduct.marketing.paragraphDraft || undefined,
         },
         attributes: {
           name: editableProduct.name,
@@ -420,9 +473,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         imageUrl: facts.images[0]?.url,
       };
       
-      const result = await describeProduct(payload, vocabMap);
-
-      const description = result.description || result.text || '';
+  const result = await describeProduct(payload, vocabMap);
+  const description = result.description || result.text || '';
       
       if (!description) {
         setToastMessage({ text: 'No description returned from API', type: 'error' });
@@ -430,29 +482,58 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       }
 
       // Update AI scores if available
-      if (result.seo_score || result.tone_score) {
-        setAiScore({
-          overall: Math.round((result.seo_score + result.tone_score) / 2),
-          seo: result.seo_score,
-          tone: result.tone_score,
-        });
+      const scores: AIScores | undefined = result.scores || (result.seo_score || result.tone_score ? { seo: result.seo_score, tone: result.tone_score } : undefined);
+      if (scores) {
+        const overall = computeOverall(scores);
+        setAiScores({ ...scores, overall });
       }
+      setAiCoach(result.coach || null);
+      setAiSEO(result.seo || null);
 
       // Write to Firestore subcollection
       const descRef = doc(db, 'products', editableProduct.id, 'descriptions', channel);
+      // Maintain short history (last 3 generations)
+      const descRefInline = doc(db, 'products', editableProduct.id, 'descriptions', channel);
+      let existing: any = null;
+      try {
+        const snap = await getDoc(descRefInline);
+        if (snap.exists()) existing = snap.data();
+      } catch {}
+
+      const newEntry = {
+        text: description,
+        scores: result.scores || null,
+        coach: result.coach || null,
+        seo: result.seo || null,
+        facts_used: result.facts_used || [],
+        meta: {
+          tone: aiTone,
+          length: aiLength,
+          temperature: aiTemperature,
+        },
+        generatedAt: serverTimestamp(),
+      };
+
+      const prevHistory = Array.isArray(existing?.history) ? existing.history.slice(-2) : [];
+
       await setDoc(
-        descRef,
+        descRefInline,
         {
           text: description,
-          seo_score: result.seo_score,
-          tone_score: result.tone_score,
-          facts_used: result.facts_used,
+          scores: result.scores || undefined,
+          coach: result.coach || undefined,
+          seo: result.seo || undefined,
+          facts_used: result.facts_used || [],
           meta: {
             tone: aiTone,
             length: aiLength,
             temperature: aiTemperature,
             generatedAt: serverTimestamp(),
+            title: result.seo?.meta_title,
+            description: result.seo?.meta_description,
+            keywords: result.seo?.meta_keywords,
           },
+          history: [...prevHistory, newEntry],
         },
         { merge: true }
       );
@@ -543,17 +624,16 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   // Check if can approve
   const canApprove = useCallback(() => {
     if (!editableProduct) return false;
-    
     const hasName = !!editableProduct.name?.trim();
     const hasBrand = !!editableProduct.brand?.trim();
     const hasCategory = !!editableProduct.category?.trim();
-    
     const hasDraft = !!editableProduct.marketing.paragraphDraft?.trim();
     const hasSavedDescription = Object.keys(aiDescriptions).length > 0;
     const hasDescription = hasDraft || hasSavedDescription;
-    
-    return hasName && hasBrand && hasCategory && hasDescription;
-  }, [editableProduct, aiDescriptions]);
+    const overall = aiScores?.overall ?? (aiScores ? Math.round(0.4*(aiScores.factual??0)+0.3*(aiScores.tone??0)+0.2*(aiScores.seo??0)+0.1*(aiScores.clarity??0)) : 0);
+    const scoreOk = overall >= 8; // approval gate
+    return hasName && hasBrand && hasCategory && hasDescription && scoreOk;
+  }, [editableProduct, aiDescriptions, aiScores]);
 
   const getMissingFields = useCallback(() => {
     if (!editableProduct) return [];
@@ -1204,23 +1284,105 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     </div>
 
                     {/* AI Quality Scores */}
-                    {aiScore && (
+                    {aiScores && (
                       <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
                         <h3 className="text-sm font-semibold text-gray-800 mb-3">AI Quality Score</h3>
-                        <div className="grid grid-cols-3 gap-4 text-center">
+                        <div className="grid grid-cols-5 gap-2 sm:gap-4 text-center">
                           <div>
-                            <p className="text-3xl font-bold text-indigo-600">{aiScore.overall}</p>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScores.overall ?? 0}</p>
                             <p className="text-xs text-gray-600 mt-1">Overall</p>
                           </div>
                           <div>
-                            <p className="text-3xl font-bold text-indigo-600">{aiScore.tone}</p>
-                            <p className="text-xs text-gray-600 mt-1">Tone</p>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScores.factual ?? 0}</p>
+                            <p className="text-xs text-gray-600 mt-1" title="Accuracy of facts, use of observations verbatim">Factual</p>
                           </div>
                           <div>
-                            <p className="text-3xl font-bold text-indigo-600">{aiScore.seo}</p>
-                            <p className="text-xs text-gray-600 mt-1">SEO</p>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScores.tone ?? 0}</p>
+                            <p className="text-xs text-gray-600 mt-1" title="Matches requested tone and audience">Tone</p>
+                          </div>
+                          <div>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScores.seo ?? 0}</p>
+                            <p className="text-xs text-gray-600 mt-1" title="Meta readiness and keyword use">SEO</p>
+                          </div>
+                          <div>
+                            <p className="text-3xl font-bold text-indigo-600">{aiScores.clarity ?? 0}</p>
+                            <p className="text-xs text-gray-600 mt-1" title="Clarity and readability for buyers">Clarity</p>
                           </div>
                         </div>
+                        {aiCoach?.actions?.length ? (
+                          <div className="mt-3">
+                            <p className="text-xs text-gray-700 mb-1">To reach 10:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {aiCoach.actions.map((action, i) => (
+                                <button
+                                  key={i}
+                                  type="button"
+                                  className="px-2 py-1 text-xs bg-white border border-indigo-200 text-indigo-700 rounded-full hover:bg-indigo-50"
+                                  onClick={async () => {
+                                    setImprovementText(action);
+                                    await handleInlineGenerate();
+                                  }}
+                                >
+                                  {action}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        {aiCoach?.next_questions?.length ? (
+                          <div className="mt-3">
+                            <button
+                              type="button"
+                              onClick={() => setQaOpen(v => !v)}
+                              className="text-xs text-indigo-700 underline"
+                            >
+                              {qaOpen ? 'Hide' : 'Show'} Q&A Coach
+                            </button>
+                            {qaOpen && (
+                              <div className="mt-2 space-y-2">
+                                {aiCoach.next_questions.map((q, idx) => (
+                                  <div key={idx} className="flex items-center gap-2">
+                                    <button
+                                      type="button"
+                                      className="px-2 py-1 text-xs bg-white border border-gray-200 rounded hover:bg-gray-50"
+                                      onClick={() => { setPendingQuestion(q); setPendingAnswer(''); }}
+                                    >
+                                      {q}
+                                    </button>
+                                  </div>
+                                ))}
+                                {pendingQuestion && (
+                                  <div className="mt-2 p-2 bg-white border border-gray-200 rounded">
+                                    <p className="text-xs text-gray-700 mb-1">{pendingQuestion}</p>
+                                    <input
+                                      type="text"
+                                      value={pendingAnswer}
+                                      onChange={(e) => setPendingAnswer(e.target.value)}
+                                      placeholder="Yes/No or brief answer"
+                                      className="w-full text-xs border-gray-300 rounded"
+                                    />
+                                    <div className="mt-2 flex gap-2">
+                                      <button
+                                        type="button"
+                                        className="px-2 py-1 text-xs bg-indigo-600 text-white rounded"
+                                        onClick={async () => {
+                                          const addition = `${pendingQuestion} ${pendingAnswer ? '- ' + pendingAnswer : ''}`.trim();
+                                          setImprovementText(prev => prev ? `${prev}; ${addition}` : addition);
+                                          setPendingQuestion(null);
+                                          setPendingAnswer('');
+                                          await handleInlineGenerate();
+                                        }}
+                                      >
+                                        Answer & Regenerate
+                                      </button>
+                                      <button type="button" className="px-2 py-1 text-xs border rounded" onClick={() => { setPendingQuestion(null); setPendingAnswer(''); }}>Cancel</button>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ) : null}
                       </div>
                     )}
 
@@ -1228,6 +1390,18 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                     <div className="border border-gray-200 rounded-lg p-4 bg-white">
                       <h3 className="text-base font-semibold text-gray-800 mb-2">Improve this</h3>
                       <p className="text-xs text-gray-500 mb-3">Tell the AI what to fix or enhance</p>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {['Fit','Cushioning','Care','Sizing','Use-case'].map((chip) => (
+                          <button
+                            key={chip}
+                            type="button"
+                            className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200"
+                            onClick={() => setImprovementText(prev => prev ? `${prev}; Add ${chip.toLowerCase()} details` : `Add ${chip.toLowerCase()} details`)}
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                      </div>
                       
                       <textarea
                         value={improvementText}
@@ -1292,7 +1466,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         onClick={async () => {
                           if (!editableProduct?.id) return;
                           setGeneratingInline(true);
-                          setAiScore(null);
+                          setAiScores(null);
+                          setAiCoach(null);
+                          setAiSEO(null);
                           try {
                             const payload: DescribeProductPayload = {
                               productId: editableProduct.id,
@@ -1310,6 +1486,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 keywords: facts.keywords,
                                 featureBullets: editableProduct.aiContext?.featureBullets || [],
                                 designNotes: improvementText || undefined,
+                                priorDraft: editableProduct.marketing.paragraphDraft || undefined,
                               },
                               attributes: {
                                 name: editableProduct.name,
@@ -1342,19 +1519,39 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             const description = result.description || result.text || '';
                             
                             if (description) {
-                              // Save to descriptions subcollection with scores
-                              const descRef = doc(db, 'products', editableProduct.id, 'descriptions', 'RetailOps');
-                              await setDoc(descRef, {
+                              // Save extended fields + history
+                              const descRef2 = doc(db, 'products', editableProduct.id, 'descriptions', 'RetailOps');
+                              let existing2: any = null;
+                              try {
+                                const snap2 = await getDoc(descRef2);
+                                if (snap2.exists()) existing2 = snap2.data();
+                              } catch {}
+                              const history2 = Array.isArray(existing2?.history) ? existing2.history.slice(-2) : [];
+                              const entry2 = {
                                 text: description,
-                                seo_score: result.seo_score,
-                                tone_score: result.tone_score,
-                                facts_used: result.facts_used,
+                                scores: result.scores || null,
+                                coach: result.coach || null,
+                                seo: result.seo || null,
+                                facts_used: result.facts_used || [],
+                                meta: { tone: aiTone, length: aiLength, temperature: aiTemperature },
+                                generatedAt: serverTimestamp(),
+                              };
+                              await setDoc(descRef2, {
+                                text: description,
+                                scores: result.scores || undefined,
+                                coach: result.coach || undefined,
+                                seo: result.seo || undefined,
+                                facts_used: result.facts_used || [],
                                 meta: { 
                                   tone: aiTone, 
                                   length: aiLength, 
                                   temperature: aiTemperature,
-                                  generatedAt: serverTimestamp() 
+                                  generatedAt: serverTimestamp(),
+                                  title: result.seo?.meta_title,
+                                  description: result.seo?.meta_description,
+                                  keywords: result.seo?.meta_keywords,
                                 },
+                                history: [...history2, entry2],
                               }, { merge: true });
                               
                               // Update local state
@@ -1363,14 +1560,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 RetailOps: { text: description, meta: { tone: aiTone, length: aiLength } },
                               }));
                               
-                              // Set scores from API response
-                              if (result.seo_score || result.tone_score) {
-                                setAiScore({
-                                  overall: Math.round((result.seo_score + result.tone_score) / 2),
-                                  seo: result.seo_score,
-                                  tone: result.tone_score,
-                                });
+                              // Set scores / coach / seo from API response (extended schema)
+                              const newScores: AIScores | undefined = result.scores || (result.seo_score || result.tone_score ? { seo: result.seo_score, tone: result.tone_score } : undefined);
+                              if (newScores) {
+                                const overall = computeOverall(newScores);
+                                setAiScores({ ...newScores, overall });
                               }
+                              setAiCoach(result.coach || null);
+                              setAiSEO(result.seo || null);
                               
                               setToastMessage({ text: 'Generated successfully', type: 'success' });
                               setImprovementText(''); // Clear after generation
@@ -1404,6 +1601,90 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         <h4 className="text-sm font-semibold text-gray-700 mb-2">Current Draft</h4>
                         <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
                           {editableProduct.marketing.paragraphDraft}
+                        </div>
+                        {/* SEO Preview */}
+                        <div className="mt-4 border-t border-gray-200 pt-3">
+                          <button
+                            type="button"
+                            className="text-sm font-medium text-indigo-700 underline"
+                            onClick={() => setSeoOpen(v => !v)}
+                          >
+                            {seoOpen ? 'Hide' : 'Show'} SEO Preview
+                          </button>
+                          {seoOpen && (
+                            <div className="mt-3 space-y-3">
+                              <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">Meta Title ({seoEdit.title.length}/60)</label>
+                                <input
+                                  type="text"
+                                  value={seoEdit.title}
+                                  onChange={(e) => setSeoEdit(s => ({ ...s, title: e.target.value.slice(0,60) }))}
+                                  className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">Meta Description ({seoEdit.description.length}/155)</label>
+                                <textarea
+                                  rows={2}
+                                  value={seoEdit.description}
+                                  onChange={(e) => setSeoEdit(s => ({ ...s, description: e.target.value.slice(0,155) }))}
+                                  className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">Meta Keywords (5–8)</label>
+                                <div className="flex gap-2 mb-2 flex-wrap">
+                                  {seoEdit.keywords.map((k, i) => (
+                                    <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                                      {k}
+                                      <button type="button" className="text-gray-500 hover:text-red-600" onClick={() => setSeoEdit(s => ({ ...s, keywords: s.keywords.filter((_, idx) => idx !== i) }))}>×</button>
+                                    </span>
+                                  ))}
+                                  {seoEdit.keywords.length < 8 && (
+                                    <input
+                                      type="text"
+                                      placeholder="add keyword"
+                                      className="text-xs border-gray-300 rounded px-2 py-1"
+                                      onKeyDown={(e) => {
+                                        const val = (e.target as HTMLInputElement).value.trim().toLowerCase();
+                                        if (e.key === 'Enter' && val) {
+                                          e.preventDefault();
+                                          setSeoEdit(s => ({ ...s, keywords: [...s.keywords, val].slice(0,8) }));
+                                          (e.target as HTMLInputElement).value = '';
+                                        }
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex justify-end">
+                                <button
+                                  type="button"
+                                  className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                  onClick={async () => {
+                                    if (!editableProduct?.id) return;
+                                    try {
+                                      const refDoc = doc(db, 'products', editableProduct.id, 'descriptions', 'RetailOps');
+                                      await setDoc(refDoc, {
+                                        meta: {
+                                          ...(aiDescriptions['RetailOps']?.meta || {}),
+                                          title: seoEdit.title,
+                                          description: seoEdit.description,
+                                          keywords: seoEdit.keywords,
+                                          updatedAt: serverTimestamp(),
+                                        }
+                                      }, { merge: true });
+                                      setToastMessage({ text: 'SEO meta saved', type: 'success' });
+                                    } catch (e) {
+                                      setToastMessage({ text: 'Failed to save SEO meta', type: 'error' });
+                                    }
+                                  }}
+                                >
+                                  Save SEO
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}

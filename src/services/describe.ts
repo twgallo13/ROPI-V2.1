@@ -13,6 +13,7 @@ export interface DescribeProductPayload {
     keywords?: string[];
     featureBullets?: string[];
     designNotes?: string;
+    priorDraft?: string; // previous draft to guide rewrite (not append)
   };
   attributes?: {
     name?: string;
@@ -41,12 +42,26 @@ export interface DescribeProductPayload {
   temperature?: number;   // 0.0-1.0, default 0.6 for balanced creativity
 }
 
+// Extended AI scoring & coaching types
+export type AIScores = {
+  overall?: number; factual?: number; tone?: number; seo?: number; clarity?: number
+};
+export type AICoach = {
+  reasons?: string[]; actions?: string[]; next_questions?: string[]
+};
+export type AISEO = {
+  meta_title?: string; meta_description?: string; meta_keywords?: string[]
+};
+
 export interface DescribeProductResponse {
   description: string;
-  seo_score: number;
-  tone_score: number;
-  facts_used: string[];
+  scores?: AIScores;
+  coach?: AICoach;
+  seo?: AISEO;
+  facts_used?: string[];
   // Legacy fields for backward compatibility
+  seo_score?: number;
+  tone_score?: number;
   text?: string;
   title?: string;
   bullets?: string[];
@@ -54,6 +69,9 @@ export interface DescribeProductResponse {
   metaDescription?: string;
   keywords?: string[];
 }
+
+// Backward-compatible alias to match spec naming
+export type DescribeProductResult = DescribeProductResponse;
 
 /**
  * Normalize vocabulary terms before sending to AI
@@ -125,26 +143,48 @@ export async function describeProduct(
       throw new Error(`Describe failed: ${res.status}`);
     }
     const data = await res.json();
-    
-    // Handle both new structured format and legacy format
-    if (data.description) {
+
+    // If new schema present
+    if (data.description && (data.scores || data.coach || data.seo)) {
+      // Compute fallback overall if missing
+      if (!data.scores?.overall && data.scores) {
+        const { factual = 0, tone = 0, seo = 0, clarity = 0 } = data.scores;
+        const weighted = Math.round(0.4 * factual + 0.3 * tone + 0.2 * seo + 0.1 * clarity);
+        data.scores.overall = weighted;
+      }
+      return { ...data, text: data.description } as DescribeProductResponse;
+    }
+
+    // Legacy pathway
+    if (data.description && (data.seo_score || data.tone_score)) {
       return {
-        ...data,
-        // Add legacy field for backward compatibility
+        description: data.description,
+        facts_used: Array.isArray(data.facts_used) ? data.facts_used : [],
+        scores: {
+          tone: data.tone_score,
+          seo: data.seo_score,
+          overall: Math.round(((data.seo_score ?? 7) + (data.tone_score ?? 7)) / 2),
+        },
         text: data.description,
       };
-    } else if (data.text) {
-      // Legacy format - convert to new format
+    }
+
+    if (data.text) {
       return {
         description: data.text,
-        seo_score: 7,
-        tone_score: 7,
         facts_used: [],
-        ...data,
+        scores: { overall: 7, tone: 7, seo: 7 },
+        text: data.text,
       };
     }
-    
-    return data;
+
+    // Unknown format fallback
+    return {
+      description: '',
+      facts_used: [],
+      scores: { overall: 7 },
+      text: '',
+    };
   };
 
   // Primary via Hosting rewrite, fallback to CF URL
