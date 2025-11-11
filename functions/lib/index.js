@@ -36,12 +36,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.exportRulesPreview = exports.setUserRole = exports.apiExporter = exports.apiDescribe = exports.apiImport = void 0;
+exports.exportRulesPreview = exports.setUserRole = exports.apiExporter = exports.apiDescribe = exports.apiImport = exports.seedSettingsVocab = void 0;
 const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
 const import_1 = __importDefault(require("./routes/import"));
 const describe_1 = __importDefault(require("./routes/describe"));
 const exporter_1 = __importDefault(require("./routes/exporter"));
+var seedVocab_1 = require("./seedVocab");
+Object.defineProperty(exports, "seedSettingsVocab", { enumerable: true, get: function () { return seedVocab_1.seedSettingsVocab; } });
 admin.initializeApp();
 const r = functions.region('us-central1');
 exports.apiImport = functions.https.onRequest(import_1.default);

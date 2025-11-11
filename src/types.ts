@@ -34,6 +34,12 @@ export type Product = {
   gender: string;
   materialFabric: string;
   fit: string;
+  primaryColor?: string;
+  descriptiveColor?: string;
+  cutType?: string;
+  closureType?: string;
+  heelHeight?: string;
+  platformHeight?: string;
   sportsTeam?: string;
   league?: string;
   websites: string[]; // Changed to array

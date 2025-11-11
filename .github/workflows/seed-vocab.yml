@@ -1,0 +1,25 @@
+name: Seed Settings Vocab
+on:
+  workflow_dispatch:
+    inputs:
+      function_url:
+        description: HTTPS URL of seedSettingsVocab
+        required: false
+        default: https://us-central1-ropi-bccee.cloudfunctions.net/seedSettingsVocab
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call seed function
+        run: |
+          set -e
+          URL="${{ github.event.inputs.function_url }}"
+          echo "POST $URL"
+          RESP=$(curl -sS -w "\n%{http_code}" -X POST "$URL" \
+            -H "Content-Type: application/json" \
+            -H "x-seed-token: ${{ secrets.SEED_TOKEN }}" \
+            --data '{}')
+          BODY=$(echo "$RESP" | head -n -1)
+          CODE=$(echo "$RESP" | tail -n 1)
+          echo "Response ($CODE): $BODY"
+          if [ "$CODE" -ge 300 ]; then exit 1; fi

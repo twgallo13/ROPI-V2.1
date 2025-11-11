@@ -356,6 +356,12 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
           fit: editableProduct.fit,
           sportsTeam: editableProduct.sportsTeam,
           league: editableProduct.league,
+          primaryColor: (editableProduct as any).primaryColor ?? null,
+          descriptiveColor: (editableProduct as any).descriptiveColor ?? null,
+          cutType: (editableProduct as any).cutType ?? null,
+          closureType: (editableProduct as any).closureType ?? null,
+          heelHeight: (editableProduct as any).heelHeight ?? null,
+          platformHeight: (editableProduct as any).platformHeight ?? null,
           status: editableProduct.status,
           websites: editableProduct.websites,
           price: (editableProduct as any).price ?? null
@@ -743,6 +749,32 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         />
                       </div>
 
+                      {/* Primary Color */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Primary Color</label>
+                        <Select
+                          name="primaryColor"
+                          value={(editableProduct as any).primaryColor ?? ''}
+                          onChange={(val) => handleSelectChange('primaryColor', val)}
+                          options={['', ...((vocab as any).primaryColors ?? []).map((v: any) => v.value)]}
+                          placeholder="Select primary color..."
+                          disabled={vocab.loading}
+                        />
+                      </div>
+
+                      {/* Descriptive Color */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Descriptive Color</label>
+                        <Select
+                          name="descriptiveColor"
+                          value={(editableProduct as any).descriptiveColor ?? ''}
+                          onChange={(val) => handleSelectChange('descriptiveColor', val)}
+                          options={['', ...((vocab as any).descriptiveColors ?? []).map((v: any) => v.value)]}
+                          placeholder="Select descriptive color..."
+                          disabled={vocab.loading}
+                        />
+                      </div>
+
                       {/* Fit */}
                       <div>
                         <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Fit</label>
@@ -752,6 +784,32 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           onChange={(val) => handleSelectChange('fit', val)}
                           options={['', ...vocab.fits.map(v => v.value)]}
                           placeholder="Select fit..."
+                          disabled={vocab.loading}
+                        />
+                      </div>
+
+                      {/* Cut Type */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Cut Type</label>
+                        <Select
+                          name="cutType"
+                          value={(editableProduct as any).cutType ?? ''}
+                          onChange={(val) => handleSelectChange('cutType', val)}
+                          options={['', ...((vocab as any).cutTypes ?? []).map((v: any) => v.value)]}
+                          placeholder="Select cut type..."
+                          disabled={vocab.loading}
+                        />
+                      </div>
+
+                      {/* Closure Type */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Closure Type</label>
+                        <Select
+                          name="closureType"
+                          value={(editableProduct as any).closureType ?? ''}
+                          onChange={(val) => handleSelectChange('closureType', val)}
+                          options={['', ...((vocab as any).closureTypes ?? []).map((v: any) => v.value)]}
+                          placeholder="Select closure type..."
                           disabled={vocab.loading}
                         />
                       </div>
@@ -790,6 +848,31 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           value={editableProduct.status ?? ''} 
                           onChange={(val) => handleSelectChange('status', val)}
                           options={vocab.statuses.map(v => v.value) as readonly string[]}
+                          disabled={vocab.loading}
+                        />
+                      </div>
+                      {/* Heel Height */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Heel Height</label>
+                        <Select
+                          name="heelHeight"
+                          value={(editableProduct as any).heelHeight ?? ''}
+                          onChange={(val) => handleSelectChange('heelHeight', val)}
+                          options={['', ...((vocab as any).heelHeights ?? []).map((v: any) => v.value)]}
+                          placeholder="Select heel height..."
+                          disabled={vocab.loading}
+                        />
+                      </div>
+
+                      {/* Platform Height */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Platform Height</label>
+                        <Select
+                          name="platformHeight"
+                          value={(editableProduct as any).platformHeight ?? ''}
+                          onChange={(val) => handleSelectChange('platformHeight', val)}
+                          options={['', ...((vocab as any).platformHeights ?? []).map((v: any) => v.value)]}
+                          placeholder="Select platform height..."
                           disabled={vocab.loading}
                         />
                       </div>
@@ -1143,6 +1226,12 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 fit: editableProduct.fit,
                                 sportsTeam: editableProduct.sportsTeam,
                                 league: editableProduct.league,
+                                primaryColor: (editableProduct as any).primaryColor ?? null,
+                                descriptiveColor: (editableProduct as any).descriptiveColor ?? null,
+                                cutType: (editableProduct as any).cutType ?? null,
+                                closureType: (editableProduct as any).closureType ?? null,
+                                heelHeight: (editableProduct as any).heelHeight ?? null,
+                                platformHeight: (editableProduct as any).platformHeight ?? null,
                                 status: editableProduct.status,
                                 websites: editableProduct.websites,
                                 price: (editableProduct as any).price ?? null
