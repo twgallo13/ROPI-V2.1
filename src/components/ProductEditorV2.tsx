@@ -517,27 +517,25 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         .map((entry: any) => ({ ...entry, at: typeof entry?.at === 'object' ? Date.now() : entry?.at }))
         .slice(-2);
 
-      const writePayload = {
-        text: description,
-        scores: result.scores || undefined,
-        coach: result.coach || undefined,
-        seo: result.seo || undefined,
-        facts_used: result.facts_used || [],
-        meta: {
-          tone: aiTone,
-          length: aiLength,
-          temperature: aiTemperature,
-          generatedAt: serverTimestamp(),
-          title: result.seo?.meta_title,
-          description: result.seo?.meta_description,
-          keywords: result.seo?.meta_keywords,
-        },
-        history: [...prevHistory, newEntry],
-      } as const;
-
       await setDoc(
         descRefInline,
-        sanitizeFirestoreData(writePayload),
+        {
+          text: description,
+          scores: result.scores || undefined,
+          coach: result.coach || undefined,
+          seo: result.seo || undefined,
+          facts_used: result.facts_used || [],
+          meta: {
+            tone: aiTone,
+            length: aiLength,
+            temperature: aiTemperature,
+            generatedAt: serverTimestamp(),
+            title: result.seo?.meta_title,
+            description: result.seo?.meta_description,
+            keywords: result.seo?.meta_keywords,
+          },
+          history: [...prevHistory, newEntry],
+        },
         { merge: true }
       );
 
@@ -1594,7 +1592,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 facts_used: result.facts_used || [],
                                 at: Date.now(),
                               };
-                              const writePayload2 = {
+                              await setDoc(descRef2, {
                                 text: description,
                                 scores: result.scores || undefined,
                                 coach: result.coach || undefined,
@@ -1610,8 +1608,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                   keywords: result.seo?.meta_keywords,
                                 },
                                 history: [...history2, entry2],
-                              } as const;
-                              await setDoc(descRef2, sanitizeFirestoreData(writePayload2), { merge: true });
+                              }, { merge: true });
                               
                               // Update local state
                               setAiDescriptions(prev => ({
