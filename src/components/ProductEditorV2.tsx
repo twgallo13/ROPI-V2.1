@@ -1646,7 +1646,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 facts_used: result.facts_used || [],
                                 at: Date.now(),
                               };
-                              await setDoc(descRef2, {
+                              const writePayload2 = {
                                 text: description,
                                 scores: result.scores || undefined,
                                 coach: result.coach || undefined,
@@ -1662,7 +1662,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                   keywords: result.seo?.meta_keywords,
                                 },
                                 history: [...history2, entry2],
-                              }, { merge: true });
+                              } as const;
+                              await setDoc(descRef2, sanitizeFirestoreData(writePayload2), { merge: true });
                               
                               // Update local state
                               setAiDescriptions(prev => ({

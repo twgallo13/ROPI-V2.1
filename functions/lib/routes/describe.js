@@ -66,7 +66,7 @@ function selectAudienceTemplate(gender, ageGroup) {
  */
 function buildPrompt(payload) {
     const { attributes = {}, facts = {}, aiContext = {}, tone = 'Clean', length = 'Medium', } = payload;
-    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, } = attributes;
+    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, primaryColor, descriptiveColor, } = attributes;
     // Select audience-specific template
     const audienceTemplate = selectAudienceTemplate(gender, ageGroup);
     console.log(`[describe] Using audience template: ${audienceTemplate} (gender=${gender}, ageGroup=${ageGroup})`);
@@ -100,13 +100,11 @@ function buildPrompt(payload) {
     // Build color context
     let colorContext = '';
     if (descriptiveColor) {
-        colorContext = `Descriptive Color (brand story context): ${descriptiveColor}`;
+        colorContext = `Color: ${descriptiveColor}`;
     }
     else if (primaryColor) {
-        colorContext = `Primary Color: ${primaryColor}`;
+        colorContext = `Color: ${primaryColor}`;
     }
-    // Build materials context (HIGH WEIGHT)
-    const materialsContext = materials.length > 0 ? `Materials (use verbatim): ${materials.join(', ')}` : '';
     // Design notes from AI context
     const designNotes = aiContext.designNotes || '';
     // Audience-specific prompt intro
@@ -136,8 +134,7 @@ Product Details:
 - Audience: ${gender}, Age Group: ${ageGroup}
 ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
-${materialsContext ? `- ${materialsContext}` : ''}
-${material ? `- Legacy Material: ${material}` : ''}
+${material ? `- Material: ${material}` : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
 ${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
@@ -148,11 +145,7 @@ ${priorDraft}
 Hard requirements:
 - Rewrite the paragraph; do not append. Output exactly one paragraph.
 - Use observation facts verbatim when present; no invented claims.
-- Use materials exactly as provided where relevant; no inventions.
-- Descriptive color can appear once for style/branding, not as a filter.
 - Respect tone & length; keep brand/product naming intact (Name is managed in UI).
-- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.
-- Never duplicate brand more than once in meta_title or meta_description.
 
 Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
 {
