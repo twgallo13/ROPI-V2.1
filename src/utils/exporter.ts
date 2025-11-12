@@ -137,6 +137,13 @@ function buildRow(
     row['Marketing Description (Final)'] = product.marketing.paragraphFinal || '';
   }
   
+  // New fields available for export via column mappings:
+  // - style.id (Style ID for linking colorways)
+  // - launch.date (Scheduled release date)
+  // - media.hideImageDate (Image embargo date)
+  // - shipping.standardOverride (Boolean)
+  // - shipping.expeditedOverride (Boolean)
+  
   return row;
 }
 

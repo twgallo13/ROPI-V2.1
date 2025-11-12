@@ -5,7 +5,7 @@ import { generateProductMarketing } from '../services/geminiService';
 import { describeProduct } from '../services/describe';
 import { mockVocabulary } from '../mockData';
 import { db, storage } from '../firebase';
-import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, collection, getDocs, getDoc, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Toast from './Toast';
 import Select from './ui/Select';
@@ -120,6 +120,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const [cheatSheetExpanded, setCheatSheetExpanded] = useState(false);
   const factsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Related Colors state
+  const [relatedColors, setRelatedColors] = useState<Product[]>([]);
+  const [loadingRelatedColors, setLoadingRelatedColors] = useState(false);
 
   // Helper to restore focus by field name + caret position
   const restoreFocus = useCallback(() => {
@@ -240,6 +244,48 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     loadCheatSheet();
   }, [product?.brand]);
 
+  // Load Related Colors when Style ID is present
+  useEffect(() => {
+    const styleId = editableProduct?.style?.id?.trim();
+    
+    if (!styleId || !product?.id) {
+      setRelatedColors([]);
+      return;
+    }
+
+    const loadRelatedColors = async () => {
+      try {
+        setLoadingRelatedColors(true);
+        
+        // Query products with same style.id but different product ID
+        const productsRef = collection(db, 'products');
+        const q = query(
+          productsRef,
+          where('style.id', '==', styleId)
+        );
+        
+        const snapshot = await getDocs(q);
+        const related: Product[] = [];
+        
+        snapshot.forEach((doc) => {
+          if (doc.id !== product.id) { // Exclude current product
+            const data = doc.data();
+            related.push({ id: doc.id, ...data } as Product);
+          }
+        });
+        
+        setRelatedColors(related);
+      } catch (error) {
+        console.error('[drawer] Failed to load related colors:', error);
+        setRelatedColors([]);
+      } finally {
+        setLoadingRelatedColors(false);
+      }
+    };
+
+    loadRelatedColors();
+  }, [editableProduct?.style?.id, product?.id]);
+
   // Inline AI generation handler
   const handleInlineGenerate = async () => {
     if (!editableProduct?.id) {
@@ -266,7 +312,9 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
           category: editableProduct.category,
           gender: editableProduct.gender,
           ageGroup: editableProduct.ageGroup,
-          price: (editableProduct as any).price ?? null
+          price: (editableProduct as any).price ?? null,
+          styleId: editableProduct.style?.id || null,
+          launchDate: editableProduct.launch?.date || null
         },
         imageUrl: facts.images[0] // first image if available
       });
@@ -526,16 +574,43 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       ageGroup: p.ageGroup,
       gender: p.gender,
       materialFabric: p.materialFabric,
+      materials: p.materials,
       fit: p.fit,
+      primaryColor: p.primaryColor,
+      descriptiveColor: p.descriptiveColor,
+      cutType: p.cutType,
+      closureType: p.closureType,
+      heelHeight: p.heelHeight,
+      heelType: p.heelType,
+      platformHeight: p.platformHeight,
       sportsTeam: p.sportsTeam,
       league: p.league,
       websites: p.websites,
       featured: p.featured,
+      
+      // Core product fields
+      isActive: p.isActive ?? true,
+      coreProduct: p.coreProduct,
+      productGroup: p.productGroup,
+      notes: p.notes,
+      
+      // Legacy flags (deprecated but kept for compatibility)
       map: p.map,
       promo: p.promo,
       hype: p.hype,
       fastfashion: p.fastfashion,
+      
+      // Nested structures
+      price: p.price,
+      launch: p.launch,
+      shipping: p.shipping,
+      dimensions: p.dimensions,
+      style: p.style,
+      tax: p.tax,
+      media: p.media,
+      
       aiContext: p.aiContext,
+      keywords: p.keywords,
       updatedAt: serverTimestamp(),
     };
 
@@ -1001,6 +1076,107 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                />
                              </FormField>
 
+                             <FormField label="Primary Color">
+                               <Select 
+                                 name="primaryColor"
+                                 value={editableProduct.primaryColor ?? ''} 
+                                 onChange={(val) => handleSelectChange('primaryColor', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.primaryColors.map(v => v.value)]}
+                                 placeholder="Select color..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+                             <FormField label="Descriptive Color">
+                               <input 
+                                 type="text" 
+                                 name="descriptiveColor" 
+                                 value={editableProduct.descriptiveColor ?? ''} 
+                                 onChange={handleInputChange} 
+                                 onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }} 
+                                 onBlur={handleBlur} 
+                                 disabled={vocab.loading} 
+                                 placeholder="e.g., Midnight Navy"
+                                 className="block w-full border-gray-300 rounded-md shadow-sm disabled:bg-gray-100" 
+                               />
+                             </FormField>
+
+                             <FormField label="Cut Type">
+                               <Select 
+                                 name="cutType"
+                                 value={editableProduct.cutType ?? ''} 
+                                 onChange={(val) => handleSelectChange('cutType', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.cutTypes.map(v => v.value)]}
+                                 placeholder="Select cut type..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+                             <FormField label="Closure Type">
+                               <Select 
+                                 name="closureType"
+                                 value={editableProduct.closureType ?? ''} 
+                                 onChange={(val) => handleSelectChange('closureType', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.closureTypes.map(v => v.value)]}
+                                 placeholder="Select closure..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+
+                             <FormField label="Heel Height">
+                               <Select 
+                                 name="heelHeight"
+                                 value={editableProduct.heelHeight ?? ''} 
+                                 onChange={(val) => handleSelectChange('heelHeight', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.heelHeights.map(v => v.value)]}
+                                 placeholder="Select height..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+                             <FormField label="Heel Type">
+                               <Select 
+                                 name="heelType"
+                                 value={editableProduct.heelType ?? ''} 
+                                 onChange={(val) => handleSelectChange('heelType', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.heelTypes.map(v => v.value)]}
+                                 placeholder="Select heel type..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+
+                             <FormField label="Platform Height">
+                               <Select 
+                                 name="platformHeight"
+                                 value={editableProduct.platformHeight ?? ''} 
+                                 onChange={(val) => handleSelectChange('platformHeight', val)} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.platformHeights.map(v => v.value)]}
+                                 placeholder="Select platform..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+                             <FormField label="Sole Material">
+                               <Select 
+                                 name="style.soleMaterial"
+                                 value={editableProduct.style?.soleMaterial ?? ''} 
+                                 onChange={(val) => {
+                                   setEditableProduct({
+                                     ...editableProduct,
+                                     style: { ...editableProduct.style, soleMaterial: val }
+                                   });
+                                   setChangedFields(prev => new Set(prev).add('style.soleMaterial'));
+                                   debouncedAutosave();
+                                 }} 
+                                 onBlur={handleBlur}
+                                 options={['', ...vocab.soleMaterials.map(v => v.value)]}
+                                 placeholder="Select sole material..."
+                                 disabled={vocab.loading}
+                               />
+                             </FormField>
+
                              <FormField label="Sports Team">
                                <Select 
                                  name="sportsTeam"
@@ -1078,8 +1254,359 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                     <input id="fastfashion" name="fastfashion" type="checkbox" checked={editableProduct.fastfashion} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
                                     <label htmlFor="fastfashion" className="ml-3 block text-sm font-medium text-gray-900">Fast Fashion</label>
                                 </div>
+                                <div className="flex items-center">
+                                    <input id="isActive" name="isActive" type="checkbox" checked={editableProduct.isActive ?? true} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <label htmlFor="isActive" className="ml-3 block text-sm font-medium text-gray-900">Product Active</label>
+                                </div>
+                                <div className="flex items-center">
+                                    <input id="coreProduct" name="coreProduct" type="checkbox" checked={editableProduct.coreProduct ?? false} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                    <label htmlFor="coreProduct" className="ml-3 block text-sm font-medium text-gray-900">Core Product</label>
+                                </div>
                             </div>
                         </div>
+
+                        {/* Pricing Section */}
+                        <div className="pt-6 border-t border-gray-200">
+                            <h3 className="text-md font-medium text-gray-900 mb-4">Pricing</h3>
+                            <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
+                                <FormField label="RICS Retail (Required)">
+                                    <input 
+                                        type="number" 
+                                        name="price.ricsRetail" 
+                                        value={editableProduct.price?.ricsRetail ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value ? parseFloat(e.target.value) : 0;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                price: { ...editableProduct.price, ricsRetail: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('price.ricsRetail'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="RICS Offer">
+                                    <input 
+                                        type="number" 
+                                        name="price.ricsOffer" 
+                                        value={editableProduct.price?.ricsOffer ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value ? parseFloat(e.target.value) : undefined;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                price: { ...editableProduct.price, ricsOffer: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('price.ricsOffer'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="MAP Price">
+                                    <input 
+                                        type="number" 
+                                        name="price.map" 
+                                        value={editableProduct.price?.map ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value ? parseFloat(e.target.value) : undefined;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                price: { ...editableProduct.price, map: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('price.map'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="Promo Code">
+                                    <input 
+                                        type="text" 
+                                        name="price.promo" 
+                                        value={editableProduct.price?.promo ?? ''} 
+                                        onChange={(e) => {
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                price: { ...editableProduct.price, promo: e.target.value }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('price.promo'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        placeholder="PROMO2025"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="SCOM Regular">
+                                    <input 
+                                        type="number" 
+                                        name="price.scomRegular" 
+                                        value={editableProduct.price?.scomRegular ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value ? parseFloat(e.target.value) : undefined;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                price: { ...editableProduct.price, scomRegular: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('price.scomRegular'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="SCOM Sale">
+                                    <input 
+                                        type="number" 
+                                        name="price.scomSale" 
+                                        value={editableProduct.price?.scomSale ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value ? parseFloat(e.target.value) : undefined;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                price: { ...editableProduct.price, scomSale: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('price.scomSale'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="Use SCOM Prices">
+                                    <div className="flex items-center h-full">
+                                        <input 
+                                            id="scomOverride" 
+                                            name="price.scomOverride" 
+                                            type="checkbox" 
+                                            checked={editableProduct.price?.scomOverride ?? false} 
+                                            onChange={(e) => {
+                                                setEditableProduct({
+                                                    ...editableProduct,
+                                                    price: { ...editableProduct.price, scomOverride: e.target.checked }
+                                                });
+                                                setChangedFields(prev => new Set(prev).add('price.scomOverride'));
+                                                debouncedAutosave();
+                                            }}
+                                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                        />
+                                        <label htmlFor="scomOverride" className="ml-3 block text-sm text-gray-700">Override with SCOM prices</label>
+                                    </div>
+                                </FormField>
+                            </div>
+                        </div>
+
+                        {/* Additional Product Info */}
+                        <div className="pt-6 border-t border-gray-200">
+                            <h3 className="text-md font-medium text-gray-900 mb-4">Additional Information</h3>
+                            <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
+                                <FormField label="Product Group">
+                                    <input 
+                                        type="text" 
+                                        name="productGroup" 
+                                        value={editableProduct.productGroup ?? ''} 
+                                        onChange={handleInputChange}
+                                        onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }}
+                                        onBlur={handleBlur}
+                                        placeholder="e.g., Air Max Family"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="Style ID (Optional)">
+                                    <input 
+                                        type="text" 
+                                        name="style.id" 
+                                        value={editableProduct.style?.id ?? ''} 
+                                        onChange={(e) => {
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                style: { ...editableProduct.style, id: e.target.value }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('style.id'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        placeholder="Use same ID across colorways"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">Use same ID across colorways to link related products</p>
+                                </FormField>
+                                <FormField label="Launch Date">
+                                    <input 
+                                        type="date" 
+                                        name="launch.date" 
+                                        value={editableProduct.launch?.date ? new Date(editableProduct.launch.date).toISOString().split('T')[0] : ''} 
+                                        onChange={(e) => {
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                launch: { ...editableProduct.launch, date: e.target.value || null }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('launch.date'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                                <FormField label="Hide Image Date">
+                                    <input 
+                                        type="datetime-local" 
+                                        name="media.hideImageDate" 
+                                        value={editableProduct.media?.hideImageDate ? new Date(editableProduct.media.hideImageDate).toISOString().slice(0, 16) : ''} 
+                                        onChange={(e) => {
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                media: { ...editableProduct.media, hideImageDate: e.target.value || null }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('media.hideImageDate'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">Embargo date when images should be hidden</p>
+                                </FormField>
+                                <FormField label="Tax Class">
+                                    <Select 
+                                        name="tax.class"
+                                        value={editableProduct.tax?.class ?? ''} 
+                                        onChange={(val) => {
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                tax: { ...editableProduct.tax, class: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('tax.class'));
+                                            debouncedAutosave();
+                                        }} 
+                                        onBlur={handleBlur}
+                                        options={['', ...vocab.taxClasses.map(v => v.value)]}
+                                        placeholder="Select tax class..."
+                                        disabled={vocab.loading}
+                                    />
+                                </FormField>
+                                <FormField label="Shipping Overrides">
+                                    <div className="space-y-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                                        <div className="flex items-center">
+                                            <input 
+                                                id="shipping.standardOverride" 
+                                                name="shipping.standardOverride" 
+                                                type="checkbox" 
+                                                checked={editableProduct.shipping?.standardOverride ?? false} 
+                                                onChange={(e) => {
+                                                    setEditableProduct({
+                                                        ...editableProduct,
+                                                        shipping: { ...editableProduct.shipping, standardOverride: e.target.checked }
+                                                    });
+                                                    setChangedFields(prev => new Set(prev).add('shipping.standardOverride'));
+                                                    debouncedAutosave();
+                                                }}
+                                                className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                            />
+                                            <label htmlFor="shipping.standardOverride" className="ml-2 block text-sm text-gray-900">Standard Override</label>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <input 
+                                                id="shipping.expeditedOverride" 
+                                                name="shipping.expeditedOverride" 
+                                                type="checkbox" 
+                                                checked={editableProduct.shipping?.expeditedOverride ?? false} 
+                                                onChange={(e) => {
+                                                    setEditableProduct({
+                                                        ...editableProduct,
+                                                        shipping: { ...editableProduct.shipping, expeditedOverride: e.target.checked }
+                                                    });
+                                                    setChangedFields(prev => new Set(prev).add('shipping.expeditedOverride'));
+                                                    debouncedAutosave();
+                                                }}
+                                                className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+                                            />
+                                            <label htmlFor="shipping.expeditedOverride" className="ml-2 block text-sm text-gray-900">Expedited Override</label>
+                                        </div>
+                                    </div>
+                                </FormField>
+                                <FormField label="Internal Notes" className="sm:col-span-2">
+                                    <textarea 
+                                        name="notes" 
+                                        value={editableProduct.notes ?? ''} 
+                                        onChange={handleInputChange}
+                                        onFocus={(e) => { lastActiveField.current = { name: e.currentTarget.name }; }}
+                                        onBlur={handleBlur}
+                                        rows={3}
+                                        placeholder="Internal notes or observations..."
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                </FormField>
+                            </div>
+                        </div>
+
+                        {/* Related Colors - Only show when Style ID exists and has related products */}
+                        {editableProduct.style?.id && relatedColors.length > 0 && (
+                            <div className="pt-6 border-t border-gray-200">
+                                <h3 className="text-md font-medium text-gray-900 mb-4">
+                                    Related Colors ({relatedColors.length})
+                                </h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {relatedColors.map((relatedProduct) => (
+                                        <div
+                                            key={relatedProduct.id}
+                                            className="p-3 border border-gray-200 rounded-lg hover:border-indigo-400 hover:shadow-sm transition-all cursor-pointer"
+                                            onClick={() => {
+                                                // Navigate to this product (could open in new drawer or update current)
+                                                onSaved?.(relatedProduct.id, {});
+                                            }}
+                                        >
+                                            <div className="flex gap-3">
+                                                {facts.images?.[0] && (
+                                                    <img 
+                                                        src={facts.images[0]} 
+                                                        alt={relatedProduct.name}
+                                                        className="w-16 h-16 object-cover rounded"
+                                                    />
+                                                )}
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-gray-900 truncate">
+                                                        {relatedProduct.name}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 truncate">
+                                                        {relatedProduct.brand}
+                                                    </p>
+                                                    <div className="flex gap-2 mt-1">
+                                                        {relatedProduct.primaryColor && (
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                                                {relatedProduct.primaryColor}
+                                                            </span>
+                                                        )}
+                                                        {relatedProduct.status && (
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                                                relatedProduct.status === 'validated' ? 'bg-green-100 text-green-800' :
+                                                                relatedProduct.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                                                                'bg-gray-100 text-gray-800'
+                                                            }`}>
+                                                                {relatedProduct.status}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
                 {activeTab === 'context' && (

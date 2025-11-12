@@ -43,6 +43,8 @@ interface DescribePayload {
     materials?: string[]; // multi-select from vocab
     primaryColor?: string;
     descriptiveColor?: string; // free-text manufacturer color
+    styleId?: string | null; // Link related colorways
+    launchDate?: string | null; // Scheduled release date
   };
   imageUrl?: string;
   temperature?: number;
@@ -107,11 +109,27 @@ function buildPrompt(payload: DescribePayload): string {
     materials = [],
     primaryColor,
     descriptiveColor,
+    styleId,
+    launchDate,
   } = attributes;
 
   // Select audience-specific template
   const audienceTemplate = selectAudienceTemplate(gender, ageGroup);
   console.log(`[describe] Using audience template: ${audienceTemplate} (gender=${gender}, ageGroup=${ageGroup})`);
+
+  // Check if launch date is within 14 days (allow subtle "new" cue)
+  let isNewLaunch = false;
+  if (launchDate) {
+    try {
+      const launch = new Date(launchDate);
+      const now = new Date();
+      const daysDiff = Math.floor((launch.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      isNewLaunch = daysDiff >= -14 && daysDiff <= 14; // Within 14 days before or after
+      console.log(`[describe] Launch date ${launchDate}: ${daysDiff} days difference, isNewLaunch=${isNewLaunch}`);
+    } catch (e) {
+      console.warn('[describe] Failed to parse launch date:', launchDate, e);
+    }
+  }
 
   // Build weighted observations summary (HIGH WEIGHT)
   const obsParts: string[] = [];
@@ -181,6 +199,7 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${materialsContext ? `- ${materialsContext}` : ''}
 ${material ? `- Legacy Material: ${material}` : ''}
+${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
 ${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
