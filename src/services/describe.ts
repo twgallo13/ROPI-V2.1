@@ -38,6 +38,8 @@ export interface DescribeProductPayload {
     status?: string;
     websites?: string[];
     price?: number;
+    styleId?: string | null; // Link related colorways
+    launchDate?: string | Date | null; // Scheduled release date
   };
   imageUrl?: string;
   temperature?: number;   // 0.0-1.0, default 0.6 for balanced creativity

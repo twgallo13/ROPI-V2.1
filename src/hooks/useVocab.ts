@@ -19,12 +19,17 @@ export interface VocabData {
   cutTypes: VocabOption[];
   closureTypes: VocabOption[];
   heelHeights: VocabOption[];
+  heelTypes: VocabOption[]; // New: Stiletto, Block, Wedge, etc.
   platformHeights: VocabOption[];
+  soleMaterials: VocabOption[]; // New: Outsole materials
+  shoeHeightMaps: VocabOption[]; // New: Low/Mid/High silhouettes
   fits: VocabOption[];
   statuses: VocabOption[];
   websites: VocabOption[];
   sportsTeams: VocabOption[];
   leagues: VocabOption[];
+  taxClasses: VocabOption[]; // New: Standard, Apparel, Exempt
+  dimensionUnits: VocabOption[]; // New: in/cm
   loading: boolean;
 }
 
@@ -45,12 +50,20 @@ export function useVocab(): VocabData {
     cutTypes: [],
     closureTypes: [],
     heelHeights: [],
+    heelTypes: [],
     platformHeights: [],
+    soleMaterials: [],
+    shoeHeightMaps: [],
     fits: [],
     statuses: [],
     websites: [],
     sportsTeams: [],
     leagues: [],
+    taxClasses: [],
+    dimensionUnits: [
+      { value: 'in', label: 'Inches' },
+      { value: 'cm', label: 'Centimeters' }
+    ],
     loading: true,
   });
 
@@ -89,12 +102,16 @@ export function useVocab(): VocabData {
     subscribe('cutTypes', 'cutTypes');
     subscribe('closureTypes', 'closureTypes');
     subscribe('heelHeights', 'heelHeights');
+    subscribe('heelTypes', 'heelTypes');
     subscribe('platformHeights', 'platformHeights');
+    subscribe('soleMaterials', 'soleMaterials');
+    subscribe('shoeHeightMaps', 'shoeHeightMaps');
     subscribe('fits', 'fits');
     subscribe('statuses', 'statuses');
     subscribe('websites', 'websites');
     subscribe('sportsTeams', 'sportsTeams');
     subscribe('leagues', 'leagues');
+    subscribe('taxClasses', 'taxClasses');
 
     // Mark loading as false after initial setup
     setTimeout(() => {
