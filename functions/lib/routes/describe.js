@@ -40,6 +40,7 @@ const express_1 = __importDefault(require("express"));
 const generative_ai_1 = require("@google/generative-ai");
 const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
+const template_selection_1 = require("../utils/template-selection");
 // Read Gemini key from Firebase Functions config first, then env as fallback
 const GEMINI_API_KEY = (functions.config().gemini && functions.config().gemini.api_key) ||
     process.env.GEMINI_API_KEY;
@@ -93,13 +94,11 @@ function selectAudienceTemplate(gender, ageGroup) {
 /**
  * Build dynamic prompt using product attributes and observations
  * Now uses Firestore template if available, otherwise falls back to hard-coded prompt
+ * P14.1: Supports both legacy prompt_body and new structured config (format, voice, seo)
  */
-async function buildPrompt(payload, templateData) {
+async function buildPrompt(payload, template) {
     const { attributes = {}, facts = {}, aiContext = {}, tone = 'Clean', length = 'Medium', } = payload;
     const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, styleId, launchDate, } = attributes;
-    // Select audience-specific template
-    const audienceTemplate = selectAudienceTemplate(gender, ageGroup);
-    console.log(`[describe] Using audience template: ${audienceTemplate} (gender=${gender}, ageGroup=${ageGroup})`);
     // Check if launch date is within 14 days (allow subtle "new" cue)
     let isNewLaunch = false;
     if (launchDate) {
@@ -156,10 +155,99 @@ async function buildPrompt(payload, templateData) {
     const priorDraft = aiContext.priorDraft ? `Previous Draft (for rewrite, do NOT append):
 ${aiContext.priorDraft}
 ` : '';
-    // If template data exists, use it; otherwise use fallback
-    if (templateData && templateData.prompt_body) {
+    // P14.1: If template has structured config, use it to build enhanced prompt
+    if (template.format && template.voice) {
+        console.log(`[describe] Using structured template config for ${template.key}`);
+        // Build voice guidance from structured config
+        const voicePresetGuidance = {
+            'clean-retail': 'Use clear, professional retail language emphasizing product benefits',
+            'hype-drop': 'Create excitement and urgency with energetic language for limited releases',
+            'parent-friendly': 'Write for parents with emphasis on safety, durability, and value',
+            'tech-performance': 'Focus on technical specifications and performance benefits',
+            'luxury': 'Use sophisticated, elevated language emphasizing quality and exclusivity'
+        };
+        const voiceGuidance = voicePresetGuidance[template.voice.preset] || '';
+        const customVoice = template.voice.description || '';
+        const avoidWords = (template.voice.avoid || []).length > 0
+            ? `Avoid these words: ${template.voice.avoid.join(', ')}`
+            : '';
+        // Build format guidance
+        const formatGuidance = template.format.layout === 'headline+paragraph+bullets'
+            ? 'Include a headline, paragraph, and bullet points'
+            : template.format.layout === 'short-blurb'
+                ? 'Write a brief 1-2 sentence summary'
+                : 'Write as a single paragraph';
+        const paragraphGuidance = `Paragraph length: ${template.format.paragraph.min}-${template.format.paragraph.max} words`;
+        // Build structured prompt
+        let structuredPrompt = `You are ROPI AI — an expert retail storyteller for ${brand}.
+Your job: REWRITE the product paragraph for ${name} as a polished, complete description.
+
+VOICE & TONE:
+- ${voiceGuidance}
+${customVoice ? `- ${customVoice}` : ''}
+${avoidWords ? `- ${avoidWords}` : ''}
+${template.voice.brandRules ? `- ${template.voice.brandRules}` : ''}
+
+FORMAT:
+- ${formatGuidance}
+- ${paragraphGuidance}
+- Use tone: ${tone}, length: ${length}
+
+Product Details:
+- Category: ${category}
+- Fit: ${fit}
+- Audience: ${gender}, Age Group: ${ageGroup}
+${teamContext ? `- ${teamContext}` : ''}
+${colorContext ? `- ${colorContext}` : ''}
+${materialsContext ? `- ${materialsContext}` : ''}
+${material ? `- Legacy Material: ${material}` : ''}
+${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
+
+${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
+${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
+${featureBullets.length > 0 ? `FEATURES: ${featureBullets.join(', ')}` : ''}
+${designNotes ? `IMPROVEMENTS REQUESTED: ${designNotes}` : ''}
+${priorDraft}`;
+        // Add hard requirements and JSON schema
+        const hardRequirements = `
+
+Hard requirements:
+- Rewrite the paragraph; do not append. Output exactly one paragraph.
+- Use observation facts verbatim when present; no invented claims.
+- Use materials exactly as provided where relevant; no inventions.
+- Descriptive color can appear once for style/branding, not as a filter.
+${template.seo_rules || '- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.'}
+${(template.banned_terms || []).length > 0 ? `- Banned terms: ${(template.banned_terms || []).join(', ')}` : ''}
+
+Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
+{
+  "description": "<single rewritten paragraph>",
+  "scores": {
+    "overall": <number 0-10, rate the overall quality>,
+    "factual": <number 0-10, accuracy and use of provided facts>,
+    "tone": <number 0-10, matches requested tone and audience>,
+    "seo": <number 0-10, keyword optimization and meta readiness>,
+    "clarity": <number 0-10, readability and customer clarity>
+  },
+  "coach": {
+    "reasons": ["<why this score>", "..."],
+    "actions": ["<specific improvement to reach 10>", "..."],
+    "next_questions": ["<clarifying question>", "..."]
+  },
+  "seo": {
+    "meta_title": "<= 60 chars>",
+    "meta_description": "<= 155 chars>",
+    "meta_keywords": ["lowercase", "5-8", "from attributes & observations"]
+  },
+  "facts_used": ["fit", "observations:heel_height", "materials"]
+}`;
+        return structuredPrompt + hardRequirements;
+    }
+    // Legacy: If template has prompt_body, use it with variable substitution
+    if (template.prompt_body) {
+        console.log(`[describe] Using legacy prompt_body for ${template.key}`);
         // Use Firestore template with simple variable substitution
-        let prompt = templateData.prompt_body;
+        let prompt = template.prompt_body;
         // Replace variables (simplified Handlebars-style)
         prompt = prompt
             .replace(/\{\{brand\}\}/g, brand)
@@ -199,9 +287,9 @@ Hard requirements:
 - Use materials exactly as provided where relevant; no inventions.
 - Descriptive color can appear once for style/branding, not as a filter.
 - Respect tone & length; keep brand/product naming intact (Name is managed in UI).
-${templateData.seo_rules ? `- ${templateData.seo_rules}` : '- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.'}
-${templateData.tone_rules ? `- ${templateData.tone_rules}` : ''}
-${templateData.banned_terms && Array.isArray(templateData.banned_terms) && templateData.banned_terms.length > 0 ? `- Banned terms: ${templateData.banned_terms.join(', ')}` : ''}
+${template.seo_rules ? `- ${template.seo_rules}` : '- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.'}
+${template.tone_rules ? `- ${template.tone_rules}` : ''}
+${template.banned_terms && Array.isArray(template.banned_terms) && template.banned_terms.length > 0 ? `- Banned terms: ${template.banned_terms.join(', ')}` : ''}
 
 Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
 {
@@ -227,18 +315,20 @@ Output ONLY a strict JSON object in this exact schema (no extra text, no markdow
 }`;
         return prompt + hardRequirements;
     }
-    // Fallback to hard-coded prompt if no template data
+    // Final fallback: use hard-coded prompt (should not reach here if Firestore is populated)
+    console.warn(`[describe] No structured config or prompt_body found, using hard-coded fallback for ${template.key}`);
+    // Determine audience guidance based on template key
     let audienceGuidance = '';
-    if (audienceTemplate === 'mens') {
+    if (template.key.includes('mens')) {
         audienceGuidance = 'Write for adult male customers. Focus on performance, durability, and practical benefits.';
     }
-    else if (audienceTemplate === 'womens') {
+    else if (template.key.includes('womens')) {
         audienceGuidance = 'Write for adult female customers. Balance style and function, emphasizing versatility and quality.';
     }
-    else if (audienceTemplate === 'gradeSchool') {
+    else if (template.key.includes('kids') || template.key.includes('gradeSchool')) {
         audienceGuidance = 'Write for parents shopping for grade school kids (ages 6-12). Focus on durability, comfort, and age-appropriate style.';
     }
-    else if (audienceTemplate === 'toddler') {
+    else if (template.key.includes('toddler')) {
         audienceGuidance = 'Write for parents shopping for toddlers/infants. Emphasize safety, comfort, and ease of care.';
     }
     return `You are ROPI AI — an expert retail storyteller for ${brand}.
@@ -336,7 +426,7 @@ function parseGeminiResponse(text) {
 }
 app.post('*', async (req, res) => {
     const payload = req.body;
-    const { productId } = payload;
+    const { productId, attributes } = payload;
     if (!productId) {
         return res.status(400).json({ error: 'productId required' });
     }
@@ -345,10 +435,24 @@ app.post('*', async (req, res) => {
         return res.status(500).json({ error: "Missing Gemini API key" });
     }
     try {
-        // Determine which template to use
-        const templateKey = selectAudienceTemplate(payload.attributes?.gender, payload.attributes?.ageGroup);
-        // Load template from Firestore
-        const templateData = await loadAudienceTemplate(templateKey);
+        // P14.1: Use condition-based template selection
+        const productData = {
+            gender: attributes?.gender,
+            department: attributes?.category?.includes('Apparel') ? 'Apparel' :
+                attributes?.category?.includes('Accessories') ? 'Accessories' : 'Footwear',
+            ageGroup: attributes?.ageGroup,
+            materials: attributes?.materials,
+            launchDate: attributes?.launchDate || null
+        };
+        const selectionResult = await (0, template_selection_1.selectTemplate)(productData);
+        const { template, conditionsMatched, fallbackReason } = selectionResult;
+        console.log(`[describe] Selected template: ${template.key} (v${template.version})`);
+        if (conditionsMatched && conditionsMatched.length > 0) {
+            console.log(`[describe] Conditions matched: ${conditionsMatched.join(', ')}`);
+        }
+        if (fallbackReason) {
+            console.log(`[describe] Fallback reason: ${fallbackReason}`);
+        }
         const genAI = new generative_ai_1.GoogleGenerativeAI(GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({
             model: 'gemini-2.0-flash',
@@ -357,23 +461,24 @@ app.post('*', async (req, res) => {
                 maxOutputTokens: 800,
             },
         });
-        const prompt = await buildPrompt(payload, templateData);
+        const prompt = await buildPrompt(payload, template);
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         const parsed = parseGeminiResponse(text);
         if (!parsed || !parsed.description) {
             return res.status(502).json({ error: 'AI returned invalid JSON' });
         }
-        // Build response with template metadata
+        // Build response with template metadata (P14.1: include conditions matched)
         const response = {
             description: parsed.description,
             scores: parsed.scores,
             coach: parsed.coach,
             seo: parsed.seo,
             used_template: {
-                scope: 'audience',
-                key: templateKey,
-                version: templateData?.version || 'fallback',
+                scope: template.scope || 'audience',
+                key: template.key,
+                version: template.version,
+                conditionsMatched: conditionsMatched || [],
             },
             facts_used: parsed.facts_used || [],
         };
