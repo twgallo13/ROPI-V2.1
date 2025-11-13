@@ -130,6 +130,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [improvementText, setImprovementText] = useState('');
   const [qaOpen, setQaOpen] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
+  const [showHtmlSource, setShowHtmlSource] = useState(false);
   const [pendingQuestion, setPendingQuestion] = useState<string | null>(null);
   const [pendingAnswer, setPendingAnswer] = useState('');
   const [seoEdit, setSeoEdit] = useState<{ title: string; description: string; keywords: string[] }>({ title: '', description: '', keywords: [] });
@@ -1855,28 +1856,45 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                               </p>
                             )}
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (editableProduct) {
-                                setEditableProduct({
-                                  ...editableProduct,
-                                  marketing: {
-                                    ...editableProduct.marketing,
-                                    paragraphDraft: aiDescriptions['RetailOps'].text,
-                                  },
-                                });
-                                setToastMessage({ text: 'Applied to draft', type: 'success' });
-                              }
-                            }}
-                            className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
-                          >
-                            Apply to Product Info
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <label className="flex items-center gap-1 text-xs text-gray-600 select-none">
+                              <input
+                                type="checkbox"
+                                className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                checked={showHtmlSource}
+                                onChange={(e) => setShowHtmlSource(e.target.checked)}
+                              />
+                              View HTML
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (editableProduct) {
+                                  setEditableProduct({
+                                    ...editableProduct,
+                                    marketing: {
+                                      ...editableProduct.marketing,
+                                      paragraphDraft: aiDescriptions['RetailOps'].text,
+                                    },
+                                  });
+                                  setToastMessage({ text: 'Applied to draft', type: 'success' });
+                                }
+                              }}
+                              className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700"
+                            >
+                              Apply to Product Info
+                            </button>
+                          </div>
                         </div>
-                        <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                          <div dangerouslySetInnerHTML={{ __html: aiDescriptions['RetailOps'].text }} />
-                        </div>
+                        {showHtmlSource ? (
+                          <pre className="p-3 bg-gray-50 rounded border border-gray-200 text-xs text-gray-800 whitespace-pre-wrap overflow-x-auto font-mono">
+                            {aiDescriptions['RetailOps'].text}
+                          </pre>
+                        ) : (
+                          <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
+                            <div dangerouslySetInnerHTML={{ __html: aiDescriptions['RetailOps'].text }} />
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -1917,9 +1935,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                   Apply to Product Info
                                 </button>
                               </div>
-                              <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700">
-                                <div dangerouslySetInnerHTML={{ __html: data.text }} />
-                              </div>
+                              {showHtmlSource ? (
+                                <pre className="p-2 bg-white rounded border border-gray-200 text-[11px] text-gray-800 whitespace-pre-wrap overflow-x-auto font-mono">
+                                  {data.text}
+                                </pre>
+                              ) : (
+                                <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700">
+                                  <div dangerouslySetInnerHTML={{ __html: data.text }} />
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
