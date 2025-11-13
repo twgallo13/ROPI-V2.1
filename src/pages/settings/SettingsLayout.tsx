@@ -8,6 +8,7 @@ type ToastState = { show: boolean; message: string; type: 'success' | 'error' };
 
 const tabs = [
   { to: '/settings/ai', label: 'AI Settings' },
+  { to: '/settings/ai-templates', label: 'AI Templates' },
   { to: '/settings/vocab-managed', label: 'Vocab (Managed)' },
   { to: '/settings/prompts', label: 'AI Prompts' },
   { to: '/settings/vocab', label: 'Vocab / Dropdowns' },
