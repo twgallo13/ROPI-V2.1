@@ -38,6 +38,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadAllTemplates = loadAllTemplates;
+exports.loadTemplateByKey = loadTemplateByKey;
 exports.selectTemplate = selectTemplate;
 const admin = __importStar(require("firebase-admin"));
 /**
@@ -65,6 +66,30 @@ async function loadAllTemplates() {
     catch (error) {
         console.error('[template-selection] Failed to load templates:', error);
         return [];
+    }
+}
+/**
+ * Load a single template by key from Firestore
+ */
+async function loadTemplateByKey(key) {
+    try {
+        const db = admin.firestore();
+        const docRef = await db
+            .collection('settings')
+            .doc('ai')
+            .collection('prompts')
+            .doc(key)
+            .get();
+        if (!docRef.exists)
+            return null;
+        const data = docRef.data();
+        if (data && (data.status === 'disabled'))
+            return null;
+        return { ...data, key };
+    }
+    catch (error) {
+        console.error('[template-selection] Failed to load template by key:', key, error);
+        return null;
     }
 }
 /**

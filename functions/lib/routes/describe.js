@@ -444,7 +444,26 @@ app.post('*', async (req, res) => {
             materials: attributes?.materials,
             launchDate: attributes?.launchDate || null
         };
-        const selectionResult = await (0, template_selection_1.selectTemplate)(productData);
+        // If an explicit override key is provided and exists, use it directly
+        let selectionResult = null;
+        const overrideKey = (payload.templateOverride || '').trim();
+        if (overrideKey) {
+            const overridden = await (0, template_selection_1.loadTemplateByKey)(overrideKey);
+            if (overridden) {
+                selectionResult = {
+                    template: overridden,
+                    conditionsMatched: [`override:${overrideKey}`],
+                    fallbackReason: undefined,
+                };
+                console.log(`[describe] Using template override: ${overrideKey} (v${overridden.version})`);
+            }
+            else {
+                console.warn(`[describe] templateOverride provided but not found: ${overrideKey}. Falling back to auto-select.`);
+            }
+        }
+        if (!selectionResult) {
+            selectionResult = await (0, template_selection_1.selectTemplate)(productData);
+        }
         const { template, conditionsMatched, fallbackReason } = selectionResult;
         console.log(`[describe] Selected template: ${template.key} (v${template.version})`);
         if (conditionsMatched && conditionsMatched.length > 0) {

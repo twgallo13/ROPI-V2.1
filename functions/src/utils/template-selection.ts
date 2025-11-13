@@ -76,6 +76,29 @@ export async function loadAllTemplates(): Promise<AITemplate[]> {
 }
 
 /**
+ * Load a single template by key from Firestore
+ */
+export async function loadTemplateByKey(key: string): Promise<AITemplate | null> {
+  try {
+    const db = admin.firestore();
+    const docRef = await db
+      .collection('settings')
+      .doc('ai')
+      .collection('prompts')
+      .doc(key)
+      .get();
+
+    if (!docRef.exists) return null;
+    const data = docRef.data() as AITemplate;
+    if (data && (data.status === 'disabled')) return null;
+    return { ...data, key } as AITemplate;
+  } catch (error) {
+    console.error('[template-selection] Failed to load template by key:', key, error);
+    return null;
+  }
+}
+
+/**
  * Evaluate a single condition against product data
  */
 function evaluateCondition(condition: TemplateCondition, product: ProductData): boolean {

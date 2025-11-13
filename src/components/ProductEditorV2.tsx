@@ -125,7 +125,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [aiScores, setAiScores] = useState<AIScores | null>(null);
   const [aiCoach, setAiCoach] = useState<AICoach | null>(null);
   const [aiSEO, setAiSEO] = useState<AISEO | null>(null);
-  const [usedTemplate, setUsedTemplate] = useState<{ scope: string; key: string; version: string } | null>(null);
+  const [usedTemplate, setUsedTemplate] = useState<{ scope: string; key: string; version: string; conditionsMatched?: string[] } | null>(null);
   const [templateOverride, setTemplateOverride] = useState<string | null>(null);
   const [improvementText, setImprovementText] = useState('');
   const [qaOpen, setQaOpen] = useState(false);
@@ -1532,12 +1532,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           disabled={generatingInline}
                           className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
                         >
-                          <option value="">Auto-select (based on gender/age)</option>
+                          <option value="">Auto-select (based on attributes)</option>
                           <option value="default">Default</option>
-                          <option value="mens">Men's</option>
-                          <option value="womens">Women's</option>
-                          <option value="gradeSchool">Grade School</option>
+                          <option value="mens_footwear">Men's Footwear</option>
+                          <option value="womens_footwear">Women's Footwear</option>
+                          <option value="kids_gs">Kids (Grade School)</option>
                           <option value="toddler">Toddler</option>
+                          <option value="apparel_mens">Apparel (Men's)</option>
+                          <option value="apparel_womens">Apparel (Women's)</option>
+                          <option value="accessories">Accessories</option>
                         </select>
                       </div>
                       
@@ -1605,6 +1608,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                               channel: 'RetailOps',
                               tone: aiTone,
                               length: aiLength,
+                              templateOverride: templateOverride || undefined,
                               temperature: aiTemperature,
                               facts: {
                                 observations: facts.observations,
@@ -1628,6 +1632,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                 ageGroup: editableProduct.ageGroup,
                                 gender: editableProduct.gender,
                                 material: editableProduct.materialFabric,
+                                materials: editableProduct.materials || [],
                                 fit: editableProduct.fit,
                                 sportsTeam: editableProduct.sportsTeam,
                                 league: editableProduct.league,
@@ -1702,6 +1707,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                               setAiCoach(result.coach || null);
                               setAiSEO(result.seo || null);
                               
+                              // Capture which template was used (for visibility)
+                              setUsedTemplate((result as any).used_template || null);
                               setToastMessage({ text: 'Generated successfully', type: 'success' });
                               setImprovementText(''); // Clear after generation
                             }
@@ -1717,6 +1724,20 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                       >
                         {generatingInline ? 'Generating...' : '✨ Generate with AI'}
                       </button>
+                      {/* Quick used_template panel (dev helper) */}
+                      {usedTemplate && (
+                        <div className="mt-2 p-2 bg-gray-50 border border-gray-200 rounded">
+                          <div className="text-xs text-gray-700">
+                            <span className="font-medium">Template used:</span> {usedTemplate.key}
+                            <span className="ml-2 text-gray-500">v{usedTemplate.version}</span>
+                          </div>
+                          {Array.isArray(usedTemplate.conditionsMatched) && usedTemplate.conditionsMatched.length > 0 && (
+                            <div className="mt-1 text-[11px] text-gray-500">
+                              Conditions: {usedTemplate.conditionsMatched.join(', ')}
+                            </div>
+                          )}
+                        </div>
+                      )}
                       
                       <a
                         href={`/ai/describe?productId=${editableProduct?.id || ''}`}

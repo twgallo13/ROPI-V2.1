@@ -3,6 +3,7 @@ export interface DescribeProductPayload {
   channel: string;        // RetailOps | Shopify | PDP
   tone: string;           // Clean | Hype | Technical
   length: string;         // Short | Medium | Long
+  templateOverride?: string | null; // P14.1.2: optional explicit template key
   facts?: {
     observations?: string;
     materials?: string;

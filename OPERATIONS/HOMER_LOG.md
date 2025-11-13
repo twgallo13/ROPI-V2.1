@@ -1,5 +1,55 @@
 # HOMER Operations Log
 
+## [P14.1.2] Template Override & Nav Wiring — 2025-11-13
+
+Objective: Finish wiring template override end-to-end, ensure describe returns used_template with conditionsMatched, update AI Product Copy UI options, expose a small verification panel, and confirm Settings navigation surfaces the new builder.
+
+Changes
+
+- Backend
+  - `functions/src/utils/template-selection.ts`: Added `loadTemplateByKey(key)` to fetch a single active template.
+  - `functions/src/routes/describe.ts`:
+    - Added `templateOverride?: string | null` to request payload.
+    - If `templateOverride` is a valid key, bypass condition matching and use it directly; set `conditionsMatched` to `['override:<key>']`.
+    - Response continues to include `used_template { scope, key, version, conditionsMatched[] }` per P14.1.
+
+- Frontend
+  - `src/services/describe.ts`: Extended `DescribeProductPayload` with `templateOverride?: string | null`.
+  - `src/components/ProductEditorV2.tsx`:
+    - Override dropdown options updated to Firestore keys: `default`, `mens_footwear`, `womens_footwear`, `kids_gs`, `toddler`, `apparel_mens`, `apparel_womens`, `accessories`.
+    - Payload now sends `templateOverride: templateOverride || undefined` when generating.
+    - Adds a compact dev panel under the Generate button showing `Template used: <key> v<version>` and `Conditions: ...` from the last response.
+  - Settings Navigation: Already included both tabs in `src/pages/settings/SettingsLayout.tsx`:
+    - AI Templates → `/settings/ai-templates`
+    - Legacy AI Prompts (JSON) → `/settings/prompts`
+
+Deploy/Test Notes
+
+- Functions:
+  - Build: `npm run build:functions`
+  - Deploy: `npx firebase deploy --only functions --project ropi-bccee`
+  - Quick test (replace TOKEN as needed):
+    - `curl -sS -X POST -H 'Content-Type: application/json' https://us-central1-ropi-bccee.cloudfunctions.net/apiDescribe -d '{"productId":"TEST123","channel":"RetailOps","tone":"Clean","length":"Medium","templateOverride":"mens_footwear","attributes":{"gender":"Mens","category":"Footwear"}}' | jq` should include `used_template.key == "mens_footwear"`.
+
+- Hosting:
+  - Build: `npm run build`
+  - Deploy: `npx firebase deploy --only hosting --project ropi-bccee`
+
+Verification Checklist (John)
+
+1) Settings nav shows two tabs and routes correctly:
+   - AI Templates → open builder UI
+   - Legacy AI Prompts (JSON)
+2) In Network tab for a men’s footwear product, `used_template` present with `key` and `conditionsMatched`.
+3) Override forces a specific template:
+   - Pick "Men's Footwear" in Template Override, generate → `used_template.key === "mens_footwear"` regardless of attributes.
+   - Choose Auto-select (blank) → condition logic selects appropriate audience.
+4) Description format reflects structured templates (headline+paragraph+bullets or configured layout, tone guidance applied).
+
+Status
+
+- Code updated in both backend and frontend within this repo. Functions deployment requires Firebase CLI auth; run the commands above from a logged-in environment.
+
 ## [P14.1] AI Template Builder Enhancements — 2025-11-13
 
 **Branch**: `feat/p14.1-template-builder-enhancements`  

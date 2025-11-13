@@ -2,7 +2,7 @@ import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
-import { selectTemplate, type AITemplate, type TemplateSelectionResult } from '../utils/template-selection';
+import { selectTemplate, type AITemplate, type TemplateSelectionResult, loadTemplateByKey } from '../utils/template-selection';
 
 // Read Gemini key from Firebase Functions config first, then env as fallback
 const GEMINI_API_KEY =
@@ -20,6 +20,7 @@ interface DescribePayload {
   channel: string;
   tone: string;
   length: string;
+  templateOverride?: string | null;
   facts?: {
     observations?: string;
     materials?: string;
@@ -513,7 +514,26 @@ app.post('*', async (req, res) => {
       launchDate: attributes?.launchDate || null
     };
 
-    const selectionResult: TemplateSelectionResult = await selectTemplate(productData);
+    // If an explicit override key is provided and exists, use it directly
+    let selectionResult: TemplateSelectionResult | null = null;
+    const overrideKey = (payload.templateOverride || '').trim();
+    if (overrideKey) {
+      const overridden = await loadTemplateByKey(overrideKey);
+      if (overridden) {
+        selectionResult = {
+          template: overridden,
+          conditionsMatched: [`override:${overrideKey}`],
+          fallbackReason: undefined,
+        } as TemplateSelectionResult;
+        console.log(`[describe] Using template override: ${overrideKey} (v${overridden.version})`);
+      } else {
+        console.warn(`[describe] templateOverride provided but not found: ${overrideKey}. Falling back to auto-select.`);
+      }
+    }
+
+    if (!selectionResult) {
+      selectionResult = await selectTemplate(productData);
+    }
     const { template, conditionsMatched, fallbackReason } = selectionResult;
 
     console.log(`[describe] Selected template: ${template.key} (v${template.version})`);
