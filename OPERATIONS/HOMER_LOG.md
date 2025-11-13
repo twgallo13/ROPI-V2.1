@@ -4,7 +4,7 @@
 
 **Branch**: `feat/p14.1-template-builder-enhancements`  
 **Status**: ✅ Complete, pending review  
-**PR**: TBD (pending creation)
+**PR**: #75
 
 ### Objective
 Transform AI Templates page from simple text editor into a no-code template builder with structured configuration, allowing non-developers to configure audience-specific product copy without touching JSON.
