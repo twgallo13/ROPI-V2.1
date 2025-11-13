@@ -10,7 +10,6 @@ const tabs = [
   { to: '/settings/ai', label: 'AI Settings' },
   { to: '/settings/ai-templates', label: 'AI Templates' },
   { to: '/settings/vocab-managed', label: 'Vocab (Managed)' },
-  { to: '/settings/prompts', label: 'Legacy AI Prompts (JSON)' },
   { to: '/settings/vocab', label: 'Vocab / Dropdowns' },
   { to: '/settings/rules', label: 'Rules' },
   { to: '/settings/brands', label: 'Brands' },
