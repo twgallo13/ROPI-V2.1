@@ -73,6 +73,55 @@ const AITemplateBuilder: React.FC<AITemplateBuilderProps> = ({ onShowToast }) =>
   const [saving, setSaving] = useState(false);
   const [showAdvancedJSON, setShowAdvancedJSON] = useState(false);
 
+  // Normalize legacy/partial template docs to full AITemplate
+  const normalizeTemplate = (data: Partial<AITemplate>, key: string): AITemplate => {
+    return {
+      key,
+      scope: data.scope || 'audience',
+      title: data.title || getTitleForKey(key),
+      status: (data.status as TemplateStatus) || 'draft',
+      description: data.description || '',
+      version: data.version || 'v2',
+      conditions: data.conditions || [],
+      matchMode: data.matchMode || 'ALL',
+      format: {
+        layout: data.format?.layout || 'paragraph-only',
+        headlineEnabled: data.format?.headlineEnabled ?? false,
+        headlinePattern: data.format?.headlinePattern || '',
+        paragraph: {
+          min: data.format?.paragraph?.min ?? 40,
+          max: data.format?.paragraph?.max ?? 80,
+          allowTwoParagraphs: data.format?.paragraph?.allowTwoParagraphs ?? false,
+        },
+        bullets: {
+          min: data.format?.bullets?.min ?? 0,
+          max: data.format?.bullets?.max ?? 0,
+          topics: data.format?.bullets?.topics || [],
+        },
+      },
+      voice: {
+        preset: data.voice?.preset || 'clean-retail',
+        description: data.voice?.description || '',
+        avoid: data.voice?.avoid || [],
+        brandRules: data.voice?.brandRules || '',
+      },
+      seo: {
+        metaTitlePattern: data.seo?.metaTitlePattern || '{{brand}} {{name}} | {{fit}} {{category}}',
+        includeFit: data.seo?.includeFit ?? true,
+        includeUseCase: data.seo?.includeUseCase ?? false,
+        includeMaterial: data.seo?.includeMaterial ?? true,
+      },
+      prompt_body: data.prompt_body || '',
+      seo_rules: data.seo_rules || '',
+      tone_rules: data.tone_rules || '',
+      length_rules: data.length_rules || '',
+      examples: data.examples || [],
+      banned_terms: (data as any).banned_terms || [],
+      updatedBy: data.updatedBy,
+      updatedAt: data.updatedAt,
+    };
+  };
+
   // Load template from Firestore
   useEffect(() => {
     if (!selectedKey) return;
@@ -80,11 +129,11 @@ const AITemplateBuilder: React.FC<AITemplateBuilderProps> = ({ onShowToast }) =>
     const loadTemplate = async () => {
       setLoading(true);
       try {
-        const templateDoc = await getDoc(doc(db, 'settings', 'ai', 'prompts', selectedKey));
-        
+        const templateDoc = await getDoc(doc(db, 'settings', 'ai', 'prompts', selectedKey));        
         if (templateDoc.exists()) {
-          const data = templateDoc.data() as AITemplate;
-          setTemplate(data);
+          const data = templateDoc.data() as Partial<AITemplate>;
+          const normalized = normalizeTemplate(data, selectedKey);
+          setTemplate(normalized);
         } else {
           // Create default template structure
           setTemplate({
@@ -148,7 +197,7 @@ const AITemplateBuilder: React.FC<AITemplateBuilderProps> = ({ onShowToast }) =>
   };
 
   const handleSave = async () => {
-    if (!template) return;
+    if (!template || !selectedKey) return;
 
     setSaving(true);
     try {
@@ -158,7 +207,11 @@ const AITemplateBuilder: React.FC<AITemplateBuilderProps> = ({ onShowToast }) =>
         updatedAt: serverTimestamp()
       };
 
-      await setDoc(doc(db, 'settings', 'ai', 'prompts', template.key), templateData);
+      await setDoc(
+        doc(db, 'settings', 'ai', 'prompts', selectedKey),
+        { ...templateData, key: selectedKey },
+        { merge: true }
+      );
       
       onShowToast?.('Template saved successfully', 'success');
     } catch (error) {
@@ -332,7 +385,7 @@ const AITemplateBuilder: React.FC<AITemplateBuilderProps> = ({ onShowToast }) =>
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={saving}
+                disabled={saving || !selectedKey}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
               >
                 {saving ? 'Saving...' : 'Save Template'}
