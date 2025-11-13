@@ -4,7 +4,7 @@
 
 **Branch**: `feat/p14-ai-templates-ui`  
 **Status**: ✅ Complete, pending review  
-**PR**: TBD (pending creation)
+**PR**: #74
 
 ### Objective
 Create a Settings UI for managing AI audience templates (default, mens, womens, gradeSchool, toddler) without requiring direct Firestore edits.
