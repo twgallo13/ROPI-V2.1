@@ -205,7 +205,7 @@ async function buildPrompt(payload: DescribePayload, template: AITemplate): Prom
 ${aiContext.priorDraft}
 ` : '';
 
-  // P14.1: If template has structured config, use it to build enhanced prompt
+  // P14.1/P14.2: If template has structured config, use it to build enhanced prompt
   if (template.format && template.voice) {
     console.log(`[describe] Using structured template config for ${template.key}`);
     
@@ -224,14 +224,28 @@ ${aiContext.priorDraft}
       ? `Avoid these words: ${template.voice.avoid.join(', ')}` 
       : '';
 
-    // Build format guidance
-    const formatGuidance = template.format.layout === 'headline+paragraph+bullets'
-      ? 'Include a headline, paragraph, and bullet points'
-      : template.format.layout === 'short-blurb'
-      ? 'Write a brief 1-2 sentence summary'
-      : 'Write as a single paragraph';
+    // Build layout-aware HTML format guidance (P14.2)
+    const layout = template.format.layout;
+    const pMin = template.format.paragraph?.min ?? 50;
+    const pMax = template.format.paragraph?.max ?? 90;
+    const allowTwo = Boolean(template.format.paragraph?.allowTwoParagraphs);
+    const bMin = template.format.bullets?.min ?? 2;
+    const bMax = template.format.bullets?.max ?? 4;
+    const topics = Array.isArray(template.format.bullets?.topics) ? template.format.bullets.topics : [];
 
-    const paragraphGuidance = `Paragraph length: ${template.format.paragraph.min}-${template.format.paragraph.max} words`;
+    let formatGuidance = '';
+    if (layout === 'headline+paragraph+bullets') {
+      const paraPhrase = allowTwo ? `1–2 short paragraphs totaling ${pMin}-${pMax} words` : `1 short paragraph of ${pMin}-${pMax} words`;
+      const bulletPhrase = `${bMin}-${bMax} concise bullets`;
+      const topicsPhrase = topics.length ? `Focus bullets on: ${topics.join(', ')}` : '';
+      formatGuidance = `Always produce HTML in the description field using this structure:\n\n<h3>Headline text</h3>\n<p>Paragraph 1...</p>\n${allowTwo ? '<p>Paragraph 2 (optional, only if needed)...</p>\n' : ''}<ul>\n  <li>Bullet 1...</li>\n  <li>Bullet 2...</li>\n</ul>\n\nWrite ${paraPhrase} and ${bulletPhrase}. ${topicsPhrase}`;
+    } else if (layout === 'paragraph-only') {
+      formatGuidance = `Always produce HTML in the description field as 1–2 <p> blocks totaling ${pMin}-${pMax} words. Do not include <ul> or bullets.`;
+    } else if (layout === 'short-blurb') {
+      formatGuidance = `Always produce HTML in the description field as a single <p> only. Keep it brief and within ${Math.max(30, Math.floor(pMin * 0.7))}-${Math.min(90, Math.floor(pMax * 0.8))} words.`;
+    } else {
+      formatGuidance = `Produce HTML in the description field as one <p> of ${pMin}-${pMax} words.`;
+    }
 
     // Build structured prompt
     let structuredPrompt = `You are ROPI AI — an expert retail storyteller for ${brand}.
@@ -245,7 +259,6 @@ ${template.voice.brandRules ? `- ${template.voice.brandRules}` : ''}
 
 FORMAT:
 - ${formatGuidance}
-- ${paragraphGuidance}
 - Use tone: ${tone}, length: ${length}
 
 Product Details:
@@ -264,11 +277,12 @@ ${featureBullets.length > 0 ? `FEATURES: ${featureBullets.join(', ')}` : ''}
 ${designNotes ? `IMPROVEMENTS REQUESTED: ${designNotes}` : ''}
 ${priorDraft}`;
 
-    // Add hard requirements and JSON schema
+    // Add hard requirements and JSON schema (HTML in description)
     const hardRequirements = `
 
 Hard requirements:
-- Rewrite the paragraph; do not append. Output exactly one paragraph.
+- description must be a single string containing valid HTML tags. No markdown, no code fences.
+- Rewrite the paragraph; do not append other text outside the requested HTML structure.
 - Use observation facts verbatim when present; no invented claims.
 - Use materials exactly as provided where relevant; no inventions.
 - Descriptive color can appear once for style/branding, not as a filter.
@@ -277,7 +291,7 @@ ${(template.banned_terms || []).length > 0 ? `- Banned terms: ${(template.banned
 
 Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
 {
-  "description": "<single rewritten paragraph>",
+  "description": "<structured HTML string>",
   "scores": {
     "overall": <number 0-10, rate the overall quality>,
     "factual": <number 0-10, accuracy and use of provided facts>,

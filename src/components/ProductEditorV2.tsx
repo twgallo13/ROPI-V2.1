@@ -1874,8 +1874,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                             Apply to Product Info
                           </button>
                         </div>
-                        <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
-                          {aiDescriptions['RetailOps'].text}
+                        <div className="p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
+                          <div dangerouslySetInnerHTML={{ __html: aiDescriptions['RetailOps'].text }} />
                         </div>
                       </div>
                     )}
@@ -1917,8 +1917,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                                   Apply to Product Info
                                 </button>
                               </div>
-                              <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
-                                {data.text}
+                              <div className="p-2 bg-white rounded border border-gray-200 text-sm text-gray-700">
+                                <div dangerouslySetInnerHTML={{ __html: data.text }} />
                               </div>
                             </div>
                           ))}

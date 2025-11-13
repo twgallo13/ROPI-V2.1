@@ -50,6 +50,42 @@ Status
 
 - Code updated in both backend and frontend within this repo. Functions deployment requires Firebase CLI auth; run the commands above from a logged-in environment.
 
+## [P14.2] Structured HTML Output from Templates — 2025-11-13
+
+Objective: Use P14.1 template config to have AI return structured HTML in the `description` field while keeping the existing JSON envelope.
+
+Changes
+
+- Backend
+  - `functions/src/routes/describe.ts` (structured template path):
+    - Replaced generic format guidance with layout-aware HTML instructions.
+    - For `headline+paragraph+bullets`: specify exact HTML skeleton with `<h3>`, `<p>`, `<ul><li>` and natural-language ranges using `format.paragraph` and `format.bullets`.
+    - For `paragraph-only`: 1–2 `<p>` blocks; no `<ul>`.
+    - For `short-blurb`: single `<p>` only.
+    - Hard requirement: description must be a single string containing valid HTML; no markdown or code fences.
+    - JSON envelope unchanged; `description` now expected to be HTML string.
+
+- Frontend
+  - `src/components/ProductEditorV2.tsx`: Render generated descriptions as HTML using `dangerouslySetInnerHTML` for RetailOps preview and other saved drafts.
+  - `src/pages/ai/DescribePage.tsx`: Render the generated description as HTML in a read-only panel instead of a textarea.
+  - No schema changes; Firestore still stores `text` as a string (now HTML).
+
+Acceptance
+
+- Men’s Footwear with override `mens_footwear`: Response includes `used_template.key === "mens_footwear"`; description contains `<h3>` and `<ul><li>`.
+- Switching template layout to `paragraph-only` yields only `<p>` blocks, no `<ul>`.
+- Export rows include the same HTML string in the description field.
+
+Deploy/Test
+
+```bash
+npm run build:functions
+npx firebase deploy --only functions --project ropi-bccee
+npm run build
+npx firebase deploy --only hosting --project ropi-bccee
+```
+
+
 ## [P14.1] AI Template Builder Enhancements — 2025-11-13
 
 **Branch**: `feat/p14.1-template-builder-enhancements`  

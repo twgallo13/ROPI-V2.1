@@ -228,13 +228,9 @@ const DescribePage: React.FC = () => {
         {generatedText && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Generated Description</label>
-            <textarea
-              ref={textareaRef}
-              readOnly
-              value={generatedText}
-              rows={12}
-              className="w-full border-gray-300 rounded-md shadow-sm bg-gray-50 font-mono text-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
+            <div className="w-full border border-gray-200 rounded-md bg-white p-4 prose prose-sm max-w-none">
+              <div dangerouslySetInnerHTML={{ __html: generatedText }} />
+            </div>
             <p className="text-xs text-gray-500 mt-2">
               Generated with: <strong>{tone}</strong> tone, <strong>{length}</strong> length for{' '}
               <strong>{channel}</strong>
