@@ -24,6 +24,7 @@ export type AttributeKey =
   | 'categories' 
   | 'ageGroups' 
   | 'genders' 
+  | 'materials'
   | 'statuses' 
   | 'websites' 
   | 'sportsTeams' 
@@ -45,6 +46,7 @@ const INITIAL_ATTRIBUTES: AttributesData = {
   categories: [],
   ageGroups: [],
   genders: [],
+  materials: [],
   statuses: [],
   websites: [],
   sportsTeams: [],
@@ -121,7 +123,7 @@ export function useAttributesSettings() {
     setLoading(true);
 
     const keys: AttributeKey[] = [
-      'departments', 'classes', 'categories', 'ageGroups', 'genders',
+      'departments', 'classes', 'categories', 'ageGroups', 'genders', 'materials',
       'statuses', 'websites', 'sportsTeams', 'leagues', 'fits', 'taxClasses',
       'primaryColors', 'descriptiveColors', 'cutTypes', 'closureTypes', 'heelHeights', 'platformHeights'
     ];
