@@ -8,6 +8,14 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          '/api/describe': {
+            target: 'https://us-central1-ropi-bccee.cloudfunctions.net/apiDescribe',
+            changeOrigin: true,
+            rewrite: (path) => '',
+            secure: true,
+          },
+        },
       },
       plugins: [react()],
       define: {
