@@ -1,0 +1,358 @@
+{
+  "templates": [
+    {
+      "key": "default",
+      "scope": "audience",
+      "title": "Default Template",
+      "status": "active",
+      "description": "Fallback template for all products when no specific audience match",
+      "version": "v2",
+      "conditions": [],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 40,
+          "max": 80,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": []
+        }
+      },
+      "voice": {
+        "preset": "clean-retail",
+        "description": "Clear, professional retail copy emphasizing product benefits without hype",
+        "avoid": ["guaranteed", "revolutionary", "game-changer", "unprecedented", "world-class"],
+        "brandRules": "Keep brand/product naming intact (Name is managed in UI). Respect tone & length parameters."
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} | {{fit}} {{category}}",
+        "includeFit": true,
+        "includeUseCase": false,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Respect tone & length; keep brand/product naming intact (Name is managed in UI).",
+      "length_rules": "Short: 1-2 sentences. Medium: 3-4 sentences. Long: 5-6 sentences.",
+      "banned_terms": "guaranteed,revolutionary,game-changer,unprecedented,world-class",
+      "examples": []
+    },
+    {
+      "key": "mens_footwear",
+      "scope": "audience",
+      "title": "Men's Footwear",
+      "status": "active",
+      "description": "Template for men's athletic and casual footwear emphasizing performance and durability",
+      "version": "v2",
+      "conditions": [
+        { "field": "gender", "operator": "is-any-of", "value": ["Mens", "Men", "Male"] },
+        { "field": "department", "operator": "==", "value": "Footwear" }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 50,
+          "max": 90,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["fit", "comfort", "durability", "traction"]
+        }
+      },
+      "voice": {
+        "preset": "tech-performance",
+        "description": "Focus on performance, durability, and practical benefits for adult male customers",
+        "avoid": ["cute", "adorable", "pretty", "feminine", "delicate"],
+        "brandRules": "Emphasize technical features and real-world performance"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - Men's {{category}}",
+        "includeFit": true,
+        "includeUseCase": true,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Write for adult male customers. Focus on performance, durability, and practical benefits.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Focus on performance and durability. Speak to adult male audience.",
+      "length_rules": "Short: 1-2 sentences. Medium: 3-4 sentences. Long: 5-6 sentences.",
+      "banned_terms": "cute,adorable,pretty,feminine,delicate",
+      "examples": []
+    },
+    {
+      "key": "womens_footwear",
+      "scope": "audience",
+      "title": "Women's Footwear",
+      "status": "active",
+      "description": "Template for women's footwear balancing style, function, and versatility",
+      "version": "v2",
+      "conditions": [
+        { "field": "gender", "operator": "is-any-of", "value": ["Womens", "Women", "Female"] },
+        { "field": "department", "operator": "==", "value": "Footwear" }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 50,
+          "max": 90,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["fit", "comfort", "durability", "use_case"]
+        }
+      },
+      "voice": {
+        "preset": "clean-retail",
+        "description": "Balance style and function, emphasizing versatility and quality for adult female customers",
+        "avoid": ["manly", "masculine", "aggressive", "rugged", "tough"],
+        "brandRules": "Emphasize versatility, quality, and timeless style"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - Women's {{category}}",
+        "includeFit": true,
+        "includeUseCase": true,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Write for adult female customers. Balance style and function, emphasizing versatility and quality.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Balance style and function. Speak to adult female audience, emphasizing versatility and quality.",
+      "length_rules": "Short: 1-2 sentences. Medium: 3-4 sentences. Long: 5-6 sentences.",
+      "banned_terms": "manly,masculine,aggressive,rugged,tough",
+      "examples": []
+    },
+    {
+      "key": "kids_gs",
+      "scope": "audience",
+      "title": "Grade School Kids",
+      "status": "active",
+      "description": "Template for grade school kids (ages 6-12) focusing on durability and age-appropriate style",
+      "version": "v2",
+      "conditions": [
+        { "field": "ageGroup", "operator": "is-any-of", "value": ["Grade School", "Big Kids", "GS"] }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 40,
+          "max": 70,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["durability", "comfort", "care"]
+        }
+      },
+      "voice": {
+        "preset": "parent-friendly",
+        "description": "Write for parents shopping for grade school kids. Focus on durability, comfort, and age-appropriate style.",
+        "avoid": ["sophisticated", "elegant", "mature", "adult", "professional"],
+        "brandRules": "Appeal to parent buyers with emphasis on value and longevity"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - Kids' {{category}}",
+        "includeFit": true,
+        "includeUseCase": false,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Write for parents shopping for grade school kids (ages 6-12). Focus on durability, comfort, and age-appropriate style.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Focus on durability and comfort for kids. Write for parent buyers.",
+      "length_rules": "Short: 1-2 sentences. Medium: 2-3 sentences. Long: 3-4 sentences.",
+      "banned_terms": "sophisticated,elegant,mature,adult,professional",
+      "examples": []
+    },
+    {
+      "key": "toddler",
+      "scope": "audience",
+      "title": "Toddler/Infant",
+      "status": "active",
+      "description": "Template for toddlers and infants emphasizing safety, comfort, and ease of care",
+      "version": "v2",
+      "conditions": [
+        { "field": "ageGroup", "operator": "is-any-of", "value": ["Toddler", "Infant", "Baby"] }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 30,
+          "max": 60,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["comfort", "care"]
+        }
+      },
+      "voice": {
+        "preset": "parent-friendly",
+        "description": "Write for parents shopping for toddlers/infants. Emphasize safety, comfort, and ease of care.",
+        "avoid": ["performance", "athletic", "competitive", "aggressive", "intense"],
+        "brandRules": "Focus on safety, softness, and hassle-free features for busy parents"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - Toddler {{category}}",
+        "includeFit": false,
+        "includeUseCase": false,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Write for parents shopping for toddlers/infants. Emphasize safety, comfort, and ease of care.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Emphasize safety, comfort, and ease of care. Write for parent buyers.",
+      "length_rules": "Short: 1 sentence. Medium: 2 sentences. Long: 2-3 sentences.",
+      "banned_terms": "performance,athletic,competitive,aggressive,intense",
+      "examples": []
+    },
+    {
+      "key": "apparel_mens",
+      "scope": "audience",
+      "title": "Men's Apparel",
+      "status": "active",
+      "description": "Template for men's clothing emphasizing fit, function, and versatility",
+      "version": "v2",
+      "conditions": [
+        { "field": "gender", "operator": "is-any-of", "value": ["Mens", "Men", "Male"] },
+        { "field": "department", "operator": "==", "value": "Apparel" }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 40,
+          "max": 80,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["fit", "comfort", "use_case", "care"]
+        }
+      },
+      "voice": {
+        "preset": "clean-retail",
+        "description": "Focus on fit, fabric, and functional details for men's clothing",
+        "avoid": ["cute", "adorable", "pretty", "feminine", "delicate"],
+        "brandRules": "Emphasize practical benefits and everyday wearability"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - Men's {{category}}",
+        "includeFit": true,
+        "includeUseCase": true,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Write for adult male customers. Focus on fit, fabric quality, and versatility.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Focus on fit and fabric quality. Speak to adult male audience.",
+      "length_rules": "Short: 1-2 sentences. Medium: 3-4 sentences. Long: 4-5 sentences.",
+      "banned_terms": "cute,adorable,pretty,feminine,delicate",
+      "examples": []
+    },
+    {
+      "key": "apparel_womens",
+      "scope": "audience",
+      "title": "Women's Apparel",
+      "status": "active",
+      "description": "Template for women's clothing emphasizing style, fit, and versatility",
+      "version": "v2",
+      "conditions": [
+        { "field": "gender", "operator": "is-any-of", "value": ["Womens", "Women", "Female"] },
+        { "field": "department", "operator": "==", "value": "Apparel" }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 40,
+          "max": 80,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["fit", "comfort", "use_case", "care"]
+        }
+      },
+      "voice": {
+        "preset": "clean-retail",
+        "description": "Balance style, fit, and versatility for women's clothing with emphasis on quality",
+        "avoid": ["manly", "masculine", "aggressive", "rugged"],
+        "brandRules": "Emphasize versatile styling and quality fabrics"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - Women's {{category}}",
+        "includeFit": true,
+        "includeUseCase": true,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Write for adult female customers. Balance style, fit, and versatility.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Balance style and versatility. Speak to adult female audience.",
+      "length_rules": "Short: 1-2 sentences. Medium: 3-4 sentences. Long: 4-5 sentences.",
+      "banned_terms": "manly,masculine,aggressive,rugged",
+      "examples": []
+    },
+    {
+      "key": "accessories",
+      "scope": "audience",
+      "title": "Accessories",
+      "status": "active",
+      "description": "Template for accessories (bags, hats, socks, etc.) emphasizing utility and style",
+      "version": "v2",
+      "conditions": [
+        { "field": "department", "operator": "==", "value": "Accessories" }
+      ],
+      "matchMode": "ALL",
+      "format": {
+        "layout": "paragraph-only",
+        "headlineEnabled": false,
+        "paragraph": {
+          "min": 30,
+          "max": 60,
+          "allowTwoParagraphs": false
+        },
+        "bullets": {
+          "min": 0,
+          "max": 0,
+          "topics": ["use_case", "comfort", "care"]
+        }
+      },
+      "voice": {
+        "preset": "clean-retail",
+        "description": "Focus on utility, style, and complementary function for accessories",
+        "avoid": ["guaranteed", "revolutionary", "game-changer"],
+        "brandRules": "Highlight how the accessory completes or enhances the look/function"
+      },
+      "seo": {
+        "metaTitlePattern": "{{brand}} {{name}} - {{category}}",
+        "includeFit": false,
+        "includeUseCase": true,
+        "includeMaterial": true
+      },
+      "prompt_body": "You are ROPI AI — an expert retail storyteller for {{brand}}.\nYour job: REWRITE the product paragraph for {{name}} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.\nUse tone: {{tone}}, length: {{length}}. Focus on utility, style, and how this accessory complements the overall look.\n\nProduct Details:\n- Category: {{category}}\n- Fit: {{fit}}\n- Audience: {{gender}}, Age Group: {{ageGroup}}\n{{#if teamContext}}- {{teamContext}}{{/if}}\n{{#if colorContext}}- {{colorContext}}{{/if}}\n{{#if materialsContext}}- {{materialsContext}}{{/if}}\n{{#if material}}- Legacy Material: {{material}}{{/if}}\n{{#if isNewLaunch}}- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., \"just in\", \"new arrival\") without revealing exact dates.{{/if}}\n\n{{#if obsSummary}}OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): {{obsSummary}}{{/if}}\n{{#if keywords}}KEYWORDS: {{keywords}}{{/if}}\n{{#if featureBullets}}FEATURES: {{featureBullets}}{{/if}}\n{{#if designNotes}}IMPROVEMENTS REQUESTED: {{designNotes}}{{/if}}\n{{#if priorDraft}}Previous Draft (for rewrite, do NOT append):\n{{priorDraft}}\n{{/if}}",
+      "seo_rules": "In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.\nNever duplicate brand more than once in meta_title or meta_description.",
+      "tone_rules": "Emphasize complementary function and style enhancement.",
+      "length_rules": "Short: 1 sentence. Medium: 2-3 sentences. Long: 3-4 sentences.",
+      "banned_terms": "guaranteed,revolutionary,game-changer",
+      "examples": []
+    }
+  ]
+}

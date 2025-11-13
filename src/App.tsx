@@ -12,7 +12,7 @@ import SettingsPage from './pages/SettingsPage';
 import ImportPage from './pages/ImportPage';
 import PromptsPage from './pages/settings/Prompts';
 import AISettingsPage from './pages/settings/AISettingsPage';
-import AITemplatesPage from './pages/settings/AITemplatesPage';
+import AITemplateBuilder from './pages/settings/AITemplateBuilder';
 import VocabManagedPage from './pages/settings/VocabManagedPage';
 import VocabDropdownsPage from './pages/settings/VocabDropdownsPage';
 import RulesPage from './pages/settings/RulesPage';
@@ -124,7 +124,7 @@ function RouteManager() {
           <Route index element={<Navigate to="export" replace />} />
           <Route path="export" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><ExportSettingsPage /></Suspense>} />
           <Route path="ai" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AISettingsPage /></Suspense>} />
-          <Route path="ai-templates" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AITemplatesPage /></Suspense>} />
+          <Route path="ai-templates" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AITemplateBuilder /></Suspense>} />
           <Route path="prompts" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><PromptsPage /></Suspense>} />
           <Route path="vocab-managed" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabManagedPage /></Suspense>} />
           <Route path="vocab" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabDropdownsPage /></Suspense>} />
