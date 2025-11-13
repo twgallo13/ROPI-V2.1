@@ -202,6 +202,29 @@ npx ts-node ../scripts/seed-ai-templates-v2.ts
    ```
 5. Verify description matches "Hype Drop" voice (energetic, no "sick")
 
+### P14.1.1 — Seeder Auth Fix (2025-11-13)
+
+To allow a one-time production seed without CLI credentials while keeping Firestore rules secure, we added a small browser tool with Firebase Auth.
+
+Files:
+- `public/seed-templates.html` — now includes email/password login using Firebase Auth, disables the seed button until signed in, and logs the current user before seeding.
+- The seed reads `ai-templates-seed-v2.json` served via Hosting and writes to `settings/ai/prompts/{key}` with `updatedBy` + `updatedAt`.
+
+Run (Production):
+- Visit https://ropi-bccee.web.app/seed-templates.html
+- Sign in with your Firebase admin email/password
+- Click "Run Seed Script"
+- Expect 8× "✓ Success: ..." and verify in Firestore under `settings/ai/prompts`
+
+Run (Local Dev):
+- `npm run dev`
+- Open http://localhost:3000/seed-templates.html
+- Sign in with a test Firebase user to verify the flow
+
+Security:
+- Firestore rules unchanged; write requires a signed-in user
+- No credentials stored; uses Firebase Auth client-side
+
 **Step 4: Test Fallback**
 1. Select a product with no matching conditions (e.g., unisex socks, department: Accessories)
 2. Generate description

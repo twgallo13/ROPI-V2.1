@@ -22,6 +22,32 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    function setAuthStatus(message, isError = false) {
+      const statusEl = document.getElementById('authStatus');
+      if (!statusEl) return;
+      statusEl.textContent = message;
+      statusEl.style.color = isError ? '#b91c1c' : '#065f46';
+    }
+
+    function setSeedEnabled(enabled) {
+      const seedBtn = document.getElementById('seedBtn');
+      if (seedBtn) seedBtn.disabled = !enabled;
+    }
+
+    window.login = async function () {
+      const email = document.getElementById('email')?.value || '';
+      const password = document.getElementById('password')?.value || '';
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        setAuthStatus(`Signed in as ${cred.user.email}`);
+        setSeedEnabled(true);
+      } catch (error) {
+        console.error('[seed-login] Failed to sign in:', error?.message || error);
+        setAuthStatus('Sign-in failed. Please check credentials and try again.', true);
+        setSeedEnabled(false);
+      }
+    };
+
     window.seedTemplates = async function() {
       const logEl = document.getElementById('log');
       const log = (msg) => {
@@ -32,8 +58,14 @@
       try {
         log('[seed] Starting production seed...');
         log('[seed] Project: ropi-bccee');
+        log(`[seed] Auth user: ${auth.currentUser?.email || 'NONE'}`);
+
+        if (!auth.currentUser) {
+          log('<span style="color:#f87171">[seed] ERROR: Not signed in. Please sign in above and try again.</span>');
+          return;
+        }
         
-        const response = await fetch('/scripts/ai-templates-seed-v2.json');
+        const response = await fetch('/ai-templates-seed-v2.json');
         const seedData = await response.json();
         const templates = seedData.templates;
 
@@ -88,7 +120,10 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('loginBtn').addEventListener('click', window.login);
       document.getElementById('seedBtn').addEventListener('click', window.seedTemplates);
+      setAuthStatus('Not signed in');
+      setSeedEnabled(false);
     });
   </script>
   <style>
@@ -142,6 +177,24 @@
       border-radius: 4px;
       margin: 20px 0;
     }
+    .auth {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #065f46;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    input[type="email"], input[type="password"] {
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      min-width: 260px;
+      font-size: 14px;
+    }
+    .btn-secondary { background: #047857; }
+    .btn-secondary:hover { background: #065f46; }
   </style>
 </head>
 <body>
@@ -159,6 +212,21 @@
       <strong>Templates:</strong> 8 (default, mens_footwear, womens_footwear, kids_gs, toddler, apparel_mens, apparel_womens, accessories)<br>
       <strong>Source:</strong> scripts/ai-templates-seed-v2.json
     </p>
+
+    <div class="auth">
+      <div class="row" style="justify-content: space-between;">
+        <strong>Authentication</strong>
+        <span id="authStatus">Not signed in</span>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <input id="email" type="email" placeholder="admin email" autocomplete="username" />
+        <input id="password" type="password" placeholder="password" autocomplete="current-password" />
+        <button id="loginBtn" class="btn-secondary">Sign In</button>
+      </div>
+      <div style="font-size:12px;color:#374151;margin-top:8px;">
+        Your credentials are sent to Firebase Auth only; nothing is stored by this page.
+      </div>
+    </div>
 
     <button id="seedBtn">▶️ Run Seed Script</button>
 
