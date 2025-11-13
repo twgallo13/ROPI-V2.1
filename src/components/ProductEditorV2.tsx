@@ -125,7 +125,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
   const [aiScores, setAiScores] = useState<AIScores | null>(null);
   const [aiCoach, setAiCoach] = useState<AICoach | null>(null);
   const [aiSEO, setAiSEO] = useState<AISEO | null>(null);
-  const [usedTemplate, setUsedTemplate] = useState<string | null>(null);
+  const [usedTemplate, setUsedTemplate] = useState<{ scope: string; key: string; version: string } | null>(null);
+  const [templateOverride, setTemplateOverride] = useState<string | null>(null);
   const [improvementText, setImprovementText] = useState('');
   const [qaOpen, setQaOpen] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
@@ -1347,7 +1348,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           <h3 className="text-sm font-semibold text-gray-800">AI Quality Score</h3>
                           {usedTemplate && (
                             <span className="text-xs text-indigo-600 font-medium px-2 py-1 bg-indigo-100 rounded">
-                              Template: {usedTemplate}
+                              Audience: {usedTemplate.key} ({usedTemplate.version})
                             </span>
                           )}
                         </div>
@@ -1518,6 +1519,27 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                         placeholder="e.g., Make it more technical, add bullet points, emphasize durability..."
                         className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-3"
                       />
+                      
+                      {/* Template Override */}
+                      <div className="mb-3">
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                          Template Override
+                          <span className="ml-1 text-gray-500 font-normal">(optional, for this generation only)</span>
+                        </label>
+                        <select
+                          value={templateOverride || ''}
+                          onChange={(e) => setTemplateOverride(e.target.value || null)}
+                          disabled={generatingInline}
+                          className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
+                        >
+                          <option value="">Auto-select (based on gender/age)</option>
+                          <option value="default">Default</option>
+                          <option value="mens">Men's</option>
+                          <option value="womens">Women's</option>
+                          <option value="gradeSchool">Grade School</option>
+                          <option value="toddler">Toddler</option>
+                        </select>
+                      </div>
                       
                       <div className="grid grid-cols-2 gap-3 mb-3">
                         <div>

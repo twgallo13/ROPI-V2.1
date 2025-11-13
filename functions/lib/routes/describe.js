@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const generative_ai_1 = require("@google/generative-ai");
 const functions = __importStar(require("firebase-functions"));
+const admin = __importStar(require("firebase-admin"));
 // Read Gemini key from Firebase Functions config first, then env as fallback
 const GEMINI_API_KEY = (functions.config().gemini && functions.config().gemini.api_key) ||
     process.env.GEMINI_API_KEY;
@@ -46,6 +47,34 @@ const GEMINI_API_KEY = (functions.config().gemini && functions.config().gemini.a
 console.log("GEMINI_KEY_PRESENT", Boolean(GEMINI_API_KEY));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+/**
+ * Load audience template from Firestore
+ * Falls back to hard-coded template if Firestore doc doesn't exist
+ */
+async function loadAudienceTemplate(templateKey) {
+    try {
+        const db = admin.firestore();
+        const templateDoc = await db
+            .collection('settings')
+            .doc('ai')
+            .collection('prompts')
+            .doc(templateKey)
+            .get();
+        if (templateDoc.exists) {
+            const data = templateDoc.data();
+            console.log(`[describe] Loaded template from Firestore: ${templateKey} v${data?.version}`);
+            return data;
+        }
+        else {
+            console.warn(`[describe] Template ${templateKey} not found in Firestore, using fallback`);
+            return null;
+        }
+    }
+    catch (error) {
+        console.error(`[describe] Failed to load template ${templateKey}:`, error);
+        return null;
+    }
+}
 /**
  * Select audience-specific prompt template based on gender and age group
  * Templates: default, mens, womens, gradeSchool, toddler
@@ -63,13 +92,28 @@ function selectAudienceTemplate(gender, ageGroup) {
 }
 /**
  * Build dynamic prompt using product attributes and observations
+ * Now uses Firestore template if available, otherwise falls back to hard-coded prompt
  */
-function buildPrompt(payload) {
+async function buildPrompt(payload, templateData) {
     const { attributes = {}, facts = {}, aiContext = {}, tone = 'Clean', length = 'Medium', } = payload;
-    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, } = attributes;
+    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, styleId, launchDate, } = attributes;
     // Select audience-specific template
     const audienceTemplate = selectAudienceTemplate(gender, ageGroup);
     console.log(`[describe] Using audience template: ${audienceTemplate} (gender=${gender}, ageGroup=${ageGroup})`);
+    // Check if launch date is within 14 days (allow subtle "new" cue)
+    let isNewLaunch = false;
+    if (launchDate) {
+        try {
+            const launch = new Date(launchDate);
+            const now = new Date();
+            const daysDiff = Math.floor((launch.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            isNewLaunch = daysDiff >= -14 && daysDiff <= 14; // Within 14 days before or after
+            console.log(`[describe] Launch date ${launchDate}: ${daysDiff} days difference, isNewLaunch=${isNewLaunch}`);
+        }
+        catch (e) {
+            console.warn('[describe] Failed to parse launch date:', launchDate, e);
+        }
+    }
     // Build weighted observations summary (HIGH WEIGHT)
     const obsParts = [];
     if (facts.observations)
@@ -109,7 +153,81 @@ function buildPrompt(payload) {
     const materialsContext = materials.length > 0 ? `Materials (use verbatim): ${materials.join(', ')}` : '';
     // Design notes from AI context
     const designNotes = aiContext.designNotes || '';
-    // Audience-specific prompt intro
+    const priorDraft = aiContext.priorDraft ? `Previous Draft (for rewrite, do NOT append):
+${aiContext.priorDraft}
+` : '';
+    // If template data exists, use it; otherwise use fallback
+    if (templateData && templateData.prompt_body) {
+        // Use Firestore template with simple variable substitution
+        let prompt = templateData.prompt_body;
+        // Replace variables (simplified Handlebars-style)
+        prompt = prompt
+            .replace(/\{\{brand\}\}/g, brand)
+            .replace(/\{\{name\}\}/g, name)
+            .replace(/\{\{category\}\}/g, category)
+            .replace(/\{\{fit\}\}/g, fit)
+            .replace(/\{\{gender\}\}/g, gender)
+            .replace(/\{\{ageGroup\}\}/g, ageGroup)
+            .replace(/\{\{tone\}\}/g, tone)
+            .replace(/\{\{length\}\}/g, length)
+            .replace(/\{\{material\}\}/g, material || '');
+        // Handle conditionals
+        prompt = prompt.replace(/\{\{#if teamContext\}\}(.*?)\{\{\/if\}\}/gs, teamContext ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if colorContext\}\}(.*?)\{\{\/if\}\}/gs, colorContext ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if materialsContext\}\}(.*?)\{\{\/if\}\}/gs, materialsContext ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if isNewLaunch\}\}(.*?)\{\{\/if\}\}/gs, isNewLaunch ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if obsSummary\}\}(.*?)\{\{\/if\}\}/gs, obsSummary ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if keywords\}\}(.*?)\{\{\/if\}\}/gs, keywords.length > 0 ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if featureBullets\}\}(.*?)\{\{\/if\}\}/gs, featureBullets.length > 0 ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if designNotes\}\}(.*?)\{\{\/if\}\}/gs, designNotes ? '$1' : '');
+        prompt = prompt.replace(/\{\{#if priorDraft\}\}(.*?)\{\{\/if\}\}/gs, priorDraft ? '$1' : '');
+        // Replace variable contents
+        prompt = prompt.replace(/\{\{teamContext\}\}/g, teamContext);
+        prompt = prompt.replace(/\{\{colorContext\}\}/g, colorContext);
+        prompt = prompt.replace(/\{\{materialsContext\}\}/g, materialsContext);
+        prompt = prompt.replace(/\{\{obsSummary\}\}/g, obsSummary);
+        prompt = prompt.replace(/\{\{keywords\}\}/g, keywords.join(', '));
+        prompt = prompt.replace(/\{\{featureBullets\}\}/g, featureBullets.join(', '));
+        prompt = prompt.replace(/\{\{designNotes\}\}/g, designNotes);
+        prompt = prompt.replace(/\{\{priorDraft\}\}/g, priorDraft);
+        // Add hard requirements and JSON schema (always append these)
+        const hardRequirements = `
+
+Hard requirements:
+- Rewrite the paragraph; do not append. Output exactly one paragraph.
+- Use observation facts verbatim when present; no invented claims.
+- Use materials exactly as provided where relevant; no inventions.
+- Descriptive color can appear once for style/branding, not as a filter.
+- Respect tone & length; keep brand/product naming intact (Name is managed in UI).
+${templateData.seo_rules ? `- ${templateData.seo_rules}` : '- In SEO meta_keywords: prefer 1-2 materials and 1 descriptive color token if present.'}
+${templateData.tone_rules ? `- ${templateData.tone_rules}` : ''}
+${templateData.banned_terms && Array.isArray(templateData.banned_terms) && templateData.banned_terms.length > 0 ? `- Banned terms: ${templateData.banned_terms.join(', ')}` : ''}
+
+Output ONLY a strict JSON object in this exact schema (no extra text, no markdown):
+{
+  "description": "<single rewritten paragraph>",
+  "scores": {
+    "overall": <number 0-10, rate the overall quality>,
+    "factual": <number 0-10, accuracy and use of provided facts>,
+    "tone": <number 0-10, matches requested tone and audience>,
+    "seo": <number 0-10, keyword optimization and meta readiness>,
+    "clarity": <number 0-10, readability and customer clarity>
+  },
+  "coach": {
+    "reasons": ["<why this score>", "..."],
+    "actions": ["<specific improvement to reach 10>", "..."],
+    "next_questions": ["<clarifying question>", "..."]
+  },
+  "seo": {
+    "meta_title": "<= 60 chars>",
+    "meta_description": "<= 155 chars>",
+    "meta_keywords": ["lowercase", "5-8", "from attributes & observations"]
+  },
+  "facts_used": ["fit", "observations:heel_height", "materials"]
+}`;
+        return prompt + hardRequirements;
+    }
+    // Fallback to hard-coded prompt if no template data
     let audienceGuidance = '';
     if (audienceTemplate === 'mens') {
         audienceGuidance = 'Write for adult male customers. Focus on performance, durability, and practical benefits.';
@@ -123,9 +241,6 @@ function buildPrompt(payload) {
     else if (audienceTemplate === 'toddler') {
         audienceGuidance = 'Write for parents shopping for toddlers/infants. Emphasize safety, comfort, and ease of care.';
     }
-    const priorDraft = aiContext.priorDraft ? `Previous Draft (for rewrite, do NOT append):
-${aiContext.priorDraft}
-` : '';
     return `You are ROPI AI — an expert retail storyteller for ${brand}.
 Your job: REWRITE the product paragraph for ${name} as a single polished paragraph. DO NOT APPEND; produce one refined paragraph only.
 Use tone: ${tone}, length: ${length}. ${audienceGuidance}
@@ -138,6 +253,7 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${materialsContext ? `- ${materialsContext}` : ''}
 ${material ? `- Legacy Material: ${material}` : ''}
+${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
 ${keywords.length > 0 ? `KEYWORDS: ${keywords.join(', ')}` : ''}
@@ -229,6 +345,10 @@ app.post('*', async (req, res) => {
         return res.status(500).json({ error: "Missing Gemini API key" });
     }
     try {
+        // Determine which template to use
+        const templateKey = selectAudienceTemplate(payload.attributes?.gender, payload.attributes?.ageGroup);
+        // Load template from Firestore
+        const templateData = await loadAudienceTemplate(templateKey);
         const genAI = new generative_ai_1.GoogleGenerativeAI(GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({
             model: 'gemini-2.0-flash',
@@ -237,26 +357,28 @@ app.post('*', async (req, res) => {
                 maxOutputTokens: 800,
             },
         });
-        const prompt = buildPrompt(payload);
+        const prompt = await buildPrompt(payload, templateData);
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         const parsed = parseGeminiResponse(text);
         if (!parsed || !parsed.description) {
             return res.status(502).json({ error: 'AI returned invalid JSON' });
         }
-        // Determine which template was used
-        const usedTemplate = selectAudienceTemplate(payload.attributes?.gender, payload.attributes?.ageGroup);
         // Build response with template metadata
         const response = {
             description: parsed.description,
             scores: parsed.scores,
             coach: parsed.coach,
             seo: parsed.seo,
-            used_template: usedTemplate,
+            used_template: {
+                scope: 'audience',
+                key: templateKey,
+                version: templateData?.version || 'fallback',
+            },
             facts_used: parsed.facts_used || [],
         };
         // Debug log for monitoring
-        console.log("[apiDescribe] used_template:", usedTemplate, "scores:", response?.scores);
+        console.log("[apiDescribe] used_template:", response.used_template, "scores:", response?.scores);
         res.status(200).json(response);
     }
     catch (error) {

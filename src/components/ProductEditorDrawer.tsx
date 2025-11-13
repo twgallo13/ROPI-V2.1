@@ -38,6 +38,7 @@ const mockHistory = [
     "Version 1: Product Imported (11/04/2025)"
 ];
 
+
 // --- MOVED HELPER COMPONENTS ---
 // Defining these outside the main component prevents them
 // from being recreated on every render, which fixes the focus loss.
