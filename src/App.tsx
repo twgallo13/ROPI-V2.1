@@ -125,7 +125,8 @@ function RouteManager() {
           <Route path="export" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><ExportSettingsPage /></Suspense>} />
           <Route path="ai" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AISettingsPage /></Suspense>} />
           <Route path="ai-templates" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AITemplateBuilder /></Suspense>} />
-          <Route path="prompts" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><PromptsPage /></Suspense>} />
+          {/* Legacy prompts UI (kept for fallback; no nav link) */}
+          {/* <Route path="prompts" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><PromptsPage /></Suspense>} /> */}
           <Route path="vocab-managed" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabManagedPage /></Suspense>} />
           <Route path="vocab" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><VocabDropdownsPage /></Suspense>} />
           <Route path="rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><RulesPage /></Suspense>} />
