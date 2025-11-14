@@ -795,14 +795,6 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                       </div>
                     )}
                     
-                    {!vocab.loading && console.log('[vocab]', {
-                      departments: vocab.departments,
-                      classes: vocab.classes,
-                      categories: vocab.categories,
-                      materials: vocab.materials,
-                      fits: vocab.fits,
-                    })}
-                    
                     <div className="grid grid-cols-1 gap-y-4 sm:gap-y-6 sm:gap-x-4 sm:grid-cols-2">
                       {/* Name & MPN */}
                       <div>
@@ -907,7 +899,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                           <div className="flex flex-wrap gap-2 mb-2">
                             {(editableProduct.materials || []).map((mat, idx) => (
                               <span
-                                key={idx}
+                                key={`${mat}-${idx}`}
                                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
                               >
                                 {mat}
