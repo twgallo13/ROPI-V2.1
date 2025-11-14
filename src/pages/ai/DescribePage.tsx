@@ -53,15 +53,15 @@ const DescribePage: React.FC = () => {
         length,
       });
 
-      if (result.text) {
-        setGeneratedText(result.text);
-        showToast('Generated draft ready', 'success');
-        // Auto-focus the textarea
-        setTimeout(() => {
-          textareaRef.current?.focus();
-        }, 100);
-      } else {
+      const description = result.description || result.text || '';
+      
+      if (!description) {
         showToast('No text returned from API', 'error');
+        setGeneratedText('');
+      } else {
+        // Store HTML from AI Template v2
+        setGeneratedText(description);
+        showToast('Generated draft ready', 'success');
       }
     } catch (err: any) {
       console.error('[DescribePage] Generate failed:', err);
@@ -86,10 +86,11 @@ const DescribePage: React.FC = () => {
     try {
       setSaving(true);
       const descRef = doc(db, 'products', productId.trim(), 'descriptions', channel);
+      // Save HTML string from AI Template v2
       await setDoc(
         descRef,
         {
-          text: generatedText,
+          text: generatedText, // HTML format
           meta: {
             tone,
             length,
@@ -227,10 +228,36 @@ const DescribePage: React.FC = () => {
         {/* Generated Text Display */}
         {generatedText && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Generated Description</label>
-            <div className="w-full border border-gray-200 rounded-md bg-white p-4 prose prose-sm max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: generatedText }} />
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Generated Description
+              <span className="ml-2 text-xs text-gray-500 font-normal">
+                (HTML rendered from AI Template v2)
+              </span>
+            </label>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+              {/* Preview Panel */}
+              <div>
+                <div className="text-xs font-medium text-gray-600 mb-1">Preview</div>
+                <div className="w-full border border-gray-200 rounded-md bg-white p-4 prose prose-sm max-w-none min-h-[200px]">
+                  <div dangerouslySetInnerHTML={{ __html: generatedText }} />
+                </div>
+              </div>
+              
+              {/* Source Panel */}
+              <div>
+                <div className="text-xs font-medium text-gray-600 mb-1">HTML Source</div>
+                <textarea
+                  ref={textareaRef}
+                  value={generatedText}
+                  onChange={(e) => setGeneratedText(e.target.value)}
+                  rows={10}
+                  className="w-full border-gray-300 rounded-md shadow-sm font-mono text-xs focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="HTML source will appear here..."
+                />
+              </div>
             </div>
+            
             <p className="text-xs text-gray-500 mt-2">
               Generated with: <strong>{tone}</strong> tone, <strong>{length}</strong> length for{' '}
               <strong>{channel}</strong>

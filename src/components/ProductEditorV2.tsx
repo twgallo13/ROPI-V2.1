@@ -678,6 +678,8 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       return;
     }
     
+    // Prefer paragraphDraft; fallback to first saved AI description
+    // Note: finalDescription is expected to be HTML (from AI Template v2)
     let finalDescription = editableProduct.marketing.paragraphDraft || '';
     
     if (!finalDescription && Object.keys(aiDescriptions).length > 0) {
@@ -690,7 +692,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
         status: 'validated',
         marketing: {
           ...editableProduct.marketing,
-          paragraphFinal: finalDescription,
+          paragraphFinal: finalDescription, // HTML format
         },
       },
       { showToast: 'Approved & ready to export', keepOpen: true }

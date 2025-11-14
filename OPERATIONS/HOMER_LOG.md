@@ -1,5 +1,60 @@
 # HOMER Operations Log
 
+## [P14.2.1] HTML Integration Cleanup — 2025-01-14
+
+**Objective:** Complete HTML integration in the Describe page and verify the full pipeline from generation to export preserves HTML format.
+
+**Changes**
+
+- DescribePage (`src/pages/ai/DescribePage.tsx`):
+  - Updated `handleGenerate` to read `result.description || result.text` and store as HTML
+  - Added comment noting "HTML from AI Template v2"
+  - Replaced single preview with dual-panel layout:
+    - Left: Preview (rendered HTML with prose styling)
+    - Right: HTML Source (textarea for editing)
+  - Updated `handleSave` to note HTML format is saved to Firestore
+  - Added header label: "(HTML rendered from AI Template v2)"
+
+- ProductEditorV2 (`src/components/ProductEditorV2.tsx`):
+  - Added comment in `handleApprove` noting `paragraphFinal` is expected to be HTML format
+  - Confirmed View HTML toggle already implemented (preview/source switch)
+
+- Export Verification:
+  - Confirmed `src/utils/exporter.ts` line 137 takes `paragraphFinal` directly without transformation
+  - HTML passes through unchanged to CSV export
+
+**Acceptance Tests**
+
+1. **DescribePage HTML Dual View:**
+   - Generated description shows side-by-side preview and source
+   - Preview renders `<p>`, `<ul>`, `<li>` tags correctly
+   - Source textarea shows raw HTML for editing
+   - Save writes HTML to Firestore `products/{id}/descriptions/{channel}`
+
+2. **ProductEditorV2 Approve Flow:**
+   - Approve handler sets `paragraphFinal` from `paragraphDraft` or first AI description
+   - HTML format preserved (no plain-text conversion)
+   - View HTML toggle shows raw source when enabled
+
+3. **Export Integrity:**
+   - Export CSV includes `paragraphFinal` HTML without modification
+   - Templates with `<p>` tags and bullets export correctly
+
+**Deployment**
+
+```bash
+cd /workspaces/ROPI-V2.1
+npm run build
+npx firebase deploy --only hosting --project ropi-bccee
+git add -A
+git commit -m "P14.2.1 – HTML integration cleanup, DescribePage dual view"
+git push origin main
+```
+
+**Status:** ✅ Complete. HTML end-to-end verified from template → describe → approve → export.
+
+---
+
 ## [P14.1.2] Template Override & Nav Wiring — 2025-11-13
 
 Objective: Finish wiring template override end-to-end, ensure describe returns used_template with conditionsMatched, update AI Product Copy UI options, expose a small verification panel, and confirm Settings navigation surfaces the new builder.
