@@ -1512,6 +1512,75 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                         disabled={vocab.loading}
                                     />
                                 </FormField>
+                            </div>
+                        </div>
+
+                        {/* SEO & Media Section */}
+                        <div className="pt-6 border-t border-gray-200">
+                            <h3 className="text-md font-medium text-gray-900 mb-4">SEO & Media</h3>
+                            <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
+                                <FormField label="Meta Name (SEO Title)" className="sm:col-span-2">
+                                    <input 
+                                        type="text" 
+                                        name="metaName" 
+                                        value={editableProduct.marketing?.title ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                marketing: { ...editableProduct.marketing, title: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('marketing.title'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        maxLength={60}
+                                        placeholder="Optimized product title for search engines (≤60 chars)"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        {(editableProduct.marketing?.title ?? '').length}/60 characters
+                                    </p>
+                                </FormField>
+                                <FormField label="Meta Description" className="sm:col-span-2">
+                                    <textarea 
+                                        name="metaDescription" 
+                                        value={editableProduct.marketing?.seo ?? ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setEditableProduct({
+                                                ...editableProduct,
+                                                marketing: { ...editableProduct.marketing, seo: val }
+                                            });
+                                            setChangedFields(prev => new Set(prev).add('marketing.seo'));
+                                            debouncedAutosave();
+                                        }}
+                                        onBlur={handleBlur}
+                                        maxLength={155}
+                                        rows={3}
+                                        placeholder="Brief description for search results (≤155 chars)"
+                                        className="block w-full border-gray-300 rounded-md shadow-sm" 
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        {(editableProduct.marketing?.seo ?? '').length}/155 characters
+                                    </p>
+                                </FormField>
+                                <FormField label="Media Status" className="sm:col-span-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                                            editableProduct.media?.hideImageDate 
+                                                ? 'bg-green-100 text-green-800' 
+                                                : 'bg-gray-100 text-gray-800'
+                                        }`}>
+                                            {editableProduct.media?.hideImageDate ? '● Images Ready' : '○ Pending'}
+                                        </span>
+                                        <span className="text-xs text-gray-500">
+                                            {editableProduct.media?.hideImageDate 
+                                                ? `Set for ${new Date(editableProduct.media.hideImageDate).toLocaleDateString()}` 
+                                                : 'Set "Hide Image Date" to mark as ready'}
+                                        </span>
+                                    </div>
+                                </FormField>
                                 <FormField label="Shipping Overrides">
                                     <div className="space-y-2 p-3 bg-gray-50 rounded-md border border-gray-200">
                                         <div className="flex items-center">
