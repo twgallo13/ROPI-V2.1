@@ -114,6 +114,7 @@ function transformToProduct(data: Record<string, any>): Partial<Product> {
     promo: data.promo || false,
     hype: data.hype || false,
     fastfashion: data.fastfashion || false,
+    familySizing: data.family_sizing || false,
     status: 'intake',
     aiContext: {
       keywords: [],

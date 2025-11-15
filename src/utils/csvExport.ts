@@ -13,6 +13,7 @@ export type ExportRow = {
   category: string;
   price: number;
   images: string;
+  familySizing: boolean;
 };
 
 /**
@@ -44,6 +45,7 @@ export function productsToExportRows(products: Product[]): ExportRow[] {
           category: product.category,
           price: variant.price,
           images: '', // Will be populated from actual image data if available
+          familySizing: product.familySizing || false,
         });
       }
     } else {
@@ -56,6 +58,7 @@ export function productsToExportRows(products: Product[]): ExportRow[] {
         category: product.category,
         price: 0, // No price available without variants
         images: '',
+        familySizing: product.familySizing || false,
       });
     }
   }
@@ -67,7 +70,7 @@ export function productsToExportRows(products: Product[]): ExportRow[] {
  * Generate CSV content from export rows
  */
 export function generateExportCSV(rows: ExportRow[]): string {
-  const headers = ['product_id', 'sku', 'title', 'brand', 'category', 'price', 'images'];
+  const headers = ['product_id', 'sku', 'title', 'brand', 'category', 'price', 'images', 'familySizing'];
   const csvLines: string[] = [];
   
   // Add header row
@@ -83,6 +86,7 @@ export function generateExportCSV(rows: ExportRow[]): string {
       escapeCSVValue(row.category),
       escapeCSVValue(row.price),
       escapeCSVValue(row.images),
+      escapeCSVValue(row.familySizing ? 'true' : 'false'),
     ];
     csvLines.push(values.join(','));
   }

@@ -49,6 +49,7 @@ const HEADER_SYNONYMS: Record<string, string[]> = {
   promo: ['promo', 'promotion', 'is_promo', 'promotional'],
   hype: ['hype', 'trending', 'hot', 'is_hype', 'popular'],
   fastfashion: ['fastfashion', 'fast_fashion', 'quick_fashion'],
+  family_sizing: ['family_sizing', 'familySizing', 'family sizing', 'family'],
   height: ['height', 'h', 'ship_height', 'shipping_height'],
   width: ['width', 'w', 'ship_width', 'shipping_width'],
   length: ['length', 'l', 'ship_length', 'shipping_length'],
@@ -254,7 +255,7 @@ function coerceValue(value: string, targetField: string): any {
   const trimmed = value.trim();
   
   // Boolean fields
-  if (['featured', 'map', 'promo', 'hype', 'fastfashion'].includes(targetField)) {
+  if (['featured', 'map', 'promo', 'hype', 'fastfashion', 'family_sizing'].includes(targetField)) {
     const upper = trimmed.toUpperCase();
     if (upper === 'TRUE' || upper === 'YES' || upper === '1' || upper === 'Y') return true;
     if (upper === 'FALSE' || upper === 'NO' || upper === '0' || upper === 'N') return false;

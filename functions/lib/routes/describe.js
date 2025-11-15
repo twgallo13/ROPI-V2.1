@@ -120,7 +120,7 @@ function selectAudienceTemplate(gender, ageGroup) {
  */
 async function buildPrompt(payload, template) {
     const { attributes = {}, facts = {}, aiContext = {}, tone = 'Clean', length = 'Medium', } = payload;
-    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, styleId, launchDate, } = attributes;
+    const { brand = 'our brand', name = 'this product', category = 'product', fit = 'standard fit', gender = 'unisex', ageGroup = 'adult', sportsTeam, league, material, materials = [], primaryColor, descriptiveColor, styleId, launchDate, familySizing, } = attributes;
     // Check if launch date is within 14 days (allow subtle "new" cue)
     let isNewLaunch = false;
     if (launchDate) {
@@ -172,6 +172,8 @@ async function buildPrompt(payload, template) {
     }
     // Build materials context (HIGH WEIGHT)
     const materialsContext = materials.length > 0 ? `Materials (use verbatim): ${materials.join(', ')}` : '';
+    // Build family sizing context
+    const familySizingContext = familySizing ? 'Family Sizing: Available (mention sizing options for the whole family)' : '';
     // Design notes from AI context
     const designNotes = aiContext.designNotes || '';
     const priorDraft = aiContext.priorDraft ? `Previous Draft (for rewrite, do NOT append):
@@ -239,6 +241,7 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${materialsContext ? `- ${materialsContext}` : ''}
 ${material ? `- Legacy Material: ${material}` : ''}
+${familySizingContext ? `- ${familySizingContext}` : ''}
 ${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
@@ -382,6 +385,7 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${materialsContext ? `- ${materialsContext}` : ''}
 ${material ? `- Legacy Material: ${material}` : ''}
+${familySizingContext ? `- ${familySizingContext}` : ''}
 ${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}

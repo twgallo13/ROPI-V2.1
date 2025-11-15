@@ -60,6 +60,9 @@ export type Product = {
   hype: boolean;
   fastfashion: boolean;
 
+  // Family sizing availability
+  familySizing?: boolean;
+
   // Pricing structure
   price?: {
     map?: number; // Minimum Advertised Price

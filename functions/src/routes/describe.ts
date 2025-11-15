@@ -75,6 +75,7 @@ interface DescribePayload {
     descriptiveColor?: string; // free-text manufacturer color
     styleId?: string | null; // Link related colorways
     launchDate?: string | null; // Scheduled release date
+    familySizing?: boolean; // Family sizing availability
   };
   imageUrl?: string;
   temperature?: number;
@@ -172,6 +173,7 @@ async function buildPrompt(payload: DescribePayload, template: AITemplate): Prom
     descriptiveColor,
     styleId,
     launchDate,
+    familySizing,
   } = attributes;
 
   // Check if launch date is within 14 days (allow subtle "new" cue)
@@ -224,6 +226,9 @@ async function buildPrompt(payload: DescribePayload, template: AITemplate): Prom
 
   // Build materials context (HIGH WEIGHT)
   const materialsContext = materials.length > 0 ? `Materials (use verbatim): ${materials.join(', ')}` : '';
+
+  // Build family sizing context
+  const familySizingContext = familySizing ? 'Family Sizing: Available (mention sizing options for the whole family)' : '';
 
   // Design notes from AI context
   const designNotes = aiContext.designNotes || '';
@@ -296,6 +301,7 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${materialsContext ? `- ${materialsContext}` : ''}
 ${material ? `- Legacy Material: ${material}` : ''}
+${familySizingContext ? `- ${familySizingContext}` : ''}
 ${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}
@@ -447,6 +453,7 @@ ${teamContext ? `- ${teamContext}` : ''}
 ${colorContext ? `- ${colorContext}` : ''}
 ${materialsContext ? `- ${materialsContext}` : ''}
 ${material ? `- Legacy Material: ${material}` : ''}
+${familySizingContext ? `- ${familySizingContext}` : ''}
 ${isNewLaunch ? '- FRESHNESS CUE: This is a new or upcoming release. You may subtly convey newness (e.g., "just in", "new arrival") without revealing exact dates.' : ''}
 
 ${obsSummary ? `OBSERVATIONS (HIGH WEIGHT - use verbatim, no hallucinations): ${obsSummary}` : ''}

@@ -600,6 +600,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       promo: p.promo,
       hype: p.hype,
       fastfashion: p.fastfashion,
+      familySizing: p.familySizing,
       
       // Nested structures
       price: p.price,
@@ -1235,6 +1236,14 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                 </div>
                                </div>
                            </FormField>
+                           <FormField label="Family Sizing">
+                              <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                                <div className="flex items-center">
+                                  <input id="familySizing" name="familySizing" type="checkbox" checked={editableProduct.familySizing ?? false} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                  <label htmlFor="familySizing" className="ml-2 block text-sm text-gray-900">Family sizing available</label>
+                                </div>
+                              </div>
+                           </FormField>
                         </div>
                          <div className="pt-6 border-t border-gray-200">
                             <h3 className="text-md font-medium text-gray-900">Product Flags</h3>
@@ -1254,6 +1263,10 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                 <div className="flex items-center">
                                     <input id="fastfashion" name="fastfashion" type="checkbox" checked={editableProduct.fastfashion} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
                                     <label htmlFor="fastfashion" className="ml-3 block text-sm font-medium text-gray-900">Fast Fashion</label>
+                                </div>
+                                <div className="flex items-center">
+                                  <input id="familySizingFlag" name="familySizing" type="checkbox" checked={editableProduct.familySizing ?? false} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                                  <label htmlFor="familySizingFlag" className="ml-3 block text-sm font-medium text-gray-900">Family sizing available</label>
                                 </div>
                                 <div className="flex items-center">
                                     <input id="isActive" name="isActive" type="checkbox" checked={editableProduct.isActive ?? true} onChange={handleInputChange} className="h-4 w-4 text-indigo-600 border-gray-300 rounded" />
