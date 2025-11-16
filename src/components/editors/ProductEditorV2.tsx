@@ -558,14 +558,21 @@ const AttributesSection: React.FC<any> = ({ product, updateField, vocab }) => (
         </select>
       </FormField>
 
-      <FormField label="Made In (comma separated)">
-        <input
-          type="text"
-          value={(product.descriptive?.madeIn || []).join(', ')}
-          onChange={(e) => updateField('descriptive', 'madeIn', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          placeholder="e.g., China, Vietnam"
-        />
+      <FormField label="Made In (Multi-Select)">
+        <select
+          multiple
+          value={product.descriptive?.madeIn || []}
+          onChange={(e) => {
+            const select = e.target as HTMLSelectElement;
+            const selected = Array.from(select.selectedOptions).map(o => (o as HTMLOptionElement).value);
+            updateField('descriptive', 'madeIn', selected);
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md h-28"
+        >
+          {['China', 'Vietnam', 'Indonesia', 'Thailand', 'India', 'Bangladesh', 'Cambodia', 'USA', 'Mexico', 'Italy', 'Portugal', 'Spain', 'Turkey', 'Other'].map((country) => (
+            <option key={country} value={country}>{country}</option>
+          ))}
+        </select>
       </FormField>
 
     </div>
@@ -816,24 +823,26 @@ const TechnicalSection: React.FC<any> = ({ product, updateField, vocab }) => {
     </FormField>
 
     <div className="grid grid-cols-3 gap-4">
-      <label className="flex items-center">
+      <FormField label="Standard Shipping Override">
         <input
-          type="checkbox"
-          checked={product.technical?.standardShippingOverride ?? false}
-          onChange={(e) => updateField('technical', 'standardShippingOverride', e.target.checked)}
-          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+          type="number"
+          value={product.technical?.standardShippingOverride || ''}
+          onChange={(e) => updateField('technical', 'standardShippingOverride', parseFloat(e.target.value) || undefined)}
+          step="0.01"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          placeholder="0.00"
         />
-        <span className="ml-2 text-sm text-gray-900">Standard Shipping Override</span>
-      </label>
-      <label className="flex items-center">
+      </FormField>
+      <FormField label="Expedited Shipping Override">
         <input
-          type="checkbox"
-          checked={product.technical?.expeditedOverrideShipping ?? false}
-          onChange={(e) => updateField('technical', 'expeditedOverrideShipping', e.target.checked)}
-          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+          type="number"
+          value={product.technical?.expeditedOverrideShipping || ''}
+          onChange={(e) => updateField('technical', 'expeditedOverrideShipping', parseFloat(e.target.value) || undefined)}
+          step="0.01"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          placeholder="0.00"
         />
-        <span className="ml-2 text-sm text-gray-900">Expedited Override Shipping</span>
-      </label>
+      </FormField>
       <FormField label="Hide Image Date">
         <input
           type="date"

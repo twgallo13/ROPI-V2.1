@@ -67,8 +67,8 @@ export interface Technical {
   length?: number;                // Shipping length
   width?: number;                 // Shipping width
   weight?: number;                // Shipping weight
-  standardShippingOverride?: boolean;   // Standard shipping override
-  expeditedOverrideShipping?: boolean;  // Expedited shipping override
+  standardShippingOverride?: number;    // Standard shipping override (Money)
+  expeditedOverrideShipping?: number;   // Expedited shipping override (Money)
   hideImageDate?: string;         // Image embargo date (ISO string)
   mediaStatus?: string;           // Media status ("Images Ready", "Pending", etc.)
   taxClass?: string;              // Tax class
