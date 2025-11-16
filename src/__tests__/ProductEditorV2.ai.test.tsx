@@ -86,11 +86,19 @@ describe('ProductEditorV2 AI Integration', () => {
   });
 
   it('renders AI tab when product is provided', async () => {
-    const { getDoc } = await import('firebase/firestore');
+    const { getDoc, getDocs } = await import('firebase/firestore');
     (getDoc as any).mockResolvedValue({
       exists: () => true,
       id: 'test-product-id',
       data: () => mockProduct,
+    });
+    
+    // Mock getDocs to return an empty snapshot
+    (getDocs as any).mockResolvedValue({
+      forEach: vi.fn(),
+      docs: [],
+      empty: true,
+      size: 0,
     });
 
     render(
@@ -112,11 +120,19 @@ describe('ProductEditorV2 AI Integration', () => {
   });
 
   it('shows generate button when AI tab is active', async () => {
-    const { getDoc } = await import('firebase/firestore');
+    const { getDoc, getDocs } = await import('firebase/firestore');
     (getDoc as any).mockResolvedValue({
       exists: () => true,
       id: 'test-product-id',
       data: () => mockProduct,
+    });
+    
+    // Mock getDocs to return an empty snapshot
+    (getDocs as any).mockResolvedValue({
+      forEach: vi.fn(),
+      docs: [],
+      empty: true,
+      size: 0,
     });
 
     render(
@@ -154,9 +170,10 @@ describe('ProductEditorV2 AI Integration', () => {
     });
 
     (getDocs as any).mockResolvedValue({
-      forEach: (callback: any) => {
-        // Mock empty descriptions collection
-      },
+      forEach: vi.fn(),
+      docs: [],
+      empty: true,
+      size: 0,
     });
 
     (describeProduct as any).mockResolvedValue({
@@ -218,6 +235,15 @@ describe('ProductEditorV2 AI Integration', () => {
           }),
         });
       },
+      docs: [{
+        id: 'RetailOps',
+        data: () => ({
+          text: 'Generated description',
+          scores: { overall: 8 },
+        }),
+      }],
+      empty: false,
+      size: 1,
     });
 
     render(
