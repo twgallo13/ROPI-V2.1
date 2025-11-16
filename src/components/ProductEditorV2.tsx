@@ -505,7 +505,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
       try {
         const snap = await getDoc(descRefInline);
         if (snap.exists()) existing = snap.data();
-      } catch {}
+      } catch { /* ignore */ }
 
       // Build history entry with client timestamp (arrays cannot contain serverTimestamp)
       const newEntry = {
@@ -1655,7 +1655,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({ isOpen, onClose, prod
                               try {
                                 const snap2 = await getDoc(descRef2);
                                 if (snap2.exists()) existing2 = snap2.data();
-                              } catch {}
+                              } catch { /* ignore */ }
                               const history2raw = Array.isArray(existing2?.history) ? existing2.history : [];
                               const history2 = history2raw
                                 .map((entry: any) => ({ ...entry, at: typeof entry?.at === 'object' ? Date.now() : entry?.at }))

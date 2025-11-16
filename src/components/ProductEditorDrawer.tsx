@@ -138,7 +138,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     if (!el) return;
     el.focus();
     if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
-      try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+      try { (el as HTMLInputElement).setSelectionRange(start, end); } catch { /* ignore */ }
     }
   }, []);
 
@@ -680,7 +680,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
       if (!el) return;
       el.focus();
       if (typeof start === 'number' && typeof end === 'number' && 'setSelectionRange' in el) {
-        try { (el as HTMLInputElement).setSelectionRange(start, end); } catch {}
+        try { (el as HTMLInputElement).setSelectionRange(start, end); } catch { /* ignore */ }
       }
     };
     restore();
