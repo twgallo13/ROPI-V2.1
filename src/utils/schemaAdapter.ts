@@ -4,8 +4,40 @@
  * Created: 2025-11-15
  */
 
-import type { Product, LegacyProduct } from '../types/product-schema';
+import type { Product, LegacyProduct, ProductStatus } from '../types/product-schema';
 import type { Product as OldProduct } from '../types';
+
+/**
+ * Status mapping between legacy and canonical Phase 3 statuses
+ */
+const LEGACY_TO_CANONICAL: Record<string, ProductStatus> = {
+  intake: 'imported',
+  'in-progress': 'inProgress',
+  validated: 'completed',
+  uploaded: 'exported',
+};
+
+const CANONICAL_TO_LEGACY: Record<ProductStatus, LegacyProduct['status']> = {
+  imported: 'intake',
+  needsInfo: 'intake',
+  inProgress: 'in-progress',
+  readyForAI: 'in-progress',
+  aiGenerated: 'validated',
+  completed: 'validated',
+  exported: 'uploaded',
+  synced: 'uploaded',
+};
+
+function mapLegacyToCanonicalStatus(status?: string): ProductStatus | undefined {
+  if (!status) return undefined;
+  const key = status as keyof typeof LEGACY_TO_CANONICAL;
+  return LEGACY_TO_CANONICAL[key] ?? undefined;
+}
+
+function mapCanonicalToLegacyStatus(status?: ProductStatus): LegacyProduct['status'] | undefined {
+  if (!status) return undefined;
+  return CANONICAL_TO_LEGACY[status];
+}
 
 /**
  * Recursively remove undefined values from an object
@@ -133,8 +165,8 @@ export function newToLegacy(product: Product): Partial<OldProduct> {
     // Websites
     websites: product.technical.website || [],
 
-    // Status mapping
-    status: (product.technical.status as any) || 'intake',
+    // Status mapping (canonical -> legacy)
+    status: mapCanonicalToLegacyStatus(product.technical.status) || 'intake',
 
     // AI Context (preserve existing structure)
     aiContext: {
@@ -225,7 +257,7 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
       taxClass: typeof legacy.tax?.class === 'string'
         ? /^taxable\s*goods$/i.test(legacy.tax.class)
         : undefined,
-      status: legacy.status,
+      status: mapLegacyToCanonicalStatus(legacy.status),
       lastReceived: undefined,
       firstReceived: undefined,
       store1: undefined,
@@ -369,6 +401,9 @@ export function mergeIntoLegacy(
       length: updates.technical.length ?? merged.shipping?.length,
       weight: updates.technical.weight ?? merged.shipping?.weight,
     };
+    if (updates.technical.status !== undefined) {
+      merged.status = mapCanonicalToLegacyStatus(updates.technical.status) ?? merged.status;
+    }
     merged.tax = {
       ...merged.tax,
       class: updates.technical.taxClass === true
