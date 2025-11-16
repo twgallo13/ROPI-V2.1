@@ -15,6 +15,12 @@ export default defineConfig(({ mode }) => {
             rewrite: (path) => '',
             secure: true,
           },
+          '/api/vision': {
+            target: 'https://us-central1-ropi-bccee.cloudfunctions.net/apiVision',
+            changeOrigin: true,
+            rewrite: (path) => '',
+            secure: true,
+          },
         },
       },
       plugins: [react()],

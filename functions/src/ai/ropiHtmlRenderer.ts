@@ -11,7 +11,7 @@ import type {
   RopiHtmlResult,
   CategoryGroup,
   RenderRopiHtmlParams
-} from '../../../src/types/ai-output';
+} from '../types/ai-output';
 
 /**
  * Escape HTML to prevent XSS

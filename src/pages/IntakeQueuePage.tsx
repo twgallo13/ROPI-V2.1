@@ -343,8 +343,8 @@ const IntakeQueuePage: React.FC = () => {
           key={selectedProduct.id}
           isOpen={isDrawerOpen}
           onClose={handleCloseDrawer}
-          product={selectedProduct}
-          onSaved={handleProductSaved}
+          productId={selectedProduct.id}
+          onSaved={(id) => handleProductSaved(id, {})}
         />
       )}
 
