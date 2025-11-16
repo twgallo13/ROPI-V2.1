@@ -101,6 +101,35 @@ const sets = {
         'Turkey',
         'Other',
     ],
+    heelTypes: [
+        'Stiletto',
+        'Block',
+        'Wedge',
+        'Kitten',
+        'Cone',
+        'Platform',
+        'Chunky',
+    ],
+    soleMaterials: [
+        'Rubber',
+        'TPU',
+        'Vibram',
+        'Cork',
+        'Crepe',
+        'Leather',
+        'EVA',
+        'Manmade',
+    ],
+    shoeHeightMaps: [
+        'Low',
+        'Mid',
+        'High',
+    ],
+    taxClasses: [
+        'Standard',
+        'Apparel',
+        'Exempt',
+    ],
 };
 // slug helper
 const slug = (s) => (s || '')
