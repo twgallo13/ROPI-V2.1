@@ -1,5 +1,37 @@
 # HOMER Operations Log
 
+## [2025-11-16 10:48 UTC] Stage C1 - add-pr-lint-test CI
+
+**Branch**: `ci/add-pr-lint-test`  
+**PR**: #78
+
+**File Added**
+- `.github/workflows/ci.yml`
+
+**Workflow Summary**
+- Triggers: `pull_request` to `main`, `push` to `main`
+- Matrix: Node 20 on `ubuntu-latest`
+- Steps: checkout → setup-node → cache npm → `npm ci` → `npm run lint` → `npm test` → `npm run build` → `npm --prefix functions ci` → `npm --prefix functions run build`
+
+**First Run Results (PR #78)**
+- Checkout: success
+- Use Node.js 20: success
+- Cache node modules: success
+- Install root deps: success
+- Lint (root): FAILED (script not present on base branch)
+- Test (root): skipped
+- Build (root): skipped
+- Install functions deps: skipped
+- Build functions: skipped
+
+**Notes / Remediation**
+- Root `npm run lint` is missing on `main`, causing CI to fail at the lint step. Two options:
+  1) Merge PR #77 (ESLint + Vitest toolchain) first, then re-run CI on #78.
+  2) Backport minimal `lint/test` scripts directly into this CI branch.
+- Functions `build` is configured and will run once root steps pass.
+
+**Status:** ⚠️ CI created; first run failed at lint due to missing script. Awaiting remediation.
+
 ## [Schema Migration – Phase 2b] ProductEditorV2 with Sectioned Layout — 2025-01-14
 
 **Objective:** Create new ProductEditorV2 component with structured sectioned layout and feature flag for gradual rollout, maintaining full backward compatibility.
