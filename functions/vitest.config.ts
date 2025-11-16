@@ -5,4 +5,7 @@ export default defineConfig({
     environment: 'node',
     globals: true,
   },
+  esbuild: {
+    target: 'ES2020',
+  },
 });
