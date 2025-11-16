@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { describeProduct, DescribeProductPayload } from '../../services/describe';
 import type { AIScores, AICoach, AISEO, DescribeProductResponse } from '../../services/describe';
 import Toast from '../Toast';
+import AIWorkflowPanel from '../ProductEditorV2/AIWorkflowPanel';
 
 interface ProductEditorV2Props {
   isOpen: boolean;
@@ -109,6 +110,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   const [aiSEO, setAiSEO] = useState<AISEO | null>(null);
   const [usedTemplate, setUsedTemplate] = useState<{ scope: string; key: string; version: string; conditionsMatched?: string[] } | null>(null);
   const [improvementText, setImprovementText] = useState('');
+
+  // AI Workflow Panel state
+  const [aiWorkflowPanelOpen, setAiWorkflowPanelOpen] = useState(false);
   const [facts, setFacts] = useState<ProductFacts>({
     observations: '',
     materials: '',
@@ -253,6 +257,30 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
           [field]: value,
         },
       };
+    });
+  }, []);
+
+  // AI Workflow Panel update handler
+  const handleAIWorkflowUpdate = useCallback((updates: any) => {
+    setProduct(prev => {
+      if (!prev) return prev;
+      
+      // Deep merge the updates into the product
+      const updated = { ...prev };
+      
+      const applyNestedUpdate = (target: any, source: any) => {
+        for (const key in source) {
+          if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+            if (!target[key]) target[key] = {};
+            applyNestedUpdate(target[key], source[key]);
+          } else {
+            target[key] = source[key];
+          }
+        }
+      };
+      
+      applyNestedUpdate(updated, updates);
+      return updated;
     });
   }, []);
 
@@ -476,6 +504,14 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
             </div>
             <div className="flex gap-2">
               <button
+                onClick={() => setAiWorkflowPanelOpen(true)}
+                disabled={!productId}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <span>🤖</span>
+                AI Assistant
+              </button>
+              <button
                 onClick={handleSave}
                 disabled={saving || validationErrors.length > 0}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
@@ -596,6 +632,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
       {toast.show && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
+
+      {/* AI Workflow Panel */}
+      <AIWorkflowPanel
+        productId={productId || ''}
+        productData={product ? newToLegacy(product as NewProduct) : null}
+        onProductUpdate={handleAIWorkflowUpdate}
+        isOpen={aiWorkflowPanelOpen}
+        onClose={() => setAiWorkflowPanelOpen(false)}
+      />
     </div>
   );
 };

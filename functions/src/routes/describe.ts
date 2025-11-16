@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
 import { selectTemplate, type AITemplate, type TemplateSelectionResult, loadTemplateByKey } from '../utils/template-selection';
+import { generateLayout, type LayoutEngineResult } from '../ai/layoutEngine';
 
 // Read Gemini key from Firebase Functions config first, then env as fallback
 const GEMINI_API_KEY =
@@ -609,8 +610,15 @@ app.post('*', async (req, res) => {
     if (!parsed || !parsed.description) {
       return res.status(502).json({ error: 'AI returned invalid JSON' });
     }
+
+    // Generate structured layout using layout engine
+    const layoutResult: LayoutEngineResult = generateLayout(
+      { sku_core: attributes, descriptive: attributes, ...payload },
+      parsed.description,
+      template.key
+    );
     
-    // Build response with template metadata (P14.1: include conditions matched)
+    // Build response with template metadata and layout engine results
     const response = {
       description: parsed.description,
       scores: parsed.scores,
@@ -623,6 +631,13 @@ app.post('*', async (req, res) => {
         conditionsMatched: conditionsMatched || [],
       },
       facts_used: parsed.facts_used || [],
+      // Layout Engine Results (Phase 3)
+      templateKey: layoutResult.templateKey,
+      blocks: layoutResult.blocks,
+      html: layoutResult.html,
+      metaName: layoutResult.metaName,
+      metaDescription: layoutResult.metaDescription,
+      slugSuggestion: layoutResult.slugSuggestion,
     };
     
     // Debug log for monitoring
