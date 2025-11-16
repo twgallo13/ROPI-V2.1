@@ -4,32 +4,43 @@ import { useAuth } from '../../contexts/AuthContext';
 import Toast from '../../components/Toast';
 import VocabEditor, { VocabKey } from './components/VocabEditor';
 
-// Editable vocab keys & labels (standard attributes)
-const editableVocabs: Partial<Record<VocabKey, string>> = {
+// Core product attributes
+const coreVocabs: Partial<Record<VocabKey, string>> = {
   departments: 'Departments',
   classes: 'Classes',
   categories: 'Categories',
   ageGroups: 'Age Groups',
   genders: 'Genders',
+  collections: 'Collections',
   materials: 'Materials',
-  statuses: 'Statuses',
+  madeIn: 'Made In',
+  primaryColors: 'Primary Colors',
+};
+
+// Shoe-specific attributes
+const shoeVocabs: Partial<Record<VocabKey, string>> = {
+  heelTypes: 'Heel Types',
+  heelHeights: 'Heel Heights',
+  platformHeights: 'Platform Heights',
+  shoeHeightMaps: 'Shoe Height Maps',
+  soleMaterials: 'Sole Materials',
+  closureTypes: 'Closure Types',
+  cutTypes: 'Cut Types',
+};
+
+// Other attributes
+const otherVocabs: Partial<Record<VocabKey, string>> = {
+  fits: 'Fits',
   websites: 'Websites',
   sportsTeams: 'Sports Teams',
   leagues: 'Leagues',
-  fits: 'Fits',
   taxClasses: 'Tax Classes',
-  collections: 'Collections',
-  madeIn: 'Made In',
 };
 
-// Shoe-specific vocabs (also editable, with admin hints)
-const shoeVocabs: Partial<Record<VocabKey, string>> = {
-  primaryColors: 'Primary Colors',
+// Internal/hidden vocabs (not shown in UI but still functional)
+const hiddenVocabs: Partial<Record<VocabKey, string>> = {
   descriptiveColors: 'Descriptive Colors',
-  cutTypes: 'Cut Types',
-  closureTypes: 'Closure Types',
-  heelHeights: 'Heel Heights',
-  platformHeights: 'Platform Heights',
+  statuses: 'Statuses',
 };
 
 const VocabDropdownsPage: React.FC = () => {
@@ -43,18 +54,19 @@ const VocabDropdownsPage: React.FC = () => {
     ageGroups: '',
     genders: '',
     materials: '',
-    statuses: '',
     websites: '',
     sportsTeams: '',
     leagues: '',
     fits: '',
     taxClasses: '',
     primaryColors: '',
-    descriptiveColors: '',
     cutTypes: '',
     closureTypes: '',
+    heelTypes: '',
     heelHeights: '',
     platformHeights: '',
+    shoeHeightMaps: '',
+    soleMaterials: '',
     collections: '',
     madeIn: '',
   });
@@ -131,11 +143,11 @@ const VocabDropdownsPage: React.FC = () => {
 
   return (
     <div>
-      {/* Editable Vocabs */}
+      {/* Core Product Attributes */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Editable Vocabularies</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Core Product Attributes</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(editableVocabs).map(([key, title]) => (
+          {Object.entries(coreVocabs).map(([key, title]) => (
             <VocabEditor
               key={key}
               title={title}
@@ -161,14 +173,41 @@ const VocabDropdownsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Shoe-Specific Attributes */}
-      <div>
+      {/* Shoe Attributes */}
+      <div className="mb-8">
         <h2 className="text-xl font-bold text-gray-800 mb-4">Shoe Attributes</h2>
-        <p className="text-sm text-gray-600 mb-4">
-          Shoe-specific vocabularies. Initially seeded via <code className="bg-gray-100 px-1 py-0.5 rounded">seedSettingsVocab</code> Cloud Function.
-        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(shoeVocabs).map(([key, title]) => (
+            <VocabEditor
+              key={key}
+              title={title}
+              vocabKey={key as VocabKey}
+              items={attributes.data[key as AttributeKey] || []}
+              saving={attributes.saving}
+              error={attributes.error}
+              loading={attributes.loading}
+              newValue={newItems[key]}
+              onNewChange={(v) => setNewItems(p => ({ ...p, [key]: v }))}
+              onAdd={() => handleAddItem(key as VocabKey)}
+              onEditStart={(i, val) => startEdit(key as AttributeKey, i, val)}
+              onEditSave={saveEdit}
+              onEditCancel={cancelEdit}
+              onDelete={(i) => handleDelete(key as AttributeKey, i)}
+              isEditing={(i) => editingItem?.key === key && editingItem?.index === i}
+              editValue={editValue}
+              setEditValue={setEditValue}
+              onReload={attributes.reload}
+              onBulkImport={(items) => handleBulkImport(key as AttributeKey, items)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Other Attributes */}
+      <div className="mb-8">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Other Attributes</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Object.entries(otherVocabs).map(([key, title]) => (
             <VocabEditor
               key={key}
               title={title}

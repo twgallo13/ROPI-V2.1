@@ -17,8 +17,14 @@ export type VocabKey =
   | 'descriptiveColors'
   | 'cutTypes'
   | 'closureTypes'
+      | 'heelTypes'
+    | 'heelTypes'
   | 'heelHeights'
   | 'platformHeights'
+      | 'shoeHeightMaps'
+      | 'soleMaterials'
+    | 'shoeHeightMaps'
+    | 'soleMaterials'
   | 'collections'
   | 'madeIn';
 
@@ -164,13 +170,6 @@ const VocabEditor: React.FC<Props> = ({
           </button>
         )}
       </div>
-      
-      {vocabKey === 'collections' && (
-        <div className="mb-4 text-sm text-gray-600 bg-indigo-50 border border-indigo-200 rounded p-3">
-          💡 <strong>Collections</strong> are seeded via <code className="bg-indigo-100 px-1 rounded">seedSettingsVocab</code> — edit with care.
-        </div>
-      )}
-
       {showBulkImport && onBulkImport && (
         <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded">
           <label className="block text-sm font-medium text-gray-700 mb-2">
