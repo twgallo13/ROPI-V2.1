@@ -17,6 +17,34 @@ git fetch origin main && git reset --hard origin/main && git log -1 --pretty=for
 
 **Status:** ✅ PR #78 merged; CI workflow now on `main`.
 
+## [2025-11-16 12:00 UTC] Investigation of PR #79 Status
+
+**Commands:**
+```bash
+gh pr view 79 --repo twgallo13/ROPI-V2.1
+gh pr list --repo twgallo13/ROPI-V2.1  
+git fetch origin && git checkout -B pr-79-check origin/feature/functions-lint-test
+git log --oneline -10
+```
+
+**Findings:**
+- PR #79 is **CLOSED** with 0 commits (no actual content)
+- Branch `origin/feature/functions-lint-test` points to same commit as main (8fa71c4)
+- No open PRs remaining in repository
+- Expected functions lint/test content was never pushed to the branch
+
+**Analysis:**
+PR #79 appears to have been created as placeholder but the actual functions lint/test implementation was never committed to the branch. The PR description contained the expected Stage C2 scope but no code changes were made.
+
+**Next Action:** Create Stage C2 implementation from scratch with:
+- Add ESLint v9 + @typescript-eslint + eslint-config-prettier to functions
+- Add Vitest (node env) with smoke test  
+- Add functions lint/test npm scripts
+- Update functions lockfile
+- Update CI workflow to run functions lint/test
+
+**Status:** ⚠️ PR #79 closed without implementation; Stage C2 needs to be created fresh.
+
 ## [2025-11-16 10:48 UTC] Stage C1 - add-pr-lint-test CI
 
 **Branch**: `ci/add-pr-lint-test`  

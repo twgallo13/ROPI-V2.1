@@ -37,6 +37,7 @@ export default tseslint.config(
       'no-control-regex': 'off',
       'no-useless-escape': 'warn',
       'no-case-declarations': 'warn',
+      'prefer-const': 'warn',
     },
   }
 );

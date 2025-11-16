@@ -45,11 +45,11 @@ jobs:
       - name: Install functions deps
         run: npm --prefix functions ci
 
-      - name: Build functions (if script present)
-        run: |
-          if npm --prefix functions run build --silent; then
-            echo "Functions build succeeded"
-          else
-            echo "Functions build failed or not present"
-            exit 1
-          fi
+      - name: Lint functions
+        run: npm --prefix functions run lint
+
+      - name: Test functions
+        run: npm --prefix functions test -- --run
+
+      - name: Build functions
+        run: npm --prefix functions run build
