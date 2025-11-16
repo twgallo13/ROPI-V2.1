@@ -10,6 +10,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage
 import Toast from './Toast';
 import Select from './ui/Select';
 import { useVocab } from '../hooks/useVocab';
+import { useAttributesSettings } from '../hooks/useAttributesSettings';
 
 interface ProductEditorDrawerProps {
   isOpen: boolean;
@@ -85,9 +86,12 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
   const formRef = useRef<HTMLFormElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const lastActiveField = useRef<{ name?: string; start?: number; end?: number }>({});
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [madeInSelections, setMadeInSelections] = useState<string[]>([]);
   
   // Live vocabulary from Firestore
   const vocab = useVocab();
+  const attributes = useAttributesSettings();
   
   // AI Descriptions from subcollection
   type AIDescription = { text: string; meta?: { tone: string; length: string; generatedAt: any } };
@@ -550,8 +554,22 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
 
   // Temporarily disable idle autosave for stability
   const debouncedAutosave = useCallback(() => {
-    // disabled for stability
-  }, []);
+    if (!editableProduct) return;
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    setSavingState('saving');
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await saveFromForm({
+          // Ensure nested descriptive.madeIn is persisted on autosave
+          ...(madeInSelections.length ? { descriptive: { madeIn: madeInSelections } as any } : {}),
+        }, { showToast: 'Draft saved', keepOpen: true });
+        setLastSavedAt(new Date());
+      } finally {
+        // savingState handled in saveFromForm, but ensure idle if anything goes wrong
+        if (!saveTimeoutRef.current) setSavingState('idle');
+      }
+    }, 1500);
+  }, [editableProduct, madeInSelections]);
 
   const saveFromForm = async (extra: Partial<Product> & { validatedAt?: any } = {}, options?: { showToast?: string; keepOpen?: boolean }) => {
     if (!product || !editableProduct) return;
@@ -621,7 +639,17 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     if (p.mpn && p.mpn !== product.mpn) (base as any).mpn = p.mpn;
 
     // Merge extra fields (like marketing, status from Approve)
-    const payload = cleanForFirestore<any>({ ...base, ...extra });
+    const payload = cleanForFirestore<any>({
+      ...base,
+      // Persist new collection selection
+      launch: {
+        ...base.launch,
+        ...(editableProduct.launch?.newCollection ? { newCollection: editableProduct.launch?.newCollection } : {}),
+      },
+      // Persist Made In selections under descriptive
+      ...(madeInSelections.length ? { descriptive: { madeIn: madeInSelections } as any } : {}),
+      ...extra,
+    });
     console.log('[drawer] payload to Firestore (STATE)', payload);
 
     await setDoc(doc(db, 'products', product.id), payload, { merge: true });
@@ -637,6 +665,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
     // Clear changed fields after manual save
     setChangedFields(new Set());
     setSavingState('saved');
+    setLastSavedAt(new Date());
 
     if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
     savedTimeoutRef.current = setTimeout(() => {
@@ -1512,6 +1541,60 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                                         disabled={vocab.loading}
                                     />
                                 </FormField>
+                                {/* Attributes: New Collection & Made In */}
+                                <FormField label="New Collection">
+                                  <Select
+                                    name="launch.newCollection"
+                                    value={editableProduct.launch?.newCollection ?? ''}
+                                    onChange={(val) => {
+                                      setEditableProduct({
+                                        ...editableProduct,
+                                        launch: { ...editableProduct.launch, newCollection: val },
+                                      });
+                                      setChangedFields(prev => new Set(prev).add('launch.newCollection'));
+                                      debouncedAutosave();
+                                    }}
+                                    onBlur={handleBlur}
+                                    options={[
+                                      '',
+                                      ...((attributes.data.collections || []).map(v => v))
+                                    ] as readonly string[]}
+                                    placeholder="Select a collection..."
+                                    disabled={attributes.loading}
+                                  />
+                                </FormField>
+                                <FormField label="Made In (multi-select)">
+                                  <div className="space-y-2 mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                                    {attributes.loading ? (
+                                      <div className="text-sm text-gray-500">Loading...</div>
+                                    ) : (
+                                      <div className="flex flex-wrap gap-2">
+                                        {(attributes.data.madeIn || []).map((country) => {
+                                          const selected = madeInSelections.includes(country);
+                                          return (
+                                            <button
+                                              type="button"
+                                              key={country}
+                                              onClick={() => {
+                                                setMadeInSelections(prev => {
+                                                  const set = new Set(prev);
+                                                  if (set.has(country)) set.delete(country); else set.add(country);
+                                                  return Array.from(set);
+                                                });
+                                                setChangedFields(prev => new Set(prev).add('descriptive.madeIn'));
+                                                debouncedAutosave();
+                                              }}
+                                              className={`px-2 py-1 rounded-full text-xs border ${selected ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300'}`}
+                                              aria-pressed={selected}
+                                            >
+                                              {country}
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                    )}
+                                  </div>
+                                </FormField>
                             </div>
                         </div>
 
@@ -2083,7 +2166,7 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                       <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                       </svg>
-                      Saved ✓
+                      Saved · {lastSavedAt ? Math.max(0, Math.floor((Date.now() - lastSavedAt.getTime()) / 1000)) : 0}s ago
                     </span>
                   )}
                 </div>
@@ -2098,15 +2181,15 @@ const ProductEditorDrawer: React.FC<ProductEditorDrawerProps> = ({ isOpen, onClo
                   
                   <div className="flex space-x-2">
                     <button type="button" className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" onClick={onClose}>Cancel</button>
-                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save (Draft)</button>
                     <button 
                       type="button" 
                       onClick={handleApprove}
                       disabled={!canApprove()}
                       className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                      title={!canApprove() ? `Missing: ${getMissingFields().join(', ')}` : 'Approve & mark validated'}
+                      title={!canApprove() ? `Missing: ${getMissingFields().join(', ')}` : 'Publish (validate and mark ready)'}
                     >
-                      Approve
+                      Publish
                     </button>
                   </div>
                 </div>
