@@ -4,13 +4,16 @@
  * Created: 2025-11-15
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import type { Product as NewProduct } from '../../types/product-schema';
-import type { Product as LegacyProduct } from '../../types';
+import type { Product as LegacyProduct, ProductFacts } from '../../types';
 import { legacyToNew, newToLegacy, mergeIntoLegacy, validateProduct, stripUndefined } from '../../utils/schemaAdapter';
-import { useVocab } from '../../hooks/useVocab';
+import { useVocab, VocabData } from '../../hooks/useVocab';
+import { useAuth } from '../../contexts/AuthContext';
+import { describeProduct, DescribeProductPayload } from '../../services/describe';
+import type { AIScores, AICoach, AISEO, DescribeProductResponse } from '../../services/describe';
 import Toast from '../Toast';
 
 interface ProductEditorV2Props {
@@ -20,7 +23,61 @@ interface ProductEditorV2Props {
   onSaved?: (productId: string) => void;
 }
 
-type SectionTab = 'basics' | 'attributes' | 'seo' | 'pricing' | 'launch' | 'technical' | 'rics';
+type SectionTab = 'basics' | 'attributes' | 'seo' | 'pricing' | 'launch' | 'technical' | 'rics' | 'ai';
+
+type AIDescription = {
+  text: string;
+  scores?: { overall?: number; factual?: number; tone?: number; seo?: number; clarity?: number };
+  coach?: { reasons?: string[]; actions?: string[]; next_questions?: string[] };
+  seo?: { meta_title?: string; meta_description?: string; meta_keywords?: string[] };
+  facts_used?: string[];
+  meta?: {
+    tone?: string;
+    length?: string;
+    temperature?: number;
+    generatedAt?: any;
+    updatedAt?: any;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  };
+};
+
+// Helper to build vocabulary normalization map
+function buildVocabMap(vocab: VocabData): Record<string, string> {
+  const map: Record<string, string> = {};
+  
+  const addOptions = (options: Array<{ value: string; label: string }>) => {
+    options.forEach(opt => {
+      if (opt.value !== opt.label) {
+        map[opt.value] = opt.label;
+      }
+    });
+  };
+  
+  addOptions(vocab.genders);
+  addOptions(vocab.ageGroups);
+  addOptions(vocab.fits);
+  addOptions(vocab.materials);
+  addOptions(vocab.primaryColors);
+  addOptions(vocab.descriptiveColors);
+  addOptions(vocab.cutTypes);
+  addOptions(vocab.closureTypes);
+  addOptions(vocab.heelHeights);
+  addOptions(vocab.platformHeights);
+  addOptions(vocab.sportsTeams);
+  addOptions(vocab.leagues);
+  addOptions(vocab.categories);
+  addOptions(vocab.departments);
+  addOptions(vocab.classes);
+  
+  return map;
+}
+
+function computeOverall(scores: AIScores): number {
+  const values = [scores.factual, scores.tone, scores.seo, scores.clarity].filter(v => v !== undefined) as number[];
+  return values.length > 0 ? Math.round(values.reduce((sum, v) => sum + v, 0) / values.length) : 0;
+}
 
 const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   isOpen,
@@ -34,13 +91,39 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   const [saving, setSaving] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [warningMessages, setWarningMessages] = useState<string[]>([]);
-  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ 
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
     show: false, message: '', type: 'success' 
   });
 
   const vocab = useVocab();
+  const { user } = useAuth();
 
-  // Load product
+  // AI functionality state
+  const [aiDescriptions, setAiDescriptions] = useState<Record<string, AIDescription>>({});
+  const [aiTone, setAiTone] = useState('Clean');
+  const [aiLength, setAiLength] = useState('Medium');
+  const [aiTemperature, setAiTemperature] = useState(0.6);
+  const [generatingInline, setGeneratingInline] = useState(false);
+  const [aiScores, setAiScores] = useState<AIScores | null>(null);
+  const [aiCoach, setAiCoach] = useState<AICoach | null>(null);
+  const [aiSEO, setAiSEO] = useState<AISEO | null>(null);
+  const [usedTemplate, setUsedTemplate] = useState<{ scope: string; key: string; version: string; conditionsMatched?: string[] } | null>(null);
+  const [improvementText, setImprovementText] = useState('');
+  const [facts, setFacts] = useState<ProductFacts>({
+    observations: '',
+    materials: '',
+    fit: '',
+    useCases: '',
+    care: '',
+    teamLeague: '',
+    keywords: [],
+    images: [],
+    updatedBy: '',
+    updatedAt: null,
+  });
+
+  // Build vocab normalization map from live vocab data
+  const vocabMap = useMemo(() => buildVocabMap(vocab), [vocab]);  // Load product
   useEffect(() => {
     if (!isOpen || !productId) {
       setProduct(null);
@@ -68,6 +151,79 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
 
     loadProduct();
   }, [isOpen, productId]);
+
+  // Load Product Facts
+  useEffect(() => {
+    if (!productId) {
+      setFacts({
+        observations: '',
+        materials: '',
+        fit: '',
+        useCases: '',
+        care: '',
+        teamLeague: '',
+        keywords: [],
+        images: [],
+        updatedBy: '',
+        updatedAt: null,
+      });
+      return;
+    }
+
+    const loadFacts = async () => {
+      try {
+        const factsRef = doc(db, 'products', productId, 'facts', 'data');
+        const snapshot = await getDoc(factsRef);
+        
+        if (snapshot.exists()) {
+          setFacts(snapshot.data() as ProductFacts);
+        } else {
+          setFacts({
+            observations: '',
+            materials: '',
+            fit: '',
+            useCases: '',
+            care: '',
+            teamLeague: '',
+            keywords: [],
+            images: [],
+            updatedBy: '',
+            updatedAt: null,
+          });
+        }
+      } catch (error) {
+        console.error('Error loading facts:', error);
+      }
+    };
+
+    loadFacts();
+  }, [productId]);
+
+  // Load AI descriptions
+  useEffect(() => {
+    if (!productId) {
+      setAiDescriptions({});
+      return;
+    }
+
+    const loadDescriptions = async () => {
+      try {
+        const descriptionsRef = collection(db, 'products', productId, 'descriptions');
+        const snapshot = await getDocs(descriptionsRef);
+        const descriptions: Record<string, AIDescription> = {};
+        
+        snapshot.forEach((doc) => {
+          descriptions[doc.id] = doc.data() as AIDescription;
+        });
+        
+        setAiDescriptions(descriptions);
+      } catch (error) {
+        console.error('Error loading AI descriptions:', error);
+      }
+    };
+
+    loadDescriptions();
+  }, [productId]);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ show: true, message, type });
@@ -99,6 +255,164 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
       };
     });
   }, []);
+
+  // AI Generate handler
+  const handleInlineGenerate = async () => {
+    if (!product || !productId) {
+      showToast('Product ID required', 'error');
+      return;
+    }
+
+    try {
+      setGeneratingInline(true);
+      setAiScores(null);
+      setAiCoach(null);
+      setAiSEO(null);
+      setUsedTemplate(null);
+      
+      const channel = 'RetailOps';
+      
+      // Convert new schema product back to legacy format for AI service
+      const legacyProduct = newToLegacy(product);
+      
+      const payload: DescribeProductPayload = {
+        productId,
+        channel,
+        tone: aiTone,
+        length: aiLength,
+        temperature: aiTemperature,
+        facts: {
+          observations: facts.observations,
+          materials: facts.materials,
+          fit: facts.fit,
+          keywords: facts.keywords,
+        },
+        aiContext: {
+          keywords: legacyProduct.aiContext?.keywords || [],
+          featureBullets: legacyProduct.aiContext?.featureBullets || [],
+          designNotes: legacyProduct.aiContext?.designNotes || '',
+          priorDraft: legacyProduct.marketing?.paragraphDraft || undefined,
+        },
+        attributes: {
+          name: legacyProduct.name,
+          brand: legacyProduct.brand,
+          mpn: legacyProduct.mpn,
+          department: legacyProduct.department,
+          class: legacyProduct.class,
+          category: legacyProduct.category,
+          ageGroup: legacyProduct.ageGroup,
+          gender: legacyProduct.gender,
+          material: legacyProduct.materialFabric,
+          materials: legacyProduct.materials || [],
+          fit: legacyProduct.fit,
+          sportsTeam: legacyProduct.sportsTeam,
+          league: legacyProduct.league,
+          primaryColor: (legacyProduct as any).primaryColor ?? undefined,
+          descriptiveColor: (legacyProduct as any).descriptiveColor ?? undefined,
+          cutType: (legacyProduct as any).cutType ?? undefined,
+          closureType: (legacyProduct as any).closureType ?? undefined,
+          heelHeight: (legacyProduct as any).heelHeight ?? undefined,
+          platformHeight: (legacyProduct as any).platformHeight ?? undefined,
+          status: legacyProduct.status,
+          websites: legacyProduct.websites,
+          price: (legacyProduct as any).price ?? undefined,
+        },
+        imageUrl: facts.images[0]?.url,
+      };
+      
+      const result = await describeProduct(payload, vocabMap);
+      const description = result.description || result.text || '';
+      
+      if (!description) {
+        showToast('No description returned from API', 'error');
+        return;
+      }
+
+      // Update AI scores if available
+      const scores: AIScores | undefined = result.scores || (result.seo_score || result.tone_score ? { seo: result.seo_score, tone: result.tone_score } : undefined);
+      if (scores) {
+        const overall = computeOverall(scores);
+        setAiScores({ ...scores, overall });
+      }
+      setAiCoach(result.coach || null);
+      setAiSEO(result.seo || null);
+      setUsedTemplate((result as any).used_template || null);
+
+      // Write to Firestore subcollection
+      const descRef = doc(db, 'products', productId, 'descriptions', channel);
+      let existing: any = null;
+      try {
+        const snap = await getDoc(descRef);
+        if (snap.exists()) existing = snap.data();
+      } catch { /* ignore */ }
+
+      // Build history entry
+      const newEntry = {
+        text: description,
+        scores: result.scores || null,
+        coach: result.coach || null,
+        seo: result.seo || null,
+        facts_used: result.facts_used || [],
+        at: Date.now(),
+      };
+
+      const prevHistoryRaw = Array.isArray(existing?.history) ? existing.history : [];
+      const prevHistory = prevHistoryRaw
+        .map((entry: any) => ({ ...entry, at: typeof entry?.at === 'object' ? Date.now() : entry?.at }))
+        .slice(-2);
+
+      await setDoc(
+        descRef,
+        {
+          text: description,
+          scores: result.scores || undefined,
+          coach: result.coach || undefined,
+          seo: result.seo || undefined,
+          facts_used: result.facts_used || [],
+          meta: {
+            tone: aiTone,
+            length: aiLength,
+            temperature: aiTemperature,
+            generatedAt: serverTimestamp(),
+            title: result.seo?.meta_title,
+            description: result.seo?.meta_description,
+            keywords: result.seo?.meta_keywords,
+          },
+          history: [...prevHistory, newEntry],
+        },
+        { merge: true }
+      );
+
+      // Auto-apply to product description field
+      setProduct(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          marketing: {
+            ...prev.marketing,
+            description: description,
+          },
+        };
+      });
+
+      // Reload descriptions
+      const descriptionsRef = collection(db, 'products', productId, 'descriptions');
+      const snapshot = await getDocs(descriptionsRef);
+      const descriptions: Record<string, AIDescription> = {};
+      
+      snapshot.forEach((doc) => {
+        descriptions[doc.id] = doc.data() as AIDescription;
+      });
+      
+      setAiDescriptions(descriptions);
+      showToast('Generated and applied to draft', 'success');
+    } catch (error: any) {
+      console.error('AI generation failed:', error);
+      showToast(error?.message || 'Failed to generate description', 'error');
+    } finally {
+      setGeneratingInline(false);
+    }
+  };
 
   // Save product
   const handleSave = async () => {
@@ -214,6 +528,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
                 { id: 'launch', label: 'Launch' },
                 { id: 'technical', label: 'Technical' },
                 { id: 'rics', label: 'RICS Data' },
+                { id: 'ai', label: 'AI Generate' },
               ].map(section => (
                 <button
                   key={section.id}
@@ -223,6 +538,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
                       ? 'bg-indigo-100 text-indigo-700'
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
+                  data-testid={section.id === 'ai' ? 'ai-tab' : undefined}
                 >
                   {section.label}
                 </button>
@@ -252,6 +568,26 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
             )}
             {activeSection === 'rics' && (
               <RICSSection product={product} />
+            )}
+            {activeSection === 'ai' && (
+              <AISection 
+                product={product}
+                facts={facts}
+                aiDescriptions={aiDescriptions}
+                aiScores={aiScores}
+                aiCoach={aiCoach}
+                usedTemplate={usedTemplate}
+                aiTone={aiTone}
+                setAiTone={setAiTone}
+                aiLength={aiLength}
+                setAiLength={setAiLength}
+                aiTemperature={aiTemperature}
+                setAiTemperature={setAiTemperature}
+                generatingInline={generatingInline}
+                handleInlineGenerate={handleInlineGenerate}
+                improvementText={improvementText}
+                setImprovementText={setImprovementText}
+              />
             )}
           </div>
         </div>
@@ -945,5 +1281,205 @@ const RICSSection: React.FC<any> = ({ product }) => (
     </div>
   </div>
 );
+
+// AI Section Component
+const AISection: React.FC<{
+  product: Partial<NewProduct> | null;
+  facts: ProductFacts;
+  aiDescriptions: Record<string, AIDescription>;
+  aiScores: AIScores | null;
+  aiCoach: AICoach | null;
+  usedTemplate: { scope: string; key: string; version: string; conditionsMatched?: string[] } | null;
+  aiTone: string;
+  setAiTone: (tone: string) => void;
+  aiLength: string;
+  setAiLength: (length: string) => void;
+  aiTemperature: number;
+  setAiTemperature: (temp: number) => void;
+  generatingInline: boolean;
+  handleInlineGenerate: () => Promise<void>;
+  improvementText: string;
+  setImprovementText: (text: string) => void;
+}> = ({
+  product,
+  facts,
+  aiDescriptions,
+  aiScores,
+  aiCoach,
+  usedTemplate,
+  aiTone,
+  setAiTone,
+  aiLength,
+  setAiLength,
+  aiTemperature,
+  setAiTemperature,
+  generatingInline,
+  handleInlineGenerate,
+  improvementText,
+  setImprovementText
+}) => {
+  const legacyProduct = product ? newToLegacy(product as NewProduct) : null;
+  const retailOpsDescription = aiDescriptions['RetailOps'];
+
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">AI Generate</h3>
+      
+      {/* Read-only Attribute Preview */}
+      <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">Product Attributes (read-only)</h3>
+        <p className="text-xs text-gray-500 mb-3">Edit these in the Attributes tab</p>
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div><strong>Brand:</strong> {product?.sku_core?.brand || '—'}</div>
+          <div><strong>Department:</strong> {legacyProduct?.department || '—'}</div>
+          <div><strong>Category:</strong> {legacyProduct?.category || '—'}</div>
+          <div><strong>Class:</strong> {legacyProduct?.class || '—'}</div>
+          <div><strong>Age Group:</strong> {legacyProduct?.ageGroup || '—'}</div>
+          <div><strong>Gender:</strong> {legacyProduct?.gender || '—'}</div>
+          <div><strong>Material:</strong> {legacyProduct?.materialFabric || '—'}</div>
+          <div><strong>Fit:</strong> {legacyProduct?.fit || '—'}</div>
+          {legacyProduct?.sportsTeam && <div><strong>Team:</strong> {legacyProduct.sportsTeam}</div>}
+          {legacyProduct?.league && <div><strong>League:</strong> {legacyProduct.league}</div>}
+        </div>
+      </div>
+
+      {/* AI Quality Scores */}
+      {aiScores && (
+        <div className="border border-blue-200 rounded-lg p-4 bg-blue-50" data-testid="ai-scores">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-sm font-semibold text-gray-800">AI Quality Score</h3>
+            {usedTemplate && (
+              <span className="text-xs text-indigo-600 font-medium px-2 py-1 bg-indigo-100 rounded" data-testid="template-info">
+                Audience: {usedTemplate.key} ({usedTemplate.version})
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-5 gap-2 sm:gap-4 text-center">
+            <div>
+              <p className="text-3xl font-bold text-indigo-600">{aiScores.overall ?? 0}</p>
+              <p className="text-xs text-gray-600 mt-1">Overall</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-indigo-600">{aiScores.factual ?? 0}</p>
+              <p className="text-xs text-gray-600 mt-1" title="Accuracy of facts, use of observations verbatim">Factual</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-indigo-600">{aiScores.tone ?? 0}</p>
+              <p className="text-xs text-gray-600 mt-1" title="Matches requested tone and audience">Tone</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-indigo-600">{aiScores.seo ?? 0}</p>
+              <p className="text-xs text-gray-600 mt-1" title="Meta readiness and keyword use">SEO</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-indigo-600">{aiScores.clarity ?? 0}</p>
+              <p className="text-xs text-gray-600 mt-1" title="Clarity and readability for buyers">Clarity</p>
+            </div>
+          </div>
+          {aiCoach?.actions?.length ? (
+            <div className="mt-3">
+              <p className="text-xs text-gray-700 mb-1">To reach 10:</p>
+              <div className="flex flex-wrap gap-2">
+                {aiCoach.actions.map((action, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className="px-2 py-1 text-xs bg-white border border-indigo-200 text-indigo-700 rounded-full hover:bg-indigo-50"
+                    onClick={async () => {
+                      setImprovementText(action);
+                      await handleInlineGenerate();
+                    }}
+                  >
+                    {action}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      {/* AI Settings */}
+      <div className="border border-gray-200 rounded-lg p-4">
+        <h4 className="text-sm font-semibold text-gray-700 mb-3">AI Settings</h4>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Tone</label>
+            <select 
+              value={aiTone} 
+              onChange={(e) => setAiTone(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            >
+              <option value="Clean">Clean</option>
+              <option value="Professional">Professional</option>
+              <option value="Casual">Casual</option>
+              <option value="Luxury">Luxury</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Length</label>
+            <select 
+              value={aiLength} 
+              onChange={(e) => setAiLength(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            >
+              <option value="Short">Short</option>
+              <option value="Medium">Medium</option>
+              <option value="Long">Long</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Temperature</label>
+            <input 
+              type="number" 
+              min="0" 
+              max="1" 
+              step="0.1"
+              value={aiTemperature} 
+              onChange={(e) => setAiTemperature(parseFloat(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Generate Button */}
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={handleInlineGenerate}
+          disabled={generatingInline || !product}
+          className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          data-testid="generate-button"
+        >
+          {generatingInline ? 'Generating...' : '✨ Generate with AI'}
+        </button>
+      </div>
+
+      {/* Preview */}
+      {retailOpsDescription && (
+        <div className="border border-gray-200 rounded-lg p-4">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3">Generated Description</h4>
+          <div className="prose prose-sm max-w-none" data-testid="preview-html">
+            <div dangerouslySetInnerHTML={{ __html: retailOpsDescription.text }} />
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={() => {
+                // Auto-apply is handled in generation, so this is just a visual confirmation
+                alert('Description applied to product');
+              }}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              data-testid="approve-button"
+            >
+              ✓ Applied to Product
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default ProductEditorV2;
