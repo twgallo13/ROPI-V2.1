@@ -43,6 +43,21 @@ const express_1 = __importDefault(require("express"));
 const admin = __importStar(require("firebase-admin"));
 const smartDetect_1 = require("./smartDetect");
 const app = (0, express_1.default)();
+// Debug logging middleware - log incoming paths first
+app.use((req, res, next) => {
+    console.log('HOSTING DEBUG - PATHS:', {
+        originalUrl: req.originalUrl,
+        url: req.url,
+        path: req.path,
+        method: req.method,
+        headers: {
+            host: req.headers.host,
+            'x-forwarded-host': req.headers['x-forwarded-host'],
+            'x-original-url': req.headers['x-original-url'] || null
+        }
+    });
+    next();
+});
 // CORS for dev environments
 app.use((req, res, next) => {
     const origin = req.headers.origin;
