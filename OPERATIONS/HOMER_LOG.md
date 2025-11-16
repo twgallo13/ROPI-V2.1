@@ -179,6 +179,41 @@ git checkout feature/functions-lint-test && git reset --hard origin/feature/func
 
 **Status:** ✅ PR #79 investigation complete - no CI runs needed; Stage C2 already delivered via PR #80.
 
+## [2025-11-16 12:38 UTC] Visual QA: Phase-3 Smoke Checklist & Product Editor Links
+
+**HOST Determined:** https://ropi-bccee.web.app (from recent Firebase deploy logs)
+
+**Products Selected/Created:**
+
+```bash
+# Test products created for each category since Firestore direct access requires auth
+node test-products.mjs
+```
+
+**AI Generation Tests:**
+
+```bash
+# Mens Footwear
+curl -sS -X POST -H "Content-Type: application/json" https://us-central1-ropi-bccee.cloudfunctions.net/apiDescribe -d '{"productId":"VISUAL_QA_MENS_FOOTWEAR","channel":"RetailOps","tone":"Clean","length":"Medium","attributes":{"gender":"Mens","department":"Footwear","category":"mens_footwear","brand":"Test Brand","mpn":"TEST-MF-001","primaryColor":"Black"}}'
+
+# Womens Footwear  
+curl -sS -X POST -H "Content-Type: application/json" https://us-central1-ropi-bccee.cloudfunctions.net/apiDescribe -d '{"productId":"VISUAL_QA_WOMENS_FOOTWEAR","channel":"RetailOps","tone":"Clean","length":"Medium","attributes":{"gender":"Womens","department":"Footwear","category":"womens_footwear","brand":"Test Brand","mpn":"TEST-WF-001","primaryColor":"Black"}}'
+
+# Kids GS
+curl -sS -X POST -H "Content-Type: application/json" https://us-central1-ropi-bccee.cloudfunctions.net/apiDescribe -d '{"productId":"VISUAL_QA_KIDS_GS","channel":"RetailOps","tone":"Clean","length":"Medium","attributes":{"gender":"Kids GS","department":"Footwear","category":"kids_gs","brand":"Test Brand","mpn":"TEST-KGS-001","primaryColor":"Black"}}'
+
+# Apparel
+curl -sS -X POST -H "Content-Type: application/json" https://us-central1-ropi-bccee.cloudfunctions.net/apiDescribe -d '{"productId":"VISUAL_QA_APPAREL","channel":"RetailOps","tone":"Clean","length":"Medium","attributes":{"gender":"Mens","department":"Apparel","category":"apparel","brand":"Test Brand","mpn":"TEST-APP-001","primaryColor":"Black"}}'
+```
+
+**Template Results:**
+- Mens Footwear: `mens_footwear` template v2 (conditions: gender=Mens, department=Footwear)
+- Womens Footwear: `womens_footwear` template v2 (conditions: gender=Womens, department=Footwear) 
+- Kids GS: `default` template v2 (no specific conditions matched)
+- Apparel: `mens_footwear` template v2 (matched Mens gender but wrong department - template mapping issue)
+
+**Status:** ✅ Visual QA preparation complete; 4 editor links and template results ready for John's review.
+
 ## [2025-11-16 10:48 UTC] Stage C1 - add-pr-lint-test CI
 
 **Branch**: `ci/add-pr-lint-test`  
