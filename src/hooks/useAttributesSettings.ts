@@ -35,8 +35,11 @@ export type AttributeKey =
   | 'descriptiveColors'
   | 'cutTypes'
   | 'closureTypes'
+  | 'heelTypes'
   | 'heelHeights'
   | 'platformHeights'
+  | 'shoeHeightMaps'
+  | 'soleMaterials'
   | 'collections'
   | 'madeIn';
 
@@ -59,8 +62,11 @@ const INITIAL_ATTRIBUTES: AttributesData = {
   descriptiveColors: [],
   cutTypes: [],
   closureTypes: [],
+  heelTypes: [],
   heelHeights: [],
   platformHeights: [],
+  shoeHeightMaps: [],
+  soleMaterials: [],
   collections: [],
   madeIn: [],
 };
@@ -129,7 +135,8 @@ export function useAttributesSettings() {
     const keys: AttributeKey[] = [
       'departments', 'classes', 'categories', 'ageGroups', 'genders', 'materials',
       'statuses', 'websites', 'sportsTeams', 'leagues', 'fits', 'taxClasses',
-      'primaryColors', 'descriptiveColors', 'cutTypes', 'closureTypes', 'heelHeights', 'platformHeights',
+      'primaryColors', 'descriptiveColors', 'cutTypes', 'closureTypes',
+      'heelTypes', 'heelHeights', 'platformHeights', 'shoeHeightMaps', 'soleMaterials',
       'collections', 'madeIn'
     ];
 
