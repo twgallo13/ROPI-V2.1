@@ -87,10 +87,12 @@ describe('ProductEditorV2 AI Integration', () => {
 
   it('renders AI tab when product is provided', async () => {
     const { getDoc, getDocs } = await import('firebase/firestore');
+    
+    // Mock getDoc for loading product and facts in child component
     (getDoc as any).mockResolvedValue({
       exists: () => true,
       id: 'test-product-id',
-      data: () => mockProduct,
+      data: () => ({ images: [] }),
     });
     
     // Mock getDocs to return an empty snapshot
@@ -105,7 +107,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        productId="test-product-id"
+        product={mockProduct}
       />
     );
 
@@ -121,10 +123,12 @@ describe('ProductEditorV2 AI Integration', () => {
 
   it('shows generate button when AI tab is active', async () => {
     const { getDoc, getDocs } = await import('firebase/firestore');
+    
+    // Mock getDoc for loading product and facts in child component
     (getDoc as any).mockResolvedValue({
       exists: () => true,
       id: 'test-product-id',
-      data: () => mockProduct,
+      data: () => ({ images: [] }),
     });
     
     // Mock getDocs to return an empty snapshot
@@ -139,7 +143,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        productId="test-product-id"
+        product={mockProduct}
       />
     );
 
@@ -163,12 +167,13 @@ describe('ProductEditorV2 AI Integration', () => {
     const { getDoc, getDocs } = await import('firebase/firestore');
     const { describeProduct } = await import('../services/describe');
     
+    // Mock getDoc for loading product and facts in child component
     (getDoc as any).mockResolvedValue({
       exists: () => true,
       id: 'test-product-id',
-      data: () => mockProduct,
+      data: () => ({ images: [{ url: 'https://example.com/image.jpg' }] }),
     });
-
+    
     (getDocs as any).mockResolvedValue({
       forEach: vi.fn(),
       docs: [],
@@ -186,7 +191,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        productId="test-product-id"
+        product={mockProduct}
       />
     );
 
@@ -219,12 +224,13 @@ describe('ProductEditorV2 AI Integration', () => {
   it('displays template info when template is used', async () => {
     const { getDoc, getDocs } = await import('firebase/firestore');
     
+    // Mock getDoc for loading product and facts in child component
     (getDoc as any).mockResolvedValue({
       exists: () => true,
       id: 'test-product-id',
-      data: () => mockProduct,
+      data: () => ({ images: [] }),
     });
-
+    
     (getDocs as any).mockResolvedValue({
       forEach: (callback: any) => {
         callback({
@@ -250,7 +256,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        productId="test-product-id"
+        product={mockProduct}
       />
     );
 
