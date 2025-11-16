@@ -36,12 +36,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.exportRulesPreview = exports.setUserRole = exports.apiExporter = exports.apiDescribe = exports.apiImport = exports.seedMaterials = exports.seedSettingsVocab = void 0;
+exports.exportRulesPreview = exports.setUserRole = exports.apiValidate = exports.apiSmartDetect = exports.apiExporter = exports.apiDescribe = exports.apiImport = exports.seedMaterials = exports.seedSettingsVocab = void 0;
 const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
 const import_1 = __importDefault(require("./routes/import"));
 const describe_1 = __importDefault(require("./routes/describe"));
 const exporter_1 = __importDefault(require("./routes/exporter"));
+const apiSmartDetect_1 = __importDefault(require("./apiSmartDetect"));
+const apiValidate_1 = __importDefault(require("./apiValidate"));
 var seedVocab_1 = require("./seedVocab");
 Object.defineProperty(exports, "seedSettingsVocab", { enumerable: true, get: function () { return seedVocab_1.seedSettingsVocab; } });
 var seedMaterials_1 = require("./seed/seedMaterials");
@@ -51,6 +53,8 @@ const r = functions.region('us-central1');
 exports.apiImport = functions.https.onRequest(import_1.default);
 exports.apiDescribe = functions.https.onRequest(describe_1.default);
 exports.apiExporter = functions.https.onRequest(exporter_1.default);
+exports.apiSmartDetect = functions.https.onRequest(apiSmartDetect_1.default);
+exports.apiValidate = functions.https.onRequest(apiValidate_1.default);
 /**
  * Cloud function to set user role (admin or specialist)
  * Only callable by theo@shiekhshoes.org
