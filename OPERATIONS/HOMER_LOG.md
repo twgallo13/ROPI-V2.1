@@ -1,5 +1,68 @@
 # HOMER Operations Log
 
+## [Schema Migration – Phase 2b] ProductEditorV2 with Sectioned Layout — 2025-01-14
+
+**Objective:** Create new ProductEditorV2 component with structured sectioned layout and feature flag for gradual rollout, maintaining full backward compatibility.
+
+**Changes**
+
+- ProductEditorV2 (`src/components/editors/ProductEditorV2.tsx`):
+  - 600+ line React component with 7 sectioned tabs:
+    - **Basics:** MPN, Brand, Name, Department, Class, Category, Style ID, Archive/Inactive flags
+    - **Attributes:** Age Group, Gender, Fit, Colors, Family Sizing
+    - **SEO:** Meta Name (≤60 chars), Meta Description (≤155 chars), Slug
+    - **Pricing:** MAP, SCOM Prices, Promo Flag
+    - **Launch:** Launch/End dates, Hype/Fast Fashion/New Collection flags
+    - **Technical:** Dimensions, Weight, Tax Class, Media Status (auto-calculated)
+    - **RICS:** Read-only RICS source data display
+  - Uses `legacyToNew()` to load legacy Firestore products into new schema
+  - Uses `newToLegacy()` to save new schema back to legacy Firestore format
+  - Validation panel shows missing required fields with character count warnings
+  - Toast notifications for save success/error
+  - All vocab dropdowns integrated via `useVocab` hook
+
+- IntakeQueuePage (`src/pages/IntakeQueuePage.tsx`):
+  - Added `useSearchParams` import for URL parameter detection
+  - Added `useV2Editor` flag: `searchParams.get('v2') === 'true' || VITE_EDITOR_V2 === 'true'`
+  - Conditional rendering: V2 editor when flag enabled, V1 editor by default
+  - Updated ProductEditorV2 import path to `editors/ProductEditorV2`
+  - Maintains full backward compatibility with existing v1 editor
+
+**Feature Flag Mechanism**
+
+Access V2 editor via:
+- URL parameter: `?v2=true` (e.g., `http://localhost:5173/intake?v2=true`)
+- Environment variable: `VITE_EDITOR_V2=true` in `.env`
+
+Default behavior: V1 editor (ProductEditorDrawer) for production safety
+
+**Technical Architecture**
+
+- Schema Conversion: Bidirectional adapter pattern ensures transparent conversion
+- Data Writes: All saves write to legacy Firestore format via `newToLegacy()`
+- Data Reads: Legacy products converted to new schema via `legacyToNew()`
+- Zero Breaking Changes: No data migration required, existing data untouched
+- Gradual Rollout: Feature flag allows testing without production impact
+
+**Deployment**
+
+```bash
+cd /workspaces/ROPI-V2.1
+npm run build  # ✓ Build passes (commit c330390)
+git add -A
+git commit -m "feat: Add ProductEditorV2 with sectioned layout and feature flag"
+# Push when ready for production testing
+```
+
+**Next Steps (Phase 3)**
+- Smart Detect integration for field validation
+- Enhanced Validation Panel with AI suggestions
+- AI description generation integration
+- Production testing with ?v2=true parameter
+- Gradual user migration from v1 to v2
+
+---
+
 ## [P14.2.1] HTML Integration Cleanup — 2025-01-14
 
 **Objective:** Complete HTML integration in the Describe page and verify the full pipeline from generation to export preserves HTML format.
