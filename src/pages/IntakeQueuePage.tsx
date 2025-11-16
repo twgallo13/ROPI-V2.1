@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { mockVocabulary } from '../mockData';
 import { Product } from '../types';
 import ProductEditorDrawer from '../components/ProductEditorDrawer';
-import ProductEditorV2 from '../components/ProductEditorV2';
+import ProductEditorV2 from '../components/editors/ProductEditorV2';
 import { useProducts } from '../hooks/useProducts';
 import Toast from '../components/Toast';
 import { exportAndDownload } from '../utils/exporter';
 
-// Feature flag: use V2 editor if environment variable is set
-const USE_EDITOR_V2 = import.meta.env.VITE_EDITOR_V2 === 'true';
-
 const IntakeQueuePage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  // Support ?v2=true URL parameter or environment variable
+  const useV2Editor = searchParams.get('v2') === 'true' || import.meta.env.VITE_EDITOR_V2 === 'true';
+
   const { products: firestoreProducts, loading, error } = useProducts();
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -336,8 +338,18 @@ const IntakeQueuePage: React.FC = () => {
         </div>
       )}
 
-      {selectedProduct && (
+      {selectedProduct && useV2Editor && (
         <ProductEditorV2
+          key={selectedProduct.id}
+          isOpen={isDrawerOpen}
+          onClose={handleCloseDrawer}
+          product={selectedProduct}
+          onSaved={handleProductSaved}
+        />
+      )}
+
+      {selectedProduct && !useV2Editor && (
+        <ProductEditorDrawer
           key={selectedProduct.id}
           isOpen={isDrawerOpen}
           onClose={handleCloseDrawer}
