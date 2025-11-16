@@ -117,7 +117,14 @@ function mapRowToProduct(csvRow: Record<string, any>): Partial<NewProduct> {
     if (value === undefined || value === null || value === '') continue;
 
     const fieldType = FIELD_TYPES[firestorePath] || 'string';
-    const transformed = transformValue(value, fieldType);
+    let transformed = transformValue(value, fieldType);
+
+    // Special-case: CSV Tax Class string -> boolean taxable toggle
+    if (firestorePath === 'technical.taxClass') {
+      if (typeof value === 'string') {
+        transformed = /^taxable\s*goods$/i.test(value.trim()) ? true : false;
+      }
+    }
     if (transformed === null) continue;
 
     setNestedValue(product, firestorePath, transformed);
@@ -145,7 +152,7 @@ function validateImportProduct(product: Partial<NewProduct>): string[] {
   if (!product.sku_core?.category) errors.push('Category is required');
 
   // Validate using schema validator
-  const schemaErrors = validateProduct(product);
+  const { errors: schemaErrors } = validateProduct(product);
   errors.push(...schemaErrors);
 
   return errors;

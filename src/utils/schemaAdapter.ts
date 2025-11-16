@@ -116,9 +116,9 @@ export function newToLegacy(product: Product): Partial<OldProduct> {
       expeditedOverride: !!product.technical.expeditedOverrideShipping,
     },
 
-    // Tax
+    // Tax (map boolean -> legacy string)
     tax: {
-      class: product.technical.taxClass,
+      class: product.technical.taxClass === true ? 'Taxable Goods' : undefined,
     },
 
     // Media
@@ -221,7 +221,10 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
         ? legacy.media.hideImageDate 
         : legacy.media?.hideImageDate?.toISOString?.(),
       mediaStatus: undefined, // Will be calculated
-      taxClass: legacy.tax?.class,
+      // Map legacy string -> boolean taxable toggle (exact "Taxable Goods")
+      taxClass: typeof legacy.tax?.class === 'string'
+        ? /^taxable\s*goods$/i.test(legacy.tax.class)
+        : undefined,
       status: legacy.status,
       lastReceived: undefined,
       firstReceived: undefined,
@@ -368,7 +371,11 @@ export function mergeIntoLegacy(
     };
     merged.tax = {
       ...merged.tax,
-      class: updates.technical.taxClass ?? merged.tax?.class,
+      class: updates.technical.taxClass === true
+        ? 'Taxable Goods'
+        : updates.technical.taxClass === false
+          ? undefined
+          : merged.tax?.class,
     };
     merged.media = {
       ...merged.media,

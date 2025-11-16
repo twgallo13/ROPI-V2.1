@@ -71,7 +71,7 @@ export interface Technical {
   expeditedOverrideShipping?: number;   // Expedited shipping override (Money)
   hideImageDate?: string;         // Image embargo date (ISO string)
   mediaStatus?: string;           // Media status ("Images Ready", "Pending", etc.)
-  taxClass?: string;              // Tax class
+  taxClass?: boolean;             // Taxable toggle (true = Taxable Goods)
   status?: string;                // Import status
   lastReceived?: string;          // Last received date (ISO string)
   firstReceived?: string;         // First received date (ISO string)

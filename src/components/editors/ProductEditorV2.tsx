@@ -808,17 +808,16 @@ const TechnicalSection: React.FC<any> = ({ product, updateField, vocab }) => {
       </FormField>
     </div>
 
-    <FormField label="Tax Class">
-      <select
-        value={product.technical?.taxClass || ''}
-        onChange={(e) => updateField('technical', 'taxClass', e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-      >
-        <option value="">Select...</option>
-        {vocab.taxClasses.map(t => (
-          <option key={t.value} value={t.value}>{t.label}</option>
-        ))}
-      </select>
+    <FormField label="Taxable">
+      <label className="inline-flex items-center space-x-2">
+        <input
+          type="checkbox"
+          checked={product.technical?.taxClass ?? true}
+          onChange={(e) => updateField('technical', 'taxClass', e.target.checked)}
+          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+        />
+        <span className="text-sm text-gray-700">Charge sales tax</span>
+      </label>
     </FormField>
 
     <div className="grid grid-cols-3 gap-4">

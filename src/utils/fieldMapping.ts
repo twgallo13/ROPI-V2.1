@@ -240,7 +240,7 @@ export const FIELD_TYPES: Record<string, 'string' | 'number' | 'boolean' | 'date
   'technical.expeditedOverrideShipping': 'number',
   'technical.hideImageDate': 'date',
   'technical.mediaStatus': 'string',
-  'technical.taxClass': 'string',
+  'technical.taxClass': 'boolean',
   'technical.status': 'string',
   'technical.lastReceived': 'date',
   'technical.firstReceived': 'date',
@@ -275,12 +275,11 @@ export const REQUIRED_FIELDS: string[] = [
   'sku_core.brand',
   'sku_core.name',
   'sku_core.department',
+  'sku_core.class',
   'sku_core.category',
   'sku_core.productIsActive',
   'descriptive.ageGroup',
   'descriptive.gender',
-  'descriptive.metaName',
-  'descriptive.metaDescription',
 ];
 
 /**

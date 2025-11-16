@@ -117,6 +117,11 @@ function buildRow(
       value = getNestedValue(product, mapping.productField);
     }
     
+    // Special case: map boolean taxable -> legacy string
+    if (mapping.productField === 'technical.taxClass') {
+      value = value === true ? 'Taxable Goods' : '';
+    }
+
     // Handle arrays (e.g., websites, keywords)
     if (Array.isArray(value)) {
       value = value.join('; ');
