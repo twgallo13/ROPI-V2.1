@@ -89,7 +89,7 @@ export interface Technical {
 export interface Launch {
   hype?: boolean;                 // High-priority or limited drop
   fastFashion?: boolean;          // Fast fashion flag
-  newCollection?: boolean;        // New collection flag
+  newCollection?: string;         // Product collection (Air Force 1, Dunk, etc.)
   klPostDate?: string;            // KL post date (ISO string)
   launchDate?: string;            // Launch date (ISO string)
 }
@@ -221,7 +221,7 @@ export interface LegacyProduct {
     hype?: boolean;
     fastFashion?: boolean;
     date?: Date | string;
-    newCollection?: boolean;
+    newCollection?: string;
     klPostDate?: Date | string;
   };
   shipping?: {

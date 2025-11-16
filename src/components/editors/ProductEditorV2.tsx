@@ -725,21 +725,54 @@ const LaunchSection: React.FC<any> = ({ product, updateField }) => (
         />
         <span className="ml-2 text-sm text-gray-900">Fast Fashion</span>
       </label>
-      <div>
-        <span className="block text-sm font-medium text-gray-700 mb-1">New Collection</span>
-        <div className="inline-flex rounded-md shadow-sm" role="group">
-          <button
-            type="button"
-            className={`px-3 py-1 text-sm border ${product.launch?.newCollection ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300'}`}
-            onClick={() => updateField('launch', 'newCollection', true)}
-          >Yes</button>
-          <button
-            type="button"
-            className={`px-3 py-1 text-sm border -ml-px ${!product.launch?.newCollection ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300'}`}
-            onClick={() => updateField('launch', 'newCollection', false)}
-          >No</button>
-        </div>
-      </div>
+      <FormField label="New Collection">
+        <select
+          value={product.launch?.newCollection || ''}
+          onChange={(e) => updateField('launch', 'newCollection', e.target.value || undefined)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">-- Select Collection --</option>
+          <option value="Air Force 1">Air Force 1</option>
+          <option value="Air Jordan 1">Air Jordan 1</option>
+          <option value="Air Jordan 2">Air Jordan 2</option>
+          <option value="Air Jordan 3">Air Jordan 3</option>
+          <option value="Air Jordan 4">Air Jordan 4</option>
+          <option value="Air Jordan 5">Air Jordan 5</option>
+          <option value="Air Jordan 6">Air Jordan 6</option>
+          <option value="Air Jordan 11">Air Jordan 11</option>
+          <option value="Air Jordan 12">Air Jordan 12</option>
+          <option value="Air Jordan 13">Air Jordan 13</option>
+          <option value="Jumpman MVP">Jumpman MVP</option>
+          <option value="Air Max 90">Air Max 90</option>
+          <option value="Air Max 95">Air Max 95</option>
+          <option value="Air Max 97">Air Max 97</option>
+          <option value="Air Max Plus">Air Max Plus</option>
+          <option value="Dunk Low">Dunk Low</option>
+          <option value="Dunk High">Dunk High</option>
+          <option value="Blazer">Blazer</option>
+          <option value="Cortez">Cortez</option>
+          <option value="React">React</option>
+          <option value="Vomero">Vomero</option>
+          <option value="VaporMax">VaporMax</option>
+          <option value="New Balance 550">New Balance 550</option>
+          <option value="New Balance 574">New Balance 574</option>
+          <option value="New Balance 327">New Balance 327</option>
+          <option value="New Balance 2002R">New Balance 2002R</option>
+          <option value="New Balance 9060">New Balance 9060</option>
+          <option value="Adidas Campus">Adidas Campus</option>
+          <option value="Adidas Gazelle">Adidas Gazelle</option>
+          <option value="Adidas Samba">Adidas Samba</option>
+          <option value="Adidas Superstar">Adidas Superstar</option>
+          <option value="Yeezy Boost 350">Yeezy Boost 350</option>
+          <option value="Yeezy Boost 700">Yeezy Boost 700</option>
+          <option value="Yeezy Slides">Yeezy Slides</option>
+          <option value="Puma Suede">Puma Suede</option>
+          <option value="Puma Lamelo Ball">Puma Lamelo Ball</option>
+          <option value="Converse All Star">Converse All Star</option>
+          <option value="Vans Old Skool">Vans Old Skool</option>
+          <option value="Other">Other</option>
+        </select>
+      </FormField>
     </div>
   </div>
 );

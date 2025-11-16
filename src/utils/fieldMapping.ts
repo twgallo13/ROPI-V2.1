@@ -254,7 +254,7 @@ export const FIELD_TYPES: Record<string, 'string' | 'number' | 'boolean' | 'date
   // Launch
   'launch.hype': 'boolean',
   'launch.fastFashion': 'boolean',
-  'launch.newCollection': 'boolean',
+  'launch.newCollection': 'string',
   'launch.klPostDate': 'date',
   'launch.launchDate': 'date',
 
