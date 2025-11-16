@@ -1,5 +1,22 @@
 # HOMER Operations Log
 
+## [2025-11-16 11:45 UTC] Merge PR #78 and update main
+
+**Commands:**
+
+```bash
+gh pr view 78 --repo twgallo13/ROPI-V2.1 --json number,headRefName,mergeable,mergeStateStatus,mergedAt --jq '{pr:.number, branch:.headRefName, mergeable:.mergeable, mergeStateStatus:.mergeStateStatus, mergedAt:.mergedAt}'
+gh pr merge 78 --repo twgallo13/ROPI-V2.1 --squash --delete-branch --body "Merge PR #78: add CI workflow for lint/test/build on PRs (Stage C1)."
+git fetch origin main && git reset --hard origin/main && git log -1 --pretty=format:"%H %s"
+```
+
+**Outputs:**
+
+- Merge: Squashed and merged PR #78; deleted remote branch `ci/add-pr-lint-test`.
+- Merge commit (on main): `693eefb6e2286994298ea5b6d9f1d299ade29f3c ci: add GitHub Actions CI for lint/test/build on PRs (#78)`
+
+**Status:** ✅ PR #78 merged; CI workflow now on `main`.
+
 ## [2025-11-16 10:48 UTC] Stage C1 - add-pr-lint-test CI
 
 **Branch**: `ci/add-pr-lint-test`  
