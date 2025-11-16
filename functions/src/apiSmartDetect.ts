@@ -56,7 +56,8 @@ interface SmartDetectRequest {
   product?: any;
 }
 
-app.post('/', async (req, res) => {
+// Route handler function
+const handleSmartDetect = async (req: express.Request, res: express.Response) => {
   try {
     const { productId, product }: SmartDetectRequest = req.body;
     
@@ -88,6 +89,12 @@ app.post('/', async (req, res) => {
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
-});
+};
+
+// Register handler for all path variations from firebase.json
+app.post('/', handleSmartDetect);
+app.post('/apiSmartDetect', handleSmartDetect);
+app.post('/api/smart-detect', handleSmartDetect);
+app.post('/smart-detect', handleSmartDetect);
 
 export default app;

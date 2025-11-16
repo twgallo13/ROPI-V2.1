@@ -56,7 +56,8 @@ interface ValidateRequest {
   product?: any;
 }
 
-app.post('/', async (req, res) => {
+// Route handler function
+const handleValidate = async (req: express.Request, res: express.Response) => {
   try {
     const { productId, product }: ValidateRequest = req.body;
     
@@ -88,6 +89,12 @@ app.post('/', async (req, res) => {
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
-});
+};
+
+// Register handler for all path variations from firebase.json
+app.post('/', handleValidate);
+app.post('/apiValidate', handleValidate);
+app.post('/api/validate', handleValidate);
+app.post('/validate', handleValidate);
 
 export default app;

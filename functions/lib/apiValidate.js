@@ -81,7 +81,8 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express_1.default.json());
-app.post('/', async (req, res) => {
+// Route handler function
+const handleValidate = async (req, res) => {
     try {
         const { productId, product } = req.body;
         let productData = product;
@@ -107,5 +108,10 @@ app.post('/', async (req, res) => {
             message: error instanceof Error ? error.message : 'Unknown error'
         });
     }
-});
+};
+// Register handler for all path variations from firebase.json
+app.post('/', handleValidate);
+app.post('/apiValidate', handleValidate);
+app.post('/api/validate', handleValidate);
+app.post('/validate', handleValidate);
 exports.default = app;
