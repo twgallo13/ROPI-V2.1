@@ -3,8 +3,8 @@ import * as admin from 'firebase-admin';
 import importer from './routes/import';
 import describe from './routes/describe';
 import exporter from './routes/exporter';
-import apiSmartDetect from './apiSmartDetect';
-import apiValidate from './apiValidate';
+import apiSmartDetectHandler from './apiSmartDetect';
+import apiValidateHandler from './apiValidate';
 export { seedSettingsVocab } from './seedVocab';
 export { seedMaterials } from './seed/seedMaterials';
 
@@ -15,8 +15,8 @@ const r = functions.region('us-central1');
 export const apiImport = functions.https.onRequest(importer);
 export const apiDescribe = functions.https.onRequest(describe);
 export const apiExporter = functions.https.onRequest(exporter);
-export const apiSmartDetect = functions.https.onRequest(apiSmartDetect);
-export const apiValidate = functions.https.onRequest(apiValidate);
+export const apiSmartDetect = functions.https.onRequest(apiSmartDetectHandler);
+export const apiValidate = functions.https.onRequest(apiValidateHandler);
 
 /**
  * Cloud function to set user role (admin or specialist)
