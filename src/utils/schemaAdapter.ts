@@ -8,6 +8,41 @@ import type { Product, LegacyProduct } from '../types/product-schema';
 import type { Product as OldProduct } from '../types';
 
 /**
+ * Recursively remove undefined values from an object
+ * Prevents Firestore "Unsupported field value: undefined" errors
+ */
+export function stripUndefined<T extends Record<string, any>>(obj: T): T {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => 
+      typeof item === 'object' && item !== null ? stripUndefined(item) : item
+    ).filter(item => item !== undefined) as any;
+  }
+
+  if (typeof obj === 'object') {
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value === undefined) {
+        continue; // Skip undefined values
+      }
+      if (typeof value === 'object' && value !== null && !Array.isArray(value) && !(value instanceof Date)) {
+        result[key] = stripUndefined(value);
+      } else if (Array.isArray(value)) {
+        result[key] = stripUndefined(value);
+      } else {
+        result[key] = value;
+      }
+    }
+    return result as T;
+  }
+
+  return obj;
+}
+
+/**
  * Convert new Product schema to legacy Firestore format
  * This allows writing new schema data to existing Firestore structure
  */
@@ -21,8 +56,8 @@ export function newToLegacy(product: Product): Partial<OldProduct> {
     department: product.sku_core.department,
     class: product.sku_core.class,
     category: product.sku_core.category,
-    isActive: product.sku_core.productIsActive,
-    coreProduct: product.sku_core.coreProduct,
+    isActive: product.sku_core.productIsActive ?? true, // Coerce boolean, default true
+    coreProduct: product.sku_core.coreProduct ?? false, // Coerce boolean, default false
 
     // Descriptive attributes
     ageGroup: product.descriptive.ageGroup,
@@ -38,13 +73,13 @@ export function newToLegacy(product: Product): Partial<OldProduct> {
     primaryColor: product.descriptive.primaryColor,
     descriptiveColor: product.descriptive.descriptiveColor,
     keywords: product.descriptive.keywords,
-    familySizing: product.descriptive.familySizing,
+    familySizing: product.descriptive.familySizing ?? false, // Coerce boolean
 
-    // Legacy boolean fields
+    // Legacy boolean fields - coerce to false if undefined
     map: !!product.pricing.map,
-    promo: !!product.pricing.promo,
-    hype: !!product.launch.hype,
-    fastfashion: !!product.launch.fastFashion,
+    promo: product.pricing.promo ?? false,
+    hype: product.launch.hype ?? false,
+    fastfashion: product.launch.fastFashion ?? false,
 
     // Pricing structure (new nested format)
     price: {
@@ -349,27 +384,34 @@ export function mergeIntoLegacy(
 
 /**
  * Validate required fields in new Product schema
+ * Returns { errors, warnings } where errors block save, warnings are advisory
  */
-export function validateProduct(product: Partial<Product>): string[] {
+export function validateProduct(product: Partial<Product>): { errors: string[]; warnings: string[] } {
   const errors: string[] = [];
+  const warnings: string[] = [];
 
+  // Hard-required fields (block save)
   if (!product.sku_core?.mpn) errors.push('MPN is required');
   if (!product.sku_core?.brand) errors.push('Brand is required');
   if (!product.sku_core?.name) errors.push('Name is required');
   if (!product.sku_core?.department) errors.push('Department is required');
+  if (!product.sku_core?.class) errors.push('Class is required');
   if (!product.sku_core?.category) errors.push('Category is required');
   if (!product.descriptive?.ageGroup) errors.push('Age Group is required');
   if (!product.descriptive?.gender) errors.push('Gender is required');
-  if (!product.descriptive?.metaName) errors.push('Meta Name is required');
-  if (!product.descriptive?.metaDescription) errors.push('Meta Description is required');
 
-  // Validate meta field lengths
-  if (product.descriptive?.metaName && product.descriptive.metaName.length > 60) {
-    errors.push('Meta Name must be ≤60 characters');
-  }
-  if (product.descriptive?.metaDescription && product.descriptive.metaDescription.length > 155) {
-    errors.push('Meta Description must be ≤155 characters');
+  // Warning-only fields (advisory, don't block save)
+  if (!product.descriptive?.metaName) {
+    warnings.push('Meta Name is recommended for SEO');
+  } else if (product.descriptive.metaName.length > 60) {
+    warnings.push('Meta Name should be ≤60 characters');
   }
 
-  return errors;
+  if (!product.descriptive?.metaDescription) {
+    warnings.push('Meta Description is recommended for SEO');
+  } else if (product.descriptive.metaDescription.length > 155) {
+    warnings.push('Meta Description should be ≤155 characters');
+  }
+
+  return { errors, warnings };
 }

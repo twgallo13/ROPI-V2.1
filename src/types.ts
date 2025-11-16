@@ -79,7 +79,7 @@ export type Product = {
     hype?: boolean; // High-priority or limited drop
     fastFashion?: boolean; // Fast-turn styles
     date?: Date | string; // Scheduled release date
-    newCollection?: boolean; // New Arrivals flag
+    newCollection?: string; // Product collection (Air Force 1, Dunk, etc.)
     klPostDate?: Date | string; // Internal marketing date
   };
 

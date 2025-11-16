@@ -18,6 +18,8 @@ const editableVocabs: Partial<Record<VocabKey, string>> = {
   leagues: 'Leagues',
   fits: 'Fits',
   taxClasses: 'Tax Classes',
+  collections: 'Collections',
+  madeIn: 'Made In',
 };
 
 // Shoe-specific vocabs (also editable, with admin hints)
@@ -53,6 +55,8 @@ const VocabDropdownsPage: React.FC = () => {
     closureTypes: '',
     heelHeights: '',
     platformHeights: '',
+    collections: '',
+    madeIn: '',
   });
   const [editingItem, setEditingItem] = useState<{ key: AttributeKey; index: number } | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -114,6 +118,17 @@ const VocabDropdownsPage: React.FC = () => {
     }
   }, [user, attributes]);
 
+  const handleBulkImport = useCallback(async (key: AttributeKey, items: string[]) => {
+    if (!user) {
+      showToast('Please sign in to edit settings', 'error');
+      return;
+    }
+    const currentItems = attributes.data[key] || [];
+    const combinedItems = [...currentItems, ...items];
+    await attributes.updateAttributeArray(key, combinedItems);
+    showToast(`Imported ${items.length} items`, 'success');
+  }, [user, attributes]);
+
   return (
     <div>
       {/* Editable Vocabs */}
@@ -140,6 +155,7 @@ const VocabDropdownsPage: React.FC = () => {
               editValue={editValue}
               setEditValue={setEditValue}
               onReload={attributes.reload}
+              onBulkImport={(items) => handleBulkImport(key as AttributeKey, items)}
             />
           ))}
         </div>
@@ -173,6 +189,7 @@ const VocabDropdownsPage: React.FC = () => {
               setEditValue={setEditValue}
               onReload={attributes.reload}
               showAdminHint={role === 'admin'}
+              onBulkImport={(items) => handleBulkImport(key as AttributeKey, items)}
             />
           ))}
         </div>

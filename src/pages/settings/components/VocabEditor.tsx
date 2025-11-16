@@ -1,4 +1,4 @@
-import React, { useRef, FormEvent } from 'react';
+import React, { useRef, FormEvent, useState } from 'react';
 
 export type VocabKey =
   | 'departments'
@@ -18,7 +18,9 @@ export type VocabKey =
   | 'cutTypes'
   | 'closureTypes'
   | 'heelHeights'
-  | 'platformHeights';
+  | 'platformHeights'
+  | 'collections'
+  | 'madeIn';
 
 type Props = {
   title: string;
@@ -39,6 +41,7 @@ type Props = {
   setEditValue(v: string): void;
   onReload?(): void;
   showAdminHint?: boolean;
+  onBulkImport?: (items: string[]) => Promise<void>;
 };
 
 const VocabEditor: React.FC<Props> = ({
@@ -60,7 +63,11 @@ const VocabEditor: React.FC<Props> = ({
   setEditValue,
   onReload,
   showAdminHint,
+  onBulkImport,
 }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showBulkImport, setShowBulkImport] = useState(false);
+  const [bulkText, setBulkText] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
   const lastActive = useRef<{ name?: string; start?: number; end?: number }>({});
 
@@ -129,9 +136,83 @@ const VocabEditor: React.FC<Props> = ({
     setTimeout(restoreFocus, 0);
   };
 
+  const handleBulkImport = async () => {
+    if (!onBulkImport || !bulkText.trim()) return;
+    const lines = bulkText.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length === 0) return;
+    await onBulkImport(lines);
+    setBulkText('');
+    setShowBulkImport(false);
+  };
+
+  // Filter items by search term
+  const filteredItems = searchTerm
+    ? items.filter(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
+    : items;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+        {items.length > 10 && onBulkImport && (
+          <button
+            type="button"
+            onClick={() => setShowBulkImport(!showBulkImport)}
+            className="text-sm text-indigo-600 hover:text-indigo-800"
+          >
+            {showBulkImport ? 'Cancel Bulk Import' : 'Bulk Import'}
+          </button>
+        )}
+      </div>
+      
+      {vocabKey === 'collections' && (
+        <div className="mb-4 text-sm text-gray-600 bg-indigo-50 border border-indigo-200 rounded p-3">
+          💡 <strong>Collections</strong> are seeded via <code className="bg-indigo-100 px-1 rounded">seedSettingsVocab</code> — edit with care.
+        </div>
+      )}
+
+      {showBulkImport && onBulkImport && (
+        <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Paste newline-separated values:
+          </label>
+          <textarea
+            value={bulkText}
+            onChange={(e) => setBulkText(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md font-mono text-sm h-32"
+            placeholder="Value 1&#10;Value 2&#10;Value 3"
+          />
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              onClick={handleBulkImport}
+              disabled={!bulkText.trim() || saving}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+            >
+              Import
+            </button>
+            <button
+              type="button"
+              onClick={() => { setBulkText(''); setShowBulkImport(false); }}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {items.length > 10 && (
+        <div className="mb-4">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          />
+        </div>
+      )}
       {error ? (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
           <div className="flex">
@@ -166,7 +247,11 @@ const VocabEditor: React.FC<Props> = ({
       ) : (
         <form ref={formRef}>
           <ul className="space-y-2 h-48 overflow-y-auto border rounded-md p-3 bg-gray-50 mb-4">
-            {items.length === 0 ? (
+            {filteredItems.length === 0 && searchTerm ? (
+              <li className="text-gray-400 text-sm italic">
+                No matches for "{searchTerm}"
+              </li>
+            ) : filteredItems.length === 0 ? (
               <li className="text-gray-400 text-sm italic">
                 No items yet
                 {showAdminHint && (
@@ -176,12 +261,14 @@ const VocabEditor: React.FC<Props> = ({
                 )}
               </li>
             ) : (
-              items.map((item, index) => (
+              filteredItems.map((item, displayIndex) => {
+                const actualIndex = items.indexOf(item);
+                return (
                 <li
-                  key={index}
+                  key={actualIndex}
                   className="flex items-center justify-between group hover:bg-white px-2 py-1 rounded transition-colors"
                 >
-                  {isEditing(index) ? (
+                  {isEditing(actualIndex) ? (
                     <div className="flex items-center gap-2 flex-grow">
                       <input
                         type="text"
@@ -217,7 +304,7 @@ const VocabEditor: React.FC<Props> = ({
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           type="button"
-                          onClick={() => onEditStart(index, item)}
+                          onClick={() => onEditStart(actualIndex, item)}
                           className="text-indigo-500 hover:text-indigo-700 text-sm font-medium px-2 py-1"
                           disabled={saving}
                           title="Edit"
@@ -227,7 +314,7 @@ const VocabEditor: React.FC<Props> = ({
                         </button>
                         <button
                           type="button"
-                          onClick={() => onDelete(index)}
+                          onClick={() => onDelete(actualIndex)}
                           className="text-red-500 hover:text-red-700 text-lg font-bold px-2 py-1"
                           disabled={saving}
                           title="Delete"
@@ -239,7 +326,8 @@ const VocabEditor: React.FC<Props> = ({
                     </>
                   )}
                 </li>
-              ))
+                );
+              })
             )}
           </ul>
           <div className="flex space-x-2">

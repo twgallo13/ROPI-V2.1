@@ -36,7 +36,9 @@ export type AttributeKey =
   | 'cutTypes'
   | 'closureTypes'
   | 'heelHeights'
-  | 'platformHeights';
+  | 'platformHeights'
+  | 'collections'
+  | 'madeIn';
 
 export type AttributesData = Record<AttributeKey, string[]>;
 
@@ -59,6 +61,8 @@ const INITIAL_ATTRIBUTES: AttributesData = {
   closureTypes: [],
   heelHeights: [],
   platformHeights: [],
+  collections: [],
+  madeIn: [],
 };
 
 const MAX_ITEM_LENGTH = 80;
@@ -125,7 +129,8 @@ export function useAttributesSettings() {
     const keys: AttributeKey[] = [
       'departments', 'classes', 'categories', 'ageGroups', 'genders', 'materials',
       'statuses', 'websites', 'sportsTeams', 'leagues', 'fits', 'taxClasses',
-      'primaryColors', 'descriptiveColors', 'cutTypes', 'closureTypes', 'heelHeights', 'platformHeights'
+      'primaryColors', 'descriptiveColors', 'cutTypes', 'closureTypes', 'heelHeights', 'platformHeights',
+      'collections', 'madeIn'
     ];
 
     keys.forEach(key => {

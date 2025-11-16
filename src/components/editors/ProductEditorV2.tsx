@@ -9,7 +9,7 @@ import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import type { Product as NewProduct } from '../../types/product-schema';
 import type { Product as LegacyProduct } from '../../types';
-import { legacyToNew, newToLegacy, mergeIntoLegacy, validateProduct } from '../../utils/schemaAdapter';
+import { legacyToNew, newToLegacy, mergeIntoLegacy, validateProduct, stripUndefined } from '../../utils/schemaAdapter';
 import { useVocab } from '../../hooks/useVocab';
 import Toast from '../Toast';
 
@@ -80,15 +80,9 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   // Validate product
   useEffect(() => {
     if (product) {
-      const all = validateProduct(product);
-      const hard: string[] = [];
-      const soft: string[] = [];
-      for (const msg of all) {
-        if (msg.includes('Meta Name') || msg.includes('Meta Description')) soft.push(msg);
-        else hard.push(msg);
-      }
-      setValidationErrors(hard);
-      setWarningMessages(soft);
+      const { errors, warnings } = validateProduct(product);
+      setValidationErrors(errors);
+      setWarningMessages(warnings);
     }
   }, [product]);
 
@@ -115,12 +109,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
       // Convert new schema to legacy format
       const legacyData = newToLegacy(product as NewProduct);
       
-      // Write to Firestore
-      const docRef = doc(db, 'products', productId);
-      await setDoc(docRef, {
+      // Strip undefined values to prevent Firestore errors
+      const cleanedData = stripUndefined({
         ...legacyData,
         lastUpdated: serverTimestamp(),
-      }, { merge: true });
+      });
+      
+      // Write to Firestore
+      const docRef = doc(db, 'products', productId);
+      await setDoc(docRef, cleanedData, { merge: true });
 
       showToast('Product saved successfully', 'success');
       if (onSaved) onSaved(productId);
@@ -359,6 +356,32 @@ const BasicsSection: React.FC<any> = ({ product, updateField, vocab }) => (
           placeholder="Links related colorways"
         />
       </FormField>
+
+      <FormField label="Age Group" required>
+        <select
+          value={product.descriptive?.ageGroup || ''}
+          onChange={(e) => updateField('descriptive', 'ageGroup', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.ageGroups.map(a => (
+            <option key={a.value} value={a.value}>{a.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Gender" required>
+        <select
+          value={product.descriptive?.gender || ''}
+          onChange={(e) => updateField('descriptive', 'gender', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.genders.map(g => (
+            <option key={g.value} value={g.value}>{g.label}</option>
+          ))}
+        </select>
+      </FormField>
     </div>
 
     <div className="flex items-center gap-4 pt-4 border-t">
@@ -390,28 +413,17 @@ const AttributesSection: React.FC<any> = ({ product, updateField, vocab }) => (
     <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Attributes</h3>
     
     <div className="grid grid-cols-2 gap-4">
-      <FormField label="Age Group" required>
+      <FormField label="New Collection">
         <select
-          value={product.descriptive?.ageGroup || ''}
-          onChange={(e) => updateField('descriptive', 'ageGroup', e.target.value)}
+          value={product.launch?.newCollection || ''}
+          onChange={(e) => updateField('launch', 'newCollection', e.target.value || undefined)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md"
         >
-          <option value="">Select...</option>
-          {vocab.ageGroups.map(a => (
-            <option key={a.value} value={a.value}>{a.label}</option>
-          ))}
-        </select>
-      </FormField>
-
-      <FormField label="Gender" required>
-        <select
-          value={product.descriptive?.gender || ''}
-          onChange={(e) => updateField('descriptive', 'gender', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-        >
-          <option value="">Select...</option>
-          {vocab.genders.map(g => (
-            <option key={g.value} value={g.value}>{g.label}</option>
+          <option value="">-- Select Collection --</option>
+          {vocab.collections?.map((c: any) => (
+            <option key={c.value || c} value={c.value || c}>
+              {c.label || c}
+            </option>
           ))}
         </select>
       </FormField>
@@ -569,8 +581,10 @@ const AttributesSection: React.FC<any> = ({ product, updateField, vocab }) => (
           }}
           className="w-full px-3 py-2 border border-gray-300 rounded-md h-28"
         >
-          {['China', 'Vietnam', 'Indonesia', 'Thailand', 'India', 'Bangladesh', 'Cambodia', 'USA', 'Mexico', 'Italy', 'Portugal', 'Spain', 'Turkey', 'Other'].map((country) => (
-            <option key={country} value={country}>{country}</option>
+          {vocab.madeIn?.map((country: any) => (
+            <option key={country.value || country} value={country.value || country}>
+              {country.label || country}
+            </option>
           ))}
         </select>
       </FormField>
@@ -725,54 +739,6 @@ const LaunchSection: React.FC<any> = ({ product, updateField }) => (
         />
         <span className="ml-2 text-sm text-gray-900">Fast Fashion</span>
       </label>
-      <FormField label="New Collection">
-        <select
-          value={product.launch?.newCollection || ''}
-          onChange={(e) => updateField('launch', 'newCollection', e.target.value || undefined)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-        >
-          <option value="">-- Select Collection --</option>
-          <option value="Air Force 1">Air Force 1</option>
-          <option value="Air Jordan 1">Air Jordan 1</option>
-          <option value="Air Jordan 2">Air Jordan 2</option>
-          <option value="Air Jordan 3">Air Jordan 3</option>
-          <option value="Air Jordan 4">Air Jordan 4</option>
-          <option value="Air Jordan 5">Air Jordan 5</option>
-          <option value="Air Jordan 6">Air Jordan 6</option>
-          <option value="Air Jordan 11">Air Jordan 11</option>
-          <option value="Air Jordan 12">Air Jordan 12</option>
-          <option value="Air Jordan 13">Air Jordan 13</option>
-          <option value="Jumpman MVP">Jumpman MVP</option>
-          <option value="Air Max 90">Air Max 90</option>
-          <option value="Air Max 95">Air Max 95</option>
-          <option value="Air Max 97">Air Max 97</option>
-          <option value="Air Max Plus">Air Max Plus</option>
-          <option value="Dunk Low">Dunk Low</option>
-          <option value="Dunk High">Dunk High</option>
-          <option value="Blazer">Blazer</option>
-          <option value="Cortez">Cortez</option>
-          <option value="React">React</option>
-          <option value="Vomero">Vomero</option>
-          <option value="VaporMax">VaporMax</option>
-          <option value="New Balance 550">New Balance 550</option>
-          <option value="New Balance 574">New Balance 574</option>
-          <option value="New Balance 327">New Balance 327</option>
-          <option value="New Balance 2002R">New Balance 2002R</option>
-          <option value="New Balance 9060">New Balance 9060</option>
-          <option value="Adidas Campus">Adidas Campus</option>
-          <option value="Adidas Gazelle">Adidas Gazelle</option>
-          <option value="Adidas Samba">Adidas Samba</option>
-          <option value="Adidas Superstar">Adidas Superstar</option>
-          <option value="Yeezy Boost 350">Yeezy Boost 350</option>
-          <option value="Yeezy Boost 700">Yeezy Boost 700</option>
-          <option value="Yeezy Slides">Yeezy Slides</option>
-          <option value="Puma Suede">Puma Suede</option>
-          <option value="Puma Lamelo Ball">Puma Lamelo Ball</option>
-          <option value="Converse All Star">Converse All Star</option>
-          <option value="Vans Old Skool">Vans Old Skool</option>
-          <option value="Other">Other</option>
-        </select>
-      </FormField>
     </div>
   </div>
 );
