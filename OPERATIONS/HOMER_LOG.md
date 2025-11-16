@@ -17,6 +17,99 @@ git fetch origin main && git reset --hard origin/main && git log -1 --pretty=for
 
 **Status:** ✅ PR #78 merged; CI workflow now on `main`.
 
+## [2025-11-16 12:00 UTC] Investigation of PR #79 Status
+
+**Commands:**
+```bash
+gh pr view 79 --repo twgallo13/ROPI-V2.1
+gh pr list --repo twgallo13/ROPI-V2.1  
+git fetch origin && git checkout -B pr-79-check origin/feature/functions-lint-test
+git log --oneline -10
+```
+
+**Findings:**
+- PR #79 is **CLOSED** with 0 commits (no actual content)
+- Branch `origin/feature/functions-lint-test` points to same commit as main (8fa71c4)
+- No open PRs remaining in repository
+- Expected functions lint/test content was never pushed to the branch
+
+**Analysis:**
+PR #79 appears to have been created as placeholder but the actual functions lint/test implementation was never committed to the branch. The PR description contained the expected Stage C2 scope but no code changes were made.
+
+**Next Action:** Create Stage C2 implementation from scratch with:
+- Add ESLint v9 + @typescript-eslint + eslint-config-prettier to functions
+- Add Vitest (node env) with smoke test  
+- Add functions lint/test npm scripts
+- Update functions lockfile
+- Update CI workflow to run functions lint/test
+
+**Status:** ⚠️ PR #79 closed without implementation; Stage C2 needs to be created fresh.
+
+## [2025-11-16 12:10 UTC] Stage C2 - Functions Lint/Test Implementation
+
+**Branch**: `ci/add-functions-tests`  
+**Commit**: 53bfb85
+
+**Files Added:**
+- `functions/.eslintrc.cjs` - ESLint config for functions with Node env
+- `functions/vitest.config.ts` - Vitest config with node environment  
+- `functions/src/__tests__/smoke.test.ts` - Basic smoke test (1 + 1 = 2)
+
+**Files Modified:**
+- `functions/package.json` - Added lint/test scripts and devDependencies (eslint, @typescript-eslint/*, vitest)
+- `eslint.config.js` - Added prefer-const: 'warn' rule to keep stylistic rules non-blocking
+- `.github/workflows/ci.yml` - Updated to run functions lint/test steps after functions deps install
+
+**Local Verification:**
+```bash
+npm --prefix functions run lint  # → 27 warnings, 0 errors  
+npm --prefix functions test -- --run  # → 1 test passed
+```
+
+**Dependencies Added to functions:**
+- eslint: ^9.14.0
+- @typescript-eslint/eslint-plugin: ^8.12.2  
+- @typescript-eslint/parser: ^8.12.2
+- vitest: ^2.1.4
+
+**CI Workflow Updates:**
+- Added "Lint functions" step running `npm --prefix functions run lint`
+- Added "Test functions" step running `npm --prefix functions test -- --run`  
+- Simplified "Build functions" to always run `npm --prefix functions run build`
+
+**Status:** ✅ Stage C2 implemented; PR #80 created and CI running.
+
+**PR Created:** https://github.com/twgallo13/ROPI-V2.1/pull/80
+
+## [2025-11-16 12:20 UTC] Stage C2 - CI Resolution and Success
+
+**Issue Identified:**
+- First CI run failed during "Build functions" step with TypeScript compilation errors
+- Vitest types conflicted with existing Chai types and CommonJS module resolution
+- Errors: Duplicate identifiers (Message, ObjectProperty, etc.) and module resolution issues
+
+**Resolution Applied:**
+```bash
+# Exclude test files from main TypeScript build
+- Updated functions/tsconfig.json to exclude test files from compilation
+- Created functions/tsconfig.test.json for test-specific configuration
+- Updated vitest.config.ts with proper esbuild target
+
+Commit: 84e63b1 "fix(functions): exclude test files from TypeScript build to resolve type conflicts"
+```
+
+**CI Results - Second Run:**
+- All steps passed successfully:
+  - ✅ Lint (root): 225 warnings (non-blocking)  
+  - ✅ Test (root): 47 tests passed
+  - ✅ Build (root): successful
+  - ✅ Install functions deps: 453 packages installed
+  - ✅ Lint functions: 27 warnings (non-blocking)
+  - ✅ Test functions: 1 test passed  
+  - ✅ Build functions: successful (test files excluded)
+
+**Status:** ✅ Stage C2 complete; PR #80 passing all CI checks and ready for potential merge.
+
 ## [2025-11-16 10:48 UTC] Stage C1 - add-pr-lint-test CI
 
 **Branch**: `ci/add-pr-lint-test`  

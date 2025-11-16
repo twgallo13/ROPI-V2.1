@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf lib",
-    "lint": "echo skip"
+    "lint": "eslint 'src/**/*.{ts,js}'",
+    "test": "vitest"
   },
   "dependencies": {
     "firebase-admin": "^12.5.0",
@@ -19,6 +20,10 @@
     "typescript": "^5.6.3",
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.10",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "eslint": "^9.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2",
+    "vitest": "^2.1.4"
   }
 }
