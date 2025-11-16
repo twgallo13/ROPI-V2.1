@@ -77,8 +77,8 @@ export function newToLegacy(product: Product): Partial<OldProduct> {
       width: product.technical.width,
       length: product.technical.length,
       weight: product.technical.weight,
-      standardOverride: product.technical.standardShippingOverride,
-      expeditedOverride: product.technical.expeditedOverrideShipping,
+      standardOverride: !!product.technical.standardShippingOverride,
+      expeditedOverride: !!product.technical.expeditedOverrideShipping,
     },
 
     // Tax
@@ -180,8 +180,8 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
       length: legacy.shipping?.length || legacy.dimensions?.length,
       width: legacy.shipping?.width || legacy.dimensions?.width,
       weight: legacy.shipping?.weight,
-      standardShippingOverride: legacy.shipping?.standardOverride,
-      expeditedOverrideShipping: legacy.shipping?.expeditedOverride,
+      standardShippingOverride: typeof legacy.shipping?.standardOverride === 'number' ? legacy.shipping.standardOverride : undefined,
+      expeditedOverrideShipping: typeof legacy.shipping?.expeditedOverride === 'number' ? legacy.shipping.expeditedOverride : undefined,
       hideImageDate: typeof legacy.media?.hideImageDate === 'string' 
         ? legacy.media.hideImageDate 
         : legacy.media?.hideImageDate?.toISOString?.(),
