@@ -63,16 +63,23 @@ const IntakeQueuePage: React.FC = () => {
     // }
   };
 
-  // Count validated products (from all products, not filtered)
-  const validatedCount = products.filter(p => p.status === 'validated').length;
+  // Legacy -> Phase 3 status mapping (UI only)
+  const legacyToCanonical: Record<Product['status'],
+    'imported' | 'needsInfo' | 'inProgress' | 'readyForAI' | 'aiGenerated' | 'completed' | 'exported' | 'synced'> = {
+    intake: 'imported',
+    'in-progress': 'inProgress',
+    validated: 'completed',
+    uploaded: 'exported',
+  } as const;
+
+  // Count completed products (export-ready) across all products
+  const completedCount = products.filter(p => legacyToCanonical[p.status] === 'completed').length;
 
   // Apply filters to get the filtered product list
   const filtered = products.filter(product => {
-    // Status filter - map display names to internal status values
-    const statusMatch = statusFilter === 'all' || 
-      (statusFilter === 'Intake' && product.status === 'intake') ||
-      (statusFilter === 'In-Progress' && product.status === 'in-progress') ||
-      (statusFilter === 'Validated' && product.status === 'validated');
+    // Status filter using canonical Phase 3 statuses
+    const canonical = legacyToCanonical[product.status];
+    const statusMatch = statusFilter === 'all' || statusFilter === canonical;
     
     // Brand filter
     const brandMatch = brandFilter === 'all' || product.brand === brandFilter;
@@ -157,7 +164,16 @@ const IntakeQueuePage: React.FC = () => {
   // Prepare data for the filter dropdowns
   const uniqueBrands = [...new Set(products.map(p => p.brand))];
   const departments = mockVocabulary.departments;
-  const statuses = ['Intake', 'In-Progress', 'Validated'];
+  const statuses: Array<'imported' | 'needsInfo' | 'inProgress' | 'readyForAI' | 'aiGenerated' | 'completed' | 'exported' | 'synced'> = [
+    'imported',
+    'needsInfo',
+    'inProgress',
+    'readyForAI',
+    'aiGenerated',
+    'completed',
+    'exported',
+    'synced',
+  ];
 
   return (
     <div>
@@ -170,7 +186,7 @@ const IntakeQueuePage: React.FC = () => {
         </div>
         <button
           onClick={handleExport}
-          disabled={isExporting || loading || (selectedIds.size === 0 && validatedCount === 0)}
+          disabled={isExporting || loading || (selectedIds.size === 0 && completedCount === 0)}
           className="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
           title={selectedIds.size > 0 ? `Export ${selectedIds.size} selected product(s)` : validatedCount === 0 ? 'No validated products to export' : 'Export validated products to CSV'}
         >
@@ -185,7 +201,7 @@ const IntakeQueuePage: React.FC = () => {
           ) : selectedIds.size > 0 ? (
             <>📥 Export selected ({selectedIds.size})</>
           ) : (
-            <>📥 Export CSV (validated {validatedCount})</>
+            <>📥 Export CSV (completed {completedCount})</>
           )}
         </button>
       </header>
@@ -315,13 +331,23 @@ const IntakeQueuePage: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.mpn}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      product.status === 'intake' ? 'bg-blue-100 text-blue-800' : 
-                      product.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                      product.status === 'validated' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {product.status}
-                  </span>
+                  {(() => {
+                    const canonical = legacyToCanonical[product.status];
+                    const cls =
+                      canonical === 'imported' ? 'bg-blue-100 text-blue-800' :
+                      canonical === 'needsInfo' ? 'bg-red-100 text-red-800' :
+                      canonical === 'inProgress' ? 'bg-yellow-100 text-yellow-800' :
+                      canonical === 'readyForAI' ? 'bg-purple-100 text-purple-800' :
+                      canonical === 'aiGenerated' ? 'bg-indigo-100 text-indigo-800' :
+                      canonical === 'completed' ? 'bg-green-100 text-green-800' :
+                      canonical === 'exported' ? 'bg-gray-100 text-gray-800' :
+                      'bg-gray-100 text-gray-800';
+                    return (
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${cls}`}>
+                        {canonical}
+                      </span>
+                    );
+                  })()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button

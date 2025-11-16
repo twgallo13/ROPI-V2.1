@@ -72,7 +72,7 @@ export interface Technical {
   hideImageDate?: string;         // Image embargo date (ISO string)
   mediaStatus?: string;           // Media status ("Images Ready", "Pending", etc.)
   taxClass?: boolean;             // Taxable toggle (true = Taxable Goods)
-  status?: string;                // Import status
+  status?: ProductStatus;         // Canonical product status
   lastReceived?: string;          // Last received date (ISO string)
   firstReceived?: string;         // First received date (ISO string)
   store1?: number;                // Store 1 inventory
@@ -82,6 +82,19 @@ export interface Technical {
   store4?: number;                // Store 4 inventory
   totalInv?: number;              // Total inventory
 }
+
+/**
+ * Canonical Product Status - Phase 3 lifecycle
+ */
+export type ProductStatus =
+  | 'imported'
+  | 'needsInfo'
+  | 'inProgress'
+  | 'readyForAI'
+  | 'aiGenerated'
+  | 'completed'
+  | 'exported'
+  | 'synced';
 
 /**
  * Launch - Launch and marketing data
