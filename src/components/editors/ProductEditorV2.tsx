@@ -33,6 +33,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [warningMessages, setWarningMessages] = useState<string[]>([]);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ 
     show: false, message: '', type: 'success' 
   });
@@ -79,8 +80,15 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   // Validate product
   useEffect(() => {
     if (product) {
-      const errors = validateProduct(product);
-      setValidationErrors(errors);
+      const all = validateProduct(product);
+      const hard: string[] = [];
+      const soft: string[] = [];
+      for (const msg of all) {
+        if (msg.includes('Meta Name') || msg.includes('Meta Description')) soft.push(msg);
+        else hard.push(msg);
+      }
+      setValidationErrors(hard);
+      setWarningMessages(soft);
     }
   }, [product]);
 
@@ -172,15 +180,29 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
             </div>
           </div>
 
-          {/* Validation Warnings */}
-          {validationErrors.length > 0 && (
+          {/* Validation: show hard errors blocking save and soft warnings not blocking */}
+          {(validationErrors.length > 0 || warningMessages.length > 0) && (
             <div className="px-6 py-3 bg-yellow-50 border-b border-yellow-200">
-              <p className="text-sm font-medium text-yellow-800">⚠️ Validation Issues:</p>
-              <ul className="mt-1 text-sm text-yellow-700 list-disc list-inside">
-                {validationErrors.map((error, i) => (
-                  <li key={i}>{error}</li>
-                ))}
-              </ul>
+              {validationErrors.length > 0 && (
+                <>
+                  <p className="text-sm font-medium text-yellow-800">⚠️ Required fields missing:</p>
+                  <ul className="mt-1 text-sm text-yellow-700 list-disc list-inside">
+                    {validationErrors.map((error, i) => (
+                      <li key={`hard-${i}`}>{error}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {warningMessages.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-sm font-medium text-yellow-800">ℹ️ Recommended for SEO (won't block save):</p>
+                  <ul className="mt-1 text-sm text-yellow-700 list-disc list-inside">
+                    {warningMessages.map((w, i) => (
+                      <li key={`soft-${i}`}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 
@@ -408,12 +430,16 @@ const AttributesSection: React.FC<any> = ({ product, updateField, vocab }) => (
       </FormField>
 
       <FormField label="Primary Color">
-        <input
-          type="text"
+        <select
           value={product.descriptive?.primaryColor || ''}
           onChange={(e) => updateField('descriptive', 'primaryColor', e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md"
-        />
+        >
+          <option value="">Select...</option>
+          {vocab.primaryColors.map((c: any) => (
+            <option key={c.value} value={c.value}>{c.label}</option>
+          ))}
+        </select>
       </FormField>
 
       <FormField label="Descriptive Color">
@@ -424,6 +450,124 @@ const AttributesSection: React.FC<any> = ({ product, updateField, vocab }) => (
           className="w-full px-3 py-2 border border-gray-300 rounded-md"
         />
       </FormField>
+      <FormField label="Materials (Multi-Select)">
+        <select
+          multiple
+          value={product.descriptive?.material || []}
+          onChange={(e) => {
+            const select = e.target as HTMLSelectElement;
+            const selected = Array.from(select.selectedOptions).map(o => (o as HTMLOptionElement).value);
+            updateField('descriptive', 'material', selected);
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md h-28"
+        >
+          {vocab.materials.map((m: any) => (
+            <option key={m.value} value={m.value}>{m.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Sports Team">
+        <select
+          value={product.descriptive?.sportsTeam || ''}
+          onChange={(e) => updateField('descriptive', 'sportsTeam', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.sportsTeams.map((t: any) => (
+            <option key={t.value} value={t.value}>{t.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="League">
+        <select
+          value={product.descriptive?.league || ''}
+          onChange={(e) => updateField('descriptive', 'league', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.leagues.map((l: any) => (
+            <option key={l.value} value={l.value}>{l.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Cut Type">
+        <select
+          value={product.descriptive?.cutType || ''}
+          onChange={(e) => updateField('descriptive', 'cutType', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.cutTypes.map((c: any) => (
+            <option key={c.value} value={c.value}>{c.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Closure Type">
+        <select
+          value={product.descriptive?.closureType || ''}
+          onChange={(e) => updateField('descriptive', 'closureType', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.closureTypes.map((c: any) => (
+            <option key={c.value} value={c.value}>{c.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Platform Height">
+        <select
+          value={product.descriptive?.platformHeight || ''}
+          onChange={(e) => updateField('descriptive', 'platformHeight', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.platformHeights.map((ph: any) => (
+            <option key={ph.value} value={ph.value}>{ph.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Heel Type">
+        <select
+          value={product.descriptive?.heelType || ''}
+          onChange={(e) => updateField('descriptive', 'heelType', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.heelTypes.map((ht: any) => (
+            <option key={ht.value} value={ht.value}>{ht.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Shoe Height Map">
+        <select
+          value={product.descriptive?.shoeHeightMap || ''}
+          onChange={(e) => updateField('descriptive', 'shoeHeightMap', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select...</option>
+          {vocab.shoeHeightMaps.map((m: any) => (
+            <option key={m.value} value={m.value}>{m.label}</option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Made In (comma separated)">
+        <input
+          type="text"
+          value={(product.descriptive?.madeIn || []).join(', ')}
+          onChange={(e) => updateField('descriptive', 'madeIn', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          placeholder="e.g., China, Vietnam"
+        />
+      </FormField>
+
     </div>
 
     <div className="pt-4">
@@ -574,24 +718,48 @@ const LaunchSection: React.FC<any> = ({ product, updateField }) => (
         />
         <span className="ml-2 text-sm text-gray-900">Fast Fashion</span>
       </label>
-
-      <label className="flex items-center">
-        <input
-          type="checkbox"
-          checked={product.launch?.newCollection ?? false}
-          onChange={(e) => updateField('launch', 'newCollection', e.target.checked)}
-          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-        />
-        <span className="ml-2 text-sm text-gray-900">New Collection</span>
-      </label>
+      <div>
+        <span className="block text-sm font-medium text-gray-700 mb-1">New Collection</span>
+        <div className="inline-flex rounded-md shadow-sm" role="group">
+          <button
+            type="button"
+            className={`px-3 py-1 text-sm border ${product.launch?.newCollection ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300'}`}
+            onClick={() => updateField('launch', 'newCollection', true)}
+          >Yes</button>
+          <button
+            type="button"
+            className={`px-3 py-1 text-sm border -ml-px ${!product.launch?.newCollection ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300'}`}
+            onClick={() => updateField('launch', 'newCollection', false)}
+          >No</button>
+        </div>
+      </div>
     </div>
   </div>
 );
 
-const TechnicalSection: React.FC<any> = ({ product, updateField, vocab }) => (
+const TechnicalSection: React.FC<any> = ({ product, updateField, vocab }) => {
+  const mediaStatus = product.technical?.hideImageDate ? 'Images Ready' : 'Pending';
+  return (
   <div className="space-y-4">
     <h3 className="text-lg font-semibold text-gray-900 mb-4">Technical & Shipping</h3>
-    
+
+    <FormField label="Websites (Multi-Select)">
+      <select
+        multiple
+        value={product.technical?.website || []}
+        onChange={(e) => {
+          const select = e.target as HTMLSelectElement;
+          const selected = Array.from(select.selectedOptions).map(o => (o as HTMLOptionElement).value);
+          updateField('technical', 'website', selected);
+        }}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md h-28"
+      >
+        {vocab.websites.map((w: any) => (
+          <option key={w.value} value={w.value}>{w.label}</option>
+        ))}
+      </select>
+    </FormField>
+
     <div className="grid grid-cols-4 gap-4">
       <FormField label="Height">
         <input
@@ -647,6 +815,35 @@ const TechnicalSection: React.FC<any> = ({ product, updateField, vocab }) => (
       </select>
     </FormField>
 
+    <div className="grid grid-cols-3 gap-4">
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          checked={product.technical?.standardShippingOverride ?? false}
+          onChange={(e) => updateField('technical', 'standardShippingOverride', e.target.checked)}
+          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+        />
+        <span className="ml-2 text-sm text-gray-900">Standard Shipping Override</span>
+      </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          checked={product.technical?.expeditedOverrideShipping ?? false}
+          onChange={(e) => updateField('technical', 'expeditedOverrideShipping', e.target.checked)}
+          className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+        />
+        <span className="ml-2 text-sm text-gray-900">Expedited Override Shipping</span>
+      </label>
+      <FormField label="Hide Image Date">
+        <input
+          type="date"
+          value={product.technical?.hideImageDate?.split('T')[0] || ''}
+          onChange={(e) => updateField('technical', 'hideImageDate', e.target.value || undefined)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        />
+      </FormField>
+    </div>
+
     <div className="p-4 bg-gray-50 rounded-md border border-gray-200">
       <h4 className="text-sm font-medium text-gray-700 mb-2">Media Status</h4>
       <div className="flex items-center gap-2">
@@ -655,12 +852,52 @@ const TechnicalSection: React.FC<any> = ({ product, updateField, vocab }) => (
             ? 'bg-green-100 text-green-800' 
             : 'bg-gray-100 text-gray-800'
         }`}>
-          {product.technical?.mediaStatus || 'Pending'}
+          {mediaStatus}
         </span>
       </div>
     </div>
+
+    <details className="p-4 bg-white rounded-md border border-gray-200">
+      <summary className="cursor-pointer text-sm font-medium text-gray-700">Inventory (optional)</summary>
+      <div className="mt-3 grid grid-cols-3 gap-4">
+        <FormField label="Last Received">
+          <input
+            type="date"
+            value={product.technical?.lastReceived?.split('T')[0] || ''}
+            onChange={(e) => updateField('technical', 'lastReceived', e.target.value || undefined)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          />
+        </FormField>
+        <FormField label="First Received">
+          <input
+            type="date"
+            value={product.technical?.firstReceived?.split('T')[0] || ''}
+            onChange={(e) => updateField('technical', 'firstReceived', e.target.value || undefined)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          />
+        </FormField>
+        <div></div>
+
+        {[
+          ['Store 1', 'store1'],
+          ['Store Inv', 'storeInv'],
+          ['Warehouse Inv', 'warehouseInv'],
+          ['WHS Inv', 'whsInv'],
+          ['Store 4', 'store4'],
+          ['Total Inv', 'totalInv'],
+        ].map(([label, key]: any) => (
+          <div key={key}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600">
+              {product.technical?.[key] ?? '—'}
+            </div>
+          </div>
+        ))}
+      </div>
+    </details>
   </div>
-);
+  );
+};
 
 const RICSSection: React.FC<any> = ({ product }) => (
   <div className="space-y-4">
