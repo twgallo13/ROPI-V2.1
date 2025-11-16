@@ -45,6 +45,42 @@ PR #79 appears to have been created as placeholder but the actual functions lint
 
 **Status:** ⚠️ PR #79 closed without implementation; Stage C2 needs to be created fresh.
 
+## [2025-11-16 12:10 UTC] Stage C2 - Functions Lint/Test Implementation
+
+**Branch**: `ci/add-functions-tests`  
+**Commit**: 53bfb85
+
+**Files Added:**
+- `functions/.eslintrc.cjs` - ESLint config for functions with Node env
+- `functions/vitest.config.ts` - Vitest config with node environment  
+- `functions/src/__tests__/smoke.test.ts` - Basic smoke test (1 + 1 = 2)
+
+**Files Modified:**
+- `functions/package.json` - Added lint/test scripts and devDependencies (eslint, @typescript-eslint/*, vitest)
+- `eslint.config.js` - Added prefer-const: 'warn' rule to keep stylistic rules non-blocking
+- `.github/workflows/ci.yml` - Updated to run functions lint/test steps after functions deps install
+
+**Local Verification:**
+```bash
+npm --prefix functions run lint  # → 27 warnings, 0 errors  
+npm --prefix functions test -- --run  # → 1 test passed
+```
+
+**Dependencies Added to functions:**
+- eslint: ^9.14.0
+- @typescript-eslint/eslint-plugin: ^8.12.2  
+- @typescript-eslint/parser: ^8.12.2
+- vitest: ^2.1.4
+
+**CI Workflow Updates:**
+- Added "Lint functions" step running `npm --prefix functions run lint`
+- Added "Test functions" step running `npm --prefix functions test -- --run`  
+- Simplified "Build functions" to always run `npm --prefix functions run build`
+
+**Status:** ✅ Stage C2 implemented; PR #80 created and CI running.
+
+**PR Created:** https://github.com/twgallo13/ROPI-V2.1/pull/80
+
 ## [2025-11-16 10:48 UTC] Stage C1 - add-pr-lint-test CI
 
 **Branch**: `ci/add-pr-lint-test`  
