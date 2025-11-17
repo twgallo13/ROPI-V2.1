@@ -3,11 +3,15 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { newToLegacy, stripUndefined } from '../../utils/schemaAdapter';
 import SmartDetectPanel from './SmartDetectPanel';
 import ValidationPanel from './ValidationPanel';
 import DescriptionPanel from './DescriptionPanel';
 import { ValidationIssue } from '../../api/validator';
 import { SmartDetectSuggestion } from '../../api/smartDetect';
+import { useToast } from '../../contexts/ToastContext';
 
 interface AIWorkflowPanelProps {
   productId: string;
@@ -26,6 +30,7 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
 }) => {
   const [activeStep, setActiveStep] = useState<'detect' | 'validate' | 'describe'>('detect');
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+  const { showToast } = useToast();
 
   // Reset workflow when product changes
   useEffect(() => {
@@ -64,23 +69,55 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
     // Could emit an event to highlight the field in the main editor
   };
 
-  const handleDescriptionUpdate = (description: string, seoData?: any) => {
-    // Apply generated description to product
+  const handleDescriptionUpdate = async (description: string, seoData?: any) => {
+    // Build nested updates using canonical schema
     const updates: any = {
-      description: description,
+      descriptive: {
+        description,
+        metaName: seoData?.title || undefined,
+        metaDescription: seoData?.metaDescription || undefined,
+        keywords: seoData?.keywords || undefined,
+      },
+      ai: {
+        descriptionHtml: description,
+      }
     };
     
-    // Apply SEO suggestions if available
-    if (seoData) {
-      if (seoData.title) updates.seoTitle = seoData.title;
-      if (seoData.metaDescription) updates.seoDescription = seoData.metaDescription;
-      if (seoData.keywords) updates.seoKeywords = seoData.keywords;
-    }
-    
+    // Update UI instantly
     onProductUpdate(updates);
+    
+    // Persist to Firestore with auto-save
+    try {
+      // Merge updates with existing product data
+      const merged = applyNestedUpdate(productData, updates);
+      
+      // Convert to legacy format and strip undefined values
+      const legacyData = stripUndefined(newToLegacy(merged));
+      
+      // Persist to Firestore
+      await setDoc(doc(db, 'products', productId), legacyData, { merge: true });
+      
+      showToast('Saved', 'success');
+    } catch (error) {
+      console.error('Failed to save description:', error);
+      showToast('Save failed', 'error');
+    }
     
     // Mark describe step as completed
     setCompletedSteps(prev => new Set([...prev, 'describe']));
+  };
+  
+  // Helper to apply nested updates to product data
+  const applyNestedUpdate = (base: any, updates: any): any => {
+    const result = { ...base };
+    for (const [key, value] of Object.entries(updates)) {
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        result[key] = { ...(result[key] || {}), ...value };
+      } else {
+        result[key] = value;
+      }
+    }
+    return result;
   };
 
   // Helper function to set nested object values
