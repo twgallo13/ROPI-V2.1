@@ -14,6 +14,7 @@ interface DescriptionPanelProps {
 
 const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
   productId,
+  productData,
   currentDescription,
   onDescriptionUpdate,
 }) => {
