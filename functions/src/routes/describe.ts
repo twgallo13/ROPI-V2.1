@@ -658,4 +658,108 @@ app.get('*', (_req, res) => {
   res.json({ ok: true, route: 'describe', message: 'Describe (Gemini) endpoint ready' });
 });
 
+/**
+ * Exported core describe logic for use by async worker
+ * This processes a describe request and returns the result
+ */
+export async function processDescribeRequest(payload: DescribePayload): Promise<Record<string, unknown>> {
+  const { productId, attributes = {} } = payload;
+  
+  if (!productId) {
+    throw new Error('productId required');
+  }
+
+  // If no API key, throw error
+  if (!GEMINI_API_KEY) {
+    throw new Error("Missing Gemini API key");
+  }
+
+  // P14.1: Use condition-based template selection
+  const productData = {
+    gender: attributes?.gender,
+    department: attributes?.category?.includes('Apparel') ? 'Apparel' : 
+                attributes?.category?.includes('Accessories') ? 'Accessories' : 'Footwear',
+    ageGroup: attributes?.ageGroup,
+    materials: attributes?.materials,
+    launchDate: attributes?.launchDate || null
+  };
+
+  // If an explicit override key is provided and exists, use it directly
+  let selectionResult: TemplateSelectionResult | null = null;
+  const overrideKey = (payload.templateOverride || '').trim();
+  if (overrideKey) {
+    const overridden = await loadTemplateByKey(overrideKey);
+    if (overridden) {
+      selectionResult = {
+        template: overridden,
+        conditionsMatched: [`override:${overrideKey}`],
+        fallbackReason: undefined,
+      } as TemplateSelectionResult;
+      console.log(`[processDescribeRequest] Using template override: ${overrideKey} (v${overridden.version})`);
+    } else {
+      console.warn(`[processDescribeRequest] templateOverride provided but not found: ${overrideKey}. Falling back to auto-select.`);
+    }
+  }
+
+  if (!selectionResult) {
+    selectionResult = await selectTemplate(productData);
+  }
+  const { template, conditionsMatched, fallbackReason } = selectionResult;
+
+  console.log(`[processDescribeRequest] Selected template: ${template.key} (v${template.version})`);
+  if (conditionsMatched && conditionsMatched.length > 0) {
+    console.log(`[processDescribeRequest] Conditions matched: ${conditionsMatched.join(', ')}`);
+  }
+  if (fallbackReason) {
+    console.log(`[processDescribeRequest] Fallback reason: ${fallbackReason}`);
+  }
+  
+  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ 
+    model: 'gemini-2.0-flash',
+    generationConfig: {
+      temperature: payload.temperature ?? 0.6,
+      maxOutputTokens: 800,
+    },
+  });
+
+  const prompt = await buildPrompt(payload, template);
+  const result = await model.generateContent(prompt);
+  const text = result.response.text();
+
+  const parsed = parseGeminiResponse(text);
+  if (!parsed || !parsed.description) {
+    throw new Error('AI returned invalid JSON');
+  }
+
+  // Generate structured layout using layout engine
+  const layoutResult: LayoutEngineResult = generateLayout(
+    { sku_core: attributes, descriptive: attributes, ...payload },
+    parsed.description,
+    template.key
+  );
+  
+  // Build response with template metadata and layout engine results
+  return {
+    description: parsed.description,
+    scores: parsed.scores,
+    coach: parsed.coach,
+    seo: parsed.seo,
+    used_template: {
+      scope: template.scope || 'audience',
+      key: template.key,
+      version: template.version,
+      conditionsMatched: conditionsMatched || [],
+    },
+    facts_used: parsed.facts_used || [],
+    // Layout Engine Results (Phase 3)
+    templateKey: layoutResult.templateKey,
+    blocks: layoutResult.blocks,
+    html: layoutResult.html,
+    metaName: layoutResult.metaName,
+    metaDescription: layoutResult.metaDescription,
+    slugSuggestion: layoutResult.slugSuggestion,
+  };
+}
+
 export default app;

@@ -8,6 +8,8 @@ import validateHandler from '../handlers/validate';
 import describeHandler from '../handlers/describe';
 import importRouter from '../routes/import';
 import exporterRouter from '../routes/exporter';
+import describeStartRouter from '../routes/describeStart';
+import describeStatusRouter from '../routes/describeStatus';
 
 const app = express();
 
@@ -53,6 +55,10 @@ app.post('/api/describe', (req, res, next) => {
   Promise.resolve(describeHandler(req, res)).catch(next);
 });
 
+// Async describe endpoints (job queue)
+app.use('/api/describe-start', describeStartRouter);
+app.use('/api/describe-status', describeStatusRouter);
+
 // Mount import and exporter subrouters
 app.use('/api/import', importRouter);
 app.use('/api/exporter', exporterRouter);
@@ -65,6 +71,8 @@ app.all('/', (req, res) => {
       '/api/smart-detect',
       '/api/validate',
       '/api/describe',
+      '/api/describe-start',
+      '/api/describe-status',
       '/api/import',
       '/api/exporter'
     ]
@@ -72,11 +80,12 @@ app.all('/', (req, res) => {
 });
 
 // Error handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('[api] Error:', err);
+app.use((err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const error = err as Error;
+  console.error('[api] Error:', error);
   res.status(500).json({
     error: 'Internal server error',
-    message: err.message || 'Unknown error'
+    message: error.message || 'Unknown error'
   });
 });
 

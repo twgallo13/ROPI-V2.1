@@ -189,6 +189,7 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
           {activeStep === 'describe' && (
             <DescriptionPanel
               productId={productId}
+              productData={productData}
               currentDescription={productData?.description}
               onDescriptionUpdate={handleDescriptionUpdate}
             />
