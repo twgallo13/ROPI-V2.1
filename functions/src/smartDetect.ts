@@ -8,6 +8,8 @@ export interface SmartDetectSuggestion {
   suggestedValue: any;
   confidence: number; // 0-1
   reason: string;
+  ruleId: string;
+  ruleName: string;
   autoApply: boolean; // Whether to auto-apply this suggestion
 }
 
@@ -114,6 +116,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: suggestedDept,
           confidence: 0.95,
           reason: `From RICS category "${category}"`,
+          ruleId: 'SD-001',
+          ruleName: 'Department from RICS Category',
           autoApply: true,
         });
       }
@@ -135,6 +139,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: suggestedClass,
           confidence: 0.9,
           reason: `From RICS category "${category}"`,
+          ruleId: 'SD-002',
+          ruleName: 'Class from RICS Category',
           autoApply: true,
         });
       }
@@ -172,6 +178,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: suggestedAge,
           confidence: 0.85,
           reason: `From RICS category "${category}"`,
+          ruleId: 'SD-003',
+          ruleName: 'Age Group from RICS Category',
           autoApply: false,
         });
       }
@@ -209,6 +217,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
         suggestedValue: suggestedGender,
         confidence: 0.9,
         reason: `From RICS category gender code "${genderCode}"`,
+        ruleId: 'SD-004',
+        ruleName: 'Gender from RICS Category',
         autoApply: true,
       });
     }
@@ -235,6 +245,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
         suggestedValue: foundTeam,
         confidence: 0.8,
         reason: `Team detected in product data: "${foundTeam}"`,
+        ruleId: 'SD-005',
+        ruleName: 'Sports Team Detection',
         autoApply: false,
       });
     }
@@ -253,6 +265,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: league,
           confidence: 0.85,
           reason: `League detected: "${league}"`,
+          ruleId: 'SD-006',
+          ruleName: 'League Detection',
           autoApply: false,
         });
         break;
@@ -273,6 +287,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: normalizedColor,
           confidence: 0.95,
           reason: `From RICS color field: "${ricsColor}"`,
+          ruleId: 'SD-007',
+          ruleName: 'Primary Color from RICS',
           autoApply: true,
         });
       }
@@ -301,6 +317,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: foundColor.color,
           confidence: 0.7,
           reason: `Color detected in RICS description: "${foundColor.color}"`,
+          ruleId: 'SD-007B',
+          ruleName: 'Primary Color from Description',
           autoApply: false,
         });
       }
@@ -316,6 +334,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
       suggestedValue: shortDescription,
       confidence: 0.95,
       reason: `From RICS short description`,
+      ruleId: 'SD-008',
+      ruleName: 'Product Name from RICS',
       autoApply: true,
     });
   }
@@ -349,6 +369,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
         suggestedValue: foundMaterials,
         confidence: 0.8,
         reason: `Materials detected in RICS description: ${foundMaterials.join(', ')}`,
+        ruleId: 'SD-009',
+        ruleName: 'Materials Detection',
         autoApply: false,
       });
     }
@@ -375,6 +397,8 @@ export function runSmartDetect(product: any): SmartDetectResult {
           suggestedValue: foundBrand,
           confidence: 0.85,
           reason: `Brand detected in RICS data: "${foundBrand}"`,
+          ruleId: 'SD-010',
+          ruleName: 'Brand Detection',
           autoApply: false,
         });
         break;
