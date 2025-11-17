@@ -1,25 +1,42 @@
 /**
- * Smart Detect Panel - Rule-based field suggestions
+ * Smart Detect Panel - Rule-based field suggestions with auto-apply and persist
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { newToLegacy, stripUndefined } from '../../utils/schemaAdapter';
 import { callSmartDetect, SmartDetectResult, SmartDetectSuggestion } from '../../api/smartDetect';
+import { callValidator } from '../../api/validator';
 
 interface SmartDetectPanelProps {
   productId: string;
+  productData: any;
   onApplySuggestion: (fieldPath: string, value: any) => void;
   onApplyAll: (suggestions: SmartDetectSuggestion[]) => void;
+  showToast?: (message: string, type: 'success' | 'error', action?: { label: string; onClick: () => void }) => void;
+  onRevalidate?: () => Promise<void>;
+}
+
+interface AppliedSuggestion {
+  fieldPath: string;
+  previousValue: any;
+  newValue: any;
 }
 
 const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
   productId,
+  productData,
   onApplySuggestion,
   onApplyAll,
+  showToast = () => {},
+  onRevalidate,
 }) => {
   const [result, setResult] = useState<SmartDetectResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(new Set());
+  const undoStackRef = useRef<AppliedSuggestion[]>([]);
 
   // Load suggestions on mount and when productId changes
   useEffect(() => {
@@ -37,6 +54,14 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
     try {
       const smartDetectResult = await callSmartDetect(productId);
       setResult(smartDetectResult);
+      
+      // Auto-apply suggestions with autoApply: true
+      const autoApplySuggestions = smartDetectResult.suggestions.filter(s => s.autoApply && !appliedSuggestions.has(s.fieldPath));
+      if (autoApplySuggestions.length > 0) {
+        for (const suggestion of autoApplySuggestions) {
+          await applyAndPersistSuggestion(suggestion, true);
+        }
+      }
     } catch (err) {
       console.error('Smart Detect error:', err);
       setError(err instanceof Error ? err.message : 'Failed to load suggestions');
@@ -45,21 +70,158 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
     }
   };
 
-  const handleApplySuggestion = (suggestion: SmartDetectSuggestion) => {
-    onApplySuggestion(suggestion.fieldPath, suggestion.suggestedValue);
-    setAppliedSuggestions(prev => new Set([...prev, suggestion.fieldPath]));
+  /**
+   * Apply and persist a suggestion to Firestore
+   */
+  const applyAndPersistSuggestion = async (suggestion: SmartDetectSuggestion, isAutoApply: boolean = false) => {
+    try {
+      // Build nested updates
+      const updates = setNestedValue({}, suggestion.fieldPath, suggestion.suggestedValue);
+      
+      // Update UI instantly
+      onApplySuggestion(suggestion.fieldPath, suggestion.suggestedValue);
+      
+      // Merge with existing product data
+      const merged = applyNestedUpdate(productData, updates);
+      
+      // Convert to legacy format
+      const legacyPartial = stripUndefined(newToLegacy(merged));
+      
+      // Persist to Firestore
+      await setDoc(doc(db, 'products', productId), legacyPartial, { merge: true });
+      
+      // Track for undo
+      const appliedSuggestion: AppliedSuggestion = {
+        fieldPath: suggestion.fieldPath,
+        previousValue: suggestion.currentValue,
+        newValue: suggestion.suggestedValue,
+      };
+      undoStackRef.current.push(appliedSuggestion);
+      
+      // Mark as applied
+      setAppliedSuggestions(prev => new Set([...prev, suggestion.fieldPath]));
+      
+      // Show success toast with Undo action
+      const fieldLabel = suggestion.fieldPath.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() || suggestion.fieldPath;
+      const toastMessage = isAutoApply 
+        ? `Auto-applied: ${fieldLabel}` 
+        : `Applied: ${fieldLabel}`;
+      
+      showToast(toastMessage, 'success', {
+        label: 'Undo',
+        onClick: () => handleUndo(appliedSuggestion),
+      });
+      
+      // Trigger revalidation
+      if (onRevalidate) {
+        await onRevalidate();
+      } else {
+        // Fallback: call validator directly
+        await callValidator(productId);
+      }
+    } catch (error) {
+      console.error('Failed to apply suggestion:', error);
+      showToast('Failed to apply suggestion', 'error');
+    }
   };
 
-  const handleApplyAll = () => {
+  /**
+   * Handle undo for a suggestion
+   */
+  const handleUndo = async (appliedSuggestion: AppliedSuggestion) => {
+    try {
+      // Build updates with previous value
+      const updates = setNestedValue({}, appliedSuggestion.fieldPath, appliedSuggestion.previousValue);
+      
+      // Update UI
+      onApplySuggestion(appliedSuggestion.fieldPath, appliedSuggestion.previousValue);
+      
+      // Merge with existing product data
+      const merged = applyNestedUpdate(productData, updates);
+      
+      // Convert to legacy format
+      const legacyPartial = stripUndefined(newToLegacy(merged));
+      
+      // Persist to Firestore
+      await setDoc(doc(db, 'products', productId), legacyPartial, { merge: true });
+      
+      // Remove from applied set
+      setAppliedSuggestions(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(appliedSuggestion.fieldPath);
+        return newSet;
+      });
+      
+      // Remove from undo stack
+      undoStackRef.current = undoStackRef.current.filter(s => s.fieldPath !== appliedSuggestion.fieldPath);
+      
+      showToast('Undone', 'success');
+      
+      // Revalidate and reload suggestions
+      await loadSuggestions();
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+    } catch (error) {
+      console.error('Failed to undo:', error);
+      showToast('Failed to undo', 'error');
+    }
+  };
+
+  /**
+   * Handle manual apply for non-autoApply suggestions
+   */
+  const handleApplySuggestion = async (suggestion: SmartDetectSuggestion) => {
+    await applyAndPersistSuggestion(suggestion, false);
+  };
+
+  /**
+   * Handle apply all
+   */
+  const handleApplyAll = async () => {
     if (!result?.suggestions) return;
     
     const unapplied = result.suggestions.filter(s => !appliedSuggestions.has(s.fieldPath));
-    onApplyAll(unapplied);
     
-    // Mark all as applied
-    const newApplied = new Set(appliedSuggestions);
-    unapplied.forEach(s => newApplied.add(s.fieldPath));
-    setAppliedSuggestions(newApplied);
+    for (const suggestion of unapplied) {
+      await applyAndPersistSuggestion(suggestion, false);
+    }
+    
+    showToast(`Applied ${unapplied.length} suggestions`, 'success');
+  };
+
+  /**
+   * Helper to apply nested updates to product data
+   */
+  const applyNestedUpdate = (base: any, updates: any): any => {
+    const result = { ...base };
+    for (const [key, value] of Object.entries(updates)) {
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        result[key] = { ...(result[key] || {}), ...value };
+      } else {
+        result[key] = value;
+      }
+    }
+    return result;
+  };
+
+  /**
+   * Helper to set nested object values
+   */
+  const setNestedValue = (obj: any, path: string, value: any) => {
+    const keys = path.split('.');
+    let current = obj;
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (!(key in current)) {
+        current[key] = {};
+      }
+      current = current[key];
+    }
+    
+    current[keys[keys.length - 1]] = value;
+    return obj;
   };
 
   const getConfidenceColor = (confidence: number) => {
@@ -145,9 +307,14 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
                           <span className={`text-xs px-2 py-1 rounded ${getConfidenceColor(suggestion.confidence)} bg-gray-100`}>
                             {getConfidenceLabel(suggestion.confidence)}
                           </span>
+                          {suggestion.autoApply && !isApplied && (
+                            <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700">
+                              Auto-Apply
+                            </span>
+                          )}
                           {isApplied && (
                             <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-700">
-                              Applied ●
+                              Applied ✓
                             </span>
                           )}
                         </div>

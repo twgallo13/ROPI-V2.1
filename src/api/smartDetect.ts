@@ -8,6 +8,7 @@ export interface SmartDetectSuggestion {
   suggestedValue: any;
   confidence: number;
   reason: string;
+  autoApply: boolean;
 }
 
 export interface SmartDetectResult {
