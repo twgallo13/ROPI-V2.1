@@ -1,5 +1,16 @@
 # HOMER Operations Log
 
+## [2025-11-17 22:22 UTC] Feature: Attribute Key Seed + Verification + Vocab UI
+
+**Branch:** `feature/attribute-key-seed-20251117-222236` → **PR TBD** → Status: In Progress
+
+**Objective:** Seed complete master attribute list to Firestore settings/attributes with normalized team/brand values, verify all canonical mappings (schema adapter, importer, SmartDetect, UI), audit Vocab/Dropdown Settings cards for uniformity, run migration + smoke tests for FD ZAHARA-S-WHT, and create read-only Attribute Key UI page.
+
+**Timeline:**
+- **22:22:36 UTC**: Created feature branch from origin/main
+
+---
+
 ## [2025-11-17 21:06 UTC] Hotfix: Importer Canonical Mappings + Schema Adapter
 
 **Branch:** `hotfix/importer-mappings-20251117-210631` → **PR TBD** → Status: In Progress
