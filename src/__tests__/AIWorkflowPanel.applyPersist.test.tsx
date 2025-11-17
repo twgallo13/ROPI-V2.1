@@ -127,18 +127,6 @@ describe('AIWorkflowPanel - Apply All Persistence', () => {
     });
   });
 
-  it('should call onProductUpdate with nested updates', async () => {
-    render(
-      <AIWorkflowPanel
-        productId="TEST-PRODUCT-001"
-        productData={mockProductData}
-        onProductUpdate={mockOnProductUpdate}
-        isOpen={true}
-        onClose={mockOnClose}
-        showToast={mockShowToast}
-      />
-    );
-
   it('should render Smart Detect panel on detect step', async () => {
     render(
       <AIWorkflowPanel
