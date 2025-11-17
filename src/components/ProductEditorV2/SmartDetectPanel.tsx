@@ -14,7 +14,8 @@ interface SmartDetectPanelProps {
   productId: string;
   productData: any;
   onApplySuggestion: (fieldPath: string, value: any) => void;
-  onApplyAll: (suggestions: SmartDetectSuggestion[]) => void;
+  onApplyAll?: (suggestions: SmartDetectSuggestion[]) => void;
+  onApplyAllComplete?: () => void;
   showToast?: (message: string, type: 'success' | 'error', action?: { label: string; onClick: () => void }) => void;
   onRevalidate?: () => Promise<void>;
 }
@@ -30,6 +31,7 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
   productData,
   onApplySuggestion,
   onApplyAll,
+  onApplyAllComplete,
   showToast = () => {},
   onRevalidate,
 }) => {
@@ -278,6 +280,11 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
     }
     
     showToast(`Applied ${unapplied.length} suggestions`, 'success');
+    
+    // Notify parent that Apply All is complete (e.g., to move to next step)
+    if (onApplyAllComplete) {
+      onApplyAllComplete();
+    }
   };
 
   /**
