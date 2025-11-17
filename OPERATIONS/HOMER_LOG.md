@@ -898,6 +898,51 @@ ProductEditorV2 already contains a comprehensive AI tab (`activeTab === 'ai'`) w
 
 **Content Management:**
 - ✅ HTML Preview with toggle between formatted view and source code
+
+---
+
+## [2025-11-17 09:58 UTC] Hotfix: Legacy-to-New Schema Adapter for Functions
+
+**Branch:** `hotfix/legacy-to-new-20251117095800`  
+**Objective:** Add minimal functions-side schema adapter to support legacy products from importer in validate and smartDetect handlers without requiring full migration.
+
+**Files Created:**
+- `functions/src/utils/schemaAdapter.ts` - Minimal legacyToNew() function mapping essential fields
+- `functions/src/__tests__/validate.legacy.test.ts` - Legacy product validation tests (4 tests)
+- `functions/src/__tests__/smartDetect.legacy.test.ts` - Legacy product detection tests (5 tests)
+
+**Files Modified:**
+- `functions/src/handlers/validate.ts` - Added legacyToNew conversion after Firestore fetch
+- `functions/src/handlers/smartDetect.ts` - Added legacyToNew conversion after Firestore fetch
+
+**Commit:** 18f2bf8 - "feat: add minimal functions-side schema adapter for legacy product support"
+
+**Schema Mapping (Minimal Subset):**
+- sku_core: mpn, sku, brand, name, department, class, category, styleId, productIsActive
+- descriptive: ageGroup, gender, fit, material (from materials or materialFabric), colors, familySizing
+- pricing: retail_price
+- technical: launchDate (from launch.date), hype, fastfashion, website, status
+- source.rics: category, longDescription
+
+**Handler Logic:**
+```typescript
+// After Firestore fetch
+if (!productData?.sku_core) {
+  console.log('[legacyToNew] conversion applied for product', productData.id);
+  productData = legacyToNew(productData);
+}
+```
+
+**Test Coverage:**
+- validate.legacy.test.ts: 4 tests covering conversion, ValidationResult structure, critical issues, ID preservation
+- smartDetect.legacy.test.ts: 5 tests covering conversion, SmartDetectResult structure, RICS suggestions, minimal data, source preservation
+
+**Status:** ⏳ Tests and build pending
+
+---
+
+**Content Management:**
+- ✅ HTML Preview with toggle between formatted view and source code
 - ✅ "Apply to Product Info" functionality for generated descriptions
 - ✅ Support for multiple saved drafts (RetailOps + other channels)
 - ✅ Extended SEO meta editing with character limits (title: 60, description: 155)
