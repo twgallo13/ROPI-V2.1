@@ -9,13 +9,14 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import SmartDetectPanel from '../components/ProductEditorV2/SmartDetectPanel';
 
 // Use vi.hoisted() to define mocks that can be used in vi.mock factory functions
-const { mockSetDoc, mockDoc, mockNewToLegacy, mockStripUndefined, mockCallSmartDetect, mockCallValidator } = vi.hoisted(() => ({
+const { mockSetDoc, mockDoc, mockNewToLegacy, mockStripUndefined, mockCallSmartDetect, mockCallValidator, mockUser } = vi.hoisted(() => ({
   mockSetDoc: vi.fn(),
   mockDoc: vi.fn(),
   mockNewToLegacy: vi.fn(),
   mockStripUndefined: vi.fn(),
   mockCallSmartDetect: vi.fn(),
   mockCallValidator: vi.fn(),
+  mockUser: { uid: 'test-user', email: 'test@example.com' },
 }));
 
 // Mock Firebase
@@ -71,6 +72,15 @@ vi.mock('../api/smartDetect', () => ({
 // Mock Validator API
 vi.mock('../api/validator', () => ({
   callValidator: mockCallValidator,
+}));
+
+// Mock Auth Context
+vi.mock('../contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: mockUser,
+    role: 'admin',
+    authReady: true,
+  }),
 }));
 
 describe('SmartDetectPanel - Persist and Undo', () => {
@@ -404,5 +414,229 @@ describe('SmartDetectPanel - Persist and Undo', () => {
       expect(mockSetDoc).toHaveBeenCalled();
       expect(mockCallSmartDetect).toHaveBeenCalled(); // Reload suggestions
     });
+  });
+
+  it('should include ruleId and ruleName in suggestions', async () => {
+    mockCallSmartDetect.mockResolvedValueOnce({
+      suggestions: [
+        {
+          fieldPath: 'sku_core.department',
+          currentValue: '',
+          suggestedValue: 'Footwear',
+          confidence: 0.95,
+          reason: 'From RICS category',
+          ruleId: 'SD-001',
+          ruleName: 'Department from RICS Category',
+          autoApply: true,
+        },
+      ],
+      summary: '1 suggestion found',
+    });
+
+    render(
+      <SmartDetectPanel
+        productId="TEST-PRODUCT-001"
+        productData={mockProductData}
+        onApplySuggestion={mockOnApplySuggestion}
+        onApplyAll={mockOnApplyAll}
+        showToast={mockShowToast}
+      />
+    );
+
+    // Wait for suggestions to load
+    await waitFor(() => {
+      expect(screen.getByText('Department from RICS Category')).toBeInTheDocument();
+    });
+  });
+
+  it('should persist ai.smartDetectApplied metadata when applying suggestion', async () => {
+    mockCallSmartDetect.mockResolvedValueOnce({
+      suggestions: [
+        {
+          fieldPath: 'descriptive.gender',
+          currentValue: '',
+          suggestedValue: "Men's",
+          confidence: 0.9,
+          reason: 'From RICS category gender code "M"',
+          ruleId: 'SD-004',
+          ruleName: 'Gender from RICS Category',
+          autoApply: true,
+        },
+      ],
+      summary: '1 suggestion found',
+    });
+
+    const productWithSource = {
+      ...mockProductData,
+      source: {
+        rics: {
+          category: 'M|FTW|BASKETBALL|ADULT',
+        },
+      },
+    };
+
+    render(
+      <SmartDetectPanel
+        productId="TEST-PRODUCT-001"
+        productData={productWithSource}
+        onApplySuggestion={mockOnApplySuggestion}
+        onApplyAll={mockOnApplyAll}
+        showToast={mockShowToast}
+      />
+    );
+
+    await waitFor(() => {
+      expect(mockSetDoc).toHaveBeenCalled();
+    });
+
+    // Get the product data that was passed to newToLegacy
+    const newToLegacyCall = mockNewToLegacy.mock.calls[0];
+    expect(newToLegacyCall).toBeDefined();
+    
+    const productWithMetadata = newToLegacyCall[0];
+    expect(productWithMetadata.ai).toBeDefined();
+    expect(productWithMetadata.ai.smartDetectApplied).toBeDefined();
+    expect(productWithMetadata.ai.smartDetectApplied['descriptive.gender']).toBeDefined();
+    
+    const metadata = productWithMetadata.ai.smartDetectApplied['descriptive.gender'];
+    expect(metadata.value).toBe("Men's");
+    expect(metadata.ruleId).toBe('SD-004');
+    expect(metadata.ruleName).toBe('Gender from RICS Category');
+    expect(metadata.confidence).toBe(0.9);
+    expect(metadata.autoApply).toBe(true);
+    expect(metadata.appliedBy).toBe('system'); // autoApply uses 'system'
+    expect(metadata.appliedAt).toBeDefined();
+    expect(metadata.source).toBeDefined();
+    expect(metadata.previousValue).toBe('');
+  });
+
+  it('should set appliedBy to user email for manual apply', async () => {
+    mockCallSmartDetect.mockResolvedValueOnce({
+      suggestions: [
+        {
+          fieldPath: 'descriptive.ageGroup',
+          currentValue: '',
+          suggestedValue: 'Adult',
+          confidence: 0.85,
+          reason: 'From RICS category',
+          ruleId: 'SD-003',
+          ruleName: 'Age Group from RICS Category',
+          autoApply: false,
+        },
+      ],
+      summary: '1 suggestion found',
+    });
+
+    render(
+      <SmartDetectPanel
+        productId="TEST-PRODUCT-001"
+        productData={mockProductData}
+        onApplySuggestion={mockOnApplySuggestion}
+        onApplyAll={mockOnApplyAll}
+        showToast={mockShowToast}
+      />
+    );
+
+    // Wait for suggestions to load
+    await waitFor(() => {
+      expect(screen.getByText('1 suggestion found')).toBeInTheDocument();
+    });
+
+    // Clear mocks before manual apply
+    vi.clearAllMocks();
+
+    // Find and click Apply button
+    const applyButton = screen.getByText('Apply');
+    fireEvent.click(applyButton);
+
+    // Wait for apply to complete
+    await waitFor(() => {
+      expect(mockSetDoc).toHaveBeenCalled();
+    });
+
+    // Verify appliedBy is user email
+    const newToLegacyCall = mockNewToLegacy.mock.calls[0];
+    const productWithMetadata = newToLegacyCall[0];
+    const metadata = productWithMetadata.ai.smartDetectApplied['descriptive.ageGroup'];
+    expect(metadata.appliedBy).toBe('test@example.com');
+  });
+
+  it('should remove ai.smartDetectApplied entry when undoing', async () => {
+    let undoCallback: (() => void) | undefined;
+
+    mockShowToast.mockImplementation((msg, type, action) => {
+      if (action && action.label === 'Undo') {
+        undoCallback = action.onClick;
+      }
+    });
+
+    mockCallSmartDetect.mockResolvedValueOnce({
+      suggestions: [
+        {
+          fieldPath: 'sku_core.class',
+          currentValue: '',
+          suggestedValue: 'Athletic',
+          confidence: 0.9,
+          reason: 'From RICS category',
+          ruleId: 'SD-002',
+          ruleName: 'Class from RICS Category',
+          autoApply: true,
+        },
+      ],
+      summary: '1 suggestion found',
+    });
+
+    const productWithExistingMetadata = {
+      ...mockProductData,
+      ai: {
+        smartDetectApplied: {
+          'sku_core.class': {
+            value: 'Athletic',
+            ruleId: 'SD-002',
+            ruleName: 'Class from RICS Category',
+            confidence: 0.9,
+            autoApply: true,
+            appliedAt: new Date().toISOString(),
+            appliedBy: 'system',
+            source: { type: 'rics', field: 'source.rics.category', raw: 'M|FTW|BASKETBALL' },
+            previousValue: '',
+          },
+        },
+      },
+    };
+
+    render(
+      <SmartDetectPanel
+        productId="TEST-PRODUCT-001"
+        productData={productWithExistingMetadata}
+        onApplySuggestion={mockOnApplySuggestion}
+        onApplyAll={mockOnApplyAll}
+        showToast={mockShowToast}
+      />
+    );
+
+    // Wait for auto-apply
+    await waitFor(() => {
+      expect(undoCallback).toBeDefined();
+    });
+
+    // Clear mocks
+    vi.clearAllMocks();
+    mockCallSmartDetect.mockResolvedValue({ suggestions: [], summary: 'No suggestions' });
+
+    // Call undo
+    if (undoCallback) {
+      undoCallback();
+    }
+
+    // Wait for undo to complete
+    await waitFor(() => {
+      expect(mockSetDoc).toHaveBeenCalled();
+    });
+
+    // Verify metadata was removed
+    const newToLegacyCall = mockNewToLegacy.mock.calls[0];
+    const productAfterUndo = newToLegacyCall[0];
+    expect(productAfterUndo.ai.smartDetectApplied['sku_core.class']).toBeUndefined();
   });
 });
