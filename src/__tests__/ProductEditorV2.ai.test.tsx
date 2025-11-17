@@ -107,7 +107,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 
@@ -143,7 +143,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 
@@ -191,7 +191,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 
@@ -256,7 +256,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 

@@ -158,6 +158,7 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
             onClick={loadDescription}
             disabled={loading}
             className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+            data-testid="generate-button"
           >
             {loading ? 'Generating...' : 'Regenerate'}
           </button>
