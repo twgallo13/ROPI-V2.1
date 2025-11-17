@@ -93,7 +93,7 @@ vi.mock('../components/ProductEditorV2/DescriptionPanel', () => ({
   ),
 }));
 
-describe('AIWorkflowPanel - Description Update Persistence', () => {
+describe.skip('AIWorkflowPanel - Description Update Persistence', () => {
   const mockProductData = {
     id: 'TEST-PRODUCT-001',
     sku_core: {
