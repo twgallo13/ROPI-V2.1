@@ -11,6 +11,10 @@
       { "source": "/api/describe", "function": "apiDescribe" },
       { "source": "/api/describe/**", "function": "apiDescribe" },
       { "source": "/api/exporter/**", "function": "apiExporter" },
+      { "source": "/apiSmartDetect", "function": "apiSmartDetect" },
+      { "source": "/api/smart-detect", "function": "apiSmartDetect" },
+      { "source": "/apiValidate", "function": "apiValidate" },
+      { "source": "/api/validate", "function": "apiValidate" },
       { "source": "**", "destination": "/index.html" }
     ]
   },
