@@ -1,11 +1,14 @@
 /**
  * Firestore Import Utilities
  * Handles validation and writing of products/variants to Firestore
+ * Updated: 2025-11-17 - Write to canonical Product schema fields
  */
 
 import { collection, doc, setDoc, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Product, Variant } from '../types';
+import { newToLegacy, stripUndefined } from './schemaAdapter';
+import type { Product as CanonicalProduct } from '../types/product-schema';
 
 export type ImportRow = {
   rowNumber: number;
@@ -79,58 +82,120 @@ function validateProductRow(data: Record<string, any>): string | null {
 }
 
 /**
- * Transform row data into Product structure
+ * Normalize material input: split by comma/semicolon, dedupe, filter empty
  */
-function transformToProduct(data: Record<string, any>): Partial<Product> {
+function normalizeMaterials(material: string | string[] | undefined): string[] {
+  if (!material) return [];
+  const materials = new Set<string>();
+  if (Array.isArray(material)) {
+    material.forEach(m => m && materials.add(m.trim()));
+  } else if (typeof material === 'string') {
+    material.split(/[,;]/).forEach(m => m.trim() && materials.add(m.trim()));
+  }
+  return Array.from(materials).sort();
+}
+
+/**
+ * Transform row data into canonical Product structure
+ * Maps CSV columns to canonical schema and maintains legacy compatibility
+ */
+function transformToProduct(data: Record<string, any>): Partial<CanonicalProduct> {
   // Sanitize MPN for use as document ID
   const sanitizedMpn = sanitizeDocId(data.mpn || '');
   
-  return {
-    id: sanitizedMpn,
-    mpn: sanitizedMpn,
-    name: data.name || '',
-    brand: data.brand || '',
-    department: data.department || '',
-    class: data.class || '',
-    category: data.category || '',
-    ageGroup: data.age_group || '',
-    gender: data.gender || '',
-    materialFabric: data.material || '',
-    fit: data.fit || '',
-    sportsTeam: data.sports_team || '',
-    league: data.league || '',
-    shipping: {
-      height: data.height ?? null,
-      width: data.width ?? null,
-      length: data.length ?? null,
-      weight: data.weight ?? null,
+  const canonical: Partial<CanonicalProduct> = {
+    sku_core: {
+      mpn: sanitizedMpn,
+      sku: sanitizedMpn, // Product-level SKU same as MPN
+      brand: data.brand || '',
+      name: data.rics_short_desc || data.name || '',
+      department: data.department || '',
+      class: data.class || '',
+      category: data.category || '',
+      styleId: sanitizedMpn,
+      coreProduct: data.core_product || false,
+      productIsActive: data.is_active ?? true,
     },
-    ricsCategory: data.rics_category || '',
-    ricsLongDesc: data.rics_long_desc || '',
-    keywords: data.keywords ? (Array.isArray(data.keywords) ? data.keywords : [data.keywords]) : [],
-    websites: Array.isArray(data.website) ? data.website : (data.website ? [data.website] : []),
-    featured: data.featured || false,
-    map: data.map || false,
-    promo: data.promo || false,
-    hype: data.hype || false,
-    fastfashion: data.fastfashion || false,
-    familySizing: data.family_sizing || false,
-    status: 'intake',
-    aiContext: {
-      keywords: [],
-      featureBullets: [],
-      designNotes: '',
+    
+    descriptive: {
+      ageGroup: data.age_group || '',
+      gender: data.gender || '',
+      sportsTeam: data.sports_team,
+      league: data.league,
+      fit: data.fit || '',
+      material: normalizeMaterials(data.material || data.materials),
+      cutType: data.cut_type,
+      closureType: data.closure_type,
+      platformHeight: data.platform_height,
+      heelType: data.heel_type,
+      shoeHeightMap: data.shoe_height_map,
+      heelHeight: data.heel_height ? parseFloat(data.heel_height) : undefined,
+      outsoleMaterial: data.outsole_material,
+      primaryColor: data.rics_color || data.primary_color,
+      descriptiveColor: data.descriptive_color,
+      keywords: data.keywords ? (Array.isArray(data.keywords) ? data.keywords : [data.keywords]) : [],
+      description: undefined,
+      familySizing: data.family_sizing || false,
+      madeIn: undefined,
+      metaName: data.meta_name || '',
+      metaDescription: data.meta_description || '',
+      slug: undefined,
     },
-    marketing: {
-      title: '',
-      bullets: [],
-      seo: '',
-      paragraphDraft: '',
-      paragraphFinal: '',
+    
+    pricing: {
+      map: data.map ? parseFloat(data.map) : undefined,
+      promo: data.promo || false,
+      scomRegularPrice: data.scom_regular ? parseFloat(data.scom_regular) : undefined,
+      scomSalePrice: data.scom_sale ? parseFloat(data.scom_sale) : undefined,
     },
-    variants: [],
-    lastUpdated: new Date().toISOString(),
+    
+    technical: {
+      website: Array.isArray(data.website) ? data.website : (data.website ? [data.website] : []),
+      height: data.height ?? undefined,
+      length: data.length ?? undefined,
+      width: data.width ?? undefined,
+      weight: data.weight ?? undefined,
+      standardShippingOverride: data.standard_shipping_override,
+      expeditedOverrideShipping: data.expedited_override_shipping,
+      hideImageDate: data.hide_image_date,
+      mediaStatus: undefined,
+      taxClass: data.taxable === true || data.taxable === 'true',
+      status: 'imported',
+      lastReceived: data.last_received,
+      firstReceived: data.first_received,
+      store1: data.store1,
+      storeInv: data.store_inv,
+      warehouseInv: data.warehouse_inv,
+      whsInv: data.whs_inv,
+      store4: data.store4,
+      totalInv: data.total_inv,
+      variantCount: data.variant_count,
+      custom2: data.custom2,
+      custom3: data.custom3,
+    },
+    
+    launch: {
+      hype: data.hype || false,
+      fastFashion: data.fastfashion || data.fast_fashion || false,
+      newCollection: data.collection || data.new_collection,
+      klPostDate: data.kl_post_date,
+      launchDate: data.launch_date,
+    },
+    
+    source: {
+      rics: {
+        shortDescription: data.rics_short_desc,
+        longDescription: data.rics_long_desc,
+        brand: data.rics_brand,
+        category: data.rics_category,
+        color: data.rics_color,
+      },
+    },
+    
+    ai: undefined,
   };
+  
+  return canonical;
 }
 
 /**
@@ -214,10 +279,14 @@ export async function importToFirestore(
   // Process each product and its variants
   for (const [mpn, productRows] of groupedRows) {
     const firstRow = productRows[0].row;
-    const productData = stripUndefined(transformToProduct(firstRow.data));
+    const canonicalProduct = transformToProduct(firstRow.data);
+    
+    // Convert canonical to legacy format for Firestore write
+    const legacyProduct = newToLegacy(canonicalProduct as CanonicalProduct);
+    const productData = stripUndefined(legacyProduct);
     const productRef = doc(db, 'products', mpn);
     
-    // Write product document
+    // Write product document (legacy format with canonical fields mapped)
     try {
       await setDoc(productRef, productData, { merge: true });
     } catch (error) {

@@ -2,10 +2,44 @@
  * Schema Adapter - Bidirectional conversion between new Product schema and legacy Firestore
  * Maintains backward compatibility during migration
  * Created: 2025-11-15
+ * Updated: 2025-11-17 - Added canonical mappings for inventory, RICS, custom fields
  */
 
 import type { Product, LegacyProduct, ProductStatus } from '../types/product-schema';
 import type { Product as OldProduct } from '../types';
+
+/**
+ * Normalize color string: trim, lowercase, dedupe spaces
+ */
+function normalizeColor(color: string | undefined): string | undefined {
+  if (!color) return undefined;
+  return color.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+/**
+ * Normalize materials array: dedupe, filter empty, sort
+ */
+function normalizeMaterials(...sources: (string | string[] | undefined)[]): string[] {
+  const materials = new Set<string>();
+  for (const source of sources) {
+    if (!source) continue;
+    if (Array.isArray(source)) {
+      source.forEach(m => m && materials.add(m.trim()));
+    } else if (typeof source === 'string') {
+      source.split(/[,;]/).forEach(m => m.trim() && materials.add(m.trim()));
+    }
+  }
+  return Array.from(materials).sort();
+}
+
+/**
+ * Normalize date to ISO string
+ */
+function normalizeDate(date: Date | string | undefined): string | undefined {
+  if (!date) return undefined;
+  if (typeof date === 'string') return date;
+  return date.toISOString();
+}
 
 /**
  * Status mapping between legacy and canonical Phase 3 statuses
@@ -161,9 +195,24 @@ export function newToLegacy(product: Product): Partial<OldProduct> {
     // RICS fields (from source)
     ricsCategory: product.source?.rics?.category,
     ricsLongDesc: product.source?.rics?.longDescription,
+    ricsShortDesc: product.source?.rics?.shortDescription,
+    ricsColor: product.source?.rics?.color,
 
     // Websites
     websites: product.technical.website || [],
+
+    // Inventory and technical fields
+    lastReceived: product.technical.lastReceived,
+    firstReceived: product.technical.firstReceived,
+    storeInv: product.technical.storeInv,
+    store1: product.technical.store1,
+    store4: product.technical.store4,
+    warehouseInv: product.technical.warehouseInv,
+    whsInv: product.technical.whsInv,
+    totalInv: product.technical.totalInv,
+    variantCount: product.technical.variantCount,
+    custom2: product.technical.custom2,
+    custom3: product.technical.custom3,
 
     // Status mapping (canonical -> legacy)
     status: mapCanonicalToLegacyStatus(product.technical.status) || 'intake',
@@ -200,7 +249,7 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
       mpn: legacy.mpn || '',
       sku: legacy.mpn || '', // Fallback to MPN if no specific SKU
       brand: legacy.brand || '',
-      name: legacy.name || '',
+      name: (legacy as any).ricsShortDesc || legacy.name || '',
       department: legacy.department || '',
       class: legacy.class || '',
       category: legacy.category || '',
@@ -215,7 +264,7 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
       sportsTeam: legacy.sportsTeam,
       league: legacy.league,
       fit: legacy.fit || '',
-      material: legacy.materials || (legacy.materialFabric ? [legacy.materialFabric] : []),
+      material: normalizeMaterials(legacy.materials, legacy.materialFabric, (legacy as any).material),
       cutType: legacy.cutType,
       closureType: legacy.closureType,
       platformHeight: legacy.platformHeight,
@@ -223,7 +272,7 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
       shoeHeightMap: legacy.style?.shoeHeightMap,
       heelHeight: legacy.style?.heelHeight,
       outsoleMaterial: legacy.style?.soleMaterial,
-      primaryColor: legacy.primaryColor,
+      primaryColor: normalizeColor((legacy as any).ricsColor) || normalizeColor(legacy.primaryColor),
       descriptiveColor: legacy.descriptiveColor,
       keywords: legacy.keywords,
       description: legacy.marketing?.paragraphFinal || legacy.marketing?.paragraphDraft,
@@ -258,14 +307,17 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
         ? /^taxable\s*goods$/i.test(legacy.tax.class)
         : undefined,
       status: mapLegacyToCanonicalStatus(legacy.status),
-      lastReceived: undefined,
-      firstReceived: undefined,
-      store1: undefined,
-      storeInv: undefined,
-      warehouseInv: undefined,
-      whsInv: undefined,
-      store4: undefined,
-      totalInv: undefined,
+      lastReceived: normalizeDate((legacy as any).lastReceived),
+      firstReceived: normalizeDate((legacy as any).firstReceived),
+      store1: (legacy as any).store1,
+      storeInv: (legacy as any).storeInv,
+      warehouseInv: (legacy as any).warehouseInv,
+      whsInv: (legacy as any).whsInv,
+      store4: (legacy as any).store4,
+      totalInv: (legacy as any).totalInv,
+      variantCount: (legacy as any).variantCount,
+      custom2: (legacy as any).custom2,
+      custom3: (legacy as any).custom3,
     },
 
     launch: {
@@ -282,11 +334,11 @@ export function legacyToNew(legacy: Partial<OldProduct>): Product {
 
     source: {
       rics: {
-        shortDescription: undefined,
+        shortDescription: (legacy as any).ricsShortDesc,
         longDescription: legacy.ricsLongDesc,
         brand: undefined,
         category: legacy.ricsCategory,
-        color: undefined,
+        color: (legacy as any).ricsColor,
       },
     },
 
@@ -417,6 +469,27 @@ export function mergeIntoLegacy(
       hideImageDate: updates.technical.hideImageDate ?? merged.media?.hideImageDate,
     };
     merged.websites = updates.technical.website ?? merged.websites;
+    
+    // Update inventory and custom fields
+    if (updates.technical.lastReceived !== undefined) (merged as any).lastReceived = updates.technical.lastReceived;
+    if (updates.technical.firstReceived !== undefined) (merged as any).firstReceived = updates.technical.firstReceived;
+    if (updates.technical.storeInv !== undefined) (merged as any).storeInv = updates.technical.storeInv;
+    if (updates.technical.store1 !== undefined) (merged as any).store1 = updates.technical.store1;
+    if (updates.technical.store4 !== undefined) (merged as any).store4 = updates.technical.store4;
+    if (updates.technical.warehouseInv !== undefined) (merged as any).warehouseInv = updates.technical.warehouseInv;
+    if (updates.technical.whsInv !== undefined) (merged as any).whsInv = updates.technical.whsInv;
+    if (updates.technical.totalInv !== undefined) (merged as any).totalInv = updates.technical.totalInv;
+    if (updates.technical.variantCount !== undefined) (merged as any).variantCount = updates.technical.variantCount;
+    if (updates.technical.custom2 !== undefined) (merged as any).custom2 = updates.technical.custom2;
+    if (updates.technical.custom3 !== undefined) (merged as any).custom3 = updates.technical.custom3;
+  }
+
+  // Update RICS source fields
+  if (updates.source?.rics) {
+    if (updates.source.rics.shortDescription !== undefined) (merged as any).ricsShortDesc = updates.source.rics.shortDescription;
+    if (updates.source.rics.longDescription !== undefined) merged.ricsLongDesc = updates.source.rics.longDescription;
+    if (updates.source.rics.category !== undefined) merged.ricsCategory = updates.source.rics.category;
+    if (updates.source.rics.color !== undefined) (merged as any).ricsColor = updates.source.rics.color;
   }
 
   merged.lastUpdated = new Date().toISOString();

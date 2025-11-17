@@ -1,5 +1,17 @@
 /**
  * Smart Detect - Rule-based field suggestions from RICS data
+ * 
+ * NOTE: As of 2025-11-17, importer and schema adapter now write canonical fields:
+ * - source.rics.shortDescription, source.rics.color are populated from RICS feed
+ * - sku_core.name is set from RICS Short Description if present
+ * - descriptive.primaryColor is set from RICS Color if present
+ * - technical.lastReceived, firstReceived, storeInv, etc. populated from imports
+ * - technical.variantCount, custom2, custom3 available
+ * - launch.newCollection set from Collection field
+ * - descriptive.material is normalized array (deduped)
+ * 
+ * SmartDetect rules prefer canonical fields (sku_core.*, descriptive.*, source.rics.*)
+ * and will work correctly with both legacy and canonical product documents.
  */
 
 export interface SmartDetectSuggestion {
