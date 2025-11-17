@@ -5,7 +5,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import ProductEditorV2 from '../components/ProductEditorV2';
+import ProductEditorV2 from '../components/editors/ProductEditorV2';
 
 // Mock Firebase
 vi.mock('../firebase', () => ({
