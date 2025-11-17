@@ -412,7 +412,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
         { merge: true }
       );
 
-      // Auto-apply to product description field
+      // Auto-apply to product description field and update product doc with SEO metadata
       setProduct(prev => {
         if (!prev) return prev;
         return {
@@ -423,6 +423,29 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
           },
         };
       });
+      
+      // Persist description and SEO metadata to product document
+      try {
+        const mergedProduct = {
+          ...product,
+          descriptive: {
+            ...product.descriptive,
+            description: description,
+            metaName: result.seo?.meta_title || undefined,
+            metaDescription: result.seo?.meta_description || undefined,
+            keywords: result.seo?.meta_keywords || undefined,
+          },
+          ai: {
+            ...product.ai,
+            descriptionHtml: description,
+          },
+        };
+        
+        const legacyUpdate = stripUndefined(newToLegacy(mergedProduct));
+        await setDoc(doc(db, 'products', productId), legacyUpdate, { merge: true });
+      } catch (error) {
+        console.error('Failed to persist description to product doc:', error);
+      }
 
       // Reload descriptions
       const descriptionsRef = collection(db, 'products', productId, 'descriptions');
