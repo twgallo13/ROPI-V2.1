@@ -188,7 +188,7 @@ const IntakeQueuePage: React.FC = () => {
           onClick={handleExport}
           disabled={isExporting || loading || (selectedIds.size === 0 && completedCount === 0)}
           className="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          title={selectedIds.size > 0 ? `Export ${selectedIds.size} selected product(s)` : validatedCount === 0 ? 'No validated products to export' : 'Export validated products to CSV'}
+          title={selectedIds.size > 0 ? `Export ${selectedIds.size} selected product(s)` : completedCount === 0 ? 'No validated products to export' : 'Export validated products to CSV'}
         >
           {isExporting ? (
             <>
