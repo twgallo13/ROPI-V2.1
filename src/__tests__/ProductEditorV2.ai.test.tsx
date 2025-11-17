@@ -5,7 +5,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import ProductEditorV2 from '../components/ProductEditorV2';
+import ProductEditorV2 from '../components/editors/ProductEditorV2';
 
 // Mock Firebase
 vi.mock('../firebase', () => ({
@@ -107,7 +107,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 
@@ -143,7 +143,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 
@@ -191,7 +191,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 
@@ -256,7 +256,7 @@ describe('ProductEditorV2 AI Integration', () => {
       <ProductEditorV2
         isOpen={true}
         onClose={() => {}}
-        product={mockProduct}
+        productId="test-product-id"
       />
     );
 

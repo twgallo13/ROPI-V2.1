@@ -16,6 +16,7 @@ import { describeProduct, DescribeProductPayload } from '../../services/describe
 import type { AIScores, AICoach, AISEO, DescribeProductResponse } from '../../services/describe';
 import Toast from '../Toast';
 import AIWorkflowPanel from '../ProductEditorV2/AIWorkflowPanel';
+import { ValidationProvider } from '../../contexts/ValidationContext';
 
 interface ProductEditorV2Props {
   isOpen: boolean;
@@ -474,20 +475,23 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
   if (!isOpen) return null;
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading product...</p>
+      <ValidationProvider>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading product...</p>
+          </div>
         </div>
-      </div>
+      </ValidationProvider>
     );
   }
 
   if (!product) return null;
 
   return (
-    <div className="fixed inset-0 overflow-hidden z-50">
-      <div className="absolute inset-0 bg-gray-900 bg-opacity-50" onClick={onClose}></div>
+    <ValidationProvider>
+      <div className="fixed inset-0 overflow-hidden z-50">
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-50" onClick={onClose}></div>
       
       <div className="absolute inset-y-0 right-0 max-w-5xl w-full flex">
         <div className="relative w-full bg-white shadow-xl flex flex-col">
@@ -642,6 +646,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
         onClose={() => setAiWorkflowPanelOpen(false)}
       />
     </div>
+    </ValidationProvider>
   );
 };
 

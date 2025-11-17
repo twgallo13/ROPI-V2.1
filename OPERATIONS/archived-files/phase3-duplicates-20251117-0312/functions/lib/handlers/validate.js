@@ -32,42 +32,11 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Validator API Endpoint
- */
-const express_1 = __importDefault(require("express"));
+exports.validateHandler = validateHandler;
 const admin = __importStar(require("firebase-admin"));
-const validator_1 = require("./validator");
-const app = (0, express_1.default)();
-// CORS for dev environments
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    const allowedOrigins = [
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'https://ropi-bccee.web.app',
-        'https://ropi-bccee.firebaseapp.com',
-    ];
-    // Allow any *.app.github.dev origin (Codespaces)
-    if (origin && (allowedOrigins.includes(origin) || /\\.app\\.github\\.dev$/.test(origin))) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-    }
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-    next();
-});
-app.use(express_1.default.json());
-// Route handler function
-const handleValidate = async (req, res) => {
+const validator_1 = require("../validator");
+async function validateHandler(req, res) {
     try {
         const { productId, product } = req.body;
         let productData = product;
@@ -76,12 +45,14 @@ const handleValidate = async (req, res) => {
             const db = admin.firestore();
             const productDoc = await db.collection('products').doc(productId).get();
             if (!productDoc.exists) {
-                return res.status(404).json({ error: 'Product not found' });
+                res.status(404).json({ error: 'Product not found' });
+                return;
             }
             productData = { id: productDoc.id, ...productDoc.data() };
         }
         if (!productData) {
-            return res.status(400).json({ error: 'Product data or productId required' });
+            res.status(400).json({ error: 'Product data or productId required' });
+            return;
         }
         const result = (0, validator_1.validateProduct)(productData);
         res.json(result);
@@ -93,10 +64,5 @@ const handleValidate = async (req, res) => {
             message: error instanceof Error ? error.message : 'Unknown error'
         });
     }
-};
-// Register handler for all path variations from firebase.json
-app.post('/', handleValidate);
-app.post('/apiValidate', handleValidate);
-app.post('/api/validate', handleValidate);
-app.post('/validate', handleValidate);
-exports.default = app;
+}
+exports.default = validateHandler;

@@ -1,12 +1,20 @@
+// Load environment variables from .env file (for local development)
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import importer from './routes/import';
 import describe from './routes/describe';
+import describeStart from './routes/describeStart';
+import describeStatus from './routes/describeStatus';
 import exporter from './routes/exporter';
 import apiSmartDetectHandler from './apiSmartDetect';
 import apiValidateHandler from './apiValidate';
+import apiRouter from './api/index';
 export { seedSettingsVocab } from './seedVocab';
 export { seedMaterials } from './seed/seedMaterials';
+export { describeWorker } from './routes/describeWorker';
 
 admin.initializeApp();
 
@@ -14,9 +22,13 @@ const r = functions.region('us-central1');
 
 export const apiImport = functions.https.onRequest(importer);
 export const apiDescribe = functions.https.onRequest(describe);
+export const apiDescribeStart = r.https.onRequest(describeStart);
+export const apiDescribeStatus = r.https.onRequest(describeStatus);
 export const apiExporter = functions.https.onRequest(exporter);
 export const apiSmartDetect = functions.https.onRequest(apiSmartDetectHandler);
 export const apiValidate = functions.https.onRequest(apiValidateHandler);
+// Consolidated API router
+export const api = r.https.onRequest(apiRouter);
 
 /**
  * Cloud function to set user role (admin or specialist)

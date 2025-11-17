@@ -18,6 +18,14 @@ service cloud.firestore {
       allow update: if request.auth.token.email == "theo@shiekhshoes.org";
     }
     
+    // Description jobs (async AI describe queue)
+    // Note: Users need read access to subscribe to job status updates
+    // Write access is handled by Cloud Functions only
+    match /descriptionJobs/{jobId} {
+      allow read: if signedIn();
+      allow write: if false; // Only Cloud Functions can write
+    }
+    
     // All other collections: any authenticated user can read/write
     match /{document=**} {
       allow read, write: if signedIn();

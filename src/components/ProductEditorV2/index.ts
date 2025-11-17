@@ -9,4 +9,4 @@ export { default as AIWorkflowPanel } from './AIWorkflowPanel';
 
 export type { ValidationIssue } from '../../api/validator';
 export type { SmartDetectSuggestion } from '../../api/smartDetect';
-export type { AIDescribeResult, LayoutBlocks, LayoutBlock } from '../../api/aiDescribe';
+export type { AIDescribeResult, LayoutBlocks } from '../../api/aiDescribe';

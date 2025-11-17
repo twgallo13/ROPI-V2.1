@@ -3,10 +3,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { callAIDescribe, AIDescribeResult, LayoutBlocks } from '../../api/aiDescribe';
+import { describeProduct, type DescribeProductResponse } from '../../services/describe';
 
 interface DescriptionPanelProps {
   productId: string;
+  productData?: any;
   currentDescription?: string;
   onDescriptionUpdate: (description: string, seoData?: any) => void;
 }
@@ -16,11 +17,12 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
   currentDescription,
   onDescriptionUpdate,
 }) => {
-  const [result, setResult] = useState<AIDescribeResult | null>(null);
+  const [result, setResult] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'blocks' | 'html' | 'preview'>('blocks');
   const [selectedBlocks, setSelectedBlocks] = useState<Set<string>>(new Set());
+  const [observations, setObservations] = useState<string>('');
 
   // Load AI description on mount and when productId changes
   useEffect(() => {
@@ -29,6 +31,39 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
     }
   }, [productId]);
 
+  const buildAttributes = (pd: any) => {
+    const sku = pd?.sku_core || {};
+    const desc = pd?.descriptive || {};
+    const pricing = pd?.pricing || {};
+    const availability = pd?.availability || {};
+    return {
+      name: sku.name || pd?.name,
+      brand: sku.brand,
+      mpn: sku.mpn,
+      department: sku.department,
+      class: sku.class,
+      category: sku.category || pd?.category,
+      gender: desc.gender || pd?.gender,
+      ageGroup: desc.age_group || pd?.age_group,
+      materials: Array.isArray(desc.materials) ? desc.materials : (desc.material ? [desc.material] : undefined),
+      material: desc.material,
+      primaryColor: desc.primary_color || pd?.primary_color,
+      descriptiveColor: desc.descriptive_color || pd?.descriptive_color,
+      cutType: desc.cut_type,
+      closureType: desc.closure_type,
+      heelHeight: desc.heel_height,
+      platformHeight: desc.platform_height,
+      sportsTeam: desc.sports_team,
+      league: desc.league,
+      styleId: desc.style_id || null,
+      launchDate: availability.launch_date || null,
+      familySizing: !!desc.family_sizing,
+      price: typeof pricing.retail_price === 'number' ? pricing.retail_price : undefined,
+      status: pd?.status,
+      websites: Array.isArray(pd?.websites) ? pd.websites : undefined,
+    } as Record<string, any>;
+  };
+
   const loadDescription = async () => {
     if (!productId) return;
 
@@ -36,12 +71,22 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
     setError(null);
     
     try {
-      const describeResult = await callAIDescribe(productId);
-      setResult(describeResult);
+      const payload = {
+        productId,
+        channel: 'RetailOps',
+        tone: 'Clean',
+        length: 'Medium',
+        temperature: 0.6,
+        attributes: productData ? buildAttributes(productData) : undefined,
+        facts: observations ? { observations } : undefined,
+      };
+
+      const data: DescribeProductResponse = await describeProduct(payload as any);
+      setResult(data as any);
       
-      // Auto-select all blocks initially
-      if (describeResult.blocks) {
-        const blockIds = Object.keys(describeResult.blocks);
+      const blocks = (data as any)?.blocks;
+      if (blocks) {
+        const blockIds = Object.keys(blocks);
         setSelectedBlocks(new Set(blockIds));
       }
     } catch (err) {
@@ -113,6 +158,7 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
             onClick={loadDescription}
             disabled={loading}
             className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+            data-testid="generate-button"
           >
             {loading ? 'Generating...' : 'Regenerate'}
           </button>
@@ -126,6 +172,18 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
             </button>
           )}
         </div>
+      </div>
+
+      {/* Observations input */}
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">Observations (optional)</label>
+        <textarea
+          value={observations}
+          onChange={(e) => setObservations(e.target.value)}
+          placeholder="Notes about materials, fit, or visual details to prioritize"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm h-20"
+        />
+        <div className="text-xs text-gray-500">Included verbatim in generation to improve factuality.</div>
       </div>
 
       {error && (
@@ -178,7 +236,7 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
           </div>
 
           {/* Blocks View */}
-          {viewMode === 'blocks' && result.blocks && (
+          {viewMode === 'blocks' && result?.blocks && (
             <div className="space-y-4">
               {/* Block Selection Controls */}
               <div className="flex justify-between items-center py-2">
@@ -203,7 +261,7 @@ const DescriptionPanel: React.FC<DescriptionPanelProps> = ({
 
               {/* Block List */}
               <div className="space-y-3">
-                {Object.entries(result.blocks).map(([blockId, blockHtml]) => {
+                {Object.entries(result.blocks).map(([blockId, blockHtml]: any) => {
                   const isSelected = selectedBlocks.has(blockId);
                   const htmlString = String(blockHtml || '');
                   
