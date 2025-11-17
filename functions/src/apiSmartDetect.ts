@@ -1,9 +1,9 @@
 /**
  * Smart Detect API Endpoint
+ * Refactored to use handler module for consistency
  */
 import express from 'express';
-import * as admin from 'firebase-admin';
-import { runSmartDetect, SmartDetectResult } from './smartDetect';
+import smartDetectHandler from './handlers/smartDetect';
 
 const app = express();
 
@@ -35,50 +35,10 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-interface SmartDetectRequest {
-  productId?: string;
-  product?: any;
-}
-
-// Route handler function
-const handleSmartDetect = async (req: express.Request, res: express.Response) => {
-  try {
-    const { productId, product }: SmartDetectRequest = req.body;
-    
-    let productData = product;
-    
-    // If productId provided, fetch from Firestore
-    if (productId && !product) {
-      const db = admin.firestore();
-      const productDoc = await db.collection('products').doc(productId).get();
-      
-      if (!productDoc.exists) {
-        return res.status(404).json({ error: 'Product not found' });
-      }
-      
-      productData = { id: productDoc.id, ...productDoc.data() };
-    }
-    
-    if (!productData) {
-      return res.status(400).json({ error: 'Product data or productId required' });
-    }
-    
-    const result: SmartDetectResult = runSmartDetect(productData);
-    
-    res.json(result);
-  } catch (error) {
-    console.error('Smart Detect API error:', error);
-    res.status(500).json({ 
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-};
-
 // Register handler for all path variations from firebase.json
-app.post('/', handleSmartDetect);
-app.post('/apiSmartDetect', handleSmartDetect);
-app.post('/api/smart-detect', handleSmartDetect);
-app.post('/smart-detect', handleSmartDetect);
+app.post('/', smartDetectHandler);
+app.post('/apiSmartDetect', smartDetectHandler);
+app.post('/api/smart-detect', smartDetectHandler);
+app.post('/smart-detect', smartDetectHandler);
 
 export default app;

@@ -5,6 +5,7 @@ import describe from './routes/describe';
 import exporter from './routes/exporter';
 import apiSmartDetectHandler from './apiSmartDetect';
 import apiValidateHandler from './apiValidate';
+import apiRouter from './api/index';
 export { seedSettingsVocab } from './seedVocab';
 export { seedMaterials } from './seed/seedMaterials';
 
@@ -17,6 +18,8 @@ export const apiDescribe = functions.https.onRequest(describe);
 export const apiExporter = functions.https.onRequest(exporter);
 export const apiSmartDetect = functions.https.onRequest(apiSmartDetectHandler);
 export const apiValidate = functions.https.onRequest(apiValidateHandler);
+// Consolidated API router
+export const api = r.https.onRequest(apiRouter);
 
 /**
  * Cloud function to set user role (admin or specialist)
