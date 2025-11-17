@@ -8,11 +8,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import AIWorkflowPanel from '../components/ProductEditorV2/AIWorkflowPanel';
 
-// Define mocks before vi.mock calls (hoisted)
-const mockSetDoc = vi.fn();
-const mockDoc = vi.fn();
-const mockNewToLegacy = vi.fn();
-const mockStripUndefined = vi.fn();
+// Use vi.hoisted() to define mocks that can be used in vi.mock factory functions
+const { mockSetDoc, mockDoc, mockNewToLegacy, mockStripUndefined } = vi.hoisted(() => ({
+  mockSetDoc: vi.fn(),
+  mockDoc: vi.fn(),
+  mockNewToLegacy: vi.fn(),
+  mockStripUndefined: vi.fn(),
+}));
 
 // Mock Firebase
 vi.mock('../firebase', () => ({
