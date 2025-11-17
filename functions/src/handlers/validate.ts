@@ -5,6 +5,7 @@
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import { validateProduct, ValidationResult } from '../validator';
+import { legacyToNew } from '../utils/schemaAdapter';
 
 interface ValidateRequest {
   productId?: string;
@@ -28,6 +29,12 @@ export async function validateHandler(req: Request, res: Response): Promise<void
       }
       
       productData = { id: productDoc.id, ...productDoc.data() };
+      
+      // Convert legacy schema to new schema if needed
+      if (!productData?.sku_core) {
+        console.log('[legacyToNew] conversion applied for product', productData.id);
+        productData = legacyToNew(productData);
+      }
     }
     
     if (!productData) {

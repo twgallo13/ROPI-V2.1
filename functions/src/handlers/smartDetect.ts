@@ -5,6 +5,7 @@
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import { runSmartDetect, SmartDetectResult } from '../smartDetect';
+import { legacyToNew } from '../utils/schemaAdapter';
 
 interface SmartDetectRequest {
   productId?: string;
@@ -28,6 +29,12 @@ export async function smartDetectHandler(req: Request, res: Response): Promise<v
       }
       
       productData = { id: productDoc.id, ...productDoc.data() };
+      
+      // Convert legacy schema to new schema if needed
+      if (!productData?.sku_core) {
+        console.log('[legacyToNew] conversion applied for product', productData.id);
+        productData = legacyToNew(productData);
+      }
     }
     
     if (!productData) {
