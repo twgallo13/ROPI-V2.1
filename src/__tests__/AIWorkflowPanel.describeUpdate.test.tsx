@@ -8,10 +8,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import AIWorkflowPanel from '../components/ProductEditorV2/AIWorkflowPanel';
 
-// Mock Firebase
+// Define mocks before vi.mock calls (hoisted)
 const mockSetDoc = vi.fn();
 const mockDoc = vi.fn();
+const mockNewToLegacy = vi.fn();
+const mockStripUndefined = vi.fn();
 
+// Mock Firebase
 vi.mock('../firebase', () => ({
   db: {},
 }));
@@ -25,27 +28,27 @@ vi.mock('firebase/firestore', () => ({
 }));
 
 // Mock schema adapter
-const mockNewToLegacy = vi.fn((product: any) => ({
-  ...product,
-  description: product.descriptive?.description,
-  metaName: product.descriptive?.metaName,
-  metaDescription: product.descriptive?.metaDescription,
-  keywords: product.descriptive?.keywords,
-}));
-
-const mockStripUndefined = vi.fn((obj: any) => {
-  const result: any = {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (value !== undefined) {
-      result[key] = value;
-    }
-  }
-  return result;
-});
-
 vi.mock('../utils/schemaAdapter', () => ({
-  newToLegacy: (product: any) => mockNewToLegacy(product),
-  stripUndefined: (obj: any) => mockStripUndefined(obj),
+  newToLegacy: (product: any) => {
+    mockNewToLegacy(product);
+    return {
+      ...product,
+      description: product.descriptive?.description,
+      metaName: product.descriptive?.metaName,
+      metaDescription: product.descriptive?.metaDescription,
+      keywords: product.descriptive?.keywords,
+    };
+  },
+  stripUndefined: (obj: any) => {
+    mockStripUndefined(obj);
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value !== undefined) {
+        result[key] = value;
+      }
+    }
+    return result;
+  },
 }));
 
 // Mock child panels
