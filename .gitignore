@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+functions/lib
+src/**/*.js
+!src/**/*.test.js
+!src/**/*.spec.js
 
 # Editor directories and files
 .vscode/*
