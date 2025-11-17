@@ -11,7 +11,6 @@ import ValidationPanel from './ValidationPanel';
 import DescriptionPanel from './DescriptionPanel';
 import { ValidationIssue } from '../../api/validator';
 import { SmartDetectSuggestion } from '../../api/smartDetect';
-import { useToast } from '../../contexts/ToastContext';
 
 interface AIWorkflowPanelProps {
   productId: string;
@@ -19,6 +18,7 @@ interface AIWorkflowPanelProps {
   onProductUpdate: (updates: any) => void;
   isOpen: boolean;
   onClose: () => void;
+  showToast?: (message: string, type: 'success' | 'error') => void;
 }
 
 const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
@@ -27,10 +27,10 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
   onProductUpdate,
   isOpen,
   onClose,
+  showToast = () => {}, // Default no-op if not provided
 }) => {
   const [activeStep, setActiveStep] = useState<'detect' | 'validate' | 'describe'>('detect');
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
-  const { showToast } = useToast();
 
   // Reset workflow when product changes
   useEffect(() => {

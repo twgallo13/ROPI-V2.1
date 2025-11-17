@@ -667,6 +667,7 @@ const ProductEditorV2: React.FC<ProductEditorV2Props> = ({
         onProductUpdate={handleAIWorkflowUpdate}
         isOpen={aiWorkflowPanelOpen}
         onClose={() => setAiWorkflowPanelOpen(false)}
+        showToast={showToast}
       />
     </div>
     </ValidationProvider>

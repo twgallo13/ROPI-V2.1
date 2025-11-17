@@ -48,15 +48,6 @@ vi.mock('../utils/schemaAdapter', () => ({
   stripUndefined: (obj: any) => mockStripUndefined(obj),
 }));
 
-// Mock Toast context
-const mockShowToast = vi.fn();
-
-vi.mock('../contexts/ToastContext', () => ({
-  useToast: () => ({
-    showToast: mockShowToast,
-  }),
-}));
-
 // Mock child panels
 vi.mock('../components/ProductEditorV2/SmartDetectPanel', () => ({
   default: ({ onApplySuggestion, onApplyAll }: any) => (
@@ -120,6 +111,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
 
   const mockOnProductUpdate = vi.fn();
   const mockOnClose = vi.fn();
+  const mockShowToast = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -133,6 +125,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
@@ -157,6 +150,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
@@ -188,6 +182,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
@@ -219,6 +214,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
@@ -250,6 +246,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
@@ -271,6 +268,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
@@ -292,6 +290,7 @@ describe('AIWorkflowPanel - Description Update Persistence', () => {
         onProductUpdate={mockOnProductUpdate}
         isOpen={true}
         onClose={mockOnClose}
+        showToast={mockShowToast}
       />
     );
 
