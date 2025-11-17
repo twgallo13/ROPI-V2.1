@@ -937,7 +937,41 @@ if (!productData?.sku_core) {
 - validate.legacy.test.ts: 4 tests covering conversion, ValidationResult structure, critical issues, ID preservation
 - smartDetect.legacy.test.ts: 5 tests covering conversion, SmartDetectResult structure, RICS suggestions, minimal data, source preservation
 
-**Status:** ⏳ Tests and build pending
+**Test Results:**
+- Root: ✅ 63/63 passing (includes 3 new DescriptionPanel tests)
+- Functions: ✅ 10/10 passing (includes 9 new legacy adapter tests)
+- Root Build: ✅ Success (315 modules, 4.08s)
+- Functions Build: ✅ Success (TypeScript compilation)
+
+**Production Smoke Tests (2025-11-17 10:06 UTC):**
+
+1. **apiValidate (FD ZAHARA-S-WHT):**
+   - Status: 200 OK
+   - Result: ValidationResult with ropiScore:0, 13 issues (3 critical, 8 warnings, 2 info)
+   - Issues: MISSING_MPN, MISSING_BRAND, MISSING_NAME, MISSING_PRICE, etc.
+   - ✅ Converter applied successfully
+
+2. **apiSmartDetect (FD ZAHARA-S-WHT):**
+   - Status: 200 OK
+   - Result: {"suggestions":[], "summary":"No suggestions available"}
+   - ✅ Converter applied successfully (no RICS data available to suggest from)
+
+3. **apiDescribe (FD ZAHARA-S-WHT):**
+   - Status: 200 OK
+   - Result: Description generated with default template v2
+   - used_template: {"scope":"audience","key":"default","version":"v2","conditionsMatched":[]}
+   - HTML blocks returned successfully
+   - ✅ Converter applied successfully
+
+**PR & Merge:**
+- PR #91: https://github.com/twgallo13/ROPI-V2.1/pull/91
+- CI Status: ✅ PASSED (54s elapsed)
+- Merge Commit: f97aa9d4fe38d67dc6285c207dd043fa8a7d4243
+- Merge Method: Merge commit (not squash)
+- Remote Branch: ✅ Deleted after merge
+- Tag: hotfix-legacy-to-new-20251117100700 (pushed)
+
+**Status:** ✅ COMPLETE - Hotfix merged to main, tagged, all tests passing, production smoke tests successful
 
 ---
 
