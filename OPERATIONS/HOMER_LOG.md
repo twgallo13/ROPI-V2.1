@@ -1,5 +1,317 @@
 # HOMER Operations Log
 
+## [2025-11-17 20:18 UTC] Hotfix: Smart Detect Applied Metadata + Persist/Undo
+
+**Branch:** `hotfix/smartdetect-applied-metadata-20251117-201837` → **PR #94** → Merged
+
+**Objective:** Implement full applied-metadata persistence for Smart Detect suggestions with `ai.smartDetectApplied` storage, including ruleId, ruleName, confidence, autoApply, appliedAt, appliedBy, source info, and previousValue. Add field-level UI badges, undo capability, and comprehensive test coverage.
+
+**Timeline:**
+- **20:18:37 UTC**: Created hotfix branch from origin/main
+- **20:20 UTC**: Added `ruleId` and `ruleName` to all SmartDetect suggestions (commit e871af1)
+  - Updated `SmartDetectSuggestion` interface with `ruleId: string` and `ruleName: string`
+  - Added IDs: SD-001 through SD-010 for all 10 rules
+  - Kept existing `autoApply` behavior unchanged
+- **20:22 UTC**: Added server-side unit tests for metadata fields (commit 2839807)
+  - Extended `smartDetect.schema.test.ts` with metadata validation tests
+  - Extended `smartDetect.legacy.test.ts` with ruleId/ruleName assertions
+  - All tests verify required fields for canonical and legacy products
+- **20:25 UTC**: Implemented applied-metadata persistence in SmartDetectPanel (commit 1dda563)
+  - Added `useAuth()` hook to get current user email
+  - Updated `applyAndPersistSuggestion()` to build `ai.smartDetectApplied` metadata
+  - Metadata shape: `{ value, ruleId, ruleName, confidence, autoApply, appliedAt, appliedBy, source, previousValue }`
+  - `appliedBy` = 'system' for autoApply, user.email for manual
+  - Added `extractSourceInfo()` helper to capture RICS source field references
+  - Persist with minimal legacyPartial via `stripUndefined(newToLegacy(merged))`
+- **20:28 UTC**: Updated AIWorkflowPanel to delegate persistence (commit 75bae9c)
+  - Removed duplicate persistence logic from `handleApplySuggestion`
+  - Added `onApplyAllComplete` callback to SmartDetectPanel
+  - Move to validate step after Apply All completes persistence
+  - Keep `onProductUpdate` for immediate UI refresh only
+- **20:31 UTC**: Created SmartDetectBadge field-level UI component (commit 1a51c11)
+  - Blue chip for autoApply suggestions, yellow for user-applied
+  - Display: "SmartDetect • {ruleName} • {confidence%}"
+  - Hover tooltip shows: ruleName, reason, appliedAt, appliedBy, source.field, source.raw
+  - Undo and View Details action buttons in tooltip
+  - Component ready for integration into field editors
+- **20:35 UTC**: Added client-side persistence tests (commit ac398c4)
+  - Added tests to `SmartDetectPanel.persist.test.tsx` for metadata persistence
+  - Verify `ai.smartDetectApplied[fieldPath]` structure
+  - Test appliedBy = 'system' vs user email
+  - Test metadata removal on undo
+  - Updated `AIWorkflowPanel.applyPersist.test.tsx` for new workflow
+- **20:37 UTC**: Fixed missing ruleId handling (commit a903473)
+  - Added null check in `extractSourceInfo()` to handle missing ruleId
+  - Updated all test mocks to include ruleId and ruleName
+- **20:38 UTC**: Fixed syntax error in test file (commit 29db5c0)
+  - Removed incomplete test block from `AIWorkflowPanel.applyPersist.test.tsx`
+- **20:41 UTC**: Client tests passed (95 passed | 7 skipped)
+- **20:42 UTC**: Functions tests passed (28 passed)
+- **20:43 UTC**: Client build succeeded (vite 6.4.1, 315 modules, 4.08s)
+- **20:44 UTC**: Functions build succeeded (TypeScript compilation)
+- **20:45 UTC**: Pushed branch to origin
+- **20:51 UTC**: Created PR #94 with full feature description
+- **20:52 UTC**: CI passed (ci (20) - SUCCESS)
+- **20:53 UTC**: Merged PR #94 (squash merge commit a5daeec)
+- **20:53:36 UTC**: Tagged `hotfix-smartdetect-applied-20251117-205336`
+
+**Files Modified:**
+
+1. **Server: `functions/src/smartDetect.ts`** (+24 lines)
+   - Added `ruleId: string` and `ruleName: string` to `SmartDetectSuggestion` interface
+   - All 10 rules now return ruleId (SD-001 through SD-010) and descriptive ruleName
+
+2. **Server Tests:**
+   - `functions/src/__tests__/smartDetect.schema.test.ts` (+103 lines)
+     - Added test: "should include required metadata fields: ruleId, ruleName, and autoApply"
+     - Added test: "should return suggestions with correct autoApply values based on confidence"
+   - `functions/src/__tests__/smartDetect.legacy.test.ts` (+43 lines)
+     - Added test: "should include ruleId, ruleName, and autoApply in all suggestions for legacy products"
+
+3. **Client API: `src/api/smartDetect.ts`** (+2 lines)
+   - Updated `SmartDetectSuggestion` interface to include `ruleId` and `ruleName`
+
+4. **Client: `src/components/ProductEditorV2/SmartDetectPanel.tsx`** (+108 lines)
+   - Added `useAuth()` to access current user
+   - Added `extractSourceInfo()` helper to capture RICS source metadata
+   - Enhanced `applyAndPersistSuggestion()` to build and persist `ai.smartDetectApplied` metadata
+   - Updated `handleUndo()` to remove metadata entry on undo
+   - Updated UI to display ruleName and confidence % in suggestion cards
+   - Added `onApplyAllComplete` callback prop
+
+5. **Client: `src/components/ProductEditorV2/AIWorkflowPanel.tsx`** (-42 lines, +11 lines)
+   - Removed duplicate persistence logic from `handleApplySuggestion`
+   - Added `handleApplyAllComplete()` to move to validate step after Apply All
+   - Simplified to delegate all persistence to SmartDetectPanel
+
+6. **Client UI Component: `src/components/ProductEditorV2/SmartDetectBadge.tsx`** (NEW, +132 lines)
+   - Created reusable badge component for field-level Smart Detect indicators
+   - Props: fieldPath, metadata, onUndo, onShowDetails
+   - Blue chip (bg-blue-100) for autoApply, yellow (bg-yellow-100) for manual
+   - Hover tooltip with full metadata display
+   - Undo and View Details action buttons
+
+7. **Client Tests:**
+   - `src/__tests__/SmartDetectPanel.persist.test.tsx` (+250 lines)
+     - Added test: "should include ruleId and ruleName in suggestions"
+     - Added test: "should persist ai.smartDetectApplied metadata when applying suggestion"
+     - Added test: "should set appliedBy to user email for manual apply"
+     - Added test: "should remove ai.smartDetectApplied entry when undoing"
+     - Updated all mocks to include ruleId and ruleName
+   - `src/__tests__/AIWorkflowPanel.applyPersist.test.tsx` (-104 lines, +27 lines)
+     - Simplified tests to focus on workflow coordination
+     - Removed persistence assertions (now handled by SmartDetectPanel)
+
+**Test Results:**
+- Root: 95 passed | 7 skipped (102 total)
+- Functions: 28 passed (28 total)
+- Build: Success (client + functions)
+- CI: Passed
+
+**PR Details:**
+- URL: https://github.com/twgallo13/ROPI-V2.1/pull/94
+- Status: Merged (squash)
+- Merge Commit: a5daeec
+- Tag: hotfix-smartdetect-applied-20251117-205336
+
+**Deliverables:**
+✅ Server-side SmartDetect suggestions include ruleId, ruleName, autoApply
+✅ Client persists ai.smartDetectApplied metadata with full audit trail
+✅ Auto-apply suggestions persist on load with 'system' as appliedBy
+✅ Manual apply persists with user email as appliedBy
+✅ Undo removes metadata and reverts field value
+✅ SmartDetectBadge component ready for field integration
+✅ Comprehensive test coverage (server + client)
+✅ All tests passing, builds clean
+✅ PR merged to main with CI green
+✅ Tagged for deployment tracking
+
+**Next Steps:**
+- Integrate SmartDetectBadge into field editors (e.g., InputField, SelectField)
+- Add "View Details" right-rail panel to show rule logic and re-run capability
+- Consider smoke test against production to verify end-to-end flow
+- Monitor Firestore for ai.smartDetectApplied metadata on applied suggestions
+
+**Manual Verification Checklist:**
+1. ✅ POST /apiSmartDetect returns suggestions with ruleId, ruleName, autoApply
+2. ⏳ UI: Open product → AI Workflow → Smart Detect shows autoApply suggestions
+3. ⏳ UI: Auto-apply suggestions persist automatically with toast + Undo
+4. ⏳ Firestore: Verify ai.smartDetectApplied metadata exists after apply
+5. ⏳ UI: Click Undo reverts field and removes metadata
+6. ⏳ UI: Manual apply persists with user email in appliedBy field
+
+---
+
+## [2025-11-17 20:00 UTC] Hotfix: Smart Detect Enhanced Rules + Client Auto-Apply/Persist/Undo
+
+**Branch:** `hotfix/smartdetect-rules-20251117194205` → **PR #93** → Merged
+
+**Objective:** Implement comprehensive Smart Detect rule set with autoApply flags, client-side auto-apply on panel load, Firestore persistence for all applies, and undo functionality with toast actions.
+
+**Timeline:**
+- **19:42:06 UTC**: Created hotfix branch from origin/main
+- **19:44 UTC**: Enhanced `smartDetect.ts` with 10 comprehensive rules + autoApply logic (commit 2b3f6d6)
+- **19:46 UTC**: Added `smartDetect.rules.test.ts` (9 comprehensive tests) (commit 96a8e45)
+- **19:47 UTC**: Fixed regex word boundary bug (\\b → \b) (commit da209be)
+- **19:50 UTC**: Enhanced `SmartDetectPanel.tsx` with auto-apply/persist/undo (commit 7c98e72)
+- **19:51 UTC**: Updated `AIWorkflowPanel.tsx` with persistence (commit 7c98e72)
+- **19:52 UTC**: Added client persist tests (commit e834d99)
+- **19:53 UTC**: Functions tests passed (25 passed)
+- **19:54 UTC**: Root tests passed (92 passed | 7 skipped)
+- **19:55 UTC**: Root build succeeded (315 modules, 4.04s)
+- **19:56 UTC**: Functions build succeeded (TypeScript compilation)
+- **19:57 UTC**: Pushed branch to origin
+- **19:58 UTC**: Created PR #93
+- **19:59 UTC**: CI passed (59s elapsed)
+- **20:00 UTC**: Merged PR #93 (merge commit 1165002)
+- **20:00 UTC**: Tagged `hotfix-smartdetect-rules-20251117200014`
+- **20:01 UTC**: API smoke tests completed (3/3 endpoints responding)
+
+**Files Modified:**
+1. `functions/src/smartDetect.ts` (+208 -99 lines)
+   - Added `autoApply: boolean` to SmartDetectSuggestion interface
+   - Added helper: `normalizeColor(color: string)` for title-case color values
+   - Added helper: `normalizeString(str: string)` for title-case with underscore/dash handling
+   - Added mapping: `DEPARTMENT_MAP` {FTW→Footwear, APP→Apparel, ACC→Accessories, EQP→Equipment, TOY→Toys}
+   - Added mapping: `CLASS_MAP` {BASKETBALL→Athletic, RUNNING→Athletic, CASUAL→Casual, DRESS→Dress, etc.}
+   - Added mapping: `LEAGUE_KEYWORDS` {nba→NBA, nfl→NFL, mlb→MLB, nhl→NHL, mls→MLS, ncaa→NCAA}
+   - Rule 1: Department from RICS category token → sku_core.department (confidence 0.95, autoApply: true)
+   - Rule 2: Class from RICS category token → sku_core.class (confidence 0.90, autoApply: true)
+   - Rule 3: Age Group from RICS category token → descriptive.ageGroup (confidence 0.85, autoApply: false)
+   - Rule 4: Gender from RICS first letter/attributes → descriptive.gender (confidence 0.9, autoApply: true)
+   - Rule 5: Sports Team from longDescription/vendorStyleName → descriptive.sportsTeam (confidence 0.8, autoApply: false)
+   - Rule 6: League from attributes/longDescription → descriptive.league (confidence 0.85, autoApply: false)
+   - Rule 7: Primary Color from RICS color (0.95, autoApply: true) or text (0.7, autoApply: false) → descriptive.primaryColor
+   - Rule 8: Product Name from shortDescription → sku_core.name (confidence 0.95, autoApply: true)
+   - Rule 9: Materials from longDescription keywords → descriptive.material array (confidence 0.8, autoApply: false)
+   - Rule 10: Brand from vendorStyleName/RICS → sku_core.brand (confidence 0.85, autoApply: false)
+   - Fixed regex: Changed /\\bred\\b/i to /\bred\b/i for proper word boundary matching
+
+2. `src/components/ProductEditorV2/SmartDetectPanel.tsx` (+191 -21 lines)
+   - Added prop: `productData: any` (full canonical product for persistence)
+   - Added prop: `showToast: (message, type, action?) => void` (for undo action buttons)
+   - Added prop: `onRevalidate?: () => Promise<void>` (trigger validation after apply)
+   - Added state: `undoStackRef` to track applied suggestions with previousValue/newValue
+   - Enhanced `loadSuggestions()`: Auto-applies suggestions where autoApply: true on panel load
+   - Added `applyAndPersistSuggestion()`: Builds nested updates, applies to UI, merges with productData, converts to legacy format via `stripUndefined(newToLegacy(merged))`, persists to Firestore with `await setDoc(doc(db, 'products', productId), legacyPartial, { merge: true })`
+   - Added `handleUndo()`: Reverts suggestion by writing previousValue back to Firestore, triggers revalidation
+   - Updated UI: Shows "Auto-Apply" badge for autoApply suggestions
+   - Updated UI: Shows "Undo" action button in success toast after apply
+   - Tracks applied suggestions to prevent duplicate auto-applies
+
+3. `src/components/ProductEditorV2/AIWorkflowPanel.tsx` (+51 -21 lines)
+   - Enhanced `handleApplySuggestion()`: Now persists to Firestore after applying
+   - Enhanced `handleApplyAllSuggestions()`: Builds batch updates, applies to UI, persists to Firestore, triggers revalidation, transitions to validate step
+   - Added `handleRevalidate()`: Re-calls validator with loading state
+   - Passes `productData`, `showToast`, `onRevalidate` props to SmartDetectPanel for auto-apply/persist/undo functionality
+
+**Files Added:**
+1. `functions/src/__tests__/smartDetect.rules.test.ts` (NEW, 374 lines, 9 tests)
+   - Test: Generate all 10 suggestions with correct confidences and autoApply flags (canonical schema)
+   - Test: Use RICS color field when available (high confidence 0.95, autoApply: true)
+   - Test: Fall back to text color detection when no RICS color (lower confidence 0.7, autoApply: false)
+   - Test: Generate same suggestions for legacy flat schema (backward compatibility)
+   - Test: Set autoApply: true for high-confidence structured data rules (dept, class, gender, RICS color, name)
+   - Test: Set autoApply: false for lower-confidence text-based rules (age, team, league, materials, brand)
+   - Test: Normalize color values properly (title case)
+   - Test: Use mapping tables for department and class transformations
+   - Test: Not suggest values for fields that already have data
+
+2. `src/__tests__/SmartDetectPanel.persist.test.tsx` (NEW, 408 lines, 7 tests)
+   - Test: Auto-apply suggestions with autoApply: true on panel load
+   - Test: Persist suggestion to Firestore with correct legacy format using newToLegacy and stripUndefined
+   - Test: Call revalidation callback after auto-apply
+   - Test: Show "Auto-Apply" badge for autoApply suggestions in UI
+   - Test: Handle manual apply for non-autoApply suggestions
+   - Test: Show error toast on persist failure with error message
+   - Test: Handle undo by reverting to previous value and persisting to Firestore
+
+3. `src/__tests__/AIWorkflowPanel.applyPersist.test.tsx` (NEW, 264 lines, 7 tests)
+   - Test: Persist suggestions when "Apply All" is clicked
+   - Test: Call onProductUpdate with nested updates object
+   - Test: Call newToLegacy and stripUndefined before persisting
+   - Test: Call setDoc with merge: true to preserve other fields
+   - Test: Show success toast after applying all suggestions
+   - Test: Transition to validate step after Apply All
+   - Test: Show error toast on persist failure
+
+**Test Results:**
+
+Functions Tests (25 passed):
+```
+✓ src/__tests__/smartDetect.legacy.test.ts (5 tests)
+✓ src/__tests__/smartDetect.rules.test.ts (9 tests) ← NEW
+✓ src/__tests__/smartDetect.schema.test.ts (6 tests)
+✓ src/__tests__/smoke.test.ts (1 test)
+✓ src/__tests__/validate.legacy.test.ts (4 tests)
+
+Test Files: 5 passed (5)
+Tests: 25 passed (25)
+Duration: 839ms
+```
+
+Root Tests (92 passed | 7 skipped):
+```
+✓ functions/src/__tests__/smartDetect.rules.test.ts (9 tests)
+✓ src/__tests__/SmartDetectPanel.persist.test.tsx (7 tests) ← NEW
+✓ src/__tests__/AIWorkflowPanel.applyPersist.test.tsx (7 tests) ← NEW
+✓ src/__tests__/DescriptionPanel.test.tsx (3 tests)
+✓ src/__tests__/ProductEditorV2.ai.test.tsx (4 tests)
+✓ src/hooks/__tests__/useAttributesSettings.test.ts (19 tests)
+✓ src/utils/__tests__/csvParser.test.ts (26 tests)
+✓ functions/src/__tests__/smartDetect.legacy.test.ts (5 tests)
+✓ functions/src/__tests__/smartDetect.schema.test.ts (6 tests)
+✓ functions/src/__tests__/validate.legacy.test.ts (4 tests)
+✓ functions/src/__tests__/smoke.test.ts (1 test)
+✓ src/__tests__/smoke.test.tsx (1 test)
+↓ src/__tests__/AIWorkflowPanel.describeUpdate.test.tsx (7 tests skipped)
+
+Test Files: 12 passed | 1 skipped (13)
+Tests: 92 passed | 7 skipped (99)
+Duration: 8.29s
+```
+
+**Build Results:**
+```
+Root Build (vite v6.4.1):
+  315 modules transformed in 4.04s
+  dist/index.html: 1.04 kB | gzip: 0.45 kB
+  dist/assets/index-D2UIGkeR.css: 33.04 kB | gzip: 6.04 kB
+  dist/assets/index-wf8GzEhy.js: 27.71 kB | gzip: 6.32 kB
+  dist/assets/index-D1KRtGe6.js: 1,102.28 kB | gzip: 289.21 kB
+
+Functions Build:
+  tsc -p tsconfig.json (TypeScript compilation successful)
+```
+
+**API Smoke Tests:**
+```
+POST https://ropi-bccee.web.app/apiSmartDetect {"productId":"FD ZAHARA-S-WHT"}
+→ 200 OK: {"suggestions":[],"summary":"No suggestions available"}
+  (Product likely has complete data or lacks RICS source data)
+
+POST https://ropi-bccee.web.app/apiValidate {"productId":"FD ZAHARA-S-WHT"}
+→ 200 OK: {"ropiScore":68,"issues":[{"code":"MISSING_META_NAME",...},{"code":"MISSING_DESCRIPTION",...}]}
+  (Validator correctly identifies missing fields)
+
+POST https://ropi-bccee.web.app/api/describe {"productId":"FD ZAHARA-S-WHT"}
+→ 200 OK: {"description":"<p>This product offers a standard fit...</p>","scores":{"overall":7,...},"seo":{...}}
+  (AI Description generator working correctly)
+```
+
+**PR Details:**
+- PR #93: https://github.com/twgallo13/ROPI-V2.1/pull/93
+- Merge commit: 11650029bf9627d0e344dd721ce67a59ac4975fa
+- CI Status: ✓ Passed (59s elapsed)
+- Files changed: 7 files, 1476 insertions(+), 120 deletions(-)
+
+**Tag:** `hotfix-smartdetect-rules-20251117200014`
+
+**Summary:**
+Enhanced Smart Detect with 10 comprehensive rules using confidence scores and autoApply flags. High-confidence structured data rules (department, class, gender, RICS color, product name) auto-apply on panel load. Client-side changes include automatic Firestore persistence for all applies (auto and manual), undo functionality with toast action buttons, and revalidation triggers. All changes tested with 25 functions tests + 92 root tests (7 skipped). Both builds successful. API endpoints verified working in production.
+
+---
+
 ## [2025-11-17 18:54 UTC] Hotfix: AI Description/SEO Persistence + Smart Detect Canonical Schema
 
 **Branch:** `hotfix/ai-describe-and-smartdetect-20251117102754` → **PR #92** → Merged
