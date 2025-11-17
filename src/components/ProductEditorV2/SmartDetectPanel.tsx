@@ -213,7 +213,7 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
    */
   const extractSourceInfo = (product: any, suggestion: SmartDetectSuggestion) => {
     // Determine source type and field based on rule
-    const ruleId = suggestion.ruleId;
+    const ruleId = suggestion.ruleId || '';
     
     // Most rules use RICS data
     if (ruleId.startsWith('SD-')) {
