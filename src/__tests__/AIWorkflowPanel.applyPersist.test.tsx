@@ -58,13 +58,15 @@ vi.mock('../utils/schemaAdapter', () => ({
 // Mock child panels - SmartDetectPanel with Apply All button
 vi.mock('../components/ProductEditorV2/SmartDetectPanel', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: ({ onApplyAll }: any) => (
+  default: ({ onApplyAllComplete }: any) => (
     <div data-testid="smart-detect-panel">
       <button 
-        onClick={() => onApplyAll([
-          { fieldPath: 'sku_core.department', suggestedValue: 'Footwear' },
-          { fieldPath: 'sku_core.class', suggestedValue: 'Athletic' },
-        ])}
+        onClick={() => {
+          // Simulate SmartDetectPanel completing Apply All
+          if (onApplyAllComplete) {
+            onApplyAllComplete();
+          }
+        }}
       >
         Apply All
       </button>
@@ -100,7 +102,7 @@ describe('AIWorkflowPanel - Apply All Persistence', () => {
     mockSetDoc.mockResolvedValue(undefined);
   });
 
-  it('should persist suggestions when Apply All is clicked', async () => {
+  it('should move to validate step when Apply All completes', async () => {
     render(
       <AIWorkflowPanel
         productId="TEST-PRODUCT-001"
@@ -112,134 +114,35 @@ describe('AIWorkflowPanel - Apply All Persistence', () => {
       />
     );
 
-    // Panel should render
+    // Panel should start on detect step
     expect(screen.getByTestId('smart-detect-panel')).toBeInTheDocument();
 
-    // Click Apply All button
+    // Click Apply All button (which calls onApplyAllComplete)
     const applyAllButton = screen.getByText('Apply All');
     fireEvent.click(applyAllButton);
 
-    // Wait for persistence
-    await waitFor(() => {
-      expect(mockSetDoc).toHaveBeenCalled();
-    });
-  });
-
-  it('should call onProductUpdate with nested updates', async () => {
-    render(
-      <AIWorkflowPanel
-        productId="TEST-PRODUCT-001"
-        productData={mockProductData}
-        onProductUpdate={mockOnProductUpdate}
-        isOpen={true}
-        onClose={mockOnClose}
-        showToast={mockShowToast}
-      />
-    );
-
-    const applyAllButton = screen.getByText('Apply All');
-    fireEvent.click(applyAllButton);
-
-    await waitFor(() => {
-      expect(mockOnProductUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sku_core: expect.objectContaining({
-            department: 'Footwear',
-            class: 'Athletic',
-          }),
-        })
-      );
-    });
-  });
-
-  it('should call newToLegacy and stripUndefined before persisting', async () => {
-    render(
-      <AIWorkflowPanel
-        productId="TEST-PRODUCT-001"
-        productData={mockProductData}
-        onProductUpdate={mockOnProductUpdate}
-        isOpen={true}
-        onClose={mockOnClose}
-        showToast={mockShowToast}
-      />
-    );
-
-    const applyAllButton = screen.getByText('Apply All');
-    fireEvent.click(applyAllButton);
-
-    await waitFor(() => {
-      expect(mockNewToLegacy).toHaveBeenCalled();
-      expect(mockStripUndefined).toHaveBeenCalled();
-    });
-  });
-
-  it('should call setDoc with merge: true', async () => {
-    render(
-      <AIWorkflowPanel
-        productId="TEST-PRODUCT-001"
-        productData={mockProductData}
-        onProductUpdate={mockOnProductUpdate}
-        isOpen={true}
-        onClose={mockOnClose}
-        showToast={mockShowToast}
-      />
-    );
-
-    const applyAllButton = screen.getByText('Apply All');
-    fireEvent.click(applyAllButton);
-
-    await waitFor(() => {
-      const setDocCall = mockSetDoc.mock.calls[0];
-      expect(setDocCall[2]).toEqual({ merge: true });
-    });
-  });
-
-  it('should show success toast after applying suggestions', async () => {
-    render(
-      <AIWorkflowPanel
-        productId="TEST-PRODUCT-001"
-        productData={mockProductData}
-        onProductUpdate={mockOnProductUpdate}
-        isOpen={true}
-        onClose={mockOnClose}
-        showToast={mockShowToast}
-      />
-    );
-
-    const applyAllButton = screen.getByText('Apply All');
-    fireEvent.click(applyAllButton);
-
-    await waitFor(() => {
-      expect(mockShowToast).toHaveBeenCalledWith(
-        expect.stringContaining('Applied 2 suggestions'),
-        'success'
-      );
-    });
-  });
-
-  it('should transition to validate step after Apply All', async () => {
-    render(
-      <AIWorkflowPanel
-        productId="TEST-PRODUCT-001"
-        productData={mockProductData}
-        onProductUpdate={mockOnProductUpdate}
-        isOpen={true}
-        onClose={mockOnClose}
-        showToast={mockShowToast}
-      />
-    );
-
-    const applyAllButton = screen.getByText('Apply All');
-    fireEvent.click(applyAllButton);
-
+    // Wait for step transition to validation
     await waitFor(() => {
       expect(screen.getByTestId('validation-panel')).toBeInTheDocument();
     });
   });
 
-  it('should show error toast on persist failure', async () => {
-    mockSetDoc.mockRejectedValueOnce(new Error('Firestore error'));
+  it('should render Smart Detect panel on detect step', async () => {
+    render(
+      <AIWorkflowPanel
+        productId="TEST-PRODUCT-001"
+        productData={mockProductData}
+        onProductUpdate={mockOnProductUpdate}
+        isOpen={true}
+        onClose={mockOnClose}
+        showToast={mockShowToast}
+      />
+    );
 
+    expect(screen.getByTestId('smart-detect-panel')).toBeInTheDocument();
+  });
+
+  it('should mark detect step as completed after Apply All', async () => {
     render(
       <AIWorkflowPanel
         productId="TEST-PRODUCT-001"
@@ -254,11 +157,9 @@ describe('AIWorkflowPanel - Apply All Persistence', () => {
     const applyAllButton = screen.getByText('Apply All');
     fireEvent.click(applyAllButton);
 
+    // Should transition to validation panel
     await waitFor(() => {
-      expect(mockShowToast).toHaveBeenCalledWith(
-        'Failed to save suggestions',
-        'error'
-      );
+      expect(screen.getByTestId('validation-panel')).toBeInTheDocument();
     });
   });
 });

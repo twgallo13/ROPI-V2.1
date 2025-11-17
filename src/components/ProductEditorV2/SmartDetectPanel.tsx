@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useAuth } from '../../contexts/AuthContext';
 import { newToLegacy, stripUndefined } from '../../utils/schemaAdapter';
 import { callSmartDetect, SmartDetectResult, SmartDetectSuggestion } from '../../api/smartDetect';
 import { callValidator } from '../../api/validator';
@@ -13,7 +14,8 @@ interface SmartDetectPanelProps {
   productId: string;
   productData: any;
   onApplySuggestion: (fieldPath: string, value: any) => void;
-  onApplyAll: (suggestions: SmartDetectSuggestion[]) => void;
+  onApplyAll?: (suggestions: SmartDetectSuggestion[]) => void;
+  onApplyAllComplete?: () => void;
   showToast?: (message: string, type: 'success' | 'error', action?: { label: string; onClick: () => void }) => void;
   onRevalidate?: () => Promise<void>;
 }
@@ -29,9 +31,11 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
   productData,
   onApplySuggestion,
   onApplyAll,
+  onApplyAllComplete,
   showToast = () => {},
   onRevalidate,
 }) => {
+  const { user } = useAuth();
   const [result, setResult] = useState<SmartDetectResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +79,8 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
    */
   const applyAndPersistSuggestion = async (suggestion: SmartDetectSuggestion, isAutoApply: boolean = false) => {
     try {
+      const previousValue = suggestion.currentValue;
+      
       // Build nested updates
       const updates = setNestedValue({}, suggestion.fieldPath, suggestion.suggestedValue);
       
@@ -84,7 +90,32 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
       // Merge with existing product data
       const merged = applyNestedUpdate(productData, updates);
       
-      // Convert to legacy format
+      // Build ai.smartDetectApplied metadata
+      const appliedBy = isAutoApply ? 'system' : (user?.email || 'unknown');
+      const sourceInfo = extractSourceInfo(productData, suggestion);
+      
+      const smartDetectApplied = {
+        ...(merged.ai?.smartDetectApplied || {}),
+        [suggestion.fieldPath]: {
+          value: suggestion.suggestedValue,
+          ruleId: suggestion.ruleId,
+          ruleName: suggestion.ruleName,
+          confidence: suggestion.confidence,
+          autoApply: suggestion.autoApply,
+          appliedAt: new Date().toISOString(),
+          appliedBy,
+          source: sourceInfo,
+          previousValue,
+        },
+      };
+      
+      // Add metadata to merged product
+      merged.ai = {
+        ...(merged.ai || {}),
+        smartDetectApplied,
+      };
+      
+      // Convert to legacy format with minimal updates
       const legacyPartial = stripUndefined(newToLegacy(merged));
       
       // Persist to Firestore
@@ -93,7 +124,7 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
       // Track for undo
       const appliedSuggestion: AppliedSuggestion = {
         fieldPath: suggestion.fieldPath,
-        previousValue: suggestion.currentValue,
+        previousValue,
         newValue: suggestion.suggestedValue,
       };
       undoStackRef.current.push(appliedSuggestion);
@@ -139,6 +170,15 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
       // Merge with existing product data
       const merged = applyNestedUpdate(productData, updates);
       
+      // Remove the ai.smartDetectApplied entry for this field
+      if (merged.ai?.smartDetectApplied) {
+        const { [appliedSuggestion.fieldPath]: removed, ...remaining } = merged.ai.smartDetectApplied;
+        merged.ai = {
+          ...merged.ai,
+          smartDetectApplied: remaining,
+        };
+      }
+      
       // Convert to legacy format
       const legacyPartial = stripUndefined(newToLegacy(merged));
       
@@ -169,6 +209,58 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
   };
 
   /**
+   * Extract source information from product data for the suggestion
+   */
+  const extractSourceInfo = (product: any, suggestion: SmartDetectSuggestion) => {
+    // Determine source type and field based on rule
+    const ruleId = suggestion.ruleId || '';
+    
+    // Most rules use RICS data
+    if (ruleId.startsWith('SD-')) {
+      const rics = product.source?.rics || product.rics || {};
+      
+      // Try to determine which RICS field was used
+      if (suggestion.reason.includes('category')) {
+        return {
+          type: 'rics',
+          field: 'source.rics.category',
+          raw: rics.category || '',
+        };
+      } else if (suggestion.reason.includes('color')) {
+        return {
+          type: 'rics',
+          field: 'source.rics.color',
+          raw: rics.color || rics.RICSColor || '',
+        };
+      } else if (suggestion.reason.includes('short description')) {
+        return {
+          type: 'rics',
+          field: 'source.rics.shortDescription',
+          raw: rics.shortDescription || '',
+        };
+      } else if (suggestion.reason.includes('description')) {
+        return {
+          type: 'rics',
+          field: 'source.rics.longDescription',
+          raw: rics.longDescription || '',
+        };
+      } else if (suggestion.reason.includes('RICS data')) {
+        return {
+          type: 'rics',
+          field: 'source.rics',
+          raw: JSON.stringify(rics),
+        };
+      }
+    }
+    
+    return {
+      type: 'other',
+      field: 'unknown',
+      raw: '',
+    };
+  };
+
+  /**
    * Handle manual apply for non-autoApply suggestions
    */
   const handleApplySuggestion = async (suggestion: SmartDetectSuggestion) => {
@@ -188,6 +280,11 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
     }
     
     showToast(`Applied ${unapplied.length} suggestions`, 'success');
+    
+    // Notify parent that Apply All is complete (e.g., to move to next step)
+    if (onApplyAllComplete) {
+      onApplyAllComplete();
+    }
   };
 
   /**
@@ -304,8 +401,11 @@ const SmartDetectPanel: React.FC<SmartDetectPanelProps> = ({
                           <span className="text-sm font-medium text-gray-900">
                             {suggestion.fieldPath.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim()}
                           </span>
+                          <span className="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600">
+                            {suggestion.ruleName}
+                          </span>
                           <span className={`text-xs px-2 py-1 rounded ${getConfidenceColor(suggestion.confidence)} bg-gray-100`}>
-                            {getConfidenceLabel(suggestion.confidence)}
+                            {getConfidenceLabel(suggestion.confidence)} ({Math.round(suggestion.confidence * 100)}%)
                           </span>
                           {suggestion.autoApply && !isApplied && (
                             <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700">

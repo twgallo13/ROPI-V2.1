@@ -225,4 +225,107 @@ describe('runSmartDetect - Canonical Schema Support', () => {
     );
     expect(hasCanonicalPaths).toBe(true);
   });
+
+  it('should include required metadata fields: ruleId, ruleName, and autoApply', () => {
+    const product = {
+      sku_core: {
+        mpn: 'METADATA-TEST-001',
+        brand: '',
+        name: '',
+        department: '',
+        class: '',
+        styleId: 'METADATA-TEST-001',
+      },
+      descriptive: {
+        gender: '',
+        primaryColor: '',
+      },
+      source: {
+        rics: {
+          category: 'M|FTW|BASKETBALL|YOUTH',
+          color: 'Black/White',
+          shortDescription: 'Air Jordan 1 Mid',
+        },
+      },
+    };
+
+    const result = runSmartDetect(product);
+
+    expect(result).toBeDefined();
+    expect(result.suggestions).toBeDefined();
+    expect(result.suggestions.length).toBeGreaterThan(0);
+
+    // Every suggestion must include required metadata fields
+    result.suggestions.forEach(suggestion => {
+      expect(suggestion.fieldPath).toBeDefined();
+      expect(typeof suggestion.fieldPath).toBe('string');
+      
+      expect(suggestion.suggestedValue).toBeDefined();
+      
+      expect(suggestion.confidence).toBeDefined();
+      expect(typeof suggestion.confidence).toBe('number');
+      expect(suggestion.confidence).toBeGreaterThan(0);
+      expect(suggestion.confidence).toBeLessThanOrEqual(1);
+      
+      expect(suggestion.reason).toBeDefined();
+      expect(typeof suggestion.reason).toBe('string');
+      
+      expect(suggestion.ruleId).toBeDefined();
+      expect(typeof suggestion.ruleId).toBe('string');
+      expect(suggestion.ruleId).toMatch(/^SD-\d+/);
+      
+      expect(suggestion.ruleName).toBeDefined();
+      expect(typeof suggestion.ruleName).toBe('string');
+      expect(suggestion.ruleName.length).toBeGreaterThan(0);
+      
+      expect(suggestion.autoApply).toBeDefined();
+      expect(typeof suggestion.autoApply).toBe('boolean');
+    });
+  });
+
+  it('should return suggestions with correct autoApply values based on confidence', () => {
+    const product = {
+      sku_core: {
+        mpn: 'AUTOAPPLY-TEST-001',
+        brand: '',
+        department: '',
+        class: '',
+      },
+      descriptive: {
+        gender: '',
+        primaryColor: '',
+        ageGroup: '',
+      },
+      source: {
+        rics: {
+          category: 'W|FTW|RUNNING|YOUTH',
+          color: 'Navy Blue',
+        },
+      },
+    };
+
+    const result = runSmartDetect(product);
+
+    expect(result.suggestions).toBeDefined();
+    expect(result.suggestions.length).toBeGreaterThan(0);
+
+    // High-confidence rules should have autoApply: true
+    const deptSuggestion = result.suggestions.find(s => s.ruleId === 'SD-001');
+    if (deptSuggestion) {
+      expect(deptSuggestion.autoApply).toBe(true);
+      expect(deptSuggestion.confidence).toBeGreaterThanOrEqual(0.9);
+    }
+
+    const colorSuggestion = result.suggestions.find(s => s.ruleId === 'SD-007');
+    if (colorSuggestion) {
+      expect(colorSuggestion.autoApply).toBe(true);
+      expect(colorSuggestion.confidence).toBeGreaterThanOrEqual(0.9);
+    }
+
+    // Lower-confidence rules should have autoApply: false
+    const ageSuggestion = result.suggestions.find(s => s.ruleId === 'SD-003');
+    if (ageSuggestion) {
+      expect(ageSuggestion.autoApply).toBe(false);
+    }
+  });
 });
