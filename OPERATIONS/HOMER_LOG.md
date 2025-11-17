@@ -1,5 +1,55 @@
 # HOMER Operations Log
 
+## [2025-11-17 21:06 UTC] Hotfix: Importer Canonical Mappings + Schema Adapter
+
+**Branch:** `hotfix/importer-mappings-20251117-210631` → **PR TBD** → Status: In Progress
+
+**Objective:** Implement canonical field mappings in schema adapter and importer to surface missing attributes (inventory, RICS color, custom fields, etc.) and eliminate duplicate/conflicting fields. Add round-trip support for technical.lastReceived, technical.firstReceived, inventory fields, variantCount, descriptive.primaryColor, sku_core.name from RICS, technical.custom2/3, launch.newCollection, and normalized material arrays.
+
+**Timeline:**
+- **21:06:31 UTC**: Created hotfix branch from origin/main
+- **21:09 UTC**: Added canonical field mappings to schema adapter (commit 0b449e8)
+  - Added Technical.variantCount, custom2, custom3 fields to Product schema
+  - Added normalization helpers: normalizeColor, normalizeMaterials, normalizeDate
+  - Updated legacyToNew: populate inventory/custom fields, RICS->name, RICS color->primaryColor
+  - Updated newToLegacy: write canonical fields back to legacy format
+  - Updated mergeIntoLegacy: handle partial updates for new fields
+- **21:11 UTC**: Updated importer to write canonical Product fields (commit 199c2ef)
+  - Import schemaAdapter newToLegacy and stripUndefined
+  - Add normalizeMaterials helper for material deduplication
+  - Rewrite transformToProduct to create canonical Product structure
+  - Map CSV columns to canonical schema (RICS, inventory, custom, collection)
+  - Convert canonical to legacy via newToLegacy before Firestore write
+- **21:13 UTC**: Created migration script for legacy data (commit c7361b2)
+  - Add migrateLegacyToCanonical.js with --dry-run and --product-ids options
+  - Extract canonical updates: RICS->name, RICS color->primaryColor, material normalization
+  - Populate inventory, custom, variantCount, launch.newCollection fields
+  - Write with merge:true to preserve existing data
+- **21:15 UTC**: Added schema adapter mapping tests (commit 91e7fe6)
+  - 10 test cases for legacyToNew and newToLegacy round-trip
+  - Test RICS shortDescription->name, RICS color normalization
+  - Test material array deduplication, inventory/custom field mapping
+  - Include FD ZAHARA-S-WHT sample product test
+- **21:17 UTC**: Added importer mapping tests (commit e682ef6)
+  - 8 test cases for CSV import canonical field writes
+  - Test RICS, inventory, custom, collection, pricing, material normalization
+  - Test FD ZAHARA-S-WHT complete import scenario
+- **21:18 UTC**: Added SmartDetect canonical field documentation (commit 32367f7)
+- **21:14 UTC**: Client tests passed (113 passed | 7 skipped)
+- **21:15 UTC**: Functions tests passed (28 passed)
+- **21:15 UTC**: Client build succeeded (vite 6.4.1, 315 modules, 3.97s)
+
+**Summary:**
+- ✅ Schema adapter enhanced with bidirectional canonical field mappings
+- ✅ Importer writes canonical Product schema fields from CSV
+- ✅ Migration script ready for bulk/one-off legacy data migration
+- ✅ 18 new test cases verify mappings (10 schema + 8 importer)
+- ✅ All tests passing (113 client + 28 functions)
+- ✅ Builds successful (client + functions)
+- 🔄 Next: smoke validation with FD ZAHARA-S-WHT, PR creation
+
+---
+
 ## [2025-11-17 20:18 UTC] Hotfix: Smart Detect Applied Metadata + Persist/Undo
 
 **Branch:** `hotfix/smartdetect-applied-metadata-20251117-201837` → **PR #94** → Merged
