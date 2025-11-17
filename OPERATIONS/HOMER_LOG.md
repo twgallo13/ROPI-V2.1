@@ -38,6 +38,12 @@
 - **21:14 UTC**: Client tests passed (113 passed | 7 skipped)
 - **21:15 UTC**: Functions tests passed (28 passed)
 - **21:15 UTC**: Client build succeeded (vite 6.4.1, 315 modules, 3.97s)
+- **21:17 UTC**: Pushed branch to origin
+- **21:20 UTC**: Created PR #95: "chore(importer): map RICS & inventory into canonical fields + migration"
+- **21:20 UTC**: CI started (GitHub Actions)
+- **21:21 UTC**: CI passed ✓
+- **21:22 UTC**: PR #95 merged to main (squash merge, commit 6d21079)
+- **21:23 UTC**: Tagged hotfix-importer-mappings-20251117-212318 and pushed
 
 **Summary:**
 - ✅ Schema adapter enhanced with bidirectional canonical field mappings
@@ -46,7 +52,28 @@
 - ✅ 18 new test cases verify mappings (10 schema + 8 importer)
 - ✅ All tests passing (113 client + 28 functions)
 - ✅ Builds successful (client + functions)
-- 🔄 Next: smoke validation with FD ZAHARA-S-WHT, PR creation
+- ✅ PR #95 merged with CI green
+- ✅ Tag: hotfix-importer-mappings-20251117-212318
+
+**Files Changed (8 files, +1183/-59 lines):**
+1. `OPERATIONS/HOMER_LOG.md` (+50 lines)
+2. `functions/src/smartDetect.ts` (+12 lines) - canonical field documentation
+3. `scripts/migrateLegacyToCanonical.js` (+258 lines) - NEW migration script
+4. `src/__tests__/firestoreImport.mappings.test.ts` (+335 lines) - NEW importer tests
+5. `src/__tests__/schemaAdapter.mappings.test.ts` (+324 lines) - NEW schema tests
+6. `src/types/product-schema.ts` (+3 lines) - variantCount, custom2, custom3 fields
+7. `src/utils/firestoreImport.ts` (+115/-46 lines) - canonical CSV import
+8. `src/utils/schemaAdapter.ts` (+89/-13 lines) - canonical mappings
+
+**Deliverables:**
+- PR URL: https://github.com/twgallo13/ROPI-V2.1/pull/95
+- Merge Commit: 6d21079213fb60f2012a41bb4d4c3f825431672a
+- Tag: hotfix-importer-mappings-20251117-212318
+
+**Next Steps:**
+- Run migration script for FD ZAHARA-S-WHT: `node scripts/migrateLegacyToCanonical.js --dry-run --product-ids="FD ZAHARA-S-WHT"`
+- Verify canonical fields in Firestore after migration
+- Test Smart Detect/Validate/Describe with migrated product
 
 ---
 
