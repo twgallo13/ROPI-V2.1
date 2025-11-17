@@ -139,4 +139,47 @@ describe('smartDetect handler - legacy product support', () => {
     expect(convertedProduct.source.rics.category).toBe('M|APP|TSHIRT');
     expect(convertedProduct.source.rics.longDescription).toBe('Cotton t-shirt with graphic print');
   });
+
+  it('should include ruleId, ruleName, and autoApply in all suggestions for legacy products', () => {
+    const legacyProduct = {
+      id: 'TEST-METADATA-LEGACY',
+      mpn: 'METADATA-LEGACY-001',
+      name: '',
+      brand: '',
+      department: '',
+      class: '',
+      ricsCategory: 'W|FTW|RUNNING|ADULT',
+      ricsColor: 'Pink/White',
+      ricsShortDesc: 'Air Max 90',
+      status: 'active',
+    };
+
+    const convertedProduct = legacyToNew(legacyProduct);
+    
+    // Add RICS data
+    convertedProduct.source = convertedProduct.source || {};
+    convertedProduct.source.rics = {
+      category: legacyProduct.ricsCategory,
+      color: legacyProduct.ricsColor,
+      shortDescription: legacyProduct.ricsShortDesc,
+    };
+
+    const result = runSmartDetect(convertedProduct);
+
+    expect(result.suggestions).toBeDefined();
+    expect(result.suggestions.length).toBeGreaterThan(0);
+
+    // Every suggestion must have required metadata
+    result.suggestions.forEach(suggestion => {
+      expect(suggestion.ruleId).toBeDefined();
+      expect(typeof suggestion.ruleId).toBe('string');
+      expect(suggestion.ruleId).toMatch(/^SD-\d+/);
+      
+      expect(suggestion.ruleName).toBeDefined();
+      expect(typeof suggestion.ruleName).toBe('string');
+      
+      expect(suggestion.autoApply).toBeDefined();
+      expect(typeof suggestion.autoApply).toBe('boolean');
+    });
+  });
 });
