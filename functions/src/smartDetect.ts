@@ -18,19 +18,22 @@ export interface SmartDetectResult {
 /**
  * Smart Detect Rules Engine
  * Analyzes product data and suggests field values based on RICS and patterns
+ * Supports new schema via sku/descr and legacy via product.
  */
 export function runSmartDetect(product: any): SmartDetectResult {
   const suggestions: SmartDetectSuggestion[] = [];
   
-  // Extract RICS data for analysis
-  const rics = product.rics || {};
+  // Support canonical schema: prefer nested structure, fallback to legacy
+  const sku = product.sku_core || product;
+  const descr = product.descriptive || product;
+  const rics = (product.source && product.source.rics) || product.rics || {};
   const category = rics.category || '';
-  const longDescription = rics.longDescription || '';
+  const longDescription = rics.longDescription || descr.description || '';
   const shortDescription = rics.shortDescription || '';
-  const vendorStyleName = rics.vendorStyleName || product.name || '';
+  const vendorStyleName = rics.vendorStyleName || sku.name || product.name || '';
   
   // Rule 1: Department from RICS Category
-  if (category && !product.department) {
+  if (category && !sku.department) {
     const categoryParts = category.split('|');
     if (categoryParts.length >= 2) {
       const ricsDept = categoryParts[1]; // M|FTW|... -> FTW
@@ -53,7 +56,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
       if (suggestedDept) {
         suggestions.push({
           fieldPath: 'sku_core.department',
-          currentValue: product.department,
+          currentValue: sku.department,
           suggestedValue: suggestedDept,
           confidence: 0.95,
           reason: `From RICS category "${category}"`
@@ -63,7 +66,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 2: Class from RICS Category
-  if (category && !product.class) {
+  if (category && !sku.class) {
     const categoryParts = category.split('|');
     if (categoryParts.length >= 3) {
       const ricsClass = categoryParts[2]; // M|FTW|BASKETBALL|... -> BASKETBALL
@@ -89,7 +92,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
       if (suggestedClass) {
         suggestions.push({
           fieldPath: 'sku_core.class',
-          currentValue: product.class,
+          currentValue: sku.class,
           suggestedValue: suggestedClass,
           confidence: 0.9,
           reason: `From RICS category "${category}"`
@@ -99,7 +102,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 3: Age Group from RICS Category
-  if (category && !product.ageGroup) {
+  if (category && !descr.ageGroup) {
     const categoryParts = category.split('|');
     if (categoryParts.length >= 4) {
       const ricsAge = categoryParts[3]; // M|FTW|BASKETBALL|YOUTH -> YOUTH
@@ -124,7 +127,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
       if (suggestedAge) {
         suggestions.push({
           fieldPath: 'descriptive.ageGroup',
-          currentValue: product.ageGroup,
+          currentValue: descr.ageGroup,
           suggestedValue: suggestedAge,
           confidence: 0.85,
           reason: `From RICS category "${category}"`
@@ -134,7 +137,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 4: Gender from RICS Category first letter
-  if (category && !product.gender) {
+  if (category && !descr.gender) {
     const genderCode = category.charAt(0); // M|FTW|... -> M
     let suggestedGender = '';
     
@@ -153,7 +156,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
     if (suggestedGender) {
       suggestions.push({
         fieldPath: 'descriptive.gender',
-        currentValue: product.gender,
+        currentValue: descr.gender,
         suggestedValue: suggestedGender,
         confidence: 0.9,
         reason: `From RICS category gender code "${genderCode}"`
@@ -162,7 +165,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 5: Materials from Long Description
-  if (longDescription && (!product.material || product.material.length === 0)) {
+  if (longDescription && (!descr.material || descr.material.length === 0)) {
     const materialKeywords = [
       { keyword: /leather/i, material: 'Leather' },
       { keyword: /mesh/i, material: 'Mesh' },
@@ -183,7 +186,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
     if (foundMaterials.length > 0) {
       suggestions.push({
         fieldPath: 'descriptive.material',
-        currentValue: product.material,
+        currentValue: descr.material,
         suggestedValue: foundMaterials,
         confidence: 0.8,
         reason: `Materials detected in RICS description: ${foundMaterials.join(', ')}`
@@ -192,7 +195,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 6: Brand from vendor style name or RICS data
-  if (!product.brand && (vendorStyleName || rics.brand)) {
+  if (!sku.brand && (vendorStyleName || rics.brand)) {
     const brandSources = [rics.brand, vendorStyleName].filter(Boolean);
     const brandKeywords = [
       'Nike', 'Adidas', 'Jordan', 'Puma', 'Reebok', 'New Balance', 'Converse',
@@ -207,7 +210,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
       if (foundBrand) {
         suggestions.push({
           fieldPath: 'sku_core.brand',
-          currentValue: product.brand,
+          currentValue: sku.brand,
           suggestedValue: foundBrand,
           confidence: 0.85,
           reason: `Brand detected in RICS data: "${foundBrand}"`
@@ -218,7 +221,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 7: Primary Color from description
-  if (longDescription && !product.primaryColor) {
+  if (longDescription && !descr.primaryColor) {
     const colorKeywords = [
       { keyword: /\\bblack\\b/i, color: 'Black' },
       { keyword: /\\bwhite\\b/i, color: 'White' },
@@ -238,7 +241,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
     if (foundColor) {
       suggestions.push({
         fieldPath: 'descriptive.primaryColor',
-        currentValue: product.primaryColor,
+        currentValue: descr.primaryColor,
         suggestedValue: foundColor.color,
         confidence: 0.7,
         reason: `Color detected in RICS description: "${foundColor.color}"`
@@ -247,7 +250,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
   }
   
   // Rule 8: Sports Team Detection
-  if ((longDescription || vendorStyleName) && !product.sportsTeam) {
+  if ((longDescription || vendorStyleName) && !descr.sportsTeam) {
     const teamKeywords = [
       'Lakers', 'Warriors', 'Bulls', 'Celtics', 'Heat', 'Knicks',
       'Cowboys', 'Patriots', 'Packers', 'Steelers', 'Giants', 'Eagles',
@@ -262,7 +265,7 @@ export function runSmartDetect(product: any): SmartDetectResult {
     if (foundTeam) {
       suggestions.push({
         fieldPath: 'descriptive.sportsTeam',
-        currentValue: product.sportsTeam,
+        currentValue: descr.sportsTeam,
         suggestedValue: foundTeam,
         confidence: 0.8,
         reason: `Team detected in product data: "${foundTeam}"`
