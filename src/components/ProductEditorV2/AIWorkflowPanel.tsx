@@ -40,17 +40,27 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
     }
   }, [productId]);
 
-  const handleApplySuggestion = (fieldPath: string, value: any) => {
-    // Apply single suggestion to product data
+  const handleApplySuggestion = async (fieldPath: string, value: any) => {
+    // Apply single suggestion to product data with persistence
     const updates = setNestedValue({}, fieldPath, value);
     onProductUpdate(updates);
     
-    // Mark detect step as completed
-    setCompletedSteps(prev => new Set([...prev, 'detect']));
+    // Persist to Firestore
+    try {
+      const merged = applyNestedUpdate(productData, updates);
+      const legacyPartial = stripUndefined(newToLegacy(merged));
+      await setDoc(doc(db, 'products', productId), legacyPartial, { merge: true });
+      
+      // Mark detect step as completed
+      setCompletedSteps(prev => new Set([...prev, 'detect']));
+    } catch (error) {
+      console.error('Failed to persist suggestion:', error);
+      showToast('Failed to save suggestion', 'error');
+    }
   };
 
-  const handleApplyAllSuggestions = (suggestions: SmartDetectSuggestion[]) => {
-    // Apply all suggestions to product data
+  const handleApplyAllSuggestions = async (suggestions: SmartDetectSuggestion[]) => {
+    // Apply all suggestions to product data with persistence
     const updates: any = {};
     suggestions.forEach(suggestion => {
       setNestedValue(updates, suggestion.fieldPath, suggestion.suggestedValue);
@@ -58,9 +68,29 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
     
     onProductUpdate(updates);
     
-    // Mark detect step as completed and move to validation
-    setCompletedSteps(prev => new Set([...prev, 'detect']));
-    setActiveStep('validate');
+    // Persist to Firestore
+    try {
+      const merged = applyNestedUpdate(productData, updates);
+      const legacyPartial = stripUndefined(newToLegacy(merged));
+      await setDoc(doc(db, 'products', productId), legacyPartial, { merge: true });
+      
+      showToast(`Applied ${suggestions.length} suggestions`, 'success');
+      
+      // Trigger revalidation
+      await handleRevalidate();
+      
+      // Mark detect step as completed and move to validation
+      setCompletedSteps(prev => new Set([...prev, 'detect']));
+      setActiveStep('validate');
+    } catch (error) {
+      console.error('Failed to persist suggestions:', error);
+      showToast('Failed to save suggestions', 'error');
+    }
+  };
+  
+  const handleRevalidate = async () => {
+    // Revalidation logic - reload validation panel
+    // The ValidationPanel will re-fetch on mount via useEffect
   };
 
   const handleIssueClick = (issue: ValidationIssue) => {
@@ -211,8 +241,11 @@ const AIWorkflowPanel: React.FC<AIWorkflowPanelProps> = ({
           {activeStep === 'detect' && (
             <SmartDetectPanel
               productId={productId}
+              productData={productData}
               onApplySuggestion={handleApplySuggestion}
               onApplyAll={handleApplyAllSuggestions}
+              showToast={showToast}
+              onRevalidate={handleRevalidate}
             />
           )}
 
