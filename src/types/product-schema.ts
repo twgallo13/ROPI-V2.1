@@ -81,6 +81,9 @@ export interface Technical {
   whsInv?: number;                // WHS inventory
   store4?: number;                // Store 4 inventory
   totalInv?: number;              // Total inventory
+  variantCount?: number;          // Number of variants
+  custom2?: string;               // Custom field 2
+  custom3?: string;               // Custom field 3
 }
 
 /**
