@@ -279,18 +279,18 @@ export function runSmartDetect(product: any): SmartDetectResult {
     } else if (longDescription) {
       // Lower confidence from text description
       const colorKeywords = [
-        { keyword: /\\bblack\\b/i, color: 'Black' },
-        { keyword: /\\bwhite\\b/i, color: 'White' },
-        { keyword: /\\bred\\b/i, color: 'Red' },
-        { keyword: /\\bblue\\b/i, color: 'Blue' },
-        { keyword: /\\bgreen\\b/i, color: 'Green' },
-        { keyword: /\\byellow\\b/i, color: 'Yellow' },
-        { keyword: /\\bpink\\b/i, color: 'Pink' },
-        { keyword: /\\bpurple\\b/i, color: 'Purple' },
-        { keyword: /\\borange\\b/i, color: 'Orange' },
-        { keyword: /\\bgray|grey\\b/i, color: 'Gray' },
-        { keyword: /\\bbrown\\b/i, color: 'Brown' },
-        { keyword: /\\bnavy\\b/i, color: 'Navy' },
+        { keyword: /\bblack\b/i, color: 'Black' },
+        { keyword: /\bwhite\b/i, color: 'White' },
+        { keyword: /\bred\b/i, color: 'Red' },
+        { keyword: /\bblue\b/i, color: 'Blue' },
+        { keyword: /\bgreen\b/i, color: 'Green' },
+        { keyword: /\byellow\b/i, color: 'Yellow' },
+        { keyword: /\bpink\b/i, color: 'Pink' },
+        { keyword: /\bpurple\b/i, color: 'Purple' },
+        { keyword: /\borange\b/i, color: 'Orange' },
+        { keyword: /\bgray|grey\b/i, color: 'Gray' },
+        { keyword: /\bbrown\b/i, color: 'Brown' },
+        { keyword: /\bnavy\b/i, color: 'Navy' },
       ];
       
       const foundColor = colorKeywords.find(c => c.keyword.test(longDescription));
