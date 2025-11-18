@@ -17,14 +17,11 @@ export type VocabKey =
   | 'descriptiveColors'
   | 'cutTypes'
   | 'closureTypes'
-      | 'heelTypes'
-    | 'heelTypes'
+  | 'heelTypes'
   | 'heelHeights'
   | 'platformHeights'
-      | 'shoeHeightMaps'
-      | 'soleMaterials'
-    | 'shoeHeightMaps'
-    | 'soleMaterials'
+  | 'shoeHeightMaps'
+  | 'soleMaterials'
   | 'collections'
   | 'madeIn';
 
