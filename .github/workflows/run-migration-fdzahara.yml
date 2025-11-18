@@ -60,7 +60,7 @@ jobs:
       - name: Run migration
         run: |
           echo "=== MIGRATION START ==="
-          node scripts/migrateLegacyToCanonical.cjs --product-ids="${{ inputs.productId }}" 2>&1 | tee migration-output.txt
+          node scripts/migrateLegacyToCanonical.js --product-ids="${{ inputs.productId }}" 2>&1 | tee migration-output.txt
           echo "=== MIGRATION END ==="
 
       - name: API Smoke Check - SmartDetect
