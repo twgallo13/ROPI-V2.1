@@ -1,0 +1,84 @@
+name: Seed Attribute Registry (Phase B)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - STAGING
+          - PRODUCTION
+      approval:
+        description: 'Type exact approval phrase'
+        required: true
+        type: string
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: integration/review-attributekey-20251118
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd functions && npm ci
+
+      - name: Setup Firebase credentials
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          echo "$SERVICE_ACCOUNT_JSON" > service-account.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/service-account.json" >> $GITHUB_ENV
+
+      - name: Verify project ID
+        run: |
+          PROJECT_ID=$(jq -r .project_id service-account.json)
+          echo "Service Account Project: $PROJECT_ID"
+          
+          if [[ "${{ inputs.environment }}" == "PRODUCTION" ]]; then
+            EXPECTED="ropi-bccee"
+          else
+            EXPECTED="ropi-bccee"  # Update if staging has different project
+          fi
+          
+          echo "Expected Project: $EXPECTED"
+          
+          if [[ "$PROJECT_ID" != "$EXPECTED" ]]; then
+            echo "ERROR: Project ID mismatch!"
+            exit 1
+          fi
+
+      - name: Run Phase B Seed
+        env:
+          APPROVAL: ${{ inputs.approval }}
+          FIREBASE_PROJECT_PROD_ID: ropi-bccee
+        run: |
+          ./scripts/seed-phaseb.sh
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f service-account.json
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seed-artifacts-${{ inputs.environment }}-${{ github.run_number }}
+          path: |
+            operations/review-artifacts/attribute-registry/attribute-keys-backup-*.json
+            operations/review-artifacts/attribute-registry/normalize-seed-*.log
+            operations/review-artifacts/attribute-registry/seed-validate-*.log
+          retention-days: 90
