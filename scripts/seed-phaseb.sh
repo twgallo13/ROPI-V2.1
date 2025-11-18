@@ -64,14 +64,18 @@ if [[ "$ACTUAL_PROJECT_ID" != "$EXPECTED_PROJECT_ID" ]]; then
   fi
 fi
 
-# 4. Check git status
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "ERROR: Working tree is not clean"
+# 4. Check git status (ignore transient service-account files)
+UNCOMMITTED=$(git status --porcelain || true)
+# Filter out service account JSON files that may be created by CI
+FILTERED=$(echo "$UNCOMMITTED" | grep -vE 'service-account\.json|serviceAccountKey\.json' || true)
+if [[ -n "${FILTERED// /}" ]]; then
+  echo "ERROR: Working tree is not clean (excluding service-account.json)"
+  echo "$FILTERED"
   git status --short
   exit 1
 fi
 
-echo "✓ Working tree clean"
+echo "✓ Working tree clean (service-account.json ignored if present)"
 
 # 5. Check current branch
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
