@@ -11,18 +11,26 @@
    - CI passed ✅
    - Deploy workflow passed ✅
 
-2. **Workflow Available**
+2. **PR #100 Merged** → `main` (Workflow Fixes)
+   - RUNNER_TEMP fix for service account JSON
+   - Environment configuration added
+   - Debug step for project_id
+   - Git cleanliness check updated
+   - CI passed ✅
+
+3. **Workflow Available**
    - Name: `Seed Attribute Registry (Phase B)`
    - File: `.github/workflows/seed-attributes-phaseb.yml`
    - Branch: `main`
    - Status: Active, ready to dispatch
+   - **Updated**: Now uses RUNNER_TEMP and environment settings
 
-3. **Artifact Collection Script Created**
+4. **Artifact Collection Script Created**
    - Path: `operations/collect-phaseb-artifacts.sh`
    - Status: Executable, committed to `main`
    - Purpose: Automate artifact collection after workflow runs
 
-4. **Documentation Posted**
+5. **Documentation Posted**
    - PR #98 has complete instructions
    - Manual dispatch required (codespace token lacks permissions)
    - Artifact collection flow documented
