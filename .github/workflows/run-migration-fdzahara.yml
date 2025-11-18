@@ -101,6 +101,10 @@ jobs:
           node -e "
           const admin = require('firebase-admin');
           const fs = require('fs');
+          const path = process.cwd() + '/serviceAccountKey.json';
+          if (!fs.existsSync(path)) { console.error('serviceAccountKey.json not found'); process.exit(1); }
+          const serviceAccount = require(path);
+          admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
           const db = admin.firestore();
           (async () => {
             const doc = await db.collection('products').doc('${{ inputs.productId }}').get();
@@ -114,7 +118,7 @@ jobs:
               console.log('Product not found after migration');
               fs.writeFileSync('final-product.json', JSON.stringify({ error: 'Product not found' }, null, 2));
             }
-          })();
+          })().catch(e => { console.error(e); process.exit(1); });
           "
 
       - name: Upload artifacts
