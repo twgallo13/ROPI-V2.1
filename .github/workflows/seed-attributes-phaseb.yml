@@ -60,7 +60,7 @@ jobs:
           if [[ "$ENVIRONMENT" == "PRODUCTION" ]]; then
             EXPECTED="ropi-bccee"
           else
-            EXPECTED="ropi-bccee"  # update staging ID if different
+            EXPECTED="ropi-bccee"  # update staging id here if needed
           fi
 
           echo "Expected Project: $EXPECTED"
