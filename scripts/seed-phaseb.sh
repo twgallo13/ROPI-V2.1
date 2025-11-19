@@ -78,16 +78,17 @@ fi
 echo "✓ Working tree clean (service-account.json ignored if present)"
 
 # 5. Check current branch
+    "
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-REQUIRED_BRANCH="integration/review-attributekey-20251118"
 
-if [[ "$CURRENT_BRANCH" != "$REQUIRED_BRANCH" ]]; then
-  echo "ERROR: Not on required branch"
+# Allow running from either the integration branch used for review OR from main
+if [[ "$CURRENT_BRANCH" != "integration/review-attributekey-20251118" && "$CURRENT_BRANCH" != "main" ]]; then
+  echo "ERROR: Not on required branch (allowed: integration/review-attributekey-20251118, main)"
   echo "  Current: $CURRENT_BRANCH"
-  echo "  Required: $REQUIRED_BRANCH"
   exit 1
 fi
-
+"
+  
 echo "✓ On correct branch: $CURRENT_BRANCH"
 
 echo ""
