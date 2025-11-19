@@ -1,68 +1,95 @@
-set -euo pipefail
-IFS=$'\n\t'
+name: Seed Attribute Registry (Phase B)
 
-REPO="twgallo13/ROPI-V2.1"
-WORKDIR="/workspaces/ROPI-V2.1"
-WF_PATH=".github/workflows/seed-attributes-phaseb.yml"
-BRANCH_FIX="fix/phaseb-yaml-$(date -u +%Y%m%dT%H%M%SZ)"
-REF="main"
-PR_NUM=98
-APPROVAL="Approve — seed to PRODUCTION"
-ENVIRONMENT="PRODUCTION"
-ART_DIR="operations/review-artifacts/attribute-registry"
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - STAGING
+          - PRODUCTION
+      approval:
+        description: 'Type exact approval phrase'
+        required: true
+        type: string
 
-cd "$WORKDIR"
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-# 1) Create fix branch
-git fetch origin
-git checkout -b "$BRANCH_FIX" origin/main
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
 
-# 2) Replace the workflow with the corrected content
-cat > "$WF_PATH" <<'YAML'
-<PASTE THE CORRECTED YAML FROM THE PREVIOUS BLOCK HERE>
-YAML
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd functions && npm ci
 
-# 3) Show a quick preview so humans can verify
-sed -n '1,200p' "$WF_PATH"
+      - name: Setup Firebase credentials
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          # write credentials to runner temp (outside repo working tree)
+          echo "$SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/service-account.json"
+          # set GOOGLE_APPLICATION_CREDENTIALS for steps that need it
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/service-account.json" >> $GITHUB_ENV
 
-# 4) Commit & push
-git add "$WF_PATH"
-git -c user.name='Homer (automation)' -c user.email='homer@shiekhshoes.org' commit -m "ci: fix Phase B workflow YAML (Debug run + verify env handling)"
-git push -u origin "$BRANCH_FIX"
+      - name: Debug: Print project_id from service account (safe)
+        run: |
+          # harmless debug to verify the JSON; won't fail the run
+          jq -r .project_id "$RUNNER_TEMP/service-account.json" || true
 
-# 5) Open PR to main for human quick check (or merge directly if allowed)
-gh pr create --repo "$REPO" --title "ci: fix Phase B workflow YAML" --body "Fix YAML syntax for Phase B: add Debug run block and use ENVIRONMENT env var in verify step. Please review and merge to main." --base main --head "$BRANCH_FIX"
+      - name: Verify project ID
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          PROJECT_ID=$(jq -r .project_id "$RUNNER_TEMP/service-account.json")
+          echo "Service Account Project: $PROJECT_ID"
 
-# OPTIONAL: If you have permission to merge and want to auto-merge:
-# gh pr merge --repo "$REPO" --web
+          if [[ "$ENVIRONMENT" == "PRODUCTION" ]]; then
+            EXPECTED="ropi-bccee"
+          else
+            EXPECTED="ropi-bccee"  # update staging ID if different
+          fi
 
-# If we do not auto-merge, wait for PR merge. Otherwise, after merge:
-# 6) If PR merged, ensure main is updated locally
-git checkout main
-git pull origin main
+          echo "Expected Project: $EXPECTED"
 
-# 7) Run quick verification tests (non-watch)
-npm ci
-npm run lint || true
-npm test -- --run
-npm run build
-npm --prefix functions ci
-npm --prefix functions test -- --run
+          if [[ "$PROJECT_ID" != "$EXPECTED" ]]; then
+            echo "ERROR: Project ID mismatch!"
+            echo "Service Account project_id: $PROJECT_ID"
+            echo "Expected: $EXPECTED"
+            exit 1
+          fi
 
-# 8) Dispatch workflow (if you have permission), else ask the user to Run workflow manually
-if gh workflow run "$WF_PATH" --repo "$REPO" --ref "$REF" -f approval="$APPROVAL" -f environment="$ENVIRONMENT"; then
-  echo "Workflow dispatched."
-  sleep 4
-  RUN_ID=$(gh run list --repo "$REPO" --workflow="$WF_PATH" --branch "$REF" --limit 1 --json databaseId --jq '.[0].databaseId')
-  echo "Run: https://github.com/$REPO/actions/runs/$RUN_ID"
-  # Monitor run
-  gh run watch "$RUN_ID" --repo "$REPO" || echo "Monitor the run in Actions UI"
-  # Collect artifacts via existing collector
-  if [[ -x "./operations/collect-phaseb-artifacts.sh" ]]; then
-    ./operations/collect-phaseb-artifacts.sh "$RUN_ID"
-  else
-    echo "Collector not present, please run the collector once run finishes."
-  fi
-else
-  echo "Unable to dispatch workflow via gh. Please open Actions UI and Run workflow manually on main with environment=PRODUCTION and approval string exactly: $APPROVAL"
-fi
+      - name: Run Phase B Seed
+        env:
+          APPROVAL: ${{ inputs.approval }}
+          FIREBASE_PROJECT_PROD_ID: ropi-bccee
+        run: |
+          ./scripts/seed-phaseb.sh
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/service-account.json"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seed-artifacts-${{ inputs.environment }}-${{ github.run_number }}
+          path: |
+            operations/review-artifacts/attribute-registry/attribute-keys-backup-*.json
+            operations/review-artifacts/attribute-registry/normalize-seed-*.log
+            operations/review-artifacts/attribute-registry/seed-validate-*.log
+          retention-days: 90
