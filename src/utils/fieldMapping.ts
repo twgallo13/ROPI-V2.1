@@ -109,6 +109,7 @@ export const CSV_TO_FIRESTORE_MAP: Record<string, string> = {
   'Custom 3': 'descriptive.custom3', // Custom descriptive field
   'Group': 'sku_core.department', // John: "Group" = Department
   'Product Is Dropship.Name': 'sku_core.dropshipName', // Dropship name mapping
+  'Product Is Dropship': 'sku_core.productIsDropship', // Dropship boolean flag
 
   // Launch
   'Hype': 'launch.hype',
@@ -210,6 +211,8 @@ export const FIELD_TYPES: Record<string, 'string' | 'number' | 'boolean' | 'date
   'sku_core.styleId': 'string',
   'sku_core.coreProduct': 'boolean',
   'sku_core.productIsActive': 'boolean',
+  'sku_core.dropshipName': 'string',
+  'sku_core.productIsDropship': 'boolean',
 
   // Descriptive
   'descriptive.ageGroup': 'string',
@@ -234,6 +237,8 @@ export const FIELD_TYPES: Record<string, 'string' | 'number' | 'boolean' | 'date
   'descriptive.metaName': 'string',
   'descriptive.metaDescription': 'string',
   'descriptive.slug': 'string',
+  'descriptive.custom2': 'string',
+  'descriptive.custom3': 'string',
 
   // Pricing
   'pricing.map': 'number',
@@ -261,6 +266,7 @@ export const FIELD_TYPES: Record<string, 'string' | 'number' | 'boolean' | 'date
   'technical.whsInv': 'number',
   'technical.store4': 'number',
   'technical.totalInv': 'number',
+  'technical.variantCount': 'number',
 
   // Launch
   'launch.hype': 'boolean',

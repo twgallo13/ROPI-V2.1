@@ -18,6 +18,8 @@ export interface SkuCore {
   styleId: string;                // Style ID (links colorways)
   coreProduct?: boolean;          // Marks main styles that persist across seasons
   productIsActive: boolean;       // Toggles product visibility
+  dropshipName?: string;          // Dropship vendor name
+  productIsDropship?: boolean;    // Indicates if product is dropshipped
 }
 
 /**
