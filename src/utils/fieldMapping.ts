@@ -99,6 +99,17 @@ export const CSV_TO_FIRESTORE_MAP: Record<string, string> = {
   'Store 4': 'technical.store4',
   'Total Inv': 'technical.totalInv',
 
+  // Missing human-friendly headers we must support (Technical additions)
+  'Media': 'technical.mediaStatus', // Some sheets use simplified header
+  'Hide Image Until Date': 'technical.hideImageDate', // Alternate embargo phrasing
+  'Variant Count': 'technical.variantCount', // Variant tally
+  'WHS inv': 'technical.whsInv', // Uppercase variant
+  'WHS Inv': 'technical.whsInv', // Uppercase variant
+  'Custom 2': 'descriptive.custom2', // Custom descriptive field
+  'Custom 3': 'descriptive.custom3', // Custom descriptive field
+  'Group': 'sku_core.department', // John: "Group" = Department
+  'Product Is Dropship.Name': 'sku_core.dropshipName', // Dropship name mapping
+
   // Launch
   'Hype': 'launch.hype',
   'Fast Fashion': 'launch.fastFashion',
