@@ -26,3 +26,5 @@ src/**/*.js
 *.njsproj
 *.sln
 *.sw?
+operations/review-artifacts/attribute-registry/
+/secrets/
