@@ -1,0 +1,69 @@
+{
+  "id": "FD ZAHARA-S-WHT",
+  "featured": false,
+  "keywords": [],
+  "variants": [],
+  "ricsLongDesc": "",
+  "promo": false,
+  "materialFabric": "",
+  "fastfashion": false,
+  "map": false,
+  "aiContext": {
+    "featureBullets": [],
+    "keywords": [],
+    "designNotes": ""
+  },
+  "league": "",
+  "mpn": "FD ZAHARA-S-WHT",
+  "ricsCategory": "",
+  "hype": false,
+  "sportsTeam": "",
+  "websites": [],
+  "status": "intake",
+  "gender": "Girls",
+  "tax": {},
+  "launch": {
+    "fastFashion": false,
+    "hype": false
+  },
+  "media": {},
+  "ageGroup": "Kids",
+  "isActive": true,
+  "coreProduct": false,
+  "lastUpdated": {
+    "_methodName": "serverTimestamp"
+  },
+  "shipping": {
+    "length": null,
+    "width": null,
+    "weight": null,
+    "height": null,
+    "expeditedOverride": false,
+    "standardOverride": false
+  },
+  "price": {
+    "ricsRetail": 0
+  },
+  "familySizing": false,
+  "name": "asdf",
+  "style": {
+    "id": "FD ZAHARA-S-WHT"
+  },
+  "department": "Clothing",
+  "category": "Basketball",
+  "brand": "asdf",
+  "class": "Hoodies",
+  "fit": "True to Size",
+  "materials": [
+    "Man-Made"
+  ],
+  "primaryColor": "Black",
+  "closureType": "Lace-up",
+  "marketing": {
+    "paragraphDraft": "",
+    "paragraphFinal": "",
+    "bullets": [],
+    "title": "asdf",
+    "seo": "TEST"
+  }
+}
