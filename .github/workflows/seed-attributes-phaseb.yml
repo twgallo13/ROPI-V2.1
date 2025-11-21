@@ -47,6 +47,13 @@ jobs:
         run: |
           jq -r .project_id "$RUNNER_TEMP/service-account.json" || true
 
+      - name: "Debug: Print project_id from service account (safe)"
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          echo "$SERVICE_ACCOUNT_JSON" > /tmp/sa.json
+          jq -r .project_id /tmp/sa.json || true
+
       - name: Verify project ID
         env:
           ENVIRONMENT: ${{ inputs.environment }}
