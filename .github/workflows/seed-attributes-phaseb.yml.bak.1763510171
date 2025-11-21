@@ -19,11 +19,12 @@ jobs:
   seed:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: integration/review-attributekey-20251118
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -43,11 +44,7 @@ jobs:
           echo "$SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/service-account.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/service-account.json" >> $GITHUB_ENV
 
-      - name: Debug Print project_id from service account
-        run: |
-          jq -r .project_id "$RUNNER_TEMP/service-account.json" || true
-
-      - name: "Debug: Print project_id from service account (safe)"
+      - name: Debug: Print project_id from service account (safe)
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: |
@@ -55,21 +52,20 @@ jobs:
           jq -r .project_id /tmp/sa.json || true
 
       - name: Verify project ID
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
         run: |
           PROJECT_ID=$(jq -r .project_id "$RUNNER_TEMP/service-account.json")
           echo "Service Account Project: $PROJECT_ID"
-          if [[ "$ENVIRONMENT" == "PRODUCTION" ]]; then
+          
+          if [[ "${{ inputs.environment }}" == "PRODUCTION" ]]; then
             EXPECTED="ropi-bccee"
           else
-            EXPECTED="ropi-bccee"
+            EXPECTED="ropi-bccee"  # Update if staging has different project
           fi
+          
           echo "Expected Project: $EXPECTED"
+          
           if [[ "$PROJECT_ID" != "$EXPECTED" ]]; then
             echo "ERROR: Project ID mismatch!"
-            echo "Service Account project_id: $PROJECT_ID"
-            echo "Expected: $EXPECTED"
             exit 1
           fi
 

@@ -40,19 +40,15 @@ jobs:
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: |
+          # write credentials to runner temp (outside repo working tree)
           echo "$SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/service-account.json"
+          # set GOOGLE_APPLICATION_CREDENTIALS for steps that need it
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/service-account.json" >> $GITHUB_ENV
 
-      - name: Debug Print project_id from service account
+      - name: Debug: Print project_id from service account (safe)
         run: |
+          # harmless debug to verify the JSON; won't fail the run
           jq -r .project_id "$RUNNER_TEMP/service-account.json" || true
-
-      - name: "Debug: Print project_id from service account (safe)"
-        env:
-          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: |
-          echo "$SERVICE_ACCOUNT_JSON" > /tmp/sa.json
-          jq -r .project_id /tmp/sa.json || true
 
       - name: Verify project ID
         env:
@@ -60,12 +56,15 @@ jobs:
         run: |
           PROJECT_ID=$(jq -r .project_id "$RUNNER_TEMP/service-account.json")
           echo "Service Account Project: $PROJECT_ID"
+
           if [[ "$ENVIRONMENT" == "PRODUCTION" ]]; then
             EXPECTED="ropi-bccee"
           else
-            EXPECTED="ropi-bccee"
+            EXPECTED="ropi-bccee"  # update staging id here if needed
           fi
+
           echo "Expected Project: $EXPECTED"
+
           if [[ "$PROJECT_ID" != "$EXPECTED" ]]; then
             echo "ERROR: Project ID mismatch!"
             echo "Service Account project_id: $PROJECT_ID"

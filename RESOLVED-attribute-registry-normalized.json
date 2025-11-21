@@ -242,8 +242,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "descriptive_color",
-      "Descriptive Color"
+      "descriptive_color"
     ],
     "rules": [],
     "usage": [],
@@ -549,8 +548,7 @@
     "importerColumns": [
       "primary_color",
       "primaryColor",
-      "primary_colour",
-      "Primary Color"
+      "primary_colour"
     ],
     "rules": [
       "SD-006"
@@ -676,8 +674,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "kl_post_date",
-      "KL Post Date"
+      "kl_post_date"
     ],
     "rules": [],
     "usage": [],
@@ -697,8 +694,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "launch_date",
-      "Launch Date"
+      "launch_date"
     ],
     "rules": [],
     "usage": [],
@@ -719,8 +715,7 @@
     "legacyPaths": [],
     "importerColumns": [
       "collection",
-      "new_collection",
-      "New Collection"
+      "new_collection"
     ],
     "rules": [],
     "usage": [],
@@ -781,8 +776,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "scom_regular",
-      "SCOM Regular Price"
+      "scom_regular"
     ],
     "rules": [],
     "usage": [],
@@ -802,8 +796,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "scom_sale",
-      "SCOM Sale Price"
+      "scom_sale"
     ],
     "rules": [],
     "usage": [],
@@ -866,8 +859,7 @@
     "legacyPaths": [],
     "importerColumns": [
       "rics_color",
-      "color",
-      "RICS Color"
+      "color"
     ],
     "rules": [],
     "usage": [],
@@ -909,8 +901,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "rics_short_description",
-      "RICS Short Description"
+      "rics_short_description"
     ],
     "rules": [],
     "usage": [],
@@ -1018,8 +1009,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "department",
-      "Group"
+      "department"
     ],
     "rules": [
       "SD-001"
@@ -1042,8 +1032,7 @@
     "legacyPaths": [],
     "importerColumns": [
       "dropship_name",
-      "product_is_dropship_name",
-      "Product Is Dropship.Name"
+      "product_is_dropship_name"
     ],
     "rules": [],
     "usage": [],
@@ -1111,8 +1100,7 @@
     "legacyPaths": [],
     "importerColumns": [
       "product_is_active",
-      "is_active",
-      "Product Is Active"
+      "is_active"
     ],
     "rules": [],
     "usage": [],
@@ -1327,8 +1315,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "hide_image_date",
-      "Hide Image Until Date"
+      "hide_image_date"
     ],
     "rules": [],
     "usage": [],
@@ -1351,8 +1338,7 @@
       "lastReceived"
     ],
     "importerColumns": [
-      "last_received",
-      "Last Received"
+      "last_received"
     ],
     "rules": [],
     "usage": [],
@@ -1393,8 +1379,7 @@
     "legacyPaths": [],
     "importerColumns": [
       "media_status",
-      "mediaStatus",
-      "Media"
+      "mediaStatus"
     ],
     "rules": [],
     "usage": [],
@@ -1503,8 +1488,7 @@
       "storeInv"
     ],
     "importerColumns": [
-      "store_inv",
-      "Store Inv"
+      "store_inv"
     ],
     "rules": [],
     "usage": [],
@@ -1570,8 +1554,7 @@
       "variantCount"
     ],
     "importerColumns": [
-      "variant_count",
-      "Variant Count"
+      "variant_count"
     ],
     "rules": [],
     "usage": [],
@@ -1593,8 +1576,7 @@
       "warehouseInv"
     ],
     "importerColumns": [
-      "warehouse_inv",
-      "Warehouse Inv"
+      "warehouse_inv"
     ],
     "rules": [],
     "usage": [],
@@ -1657,8 +1639,7 @@
       "whsInv"
     ],
     "importerColumns": [
-      "whs_inv",
-      "WHS inv"
+      "whs_inv"
     ],
     "rules": [],
     "usage": [],
@@ -1685,39 +1666,5 @@
     "examples": {
       "sampleValues": []
     }
-  },
-  {
-    "key": "custom2",
-    "canonicalPath": "descriptive.custom2",
-    "label": "custom2",
-    "category": "descriptive",
-    "dataType": "string",
-    "required": false,
-    "export": true,
-    "description": "Added human alias for descriptive.custom2",
-    "systemFlag": false,
-    "legacyPaths": [],
-    "importerColumns": [
-      "Custom 2"
-    ],
-    "rules": [],
-    "usage": []
-  },
-  {
-    "key": "custom3",
-    "canonicalPath": "descriptive.custom3",
-    "label": "custom3",
-    "category": "descriptive",
-    "dataType": "string",
-    "required": false,
-    "export": true,
-    "description": "Added human alias for descriptive.custom3",
-    "systemFlag": false,
-    "legacyPaths": [],
-    "importerColumns": [
-      "Custom 3"
-    ],
-    "rules": [],
-    "usage": []
   }
 ]
