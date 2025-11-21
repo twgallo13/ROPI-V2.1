@@ -220,12 +220,18 @@
     "description": "Long description (ROPI HTML output)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "description",
+      "product_description",
+      "long_description",
+      "short_description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "descriptiveColor",
@@ -258,12 +264,15 @@
     "description": "Family sizing available",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "family_sizing"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "fit",
@@ -318,12 +327,15 @@
     "description": "Heel Height (numeric)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "heel_height"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "heelType",
@@ -336,14 +348,17 @@
     "description": "Heel Type (Stiletto, Block, Wedge)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "heel_type"
+    ],
     "rules": [
       "SD-010"
     ],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "keywords",
@@ -396,12 +411,18 @@
     "description": "Countries of origin",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "made_in",
+      "country_of_origin",
+      "country",
+      "origin"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "material",
@@ -437,15 +458,18 @@
     "dataType": "string",
     "required": true,
     "export": true,
-    "description": "SEO meta description (≤155 chars)",
+    "description": "SEO meta description (\u2264155 chars)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "meta_description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "metaName",
@@ -455,15 +479,19 @@
     "dataType": "string",
     "required": true,
     "export": true,
-    "description": "SEO meta name (≤60 chars)",
+    "description": "SEO meta name (\u226460 chars)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "meta_name",
+      "meta_title"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "outsoleMaterial",
@@ -476,12 +504,15 @@
     "description": "Outsole Material",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "outsole_material"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "platformHeight",
@@ -494,12 +525,15 @@
     "description": "Platform Height",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "platform_height"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "primaryColor",
@@ -516,7 +550,9 @@
     ],
     "importerColumns": [
       "rics_color",
-      "primary_color"
+      "primary_color",
+      "primaryColor",
+      "primary_colour"
     ],
     "rules": [
       "SD-006"
@@ -524,7 +560,8 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "shoeHeightMap",
@@ -537,12 +574,15 @@
     "description": "Shoe Height Map (Low, Mid, High)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "shoe_height_map"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "slug",
@@ -555,12 +595,15 @@
     "description": "URL slug",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "slug"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "sportsTeam",
@@ -776,12 +819,16 @@
     "description": "RICS brand",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_brand",
+      "brand"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "category",
@@ -794,12 +841,16 @@
     "description": "RICS category",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_category",
+      "category"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "color",
@@ -812,12 +863,16 @@
     "description": "RICS color",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_color",
+      "color"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "longDescription",
@@ -830,12 +885,16 @@
     "description": "RICS long description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_long_description",
+      "long_description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "shortDescription",
@@ -848,12 +907,16 @@
     "description": "RICS short description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_short_description",
+      "short_description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "brand",
@@ -931,12 +994,16 @@
     "description": "Marks main styles that persist across seasons",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "core_product",
+      "is_core_product"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "department",
@@ -1017,12 +1084,16 @@
     "description": "Toggles product visibility",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "product_is_active",
+      "is_active"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "sku",
@@ -1035,12 +1106,15 @@
     "description": "SKU (Variant ID)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "sku"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "styleId",
@@ -1053,12 +1127,16 @@
     "description": "Style ID (links colorways)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "style_id",
+      "styleId"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "rics",
@@ -1071,12 +1149,16 @@
     "description": "RICS system data",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "source_rics",
+      "rics"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "custom2",
@@ -1133,12 +1215,15 @@
     "description": "Expedited shipping override (Money)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "expedited_override_shipping"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "firstReceived",
@@ -1193,12 +1278,15 @@
     "description": "Image embargo date (ISO string)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "hide_image_date"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "lastReceived",
@@ -1253,12 +1341,16 @@
     "description": "Media status (\"Images Ready\", \"Pending\", etc.)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "media_status",
+      "mediaStatus"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "standardShippingOverride",
@@ -1271,12 +1363,15 @@
     "description": "Standard shipping override (Money)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "standard_shipping_override"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "status",
@@ -1289,12 +1384,15 @@
     "description": "Canonical product status",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "status"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "store1",
@@ -1373,12 +1471,16 @@
     "description": "Taxable toggle (true = Taxable Goods)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "tax_class",
+      "taxClass"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "totalInv",
@@ -1464,7 +1566,8 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "bulkEditable": true
   },
   {
     "key": "weight",
