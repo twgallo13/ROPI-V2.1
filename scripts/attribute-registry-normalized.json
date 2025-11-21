@@ -221,10 +221,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "description",
-      "product_description",
-      "long_description",
-      "short_description"
+      "description"
     ],
     "rules": [],
     "usage": [],
@@ -458,7 +455,7 @@
     "dataType": "string",
     "required": true,
     "export": true,
-    "description": "SEO meta description (\u2264155 chars)",
+    "description": "SEO meta description (≤155 chars)",
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
@@ -479,7 +476,7 @@
     "dataType": "string",
     "required": true,
     "export": true,
-    "description": "SEO meta name (\u226460 chars)",
+    "description": "SEO meta name (≤60 chars)",
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
@@ -549,7 +546,6 @@
       "primaryColor"
     ],
     "importerColumns": [
-      "rics_color",
       "primary_color",
       "primaryColor",
       "primary_colour"
@@ -820,8 +816,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "rics_brand",
-      "brand"
+      "rics_brand"
     ],
     "rules": [],
     "usage": [],
@@ -842,8 +837,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "rics_category",
-      "category"
+      "rics_category"
     ],
     "rules": [],
     "usage": [],
@@ -886,8 +880,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "rics_long_description",
-      "long_description"
+      "rics_long_description"
     ],
     "rules": [],
     "usage": [],
@@ -908,8 +901,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "rics_short_description",
-      "short_description"
+      "rics_short_description"
     ],
     "rules": [],
     "usage": [],
@@ -1028,6 +1020,28 @@
     }
   },
   {
+    "key": "dropshipName",
+    "canonicalPath": "sku_core.dropshipName",
+    "label": "Dropship Name",
+    "category": "Core",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Dropship vendor name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "dropship_name",
+      "product_is_dropship_name"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "bulkEditable": true
+  },
+  {
     "key": "mpn",
     "canonicalPath": "sku_core.mpn",
     "label": "Mpn",
@@ -1087,6 +1101,28 @@
     "importerColumns": [
       "product_is_active",
       "is_active"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "bulkEditable": true
+  },
+  {
+    "key": "productIsDropship",
+    "canonicalPath": "sku_core.productIsDropship",
+    "label": "Product Is Dropship",
+    "category": "Core",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "Indicates if product is dropshipped",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "product_is_dropship",
+      "is_dropship"
     ],
     "rules": [],
     "usage": [],
