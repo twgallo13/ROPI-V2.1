@@ -18,9 +18,9 @@ vi.mock('firebase/firestore', () => ({
 
 describe('MappingReview - Dynamic Registry Integration', () => {
   const mockMappings: ColumnMapping[] = [
-    { csvHeader: 'Group', targetField: null, confidence: 'unmapped' },
-    { csvHeader: 'Primary Color', targetField: null, confidence: 'unmapped' },
-    { csvHeader: 'Variant Count', targetField: null, confidence: 'unmapped' },
+    { csvHeader: 'Group', targetField: null, confidence: 'Unmapped' },
+    { csvHeader: 'Primary Color', targetField: null, confidence: 'Unmapped' },
+    { csvHeader: 'Variant Count', targetField: null, confidence: 'Unmapped' },
   ];
 
   const mockOnMappingChange = vi.fn();

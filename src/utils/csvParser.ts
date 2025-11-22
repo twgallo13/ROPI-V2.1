@@ -1,18 +1,24 @@
 /**
  * CSV Import Utilities
  * Handles parsing, auto-mapping, fuzzy matching, and data coercion
- * Lisa v2.0: Enhanced with dynamic attribute registry integration
+ * Lisa v2.2: Enhanced with normalized matching and auto-selection
  */
 
-import { resolveHeaderToPath, getImportableAttributes } from './attributeRegistry';
+import { getImportableAttributes, type AttributeMetadata } from './attributeRegistry';
 
-export type MappingConfidence = 'exact' | 'synonym' | 'suggested-low' | 'unmapped';
+export type MappingConfidence = 'Exact Match' | 'Synonym' | 'Fuzzy' | 'Unmapped';
 
 export type ColumnMapping = {
   csvHeader: string;
   targetField: string | null;
   confidence: MappingConfidence;
   alternatives?: string[];
+  matchedAlias?: string;
+  matchScore?: number;
+  category?: string;
+  label?: string;
+  allAliases?: string[];
+  autoSelected?: boolean;
 };
 
 export type ParsedRow = {
@@ -29,7 +35,95 @@ export type ParseResult = {
   delimiter: string;
 };
 
-// Synonym mappings for auto-detection
+/**
+ * Normalize a header or alias for matching
+ * Converts: "Product Is Dropship.Name" → "product_is_dropship_name"
+ * Lisa v2.2: Handle dots, spaces, special chars, collapse multiple underscores
+ */
+function normalizeHeader(s: string): string {
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/\./g, '_')  // dots to underscores
+    .replace(/[^\w]+/g, '_')  // non-word chars to underscore
+    .replace(/_+/g, '_')  // collapse multiple underscores
+    .replace(/^_|_$/g, '');  // trim leading/trailing underscores
+}
+
+/**
+ * Calculate Jaro-Winkler similarity (0-1, higher is better)
+ */
+function jaroWinkler(s1: string, s2: string): number {
+  const m1 = s1.length;
+  const m2 = s2.length;
+  
+  if (m1 === 0 && m2 === 0) return 1;
+  if (m1 === 0 || m2 === 0) return 0;
+  
+  const matchWindow = Math.floor(Math.max(m1, m2) / 2) - 1;
+  const s1Matches = new Array(m1).fill(false);
+  const s2Matches = new Array(m2).fill(false);
+  
+  let matches = 0;
+  let transpositions = 0;
+  
+  // Find matches
+  for (let i = 0; i < m1; i++) {
+    const start = Math.max(0, i - matchWindow);
+    const end = Math.min(i + matchWindow + 1, m2);
+    
+    for (let j = start; j < end; j++) {
+      if (s2Matches[j] || s1[i] !== s2[j]) continue;
+      s1Matches[i] = true;
+      s2Matches[j] = true;
+      matches++;
+      break;
+    }
+  }
+  
+  if (matches === 0) return 0;
+  
+  // Count transpositions
+  let k = 0;
+  for (let i = 0; i < m1; i++) {
+    if (!s1Matches[i]) continue;
+    while (!s2Matches[k]) k++;
+    if (s1[i] !== s2[k]) transpositions++;
+    k++;
+  }
+  
+  const jaro = (matches / m1 + matches / m2 + (matches - transpositions / 2) / matches) / 3;
+  
+  // Winkler modification
+  const prefix = Math.min(4, Math.min(m1, m2));
+  let prefixLen = 0;
+  for (let i = 0; i < prefix; i++) {
+    if (s1[i] === s2[i]) prefixLen++;
+    else break;
+  }
+  
+  return jaro + prefixLen * 0.1 * (1 - jaro);
+}
+
+/**
+ * Calculate token overlap score (0-1)
+ */
+function tokenOverlap(s1: string, s2: string): number {
+  const tokens1 = s1.split('_').filter(t => t.length > 0);
+  const tokens2 = s2.split('_').filter(t => t.length > 0);
+  
+  if (tokens1.length === 0 || tokens2.length === 0) return 0;
+  
+  const set1 = new Set(tokens1);
+  const set2 = new Set(tokens2);
+  
+  const intersection = [...set1].filter(t => set2.has(t)).length;
+  const union = new Set([...set1, ...set2]).size;
+  
+  return intersection / union;
+}
+
+// Synonym mappings for auto-detection (fallback only in v2.2)
 const HEADER_SYNONYMS: Record<string, string[]> = {
   mpn: ['mpn', 'model', 'mpn_code', 'manufacturer_part_number', 'product_id', 'style', 'style_id', 'styleid', 'parent_sku', 'style_code', 'product.id', 'product_code'],
   sku: ['sku', 'variant_id', 'child_sku', 'upc', 'variant_sku'],
@@ -66,17 +160,12 @@ const HEADER_SYNONYMS: Record<string, string[]> = {
   taxclass: ['taxclass', 'tax_class', 'tax_code', 'tax', 'tax_category'],
 };
 
-// Headers that should be ignored by default
+// Headers that should be ignored by default (v2.2: removed most, now handled by registry)
 const DEFAULT_IGNORE = [
   'status',
-  'last_received',
   'store 1',
-  'store inv',
-  'warehouse inv',
   'store 4',
   'total inv',
-  'whs inv',
-  'kl post date',
 ];
 
 /**
@@ -159,107 +248,186 @@ function levenshteinDistance(str1: string, str2: string): number {
 
 /**
  * Auto-map a CSV header to a target field
- * Lisa v2.0: Try registry first (exact match from importerColumns), then fall back to static synonyms
+ * Lisa v2.2: Normalized matching with registry-first approach and auto-selection
  */
 async function autoMapHeaderAsync(csvHeader: string, allHeaders: string[], headerIndex: number): Promise<ColumnMapping> {
-  const normalized = csvHeader.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  const normalizedHeader = normalizeHeader(csvHeader);
   
-  // Check if this is a duplicate header (appears earlier in the list)
+  // Check for duplicate headers
   const isDuplicate = allHeaders.slice(0, headerIndex).some(
-    h => h.toLowerCase().replace(/[^a-z0-9]/g, '_') === normalized
+    h => normalizeHeader(h) === normalizedHeader
   );
   
   if (isDuplicate) {
     return {
       csvHeader,
       targetField: null,
-      confidence: 'unmapped',
+      confidence: 'Unmapped',
     };
   }
   
   // Check if header should be ignored by default
-  if (DEFAULT_IGNORE.includes(normalized) || DEFAULT_IGNORE.includes(csvHeader.toLowerCase())) {
+  if (DEFAULT_IGNORE.includes(normalizedHeader) || DEFAULT_IGNORE.includes(csvHeader.toLowerCase())) {
     return {
       csvHeader,
       targetField: null,
-      confidence: 'unmapped',
+      confidence: 'Unmapped',
     };
   }
   
-  // Priority 0: Try attribute registry first (Lisa v2.0 dynamic mapping)
+  // Get importable attributes from registry
+  let attributes: AttributeMetadata[] = [];
   try {
-    const canonicalPath = await resolveHeaderToPath(csvHeader);
-    if (canonicalPath) {
-      // Registry match found - this is the most authoritative
-      return {
-        csvHeader,
-        targetField: canonicalPath,
-        confidence: 'exact',
-      };
-    }
+    attributes = await getImportableAttributes();
   } catch (error) {
-    console.warn('[csvParser] Registry lookup failed, falling back to static synonyms:', error);
+    console.warn('[csvParser] Failed to load registry:', error);
   }
   
-  // Priority 1: Exact equality check against synonyms (fallback)
-  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
-    for (const synonym of synonyms) {
-      const synonymNormalized = synonym.toLowerCase().replace(/[^a-z0-9]/g, '_');
-      if (normalized === synonymNormalized) {
-        return {
-          csvHeader,
-          targetField,
-          confidence: 'exact',
-        };
+  // Build candidates list with scores
+  type Candidate = {
+    attr: AttributeMetadata;
+    matchedAlias?: string;
+    score: number;
+    confidence: MappingConfidence;
+  };
+  
+  const candidates: Candidate[] = [];
+  
+  // Priority 1: Exact normalized match to importerColumns
+  for (const attr of attributes) {
+    for (const alias of attr.importerColumns) {
+      const normalizedAlias = normalizeHeader(alias);
+      if (normalizedAlias === normalizedHeader) {
+        candidates.push({
+          attr,
+          matchedAlias: alias,
+          score: 1.0,
+          confidence: 'Exact Match',
+        });
+        break; // Only need one exact match per attribute
       }
     }
   }
   
-  // Priority 2: Word-boundary regex match
-  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
-    for (const synonym of synonyms) {
-      // Create word-boundary regex pattern
-      const pattern = new RegExp('\\b' + synonym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
-      if (pattern.test(csvHeader)) {
-        return {
-          csvHeader,
-          targetField,
-          confidence: 'synonym',
-        };
+  // Priority 2: Exact normalized match to label or canonicalPath
+  if (candidates.length === 0) {
+    for (const attr of attributes) {
+      const normalizedLabel = normalizeHeader(attr.label);
+      const normalizedPath = normalizeHeader(attr.canonicalPath);
+      
+      if (normalizedLabel === normalizedHeader || normalizedPath === normalizedHeader) {
+        candidates.push({
+          attr,
+          score: 1.0,
+          confidence: 'Exact Match',
+        });
       }
     }
   }
   
-  // Priority 3: Levenshtein distance fuzzy matching (distance <= 2)
-  const fuzzyMatches: Array<{ field: string; distance: number }> = [];
-  
-  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
-    for (const synonym of synonyms) {
-      const distance = levenshteinDistance(normalized, synonym);
-      if (distance <= 2) {
-        fuzzyMatches.push({ field: targetField, distance });
+  // Priority 3: Static synonym match (fallback for fields not in registry)
+  if (candidates.length === 0) {
+    for (const [field, synonyms] of Object.entries(HEADER_SYNONYMS)) {
+      for (const synonym of synonyms) {
+        if (normalizeHeader(synonym) === normalizedHeader) {
+          // Check if this field exists in registry
+          const attrMatch = attributes.find(a => 
+            normalizeHeader(a.canonicalPath).includes(normalizeHeader(field)) ||
+            normalizeHeader(a.key) === normalizeHeader(field)
+          );
+          
+          if (attrMatch) {
+            candidates.push({
+              attr: attrMatch,
+              matchedAlias: synonym,
+              score: 0.95,
+              confidence: 'Synonym',
+            });
+          }
+          break;
+        }
       }
     }
   }
   
-  // Sort by distance and take the best match
-  fuzzyMatches.sort((a, b) => a.distance - b.distance);
+  // Priority 4: Fuzzy matching (Jaro-Winkler + token overlap)
+  if (candidates.length === 0) {
+    for (const attr of attributes) {
+      let bestScore = 0;
+      let bestAlias: string | undefined;
+      
+      // Check all aliases
+      for (const alias of attr.importerColumns) {
+        const normalizedAlias = normalizeHeader(alias);
+        const jw = jaroWinkler(normalizedHeader, normalizedAlias);
+        const token = tokenOverlap(normalizedHeader, normalizedAlias);
+        const score = Math.max(jw, token);
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestAlias = alias;
+        }
+      }
+      
+      // Check label
+      const normalizedLabel = normalizeHeader(attr.label);
+      const jwLabel = jaroWinkler(normalizedHeader, normalizedLabel);
+      const tokenLabel = tokenOverlap(normalizedHeader, normalizedLabel);
+      const labelScore = Math.max(jwLabel, tokenLabel);
+      
+      if (labelScore > bestScore) {
+        bestScore = labelScore;
+        bestAlias = attr.label;
+      }
+      
+      // Only consider if score meets threshold
+      if (bestScore >= 0.6) {
+        candidates.push({
+          attr,
+          matchedAlias: bestAlias,
+          score: bestScore,
+          confidence: 'Fuzzy',
+        });
+      }
+    }
+  }
   
-  if (fuzzyMatches.length > 0) {
-    const alternatives = fuzzyMatches.slice(1, 4).map(m => m.field);
+  // Sort candidates by score (highest first)
+  candidates.sort((a, b) => b.score - a.score);
+  
+  if (candidates.length === 0) {
     return {
       csvHeader,
-      targetField: fuzzyMatches[0].field,
-      confidence: 'suggested-low',
-      alternatives: alternatives.length > 0 ? alternatives : undefined,
+      targetField: null,
+      confidence: 'Unmapped',
     };
   }
   
-  // No match found
+  // Get top candidate
+  const top = candidates[0];
+  
+  // Determine if we should auto-select
+  const autoSelected = 
+    top.confidence === 'Exact Match' ||
+    (top.confidence === 'Synonym' && top.score > 0.9) ||
+    (top.confidence === 'Fuzzy' && top.score >= 0.8);
+  
+  // Build alternatives list (top 3, excluding the selected one)
+  const alternatives = candidates
+    .slice(1, 4)
+    .map(c => c.attr.canonicalPath);
+  
   return {
     csvHeader,
-    targetField: null,
-    confidence: 'unmapped',
+    targetField: autoSelected ? top.attr.canonicalPath : null,
+    confidence: top.confidence,
+    matchedAlias: top.matchedAlias,
+    matchScore: top.score,
+    category: top.attr.category,
+    label: top.attr.label,
+    allAliases: top.attr.importerColumns,
+    alternatives: alternatives.length > 0 ? alternatives : undefined,
+    autoSelected,
   };
 }
 
@@ -376,6 +544,32 @@ export async function parseCSVAsync(csvContent: string): Promise<ParseResult> {
   const mappings = await Promise.all(
     headers.map((header, index) => autoMapHeaderAsync(header, headers, index))
   );
+  
+  // Debug logging (v2.2): Write mapping decisions to file for verification
+  const debugDecisions = mappings.map((m, idx) => ({
+    header: m.csvHeader,
+    normalizedHeader: normalizeHeader(m.csvHeader),
+    candidateList: [
+      {
+        canonicalPath: m.targetField || 'null',
+        confidence: m.confidence,
+        matchedAlias: m.matchedAlias || null,
+        score: m.matchScore || null,
+      }
+    ],
+    selectedCanonicalPath: m.autoSelected ? m.targetField : null,
+    autoSelected: m.autoSelected || false,
+  }));
+  
+  // Write debug file if in Node environment
+  if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+    try {
+      // Only log in Node.js environment (not browser)
+      console.log('[csvParser v2.2] Mapping decisions:', JSON.stringify(debugDecisions, null, 2));
+    } catch (e) {
+      // Ignore if in browser or write fails
+    }
+  }
   
   // Parse data rows
   const rawData: string[][] = [];
