@@ -19,6 +19,28 @@ const serviceAccount = require(saPath);
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
+/**
+ * v2.4.1: Normalize header to canonical lookup key
+ * Handles title-case, spaces, dots, and special characters
+ * Example: "Product Is Dropship.Name" -> "product_is_dropship_name"
+ */
+function normalizeHeaderKey(raw) {
+  if (!raw) return '';
+  // remove BOM
+  raw = raw.replace(/^\uFEFF/, '');
+  // normalize whitespace, lower case
+  let s = raw.trim().toLowerCase();
+  // replace dots and non-word characters with underscore
+  s = s.replace(/[\s\.\/\\:-]+/g, '_');
+  // remove any characters that aren't alnum or underscore
+  s = s.replace(/[^a-z0-9_]/g, '');
+  // collapse multiple underscores
+  s = s.replace(/_+/g, '_');
+  // trim underscores
+  s = s.replace(/^_+|_+$/g, '');
+  return s;
+}
+
 // Parse CLI args (v2.3: validation mode support)
 const args = process.argv.slice(2);
 let file = null;
@@ -150,7 +172,14 @@ function transform(key, value) {
   const arrayFields = new Set([
     'descriptive.material', 'descriptive.keywords', 'descriptive.madeIn', 'technical.website'
   ]);
-  const path = MAP[key];
+  
+  // v2.4.1: Try normalized key first, then lowercase, then original
+  const normalized = normalizeHeaderKey(key);
+  let path = MAP[normalized];
+  if (!path && key !== normalized) {
+    path = MAP[key.toLowerCase()] || MAP[key];
+  }
+  
   if (!path) return { path: null, value: null };
   if (numFields.has(path)) {
     const n = parseFloat(String(value).replace(/[,$]/g, ''));
