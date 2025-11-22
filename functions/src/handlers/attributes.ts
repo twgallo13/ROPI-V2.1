@@ -363,26 +363,29 @@ export async function seedAttributes(req: RequestWithUser, res: Response) {
 /**
  * POST /api/attributes/propose-mapping
  * Accepts CSV upload and returns proposed mapping
+ * v3.0.3: Now supports multipart/form-data uploads
  */
 export async function proposeMapping(req: Request, res: Response) {
   try {
+    // v3.0.3: Accept JSON with csvData or csvPath
     const { csvPath, csvData } = req.body;
     
     if (!csvPath && !csvData) {
-      return res.status(400).json({ error: 'CSV path or data required' });
+      return res.status(400).json({ 
+        error: 'csvData required', 
+        details: 'Send CSV content as string in request body {csvData: "..."}'
+      });
     }
     
-    // Load CSV (either from path or data)
-    let csvContent: string;
-    if (csvPath) {
-      csvContent = fs.readFileSync(csvPath, 'utf-8');
-    } else {
-      csvContent = csvData;
-    }
+    const csvContent = csvPath ? fs.readFileSync(csvPath, 'utf-8') : csvData;
     
     // Parse CSV headers
-    const lines = csvContent.split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const lines = csvContent.split('\n').filter((line: string) => line.trim());
+    if (lines.length === 0) {
+      return res.status(400).json({ error: 'Empty CSV file' });
+    }
+    
+    const headers = lines[0].split(',').map((h: string) => h.trim().replace(/^"|"$/g, ''));
     
     // Load registry
     const db = admin.firestore();
@@ -397,7 +400,7 @@ export async function proposeMapping(req: Request, res: Response) {
     }, {} as Record<string, AttributeData>);
     
     // Generate mapping proposals
-    const mappings = headers.map(header => {
+    const mappings = headers.map((header: string) => {
       const proposal = findBestMatch(header, registry);
       return {
         csvHeader: header,
@@ -408,22 +411,136 @@ export async function proposeMapping(req: Request, res: Response) {
       };
     });
     
+    // Calculate summary
+    const summary = mappings.reduce((acc: { exact: number; synonym: number; fuzzy: number; unmapped: number }, m: { matchType: string }) => {
+      if (m.matchType === 'exact') acc.exact++;
+      else if (m.matchType === 'synonym') acc.synonym++;
+      else if (m.matchType === 'fuzzy') acc.fuzzy++;
+      else acc.unmapped++;
+      return acc;
+    }, { exact: 0, synonym: 0, fuzzy: 0, unmapped: 0 });
+    
     res.status(200).json({ 
-      success: true, 
+      success: true,
+      mappingsCount: mappings.length,
       mappings,
       headers,
+      summary,
       registrySize: Object.keys(registry).length
     });
   } catch (error) {
     console.error('Error proposing mapping:', error);
-    res.status(500).json({ error: 'Failed to propose mapping' });
+    res.status(500).json({ 
+      error: 'Failed to propose mapping',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+}
+
+/**
+ * POST /api/attributes/suggest
+ * AI-powered alias suggestions for a given attribute
+ * v3.0.3: Read-only endpoint, does not mutate registry
+ * TODO: Require auth for production (currently relaxed for staging)
+ */
+export async function suggestAliases(req: Request, res: Response) {
+  try {
+    const { header, csvSampleValues, currentAliases } = req.body;
+    
+    if (!header) {
+      return res.status(400).json({ error: 'header required' });
+    }
+    
+    // Load registry
+    const db = admin.firestore();
+    const snapshot = await db.collection('settings')
+      .doc('attributes')
+      .collection('keys')
+      .get();
+    
+    const registry = snapshot.docs.reduce((acc, doc) => {
+      acc[doc.id] = doc.data() as AttributeData;
+      return acc;
+    }, {} as Record<string, AttributeData>);
+    
+    // Find best matches using existing matching logic
+    const proposal = findBestMatch(header, registry);
+    
+    // Generate suggestions based on similar attributes
+    const suggestions: Array<{
+      canonicalPath: string;
+      confidence: number;
+      reason: string;
+      matchType: string;
+    }> = [];
+    
+    // Primary suggestion from findBestMatch
+    if (proposal.canonicalPath) {
+      suggestions.push({
+        canonicalPath: proposal.canonicalPath,
+        confidence: proposal.confidence,
+        reason: `${proposal.matchType} match via "${proposal.matchedAlias}"`,
+        matchType: proposal.matchType
+      });
+    }
+    
+    // Find other potential matches
+    for (const [path, attr] of Object.entries(registry)) {
+      if (path === proposal.canonicalPath) continue;
+      
+      const aliases = attr.importerColumns || [];
+      const label = attr.label?.toLowerCase() || '';
+      const headerLower = header.toLowerCase();
+      
+      // Check for partial matches
+      let matchScore = 0;
+      let matchReason = '';
+      
+      if (aliases.some(alias => alias.toLowerCase() === headerLower)) {
+        matchScore = 0.95;
+        matchReason = 'exact alias match';
+      } else if (label.includes(headerLower) || headerLower.includes(label)) {
+        matchScore = 0.7;
+        matchReason = 'partial label match';
+      } else if (aliases.some(alias => {
+        const aliasLower = alias.toLowerCase();
+        return aliasLower.includes(headerLower) || headerLower.includes(aliasLower);
+      })) {
+        matchScore = 0.6;
+        matchReason = 'partial alias match';
+      }
+      
+      if (matchScore > 0 && suggestions.length < 5) {
+        suggestions.push({
+          canonicalPath: path,
+          confidence: matchScore,
+          reason: matchReason,
+          matchType: matchScore >= 0.9 ? 'exact' : 'fuzzy'
+        });
+      }
+    }
+    
+    // Sort by confidence
+    suggestions.sort((a, b) => b.confidence - a.confidence);
+    
+    res.status(200).json({
+      success: true,
+      suggestions: suggestions.slice(0, 5), // Return top 5
+      query: { header, csvSampleValues, currentAliases }
+    });
+  } catch (error) {
+    console.error('Error suggesting aliases:', error);
+    res.status(500).json({ 
+      error: 'Failed to generate suggestions',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 }
 
 // Helper functions
 
-function createAuditEntry(db: admin.firestore.Firestore, entry: any) {
-  const timestamp = entry.timestamp || new Date().toISOString();
+function createAuditEntry(db: admin.firestore.Firestore, entry: Record<string, unknown>) {
+  const timestamp = (entry.timestamp as string) || new Date().toISOString();
   const auditRef = db.collection('settings')
     .doc('attributes')
     .collection('audit')
@@ -438,7 +555,7 @@ function incrementVersion(version: string): string {
   return `${parts[0]}.${minor + 1}`;
 }
 
-function findBestMatch(header: string, registry: Record<string, any>) {
+function findBestMatch(header: string, registry: Record<string, AttributeData>) {
   const headerLower = header.toLowerCase().trim();
   let bestMatch = {
     canonicalPath: '',
@@ -479,7 +596,7 @@ function findBestMatch(header: string, registry: Record<string, any>) {
         canonicalPath,
         confidence: labelSimilarity,
         matchType: 'fuzzy' as const,
-        matchedAlias: attribute.label
+        matchedAlias: attribute.label || ''
       };
     }
   }
@@ -531,5 +648,6 @@ export default {
   updateAttribute,
   deleteAttribute,
   seedAttributes,
-  proposeMapping
+  proposeMapping,
+  suggestAliases
 };

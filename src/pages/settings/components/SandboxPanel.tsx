@@ -33,21 +33,20 @@ export default function SandboxPanel({ onClose }: SandboxPanelProps) {
   async function handleLoadTestCSV() {
     try {
       setLoading(true);
-      // Fetch test CSV and upload as multipart
+      // Fetch test CSV and send as JSON (v3.0.3: multipart has issues in Cloud Functions)
       const testCsvResponse = await fetch('/test-import-sample.csv');
       if (!testCsvResponse.ok) {
         throw new Error('Test CSV not found');
       }
-      const csvBlob = await testCsvResponse.blob();
-      const testFile = new File([csvBlob], 'Test 2.csv', { type: 'text/csv' });
-      
-      const fd = new FormData();
-      fd.append('file', testFile);
+      const csvData = await testCsvResponse.text();
       
       const response = await fetch('/api/attributes/propose-mapping', {
         method: 'POST',
         credentials: 'include',
-        body: fd
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ csvData })
       });
 
       if (!response.ok) {
@@ -75,13 +74,16 @@ export default function SandboxPanel({ onClose }: SandboxPanelProps) {
     try {
       setLoading(true);
       
-      const fd = new FormData();
-      fd.append('file', file);
+      // Read file as text and send as JSON (v3.0.3)
+      const csvData = await file.text();
       
       const response = await fetch('/api/attributes/propose-mapping', {
         method: 'POST',
         credentials: 'include',
-        body: fd
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ csvData })
       });
 
       if (!response.ok) {
