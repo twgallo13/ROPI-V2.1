@@ -101,13 +101,11 @@ export const CSV_TO_FIRESTORE_MAP: Record<string, string> = {
 
   // Missing human-friendly headers we must support (Technical additions)
   'Media': 'technical.mediaStatus', // Some sheets use simplified header
-  'Hide Image Until Date': 'technical.hideImageDate', // Alternate embargo phrasing
-  'Variant Count': 'technical.variantCount', // Variant tally
-  'WHS inv': 'technical.whsInv', // Uppercase variant
+  'Hide Image Until Date': 'technical.hideImageDate', // Alternate embargo phrasing  'WHS inv': 'technical.whsInv', // Uppercase variant
   'WHS Inv': 'technical.whsInv', // Uppercase variant
   'Custom 2': 'descriptive.custom2', // Custom descriptive field
   'Custom 3': 'descriptive.custom3', // Custom descriptive field
-  'Group': 'sku_core.department', // John: "Group" = Department
+  'Group': 'descriptive.gender', // John: "Group" = Gender (moved from department)
   'Product Is Dropship.Name': 'sku_core.dropshipName', // Dropship name mapping
   'Product Is Dropship': 'sku_core.productIsDropship', // Dropship boolean flag
 
@@ -120,11 +118,11 @@ export const CSV_TO_FIRESTORE_MAP: Record<string, string> = {
   'Launch Date': 'launch.launchDate',
 
   // RICS Source (read-only, import only)
-  'RICS Short Description': 'source.rics.shortDescription',
-  'RICS Long Description': 'source.rics.longDescription',
-  'RICS Brand': 'source.rics.brand',
-  'RICS Category': 'source.rics.category',
-  'RICS Color': 'source.rics.color',
+  'RICS Short Description': 'rics_source.shortDescription',
+  'RICS Long Description': 'rics_source.longDescription',
+  'RICS Brand': 'rics_source.brand',
+  'RICS Category': 'rics_source.category',
+  'RICS Color': 'rics_source.color',
 };
 
 /**
@@ -266,8 +264,6 @@ export const FIELD_TYPES: Record<string, 'string' | 'number' | 'boolean' | 'date
   'technical.whsInv': 'number',
   'technical.store4': 'number',
   'technical.totalInv': 'number',
-  'technical.variantCount': 'number',
-
   // Launch
   'launch.hype': 'boolean',
   'launch.fastFashion': 'boolean',
