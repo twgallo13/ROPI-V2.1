@@ -58,6 +58,81 @@ function stripUndefined<T>(obj: T): T {
 }
 
 /**
+ * Normalize header key (from v2.4.1 CLI fix)
+ * Converts title-case or human-form headers to lowercase with underscores
+ * Examples: "MPN" → "mpn", "Primary Color" → "primary_color"
+ */
+function normalizeHeaderKey(raw: string): string {
+  if (!raw || typeof raw !== 'string') return '';
+  
+  // Strip BOM, leading/trailing whitespace
+  let cleaned = raw.replace(/^\uFEFF/, '').trim();
+  
+  // Convert to lowercase
+  cleaned = cleaned.toLowerCase();
+  
+  // Replace spaces with underscores
+  cleaned = cleaned.replace(/\s+/g, '_');
+  
+  // Remove or convert dots (for "Product Is Dropship.Name" → "product_is_dropship_name")
+  cleaned = cleaned.replace(/\./g, '_');
+  
+  // Collapse multiple underscores
+  cleaned = cleaned.replace(/_+/g, '_');
+  
+  // Remove leading/trailing underscores
+  cleaned = cleaned.replace(/^_+|_+$/g, '');
+  
+  return cleaned;
+}
+
+/**
+ * Adapt row to canonical Firestore paths
+ * v2.4.3: Accept both Firestore-path keys (from UI) and CSV header keys (from tests/CLI)
+ * 
+ * @param row - Input row with either Firestore paths or CSV headers as keys
+ * @param registryMap - CSV_TO_FIRESTORE_MAP for header → path lookup
+ * @returns Adapted row with canonical Firestore paths as keys
+ */
+function adaptRowToCanonicalPaths(
+  row: Record<string, any>,
+  registryMap: Record<string, string>
+): Record<string, any> {
+  const adapted: Record<string, any> = {};
+  const keys = Object.keys(row);
+  
+  // Detect format: Firestore paths contain dots, CSV headers typically don't
+  const looksLikeFirestorePaths = keys.some(k => k.indexOf('.') !== -1);
+  
+  if (looksLikeFirestorePaths) {
+    // Keys are already Firestore paths (e.g., "sku_core.mpn")
+    // Just copy them through after trimming
+    for (const k of keys) {
+      const trimmedKey = k.trim();
+      adapted[trimmedKey] = row[k];
+    }
+    return adapted;
+  }
+  
+  // Keys are CSV headers (e.g., "MPN", "Brand")
+  // Normalize and map to canonical Firestore paths
+  for (const k of keys) {
+    const normalized = normalizeHeaderKey(k);
+    const canonical = registryMap[normalized] || registryMap[k.toLowerCase()] || null;
+    
+    if (canonical) {
+      // Found mapping: use canonical path
+      adapted[canonical] = row[k];
+    } else {
+      // No mapping: preserve original key (for directMappings fallback)
+      adapted[k] = row[k];
+    }
+  }
+  
+  return adapted;
+}
+
+/**
  * Transform CSV value based on field type
  */
 function transformValue(value: any, fieldType: string): any {
@@ -102,6 +177,10 @@ function transformValue(value: any, fieldType: string): any {
  * Map CSV row to new Product schema
  */
 function mapRowToProduct(csvRow: Record<string, any>): Partial<NewProduct> {
+  // v2.4.3: Adapt row to canonical Firestore paths
+  // This allows both UI (Firestore-path keys) and CLI/tests (CSV header keys) to work
+  const adaptedRow = adaptRowToCanonicalPaths(csvRow, CSV_TO_FIRESTORE_MAP);
+  
   const product: any = {
     sku_core: {},
     descriptive: {},
@@ -112,9 +191,9 @@ function mapRowToProduct(csvRow: Record<string, any>): Partial<NewProduct> {
     ai: {},
   };
 
-  // Process each CSV column through the mapping
-  for (const [csvHeader, firestorePath] of Object.entries(CSV_TO_FIRESTORE_MAP)) {
-    const value = csvRow[csvHeader];
+  // Process each field using canonical Firestore paths
+  for (const firestorePath of Object.values(CSV_TO_FIRESTORE_MAP)) {
+    const value = adaptedRow[firestorePath];
     if (value === undefined || value === null || value === '') continue;
 
     const fieldType = FIELD_TYPES[firestorePath] || 'string';
@@ -144,8 +223,8 @@ function mapRowToProduct(csvRow: Record<string, any>): Partial<NewProduct> {
   };
 
   for (const [directKey, firestorePath] of Object.entries(directMappings)) {
-    if (csvRow[directKey] !== undefined && !getNestedValue(product, firestorePath)) {
-      setNestedValue(product, firestorePath, csvRow[directKey]);
+    if (adaptedRow[directKey] !== undefined && !getNestedValue(product, firestorePath)) {
+      setNestedValue(product, firestorePath, adaptedRow[directKey]);
     }
   }
 

@@ -156,7 +156,7 @@ function setNested(obj, path, value) {
 }
 
 function transform(key, value) {
-  if (value === '' || value == null) return null;
+  if (value === '' || value == null) return { path: null, value: null };
   const numFields = new Set([
     'pricing.map', 'pricing.scomRegularPrice', 'pricing.scomSalePrice',
     'technical.height', 'technical.length', 'technical.width', 'technical.weight',
