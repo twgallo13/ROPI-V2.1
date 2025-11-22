@@ -15,7 +15,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "descriptionHtml",
@@ -33,7 +35,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "ropiScore",
@@ -51,7 +55,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "seoName",
@@ -69,7 +75,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "smartDetectSummary",
@@ -87,7 +95,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "templateKey",
@@ -105,7 +115,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "templateOverrideKey",
@@ -123,7 +135,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "validationFlags",
@@ -141,7 +155,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "ageGroup",
@@ -163,7 +179,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "closureType",
@@ -185,7 +203,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "cutType",
@@ -207,7 +227,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "description",
@@ -225,7 +247,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "descriptiveColor",
@@ -245,7 +269,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "familySizing",
@@ -263,7 +289,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "fit",
@@ -283,7 +311,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "gender",
@@ -305,7 +335,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "heelHeight",
@@ -323,7 +355,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "heelType",
@@ -343,7 +377,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "keywords",
@@ -363,7 +399,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "league",
@@ -383,7 +421,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "madeIn",
@@ -401,7 +441,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "material",
@@ -427,7 +469,9 @@
     "examples": {
       "sampleValues": []
     },
-    "normalizationNote": "Materials stored as deduped arrays in canonical schema"
+    "normalizationNote": "Materials stored as deduped arrays in canonical schema",
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "metaDescription",
@@ -445,7 +489,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "metaName",
@@ -463,7 +509,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "outsoleMaterial",
@@ -481,7 +529,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "platformHeight",
@@ -499,7 +549,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "primaryColor",
@@ -524,7 +576,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "shoeHeightMap",
@@ -542,7 +596,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "slug",
@@ -560,7 +616,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "sportsTeam",
@@ -580,7 +638,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "fastFashion",
@@ -601,7 +661,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "hype",
@@ -621,7 +683,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "klPostDate",
@@ -644,7 +708,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "launchDate",
@@ -664,7 +730,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "newCollection",
@@ -686,7 +754,9 @@
     "examples": {
       "sampleValues": []
     },
-    "normalizationNote": "Canonicalized from legacy \"collection\" field"
+    "normalizationNote": "Canonicalized from legacy \"collection\" field",
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "map",
@@ -706,7 +776,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "promo",
@@ -726,7 +798,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "scomRegularPrice",
@@ -746,7 +820,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "scomSalePrice",
@@ -766,7 +842,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "brand",
@@ -784,7 +862,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "category",
@@ -797,12 +877,18 @@
     "description": "RICS category",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_category",
+      "RICS Category",
+      "category"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": true,
+    "importRequired": false
   },
   {
     "key": "color",
@@ -826,7 +912,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "longDescription",
@@ -839,12 +927,18 @@
     "description": "RICS long description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_long_description",
+      "RICS Long Desc",
+      "RICS Long Description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "shortDescription",
@@ -858,15 +952,17 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "RICS Source.Short Description",
-      "rics_long_desc",
-      "RICS Long Description"
+      "rics_short_description",
+      "RICS Short Description",
+      "rics_short_desc"
     ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": true,
+    "importRequired": false
   },
   {
     "key": "brand",
@@ -886,7 +982,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": true,
+    "importRequired": false
   },
   {
     "key": "category",
@@ -909,7 +1007,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "class",
@@ -931,7 +1031,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "coreProduct",
@@ -949,7 +1051,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "department",
@@ -971,7 +1075,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "mpn",
@@ -991,7 +1097,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": true,
+    "importRequired": true
   },
   {
     "key": "name",
@@ -1017,7 +1125,35 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": true,
+    "importRequired": true
+  },
+  {
+    "key": "dropshipName",
+    "canonicalPath": "sku_core.dropshipName",
+    "label": "Dropship Name",
+    "category": "Core",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Dropship supplier name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "product_is_dropship_name",
+      "Product Is Dropship.Name",
+      "Product Is Dropship Name",
+      "dropship_name",
+      "dropship name"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "productIsActive",
@@ -1030,12 +1166,18 @@
     "description": "Toggles product visibility",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "product_is_active",
+      "Product Is Active",
+      "is_active"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "sku",
@@ -1053,7 +1195,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": true,
+    "importRequired": false
   },
   {
     "key": "styleId",
@@ -1071,7 +1215,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "rics",
@@ -1089,7 +1235,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "custom2",
@@ -1111,7 +1259,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "custom3",
@@ -1133,7 +1283,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "expeditedOverrideShipping",
@@ -1151,7 +1303,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "firstReceived",
@@ -1173,7 +1327,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "height",
@@ -1193,7 +1349,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "hideImageDate",
@@ -1211,7 +1369,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "lastReceived",
@@ -1227,13 +1387,17 @@
       "lastReceived"
     ],
     "importerColumns": [
-      "last_received"
+      "last_received",
+      "Last Received",
+      "lastReceived"
     ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "length",
@@ -1253,7 +1417,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "mediaStatus",
@@ -1271,7 +1437,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "standardShippingOverride",
@@ -1289,7 +1457,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "status",
@@ -1307,7 +1477,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "store1",
@@ -1329,7 +1501,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "store4",
@@ -1351,7 +1525,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "storeInv",
@@ -1367,13 +1543,17 @@
       "storeInv"
     ],
     "importerColumns": [
-      "store_inv"
+      "store_inv",
+      "Store Inv",
+      "storeInv"
     ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "taxClass",
@@ -1391,7 +1571,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "totalInv",
@@ -1413,7 +1595,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "variantCount",
@@ -1433,7 +1617,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "warehouseInv",
@@ -1449,13 +1635,19 @@
       "warehouseInv"
     ],
     "importerColumns": [
-      "warehouse_inv"
+      "warehouse_inv",
+      "Warehouse Inv",
+      "warehouseInv",
+      "WHS inv",
+      "whs_inv"
     ],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "website",
@@ -1475,7 +1667,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "weight",
@@ -1495,7 +1689,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "whsInv",
@@ -1517,7 +1713,9 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   },
   {
     "key": "width",
@@ -1537,6 +1735,8 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    }
+    },
+    "requiredForExport": false,
+    "importRequired": false
   }
 ]
