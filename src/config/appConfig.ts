@@ -20,6 +20,13 @@ export const FEATURE_FLAGS = {
    * When false, fetches fresh registry on every import
    */
   ENABLE_REGISTRY_CACHE: true,
+
+  /**
+   * Enable AI Suggest button for attribute aliases
+   * When true, editors and admins can use AI to suggest aliases
+   * v3.0.2
+   */
+  AI_SUGGEST: true,
 } as const;
 
 /**

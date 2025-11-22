@@ -33,21 +33,34 @@ export default function SandboxPanel({ onClose }: SandboxPanelProps) {
   async function handleLoadTestCSV() {
     try {
       setLoading(true);
+      // Fetch test CSV and upload as multipart
+      const testCsvResponse = await fetch('/test-import-sample.csv');
+      if (!testCsvResponse.ok) {
+        throw new Error('Test CSV not found');
+      }
+      const csvBlob = await testCsvResponse.blob();
+      const testFile = new File([csvBlob], 'Test 2.csv', { type: 'text/csv' });
+      
+      const fd = new FormData();
+      fd.append('file', testFile);
+      
       const response = await fetch('/api/attributes/propose-mapping', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ csvPath: '/mnt/data/Test 2.csv' })
+        body: fd
       });
 
-      if (!response.ok) throw new Error('Failed to load test CSV');
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(body.message || `HTTP ${response.status}`);
+      }
 
       const data = await response.json();
       setMappings(data.mappings || []);
       setCsvHeaders(data.headers || []);
     } catch (error) {
       console.error('Load test CSV error:', error);
-      alert('Failed to load test CSV');
+      alert(`Failed to load test CSV: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
@@ -61,23 +74,27 @@ export default function SandboxPanel({ onClose }: SandboxPanelProps) {
 
     try {
       setLoading(true);
-      const text = await file.text();
+      
+      const fd = new FormData();
+      fd.append('file', file);
       
       const response = await fetch('/api/attributes/propose-mapping', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ csvData: text })
+        body: fd
       });
 
-      if (!response.ok) throw new Error('Failed to analyze CSV');
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(body.message || `HTTP ${response.status}`);
+      }
 
       const data = await response.json();
       setMappings(data.mappings || []);
       setCsvHeaders(data.headers || []);
     } catch (error) {
       console.error('File upload error:', error);
-      alert('Failed to analyze CSV file');
+      alert(`Failed to analyze CSV file: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
