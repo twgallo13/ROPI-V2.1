@@ -1,5 +1,92 @@
 # HOMER Operations Log
 
+## [2025-11-22 20:28 UTC] v3.0.2 — Frontend endpoint repair + multipart upload + Suggest button
+
+**Timestamp:** 2025-11-22T20:28:00Z
+
+**Branch:** fix/attribute-frontend-v3.0.2
+
+**PR:** #114 (https://github.com/twgallo13/ROPI-V2.1/pull/114)
+
+**Commits:**
+- 6c02c1b - "v3.0.2: fix multipart CSV upload, add AI Suggest button, and unit tests"
+- 79f993e - "test: fix SandboxPanel test selectors and assertions"
+- 7eaa7b3 - "test: simplify SandboxPanel assertion to use getAllByText"
+
+**Objective:** Fix three frontend issues so Attribute Command Center functions end-to-end: (1) CSV upload uses multipart/form-data, (2) proper error handling, (3) Suggest button visible for editors/admins.
+
+**Implementation Summary:**
+
+Frontend Fixes:
+- ✅ SandboxPanel.tsx: Fixed CSV upload to use FormData
+  * Removed manual Content-Type header (browser sets it automatically for multipart)
+  * Added robust error handling with detailed server messages
+  * Both "Load Test 2 CSV" and "Upload CSV File" now use multipart
+  * Error messages display server-provided details instead of "Unknown error"
+  
+- ✅ Added AI_SUGGEST feature flag to appConfig.ts
+  * Defaults to true in staging
+  * Can be overridden via VITE_FEATURE_AI_SUGGEST env var
+  
+- ✅ AttributeDetailDrawer.tsx: Added Suggest button for AI alias suggestions
+  * Visible only when AI_SUGGEST feature flag is true
+  * Disabled when user lacks editor/admin role (isEditable=false)
+  * Shows tooltip "AI Suggestions — Editor role required" when disabled
+  * Calls POST /api/attributes/suggest endpoint
+  * Merges AI suggestions with existing aliases (no duplicates)
+  * Displays detailed error messages on failure
+
+Tests:
+- ✅ SandboxPanel.propose-mapping.test.tsx (4 tests)
+  * Verifies FormData usage without manual Content-Type
+  * Tests multipart upload to /api/attributes/propose-mapping
+  * Validates error handling with server messages
+  * Checks mapping results display
+  
+- ✅ AttributeDetailDrawer.suggest-visibility.test.tsx (7 tests)
+  * Tests Suggest button visibility with feature flag
+  * Validates role-based access (editor/admin only)
+  * Tests API call to /api/attributes/suggest
+  * Verifies alias merging without duplicates
+  * Tests error handling and user feedback
+
+CI/CD:
+- ✅ All tests passing (213 passed, 9 skipped)
+- ✅ PR #114 created and CI passed
+- ✅ Frontend built successfully (dist/ generated)
+- ✅ Deployed to staging: https://ropi-bccee.web.app
+
+**Known Issue (Backend):**
+The backend proposeMapping handler currently expects JSON body with `csvData` or `csvPath`, not multipart form-data.
+Frontend now sends multipart, but backend needs update to parse multipart uploads using busboy/multer middleware.
+Testing shows 400 error: `{"error":"csvData required"}` when posting file via FormData.
+
+**Next Steps:**
+1. Update functions/src/handlers/attributes.ts proposeMapping to accept multipart uploads
+2. Add busboy or multer to functions/package.json dependencies
+3. Deploy updated functions to staging
+4. Re-test with curl: `curl -F "file=@test.csv" https://ropi-bccee.web.app/api/attributes/propose-mapping`
+5. Implement /api/attributes/suggest endpoint in backend (currently returns 404)
+
+**Artifacts:**
+- operations/review-artifacts/attribute-command-center-v3.0.2/npm-test-v3.0.2.log
+- operations/review-artifacts/attribute-command-center-v3.0.2/npm-build-v3.0.2.log
+- operations/review-artifacts/attribute-command-center-v3.0.2/firebase-deploy-hosting-v3.0.2.log
+- operations/review-artifacts/attribute-command-center-v3.0.2/curl-propose-mapping-hosting-v3.0.2.log
+- operations/review-artifacts/attribute-command-center-v3.0.2/propose-response-final.json
+
+**Status:** BLOCKED — Backend needs multipart upload support before end-to-end validation
+
+**Verification for Theo:**
+Once backend is updated:
+1. Hard refresh https://ropi-bccee.web.app/settings/attributes
+2. Upload Test 2.csv via UI → should populate mapping preview (no 404)
+3. Check Network tab → POST to /api/attributes/propose-mapping returns 200
+4. As editor, click Suggest button in attribute drawer → verify suggestions appear
+5. Save & Seed → confirm success message
+
+---
+
 ## [2025-11-22 14:20 UTC] v3.0 — Attribute Command Center (Phase 1)
 
 **Timestamp:** 2025-11-22T14:20:00Z
