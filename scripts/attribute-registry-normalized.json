@@ -220,15 +220,12 @@
     "description": "Long description (ROPI HTML output)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "description"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "descriptiveColor",
@@ -242,8 +239,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "descriptive_color",
-      "Descriptive Color"
+      "descriptive_color"
     ],
     "rules": [],
     "usage": [],
@@ -262,15 +258,12 @@
     "description": "Family sizing available",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "family_sizing"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "fit",
@@ -304,8 +297,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "gender",
-      "Group"
+      "gender"
     ],
     "rules": [
       "SD-005"
@@ -326,15 +318,12 @@
     "description": "Heel Height (numeric)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "heel_height"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "heelType",
@@ -347,17 +336,14 @@
     "description": "Heel Type (Stiletto, Block, Wedge)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "heel_type"
-    ],
+    "importerColumns": [],
     "rules": [
       "SD-010"
     ],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "keywords",
@@ -410,18 +396,12 @@
     "description": "Countries of origin",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "made_in",
-      "country_of_origin",
-      "country",
-      "origin"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "material",
@@ -460,15 +440,12 @@
     "description": "SEO meta description (≤155 chars)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "meta_description"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "metaName",
@@ -481,16 +458,12 @@
     "description": "SEO meta name (≤60 chars)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "meta_name",
-      "meta_title"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "outsoleMaterial",
@@ -503,15 +476,12 @@
     "description": "Outsole Material",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "outsole_material"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "platformHeight",
@@ -524,15 +494,12 @@
     "description": "Platform Height",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "platform_height"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "primaryColor",
@@ -548,10 +515,8 @@
       "primaryColor"
     ],
     "importerColumns": [
-      "primary_color",
-      "primaryColor",
-      "primary_colour",
-      "Primary Color"
+      "rics_color",
+      "primary_color"
     ],
     "rules": [
       "SD-006"
@@ -559,8 +524,7 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "shoeHeightMap",
@@ -573,15 +537,12 @@
     "description": "Shoe Height Map (Low, Mid, High)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "shoe_height_map"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "slug",
@@ -594,15 +555,12 @@
     "description": "URL slug",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "slug"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "sportsTeam",
@@ -677,8 +635,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "kl_post_date",
-      "KL Post Date"
+      "kl_post_date"
     ],
     "rules": [],
     "usage": [],
@@ -698,8 +655,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "launch_date",
-      "Launch Date"
+      "launch_date"
     ],
     "rules": [],
     "usage": [],
@@ -720,8 +676,7 @@
     "legacyPaths": [],
     "importerColumns": [
       "collection",
-      "new_collection",
-      "New Collection"
+      "new_collection"
     ],
     "rules": [],
     "usage": [],
@@ -782,8 +737,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "scom_regular",
-      "SCOM Regular Price"
+      "scom_regular"
     ],
     "rules": [],
     "usage": [],
@@ -803,8 +757,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "scom_sale",
-      "SCOM Sale Price"
+      "scom_sale"
     ],
     "rules": [],
     "usage": [],
@@ -823,15 +776,12 @@
     "description": "RICS brand",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "rics_brand"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "category",
@@ -844,15 +794,12 @@
     "description": "RICS category",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "rics_category"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "color",
@@ -865,17 +812,12 @@
     "description": "RICS color",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "rics_color",
-      "color",
-      "RICS Color"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "longDescription",
@@ -888,15 +830,12 @@
     "description": "RICS long description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "rics_long_description"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "shortDescription",
@@ -909,16 +848,12 @@
     "description": "RICS short description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "rics_short_description",
-      "RICS Short Description"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "brand",
@@ -996,16 +931,12 @@
     "description": "Marks main styles that persist across seasons",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "core_product",
-      "is_core_product"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "department",
@@ -1028,29 +959,6 @@
     "examples": {
       "sampleValues": []
     }
-  },
-  {
-    "key": "dropshipName",
-    "canonicalPath": "sku_core.dropshipName",
-    "label": "Dropship Name",
-    "category": "Core",
-    "dataType": "string",
-    "required": false,
-    "export": true,
-    "description": "Dropship vendor name",
-    "systemFlag": false,
-    "legacyPaths": [],
-    "importerColumns": [
-      "dropship_name",
-      "product_is_dropship_name",
-      "Product Is Dropship.Name"
-    ],
-    "rules": [],
-    "usage": [],
-    "examples": {
-      "sampleValues": []
-    },
-    "bulkEditable": true
   },
   {
     "key": "mpn",
@@ -1109,39 +1017,12 @@
     "description": "Toggles product visibility",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "product_is_active",
-      "is_active",
-      "Product Is Active"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
-  },
-  {
-    "key": "productIsDropship",
-    "canonicalPath": "sku_core.productIsDropship",
-    "label": "Product Is Dropship",
-    "category": "Core",
-    "dataType": "boolean",
-    "required": false,
-    "export": true,
-    "description": "Indicates if product is dropshipped",
-    "systemFlag": false,
-    "legacyPaths": [],
-    "importerColumns": [
-      "product_is_dropship",
-      "is_dropship"
-    ],
-    "rules": [],
-    "usage": [],
-    "examples": {
-      "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "sku",
@@ -1154,15 +1035,12 @@
     "description": "SKU (Variant ID)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "sku"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "styleId",
@@ -1175,16 +1053,12 @@
     "description": "Style ID (links colorways)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "style_id",
-      "styleId"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "rics",
@@ -1197,16 +1071,12 @@
     "description": "RICS system data",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "source_rics",
-      "rics"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "custom2",
@@ -1263,15 +1133,12 @@
     "description": "Expedited shipping override (Money)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "expedited_override_shipping"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "firstReceived",
@@ -1326,16 +1193,12 @@
     "description": "Image embargo date (ISO string)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "hide_image_date",
-      "Hide Image Until Date"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "lastReceived",
@@ -1351,8 +1214,7 @@
       "lastReceived"
     ],
     "importerColumns": [
-      "last_received",
-      "Last Received"
+      "last_received"
     ],
     "rules": [],
     "usage": [],
@@ -1391,17 +1253,12 @@
     "description": "Media status (\"Images Ready\", \"Pending\", etc.)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "media_status",
-      "mediaStatus",
-      "Media"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "standardShippingOverride",
@@ -1414,15 +1271,12 @@
     "description": "Standard shipping override (Money)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "standard_shipping_override"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "status",
@@ -1435,15 +1289,12 @@
     "description": "Canonical product status",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "status"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "store1",
@@ -1503,8 +1354,7 @@
       "storeInv"
     ],
     "importerColumns": [
-      "store_inv",
-      "Store Inv"
+      "store_inv"
     ],
     "rules": [],
     "usage": [],
@@ -1523,16 +1373,12 @@
     "description": "Taxable toggle (true = Taxable Goods)",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [
-      "tax_class",
-      "taxClass"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "totalInv",
@@ -1563,13 +1409,15 @@
     "category": "Technical",
     "dataType": "number",
     "required": false,
-    "export": false,
+    "export": true,
     "description": "Number of variants",
     "systemFlag": false,
     "legacyPaths": [
       "variantCount"
     ],
-    "importerColumns": [],
+    "importerColumns": [
+      "variant_count"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
@@ -1590,8 +1438,7 @@
       "warehouseInv"
     ],
     "importerColumns": [
-      "warehouse_inv",
-      "Warehouse Inv"
+      "warehouse_inv"
     ],
     "rules": [],
     "usage": [],
@@ -1617,8 +1464,7 @@
     "usage": [],
     "examples": {
       "sampleValues": []
-    },
-    "bulkEditable": true
+    }
   },
   {
     "key": "weight",
@@ -1654,8 +1500,7 @@
       "whsInv"
     ],
     "importerColumns": [
-      "whs_inv",
-      "WHS inv"
+      "whs_inv"
     ],
     "rules": [],
     "usage": [],
@@ -1682,39 +1527,5 @@
     "examples": {
       "sampleValues": []
     }
-  },
-  {
-    "key": "custom2",
-    "canonicalPath": "descriptive.custom2",
-    "label": "custom2",
-    "category": "descriptive",
-    "dataType": "string",
-    "required": false,
-    "export": true,
-    "description": "Added human alias for descriptive.custom2",
-    "systemFlag": false,
-    "legacyPaths": [],
-    "importerColumns": [
-      "Custom 2"
-    ],
-    "rules": [],
-    "usage": []
-  },
-  {
-    "key": "custom3",
-    "canonicalPath": "descriptive.custom3",
-    "label": "custom3",
-    "category": "descriptive",
-    "dataType": "string",
-    "required": false,
-    "export": true,
-    "description": "Added human alias for descriptive.custom3",
-    "systemFlag": false,
-    "legacyPaths": [],
-    "importerColumns": [
-      "Custom 3"
-    ],
-    "rules": [],
-    "usage": []
   }
 ]
