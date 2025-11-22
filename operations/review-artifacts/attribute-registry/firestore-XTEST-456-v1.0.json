@@ -1,0 +1,45 @@
+{
+  "technical": {
+    "whsInv": 3,
+    "warehouseInv": 20,
+    "lastReceived": "2025-11-14T00:00:00.000Z",
+    "mediaStatus": "Images Ready",
+    "storeInv": 10,
+    "hideImageDate": "2025-12-01T00:00:00.000Z"
+  },
+  "ai": {},
+  "launch": {
+    "newCollection": "Air Force 1",
+    "launchDate": "2025-11-15T00:00:00.000Z",
+    "klPostDate": "2025-11-01T00:00:00.000Z"
+  },
+  "source": {
+    "rics": {
+      "color": "Black",
+      "shortDescription": "This is short desc"
+    }
+  },
+  "pricing": {
+    "scomRegularPrice": 49.99,
+    "scomSalePrice": 39.99
+  },
+  "sku_core": {
+    "productIsActive": true,
+    "productIsDropship": true,
+    "name": "Unnamed Product",
+    "mpn": "MISSING-MPN",
+    "category": "Misc",
+    "department": "Footwear",
+    "sku": "XTEST-456",
+    "brand": "Unknown",
+    "class": "Misc",
+    "dropshipName": "AcmeDropship"
+  },
+  "descriptive": {
+    "gender": "male",
+    "primaryColor": "Black",
+    "descriptiveColor": "Black",
+    "custom3": "bar",
+    "custom2": "foo"
+  }
+}

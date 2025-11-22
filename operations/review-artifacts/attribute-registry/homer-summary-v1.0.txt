@@ -1,0 +1,78 @@
+HOMER v1.0 EXECUTION SUMMARY
+============================
+
+Version: v1.0
+Date: 2025-11-22T04:33:50Z
+Branch: main (direct commits, no PR)
+
+COMMITS PUSHED TO MAIN:
+- a1b54b4: v1.0: registry: variantCount non-importable/export false; move Group -> descriptive.gender; ensure Custom 2/3
+- c5095c3: v1.0: fieldMapping - Group->gender, remove Variant Count import, align RICS and add required headers
+- 7f67147: v1.0: parseImporter guard - keep technical.variantCount non-importable
+- 2c9f9bf: v1.0: update-importer-aliases guard - skip variantCount
+- 9f0c3b1: v1.0: staging importer - add product_is_dropship mapping, bool parsing, and ensure technical headers
+- 640890e: v1.0: add lisa version metadata file
+- 2dacaa8: v1.0: admin-import-staging - add Custom 2/3 and dropshipName mappings
+
+FILES CHANGED:
+- scripts/attribute-registry-normalized.json (patched)
+- src/utils/fieldMapping.ts (patched)
+- scripts/parseAttributesFromCode.ts (guard added)
+- scripts/update-importer-aliases.ts (guard added)
+- admin-import-staging.cjs (mappings added)
+- .lisa_version.json (new file, committed)
+
+BACKUPS CREATED:
+- operations/review-artifacts/attribute-registry/attribute-keys-backup-20251122T043350Z.json
+- operations/review-artifacts/attribute-registry/fieldMapping-backup-20251122T043350Z.ts
+- operations/review-artifacts/attribute-registry/admin-import-staging-backup-20251122T043350Z.cjs
+
+STAGING OPERATIONS (NO PRODUCTION CHANGES):
+- Seeded 77 attributes to staging Firestore settings/attributes/keys/*
+- Wrote version metadata to staging Firestore settings/meta/lisaVersion
+- Imported test product XTEST-456 (doc ID: _M_I_S_S_I_N_G_-_M_P_N_)
+- Verified technical.variantCount is absent from staging product doc
+
+LOGS AND ARTIFACTS:
+- operations/review-artifacts/attribute-registry/normalize-dryrun-v1.0.log
+- operations/review-artifacts/attribute-registry/normalize-seed-v1.0.log
+- operations/review-artifacts/attribute-registry/admin-import-v1.0.log
+- operations/review-artifacts/attribute-registry/product-XTEST-456-v1.0.json
+- operations/review-artifacts/attribute-registry/firestore-XTEST-456-v1.0.json
+- operations/review-artifacts/attribute-registry/missing-importer-report-v1.0.json
+
+HIDDEN VERSION METADATA:
+- Repo: .lisa_version.json (version: v1.0, commit: 9f0c3b10529d27a2f6d7d5702fa73e5b707a50a9, timestamp: 2025-11-22T04:38:53Z)
+- Staging Firestore: settings/meta/lisaVersion (version: v1.0, commit: 9f0c3b10529d27a2f6d7d5702fa73e5b707a50a9, timestamp: 2025-11-22T04:38:53Z)
+
+KEY CHANGES:
+1. technical.variantCount: importerColumns = [], export = false (intentionally non-importable per business rule)
+2. "Group" moved from sku_core.department.importerColumns to descriptive.gender.importerColumns
+3. RICS mappings updated from source.rics.* to rics_source.* canonical
+4. Added mappings: product_is_dropship (boolean), Custom 2, Custom 3, Product Is Dropship.Name
+5. Guards added to parseAttributesFromCode.ts and update-importer-aliases.ts to prevent variantCount re-introduction
+
+TEST IMPORT RESULTS:
+- All required headers map correctly (Last Received, Group->gender, Primary Color, etc.)
+- Custom 2/3 mapped to descriptive.custom2/custom3
+- product_is_dropship parses as boolean correctly
+- variant_count intentionally UNMAPPED (business rule)
+- Staging Firestore doc verified: technical.variantCount is absent
+
+MISSING-IMPORTER REPORT:
+- Total attributes: 77
+- With importers: 42
+- AI-output fields (no importers): 8 (expected)
+- Intentional non-importable: 1 (technical.variantCount)
+- Missing importers (legitimate system/read-only fields): 26
+
+ERRORS/REMEDIATION:
+- Seeder normalized the registry during run, temporarily re-adding variantCount importers
+- Remediation: Re-ran patch-registry.cjs and re-seeded to fix
+- Final state confirmed: variantCount has empty importerColumns and export=false
+
+HOMER: embed-version v1.0 applied to .lisa_version.json and staging settings/meta/lisaVersion
+
+RESULT: SUCCESS
+
+All steps completed without blocking errors. Staging environment updated with v1.0 attribute registry and importer mappings. Test import verified all suspicious headers map correctly and variantCount is correctly excluded. Production untouched.

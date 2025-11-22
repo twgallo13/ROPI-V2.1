@@ -1,0 +1,701 @@
+{
+  "meta": 1763760472792,
+  "data": {
+    "ageGroup": {
+      "importerColumns": [
+        "age_group"
+      ],
+      "canonicalPath": "descriptive.ageGroup",
+      "description": "Age Group (Adult, Grade School, Toddler, Infant)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "brand": {
+      "export": true,
+      "importerColumns": [
+        "brand"
+      ],
+      "canonicalPath": "sku_core.brand",
+      "description": "Brand name",
+      "bulkEditable": false
+    },
+    "category": {
+      "export": true,
+      "importerColumns": [
+        "category"
+      ],
+      "canonicalPath": "sku_core.category",
+      "description": "Category (e.g., \"Running Shoes\", \"T-Shirts\")",
+      "bulkEditable": false
+    },
+    "class": {
+      "importerColumns": [
+        "class"
+      ],
+      "canonicalPath": "sku_core.class",
+      "description": "Class (e.g., \"Athletic\", \"Casual\")",
+      "bulkEditable": false,
+      "export": true
+    },
+    "closureType": {
+      "importerColumns": [
+        "closure_type"
+      ],
+      "canonicalPath": "descriptive.closureType",
+      "description": "Closure Type (Lace-up, Slip-on, Velcro)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "color": {
+      "importerColumns": [
+        "rics_color",
+        "color"
+      ],
+      "canonicalPath": "rics_source.color",
+      "description": "RICS color",
+      "bulkEditable": true,
+      "export": true
+    },
+    "coreProduct": {
+      "importerColumns": [
+        "core_product",
+        "is_core_product"
+      ],
+      "canonicalPath": "sku_core.coreProduct",
+      "description": "Marks main styles that persist across seasons",
+      "bulkEditable": true,
+      "export": true
+    },
+    "custom2": {
+      "importerColumns": [
+        "custom2"
+      ],
+      "canonicalPath": "technical.custom2",
+      "description": "Custom field 2",
+      "bulkEditable": false,
+      "export": true
+    },
+    "custom3": {
+      "importerColumns": [
+        "custom3"
+      ],
+      "canonicalPath": "technical.custom3",
+      "description": "Custom field 3",
+      "bulkEditable": false,
+      "export": true
+    },
+    "cutType": {
+      "importerColumns": [
+        "cut_type"
+      ],
+      "canonicalPath": "descriptive.cutType",
+      "description": "Cut Type (Low, Mid, High)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "department": {
+      "importerColumns": [
+        "department"
+      ],
+      "canonicalPath": "sku_core.department",
+      "description": "Department (e.g., \"Footwear\", \"Apparel\")",
+      "bulkEditable": false,
+      "export": true
+    },
+    "description": {
+      "importerColumns": [
+        "description"
+      ],
+      "canonicalPath": "descriptive.description",
+      "description": "Long description (ROPI HTML output)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "descriptionBlocks": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.descriptionBlocks",
+      "description": "HTML blocks per section",
+      "bulkEditable": false,
+      "export": true
+    },
+    "descriptionHtml": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.descriptionHtml",
+      "description": "AI-generated HTML description",
+      "bulkEditable": false,
+      "export": true
+    },
+    "descriptiveColor": {
+      "importerColumns": [
+        "descriptive_color"
+      ],
+      "canonicalPath": "descriptive.descriptiveColor",
+      "description": "Descriptive Color (free-text manufacturer color)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "dropshipName": {
+      "importerColumns": [
+        "dropship_name",
+        "product_is_dropship_name"
+      ],
+      "canonicalPath": "sku_core.dropshipName",
+      "description": "Dropship vendor name",
+      "bulkEditable": true,
+      "export": true
+    },
+    "expeditedOverrideShipping": {
+      "importerColumns": [
+        "expedited_override_shipping"
+      ],
+      "canonicalPath": "technical.expeditedOverrideShipping",
+      "description": "Expedited shipping override (Money)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "familySizing": {
+      "importerColumns": [
+        "family_sizing"
+      ],
+      "canonicalPath": "descriptive.familySizing",
+      "description": "Family sizing available",
+      "bulkEditable": true,
+      "export": true
+    },
+    "fastFashion": {
+      "importerColumns": [
+        "fastfashion",
+        "fast_fashion"
+      ],
+      "canonicalPath": "launch.fastFashion",
+      "description": "Fast fashion flag",
+      "bulkEditable": false,
+      "export": true
+    },
+    "firstReceived": {
+      "importerColumns": [
+        "first_received"
+      ],
+      "canonicalPath": "technical.firstReceived",
+      "description": "First received date (ISO string)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "fit": {
+      "importerColumns": [
+        "fit"
+      ],
+      "canonicalPath": "descriptive.fit",
+      "description": "Fit description",
+      "bulkEditable": false,
+      "export": true
+    },
+    "gender": {
+      "importerColumns": [
+        "gender"
+      ],
+      "canonicalPath": "descriptive.gender",
+      "description": "Gender (Men's, Women's, Unisex)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "heelHeight": {
+      "importerColumns": [
+        "heel_height"
+      ],
+      "canonicalPath": "descriptive.heelHeight",
+      "description": "Heel Height (numeric)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "heelType": {
+      "importerColumns": [
+        "heel_type"
+      ],
+      "canonicalPath": "descriptive.heelType",
+      "description": "Heel Type (Stiletto, Block, Wedge)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "height": {
+      "importerColumns": [
+        "height"
+      ],
+      "canonicalPath": "technical.height",
+      "description": "Shipping height",
+      "bulkEditable": false,
+      "export": true
+    },
+    "hideImageDate": {
+      "importerColumns": [
+        "hide_image_date"
+      ],
+      "canonicalPath": "technical.hideImageDate",
+      "description": "Image embargo date (ISO string)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "hype": {
+      "importerColumns": [
+        "hype"
+      ],
+      "canonicalPath": "launch.hype",
+      "description": "High-priority or limited drop",
+      "bulkEditable": false,
+      "export": true
+    },
+    "keywords": {
+      "importerColumns": [
+        "keywords"
+      ],
+      "canonicalPath": "descriptive.keywords",
+      "description": "Keywords/tags",
+      "bulkEditable": false,
+      "export": true
+    },
+    "klPostDate": {
+      "importerColumns": [
+        "kl_post_date"
+      ],
+      "canonicalPath": "launch.klPostDate",
+      "description": "KL post date (ISO string)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "lastReceived": {
+      "importerColumns": [
+        "last_received"
+      ],
+      "canonicalPath": "technical.lastReceived",
+      "description": "Last received date (ISO string)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "launchDate": {
+      "importerColumns": [
+        "launch_date"
+      ],
+      "canonicalPath": "launch.launchDate",
+      "description": "Launch date (ISO string)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "league": {
+      "importerColumns": [
+        "league"
+      ],
+      "canonicalPath": "descriptive.league",
+      "description": "League (NFL, NBA, etc.)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "length": {
+      "importerColumns": [
+        "length"
+      ],
+      "canonicalPath": "technical.length",
+      "description": "Shipping length",
+      "bulkEditable": false,
+      "export": true
+    },
+    "longDescription": {
+      "importerColumns": [
+        "rics_long_description"
+      ],
+      "canonicalPath": "rics_source.longDescription",
+      "description": "RICS long description",
+      "bulkEditable": true,
+      "export": true
+    },
+    "madeIn": {
+      "importerColumns": [
+        "made_in",
+        "country_of_origin",
+        "country",
+        "origin"
+      ],
+      "canonicalPath": "descriptive.madeIn",
+      "description": "Countries of origin",
+      "bulkEditable": true,
+      "export": true
+    },
+    "map": {
+      "importerColumns": [
+        "map"
+      ],
+      "canonicalPath": "pricing.map",
+      "description": "Minimum Advertised Price",
+      "bulkEditable": false,
+      "export": true
+    },
+    "material": {
+      "importerColumns": [
+        "material",
+        "materials"
+      ],
+      "canonicalPath": "descriptive.material",
+      "description": "Materials (multi-select array)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "mediaStatus": {
+      "importerColumns": [
+        "media_status",
+        "mediaStatus"
+      ],
+      "canonicalPath": "technical.mediaStatus",
+      "description": "Media status (\"Images Ready\", \"Pending\", etc.)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "metaDescription": {
+      "importerColumns": [
+        "meta_description"
+      ],
+      "canonicalPath": "descriptive.metaDescription",
+      "description": "SEO meta description (≤155 chars)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "metaName": {
+      "importerColumns": [
+        "meta_name",
+        "meta_title"
+      ],
+      "canonicalPath": "descriptive.metaName",
+      "description": "SEO meta name (≤60 chars)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "mpn": {
+      "importerColumns": [
+        "mpn"
+      ],
+      "canonicalPath": "sku_core.mpn",
+      "description": "Manufacturer Part Number (Product ID)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "name": {
+      "importerColumns": [
+        "rics_short_desc",
+        "name"
+      ],
+      "canonicalPath": "sku_core.name",
+      "description": "Product name",
+      "bulkEditable": false,
+      "export": true
+    },
+    "newCollection": {
+      "importerColumns": [
+        "collection",
+        "new_collection"
+      ],
+      "canonicalPath": "launch.newCollection",
+      "description": "Product collection (Air Force 1, Dunk, etc.)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "outsoleMaterial": {
+      "importerColumns": [
+        "outsole_material"
+      ],
+      "canonicalPath": "descriptive.outsoleMaterial",
+      "description": "Outsole Material",
+      "bulkEditable": true,
+      "export": true
+    },
+    "platformHeight": {
+      "importerColumns": [
+        "platform_height"
+      ],
+      "canonicalPath": "descriptive.platformHeight",
+      "description": "Platform Height",
+      "bulkEditable": true,
+      "export": true
+    },
+    "primaryColor": {
+      "importerColumns": [
+        "primary_color",
+        "primaryColor",
+        "primary_colour"
+      ],
+      "canonicalPath": "descriptive.primaryColor",
+      "description": "Primary Color",
+      "bulkEditable": true,
+      "export": true
+    },
+    "productIsActive": {
+      "importerColumns": [
+        "product_is_active",
+        "is_active"
+      ],
+      "canonicalPath": "sku_core.productIsActive",
+      "description": "Toggles product visibility",
+      "bulkEditable": true,
+      "export": true
+    },
+    "productIsDropship": {
+      "importerColumns": [
+        "product_is_dropship",
+        "is_dropship"
+      ],
+      "canonicalPath": "sku_core.productIsDropship",
+      "description": "Indicates if product is dropshipped",
+      "bulkEditable": true,
+      "export": true
+    },
+    "promo": {
+      "importerColumns": [
+        "promo"
+      ],
+      "canonicalPath": "pricing.promo",
+      "description": "Promotional flag",
+      "bulkEditable": false,
+      "export": true
+    },
+    "rics": {
+      "importerColumns": [
+        "source_rics",
+        "rics"
+      ],
+      "canonicalPath": "source.rics",
+      "description": "RICS system data",
+      "bulkEditable": true,
+      "export": true
+    },
+    "ropiScore": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.ropiScore",
+      "description": "ROPI validation score (0-10)",
+      "bulkEditable": false,
+      "export": true
+    },
+    "scomRegularPrice": {
+      "importerColumns": [
+        "scom_regular"
+      ],
+      "canonicalPath": "pricing.scomRegularPrice",
+      "description": "SCOM regular price",
+      "bulkEditable": false,
+      "export": true
+    },
+    "scomSalePrice": {
+      "importerColumns": [
+        "scom_sale"
+      ],
+      "canonicalPath": "pricing.scomSalePrice",
+      "description": "SCOM sale price",
+      "bulkEditable": false,
+      "export": true
+    },
+    "seoName": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.seoName",
+      "description": "AI-generated SEO name",
+      "bulkEditable": false,
+      "export": true
+    },
+    "shoeHeightMap": {
+      "importerColumns": [
+        "shoe_height_map"
+      ],
+      "canonicalPath": "descriptive.shoeHeightMap",
+      "description": "Shoe Height Map (Low, Mid, High)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "shortDescription": {
+      "importerColumns": [
+        "rics_short_description"
+      ],
+      "canonicalPath": "rics_source.shortDescription",
+      "description": "RICS short description",
+      "bulkEditable": true,
+      "export": true
+    },
+    "sku": {
+      "importerColumns": [
+        "sku"
+      ],
+      "canonicalPath": "sku_core.sku",
+      "description": "SKU (Variant ID)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "slug": {
+      "importerColumns": [
+        "slug"
+      ],
+      "canonicalPath": "descriptive.slug",
+      "description": "URL slug",
+      "bulkEditable": true,
+      "export": true
+    },
+    "smartDetectSummary": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.smartDetectSummary",
+      "description": "Smart Detect autofill summary",
+      "bulkEditable": false,
+      "export": true
+    },
+    "sportsTeam": {
+      "importerColumns": [
+        "sports_team"
+      ],
+      "canonicalPath": "descriptive.sportsTeam",
+      "description": "Sports Team name",
+      "bulkEditable": false,
+      "export": true
+    },
+    "standardShippingOverride": {
+      "importerColumns": [
+        "standard_shipping_override"
+      ],
+      "canonicalPath": "technical.standardShippingOverride",
+      "description": "Standard shipping override (Money)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "status": {
+      "importerColumns": [
+        "status"
+      ],
+      "canonicalPath": "technical.status",
+      "description": "Canonical product status",
+      "bulkEditable": true,
+      "export": true
+    },
+    "store1": {
+      "importerColumns": [
+        "store1"
+      ],
+      "canonicalPath": "technical.store1",
+      "description": "Store 1 inventory",
+      "bulkEditable": false,
+      "export": true
+    },
+    "store4": {
+      "importerColumns": [
+        "store4"
+      ],
+      "canonicalPath": "technical.store4",
+      "description": "Store 4 inventory",
+      "bulkEditable": false,
+      "export": true
+    },
+    "storeInv": {
+      "importerColumns": [
+        "store_inv"
+      ],
+      "canonicalPath": "technical.storeInv",
+      "description": "Store inventory total",
+      "bulkEditable": false,
+      "export": true
+    },
+    "styleId": {
+      "importerColumns": [
+        "style_id",
+        "styleId"
+      ],
+      "canonicalPath": "sku_core.styleId",
+      "description": "Style ID (links colorways)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "taxClass": {
+      "importerColumns": [
+        "tax_class",
+        "taxClass"
+      ],
+      "canonicalPath": "technical.taxClass",
+      "description": "Taxable toggle (true = Taxable Goods)",
+      "bulkEditable": true,
+      "export": true
+    },
+    "templateKey": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.templateKey",
+      "description": "Template used for generation",
+      "bulkEditable": false,
+      "export": true
+    },
+    "templateOverrideKey": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.templateOverrideKey",
+      "description": "Manual template override",
+      "bulkEditable": false,
+      "export": true
+    },
+    "totalInv": {
+      "importerColumns": [
+        "total_inv"
+      ],
+      "canonicalPath": "technical.totalInv",
+      "description": "Total inventory",
+      "bulkEditable": false,
+      "export": true
+    },
+    "validationFlags": {
+      "importerColumns": [],
+      "canonicalPath": "a_i_generated.validationFlags",
+      "description": "Validation warnings/errors",
+      "bulkEditable": false,
+      "export": true
+    },
+    "variantCount": {
+      "importerColumns": [
+        "variant_count"
+      ],
+      "canonicalPath": "technical.variantCount",
+      "description": "Number of variants",
+      "bulkEditable": false,
+      "export": true
+    },
+    "warehouseInv": {
+      "importerColumns": [
+        "warehouse_inv"
+      ],
+      "canonicalPath": "technical.warehouseInv",
+      "description": "Warehouse inventory",
+      "bulkEditable": false,
+      "export": true
+    },
+    "website": {
+      "importerColumns": [
+        "website"
+      ],
+      "canonicalPath": "technical.website",
+      "description": "Website availability",
+      "bulkEditable": true,
+      "export": true
+    },
+    "weight": {
+      "importerColumns": [
+        "weight"
+      ],
+      "canonicalPath": "technical.weight",
+      "description": "Shipping weight",
+      "bulkEditable": false,
+      "export": true
+    },
+    "whsInv": {
+      "importerColumns": [
+        "whs_inv"
+      ],
+      "canonicalPath": "technical.whsInv",
+      "description": "WHS inventory",
+      "bulkEditable": false,
+      "export": true
+    },
+    "width": {
+      "importerColumns": [
+        "width"
+      ],
+      "canonicalPath": "technical.width",
+      "description": "Shipping width",
+      "bulkEditable": false,
+      "export": true
+    }
+  }
+}

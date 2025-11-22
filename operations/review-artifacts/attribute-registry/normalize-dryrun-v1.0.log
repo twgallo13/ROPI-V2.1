@@ -1,0 +1,37 @@
+Normalizing and seeding attribute registry...
+
+[DRY RUN MODE]
+
+✓ Loaded 77 attributes from registry
+✓ Applied normalization rules
+✓ Saved normalized registry to /workspaces/ROPI-V2.1/scripts/attribute-registry-normalized.json
+
+[DRY RUN] Would seed to Firestore settings/attributes/*
+Total attributes: 77
+
+Sample attribute (descriptive.sportsTeam):
+{
+  "key": "sportsTeam",
+  "canonicalPath": "descriptive.sportsTeam",
+  "label": "Sports Team",
+  "category": "Descriptive",
+  "dataType": "string",
+  "required": false,
+  "export": true,
+  "description": "Sports Team name",
+  "systemFlag": false,
+  "legacyPaths": [],
+  "importerColumns": [
+    "sports_team"
+  ],
+  "rules": [],
+  "usage": [],
+  "examples": {
+    "sampleValues": []
+  }
+}
+✓ Generated CSV report at /workspaces/ROPI-V2.1/scripts/attribute-registry.csv
+
+✅ Complete!
+
+Run without --dry-run to seed Firestore.

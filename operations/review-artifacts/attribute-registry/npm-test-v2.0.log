@@ -1,0 +1,1602 @@
+
+> react-typescript-starter@0.0.0 test
+> vitest
+
+
+[1m[44m DEV [49m[22m [34mv4.0.9 [39m[90m/workspaces/ROPI-V2.1[39m
+
+ [32m✓[39m functions/src/__tests__/smartDetect.rules.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstderr[2m | src/__tests__/SmartDetectPanel.persist.test.tsx[2m > [22m[2mSmartDetectPanel - Persist and Undo[2m > [22m[2mshould show error toast on persist failure
+[22m[39mFailed to apply suggestion: Error: Firestore error
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/SmartDetectPanel.persist.test.tsx:342:38
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+ [32m✓[39m src/__tests__/SmartDetectPanel.persist.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[32m 210[2mms[22m[39m
+ [32m✓[39m src/__tests__/schemaAdapter.mappings.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smartDetect.schema.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/__tests__/firestoreImport.mappings.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstderr[2m | src/utils/__tests__/csvParser.test.ts[2m > [22m[2mCSV Parser - Delimiter Detection[2m > [22m[2mdefaults to comma when no delimiters found
+[22m[39mDelimiter detection: detected ',' (comma), but all rows parsed as single field. File might use a different delimiter.
+
+ [32m✓[39m src/utils/__tests__/csvParser.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [2m[90m↓[39m[22m src/__tests__/AIWorkflowPanel.describeUpdate.test.tsx [2m([22m[2m7 tests[22m[2m | [22m[33m7 skipped[39m[2m)[22m
+ [32m✓[39m src/__tests__/DescriptionPanel.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 319[2mms[22m[39m
+[90mstderr[2m | src/__tests__/AttributeKeyPage.test.tsx[2m > [22m[2mAttributeKeyPage[2m > [22m[2mhandles Firestore error gracefully
+[22m[39mFailed to load attributes: Error: Firestore unavailable
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/AttributeKeyPage.test.tsx:209:37
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+Not implemented: navigation to another Document
+[90mstderr[2m | src/__tests__/AttributeKeyPage.test.tsx[2m > [22m[2mAttributeKeyPage[2m > [22m[2mloads fallback JSON when Firestore fails
+[22m[39mFailed to load attributes: Error: Firestore unavailable
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/AttributeKeyPage.test.tsx:225:37
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+ [32m✓[39m src/__tests__/AttributeKeyPage.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 295[2mms[22m[39m
+ [32m✓[39m src/__tests__/ProductEditorV2.ai.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 174[2mms[22m[39m
+[90mstderr[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould fall back to static synonyms if registry fails
+[22m[39m[csvParser] Registry lookup failed, falling back to static synonyms: Error: Firestore unavailable
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/csvParser.registry.test.ts:73:7
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+[csvParser] Registry lookup failed, falling back to static synonyms: Error: Firestore unavailable
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/csvParser.registry.test.ts:73:7
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+
+ [32m✓[39m src/__tests__/csvParser.registry.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smartDetect.legacy.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstderr[2m | src/__tests__/MappingReview.dynamic.test.tsx[2m > [22m[2mMappingReview - Dynamic Registry Integration[2m > [22m[2mshould handle registry load error gracefully
+[22m[39m[MappingReview] Failed to load attribute registry: Error: Firestore connection failed
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/MappingReview.dynamic.test.tsx:215:7
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+[90mstdout[2m | src/hooks/__tests__/useAttributesSettings.test.ts
+[22m[39mLoaded env: {
+  GITHUB_TOKEN: [32m'ghu_2gOjrplKVLrhnbfSJ5UXVF13V0Aerq2F87H4'[39m,
+  DOCKER_BUILDKIT: [32m'1'[39m,
+  LESSOPEN: [32m'| /usr/bin/lesspipe %s'[39m,
+  ENABLE_DYNAMIC_INSTALL: [32m'true'[39m,
+  GITHUB_CODESPACE_TOKEN: [32m'BVDIZAZ7IY6N3Y72FRIMIQDJEHO3TANCNFSM4ARG4TKA'[39m,
+  PYTHONIOENCODING: [32m'UTF-8'[39m,
+  USER: [32m'codespace'[39m,
+  npm_config_user_agent: [32m'npm/9.8.1 node/v22.17.0 linux x64 workspaces/false'[39m,
+  NVS_ROOT: [32m'/usr/local/nvs'[39m,
+  GIT_EDITOR: [32m'code --wait'[39m,
+  RVM_PATH: [32m'/usr/local/rvm'[39m,
+  FEATURE_SPARK_POST_COMMIT_CREATE_ITERATION: [32m'true'[39m,
+  HOSTNAME: [32m'codespaces-868ac7'[39m,
+  GIT_ASKPASS: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/extensions/git/dist/askpass.sh'[39m,
+  PIPX_HOME: [32m'/usr/local/py-utils'[39m,
+  CONDA_SCRIPT: [32m'/opt/conda/etc/profile.d/conda.sh'[39m,
+  DOTNET_USE_POLLING_FILE_WATCHER: [32m'true'[39m,
+  npm_node_execpath: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin/node'[39m,
+  GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN: [32m'app.github.dev'[39m,
+  SHLVL: [32m'2'[39m,
+  BROWSER: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/bin/helpers/browser.sh'[39m,
+  npm_config_noproxy: [32m''[39m,
+  HUGO_ROOT: [32m'/home/codespace/.hugo'[39m,
+  HOME: [32m'/home/codespace'[39m,
+  OLDPWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  TERM_PROGRAM_VERSION: [32m'1.106.2'[39m,
+  ORYX_ENV_TYPE: [32m'vsonline-present'[39m,
+  NVM_BIN: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin'[39m,
+  VSCODE_IPC_HOOK_CLI: [32m'/tmp/vscode-ipc-62037af7-8071-4f36-9271-36411aa08c30.sock'[39m,
+  npm_package_json: [32m'/workspaces/ROPI-V2.1/package.json'[39m,
+  NVM_INC: [32m'/usr/local/share/nvm/versions/node/v22.17.0/include/node'[39m,
+  CODESPACES: [32m'true'[39m,
+  PIPX_BIN_DIR: [32m'/usr/local/py-utils/bin'[39m,
+  DYNAMIC_INSTALL_ROOT_DIR: [32m'/opt'[39m,
+  NVM_SYMLINK_CURRENT: [32m'true'[39m,
+  DOTNET_RUNNING_IN_CONTAINER: [32m'true'[39m,
+  GRADLE_HOME: [32m'/usr/local/sdkman/candidates/gradle/current'[39m,
+  ORYX_DIR: [32m'/usr/local/oryx'[39m,
+  VSCODE_GIT_ASKPASS_MAIN: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/extensions/git/dist/askpass-main.js'[39m,
+  VSCODE_GIT_ASKPASS_NODE: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/node'[39m,
+  MAVEN_HOME: [32m'/usr/local/sdkman/candidates/maven/current'[39m,
+  JUPYTERLAB_PATH: [32m'/home/codespace/.local/bin'[39m,
+  npm_config_userconfig: [32m'/home/codespace/.npmrc'[39m,
+  npm_config_local_prefix: [32m'/workspaces/ROPI-V2.1'[39m,
+  GOROOT: [32m'/usr/local/go'[39m,
+  VSCODE_PYTHON_AUTOACTIVATE_GUARD: [32m'1'[39m,
+  NODE_ROOT: [32m'/home/codespace/nvm'[39m,
+  COLORTERM: [32m'truecolor'[39m,
+  GITHUB_USER: [32m'twgallo13'[39m,
+  GOOGLE_APPLICATION_CREDENTIALS: [32m'/secrets/staging-service-account.json'[39m,
+  GITHUB_GRAPHQL_URL: [32m'https://api.github.com/graphql'[39m,
+  COLOR: [32m'0'[39m,
+  PYTHON_PATH: [32m'/usr/local/python/current'[39m,
+  NVM_DIR: [32m'/usr/local/share/nvm'[39m,
+  DEBUGINFOD_URLS: [32m'https://debuginfod.ubuntu.com '[39m,
+  npm_config_metrics_registry: [32m'https://registry.npmjs.org/'[39m,
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: [32m'1'[39m,
+  ContainerVersion: [32m'13'[39m,
+  GITHUB_API_URL: [32m'https://api.github.com'[39m,
+  NVS_HOME: [32m'/usr/local/nvs'[39m,
+  rvm_bin_path: [32m'/usr/local/rvm/bin'[39m,
+  SDKMAN_CANDIDATES_API: [32m'https://api.sdkman.io/2'[39m,
+  _: [32m'/home/codespace/nvm/current/bin/npm'[39m,
+  npm_config_prefix: [32m'/usr/local/share/nvm/versions/node/v22.17.0'[39m,
+  npm_config_npm_version: [32m'9.8.1'[39m,
+  CLOUDENV_ENVIRONMENT_ID: [32m'b103cb16-9561-4a0e-ad81-4b7e69c0d077'[39m,
+  RUBY_VERSION: [32m'ruby-3.4.1'[39m,
+  PROMPT_DIRTRIM: [32m'4'[39m,
+  IRBRC: [32m'/usr/local/rvm/rubies/ruby-3.4.1/.irbrc'[39m,
+  TERM: [32m'xterm-256color'[39m,
+  npm_config_cache: [32m'/home/codespace/.npm'[39m,
+  DOTNET_ROOT: [32m'/usr/share/dotnet'[39m,
+  NVS_DIR: [32m'/usr/local/nvs'[39m,
+  PHP_ROOT: [32m'/home/codespace/.php'[39m,
+  npm_config_node_gyp: [32m'/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js'[39m,
+  PATH: [32m'/workspaces/ROPI-V2.1/node_modules/.bin:/workspaces/node_modules/.bin:/node_modules/.bin:/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/usr/local/rvm/gems/ruby-3.4.1/bin:/usr/local/rvm/gems/ruby-3.4.1@global/bin:/usr/local/rvm/rubies/ruby-3.4.1/bin:/home/codespace/.vscode-remote/data/User/globalStorage/github.copilot-chat/debugCommand:/home/codespace/.vscode-remote/data/User/globalStorage/github.copilot-chat/copilotCli:/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/bin/remote-cli:/home/codespace/.local/bin:/home/codespace/.dotnet:/home/codespace/nvm/current/bin:/home/codespace/.php/current/bin:/home/codespace/.python/current/bin:/home/codespace/java/current/bin:/home/codespace/.ruby/current/bin:/home/codespace/.local/bin:/usr/local/python/current/bin:/usr/local/py-utils/bin:/usr/local/jupyter:/usr/local/oryx:/usr/local/go/bin:/go/bin:/usr/local/sdkman/bin:/usr/local/sdkman/candidates/java/current/bin:/usr/local/sdkman/candidates/gradle/current/bin:/usr/local/sdkman/candidates/maven/current/bin:/usr/local/sdkman/candidates/ant/current/bin:/usr/local/rvm/gems/default/bin:/usr/local/rvm/gems/default@global/bin:/usr/local/rvm/rubies/default/bin:/usr/local/share/rbenv/bin:/usr/local/php/current/bin:/opt/conda/bin:/usr/local/nvs:/usr/local/share/nvm/versions/node/v22.17.0/bin:/usr/local/hugo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/dotnet:/home/codespace/.dotnet/tools:/usr/local/rvm/bin'[39m,
+  JAVA_ROOT: [32m'/home/codespace/java'[39m,
+  SDKMAN_CANDIDATES_DIR: [32m'/usr/local/sdkman/candidates'[39m,
+  NODE: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin/node'[39m,
+  npm_package_name: [32m'react-typescript-starter'[39m,
+  NPM_GLOBAL: [32m'/home/codespace/.npm-global'[39m,
+  HUGO_DIR: [32m'/usr/local/hugo/bin'[39m,
+  SHELL_LOGGED_IN: [32m'true'[39m,
+  MY_RUBY_HOME: [32m'/usr/local/rvm/rubies/ruby-3.4.1'[39m,
+  LANG: [32m'C.UTF-8'[39m,
+  LS_COLORS: [32m'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:'[39m,
+  VSCODE_GIT_IPC_HANDLE: [32m'/tmp/vscode-git-5e09547bac.sock'[39m,
+  SDKMAN_DIR: [32m'/usr/local/sdkman'[39m,
+  GITHUB_REPOSITORY: [32m'twgallo13/ROPI-V2.1'[39m,
+  RUBY_ROOT: [32m'/home/codespace/.ruby'[39m,
+  SDKMAN_PLATFORM: [32m'linuxx64'[39m,
+  TERM_PROGRAM: [32m'vscode'[39m,
+  npm_lifecycle_script: [32m'vitest'[39m,
+  SHELL: [32m'/bin/bash'[39m,
+  GOPATH: [32m'/go'[39m,
+  npm_package_version: [32m'0.0.0'[39m,
+  npm_lifecycle_event: [32m'test'[39m,
+  rvm_prefix: [32m'/usr/local'[39m,
+  GEM_HOME: [32m'/usr/local/rvm/gems/ruby-3.4.1'[39m,
+  LESSCLOSE: [32m'/usr/bin/lesspipe %s %s'[39m,
+  ORYX_PREFER_USER_INSTALLED_SDKS: [32m'true'[39m,
+  ORYX_SDK_STORAGE_BASE_URL: [32m'https://oryx-cdn.microsoft.io'[39m,
+  rvm_version: [32m'1.29.12 (latest)'[39m,
+  CONDA_DIR: [32m'/opt/conda'[39m,
+  DEBIAN_FLAVOR: [32m'focal-scm'[39m,
+  VSCODE_GIT_ASKPASS_EXTRA_ARGS: [32m''[39m,
+  GIT_PAGER: [32m'cat'[39m,
+  npm_config_globalconfig: [32m'/usr/local/share/nvm/versions/node/v22.17.0/etc/npmrc'[39m,
+  npm_config_init_module: [32m'/home/codespace/.npm-init.js'[39m,
+  JAVA_HOME: [32m'/usr/local/sdkman/candidates/java/current'[39m,
+  NVS_USE_XZ: [32m'1'[39m,
+  PWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  INTERNAL_VSCS_TARGET_URL: [32m'https://westus3.online.visualstudio.com'[39m,
+  GEM_PATH: [32m'/usr/local/rvm/gems/ruby-3.4.1:/usr/local/rvm/gems/ruby-3.4.1@global'[39m,
+  npm_execpath: [32m'/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/bin/npm-cli.js'[39m,
+  GITHUB_SERVER_URL: [32m'https://github.com'[39m,
+  NVM_CD_FLAGS: [32m''[39m,
+  npm_config_global_prefix: [32m'/usr/local/share/nvm/versions/node/v22.17.0'[39m,
+  npm_command: [32m'test'[39m,
+  CODESPACE_NAME: [32m'scaling-robot-7v499w6pq9x6cppxx'[39m,
+  PYTHON_ROOT: [32m'/home/codespace/.python'[39m,
+  NVS_OS: [32m'linux'[39m,
+  PHP_PATH: [32m'/usr/local/php/current'[39m,
+  RAILS_DEVELOPMENT_HOSTS: [32m'.githubpreview.dev,.preview.app.github.dev,.app.github.dev'[39m,
+  CODESPACE_VSCODE_FOLDER: [32m'/workspaces/ROPI-V2.1'[39m,
+  MAVEN_ROOT: [32m'/home/codespace/.maven'[39m,
+  RUBY_HOME: [32m'/usr/local/rvm/rubies/default'[39m,
+  rvm_path: [32m'/usr/local/rvm'[39m,
+  NUGET_XMLDOC_MODE: [32m'skip'[39m,
+  INIT_CWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  EDITOR: [32m'vi'[39m,
+  TEST: [32m'true'[39m,
+  VITEST: [32m'true'[39m,
+  NODE_ENV: [32m'test'[39m,
+  PROD: [32m''[39m,
+  DEV: [32m'1'[39m,
+  VITE_FIREBASE_API_KEY: [32m'AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8'[39m,
+  VITE_FIREBASE_AUTH_DOMAIN: [32m'ropi-bccee.firebaseapp.com'[39m,
+  VITE_FIREBASE_PROJECT_ID: [32m'ropi-bccee'[39m,
+  VITE_FIREBASE_STORAGE_BUCKET: [32m'ropi-bccee.appspot.com'[39m,
+  VITE_FIREBASE_MESSAGING_SENDER_ID: [32m'892791174441'[39m,
+  VITE_FIREBASE_APP_ID: [32m'1:892791174441:web:2ea5843a253b167d12b338'[39m,
+  VITE_ORG_DOMAIN: [32m'shiekhshoes.org'[39m,
+  VITE_ADMIN_EMAILS: [32m'theo@shiekhshoes.org'[39m,
+  VITE_EDITOR_V2: [32m'true'[39m,
+  BASE_URL: [32m'/'[39m,
+  MODE: [32m'test'[39m,
+  VITEST_MODE: [32m'WATCH'[39m,
+  FORCE_TTY: [32m''[39m,
+  VITEST_POOL_ID: [32m'2'[39m,
+  VITEST_WORKER_ID: [32m'13'[39m,
+  SSR: [32m''[39m
+}
+
+ [32m✓[39m src/hooks/__tests__/useAttributesSettings.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [31m❯[39m src/__tests__/MappingReview.dynamic.test.tsx [2m([22m[2m6 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 3347[2mms[22m[39m
+     [32m✓[39m should load attribute registry on mount[32m 59[2mms[22m[39m
+[31m     [31m×[31m should display dropdown with descriptive.gender option[39m[33m 1019[2mms[22m[39m
+[31m     [31m×[31m should exclude technical.variantCount from options (empty importerColumns)[39m[33m 1014[2mms[22m[39m
+     [32m✓[39m should display attributes grouped by category[32m 234[2mms[22m[39m
+[31m     [31m×[31m should handle registry load error gracefully[39m[33m 1012[2mms[22m[39m
+     [32m✓[39m should display loading state initially[32m 7[2mms[22m[39m
+ [32m✓[39m src/__tests__/AIWorkflowPanel.applyPersist.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/validate.legacy.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smoke.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m src/__tests__/smoke.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/MappingReview.dynamic.test.tsx[2m > [22mMappingReview - Dynamic Registry Integration[2m > [22mshould display dropdown with descriptive.gender option
+[31m[1mTestingLibraryElementError[22m[39m: Found multiple elements with the text: /Gender \(descriptive.gender\)/i
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<option[39m
+  [33mvalue[39m=[32m"descriptive.gender"[39m
+[36m>[39m
+  [0mGender[0m
+  [0m ([0m
+  [0mdescriptive.gender[0m
+  [0m)[0m
+[36m</option>[39m
+
+Ignored nodes: comments, script, style
+[36m<option[39m
+  [33mvalue[39m=[32m"descriptive.gender"[39m
+[36m>[39m
+  [0mGender[0m
+  [0m ([0m
+  [0mdescriptive.gender[0m
+  [0m)[0m
+[36m</option>[39m
+
+Ignored nodes: comments, script, style
+[36m<option[39m
+  [33mvalue[39m=[32m"descriptive.gender"[39m
+[36m>[39m
+  [0mGender[0m
+  [0m ([0m
+  [0mdescriptive.gender[0m
+  [0m)[0m
+[36m</option>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"bg-white p-6 rounded-lg shadow"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"mb-6"[39m
+      [36m>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"text-xl font-semibold text-gray-800 mb-2"[39m
+        [36m>[39m
+          [0mReview Column Mappings[0m
+        [36m</h2>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-gray-600"[39m
+        [36m>[39m
+          [0mReview and adjust the automatically detected column mappings.[0m
+          [36m<span[39m
+            [33mclass[39m=[32m"text-yellow-700 font-medium"[39m
+          [36m>[39m
+            [0m Some mappings need your attention.[0m
+          [36m</span>[39m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mt-3"[39m
+        [36m>[39m
+          [36m<input[39m
+            [33mclass[39m=[32m"w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"[39m
+            [33mplaceholder[39m=[32m"Search attributes by name or path..."[39m
+            [33mtype[39m=[32m"text"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500 mt-1"[39m
+          [36m>[39m
+            [0m1[0m
+            [0m of [0m
+            [0m1[0m
+            [0m importable attributes loaded from Firestore[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"overflow-x-auto border rounded-lg mb-6"[39m
+      [36m>[39m
+        [36m<table[39m
+          [33mclass[39m=[32m"min-w-full divide-y divide-gray-200"[39m
+        [36m>[39m
+          [36m<thead[39m
+            [33mclass[39m=[32m"bg-gray-50"[39m
+          [36m>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mCSV Header[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mTarget Field[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mConfidence[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mAction[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody[39m
+            [33mclass[39m=[32m"bg-white divide-y divide-gray-200"[39m
+          [36m>[39m
+            [36m<tr[39m
+              [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+              [36m>[39m
+                [0mGroup[0m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+              [36m>[39m
+                [36m<select[39m
+                  [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                [36m>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m>[39m
+                    [0m-- Ignore this column --[0m
+                  [36m</option>[39m
+                  [36m<optgroup[39m
+                    [33mlabel[39m=[32m"Descriptive"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"descriptive.gender"[39m
+                    [36m>[39m
+                      [0mGender[0m
+                      [0m ([0m
+                      [0mdescriptive.gender[0m
+                      [0m)[0m
+                    [36m</option>[39m
+                  [36m</optgroup>[39m
+                [36m</select>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                [36m>[39m
+                  [0mUnmapped[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+              [36m/>[39m
+            [36m</tr>[39m
+            [36m<tr[39m
+              [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+              [36m>[39m
+                [0mPrimary Color[0m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+              [36m>[39m
+                [36m<select[39m
+                  [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                [36m>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m>[39m
+                    [0m-- Ignore this column --[0m
+                  [36m</option>[39m
+                  [36m<optgroup[39m
+                    [33mlabel[39m=[32m"Descriptive"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"descriptive.gender"[39m
+                    [36m>[39m
+                      [0mGender[0m
+                      [0m ([0m
+                      [0mdescriptive.gender[0m
+                      [0m)[0m
+                    [36m</option>[39m
+                  [36m</optgroup>[39m
+                [36m</select>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                [36m>[39m
+                  [0mUnmapped[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+              [36m/>[39m
+            [36m</tr>[39m
+            [36m<tr[39m
+              [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+              [36m>[39m
+                [0mVariant Count[0m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+              [36m>[39m
+                [36m<select[39m
+                  [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                [36m>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m>[39m
+                    [0m-- Ignore this column --[0m
+                  [36m</option>[39m
+                  [36m<optgroup[39m
+                    [33mlabel[39m=[32m"Descriptive"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"descriptive.gender"[39m
+                    [36m>[39m
+                      [0mGender[0m
+                      [0m ([0m
+                      [0mdescriptive.gender[0m
+                      [0m)[0m
+                    [36m</option>[39m
+                  [36m</optgroup>[39m
+                [36m</select>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                [36m>[39m
+                  [0mUnmapped[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+              [36m/>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex justify-between items-center"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-sm text-gray-600"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"font-medium"[39m
+          [36m>[39m
+            [0m0[0m
+          [36m</span>[39m
+          [0m of[0m
+          [0m [0m
+          [36m<span[39m
+            [33mclass[39m=[32m"font-medium"[39m
+          [36m>[39m
+            [0m3[0m
+          [36m</span>[39m
+          [0m columns mapped[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex space-x-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+          [36m>[39m
+            [0mCancel[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+          [36m>[39m
+            [0mConfirm & Import[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white p-6 rounded-lg shadow"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mb-6"[39m
+        [36m>[39m
+          [36m<h2[39m
+            [33mclass[39m=[32m"text-xl font-semibold text-gray-800 mb-2"[39m
+          [36m>[39m
+            [0mReview Column Mappings[0m
+          [36m</h2>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-sm text-gray-600"[39m
+          [36m>[39m
+            [0mReview and adjust the automatically detected column mappings.[0m
+            [36m<span[39m
+              [33mclass[39m=[32m"text-yellow-700 font-medium"[39m
+            [36m>[39m
+              [0m Some mappings need your attention.[0m
+            [36m</span>[39m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-3"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33mclass[39m=[32m"w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"[39m
+              [33mplaceholder[39m=[32m"Search attributes by name or path..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-xs text-gray-500 mt-1"[39m
+            [36m>[39m
+              [0m1[0m
+              [0m of [0m
+              [0m1[0m
+              [0m importable attributes loaded from Firestore[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"overflow-x-auto border rounded-lg mb-6"[39m
+        [36m>[39m
+          [36m<table[39m
+            [33mclass[39m=[32m"min-w-full divide-y divide-gray-200"[39m
+          [36m>[39m
+            [36m<thead[39m
+              [33mclass[39m=[32m"bg-gray-50"[39m
+            [36m>[39m
+              [36m<tr>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mCSV Header[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mTarget Field[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mConfidence[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mAction[0m
+                [36m</th>[39m
+              [36m</tr>[39m
+            [36m</thead>[39m
+            [36m<tbody[39m
+              [33mclass[39m=[32m"bg-white divide-y divide-gray-200"[39m
+            [36m>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mGroup[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<select[39m
+                    [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m>[39m
+                      [0m-- Ignore this column --[0m
+                    [36m</option>[39m
+                    [36m<optgroup[39m
+                      [33mlabel[39m=[32m"Descriptive"[39m
+                    [36m>[39m
+                      [36m<option[39m
+                        [33mvalue[39m=[32m"descriptive.gender"[39m
+                      [36m>[39m
+                        [0mGender[0m
+                        [0m ([0m
+                        [0mdescriptive.gender[0m
+                        [0m)[0m
+                      [36m</option>[39m
+                    [36m</optgroup>[39m
+                  [36m</select>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mPrimary Color[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<select[39m
+                    [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m>[39m
+                      [0m-- Ignore this column --[0m
+                    [36m</option>[39m
+                    [36m<optgroup[39m
+                      [33mlabel[39m=[32m"Descriptive"[39m
+                    [36m>[39m
+                      [36m<option[39m
+                        [33mvalue[39m=[32m"descriptive.gender"[39m
+                      [36m>[39m
+                        [0mGender[0m
+                        [0m ([0m
+                        [0mdescriptive.gender[0m
+                        [0m)[0m
+                      [36m</option>[39m
+                    [36m</optgroup>[39m
+                  [36m</select>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mVariant Count[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<select[39m
+                    [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m>[39m
+                      [0m-- Ignore this column --[0m
+                    [36m</option>[39m
+                    [36m<optgroup[39m
+                      [33mlabel[39m=[32m"Descriptive"[39m
+                    [36m>[39m
+                      [36m<option[39m
+                        [33mvalue[39m=[32m"descriptive.gender"[39m
+                      [36m>[39m
+                        [0mGender[0m
+                        [0m ([0m
+                        [0mdescriptive.gender[0m
+                        [0m)[0m
+                      [36m</option>[39m
+                    [36m</optgroup>[39m
+                  [36m</select>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+            [36m</tbody>[39m
+          [36m</table>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex justify-between items-center"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"text-sm text-gray-600"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0m0[0m
+            [36m</span>[39m
+            [0m of[0m
+            [0m [0m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0m3[0m
+            [36m</span>[39m
+            [0m columns mapped[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex space-x-3"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+            [36m>[39m
+              [0mCancel[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+            [36m>[39m
+              [0mConfirm & Import[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+[90m [2m❯[22m Proxy.waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[36m [2m❯[22m src/__tests__/MappingReview.dynamic.test.tsx:[2m109:11[22m[39m
+    [90m107| [39m    )[33m;[39m
+    [90m108| [39m
+    [90m109| [39m    [35mawait[39m [34mwaitFor[39m(() [33m=>[39m {
+    [90m   | [39m          [31m^[39m
+    [90m110| [39m      expect(screen.getByText(/Gender \(descriptive.gender\)/i)).toBeI…
+    [90m111| [39m    })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/MappingReview.dynamic.test.tsx[2m > [22mMappingReview - Dynamic Registry Integration[2m > [22mshould exclude technical.variantCount from options (empty importerColumns)
+[31m[1mError[22m[39m: [2mexpect([22m[31melement[39m[2m).not.toBeInTheDocument()[22m
+
+[31mexpected document not to contain element, found <td
+  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+>
+  Variant Count
+</td> instead[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white p-6 rounded-lg shadow"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mb-6"[39m
+        [36m>[39m
+          [36m<h2[39m
+            [33mclass[39m=[32m"text-xl font-semibold text-gray-800 mb-2"[39m
+          [36m>[39m
+            [0mReview Column Mappings[0m
+          [36m</h2>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-sm text-gray-600"[39m
+          [36m>[39m
+            [0mReview and adjust the automatically detected column mappings.[0m
+            [36m<span[39m
+              [33mclass[39m=[32m"text-yellow-700 font-medium"[39m
+            [36m>[39m
+              [0m Some mappings need your attention.[0m
+            [36m</span>[39m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-3"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33mclass[39m=[32m"w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"[39m
+              [33mplaceholder[39m=[32m"Search attributes by name or path..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-xs text-gray-500 mt-1"[39m
+            [36m>[39m
+              [0m1[0m
+              [0m of [0m
+              [0m1[0m
+              [0m importable attributes loaded from Firestore[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"overflow-x-auto border rounded-lg mb-6"[39m
+        [36m>[39m
+          [36m<table[39m
+            [33mclass[39m=[32m"min-w-full divide-y divide-gray-200"[39m
+          [36m>[39m
+            [36m<thead[39m
+              [33mclass[39m=[32m"bg-gray-50"[39m
+            [36m>[39m
+              [36m<tr>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mCSV Header[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mTarget Field[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mConfidence[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mAction[0m
+                [36m</th>[39m
+              [36m</tr>[39m
+            [36m</thead>[39m
+            [36m<tbody[39m
+              [33mclass[39m=[32m"bg-white divide-y divide-gray-200"[39m
+            [36m>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mGroup[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<select[39m
+                    [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m>[39m
+                      [0m-- Ignore this column --[0m
+                    [36m</option>[39m
+                    [36m<optgroup[39m
+                      [33mlabel[39m=[32m"Descriptive"[39m
+                    [36m>[39m
+                      [36m<option[39m
+                        [33mvalue[39m=[32m"descriptive.gender"[39m
+                      [36m>[39m
+                        [0mGender[0m
+                        [0m ([0m
+                        [0mdescriptive.gender[0m
+                        [0m)[0m
+                      [36m</option>[39m
+                    [36m</optgroup>[39m
+                  [36m</select>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mPrimary Color[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<select[39m
+                    [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m>[39m
+                      [0m-- Ignore this column --[0m
+                    [36m</option>[39m
+                    [36m<optgroup[39m
+                      [33mlabel[39m=[32m"Descriptive"[39m
+                    [36m>[39m
+                      [36m<option[39m
+                        [33mvalue[39m=[32m"descriptive.gender"[39m
+                      [36m>[39m
+                        [0mGender[0m
+                        [0m ([0m
+                        [0mdescriptive.gender[0m
+                        [0m)[0m
+                      [36m</option>[39m
+                    [36m</optgroup>[39m
+                  [36m</select>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mVariant Count[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<select[39m
+                    [33mclass[39m=[32m"w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m>[39m
+                      [0m-- Ignore this column --[0m
+                    [36m</option>[39m
+                    [36m<optgroup[39m
+                      [33mlabel[39m=[32m"Descriptive"[39m
+                    [36m>[39m
+                      [36m<option[39m
+                        [33mvalue[39m=[32m"descriptive.gender"[39m
+                      [36m>[39m
+                        [0mGender[0m
+                        [0m ([0m
+                        [0mdescriptive.gender[0m
+                        [0m)[0m
+                      [36m</option>[39m
+                    [36m</optgroup>[39m
+                  [36m</select>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+            [36m</tbody>[39m
+          [36m</table>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex justify-between items-center"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"text-sm text-gray-600"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0m0[0m
+            [36m</span>[39m
+            [0m of[0m
+            [0m [0m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0m3[0m
+            [36m</span>[39m
+            [0m columns mapped[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex space-x-3"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+            [36m>[39m
+              [0mCancel[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+            [36m>[39m
+              [0mConfirm & Import[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+[36m [2m❯[22m src/__tests__/MappingReview.dynamic.test.tsx:[2m154:56[22m[39m
+    [90m152| [39m
+    [90m153| [39m    [35mawait[39m [34mwaitFor[39m(() [33m=>[39m {
+    [90m154| [39m      expect(screen.queryByText(/Variant Count/i)).not.toBeInTheDocume…
+    [90m   | [39m                                                       [31m^[39m
+    [90m155| [39m    })[33m;[39m
+    [90m156| [39m
+[90m [2m❯[22m runWithExpensiveErrorDiagnosticsDisabled node_modules/@testing-library/dom/dist/config.js:[2m47:12[22m[39m
+[90m [2m❯[22m checkCallback node_modules/@testing-library/dom/dist/wait-for.js:[2m124:77[22m[39m
+[90m [2m❯[22m Timeout.checkRealTimersCallback node_modules/@testing-library/dom/dist/wait-for.js:[2m118:16[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/MappingReview.dynamic.test.tsx[2m > [22mMappingReview - Dynamic Registry Integration[2m > [22mshould handle registry load error gracefully
+[31m[1mTestingLibraryElementError[22m[39m: Found multiple elements with the text: /Registry error/i
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<span[39m
+  [33mclass[39m=[32m"text-red-600 font-medium ml-2"[39m
+[36m>[39m
+  [0mRegistry error: [0m
+  [0mFirestore connection failed[0m
+[36m</span>[39m
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"text-red-600 text-xs"[39m
+[36m>[39m
+  [0mRegistry error[0m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"text-red-600 text-xs"[39m
+[36m>[39m
+  [0mRegistry error[0m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"text-red-600 text-xs"[39m
+[36m>[39m
+  [0mRegistry error[0m
+[36m</div>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"bg-white p-6 rounded-lg shadow"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"mb-6"[39m
+      [36m>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"text-xl font-semibold text-gray-800 mb-2"[39m
+        [36m>[39m
+          [0mReview Column Mappings[0m
+        [36m</h2>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-gray-600"[39m
+        [36m>[39m
+          [0mReview and adjust the automatically detected column mappings.[0m
+          [36m<span[39m
+            [33mclass[39m=[32m"text-yellow-700 font-medium"[39m
+          [36m>[39m
+            [0m Some mappings need your attention.[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"text-red-600 font-medium ml-2"[39m
+          [36m>[39m
+            [0mRegistry error: [0m
+            [0mFirestore connection failed[0m
+          [36m</span>[39m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"overflow-x-auto border rounded-lg mb-6"[39m
+      [36m>[39m
+        [36m<table[39m
+          [33mclass[39m=[32m"min-w-full divide-y divide-gray-200"[39m
+        [36m>[39m
+          [36m<thead[39m
+            [33mclass[39m=[32m"bg-gray-50"[39m
+          [36m>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mCSV Header[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mTarget Field[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mConfidence[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mAction[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody[39m
+            [33mclass[39m=[32m"bg-white divide-y divide-gray-200"[39m
+          [36m>[39m
+            [36m<tr[39m
+              [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+              [36m>[39m
+                [0mGroup[0m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-red-600 text-xs"[39m
+                [36m>[39m
+                  [0mRegistry error[0m
+                [36m</div>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                [36m>[39m
+                  [0mUnmapped[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+              [36m/>[39m
+            [36m</tr>[39m
+            [36m<tr[39m
+              [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+              [36m>[39m
+                [0mPrimary Color[0m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-red-600 text-xs"[39m
+                [36m>[39m
+                  [0mRegistry error[0m
+                [36m</div>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                [36m>[39m
+                  [0mUnmapped[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+              [36m/>[39m
+            [36m</tr>[39m
+            [36m<tr[39m
+              [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+              [36m>[39m
+                [0mVariant Count[0m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-red-600 text-xs"[39m
+                [36m>[39m
+                  [0mRegistry error[0m
+                [36m</div>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                [36m>[39m
+                  [0mUnmapped[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+              [36m/>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex justify-between items-center"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-sm text-gray-600"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"font-medium"[39m
+          [36m>[39m
+            [0m0[0m
+          [36m</span>[39m
+          [0m of[0m
+          [0m [0m
+          [36m<span[39m
+            [33mclass[39m=[32m"font-medium"[39m
+          [36m>[39m
+            [0m3[0m
+          [36m</span>[39m
+          [0m columns mapped[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex space-x-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+          [36m>[39m
+            [0mCancel[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+          [36m>[39m
+            [0mConfirm & Import[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white p-6 rounded-lg shadow"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mb-6"[39m
+        [36m>[39m
+          [36m<h2[39m
+            [33mclass[39m=[32m"text-xl font-semibold text-gray-800 mb-2"[39m
+          [36m>[39m
+            [0mReview Column Mappings[0m
+          [36m</h2>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-sm text-gray-600"[39m
+          [36m>[39m
+            [0mReview and adjust the automatically detected column mappings.[0m
+            [36m<span[39m
+              [33mclass[39m=[32m"text-yellow-700 font-medium"[39m
+            [36m>[39m
+              [0m Some mappings need your attention.[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"text-red-600 font-medium ml-2"[39m
+            [36m>[39m
+              [0mRegistry error: [0m
+              [0mFirestore connection failed[0m
+            [36m</span>[39m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"overflow-x-auto border rounded-lg mb-6"[39m
+        [36m>[39m
+          [36m<table[39m
+            [33mclass[39m=[32m"min-w-full divide-y divide-gray-200"[39m
+          [36m>[39m
+            [36m<thead[39m
+              [33mclass[39m=[32m"bg-gray-50"[39m
+            [36m>[39m
+              [36m<tr>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mCSV Header[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mTarget Field[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mConfidence[0m
+                [36m</th>[39m
+                [36m<th[39m
+                  [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"[39m
+                  [33mscope[39m=[32m"col"[39m
+                [36m>[39m
+                  [0mAction[0m
+                [36m</th>[39m
+              [36m</tr>[39m
+            [36m</thead>[39m
+            [36m<tbody[39m
+              [33mclass[39m=[32m"bg-white divide-y divide-gray-200"[39m
+            [36m>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mGroup[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"text-red-600 text-xs"[39m
+                  [36m>[39m
+                    [0mRegistry error[0m
+                  [36m</div>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mPrimary Color[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"text-red-600 text-xs"[39m
+                  [36m>[39m
+                    [0mRegistry error[0m
+                  [36m</div>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+              [36m<tr[39m
+                [33mclass[39m=[32m"hover:bg-gray-50 bg-red-50"[39m
+              [36m>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"[39m
+                [36m>[39m
+                  [0mVariant Count[0m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-700"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"text-red-600 text-xs"[39m
+                  [36m>[39m
+                    [0mRegistry error[0m
+                  [36m</div>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"[39m
+                  [36m>[39m
+                    [0mUnmapped[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td[39m
+                  [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+                [36m/>[39m
+              [36m</tr>[39m
+            [36m</tbody>[39m
+          [36m</table>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex justify-between items-center"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"text-sm text-gray-600"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0m0[0m
+            [36m</span>[39m
+            [0m of[0m
+            [0m [0m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0m3[0m
+            [36m</span>[39m
+            [0m columns mapped[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex space-x-3"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+            [36m>[39m
+              [0mCancel[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"[39m
+            [36m>[39m
+              [0mConfirm & Import[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+[90m [2m❯[22m Proxy.waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[36m [2m❯[22m src/__tests__/MappingReview.dynamic.test.tsx:[2m227:11[22m[39m
+    [90m225| [39m    )[33m;[39m
+    [90m226| [39m
+    [90m227| [39m    [35mawait[39m [34mwaitFor[39m(() [33m=>[39m {
+    [90m   | [39m          [31m^[39m
+    [90m228| [39m      [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([36m/Registry error/i[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m229| [39m    })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m16 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (18)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m134 passed[39m[22m[2m | [22m[33m7 skipped[39m[90m (144)[39m
+[2m   Start at [22m 05:39:39
+[2m   Duration [22m 10.41s[2m (transform 740ms, setup 1.16s, collect 1.92s, tests 4.55s, environment 10.24s, prepare 197ms)[22m
+
+[1m[41m FAIL [49m[22m [31mTests failed. Watching for file changes...[39m
+       [2mpress [22m[1mh[22m[2m to show help[22m[2m, [22m[2mpress [22m[1mq[22m[2m to quit[22m
+
+[1m  Watch Usage[22m
+[2m  press [22m[0m[1ma[22m, [1mreturn[22m[0m[2m to rerun all tests[22m
+[2m  press [22m[0m[1mr[22m[0m[2m to rerun current pattern tests[22m
+[2m  press [22m[0m[1mf[22m[0m[2m to rerun only failed tests[22m
+[2m  press [22m[0m[1mu[22m[0m[2m to update snapshot[22m
+[2m  press [22m[0m[1mp[22m[0m[2m to filter by a filename[22m
+[2m  press [22m[0m[1mt[22m[0m[2m to filter by a test name regex pattern[22m
+[2m  press [22m[0m[1mw[22m[0m[2m to filter by a project name[22m
+[2m  press [22m[0m[1mb[22m[0m[2m to start the browser server if not started yet[22m
+[2m  press [22m[0m[1mq[22m[0m[2m to quit[22m

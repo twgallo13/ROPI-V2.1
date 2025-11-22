@@ -1,0 +1,290 @@
+Generating Missing Importer Columns Report...
+Loaded 77 attributes from registry
+{
+  "timestamp": "2025-11-22T04:49:14.297Z",
+  "totalAttributes": 77,
+  "summary": {
+    "withImporters": 42,
+    "missingImporters": 26,
+    "aiOutputFields": 8,
+    "intentionalNonImportable": 1
+  },
+  "aiOutputFields": [
+    {
+      "canonicalPath": "a_i_generated.descriptionBlocks",
+      "label": "Description Blocks",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.descriptionHtml",
+      "label": "Description Html",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.ropiScore",
+      "label": "Ropi Score",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.seoName",
+      "label": "Seo Name",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.smartDetectSummary",
+      "label": "Smart Detect Summary",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.templateKey",
+      "label": "Template Key",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.templateOverrideKey",
+      "label": "Template Override Key",
+      "category": "AI",
+      "export": true
+    },
+    {
+      "canonicalPath": "a_i_generated.validationFlags",
+      "label": "Validation Flags",
+      "category": "AI",
+      "export": true
+    }
+  ],
+  "intentionalNonImportable": [
+    {
+      "canonicalPath": "technical.variantCount",
+      "label": "Variant Count",
+      "category": "Technical",
+      "export": false,
+      "reason": "Business rule: calculated/derived field, not directly importable"
+    }
+  ],
+  "missingImporters": [
+    {
+      "canonicalPath": "descriptive.description",
+      "label": "Description",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.familySizing",
+      "label": "Family Sizing",
+      "category": "Descriptive",
+      "dataType": "boolean",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.heelHeight",
+      "label": "Heel Height",
+      "category": "Descriptive",
+      "dataType": "number",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.heelType",
+      "label": "Heel Type",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.metaDescription",
+      "label": "Meta Description",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.metaName",
+      "label": "Meta Name",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.outsoleMaterial",
+      "label": "Outsole Material",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.platformHeight",
+      "label": "Platform Height",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.shoeHeightMap",
+      "label": "Shoe Height Map",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "descriptive.slug",
+      "label": "Slug",
+      "category": "Descriptive",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "rics_source.brand",
+      "label": "Brand",
+      "category": "Source",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "rics_source.category",
+      "label": "Category",
+      "category": "Source",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "rics_source.color",
+      "label": "Color",
+      "category": "Source",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "rics_source.longDescription",
+      "label": "Long Description",
+      "category": "Source",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "rics_source.shortDescription",
+      "label": "Short Description",
+      "category": "Source",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "sku_core.coreProduct",
+      "label": "Core Product",
+      "category": "Core",
+      "dataType": "boolean",
+      "export": true
+    },
+    {
+      "canonicalPath": "sku_core.productIsActive",
+      "label": "Product Is Active",
+      "category": "Core",
+      "dataType": "boolean",
+      "export": true
+    },
+    {
+      "canonicalPath": "sku_core.sku",
+      "label": "Sku",
+      "category": "Core",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "sku_core.styleId",
+      "label": "Style Id",
+      "category": "Core",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "source.rics",
+      "label": "Rics",
+      "category": "Source",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "technical.expeditedOverrideShipping",
+      "label": "Expedited Override Shipping",
+      "category": "Technical",
+      "dataType": "number",
+      "export": true
+    },
+    {
+      "canonicalPath": "technical.hideImageDate",
+      "label": "Hide Image Date",
+      "category": "Technical",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "technical.mediaStatus",
+      "label": "Media Status",
+      "category": "Technical",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "technical.standardShippingOverride",
+      "label": "Standard Shipping Override",
+      "category": "Technical",
+      "dataType": "number",
+      "export": true
+    },
+    {
+      "canonicalPath": "technical.status",
+      "label": "Status",
+      "category": "Technical",
+      "dataType": "string",
+      "export": true
+    },
+    {
+      "canonicalPath": "technical.taxClass",
+      "label": "Tax Class",
+      "category": "Technical",
+      "dataType": "boolean",
+      "export": true
+    }
+  ]
+}
+
+=== SUMMARY ===
+Total attributes: 77
+With importers: 42
+AI output fields (no importers): 8
+Intentional non-importable: 1
+Missing importers (business fields): 26
+
+⚠ WARNING: Some business fields are missing importer columns:
+  - descriptive.description
+  - descriptive.familySizing
+  - descriptive.heelHeight
+  - descriptive.heelType
+  - descriptive.metaDescription
+  - descriptive.metaName
+  - descriptive.outsoleMaterial
+  - descriptive.platformHeight
+  - descriptive.shoeHeightMap
+  - descriptive.slug
+  - rics_source.brand
+  - rics_source.category
+  - rics_source.color
+  - rics_source.longDescription
+  - rics_source.shortDescription
+  - sku_core.coreProduct
+  - sku_core.productIsActive
+  - sku_core.sku
+  - sku_core.styleId
+  - source.rics
+  - technical.expeditedOverrideShipping
+  - technical.hideImageDate
+  - technical.mediaStatus
+  - technical.standardShippingOverride
+  - technical.status
+  - technical.taxClass

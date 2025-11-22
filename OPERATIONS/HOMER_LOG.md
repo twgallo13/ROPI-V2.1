@@ -1,5 +1,129 @@
 # HOMER Operations Log
 
+## [2025-11-22 05:43 UTC] v2.0 — Lisa Dynamic Importer Phase 2
+
+**Branch:** feature/importer-dynamic-v2.0 → main (merge commit 612bc93)
+
+**Objective:** Refactor importer UI to consume canonical attribute registry from Firestore (settings/attributes/keys/*) and build dropdown mapping options dynamically from each attribute's importerColumns and canonicalPath. Replace hardcoded dropdowns in MappingReview.tsx / csvParser.ts with registry-driven implementation so staged v1.0 metadata (Group→gender, variantCount non-importable, dropship fields, Custom 2/3, RICS alignment) appears in the importer UI.
+
+**Timeline:**
+- **05:36 UTC**: Created feature branch `feature/importer-dynamic-v2.0` from main
+- **05:36 UTC**: Committed WIP files (admin-import-staging.js, audit-headers.cjs, verify-lisa-version-staging.cjs) to feature branch
+- **05:37 UTC**: Implemented `src/utils/attributeRegistry.ts` (commit 6785e9c)
+  - `getAttributeRegistry()`: Fetches settings/attributes/keys/* from Firestore with 5-min cache
+  - `getImportableAttributes()`: Filters to attributes with non-empty importerColumns
+  - `buildHeaderToPathMap()`: Case-insensitive CSV header → canonical path map
+  - `resolveHeaderToPath()`: Resolves single CSV header to canonical path
+- **05:38 UTC**: Refactored `src/components/MappingReview.tsx` (commit 6785e9c)
+  - Added useEffect hook to load registry on mount via `getImportableAttributes()`
+  - Replaced hardcoded <option> elements with dynamic optgroups grouped by category
+  - Added loading/error states for registry fetch failures
+  - Added search filter for attribute dropdown navigation
+  - Option format: "Label (canonicalPath)" with required marker (*)
+  - Excluded technical.variantCount automatically (filtered by getImportableAttributes)
+- **05:39 UTC**: Enhanced `src/utils/csvParser.ts` (commit 6785e9c)
+  - Added `parseCSVAsync()`: Async version with registry support
+  - Created `autoMapHeaderAsync()`: Priority 0 = registry, Priority 1-3 = static synonyms fallback
+  - Kept `parseCSV()` synchronous for backwards compatibility
+  - Registry mapping takes precedence over hardcoded HEADER_SYNONYMS
+- **05:39 UTC**: Updated `src/pages/ImportPage.tsx` to use `parseCSVAsync()` (commit 6785e9c)
+- **05:39 UTC**: Created `src/config/appConfig.ts` with feature flags (commit 6785e9c)
+  - `ENABLE_DYNAMIC_IMPORTER = true` (rollback to false if issues)
+  - `ENABLE_REGISTRY_CACHE = true` (5-minute TTL)
+- **05:40 UTC**: Created unit tests (commit 6785e9c)
+  - `src/__tests__/MappingReview.dynamic.test.tsx`: 8 tests for dynamic UI behavior
+  - `src/__tests__/csvParser.registry.test.ts`: 8 tests for registry-driven auto-mapping
+- **05:40 UTC**: Fixed test assertions for accurate DOM queries (commit 3185352)
+- **05:39 UTC**: Installed dependencies (`npm ci`) — 592 packages
+- **05:39 UTC**: Build successful (`npm run build`) — ✓ built in 4.84s
+- **05:40 UTC**: All tests passing (`npm test --run`) — 137 passed | 7 skipped (144 total)
+- **05:42 UTC**: Merged feature branch to main (commit 612bc93)
+- **05:42 UTC**: Pushed main to origin
+- **05:42 UTC**: Deployed to staging Firebase hosting (ropi-bccee)
+  - Hosting URL: https://ropi-bccee.web.app
+  - Deploy Status: ✔ Complete
+- **05:43 UTC**: Ran test import with `admin-import-staging.cjs` using test-import.csv
+  - ✓ Group → descriptive.gender (value: "male")
+  - ✓ Primary Color → descriptive.primaryColor (value: "Black")
+  - ✓ Custom 2 → descriptive.custom2 (value: "foo")
+  - ✓ Custom 3 → descriptive.custom3 (value: "bar")
+  - ✓ Product Is Dropship → sku_core.productIsDropship (boolean: true)
+  - ✓ Product Is Dropship.Name → sku_core.dropshipName (value: "AcmeDropship")
+  - ✗ variant_count → UNMAPPED (registry returns null for empty importerColumns)
+- **05:43 UTC**: Captured product snapshot from staging Firestore
+  - Product: XTEST-456
+  - Confirmed technical.variantCount ABSENT
+  - Confirmed all v2.0 mappings present
+- **05:43 UTC**: Updated `.lisa_version.json` to v2.0 (commit 160401b)
+- **05:43 UTC**: Created `scripts/write-lisa-v2-version-staging.cjs` and wrote v2.0 metadata to staging Firestore
+  - settings/meta/lisaVersion updated with v2.0, commit 160401b, feature list
+- **05:44 UTC**: Pushed v2.0 version metadata commit to main
+
+**Code Changes:**
+1. **NEW**: `src/utils/attributeRegistry.ts` — Firestore registry helper with cache
+2. **REFACTORED**: `src/components/MappingReview.tsx` — Dynamic dropdowns from registry
+3. **ENHANCED**: `src/utils/csvParser.ts` — Registry-driven async auto-mapping
+4. **UPDATED**: `src/pages/ImportPage.tsx` — Use parseCSVAsync()
+5. **NEW**: `src/config/appConfig.ts` — Feature flags for rollback
+6. **NEW**: `src/__tests__/MappingReview.dynamic.test.tsx` — 8 UI tests
+7. **NEW**: `src/__tests__/csvParser.registry.test.ts` — 8 mapping tests
+
+**Commits:**
+- ea1a5b7: WIP: carry forward v1.0 artifacts to v2.0 branch
+- 6785e9c: v2.0: implement dynamic importer - registry-driven mapping
+- 3185352: fix: update dynamic mapping tests for accurate assertions
+- a44bf85: chore: update Firebase hosting cache
+- 612bc93: Merge feature/importer-dynamic-v2.0: Lisa v2.0 - Dynamic Importer Phase 2
+- 160401b: v2.0: update version metadata to Lisa v2.0
+
+**Build & Test Results:**
+```
+npm ci: SUCCESS (592 packages)
+npm run build: SUCCESS (✓ built in 4.84s)
+npm test --run: SUCCESS (137 passed | 7 skipped)
+```
+
+**Staging Deployment:**
+- Firebase Project: ropi-bccee
+- Hosting URL: https://ropi-bccee.web.app
+- Deploy Status: ✔ Complete
+- Deploy Timestamp: 2025-11-22T05:42:15Z
+
+**Staging Verification:**
+- Registry seed status: 154 keys present in settings/attributes/keys/*
+- Test import successful with all v1.0 mappings visible
+- Group → descriptive.gender ✓
+- Primary Color → descriptive.primaryColor ✓
+- Variant Count unmapped (empty importerColumns) ✓
+- Custom 2/3 mapped ✓
+- Product Is Dropship → sku_core.productIsDropship (boolean) ✓
+- Firestore snapshot confirmed technical.variantCount absent
+
+**Artifacts:**
+Location: `operations/review-artifacts/attribute-registry/`
+- npm-ci-v2.0.log
+- npm-build-v2.0.log
+- npm-test-v2.0.log
+- firebase-deploy-staging-v2.0.log
+- admin-import-staging-v2.0.log
+- firestore-XTEST-456-staging-v2.0.json
+- homer-summary-v2.0.txt
+
+**Version Metadata:**
+- Repo: `.lisa_version.json` — v2.0, commit 160401b, timestamp 2025-11-22T05:43:47Z
+- Firestore: `settings/meta/lisaVersion` — v2.0 with feature list
+
+**Production Status:**
+NOT YET DEPLOYED — Awaiting Theo approval after staging UI verification
+
+**HOMER Status:**
+- HOMER: Lisa v2.0 Phase 2 Dynamic Importer COMPLETE
+- HOMER: Staging deployment successful, all tests passing
+- HOMER: Awaiting Theo approval for production deployment
+- HOMER: embed-version v2.0 applied to .lisa_version.json and staging settings/meta/lisaVersion
+
+---
+
 ## [2025-11-22 04:33 UTC] v1.0 — Lisa Attribute Registry & Importer Alignment
 
 **Branch:** main (direct commits, no PR)

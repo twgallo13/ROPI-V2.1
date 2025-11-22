@@ -1,0 +1,10 @@
+Normalizing and seeding attribute registry...
+
+✓ Loaded 77 attributes from registry
+✓ Applied normalization rules
+✓ Saved normalized registry to /workspaces/ROPI-V2.1/scripts/attribute-registry-normalized.json
+
+✓ Seeded 77 attributes to Firestore settings/attributes/keys
+✓ Generated CSV report at /workspaces/ROPI-V2.1/scripts/attribute-registry.csv
+
+✅ Complete!
