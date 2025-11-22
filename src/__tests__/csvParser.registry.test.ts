@@ -20,48 +20,80 @@ describe('csvParser - Registry-Driven Mapping', () => {
   });
 
   it('should resolve "Group" header to descriptive.gender via registry', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockImplementation(async (header) => {
-      if (header.toLowerCase() === 'group') return 'descriptive.gender';
-      return null;
-    });
+    const mockAttrs: any[] = [
+      {
+        canonicalPath: 'descriptive.gender',
+        label: 'Gender',
+        category: 'Descriptive',
+        importerColumns: ['group', 'Group', 'gender'],
+        legacyPaths: [],
+        key: 'gender',
+        dataType: 'string',
+        required: false,
+        export: true,
+        description: 'Gender',
+      },
+    ];
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockResolvedValue(mockAttrs);
 
     const csvContent = 'Group,MPN\nMen,TEST123';
     const result = await parseCSVAsync(csvContent);
 
     expect(result.mappings[0].csvHeader).toBe('Group');
     expect(result.mappings[0].targetField).toBe('descriptive.gender');
-    expect(result.mappings[0].confidence).toBe('exact');
+    expect(result.mappings[0].confidence).toBe('Exact Match');
   });
 
   it('should resolve "Primary Color" to descriptive.primaryColor', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockImplementation(async (header) => {
-      if (header.toLowerCase() === 'primary color') return 'descriptive.primaryColor';
-      return null;
-    });
+    const mockAttrs: any[] = [
+      {
+        canonicalPath: 'descriptive.primaryColor',
+        label: 'Primary Color',
+        category: 'Descriptive',
+        importerColumns: ['primary_color', 'Primary Color', 'primaryColor'],
+        legacyPaths: [],
+        key: 'primaryColor',
+        dataType: 'string',
+        required: false,
+        export: true,
+        description: 'Primary Color',
+      },
+    ];
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockResolvedValue(mockAttrs);
 
     const csvContent = 'Primary Color,MPN\nRed,TEST123';
     const result = await parseCSVAsync(csvContent);
 
     expect(result.mappings[0].csvHeader).toBe('Primary Color');
     expect(result.mappings[0].targetField).toBe('descriptive.primaryColor');
-    expect(result.mappings[0].confidence).toBe('exact');
+    expect(result.mappings[0].confidence).toBe('Exact Match');
   });
 
   it('should NOT map "Variant Count" when registry returns null', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockImplementation(async (header) => {
-      // variantCount has empty importerColumns, so registry returns null
-      if (header.toLowerCase() === 'variant count') return null;
-      if (header.toLowerCase() === 'mpn') return 'sku_core.mpn';
-      return null;
-    });
+    const mockAttrs: any[] = [
+      {
+        canonicalPath: 'sku_core.mpn',
+        label: 'MPN',
+        category: 'Core',
+        importerColumns: ['mpn', 'MPN'],
+        legacyPaths: [],
+        key: 'mpn',
+        dataType: 'string',
+        required: true,
+        export: true,
+        description: 'Manufacturer Part Number',
+      },
+      // variantCount not included since it has empty importerColumns
+    ];
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockResolvedValue(mockAttrs);
 
     const csvContent = 'Variant Count,MPN\n5,TEST123';
     const result = await parseCSVAsync(csvContent);
 
-    // Variant Count should be unmapped (registry returned null)
+    // Variant Count should be unmapped (not in registry)
     expect(result.mappings[0].csvHeader).toBe('Variant Count');
     expect(result.mappings[0].targetField).toBeNull();
-    expect(result.mappings[0].confidence).toBe('unmapped');
+    expect(result.mappings[0].confidence).toBe('Unmapped');
 
     // MPN should map correctly
     expect(result.mappings[1].csvHeader).toBe('MPN');
@@ -69,7 +101,7 @@ describe('csvParser - Registry-Driven Mapping', () => {
   });
 
   it('should fall back to static synonyms if registry fails', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockRejectedValue(
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockRejectedValue(
       new Error('Firestore unavailable')
     );
 
@@ -79,18 +111,61 @@ describe('csvParser - Registry-Driven Mapping', () => {
     // Should still map using static synonyms
     expect(result.mappings[0].csvHeader).toBe('brand');
     expect(result.mappings[0].targetField).toBe('brand'); // Static synonym fallback
-    expect(result.mappings[0].confidence).toBe('exact');
+    expect(result.mappings[0].confidence).toBe('Synonym');
   });
 
   it('should handle multiple headers with registry and static mix', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockImplementation(async (header) => {
-      const map: Record<string, string> = {
-        'group': 'descriptive.gender',
-        'custom 2': 'descriptive.custom2',
-        'product is dropship': 'sku_core.productIsDropship',
-      };
-      return map[header.toLowerCase()] || null;
-    });
+    const mockAttrs: any[] = [
+      {
+        canonicalPath: 'descriptive.gender',
+        label: 'Gender',
+        category: 'Descriptive',
+        importerColumns: ['group', 'Group'],
+        legacyPaths: [],
+        key: 'gender',
+        dataType: 'string',
+        required: false,
+        export: true,
+        description: 'Gender',
+      },
+      {
+        canonicalPath: 'descriptive.custom2',
+        label: 'Custom 2',
+        category: 'Descriptive',
+        importerColumns: ['custom 2', 'Custom 2', 'custom_2'],
+        legacyPaths: [],
+        key: 'custom2',
+        dataType: 'string',
+        required: false,
+        export: true,
+        description: 'Custom 2',
+      },
+      {
+        canonicalPath: 'sku_core.productIsDropship',
+        label: 'Product Is Dropship',
+        category: 'Core',
+        importerColumns: ['product is dropship', 'Product Is Dropship', 'product_is_dropship'],
+        legacyPaths: [],
+        key: 'productIsDropship',
+        dataType: 'boolean',
+        required: false,
+        export: true,
+        description: 'Product Is Dropship',
+      },
+      {
+        canonicalPath: 'sku_core.brand',
+        label: 'Brand',
+        category: 'Core',
+        importerColumns: ['brand', 'Brand'],
+        legacyPaths: [],
+        key: 'brand',
+        dataType: 'string',
+        required: false,
+        export: true,
+        description: 'Brand',
+      },
+    ];
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockResolvedValue(mockAttrs);
 
     const csvContent = 'Group,Custom 2,Product Is Dropship,Brand\nMen,Custom Value,true,Nike';
     const result = await parseCSVAsync(csvContent);
@@ -119,27 +194,50 @@ describe('csvParser - Registry-Driven Mapping', () => {
   });
 
   it('should ignore duplicate headers', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockImplementation(async (header) => {
-      if (header.toLowerCase() === 'mpn') return 'sku_core.mpn';
-      return null;
-    });
+    const mockAttrs: any[] = [
+      {
+        canonicalPath: 'sku_core.mpn',
+        label: 'MPN',
+        category: 'Core',
+        importerColumns: ['mpn', 'MPN'],
+        legacyPaths: [],
+        systemFlag: false,
+        key: 'mpn',
+        dataType: 'string',
+        required: true,
+        export: true,
+        description: 'Manufacturer Part Number',
+      },
+    ];
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockResolvedValue(mockAttrs);
 
     const csvContent = 'MPN,MPN,Brand\nTEST123,TEST456,Nike';
     const result = await parseCSVAsync(csvContent);
 
     expect(result.mappings[0].targetField).toBe('sku_core.mpn');
     expect(result.mappings[1].targetField).toBeNull(); // Duplicate ignored
-    expect(result.mappings[1].confidence).toBe('unmapped');
+    expect(result.mappings[1].confidence).toBe('Unmapped');
   });
 
   it('should handle empty importerColumns (non-importable attributes)', async () => {
-    vi.spyOn(attributeRegistry, 'resolveHeaderToPath').mockImplementation(async (header) => {
-      // Simulate registry behavior: variantCount has empty importerColumns
-      // so resolveHeaderToPath returns null (not in the importable map)
-      if (header.toLowerCase().includes('variant')) return null;
-      if (header.toLowerCase() === 'mpn') return 'sku_core.mpn';
-      return null;
-    });
+    const mockAttrs: any[] = [
+      {
+        canonicalPath: 'sku_core.mpn',
+        label: 'MPN',
+        category: 'Core',
+        importerColumns: ['mpn', 'MPN'],
+        legacyPaths: [],
+        systemFlag: false,
+        key: 'mpn',
+        dataType: 'string',
+        required: true,
+        export: true,
+        description: 'Manufacturer Part Number',
+      },
+      // variantCount has empty importerColumns, so it won't be in getImportableAttributes()
+      // No need to include it here since getImportableAttributes() filters it out
+    ];
+    vi.spyOn(attributeRegistry, 'getImportableAttributes').mockResolvedValue(mockAttrs);
 
     const csvContent = 'Variant Count,variant_count,MPN\n5,10,TEST123';
     const result = await parseCSVAsync(csvContent);
