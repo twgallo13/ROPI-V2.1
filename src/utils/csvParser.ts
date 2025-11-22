@@ -1,7 +1,10 @@
 /**
  * CSV Import Utilities
  * Handles parsing, auto-mapping, fuzzy matching, and data coercion
+ * Lisa v2.0: Enhanced with dynamic attribute registry integration
  */
+
+import { resolveHeaderToPath, getImportableAttributes } from './attributeRegistry';
 
 export type MappingConfidence = 'exact' | 'synonym' | 'suggested-low' | 'unmapped';
 
@@ -156,8 +159,9 @@ function levenshteinDistance(str1: string, str2: string): number {
 
 /**
  * Auto-map a CSV header to a target field
+ * Lisa v2.0: Try registry first (exact match from importerColumns), then fall back to static synonyms
  */
-function autoMapHeader(csvHeader: string, allHeaders: string[], headerIndex: number): ColumnMapping {
+async function autoMapHeaderAsync(csvHeader: string, allHeaders: string[], headerIndex: number): Promise<ColumnMapping> {
   const normalized = csvHeader.toLowerCase().replace(/[^a-z0-9]/g, '_');
   
   // Check if this is a duplicate header (appears earlier in the list)
@@ -182,7 +186,22 @@ function autoMapHeader(csvHeader: string, allHeaders: string[], headerIndex: num
     };
   }
   
-  // Priority 1: Exact equality check against synonyms
+  // Priority 0: Try attribute registry first (Lisa v2.0 dynamic mapping)
+  try {
+    const canonicalPath = await resolveHeaderToPath(csvHeader);
+    if (canonicalPath) {
+      // Registry match found - this is the most authoritative
+      return {
+        csvHeader,
+        targetField: canonicalPath,
+        confidence: 'exact',
+      };
+    }
+  } catch (error) {
+    console.warn('[csvParser] Registry lookup failed, falling back to static synonyms:', error);
+  }
+  
+  // Priority 1: Exact equality check against synonyms (fallback)
   for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
     for (const synonym of synonyms) {
       const synonymNormalized = synonym.toLowerCase().replace(/[^a-z0-9]/g, '_');
@@ -245,6 +264,64 @@ function autoMapHeader(csvHeader: string, allHeaders: string[], headerIndex: num
 }
 
 /**
+ * Synchronous version of autoMapHeader (no registry lookup, static synonyms only)
+ * Used as fallback when async registry is unavailable
+ */
+function autoMapHeader(csvHeader: string, allHeaders: string[], headerIndex: number): ColumnMapping {
+  const normalized = csvHeader.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  
+  if (allHeaders.slice(0, headerIndex).some(h => h.toLowerCase().replace(/[^a-z0-9]/g, '_') === normalized)) {
+    return { csvHeader, targetField: null, confidence: 'unmapped' };
+  }
+  
+  if (DEFAULT_IGNORE.includes(normalized) || DEFAULT_IGNORE.includes(csvHeader.toLowerCase())) {
+    return { csvHeader, targetField: null, confidence: 'unmapped' };
+  }
+  
+  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
+    for (const synonym of synonyms) {
+      const synonymNormalized = synonym.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      if (normalized === synonymNormalized) {
+        return { csvHeader, targetField, confidence: 'exact' };
+      }
+    }
+  }
+  
+  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
+    for (const synonym of synonyms) {
+      const pattern = new RegExp('\\b' + synonym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (pattern.test(csvHeader)) {
+        return { csvHeader, targetField, confidence: 'synonym' };
+      }
+    }
+  }
+  
+  const fuzzyMatches: Array<{ field: string; distance: number }> = [];
+  for (const [targetField, synonyms] of Object.entries(HEADER_SYNONYMS)) {
+    for (const synonym of synonyms) {
+      const distance = levenshteinDistance(normalized, synonym);
+      if (distance <= 2) {
+        fuzzyMatches.push({ field: targetField, distance });
+      }
+    }
+  }
+  
+  fuzzyMatches.sort((a, b) => a.distance - b.distance);
+  
+  if (fuzzyMatches.length > 0) {
+    const alternatives = fuzzyMatches.slice(1, 4).map(m => m.field);
+    return {
+      csvHeader,
+      targetField: fuzzyMatches[0].field,
+      confidence: 'suggested-low',
+      alternatives: alternatives.length > 0 ? alternatives : undefined,
+    };
+  }
+  
+  return { csvHeader, targetField: null, confidence: 'unmapped' };
+}
+
+/**
  * Coerce a value based on the target field type
  */
 function coerceValue(value: string, targetField: string): any {
@@ -280,7 +357,73 @@ function coerceValue(value: string, targetField: string): any {
 }
 
 /**
- * Parse CSV file content
+ * Parse CSV file content (async version with registry support - Lisa v2.0)
+ */
+export async function parseCSVAsync(csvContent: string): Promise<ParseResult> {
+  const lines = csvContent.split(/\r?\n/).filter(line => line.trim());
+  
+  if (lines.length === 0) {
+    throw new Error('CSV file is empty');
+  }
+  
+  // Detect delimiter from header line
+  const delimiter = detectDelimiter(lines[0]);
+  
+  // Parse headers
+  const headers = parseCSVLine(lines[0], delimiter);
+  
+  // Auto-map headers using registry (async)
+  const mappings = await Promise.all(
+    headers.map((header, index) => autoMapHeaderAsync(header, headers, index))
+  );
+  
+  // Parse data rows
+  const rawData: string[][] = [];
+  const rows: ParsedRow[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCSVLine(lines[i], delimiter);
+    rawData.push(values);
+    
+    const rowData: Record<string, any> = {};
+    const errors: string[] = [];
+    
+    for (let j = 0; j < headers.length; j++) {
+      const mapping = mappings[j];
+      const value = values[j] || '';
+      
+      if (mapping.targetField) {
+        try {
+          rowData[mapping.targetField] = coerceValue(value, mapping.targetField);
+        } catch (error) {
+          errors.push(`Column "${mapping.csvHeader}": ${error}`);
+        }
+      }
+    }
+    
+    rows.push({
+      rowNumber: i,
+      data: rowData,
+      errors,
+    });
+  }
+  
+  const allSingleField = headers.length === 1 && rows.length > 0;
+  if (allSingleField && lines.length > 1) {
+    console.warn(`Delimiter detection: detected '${delimiter}' (${getDelimiterName(delimiter)}), but all rows parsed as single field. File might use a different delimiter.`);
+  }
+  
+  return {
+    headers,
+    mappings,
+    rows,
+    rawData,
+    delimiter,
+  };
+}
+
+/**
+ * Parse CSV file content (synchronous version, static synonyms only)
  */
 export function parseCSV(csvContent: string): ParseResult {
   const lines = csvContent.split(/\r?\n/).filter(line => line.trim());
@@ -295,7 +438,7 @@ export function parseCSV(csvContent: string): ParseResult {
   // Parse headers
   const headers = parseCSVLine(lines[0], delimiter);
   
-  // Auto-map headers
+  // Auto-map headers (synchronous, no registry)
   const mappings = headers.map((header, index) => autoMapHeader(header, headers, index));
   
   // Parse data rows

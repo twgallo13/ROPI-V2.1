@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { ColumnMapping } from '../utils/csvParser';
+import { getImportableAttributes, type AttributeMetadata } from '../utils/attributeRegistry';
 
 type MappingReviewProps = {
   mappings: ColumnMapping[];
@@ -14,6 +15,29 @@ const MappingReview: React.FC<MappingReviewProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  const [attributes, setAttributes] = useState<AttributeMetadata[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch attribute registry on mount
+  useEffect(() => {
+    const loadRegistry = async () => {
+      try {
+        setLoading(true);
+        const importableAttrs = await getImportableAttributes();
+        setAttributes(importableAttrs);
+        setError(null);
+      } catch (err) {
+        console.error('[MappingReview] Failed to load attribute registry:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load attribute registry');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRegistry();
+  }, []);
   const getConfidenceBadge = (confidence: string) => {
     switch (confidence) {
       case 'exact':
@@ -31,6 +55,14 @@ const MappingReview: React.FC<MappingReviewProps> = ({
 
   const hasConflicts = mappings.some(m => m.confidence === 'suggested-low' || m.confidence === 'unmapped');
 
+  // Filter attributes by search term (label or canonical path)
+  const filteredAttributes = searchTerm.trim()
+    ? attributes.filter(a => 
+        a.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        a.canonicalPath.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : attributes;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <div className="mb-6">
@@ -40,7 +72,27 @@ const MappingReview: React.FC<MappingReviewProps> = ({
           {hasConflicts && (
             <span className="text-yellow-700 font-medium"> Some mappings need your attention.</span>
           )}
+          {loading && (
+            <span className="text-blue-600 font-medium ml-2">Loading attribute registry...</span>
+          )}
+          {error && (
+            <span className="text-red-600 font-medium ml-2">Registry error: {error}</span>
+          )}
         </p>
+        {!loading && !error && attributes.length > 0 && (
+          <div className="mt-3">
+            <input
+              type="text"
+              placeholder="Search attributes by name or path..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {filteredAttributes.length} of {attributes.length} importable attributes loaded from Firestore
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="overflow-x-auto border rounded-lg mb-6">
@@ -68,45 +120,35 @@ const MappingReview: React.FC<MappingReviewProps> = ({
                   {mapping.csvHeader}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                  <select
-                    value={mapping.targetField || ''}
-                    onChange={(e) => onMappingChange(index, e.target.value || null)}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                  >
-                    <option value="">-- Ignore this column --</option>
-                    <option value="mpn">MPN (Required)</option>
-                    <option value="sku">SKU (Required)</option>
-                    <option value="name">Name</option>
-                    <option value="brand">Brand</option>
-                    <option value="price">Price</option>
-                    <option value="stock">Stock</option>
-                    <option value="images">Images</option>
-                    <option value="size">Size</option>
-                    <option value="color">Color</option>
-                    <option value="department">Department</option>
-                    <option value="class">Class</option>
-                    <option value="category">Category</option>
-                    <option value="age_group">Age Group</option>
-                    <option value="gender">Gender</option>
-                    <option value="material">Material/Fabric</option>
-                    <option value="fit">Fit</option>
-                    <option value="sports_team">Sports Team</option>
-                    <option value="league">League</option>
-                    <option value="height">Height (Shipping)</option>
-                    <option value="width">Width (Shipping)</option>
-                    <option value="length">Length (Shipping)</option>
-                    <option value="weight">Weight (Shipping)</option>
-                    <option value="rics_category">RICS Category</option>
-                    <option value="rics_long_desc">RICS Long Description</option>
-                    <option value="keywords">Keywords/Tags</option>
-                    <option value="website">Website</option>
-                    <option value="taxclass">Tax Class</option>
-                    <option value="featured">Featured</option>
-                    <option value="map">MAP</option>
-                    <option value="promo">Promo</option>
-                    <option value="hype">Hype</option>
-                    <option value="fastfashion">Fast Fashion</option>
-                  </select>
+                  {loading ? (
+                    <div className="text-gray-400 italic">Loading...</div>
+                  ) : error ? (
+                    <div className="text-red-600 text-xs">Registry error</div>
+                  ) : (
+                    <select
+                      value={mapping.targetField || ''}
+                      onChange={(e) => onMappingChange(index, e.target.value || null)}
+                      className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                    >
+                      <option value="">-- Ignore this column --</option>
+                      {/* Group by category - use full attributes list, not filtered */}
+                      {Array.from(new Set(attributes.map(a => a.category))).sort().map(category => {
+                        const categoryAttrs = attributes.filter(a => a.category === category);
+                        if (categoryAttrs.length === 0) return null;
+                        
+                        return (
+                          <optgroup key={category} label={category}>
+                            {categoryAttrs.map(attr => (
+                              <option key={attr.canonicalPath} value={attr.canonicalPath}>
+                                {attr.label} ({attr.canonicalPath})
+                                {attr.required ? ' *' : ''}
+                              </option>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
+                    </select>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   {getConfidenceBadge(mapping.confidence)}
