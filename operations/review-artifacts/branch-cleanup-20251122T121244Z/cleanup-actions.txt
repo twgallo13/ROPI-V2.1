@@ -1,0 +1,76 @@
+Build: SUCCESS
+Tests: 186/196 passed (3 registry test failures - pre-existing)
+To https://github.com/twgallo13/ROPI-V2.1
+ - [deleted]         fix/ui-import-key-mismatch-v2.4.5
+To https://github.com/twgallo13/ROPI-V2.1
+ - [deleted]         diagnostics/ui-import-capture-v2.4.4
+Branch fix/importer-accept-firestore-keys-v2.4.3 already fully merged - no unique commits
+To https://github.com/twgallo13/ROPI-V2.1
+ - [deleted]         fix/importer-accept-firestore-keys-v2.4.3
+[v2.3] Validation mode: minimal
+WROTE product doc: products_v2/_A_1_4_3_3_8_F_
+WROTE product doc: products/_A_1_4_3_3_8_F_
+UNMAPPED HEADER: Age Group
+UNMAPPED HEADER: Gender
+UNMAPPED HEADER: Department
+UNMAPPED HEADER: Class
+UNMAPPED HEADER: Category
+UNMAPPED HEADER: Primary Color
+UNMAPPED HEADER: Descriptive Color
+UNMAPPED HEADER: TaxClass
+UNMAPPED HEADER: Keywords
+UNMAPPED HEADER: Style ID
+UNMAPPED HEADER: Fit
+UNMAPPED HEADER: Material Fabric
+UNMAPPED HEADER: MAP
+UNMAPPED HEADER: Promo
+UNMAPPED HEADER: HYPE
+UNMAPPED HEADER: Product Is Active
+UNMAPPED HEADER: Sports Team
+UNMAPPED HEADER: League
+UNMAPPED HEADER: Description
+UNMAPPED HEADER: Media Status
+UNMAPPED HEADER: FastFashion
+UNMAPPED HEADER: New Collection
+UNMAPPED HEADER: KL Post Date
+UNMAPPED HEADER: Hide Image Until Date
+UNMAPPED HEADER: RICS Long Desc
+UNMAPPED HEADER: Variant Count
+UNMAPPED HEADER: Website
+UNMAPPED HEADER: Launch Date
+UNMAPPED HEADER: SCOM Regular Price
+UNMAPPED HEADER: SCOM Sale Price
+UNMAPPED HEADER: Product Is Dropship.Name
+PRODUCT_JSON: {
+  "sku_core": {
+    "mpn": "A14338F",
+    "sku": "SHK3024885",
+    "brand": "CONVERSE",
+    "name": "b612f26c-3483-470b-b634-b2b4011b1f16",
+    "department": "Misc",
+    "class": "Misc",
+    "category": "Misc"
+  },
+  "descriptive": {},
+  "pricing": {},
+  "technical": {
+    "firstReceived": "2025-11-14T00:00:00.000Z",
+    "lastReceived": "2025-11-11T00:00:00.000Z",
+    "storeInv": 51,
+    "warehouseInv": 12,
+    "height": 0,
+    "width": 0,
+    "length": 0,
+    "weight": 0,
+    "mediaStatus": "Images Ready"
+  },
+  "launch": {},
+  "source": {
+    "rics": {
+      "color": "DAYS AHEAD/WHITE/DAYSAHEAD",
+      "shortDescription": "CTAS STARBOWS GS",
+      "category": "Kids||Girls Grade School||Footwear||Athletic||lifestyle"
+    }
+  },
+  "ai": {}
+}
