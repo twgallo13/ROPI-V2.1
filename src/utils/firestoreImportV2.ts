@@ -25,6 +25,7 @@ export type ImportResult = {
     raw: string[];
     mpn?: string;
     sku?: string;
+    missingFields?: string[]; // v2.3: Track missing required fields
   }>;
 };
 
@@ -140,22 +141,60 @@ function mapRowToProduct(csvRow: Record<string, any>): Partial<NewProduct> {
 
 /**
  * Validate product using new schema rules
+ * v2.3: Support minimal and full validation modes
+ * 
+ * @param product - Product to validate
+ * @param mode - Validation mode ('minimal' | 'full')
+ * @param registryAttributes - Optional registry attributes for full validation
+ * @returns Array of error messages
  */
-function validateImportProduct(product: Partial<NewProduct>): string[] {
+function validateImportProduct(
+  product: Partial<NewProduct>, 
+  mode: 'minimal' | 'full' = 'full',
+  registryAttributes?: any[]
+): string[] {
   const errors: string[] = [];
 
-  // Check critical required fields
+  // Minimal mode: Only require MPN (SKU optional but recommended)
+  if (mode === 'minimal') {
+    if (!product.sku_core?.mpn) {
+      errors.push('MPN is required (minimal mode)');
+    }
+    return errors;
+  }
+
+  // Full mode: Check critical required fields
   if (!product.sku_core?.mpn) errors.push('MPN is required');
   if (!product.sku_core?.brand) errors.push('Brand is required');
   if (!product.sku_core?.name) errors.push('Name is required');
   if (!product.sku_core?.department) errors.push('Department is required');
   if (!product.sku_core?.category) errors.push('Category is required');
 
-  // Validate using schema validator
+  // Full mode: Validate using schema validator
   const { errors: schemaErrors } = validateProduct(product);
   errors.push(...schemaErrors);
 
+  // Full mode: Check registry importRequired fields if provided
+  if (registryAttributes && Array.isArray(registryAttributes)) {
+    registryAttributes.forEach(attr => {
+      if (attr.importRequired) {
+        const value = getNestedValue(product, attr.canonicalPath);
+        if (value === undefined || value === null || value === '') {
+          errors.push(`${attr.label} is required for import (registry rule)`);
+        }
+      }
+    });
+  }
+
   return errors;
+}
+
+/**
+ * Get nested value from object by dot-notation path
+ * Helper for registry validation
+ */
+function getNestedValue(obj: any, path: string): any {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
 }
 
 /**
@@ -175,11 +214,19 @@ function transformToVariant(data: Record<string, any>): Partial<Variant> {
 
 /**
  * Import products and variants to Firestore using new schema
+ * v2.3: Support validation modes and registry-driven validation
  */
 export async function importToFirestore(
   rows: ImportRow[],
-  rawData: string[][]
+  rawData: string[][],
+  options?: {
+    validationMode?: 'minimal' | 'full';
+    registryAttributes?: any[];
+  }
 ): Promise<ImportResult> {
+  const validationMode = options?.validationMode || 'full';
+  const registryAttributes = options?.registryAttributes;
+
   const result: ImportResult = {
     imported: 0,
     skipped: 0,
@@ -191,6 +238,7 @@ export async function importToFirestore(
     product: Partial<NewProduct>;
     mpn: string; 
     sku: string;
+    missingFields?: string[];
   }> = [];
 
   // Step 1: Map and validate all rows
@@ -198,8 +246,8 @@ export async function importToFirestore(
     // Map CSV row to new Product schema
     const newProduct = mapRowToProduct(row.data);
 
-    // Validate
-    const errors = validateImportProduct(newProduct);
+    // Validate with mode
+    const errors = validateImportProduct(newProduct, validationMode, registryAttributes);
     if (errors.length > 0) {
       result.skipped++;
       result.errors.push({
@@ -208,6 +256,7 @@ export async function importToFirestore(
         raw: rawData[row.rowNumber - 1] || [],
         mpn: newProduct.sku_core?.mpn,
         sku: row.data.sku || row.data.SKU,
+        missingFields: errors,
       });
       continue;
     }

@@ -21,6 +21,9 @@ const ImportPage: React.FC = () => {
   const [errorCSV, setErrorCSV] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // v2.3: Validation mode toggle
+  const [validationMode, setValidationMode] = useState<'minimal' | 'full'>('full');
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ show: true, message, type });
@@ -86,8 +89,11 @@ const ImportPage: React.FC = () => {
         };
       });
 
-      // Import to Firestore
-      const result = await importToFirestore(mappedRows, parseResult.rawData);
+      // Import to Firestore with validation mode (v2.3)
+      const result = await importToFirestore(mappedRows, parseResult.rawData, {
+        validationMode,
+        registryAttributes: undefined, // TODO: Pass registry if needed for full validation
+      });
       
       setImportProgress({ imported: result.imported, skipped: result.skipped });
       setStep('complete');
@@ -171,6 +177,58 @@ const ImportPage: React.FC = () => {
                   Optional: name, brand, price, size, color, etc.
                 </p>
               </div>
+            </div>
+
+            {/* v2.3: Validation Mode Toggle */}
+            <div className="mt-6 border-t pt-4">
+              <button
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
+              >
+                <svg className={`h-4 w-4 mr-1 transform ${showAdvanced ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+                Advanced Options
+              </button>
+              
+              {showAdvanced && (
+                <div className="mt-4 p-4 bg-gray-50 rounded-md">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Validation Mode
+                  </label>
+                  <div className="space-y-2">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        value="full"
+                        checked={validationMode === 'full'}
+                        onChange={(e) => setValidationMode(e.target.value as 'full')}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        <strong>Full</strong> - Use registry required rules (recommended)
+                      </span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        value="minimal"
+                        checked={validationMode === 'minimal'}
+                        onChange={(e) => setValidationMode(e.target.value as 'minimal')}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        <strong>Minimal</strong> - MPN & SKU only (for quick imports)
+                      </span>
+                    </label>
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500">
+                    {validationMode === 'full' 
+                      ? 'Validates required fields per attribute registry before import.'
+                      : 'Only MPN is required. Other fields are optional. Use for testing or partial data.'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

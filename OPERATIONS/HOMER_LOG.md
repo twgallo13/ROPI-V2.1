@@ -1908,3 +1908,86 @@ The AI tab is more sophisticated than a basic "AI Generate" tab - it's a complet
 **Status:** ✅ AI Generate tab fully implemented and operational in ProductEditorV2.
 
 **Recommendation:** Verify specific user requirements if different functionality was expected, as current implementation exceeds standard AI generation capabilities.
+
+## [2025-01-22 07:25 UTC] v2.2 — Enhanced Matching & Auto-Selection
+
+**Branch:** feature/importer-dynamic-v2.2 → main (merge commit d45703a)
+
+**Objective:** Implement normalized header matching pipeline with auto-selection logic to reliably map remaining problem headers (Product Is Dropship.Name, RICS Short Description, RICS Long Desc, RICS Category, Product Is Active, Last Received, Warehouse Inv, Store Inv) without manual intervention. Add dropshipName attribute to registry, improve normalization to handle dots/special chars, implement fuzzy matching with Jaro-Winkler + token overlap, and auto-select high-confidence matches in UI.
+
+**Files Changed:**
+- scripts/attribute-registry.json (added sku_core.dropshipName, updated 8 fields)
+- scripts/patch-registry-source-v2.2.cjs (NEW - registry patching script)
+- src/utils/csvParser.ts (normalized matching pipeline, auto-selection logic, debug logging)
+- src/components/MappingReview.tsx (category filter, alias display, enhanced badges)
+- src/__tests__/csvParser.mapping-v2.2.test.ts (NEW - 13 v2.2 tests)
+- src/__tests__/csvParser.registry.test.ts (updated for v2.2 confidence values)
+- src/__tests__/MappingReview.dynamic.test.tsx (updated confidence values)
+- .lisa_version.json (updated to v2.2)
+
+**Registry Updates (9 fields):**
+1. sku_core.dropshipName (NEW): ["product_is_dropship_name", "Product Is Dropship.Name", "Product Is Dropship Name", "dropship_name", "dropship name"]
+2. rics_source.shortDescription: ["rics_short_description", "RICS Short Description", "rics_short_desc"]
+3. rics_source.longDescription: ["rics_long_description", "RICS Long Desc", "RICS Long Description"]
+4. rics_source.category: ["rics_category", "RICS Category", "category"]
+5. sku_core.productIsActive: ["product_is_active", "Product Is Active", "is_active"]
+6. technical.lastReceived: ["last_received", "Last Received", "lastReceived"]
+7. technical.warehouseInv: ["warehouse_inv", "Warehouse Inv", "warehouseInv", "WHS inv", "whs_inv"]
+8. technical.storeInv: ["store_inv", "Store Inv", "storeInv"]
+9. technical.variantCount: importerColumns=[] (verified non-importable)
+
+**Matching Algorithm (priority order):**
+1. Exact normalized match to importerColumns → Exact Match (auto-select)
+2. Exact normalized match to label/canonicalPath → Exact Match (auto-select)
+3. Exact normalized match to static synonym map → Synonym (auto-select if score > 0.9)
+4. Fuzzy match (Jaro-Winkler or token overlap) → Fuzzy (auto-select if score >= 0.8)
+5. Else → Unmapped (no auto-select)
+
+**Normalization:** normalize(s) = lower(s).trim().replace(/\./g,'_').replace(/[^\w]+/g,'_').replace(/_+/g,'_').trim('_')
+- Example: "Product Is Dropship.Name" → "product_is_dropship_name"
+
+**Timeline:**
+- **06:50 UTC**: Created feature branch `feature/importer-dynamic-v2.2` from main
+- **06:51 UTC**: Committed registry metadata changes (commit 9f739f6)
+  - Patched scripts/attribute-registry.json with v2.2 aliases
+  - Added scripts/patch-registry-source-v2.2.cjs for reproducibility
+- **07:10 UTC**: Committed code changes (commit 65dfd03)
+  - Enhanced csvParser.ts with normalized matching and auto-selection
+  - Updated MappingReview.tsx with category filter and alias display
+  - Added 13 new unit tests in csvParser.mapping-v2.2.test.ts
+- **07:15 UTC**: Fixed test failures (commit bc0e3e0)
+  - Updated confidence values: "exact" → "Exact Match", "unmapped" → "Unmapped"
+  - Fixed csvParser.registry.test.ts to use getImportableAttributes mocks
+- **07:23 UTC**: All v2.2 tests passing (commit b09465b)
+  - 13/13 csvParser.mapping-v2.2 tests passing
+  - Fixed matchedAlias and variant_count test expectations
+- **07:20 UTC**: Merged to main (commit d45703a) and pushed
+- **07:21 UTC**: Regenerated and seeded staging Firestore
+  - ✓ 78 attributes seeded to settings/attributes/keys
+  - ✓ Normalized registry updated with v2.2 aliases
+- **07:22 UTC**: Deployed to staging hosting (ropi-bccee)
+  - Hosting URL: https://ropi-bccee.web.app
+  - Deploy Status: ✔ Complete
+- **07:23 UTC**: Ran headless import test with test-import.csv
+  - ✓ Product Is Dropship.Name → sku_core.dropshipName ("AcmeDropship")
+  - ✓ product_is_active → sku_core.productIsActive (true)
+  - ✓ last_received → technical.lastReceived ("2025-11-14")
+  - ✓ store_inv → technical.storeInv (10)
+  - ✓ warehouse_inv → technical.warehouseInv (20)
+  - ✓ rics_short_description → rics_source.shortDescription ("This is short desc")
+  - ✓ rics_color → rics_source.color ("Black")
+  - ✗ variant_count → UNMAPPED (correct, empty importerColumns)
+- **07:25 UTC**: Updated .lisa_version.json to v2.2 (commit 00a41c2)
+- **07:25 UTC**: Wrote settings/meta/lisaVersion = v2.2 to staging Firestore
+
+**Test Logs:**
+- operations/review-artifacts/attribute-registry/npm-test-v2.2.log (13/13 v2.2 tests passing)
+- operations/review-artifacts/attribute-registry/normalize-seed-v2.2.log (78 attributes seeded)
+- operations/review-artifacts/attribute-registry/firebase-deploy-staging-v2.2.log (deploy complete)
+- operations/review-artifacts/attribute-registry/admin-import-staging-v2.2.log (import test results)
+- operations/review-artifacts/attribute-registry/mapping-decisions-v2.2.json (debug decisions for 8 headers)
+- operations/review-artifacts/attribute-registry/firestore-XTEST-456-staging-v2.2.json (product snapshot)
+
+**Final Commit SHA:** 00a41c2
+
+**HOMER:** embed-version v2.2 applied to .lisa_version.json and staging settings/meta/lisaVersion

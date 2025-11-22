@@ -38,6 +38,12 @@ export const REGISTRY_CONFIG = {
 } as const;
 
 /**
+ * Import Validation Modes
+ * v2.3 - Flexible validation for different import scenarios
+ */
+export type ImportValidationMode = 'minimal' | 'full';
+
+/**
  * Import Configuration
  */
 export const IMPORT_CONFIG = {
@@ -50,7 +56,32 @@ export const IMPORT_CONFIG = {
    * Enable validation before import
    */
   ENABLE_VALIDATION: true,
+
+  /**
+   * Validation mode:
+   * - 'minimal': Require only MPN (and optionally SKU)
+   * - 'full': Enforce registry required rules (requiredForExport, importRequired)
+   * 
+   * Can be overridden via REACT_APP_IMPORT_VALIDATION_MODE env var
+   * v2.3
+   */
+  DEFAULT_VALIDATION_MODE: 'full' as ImportValidationMode,
 } as const;
+
+/**
+ * Get effective validation mode (can be overridden by env vars)
+ * v2.3
+ */
+export function getValidationMode(): ImportValidationMode {
+  // Check environment override
+  const envValue = import.meta.env.REACT_APP_IMPORT_VALIDATION_MODE;
+  
+  if (envValue === 'minimal' || envValue === 'full') {
+    return envValue;
+  }
+  
+  return IMPORT_CONFIG.DEFAULT_VALIDATION_MODE;
+}
 
 /**
  * Get effective feature flag value (can be overridden by env vars)

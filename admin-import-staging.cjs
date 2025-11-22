@@ -19,16 +19,36 @@ const serviceAccount = require(saPath);
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
-const file = process.argv[2];
+// Parse CLI args (v2.3: validation mode support)
+const args = process.argv.slice(2);
+let file = null;
+let validationMode = 'full'; // default
+
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg.startsWith('--validation=')) {
+    validationMode = arg.split('=')[1];
+    if (validationMode !== 'minimal' && validationMode !== 'full') {
+      console.error('Invalid validation mode. Use: --validation=minimal or --validation=full');
+      process.exit(1);
+    }
+  } else if (!file) {
+    file = arg;
+  }
+}
+
 if (!file) {
-  console.error('CSV file arg required');
+  console.error('Usage: node admin-import-staging.cjs <file.csv> [--validation=minimal|full]');
   process.exit(1);
 }
+
 const csvPath = path.resolve(file);
 if (!fs.existsSync(csvPath)) {
   console.error('CSV file not found:', csvPath);
   process.exit(1);
 }
+
+console.log(`[v2.3] Validation mode: ${validationMode}`);
 
 // Minimal mapping for snake_case test-import.csv headers
 const MAP = {
@@ -176,13 +196,40 @@ if (!product.technical.mediaStatus) {
   product.technical.mediaStatus = hasEmbargo ? 'Embargo' : 'Images Ready';
 }
 
-product.sku_core.mpn = product.sku_core.mpn || 'MISSING-MPN';
-product.sku_core.sku = product.sku_core.sku || product.sku_core.mpn;
-product.sku_core.brand = product.sku_core.brand || 'Unknown';
-product.sku_core.name = product.sku_core.name || 'Unnamed Product';
-product.sku_core.department = product.sku_core.department || 'Misc';
-product.sku_core.class = product.sku_core.class || 'Misc';
-product.sku_core.category = product.sku_core.category || 'Misc';
+// v2.3: Validation based on mode
+const missingFields = [];
+
+if (validationMode === 'minimal') {
+  // Minimal: Only MPN required
+  if (!product.sku_core.mpn) {
+    console.error('VALIDATION ERROR: MPN is required (minimal mode)');
+    process.exit(1);
+  }
+  // Apply defaults for optional fields
+  product.sku_core.sku = product.sku_core.sku || product.sku_core.mpn;
+  product.sku_core.brand = product.sku_core.brand || 'Unknown';
+  product.sku_core.name = product.sku_core.name || 'Unnamed Product';
+  product.sku_core.department = product.sku_core.department || 'Misc';
+  product.sku_core.class = product.sku_core.class || 'Misc';
+  product.sku_core.category = product.sku_core.category || 'Misc';
+} else {
+  // Full: Enforce required fields
+  if (!product.sku_core.mpn) missingFields.push('MPN');
+  if (!product.sku_core.sku) missingFields.push('SKU');
+  if (!product.sku_core.brand) missingFields.push('Brand');
+  if (!product.sku_core.name) missingFields.push('Name');
+  if (!product.sku_core.department) missingFields.push('Department');
+  if (!product.sku_core.category) missingFields.push('Category');
+  
+  if (missingFields.length > 0) {
+    console.error('VALIDATION ERROR (full mode): Missing required fields:', missingFields.join(', '));
+    process.exit(1);
+  }
+  
+  // Apply minimal defaults
+  product.sku_core.sku = product.sku_core.sku || product.sku_core.mpn;
+  product.sku_core.class = product.sku_core.class || 'Misc';
+}
 
 const docId = product.sku_core.mpn.replace(/[\\/]*/g,'_');
 
