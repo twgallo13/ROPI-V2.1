@@ -1,0 +1,15 @@
+{
+  "prod_firebaseapp_com": {
+    "cache-control": "max-age=3600",
+    "content-type": "text/html; charset=utf-8",
+    "etag": "92ee4c29cafa621ca538a4de80af67fb728da1a10a5f175c6b17ef2372d6f49e",
+    "last-modified": "Sat, 22 Nov 2025 12:43:09 GMT"
+  },
+  "webapp_web_app": {
+    "Note": "Headers should be extracted from webapp-root.headers.txt"
+  },
+  "comparison_result": "IDENTICAL_HTML",
+  "sha256_match": true,
+  "lisa_version_json_public": false,
+  "note": ".lisa_version.json is not publicly accessible (returns 404 HTML page)"
+}

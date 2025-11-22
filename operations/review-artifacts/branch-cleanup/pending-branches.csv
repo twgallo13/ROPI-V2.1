@@ -1,0 +1,6 @@
+branch_name,status,reason,action
+feature/importer-dynamic-v2.0,merged,Registry-driven import v2.0,KEEP (feature branch)
+feature/importer-dynamic-v2.2,merged,Enhanced registry features,KEEP (feature branch)
+backup/diagnostics/ui-import-capture-v2.4.4-20251122T121244Z,backup,Diagnostic tools backup,KEEP (backup)
+backup/fix/importer-accept-firestore-keys-v2.4.3-20251122T121244Z,backup,v2.4.3 adapter backup,KEEP (backup)
+backup/fix/ui-import-key-mismatch-v2.4.5-20251122T121244Z,backup,v2.4.5 UI fix backup,KEEP (backup)

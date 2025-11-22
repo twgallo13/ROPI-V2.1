@@ -1,0 +1,9 @@
+lisaVersion document not found at settings/meta/meta/lisaVersion
+{
+  "error": "Document not found",
+  "paths_tried": [
+    "settings/meta/meta/lisaVersion",
+    "settings/lisaVersion"
+  ],
+  "note": "lisaVersion may not be stored in Firestore yet"
+}

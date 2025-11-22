@@ -1,0 +1,45 @@
+HTTP/2 200 
+cache-control: max-age=3600
+content-type: text/html; charset=utf-8
+etag: "92ee4c29cafa621ca538a4de80af67fb728da1a10a5f175c6b17ef2372d6f49e"
+last-modified: Sat, 22 Nov 2025 12:43:09 GMT
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+accept-ranges: bytes
+date: Sat, 22 Nov 2025 12:53:43 GMT
+x-served-by: cache-bur-kbur8200142-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1763816024.693807,VS0,VE135
+vary: x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 1039
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ROPI v2</title>
+
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client.js",
+    "react/jsx-runtime": "https://aistudiocdn.com/react@^19.2.0/jsx-runtime.js",
+
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^6.25.1",
+    "react-router-dom/": "https://aistudiocdn.com/react-router-dom@^6.25.1/"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-BDAhLifp.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DxIlR9BG.css">
+</head>
+<body class="bg-gray-100 text-gray-900 antialiased">
+    <div id="root"></div>
+</body>
+</html>

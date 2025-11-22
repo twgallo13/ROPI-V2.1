@@ -1,0 +1,4 @@
+branch_name,deleted_at,backup_ref,merge_commit,notes
+fix/ui-import-key-mismatch-v2.4.5,2025-11-22T12:12:00Z,backup/fix/ui-import-key-mismatch-v2.4.5-20251122T121244Z,2d779d3,v2.4.5 UI rawData fix
+diagnostics/ui-import-capture-v2.4.4,2025-11-22T12:12:00Z,backup/diagnostics/ui-import-capture-v2.4.4-20251122T121244Z,89bbb32,Diagnostic tools
+fix/importer-accept-firestore-keys-v2.4.3,2025-11-22T12:12:00Z,backup/fix/importer-accept-firestore-keys-v2.4.3-20251122T121244Z,N/A,Already fully merged
