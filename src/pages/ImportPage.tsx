@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import MappingReview from '../components/MappingReview';
 import Toast from '../components/Toast';
-import { parseCSV, generateErrorCSV, downloadFile, getDelimiterName, type ColumnMapping, type ParseResult } from '../utils/csvParser';
+import { parseCSVAsync, generateErrorCSV, downloadFile, getDelimiterName, type ColumnMapping, type ParseResult } from '../utils/csvParser';
 import { importToFirestore, generateErrorCSV as generateErrorCSVV2, type ImportRow } from '../utils/firestoreImportV2';
 
 type ImportStep = 'upload' | 'mapping' | 'importing' | 'complete';
@@ -37,13 +37,14 @@ const ImportPage: React.FC = () => {
     try {
       setFileName(file.name);
       const content = await file.text();
-      const result = parseCSV(content);
+      // Lisa v2.0: Use async parser with registry support
+      const result = await parseCSVAsync(content);
       
       setParseResult(result);
       setMappings(result.mappings);
       setStep('mapping');
       
-      showToast(`Parsed ${result.rows.length} rows from CSV`, 'success');
+      showToast(`Parsed ${result.rows.length} rows from CSV (registry-enhanced mapping)`, 'success');
     } catch (error) {
       showToast(`Error parsing CSV: ${error}`, 'error');
       console.error('CSV parse error:', error);
