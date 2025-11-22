@@ -8,14 +8,14 @@ import { importToFirestore } from '../utils/firestoreImportV2';
 import type { ImportRow } from '../utils/firestoreImportV2';
 
 // Mock Firestore
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(() => ({})),
+  setDoc: vi.fn(() => Promise.resolve()),
+  collection: vi.fn(),
+}));
+
 vi.mock('../firebase', () => ({
-  db: {
-    collection: vi.fn(() => ({
-      doc: vi.fn(() => ({
-        set: vi.fn(() => Promise.resolve()),
-      })),
-    })),
-  },
+  db: {},
 }));
 
 // Mock schema adapter

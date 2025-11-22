@@ -131,6 +131,24 @@ function mapRowToProduct(csvRow: Record<string, any>): Partial<NewProduct> {
     setNestedValue(product, firestorePath, transformed);
   }
 
+  // v2.3: Also handle direct nested field names (for tests and flexible imports)
+  // If a field like 'mpn' is passed directly and not in CSV_TO_FIRESTORE_MAP,
+  // try mapping it to common paths
+  const directMappings: Record<string, string> = {
+    'mpn': 'sku_core.mpn',
+    'sku': 'sku_core.sku',
+    'brand': 'sku_core.brand',
+    'name': 'sku_core.name',
+    'department': 'sku_core.department',
+    'category': 'sku_core.category',
+  };
+
+  for (const [directKey, firestorePath] of Object.entries(directMappings)) {
+    if (csvRow[directKey] !== undefined && !getNestedValue(product, firestorePath)) {
+      setNestedValue(product, firestorePath, csvRow[directKey]);
+    }
+  }
+
   // Auto-calculate Media Status
   if (product.technical) {
     product.technical.mediaStatus = calculateMediaStatus(product.technical);
@@ -187,14 +205,6 @@ function validateImportProduct(
   }
 
   return errors;
-}
-
-/**
- * Get nested value from object by dot-notation path
- * Helper for registry validation
- */
-function getNestedValue(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
 }
 
 /**
