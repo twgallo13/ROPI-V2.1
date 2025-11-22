@@ -6,6 +6,7 @@ const tabs = [
   { to: 'export', label: 'Export Settings', adminOnly: false },
   { to: 'ai', label: 'AI Settings', adminOnly: false },
   { to: 'ai-templates', label: 'AI Templates', adminOnly: false },
+  { to: 'attributes', label: 'Attributes Command Center', adminOnly: false },
   { to: 'vocab-managed', label: 'Vocab (Managed)', adminOnly: false },
   { to: 'vocab', label: 'Vocab / Dropdowns', adminOnly: false },
   { to: 'rules', label: 'Rules', adminOnly: false },

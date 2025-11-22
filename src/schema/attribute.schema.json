@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Attribute Schema",
+  "description": "Canonical attribute schema for RO Product Attributes and Ropi AI attributes",
+  "type": "object",
+  "required": ["canonicalPath", "label", "category", "dataType"],
+  "properties": {
+    "canonicalPath": {
+      "type": "string",
+      "description": "Unique canonical path identifier (e.g., sku_core.mpn)",
+      "pattern": "^[a-z_]+\\.[a-z_]+$"
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable label for the attribute"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category grouping for the attribute",
+      "enum": ["sku_core", "descriptive", "pricing", "inventory", "media", "compliance", "shipping", "meta"]
+    },
+    "dataType": {
+      "type": "string",
+      "description": "Data type of the attribute value",
+      "enum": ["string", "number", "boolean", "date", "array", "object", "url"]
+    },
+    "importerColumns": {
+      "type": "array",
+      "description": "List of importer column aliases that map to this canonical attribute",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "importRequired": {
+      "type": "boolean",
+      "description": "Whether this attribute is required during import",
+      "default": false
+    },
+    "requiredForExport": {
+      "type": "boolean",
+      "description": "Whether this attribute is required for export operations",
+      "default": false
+    },
+    "export": {
+      "type": "boolean",
+      "description": "Whether this attribute is exportable",
+      "default": true
+    },
+    "bulkEditable": {
+      "type": "boolean",
+      "description": "Whether this attribute can be bulk edited",
+      "default": true
+    },
+    "foundation": {
+      "type": "boolean",
+      "description": "Whether this is a foundation attribute",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the attribute"
+    },
+    "ai": {
+      "type": "object",
+      "description": "AI-related settings for the attribute",
+      "properties": {
+        "use": {
+          "type": "array",
+          "description": "AI use cases for this attribute",
+          "items": {
+            "type": "string",
+            "enum": ["template_selection", "enrichment", "validation", "classification", "extraction"]
+          },
+          "default": []
+        },
+        "can_write": {
+          "type": "boolean",
+          "description": "Whether AI can write values for this attribute",
+          "default": false
+        },
+        "confidenceThreshold": {
+          "type": "number",
+          "description": "Minimum confidence threshold for AI suggestions",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.9
+        },
+        "trusted_sources": {
+          "type": "array",
+          "description": "List of trusted sources for AI data",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes about AI behavior for this attribute"
+        }
+      },
+      "default": {
+        "use": [],
+        "can_write": false,
+        "confidenceThreshold": 0.9,
+        "trusted_sources": []
+      }
+    },
+    "validation": {
+      "type": "object",
+      "description": "Validation rules for the attribute",
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "pattern": {
+          "type": ["string", "null"],
+          "description": "Regex pattern for validation",
+          "default": null
+        },
+        "allowedValuesRef": {
+          "type": ["string", "null"],
+          "description": "Reference to settings/lists/* for allowed values",
+          "default": null
+        }
+      },
+      "default": {
+        "required": false,
+        "pattern": null,
+        "allowedValuesRef": null
+      }
+    },
+    "ui": {
+      "type": "object",
+      "description": "UI-related settings",
+      "properties": {
+        "hint": {
+          "type": "string",
+          "description": "Hint text for UI display"
+        }
+      },
+      "default": {}
+    },
+    "audit": {
+      "type": "object",
+      "description": "Audit trail information",
+      "properties": {
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "default": {}
+    },
+    "deprecated": {
+      "type": "boolean",
+      "description": "Whether this attribute is deprecated",
+      "default": false
+    }
+  }
+}

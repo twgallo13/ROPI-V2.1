@@ -21,6 +21,7 @@ import ExportSettingsPage from './pages/settings/ExportSettingsPage';
 import ExportRulesPage from './pages/settings/ExportRulesPage';
 import UsersAdminPage from './pages/admin/UsersAdminPage';
 import DescribePage from './pages/ai/DescribePage';
+import AttributesCommandCenter from './pages/settings/AttributesCommandCenter';
 
 function RouteManager() {
   const { user, role, authReady } = useAuth();
@@ -133,6 +134,7 @@ function RouteManager() {
           <Route path="brands" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><BrandsPage /></Suspense>} />
           <Route path="export-rules" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><ExportRulesPage /></Suspense>} />
           <Route path="admin-users" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><UsersAdminPage /></Suspense>} />
+          <Route path="attributes" element={<Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading settings…</div>}><AttributesCommandCenter /></Suspense>} />
         </Route>
         
         {/* Catch-all for any other bad URL */}
