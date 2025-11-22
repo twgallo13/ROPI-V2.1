@@ -6,6 +6,7 @@ import express from 'express';
 import smartDetectHandler from '../handlers/smartDetect';
 import validateHandler from '../handlers/validate';
 import describeHandler from '../handlers/describe';
+import attributesHandler from '../handlers/attributes';
 import importRouter from '../routes/import';
 import exporterRouter from '../routes/exporter';
 import describeStartRouter from '../routes/describeStart';
@@ -63,6 +64,31 @@ app.use('/api/describe-status', describeStatusRouter);
 app.use('/api/import', importRouter);
 app.use('/api/exporter', exporterRouter);
 
+// Attributes API endpoints
+app.get('/api/attributes', (req, res, next) => {
+  Promise.resolve(attributesHandler.getAttributes(req, res)).catch(next);
+});
+
+app.post('/api/attributes', (req, res, next) => {
+  Promise.resolve(attributesHandler.createAttribute(req, res)).catch(next);
+});
+
+app.put('/api/attributes/:canonicalPath', (req, res, next) => {
+  Promise.resolve(attributesHandler.updateAttribute(req, res)).catch(next);
+});
+
+app.delete('/api/attributes/:canonicalPath', (req, res, next) => {
+  Promise.resolve(attributesHandler.deleteAttribute(req, res)).catch(next);
+});
+
+app.post('/api/attributes/seed', (req, res, next) => {
+  Promise.resolve(attributesHandler.seedAttributes(req, res)).catch(next);
+});
+
+app.post('/api/attributes/propose-mapping', (req, res, next) => {
+  Promise.resolve(attributesHandler.proposeMapping(req, res)).catch(next);
+});
+
 // Root endpoint for health checks
 app.all('/', (req, res) => {
   res.status(200).json({ 
@@ -74,7 +100,8 @@ app.all('/', (req, res) => {
       '/api/describe-start',
       '/api/describe-status',
       '/api/import',
-      '/api/exporter'
+      '/api/exporter',
+      '/api/attributes'
     ]
   });
 });
