@@ -18,6 +18,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Export AuthContext for testing
+export { AuthContext };
+
 // Role is loaded from Firestore: /users/{uid} -> { role: 'admin' | 'specialist' }
 // Live subscription via onSnapshot
 // If missing, default to 'specialist' (but don't override existing roles)
