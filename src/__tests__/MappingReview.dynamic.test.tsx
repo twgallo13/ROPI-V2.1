@@ -107,8 +107,17 @@ describe('MappingReview - Dynamic Registry Integration', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Gender \(descriptive.gender\)/i)).toBeInTheDocument();
+      // Wait for registry to load
+      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
     });
+
+    // Check dropdown contains the option (case-insensitive partial match)
+    const options = document.querySelectorAll('option');
+    const genderOption = Array.from(options).find(opt => 
+      opt.textContent?.toLowerCase().includes('gender') && 
+      opt.textContent?.includes('descriptive.gender')
+    );
+    expect(genderOption).toBeDefined();
   });
 
   it('should exclude technical.variantCount from options (empty importerColumns)', async () => {
@@ -151,12 +160,22 @@ describe('MappingReview - Dynamic Registry Integration', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText(/Variant Count/i)).not.toBeInTheDocument();
+      // Wait for loading to finish
+      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
     });
 
-    await waitFor(() => {
-      expect(screen.getByText(/Gender \(descriptive.gender\)/i)).toBeInTheDocument();
-    });
+    // Check that technical.variantCount is NOT in dropdown options
+    const options = document.querySelectorAll('option');
+    const variantCountOption = Array.from(options).find(opt => 
+      opt.textContent?.includes('technical.variantCount')
+    );
+    expect(variantCountOption).toBeUndefined();
+
+    // Check gender option exists in dropdown
+    const genderOption = Array.from(options).find(opt => 
+      opt.textContent?.includes('Gender') && opt.textContent?.includes('descriptive.gender')
+    );
+    expect(genderOption).toBeDefined();
   });
 
   it('should display attributes grouped by category', async () => {
@@ -199,14 +218,19 @@ describe('MappingReview - Dynamic Registry Integration', () => {
     );
 
     await waitFor(() => {
-      const select = screen.getAllByRole('combobox')[0];
-      expect(select).toBeInTheDocument();
+      // Wait for loading to complete
+      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
     });
 
     // Check that optgroups exist (category grouping)
     await waitFor(() => {
       const optgroups = document.querySelectorAll('optgroup');
       expect(optgroups.length).toBeGreaterThan(0);
+      
+      // Verify both categories exist
+      const categories = Array.from(optgroups).map(og => og.getAttribute('label'));
+      expect(categories).toContain('Descriptive');
+      expect(categories).toContain('SKU Core');
     });
   });
 
@@ -225,7 +249,9 @@ describe('MappingReview - Dynamic Registry Integration', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Registry error/i)).toBeInTheDocument();
+      // Multiple "Registry error" texts exist (one in header, one per row), use getAllByText
+      const errorTexts = screen.getAllByText(/Registry error/i);
+      expect(errorTexts.length).toBeGreaterThan(0);
     });
   });
 
