@@ -215,6 +215,13 @@ function main() {
           console.log(`Removed 'rics_color' from descriptive.primaryColor`);
         }
       }
+
+      // Lisa v1.0 guard: never add importer columns to technical.variantCount
+      if (canonicalPath === 'technical.variantCount') {
+        attr.importerColumns = [];
+        attr.export = false;
+        console.log(`Lisa v1.0 guard: kept technical.variantCount non-importable`);
+      }
       
       if (changed) {
         updated++;
