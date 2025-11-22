@@ -1,5 +1,108 @@
 # HOMER Operations Log
 
+## [2025-11-22 14:20 UTC] v3.0 — Attribute Command Center (Phase 1)
+
+**Timestamp:** 2025-11-22T14:20:00Z
+
+**Branch:** feature/attribute-command-center-v3.0
+
+**Commit:** 0cd0fc4 - "v3.0: Attribute Command Center UI + API (Phase 1)"
+
+**Objective:** Build fully functional Attribute Command Center in Settings for viewing, adding, editing, and testing RO Product Attributes and Ropi (AI) attributes with import/export flags, foundation flags, AI settings, importer aliases, and audit/history.
+
+**Implementation Summary:**
+
+Backend (Functions):
+- ✅ Created handlers/attributes.ts with full CRUD API
+  * GET /api/attributes (paginated, searchable, filterable)
+  * POST /api/attributes (create with validation)
+  * PUT /api/attributes/:canonicalPath (update with audit)
+  * DELETE /api/attributes/:canonicalPath (soft-delete)
+  * POST /api/attributes/seed (seed to staging)
+  * POST /api/attributes/propose-mapping (CSV analysis)
+- ✅ Schema validation with ajv (src/schema/attribute.schema.json)
+- ✅ Audit trail (settings/attributes/audit/*)
+- ✅ Registry persistence (scripts/attribute-registry-normalized.json → Firestore)
+
+Frontend (UI):
+- ✅ AttributesCommandCenter.tsx (main page)
+  * Searchable table with category, foundation, exportable filters
+  * Admin actions: Seed to staging, download registry
+  * Sandbox toggle for CSV testing
+- ✅ AttributeDetailDrawer.tsx (edit modal)
+  * 4 tabs: Details, AI Settings, Validation, Audit
+  * Editable fields: label, category, dataType, importerColumns
+  * AI panel: use cases, can_write, confidenceThreshold, trusted_sources
+  * Validation: pattern, required, allowedValuesRef
+  * Actions: Save, Save & Seed, Delete
+- ✅ SandboxPanel.tsx (mapping preview)
+  * Load Test 2 CSV or upload file
+  * Foundation attribute checklist
+  * Mapping preview with match type badges
+  * Proposed actions (stubs for Phase 2)
+
+Schema & Types:
+- ✅ src/schema/attribute.schema.json (JSON Schema draft-07)
+- ✅ TypeScript interfaces with proper typing
+- ✅ Pattern validation for canonicalPath (category.field_name)
+
+Tests:
+- ✅ Unit tests: attribute-schema.test.ts (8/8 passing)
+- ✅ Component tests: AttributesCommandCenter.test.tsx
+- ✅ Build: SUCCESS (main + functions)
+- ✅ Test suite: 21/24 passing (2 pre-existing failures unrelated)
+
+Integration:
+- ✅ Route added: /settings/attributes
+- ✅ Tab added to SettingsPage
+- ✅ API router updated with attributes endpoints
+- ✅ Dependencies: ajv, ajv-formats added
+
+**Files Changed:**
+- src/schema/attribute.schema.json (new)
+- functions/src/handlers/attributes.ts (new)
+- functions/src/api/index.ts (updated)
+- src/pages/settings/AttributesCommandCenter.tsx (new)
+- src/pages/settings/components/AttributeDetailDrawer.tsx (new)
+- src/pages/settings/components/SandboxPanel.tsx (new)
+- src/__tests__/attribute-schema.test.ts (new)
+- src/__tests__/AttributesCommandCenter.test.tsx (new)
+- src/App.tsx (updated - added route)
+- src/pages/SettingsPage.tsx (updated - added tab)
+- package.json (updated - added ajv)
+- functions/package.json (updated - added ajv)
+
+**Artifacts:**
+- operations/review-artifacts/attribute-command-center-v3.0/npm-test-v3.0.log
+- operations/review-artifacts/attribute-command-center-v3.0/npm-build-v3.0.log
+- operations/review-artifacts/attribute-command-center-v3.0/npm-build-functions-v3.0.log
+- operations/review-artifacts/attribute-command-center-v3.0/homer-summary-attribute-command-center-v3.0.txt
+
+**Deployment Status:**
+- ⏸️ STAGING NOT YET DEPLOYED (awaiting Theo verification)
+- Branch pushed to remote: feature/attribute-command-center-v3.0
+- Ready for PR to main
+
+**Verification Checklist for Theo:**
+1. Open /settings/attributes on staging
+2. Verify table loads, edit Age Group (foundation=true)
+3. Edit descriptive.primaryColor importerColumns, add aliases, Save & Seed
+4. Sandbox: Load Test 2 CSV, verify mapping preview and foundation checklist
+5. Run preflight checks (minimal/full)
+6. Verify audit trail records changes
+
+**Known Limitations (Phase 1):**
+- Sandbox actions (Apply/Preflight/Import) are UI stubs
+- Rollback feature not yet implemented
+- Bulk edit mode not yet functional
+- No production writes
+
+**HOMER:** EMBED-VERSION v3.0 applied to .lisa_version.json (hidden) and staging settings/meta/lisaVersion (pending deployment)
+
+**Status:** ✅ ATTRIBUTE COMMAND CENTER v3.0 PHASE 1 COMPLETE
+
+---
+
 ## [2025-11-22 13:13 UTC] v2.4.6 — Domain Parity Verification & Audit
 
 **Timestamp:** 2025-11-22T13:13:17Z
