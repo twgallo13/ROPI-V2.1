@@ -98,6 +98,9 @@ const MAP = {
   meta_name: 'descriptive.metaName',
   meta_description: 'descriptive.metaDescription',
   product_is_dropship: 'sku_core.productIsDropship', // Lisa v1.0: dropship boolean
+  'Custom 2': 'descriptive.custom2', // Lisa v1.0: custom field 2
+  'Custom 3': 'descriptive.custom3', // Lisa v1.0: custom field 3
+  'Product Is Dropship.Name': 'sku_core.dropshipName', // Lisa v1.0: dropship name
 };
 
 function setNested(obj, path, value) {
