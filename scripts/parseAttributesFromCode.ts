@@ -199,8 +199,15 @@ function parseImporter(_filePath: string, attributes: Map<string, AttributeMetad
   for (const mapping of columnMappings) {
     const attr = attributes.get(mapping.canonical);
     if (attr) {
-      attr.importerColumns = mapping.columns;
+      attr.importerColumns.push(...mapping.columns);
     }
+  }
+
+  // Lisa v1.0 guard: ensure technical.variantCount remains non-importable
+  const variantCount = attributes.get('technical.variantCount');
+  if (variantCount) {
+    variantCount.importerColumns = [];
+    variantCount.export = false;
   }
 }
 
