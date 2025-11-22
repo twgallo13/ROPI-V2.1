@@ -304,7 +304,8 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "gender"
+      "gender",
+      "Group"
     ],
     "rules": [
       "SD-005"
@@ -1018,8 +1019,7 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "department",
-      "Group"
+      "department"
     ],
     "rules": [
       "SD-001"
@@ -1563,16 +1563,13 @@
     "category": "Technical",
     "dataType": "number",
     "required": false,
-    "export": true,
+    "export": false,
     "description": "Number of variants",
     "systemFlag": false,
     "legacyPaths": [
       "variantCount"
     ],
-    "importerColumns": [
-      "variant_count",
-      "Variant Count"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
