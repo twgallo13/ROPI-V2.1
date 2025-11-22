@@ -71,17 +71,23 @@ const ImportPage: React.FC = () => {
       setImportProgress({ success: 0, failed: 0 });
 
       // Apply mappings to rows
+      // v2.4.5: Fix key mismatch - use rawData to get values by column index
       const mappedRows: ImportRow[] = parseResult.rows.map((row) => {
         const mappedData: Record<string, any> = {};
         
-        mappings.forEach((mapping, index) => {
-          if (mapping.targetField) {
-            const value = row.data[parseResult.headers[index]];
-            if (value !== undefined) {
-              mappedData[mapping.targetField] = value;
+        // Get raw values for this row (rawData is 0-based, row.rowNumber is 1-based)
+        const rawValues = parseResult.rawData[row.rowNumber - 1];
+        
+        if (rawValues) {
+          mappings.forEach((mapping, index) => {
+            if (mapping.targetField && index < rawValues.length) {
+              const value = rawValues[index];
+              if (value !== undefined && value !== '') {
+                mappedData[mapping.targetField] = value;
+              }
             }
-          }
-        });
+          });
+        }
 
         return {
           rowNumber: row.rowNumber,
