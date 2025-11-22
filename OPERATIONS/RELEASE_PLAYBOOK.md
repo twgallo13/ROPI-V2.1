@@ -107,3 +107,41 @@ All headers mapped
 ✅ All CSV headers mapped successfully
 ✅ Products written to both products and products_v2 collections
 
+---
+
+## Final Re-verification - November 22, 2025 (Post-Branch-Cleanup)
+
+### Headless Import Re-run
+
+**Import Output:**
+
+```text
+WROTE product doc: products_v2/_M_P_N_0_0_1_
+WROTE product doc: products/_M_P_N_0_0_1_
+All headers mapped
+```
+
+**TEST-001 Summary (10 critical fields + dropship):**
+
+```json
+{
+  "sku_core": {
+    "department": "Footwear",
+    "class": "Athletic",
+    "category": "Running",
+    "styleId": "STYLE-001",
+    "coreProduct": true,
+    "productIsActive": true,
+    "mpn": "MPN001",
+    "sku": "TEST-001",
+    "brand": "Adidas",
+    "name": "Adidas Air",
+    "dropshipName": "FastShip Inc",
+    "productIsDropship": true
+  }
+}
+```
+
+**Status:** ✅ All verifications passed after branch cleanup
+
+
