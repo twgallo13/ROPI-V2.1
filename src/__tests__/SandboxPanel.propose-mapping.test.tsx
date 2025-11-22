@@ -39,8 +39,8 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
     const csvContent = 'Product Name,Price\nTest Product,10.00';
     const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
 
-    // Find the file input
-    const fileInput = screen.getByLabelText(/Upload CSV File/i).closest('label')?.previousSibling as HTMLInputElement;
+    // Find the file input by ID
+    const fileInput = document.getElementById('csv-upload') as HTMLInputElement;
     
     // Trigger file upload
     fireEvent.change(fileInput, { target: { files: [file] } });
@@ -79,7 +79,7 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
 
     const csvContent = 'Invalid CSV';
     const file = new File([csvContent], 'bad.csv', { type: 'text/csv' });
-    const fileInput = screen.getByLabelText(/Upload CSV File/i).closest('label')?.previousSibling as HTMLInputElement;
+    const fileInput = document.getElementById('csv-upload') as HTMLInputElement;
     
     fireEvent.change(fileInput, { target: { files: [file] } });
 
@@ -99,7 +99,7 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
     render(<SandboxPanel onClose={vi.fn()} />);
 
     const file = new File(['test'], 'test.csv', { type: 'text/csv' });
-    const fileInput = screen.getByLabelText(/Upload CSV File/i).closest('label')?.previousSibling as HTMLInputElement;
+    const fileInput = document.getElementById('csv-upload') as HTMLInputElement;
     
     fireEvent.change(fileInput, { target: { files: [file] } });
 
@@ -135,14 +135,17 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
     render(<SandboxPanel onClose={vi.fn()} />);
 
     const file = new File(['Brand\nNike'], 'test.csv', { type: 'text/csv' });
-    const fileInput = screen.getByLabelText(/Upload CSV File/i).closest('label')?.previousSibling as HTMLInputElement;
+    const fileInput = document.getElementById('csv-upload') as HTMLInputElement;
     
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
       expect(screen.getByText(/Proposed Mappings/i)).toBeInTheDocument();
       expect(screen.getByText('Brand')).toBeInTheDocument();
-      expect(screen.getByText(/descriptive\.brand/)).toBeInTheDocument();
+      const mappingDisplay = screen.getByText((content, element) => {
+        return element?.className?.includes('font-mono') && content.includes('descriptive.brand');
+      });
+      expect(mappingDisplay).toBeInTheDocument();
     });
   });
 });
