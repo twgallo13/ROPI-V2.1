@@ -28,3 +28,13 @@ src/**/*.js
 *.sw?
 operations/review-artifacts/attribute-registry/
 /secrets/
+
+# Service account credentials (sensitive)
+service-account.json
+*-service-account.json
+
+# Backup and temporary files
+*.bak
+*-old.csv
+test-import-old.csv
+test-import-with-dropship.csv
