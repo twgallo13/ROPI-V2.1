@@ -19,6 +19,7 @@ const MappingReview: React.FC<MappingReviewProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('All');
 
   // Fetch attribute registry on mount
   useEffect(() => {
@@ -38,30 +39,55 @@ const MappingReview: React.FC<MappingReviewProps> = ({
 
     loadRegistry();
   }, []);
-  const getConfidenceBadge = (confidence: string) => {
+  const getConfidenceBadge = (confidence: string, matchedAlias?: string, matchScore?: number) => {
     switch (confidence) {
-      case 'exact':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Exact Match</span>;
-      case 'synonym':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Synonym</span>;
-      case 'suggested-low':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Fuzzy Match</span>;
-      case 'unmapped':
+      case 'Exact Match':
+        return (
+          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+            Exact Match{matchedAlias ? ` (via '${matchedAlias}')` : ''}
+          </span>
+        );
+      case 'Synonym':
+        return (
+          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+            Synonym{matchedAlias ? ` (via '${matchedAlias}')` : ''}
+          </span>
+        );
+      case 'Fuzzy':
+        return (
+          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+            Fuzzy{matchScore ? ` (${(matchScore * 100).toFixed(0)}%)` : ''}
+          </span>
+        );
+      case 'Unmapped':
         return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Unmapped</span>;
       default:
         return null;
     }
   };
 
-  const hasConflicts = mappings.some(m => m.confidence === 'suggested-low' || m.confidence === 'unmapped');
+  const hasConflicts = mappings.some(m => m.confidence === 'Fuzzy' || m.confidence === 'Unmapped');
 
-  // Filter attributes by search term (label or canonical path)
-  const filteredAttributes = searchTerm.trim()
-    ? attributes.filter(a => 
-        a.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.canonicalPath.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : attributes;
+  // Get unique categories for filter
+  const categories = Array.from(new Set(attributes.map(a => a.category))).sort();
+  
+  // Filter attributes by search term and category
+  const filteredAttributes = attributes.filter(a => {
+    // Category filter
+    if (categoryFilter !== 'All' && a.category !== categoryFilter) return false;
+    
+    // Search term filter (search in label, canonicalPath, and aliases)
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase();
+      return (
+        a.label.toLowerCase().includes(search) ||
+        a.canonicalPath.toLowerCase().includes(search) ||
+        a.importerColumns.some(alias => alias.toLowerCase().includes(search))
+      );
+    }
+    
+    return true;
+  });
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
@@ -80,15 +106,27 @@ const MappingReview: React.FC<MappingReviewProps> = ({
           )}
         </p>
         {!loading && !error && attributes.length > 0 && (
-          <div className="mt-3">
-            <input
-              type="text"
-              placeholder="Search attributes by name or path..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
+          <div className="mt-3 space-y-2">
+            <div className="flex gap-3">
+              <input
+                type="text"
+                placeholder="Search attributes by name, path, or alias..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-1 max-w-md px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
+              />
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="All">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+            <p className="text-xs text-gray-500">
               {filteredAttributes.length} of {attributes.length} importable attributes loaded from Firestore
             </p>
           </div>
@@ -115,7 +153,7 @@ const MappingReview: React.FC<MappingReviewProps> = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {mappings.map((mapping, index) => (
-              <tr key={index} className={`hover:bg-gray-50 ${mapping.confidence === 'unmapped' ? 'bg-red-50' : ''}`}>
+              <tr key={index} className={`hover:bg-gray-50 ${mapping.confidence === 'Unmapped' ? 'bg-red-50' : ''}`}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {mapping.csvHeader}
                 </td>
@@ -138,12 +176,18 @@ const MappingReview: React.FC<MappingReviewProps> = ({
                         
                         return (
                           <optgroup key={category} label={category}>
-                            {categoryAttrs.map(attr => (
-                              <option key={attr.canonicalPath} value={attr.canonicalPath}>
-                                {attr.label} ({attr.canonicalPath})
-                                {attr.required ? ' *' : ''}
-                              </option>
-                            ))}
+                            {categoryAttrs.map(attr => {
+                              const aliasStr = attr.importerColumns.length > 0 
+                                ? ` [aliases: ${attr.importerColumns.slice(0, 3).join(', ')}${attr.importerColumns.length > 3 ? '...' : ''}]`
+                                : '';
+                              return (
+                                <option key={attr.canonicalPath} value={attr.canonicalPath} title={`Aliases: ${attr.importerColumns.join(', ')}`}>
+                                  {attr.label} ({attr.canonicalPath})
+                                  {attr.required ? ' *' : ''}
+                                  {aliasStr}
+                                </option>
+                              );
+                            })}
                           </optgroup>
                         );
                       })}
@@ -151,7 +195,7 @@ const MappingReview: React.FC<MappingReviewProps> = ({
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {getConfidenceBadge(mapping.confidence)}
+                  {getConfidenceBadge(mapping.confidence, mapping.matchedAlias, mapping.matchScore)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {mapping.alternatives && mapping.alternatives.length > 0 && (
