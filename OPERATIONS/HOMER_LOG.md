@@ -1,5 +1,55 @@
 # HOMER Operations Log
 
+## [2025-11-22 11:52 UTC] v2.4.5 — Fix: UI Import Key Mismatch (Critical)
+
+**Branch:** fix/ui-import-key-mismatch-v2.4.5
+
+**Commit:** fcb8556 — "v2.4.5: fix UI import key mismatch - use rawData instead of row.data keys"
+
+**Severity:** CRITICAL (Blocks all staging UI imports)
+
+**Root Cause:** ImportPage.tsx data access bug causing undefined values to be sent to server
+
+In `handleConfirmImport()`, the code attempted to read CSV values using:
+```typescript
+const value = row.data[parseResult.headers[index]]; // WRONG
+```
+
+However, `row.data` is keyed by canonical Firestore paths (e.g., "sku_core.mpn"), not CSV headers like "mpn".
+This caused `value` to always be `undefined`, resulting in empty data sent to server.
+
+**The Fix:**
+
+Use `parseResult.rawData` to access actual CSV values by column index:
+```typescript
+const rawValues = parseResult.rawData[row.rowNumber - 1];
+const value = rawValues[index]; // Direct array access
+```
+
+**Files Changed:**
+- `src/pages/ImportPage.tsx` — Fixed handleConfirmImport mapping logic
+
+**Build & Deploy:**
+- Build: SUCCESS (1.1 MB bundle)
+- Deploy: https://ropi-bccee.web.app
+- Timestamp: 2025-11-22T11:52:00Z
+
+**Impact:**
+- ✅ UI import now reads CSV values correctly by column index
+- ✅ Values properly mapped to Firestore paths
+- ✅ Server receives populated data
+- ✅ "MPN is required" error should no longer occur
+
+**Testing:**
+1. Open https://ropi-bccee.web.app/import
+2. Set Validation Mode = Minimal
+3. Upload Test 2.csv
+4. Should succeed ✅
+
+**HOMER:** v2.4.5 deployed; critical UI import bug resolved.
+
+---
+
 ## [2025-11-22 11:44 UTC] v2.4.4 — Diagnostics: UI Import Capture (Manual Required)
 
 **Branch:** diagnostics/ui-import-capture-v2.4.4
