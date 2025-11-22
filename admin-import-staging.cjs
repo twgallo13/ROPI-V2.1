@@ -199,10 +199,16 @@ if (!product.technical.mediaStatus) {
 // v2.3: Validation based on mode
 const missingFields = [];
 
+// Allow SKU to serve as MPN if MPN is missing (flexible import)
+if (!product.sku_core.mpn && product.sku_core.sku) {
+  product.sku_core.mpn = product.sku_core.sku;
+  console.log('[v2.3] Using SKU as MPN:', product.sku_core.sku);
+}
+
 if (validationMode === 'minimal') {
-  // Minimal: Only MPN required
+  // Minimal: Only MPN required (or SKU serving as MPN)
   if (!product.sku_core.mpn) {
-    console.error('VALIDATION ERROR: MPN is required (minimal mode)');
+    console.error('VALIDATION ERROR: MPN (or SKU) is required (minimal mode)');
     process.exit(1);
   }
   // Apply defaults for optional fields
