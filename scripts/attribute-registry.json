@@ -634,7 +634,10 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "kl_post_date"
+      "kl_post_date",
+      "KL Post Date",
+      "KL_POST_DATE",
+      "klPostDate"
     ],
     "rules": [],
     "usage": [],
@@ -810,7 +813,13 @@
     "description": "RICS color",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "RICS Color",
+      "rics_color",
+      "RICS_COLOR",
+      "RICS Source.Color",
+      "Color"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
@@ -846,7 +855,11 @@
     "description": "RICS short description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "RICS Source.Short Description",
+      "rics_long_desc",
+      "RICS Long Description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
@@ -1407,15 +1420,13 @@
     "category": "Technical",
     "dataType": "number",
     "required": false,
-    "export": true,
+    "export": false,
     "description": "Number of variants",
     "systemFlag": false,
     "legacyPaths": [
       "variantCount"
     ],
-    "importerColumns": [
-      "variant_count"
-    ],
+    "importerColumns": [],
     "rules": [],
     "usage": [],
     "examples": {
