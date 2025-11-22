@@ -795,7 +795,11 @@
     "description": "RICS category",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_category",
+      "RICS Category",
+      "category"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
@@ -837,7 +841,11 @@
     "description": "RICS long description",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "rics_long_description",
+      "RICS Long Desc",
+      "RICS Long Description"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
@@ -856,9 +864,9 @@
     "systemFlag": false,
     "legacyPaths": [],
     "importerColumns": [
-      "RICS Source.Short Description",
-      "rics_long_desc",
-      "RICS Long Description"
+      "rics_short_description",
+      "RICS Short Description",
+      "rics_short_desc"
     ],
     "rules": [],
     "usage": [],
@@ -1018,6 +1026,30 @@
     }
   },
   {
+    "key": "dropshipName",
+    "canonicalPath": "sku_core.dropshipName",
+    "label": "Dropship Name",
+    "category": "Core",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Dropship supplier name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "product_is_dropship_name",
+      "Product Is Dropship.Name",
+      "Product Is Dropship Name",
+      "dropship_name",
+      "dropship name"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
     "key": "productIsActive",
     "canonicalPath": "sku_core.productIsActive",
     "label": "Product Is Active",
@@ -1028,7 +1060,11 @@
     "description": "Toggles product visibility",
     "systemFlag": false,
     "legacyPaths": [],
-    "importerColumns": [],
+    "importerColumns": [
+      "product_is_active",
+      "Product Is Active",
+      "is_active"
+    ],
     "rules": [],
     "usage": [],
     "examples": {
@@ -1225,7 +1261,9 @@
       "lastReceived"
     ],
     "importerColumns": [
-      "last_received"
+      "last_received",
+      "Last Received",
+      "lastReceived"
     ],
     "rules": [],
     "usage": [],
@@ -1365,7 +1403,9 @@
       "storeInv"
     ],
     "importerColumns": [
-      "store_inv"
+      "store_inv",
+      "Store Inv",
+      "storeInv"
     ],
     "rules": [],
     "usage": [],
@@ -1447,7 +1487,11 @@
       "warehouseInv"
     ],
     "importerColumns": [
-      "warehouse_inv"
+      "warehouse_inv",
+      "Warehouse Inv",
+      "warehouseInv",
+      "WHS inv",
+      "whs_inv"
     ],
     "rules": [],
     "usage": [],
