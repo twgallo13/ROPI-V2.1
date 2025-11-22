@@ -1,5 +1,93 @@
 # HOMER Operations Log
 
+## [2025-11-22 11:44 UTC] v2.4.4 — Diagnostics: UI Import Capture (Manual Required)
+
+**Branch:** diagnostics/ui-import-capture-v2.4.4
+
+**Objective:** Capture exact browser request/response from live UI import to determine why "MPN is required (minimal mode)" error occurs despite v2.4.3 adapter fix. Need definitive proof of: (1) whether UI sends validation: "minimal", (2) whether mpn/sku are mapped correctly, (3) what data structure the server receives.
+
+**Approach:**
+
+1. **Automated Puppeteer Capture** (attempted)
+   - Created `scripts/capture-ui-import-v2.4.4.cjs`
+   - Installed puppeteer, launched headless Chrome
+   - Successfully navigated to https://ropi-bccee.web.app/import
+   - Page loaded, assets fetched (59KB network log)
+   - **Issue:** File input element not triggerable in headless mode
+   - No POST request captured (file never uploaded)
+   - Common limitation with headless browsers and file inputs
+
+2. **Manual Capture Fallback** (required)
+   - Created comprehensive guide: `MANUAL_CAPTURE_GUIDE_v2.4.4.txt`
+   - Step-by-step instructions for DevTools capture
+   - Specifies artifacts to save:
+     * ui-import-request-v2.4.4.log (URL, headers, payload)
+     * ui-import-response-v2.4.4.log (status, error body)
+     * ui-console-v2.4.4.log (console output)
+
+**Artifacts Saved:**
+
+Automated capture (partial):
+- `scripts/capture-ui-import-v2.4.4.cjs` — Puppeteer script
+- `ui-console-v2.4.4.json` (72 bytes) — "Loaded env: JSHandle@object"
+- `ui-network-v2.4.4.json` (59KB) — GET requests for assets only
+- `ui-import-mpn-responses-v2.4.4.json` (2 bytes) — empty array
+
+Manual capture guide:
+- `MANUAL_CAPTURE_GUIDE_v2.4.4.txt` — Complete instructions
+- `homer-summary-v2.4.4.txt` — Summary and analysis criteria
+
+**Analysis Criteria (for manual artifacts):**
+
+Once manual capture complete, check request payload for:
+
+1. **Validation mode present?**
+   - Expected: `validation: "minimal"` or `validationMode: "minimal"`
+   - If missing: UI bug, ImportPage not sending parameter
+
+2. **MPN/SKU mapped?**
+   - Expected: `{"sku_core.mpn": "A14338F", "sku_core.sku": "SHK3024885"}`
+   - If missing: Mapping bug in csvParser or ImportPage
+
+3. **Data structure correct?**
+   - v2.4.3 adapter should handle both Firestore-path keys and CSV headers
+   - If wrong format: adapter not being called or data transformed elsewhere
+
+4. **Server validation logic?**
+   - If validation:minimal present but server returns full validation error
+   - Need server logs to debug backend logic
+
+**Diagnostic Outcomes:**
+
+| Case | Validation | MPN Mapped | Diagnosis | Fix |
+|------|-----------|-----------|-----------|-----|
+| A | ✅ Present | ✅ Mapped | Server bug | Debug backend validation |
+| B | ❌ Missing | ✅ Mapped | UI bug | Patch ImportPage to send mode |
+| C | ✅ Present | ❌ Missing | Mapping bug | Fix csvParser/ImportPage |
+| D | ✅ Present | ✅ Wrong format | v2.4.2 not fixed | Check adapter integration |
+
+**Files Changed:**
+- `scripts/capture-ui-import-v2.4.4.cjs` — New automated capture script
+- `operations/review-artifacts/attribute-registry/MANUAL_CAPTURE_GUIDE_v2.4.4.txt` — New manual guide
+- `operations/review-artifacts/attribute-registry/homer-summary-v2.4.4.txt` — New summary
+- `operations/review-artifacts/attribute-registry/ui-*.json` — Partial automated capture
+
+**Next Steps:**
+
+1. User performs manual capture following guide
+2. Paste artifacts (request, response, console)
+3. Analyze captured data against criteria
+4. Implement targeted fix based on findings
+5. Deploy and verify
+
+**Result:** READY (manual capture required)
+
+Automated approach revealed headless browser limitations. Manual capture guide is comprehensive and ready for execution. All diagnostic logic prepared for analysis phase.
+
+**HOMER:** ui-import capture v2.4.4 setup complete; manual capture required for live proof.
+
+---
+
 ## [2025-11-22 11:18 UTC] v2.4.3 — Fix: UI ↔ Importer Data Structure Consistency
 
 **Branch:** fix/importer-accept-firestore-keys-v2.4.3
