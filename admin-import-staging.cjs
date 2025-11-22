@@ -97,6 +97,7 @@ const MAP = {
   made_in: 'descriptive.madeIn',
   meta_name: 'descriptive.metaName',
   meta_description: 'descriptive.metaDescription',
+  product_is_dropship: 'sku_core.productIsDropship', // Lisa v1.0: dropship boolean
 };
 
 function setNested(obj, path, value) {
@@ -118,7 +119,7 @@ function transform(key, value) {
     'descriptive.heelHeight', 'technical.store1', 'technical.storeInv', 'technical.warehouseInv', 'technical.whsInv', 'technical.store4', 'technical.totalInv'
   ]);
   const boolFields = new Set([
-    'pricing.promo', 'launch.hype', 'launch.fastFashion', 'sku_core.coreProduct', 'descriptive.familySizing', 'sku_core.productIsActive', 'technical.taxClass'
+    'pricing.promo', 'launch.hype', 'launch.fastFashion', 'sku_core.coreProduct', 'descriptive.familySizing', 'sku_core.productIsActive', 'technical.taxClass', 'sku_core.productIsDropship'
   ]);
   const dateFields = new Set([
     'technical.hideImageDate', 'launch.klPostDate', 'launch.launchDate', 'technical.lastReceived', 'technical.firstReceived'
