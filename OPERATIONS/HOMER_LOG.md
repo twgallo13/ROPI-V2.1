@@ -2,8 +2,10 @@
 
 ## [2025-11-23] v3.3.0 — Micro-fixes (PRs A, B, C)
 
-### PR A: Runtime fix (fix/v3.3-registry-sort-guard)
+### PR A: Runtime fix (fix/v3.3-registry-sort-guard) - MERGED ✅
 - Runtime fix: Guarded attribute registry sort comparator against undefined category/label to avoid localeCompare TypeError on ACC load.
+- Merged: PR #119, commit 086654b
+- Verified: Local build + tests pass (213/213). Defensive coercion `(a.category || '').toString()` applied to sort comparator.
 
 ### PR B: Test fix (fix/v3.3-test-descriptionpanel)
 - Test fix: relaxed DescriptionPanel generate-button accessible name regex to accept 'Generating...' loading label (no UI change).
