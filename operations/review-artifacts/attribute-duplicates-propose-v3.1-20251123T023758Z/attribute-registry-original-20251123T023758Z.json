@@ -1,0 +1,1584 @@
+[
+  {
+    "key": "descriptionBlocks",
+    "canonicalPath": "a_i_generated.descriptionBlocks",
+    "label": "Description Blocks",
+    "category": "AI",
+    "dataType": "object",
+    "required": false,
+    "export": true,
+    "description": "HTML blocks per section",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "descriptionHtml",
+    "canonicalPath": "a_i_generated.descriptionHtml",
+    "label": "Description Html",
+    "category": "AI",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "AI-generated HTML description",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "ropiScore",
+    "canonicalPath": "a_i_generated.ropiScore",
+    "label": "Ropi Score",
+    "category": "AI",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "ROPI validation score (0-10)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "seoName",
+    "canonicalPath": "a_i_generated.seoName",
+    "label": "Seo Name",
+    "category": "AI",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "AI-generated SEO name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "smartDetectSummary",
+    "canonicalPath": "a_i_generated.smartDetectSummary",
+    "label": "Smart Detect Summary",
+    "category": "AI",
+    "dataType": "object",
+    "required": false,
+    "export": true,
+    "description": "Smart Detect autofill summary",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "templateKey",
+    "canonicalPath": "a_i_generated.templateKey",
+    "label": "Template Key",
+    "category": "AI",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Template used for generation",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "templateOverrideKey",
+    "canonicalPath": "a_i_generated.templateOverrideKey",
+    "label": "Template Override Key",
+    "category": "AI",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Manual template override",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "validationFlags",
+    "canonicalPath": "a_i_generated.validationFlags",
+    "label": "Validation Flags",
+    "category": "AI",
+    "dataType": "array",
+    "required": false,
+    "export": true,
+    "description": "Validation warnings/errors",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "ageGroup",
+    "canonicalPath": "descriptive.ageGroup",
+    "label": "Age Group",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Age Group (Adult, Grade School, Toddler, Infant)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "age_group"
+    ],
+    "rules": [
+      "SD-004"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "closureType",
+    "canonicalPath": "descriptive.closureType",
+    "label": "Closure Type",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Closure Type (Lace-up, Slip-on, Velcro)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "closure_type"
+    ],
+    "rules": [
+      "SD-009"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "cutType",
+    "canonicalPath": "descriptive.cutType",
+    "label": "Cut Type",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Cut Type (Low, Mid, High)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "cut_type"
+    ],
+    "rules": [
+      "SD-008"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "description",
+    "canonicalPath": "descriptive.description",
+    "label": "Description",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Long description (ROPI HTML output)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "descriptiveColor",
+    "canonicalPath": "descriptive.descriptiveColor",
+    "label": "Descriptive Color",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Descriptive Color (free-text manufacturer color)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "descriptive_color"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "familySizing",
+    "canonicalPath": "descriptive.familySizing",
+    "label": "Family Sizing",
+    "category": "Descriptive",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "Family sizing available",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "fit",
+    "canonicalPath": "descriptive.fit",
+    "label": "Fit",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Fit description",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "fit"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "gender",
+    "canonicalPath": "descriptive.gender",
+    "label": "Gender",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Gender (Men's, Women's, Unisex)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "gender"
+    ],
+    "rules": [
+      "SD-005"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "heelHeight",
+    "canonicalPath": "descriptive.heelHeight",
+    "label": "Heel Height",
+    "category": "Descriptive",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Heel Height (numeric)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "heelType",
+    "canonicalPath": "descriptive.heelType",
+    "label": "Heel Type",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Heel Type (Stiletto, Block, Wedge)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [
+      "SD-010"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "keywords",
+    "canonicalPath": "descriptive.keywords",
+    "label": "Keywords",
+    "category": "Descriptive",
+    "dataType": "array",
+    "required": false,
+    "export": true,
+    "description": "Keywords/tags",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "keywords"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "league",
+    "canonicalPath": "descriptive.league",
+    "label": "League",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "League (NFL, NBA, etc.)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "league"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "madeIn",
+    "canonicalPath": "descriptive.madeIn",
+    "label": "Made In",
+    "category": "Descriptive",
+    "dataType": "array",
+    "required": false,
+    "export": true,
+    "description": "Countries of origin",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "material",
+    "canonicalPath": "descriptive.material",
+    "label": "Material",
+    "category": "Descriptive",
+    "dataType": "array",
+    "required": false,
+    "export": true,
+    "description": "Materials (multi-select array)",
+    "systemFlag": false,
+    "legacyPaths": [
+      "materials"
+    ],
+    "importerColumns": [
+      "material",
+      "materials"
+    ],
+    "rules": [
+      "SD-007"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "metaDescription",
+    "canonicalPath": "descriptive.metaDescription",
+    "label": "Meta Description",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "SEO meta description (≤155 chars)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "metaName",
+    "canonicalPath": "descriptive.metaName",
+    "label": "Meta Name",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "SEO meta name (≤60 chars)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "outsoleMaterial",
+    "canonicalPath": "descriptive.outsoleMaterial",
+    "label": "Outsole Material",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Outsole Material",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "platformHeight",
+    "canonicalPath": "descriptive.platformHeight",
+    "label": "Platform Height",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Platform Height",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "primaryColor",
+    "canonicalPath": "descriptive.primaryColor",
+    "label": "Primary Color",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Primary Color",
+    "systemFlag": false,
+    "legacyPaths": [
+      "primaryColor"
+    ],
+    "importerColumns": [
+      "rics_color",
+      "primary_color"
+    ],
+    "rules": [
+      "SD-006"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "shoeHeightMap",
+    "canonicalPath": "descriptive.shoeHeightMap",
+    "label": "Shoe Height Map",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Shoe Height Map (Low, Mid, High)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "slug",
+    "canonicalPath": "descriptive.slug",
+    "label": "Slug",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "URL slug",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "sportsTeam",
+    "canonicalPath": "descriptive.sportsTeam",
+    "label": "Sports Team",
+    "category": "Descriptive",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Sports Team name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "sports_team"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "fastFashion",
+    "canonicalPath": "launch.fastFashion",
+    "label": "Fast Fashion",
+    "category": "Launch",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "Fast fashion flag",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "fastfashion",
+      "fast_fashion"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "hype",
+    "canonicalPath": "launch.hype",
+    "label": "Hype",
+    "category": "Launch",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "High-priority or limited drop",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "hype"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "klPostDate",
+    "canonicalPath": "launch.klPostDate",
+    "label": "Kl Post Date",
+    "category": "Launch",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "KL post date (ISO string)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "kl_post_date",
+      "KL Post Date",
+      "KL_POST_DATE",
+      "klPostDate"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "launchDate",
+    "canonicalPath": "launch.launchDate",
+    "label": "Launch Date",
+    "category": "Launch",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Launch date (ISO string)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "launch_date"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "newCollection",
+    "canonicalPath": "launch.newCollection",
+    "label": "New Collection",
+    "category": "Launch",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Product collection (Air Force 1, Dunk, etc.)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "collection",
+      "new_collection"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "map",
+    "canonicalPath": "pricing.map",
+    "label": "Map",
+    "category": "Pricing",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Minimum Advertised Price",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "map"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "promo",
+    "canonicalPath": "pricing.promo",
+    "label": "Promo",
+    "category": "Pricing",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "Promotional flag",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "promo"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "scomRegularPrice",
+    "canonicalPath": "pricing.scomRegularPrice",
+    "label": "Scom Regular Price",
+    "category": "Pricing",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "SCOM regular price",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "scom_regular"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "scomSalePrice",
+    "canonicalPath": "pricing.scomSalePrice",
+    "label": "Scom Sale Price",
+    "category": "Pricing",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "SCOM sale price",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "scom_sale"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "brand",
+    "canonicalPath": "rics_source.brand",
+    "label": "Brand",
+    "category": "Source",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "RICS brand",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "category",
+    "canonicalPath": "rics_source.category",
+    "label": "Category",
+    "category": "Source",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "RICS category",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "rics_category",
+      "RICS Category",
+      "category"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "color",
+    "canonicalPath": "rics_source.color",
+    "label": "Color",
+    "category": "Source",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "RICS color",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "RICS Color",
+      "rics_color",
+      "RICS_COLOR",
+      "RICS Source.Color",
+      "Color"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "longDescription",
+    "canonicalPath": "rics_source.longDescription",
+    "label": "Long Description",
+    "category": "Source",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "RICS long description",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "rics_long_description",
+      "RICS Long Desc",
+      "RICS Long Description"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "shortDescription",
+    "canonicalPath": "rics_source.shortDescription",
+    "label": "Short Description",
+    "category": "Source",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "RICS short description",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "rics_short_description",
+      "RICS Short Description",
+      "rics_short_desc"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "brand",
+    "canonicalPath": "sku_core.brand",
+    "label": "Brand",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Brand name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "brand"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "category",
+    "canonicalPath": "sku_core.category",
+    "label": "Category",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Category (e.g., \"Running Shoes\", \"T-Shirts\")",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "category"
+    ],
+    "rules": [
+      "SD-003",
+      "SD-004"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "class",
+    "canonicalPath": "sku_core.class",
+    "label": "Class",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Class (e.g., \"Athletic\", \"Casual\")",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "class"
+    ],
+    "rules": [
+      "SD-002"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "coreProduct",
+    "canonicalPath": "sku_core.coreProduct",
+    "label": "Core Product",
+    "category": "Core",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "Marks main styles that persist across seasons",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "department",
+    "canonicalPath": "sku_core.department",
+    "label": "Department",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Department (e.g., \"Footwear\", \"Apparel\")",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "department"
+    ],
+    "rules": [
+      "SD-001"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "mpn",
+    "canonicalPath": "sku_core.mpn",
+    "label": "Mpn",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Manufacturer Part Number (Product ID)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "mpn"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "name",
+    "canonicalPath": "sku_core.name",
+    "label": "Name",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Product name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "rics_short_desc",
+      "name"
+    ],
+    "rules": [
+      "SD-005",
+      "SD-008",
+      "SD-009",
+      "SD-010"
+    ],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "dropshipName",
+    "canonicalPath": "sku_core.dropshipName",
+    "label": "Dropship Name",
+    "category": "Core",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Dropship supplier name",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "product_is_dropship_name",
+      "Product Is Dropship.Name",
+      "Product Is Dropship Name",
+      "dropship_name",
+      "dropship name"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "productIsActive",
+    "canonicalPath": "sku_core.productIsActive",
+    "label": "Product Is Active",
+    "category": "Core",
+    "dataType": "boolean",
+    "required": true,
+    "export": true,
+    "description": "Toggles product visibility",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "product_is_active",
+      "Product Is Active",
+      "is_active"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "sku",
+    "canonicalPath": "sku_core.sku",
+    "label": "Sku",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "SKU (Variant ID)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "styleId",
+    "canonicalPath": "sku_core.styleId",
+    "label": "Style Id",
+    "category": "Core",
+    "dataType": "string",
+    "required": true,
+    "export": true,
+    "description": "Style ID (links colorways)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "rics",
+    "canonicalPath": "source.rics",
+    "label": "Rics",
+    "category": "Source",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "RICS system data",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "custom2",
+    "canonicalPath": "technical.custom2",
+    "label": "Custom2",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Custom field 2",
+    "systemFlag": false,
+    "legacyPaths": [
+      "custom2"
+    ],
+    "importerColumns": [
+      "custom2"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "custom3",
+    "canonicalPath": "technical.custom3",
+    "label": "Custom3",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Custom field 3",
+    "systemFlag": false,
+    "legacyPaths": [
+      "custom3"
+    ],
+    "importerColumns": [
+      "custom3"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "expeditedOverrideShipping",
+    "canonicalPath": "technical.expeditedOverrideShipping",
+    "label": "Expedited Override Shipping",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Expedited shipping override (Money)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "firstReceived",
+    "canonicalPath": "technical.firstReceived",
+    "label": "First Received",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "First received date (ISO string)",
+    "systemFlag": false,
+    "legacyPaths": [
+      "firstReceived"
+    ],
+    "importerColumns": [
+      "first_received"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "height",
+    "canonicalPath": "technical.height",
+    "label": "Height",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Shipping height",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "height"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "hideImageDate",
+    "canonicalPath": "technical.hideImageDate",
+    "label": "Hide Image Date",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Image embargo date (ISO string)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "lastReceived",
+    "canonicalPath": "technical.lastReceived",
+    "label": "Last Received",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Last received date (ISO string)",
+    "systemFlag": false,
+    "legacyPaths": [
+      "lastReceived"
+    ],
+    "importerColumns": [
+      "last_received",
+      "Last Received",
+      "lastReceived"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "length",
+    "canonicalPath": "technical.length",
+    "label": "Length",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Shipping length",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "length"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "mediaStatus",
+    "canonicalPath": "technical.mediaStatus",
+    "label": "Media Status",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Media status (\"Images Ready\", \"Pending\", etc.)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "standardShippingOverride",
+    "canonicalPath": "technical.standardShippingOverride",
+    "label": "Standard Shipping Override",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Standard shipping override (Money)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "status",
+    "canonicalPath": "technical.status",
+    "label": "Status",
+    "category": "Technical",
+    "dataType": "string",
+    "required": false,
+    "export": true,
+    "description": "Canonical product status",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "store1",
+    "canonicalPath": "technical.store1",
+    "label": "Store1",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Store 1 inventory",
+    "systemFlag": false,
+    "legacyPaths": [
+      "store1"
+    ],
+    "importerColumns": [
+      "store1"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "store4",
+    "canonicalPath": "technical.store4",
+    "label": "Store4",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Store 4 inventory",
+    "systemFlag": false,
+    "legacyPaths": [
+      "store4"
+    ],
+    "importerColumns": [
+      "store4"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "storeInv",
+    "canonicalPath": "technical.storeInv",
+    "label": "Store Inv",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Store inventory total",
+    "systemFlag": false,
+    "legacyPaths": [
+      "storeInv"
+    ],
+    "importerColumns": [
+      "store_inv",
+      "Store Inv",
+      "storeInv"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "taxClass",
+    "canonicalPath": "technical.taxClass",
+    "label": "Tax Class",
+    "category": "Technical",
+    "dataType": "boolean",
+    "required": false,
+    "export": true,
+    "description": "Taxable toggle (true = Taxable Goods)",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "totalInv",
+    "canonicalPath": "technical.totalInv",
+    "label": "Total Inv",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Total inventory",
+    "systemFlag": false,
+    "legacyPaths": [
+      "totalInv"
+    ],
+    "importerColumns": [
+      "total_inv"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "variantCount",
+    "canonicalPath": "technical.variantCount",
+    "label": "Variant Count",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": false,
+    "description": "Number of variants",
+    "systemFlag": false,
+    "legacyPaths": [
+      "variantCount"
+    ],
+    "importerColumns": [],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "warehouseInv",
+    "canonicalPath": "technical.warehouseInv",
+    "label": "Warehouse Inv",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Warehouse inventory",
+    "systemFlag": false,
+    "legacyPaths": [
+      "warehouseInv"
+    ],
+    "importerColumns": [
+      "warehouse_inv",
+      "Warehouse Inv",
+      "warehouseInv",
+      "WHS inv",
+      "whs_inv"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "website",
+    "canonicalPath": "technical.website",
+    "label": "Website",
+    "category": "Technical",
+    "dataType": "array",
+    "required": false,
+    "export": true,
+    "description": "Website availability",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "website"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "weight",
+    "canonicalPath": "technical.weight",
+    "label": "Weight",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Shipping weight",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "weight"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "whsInv",
+    "canonicalPath": "technical.whsInv",
+    "label": "Whs Inv",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "WHS inventory",
+    "systemFlag": false,
+    "legacyPaths": [
+      "whsInv"
+    ],
+    "importerColumns": [
+      "whs_inv"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  },
+  {
+    "key": "width",
+    "canonicalPath": "technical.width",
+    "label": "Width",
+    "category": "Technical",
+    "dataType": "number",
+    "required": false,
+    "export": true,
+    "description": "Shipping width",
+    "systemFlag": false,
+    "legacyPaths": [],
+    "importerColumns": [
+      "width"
+    ],
+    "rules": [],
+    "usage": [],
+    "examples": {
+      "sampleValues": []
+    }
+  }
+]
