@@ -46,18 +46,20 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        '/api/attributes/propose-mapping',
-        expect.objectContaining({
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: expect.stringContaining(csvContent)
-        })
-      );
+      expect(global.fetch).toHaveBeenCalled();
     });
+
+    // Verify fetch was called with correct parameters
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/attributes/propose-mapping',
+      expect.objectContaining({
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    );
 
     // Verify JSON body contains csvData
     const fetchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
