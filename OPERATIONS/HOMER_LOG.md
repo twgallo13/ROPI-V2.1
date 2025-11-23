@@ -35,24 +35,51 @@
 
 ---
 
-## [2025-11-23] v3.3.0 — Micro-fixes (PRs A, B, C)
+## [2025-11-23 22:10 UTC] v3.3.0 — Conflict Resolution for PR #118
 
-### PR A: Runtime fix (fix/v3.3-registry-sort-guard) - MERGED ✅
-- Runtime fix: Guarded attribute registry sort comparator against undefined category/label to avoid localeCompare TypeError on ACC load.
-- Merged: PR #119, commit 086654b
-- Verified: Local build + tests pass (213/213). Defensive coercion `(a.category || '').toString()` applied to sort comparator.
+**Timestamp:** 2025-11-23T22:10:47Z
 
-### PR B: Test fix (fix/v3.3-test-descriptionpanel)
-- Test fix: relaxed DescriptionPanel generate-button accessible name regex to accept 'Generating...' loading label (no UI change).
+**Action:** Resolved merge conflicts for v3.3.0 PR #118 vs main
 
-### PR C: Types chore (fix/v3.3-types-attribute-detail)
-- Types chore: Replaced explicit `any` in AttributeDetailDrawer with AttributeMetadata and narrowed handler types to satisfy @typescript-eslint/no-explicit-any.
+**Branch:** axs/v3.3-resolve-118 (tracks feature/v3.3-acc-vocab-preview + merged main)
 
-### ESLint cleanup: PR #122 (fix/v3.3-eslint-acc-unused-vars) - MERGED ✅
-- ESLint cleanup: removed unused vars in AttributesCommandCenter; merged PR #122 after CI green. Verified ACC on staging (no errors).
+**Merge Commit:** 3442917
 
-=======
-## [2025-11-23 19:53 UTC] v3.3.0 — ACC Vocabulary UX & Product-value Preview
+**Base:** feature/v3.3-acc-vocab-preview → merged origin/main @ 4469715
+
+**Conflicts Resolved:** 3 files
+1. `OPERATIONS/HOMER_LOG.md`: Combined both v3.3.0 feature entry (HEAD) + micro-fixes section (main) chronologically
+2. `src/pages/settings/AttributesCommandCenter.tsx` (line 570): Chose main's ESLint fix — removed unused `_updated` parameter in `onSave` callback
+3. `src/pages/settings/components/AttributeDetailDrawer.tsx` (lines 16-24): Merged both import sets — `AttributeMetadata` (main, PR #121) + product preview imports (feature)
+
+**Auto-merged files preserved all micro-fixes:**
+- `src/utils/attributeRegistry.ts`: Kept main's localeCompare guard (PR #119)
+- `src/__tests__/DescriptionPanel.test.tsx`: Kept main's test stabilization (PR #120)
+
+**Local Validation:**
+- Lint: 0 errors, 334 warnings (pre-existing)
+- Tests: 225 passed, 9 skipped
+- Build: 4.39s (clean pass)
+
+**Staging Seeded:** 78 attributes normalized and seeded to Firestore settings/attributes/keys
+
+**Staging Deployed:** https://ropi-bccee.web.app/settings/attributes
+- Hosting deployed
+- All 13 Cloud Functions updated successfully
+
+**Artifacts:** operations/review-artifacts/v3.3-acc-vocab-preview-merge/
+- npm-ci.log, npm-lint-v3.3-resolve-118.log, npm-test-v3.3-resolve-118.log, npm-build-v3.3-resolve-118.log
+- normalize-dryrun-v3.3.log, normalize-seed-v3.3.log, firebase-deploy-staging-v3.3.log
+- homer-summary.txt
+
+**Status:** Resolution complete, branch pushed to origin. PR #118 ready for Lisa's review.
+
+**DO NOT MERGE** — Awaiting Lisa's explicit approval per instructions.
+
+---
+
+## [2025-11-23 19:53 UTC] v3.3.0 — ACC Vocabulary UX & Product-value Preview (PR #118)
+>>>>>>> d054572 (docs: add PR #118 conflict resolution to HOMER_LOG)
 
 **Timestamp:** 2025-11-23T19:53:00Z
 
