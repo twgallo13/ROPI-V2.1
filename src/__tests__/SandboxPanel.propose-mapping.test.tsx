@@ -35,7 +35,7 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
 
     render(<SandboxPanel onClose={vi.fn()} />);
 
-    // Create a test CSV file
+    // Create a test CSV file (v3.2: using real File object with polyfill)
     const csvContent = 'Product Name,Price\nTest Product,10.00';
     const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
 
@@ -51,16 +51,18 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
         expect.objectContaining({
           method: 'POST',
           credentials: 'include',
-          body: expect.any(FormData)
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: expect.stringContaining(csvContent)
         })
       );
     });
 
-    // Verify FormData contains the file
+    // Verify JSON body contains csvData
     const fetchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
-    const formData = fetchCall[1].body as FormData;
-    expect(formData.get('file')).toBeInstanceOf(File);
-    expect((formData.get('file') as File).name).toBe('test.csv');
+    const body = JSON.parse(fetchCall[1].body);
+    expect(body.csvData).toBe(csvContent);
   });
 
   it('should handle CSV upload errors gracefully and show detailed error message', async () => {
@@ -84,13 +86,13 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid CSV format'));
+      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to analyze CSV file'));
     });
 
     alertSpy.mockRestore();
   });
 
-  it('should use FormData without manually setting Content-Type header', async () => {
+  it('should send JSON with csvData and proper Content-Type header', async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: true,
       json: async () => ({ mappings: [], headers: [] })
@@ -107,9 +109,11 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
       const fetchCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
       const options = fetchCall[1];
       
-      // Should NOT have Content-Type header (browser sets it automatically for FormData)
-      expect(options.headers).toBeUndefined();
-      expect(options.body).toBeInstanceOf(FormData);
+      // Should have Content-Type: application/json header
+      expect(options.headers['Content-Type']).toBe('application/json');
+      expect(typeof options.body).toBe('string');
+      const body = JSON.parse(options.body);
+      expect(body).toHaveProperty('csvData');
     });
   });
 
@@ -139,11 +143,13 @@ describe('SandboxPanel - propose-mapping endpoint', () => {
     
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    await waitFor(() => {
-      expect(screen.getByText(/Proposed Mappings/i)).toBeInTheDocument();
-      expect(screen.getByText('Brand')).toBeInTheDocument();
-      // Check that the mapping path is rendered somewhere
-      expect(screen.getAllByText(/descriptive\.brand/)[0]).toBeInTheDocument();
-    });
+    // Use async findByText to wait for UI updates (v3.2)
+    const proposedMappingsHeading = await screen.findByText(/Proposed Mappings/i, {}, { timeout: 3000 });
+    expect(proposedMappingsHeading).toBeInTheDocument();
+    
+    expect(await screen.findByText('Brand')).toBeInTheDocument();
+    // Check that the mapping path is rendered somewhere
+    const pathElements = await screen.findAllByText(/descriptive\.brand/);
+    expect(pathElements[0]).toBeInTheDocument();
   });
 });
