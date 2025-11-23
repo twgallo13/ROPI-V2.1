@@ -1,5 +1,114 @@
 # HOMER Operations Log
 
+## [2025-11-23 06:57 UTC] v3.2.2 — Merge conflict resolution (PR #117)
+
+**Timestamp:** 2025-11-23T06:57:28Z
+
+**Action:** Resolve merge conflicts for PR #117 (fix/tests-file-read-v3.2)
+
+**Branch:** fix/tests-file-read-v3.2
+
+**Merge Result:** No conflicts - branch already up-to-date with main
+
+**Details:**
+- Branch SHA: 150e6c8c8c817adca5df125cc6591499665c9c0d
+- Main SHA: efd8561e98d4fbf4d2f5f9952ab3e38f8dcfa6d5
+- The PR branch was created after the most recent main commits
+- No merge operation was needed
+
+**Local Tests:** ✅ PASS
+```
+Test Files: 25 passed | 1 skipped (26)
+Tests: 213 passed | 9 skipped (222)
+Duration: 16.15s
+```
+
+**CI Tests:** ❌ FAIL (unrelated flaky test)
+- Run ID: 19607178192
+- Failed Test: DescriptionPanel.test.tsx (race condition/timing issue)
+- Failure: Button transitioned to "Generating..." state before test could interact
+- **Not related to v3.2 file.text fixes**
+- Previous CI run on same code: ✅ SUCCESS (run #19607142386)
+
+**Artifacts:** operations/review-artifacts/tests-fix-v3.2.2-20251123T065728Z/
+- orig-branch-sha.txt, orig-main-sha.txt, merge-commit-sha.txt
+- git-status-after-merge.txt
+- npm-test-local.log (PASS)
+- test-summary.txt
+- ci-failure-last200.log (DescriptionPanel flaky test)
+- ci-failure-info.json
+- resolution-summary.md
+
+**Conflict Resolution Policy:** Not applied (no conflicts found)
+- Test files: prefer branch changes
+- Docs/metadata: prefer main, append resolution note
+- Manual merges only where required
+
+**Status:** ✅ Merge resolution complete. Local tests pass. CI failure is pre-existing flaky test unrelated to v3.2 changes. **Ready for Lisa review.**
+
+**Notes:** The DescriptionPanel test failure is a known flaky test where the component transitions to loading state before the test can interact with the button. The v3.2 file reading fixes are solid and all related tests pass.
+
+---
+
+## [2025-11-23 06:28 UTC] v3.2 — Tests fixing run (file.text / Sandbox CSV)
+
+**Timestamp:** 2025-11-23T06:28:04Z
+
+**Branch:** fix/tests-file-read-v3.2
+
+**PR:** https://github.com/twgallo13/ROPI-V2.1/pull/117
+
+**Objective:** Fix CI test failures related to `file.text is not a function`, `Cannot read properties of undefined (reading '1')`, and missing UI elements in SandboxPanel tests.
+
+**Changes Made:**
+1. **Added readFileText helper** (`src/utils/readFileText.ts`)
+   - Robust file reading utility with fallbacks (File.text() → arrayBuffer → FileReader)
+   - Handles different environments (browser, Node, vitest/jsdom)
+
+2. **Updated file.text() calls:**
+   - `src/pages/settings/components/SandboxPanel.tsx` - use readFileText
+   - `src/pages/ImportPage.tsx` - use readFileText
+
+3. **Added File polyfill** (`src/setupTests.ts`)
+   - Provides File.prototype.text() for vitest/jsdom environment
+   - Fixes "file.text is not a function" errors in CI
+
+4. **Fixed SandboxPanel tests** (`src/__tests__/SandboxPanel.propose-mapping.test.tsx`)
+   - Updated to use real File objects with polyfill support
+   - Changed to async findByText assertions for UI updates
+   - Fixed JSON body expectations (was expecting FormData, now expects JSON with csvData)
+
+**Local Tests:** ✅ PASS (222 tests: 212 passed, 9 skipped, 1 initially failed then fixed)
+- SandboxPanel tests: 4/4 passed
+- Full test suite output: operations/review-artifacts/tests-fix-v3.2/npm-test-local.log
+
+**CI Tests:** ✅ PASS (GitHub Actions run 19607142386)
+- Status: SUCCESS
+- Run URL: https://github.com/twgallo13/ROPI-V2.1/actions/runs/19607142386
+- CI log: operations/review-artifacts/tests-fix-v3.2/ci-success.log
+
+**Artifacts:** operations/review-artifacts/tests-fix-v3.2/
+- CHECKLIST.txt
+- changed-files-list.txt
+- npm-test-local.log
+- test-summary.txt
+- PR-URL.txt
+- ci-run-info.json
+- ci-success.log
+
+**Commits:**
+- 10ed57a: add readFileText helper
+- a4efb16: replace direct file.text() calls with readFileText helper
+- e792555: add File polyfill to setupTests.ts
+- 9cefaae: update SandboxPanel tests (File + async assertions; fix JSON body expectations)
+- 87153e0: fix SandboxPanel test assertion for JSON body
+
+**Status:** ✅ PR created, CI passing, awaiting Lisa approval. **DO NOT MERGE** until Lisa reviews.
+
+**Notes:** This fixes the recurring "file.text is not a function" CI errors. The polyfill ensures File objects work correctly in test environments, and the readFileText helper provides robust fallback support.
+
+---
+
 ## [2025-11-23 09:00 UTC] v3.2 — Branch cleanup & main consolidation
 
 **Timestamp:** 2025-11-23T09:00:00Z
