@@ -54,7 +54,7 @@ interface Attribute {
 }
 
 export default function AttributesCommandCenter() {
-  const { user, role } = useAuth();
+  const { role } = useAuth();
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -451,7 +451,7 @@ export default function AttributesCommandCenter() {
             setDrawerOpen(false);
             setSelectedAttribute(null);
           }}
-          onSave={(updated) => {
+          onSave={() => {
             fetchAttributes();
             setDrawerOpen(false);
             setSelectedAttribute(null);
