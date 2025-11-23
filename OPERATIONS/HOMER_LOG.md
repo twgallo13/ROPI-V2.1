@@ -7,6 +7,9 @@
 
 ### PR B: Test fix (fix/v3.3-test-descriptionpanel)
 - Test fix: relaxed DescriptionPanel generate-button accessible name regex to accept 'Generating...' loading label (no UI change).
+
+### PR C: Types chore (fix/v3.3-types-attribute-detail)
+- Types chore: Replaced explicit `any` in AttributeDetailDrawer with AttributeMetadata and narrowed handler types to satisfy @typescript-eslint/no-explicit-any.
 ## [2025-11-23 06:57 UTC] v3.2.2 — Merge conflict resolution (PR #117)
 
 **Timestamp:** 2025-11-23T06:57:28Z

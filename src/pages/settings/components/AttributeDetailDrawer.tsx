@@ -12,12 +12,13 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import { getFeatureFlag } from '../../../config/appConfig';
+import { AttributeMetadata } from '../../../utils/attributeRegistry';
 
 interface AttributeDetailDrawerProps {
-  attribute: any;
+  attribute: AttributeMetadata;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updated: any) => void;
+  onSave: (updated: AttributeMetadata) => void;
   isEditable: boolean;
 }
 
@@ -28,7 +29,7 @@ export default function AttributeDetailDrawer({
   onSave,
   isEditable
 }: AttributeDetailDrawerProps) {
-  const [formData, setFormData] = useState(attribute);
+  const [formData, setFormData] = useState<AttributeMetadata>(() => attribute || ({} as AttributeMetadata));
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'ai' | 'validation' | 'audit'>('details');
   const [newAlias, setNewAlias] = useState('');
@@ -39,18 +40,23 @@ export default function AttributeDetailDrawer({
     setFormData(attribute);
   }, [attribute]);
 
-  function handleChange(field: string, value: any) {
-    setFormData((prev: any) => ({
-      ...prev,
-      [field]: value
+  function handleChange(field: keyof AttributeMetadata | string, value: unknown) {
+    // small, local 'any' cast for dynamic assignment only; top-level types now explicit
+    setFormData((prev) => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(prev as any),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [field]: value as any
     }));
   }
 
-  function handleNestedChange(parent: string, field: string, value: any) {
-    setFormData((prev: any) => ({
-      ...prev,
+  function handleNestedChange(parent: string, field: string, value: unknown) {
+    setFormData((prev) => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(prev as any),
       [parent]: {
-        ...prev[parent],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...(prev as any)[parent],
         [field]: value
       }
     }));
@@ -68,7 +74,7 @@ export default function AttributeDetailDrawer({
 
   function handleRemoveAlias(index: number) {
     const currentAliases = formData.importerColumns || [];
-    handleChange('importerColumns', currentAliases.filter((_: any, i: number) => i !== index));
+    handleChange('importerColumns', currentAliases.filter((_: string, i: number) => i !== index));
   }
 
   async function handleAiSuggestAliases() {
