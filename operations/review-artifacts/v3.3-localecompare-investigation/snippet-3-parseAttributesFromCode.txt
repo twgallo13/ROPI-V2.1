@@ -1,0 +1,31 @@
+File: scripts/parseAttributesFromCode.ts
+Lines: 287-307 (around line 297)
+
+Context: Sort registry output in build script
+
+```typescript
+  console.log(`✓ Extracted CSV column mappings from importer`);
+
+  // Parse SmartDetect for rule references
+  const smartDetectPath = path.join(rootDir, 'functions/src/smartDetect.ts');
+  parseSmartDetect(smartDetectPath, attributes);
+  console.log(`✓ Extracted SmartDetect rule references`);
+
+  // Output attribute registry
+  const outputPath = path.join(rootDir, 'scripts/attribute-registry.json');
+  const registry = Array.from(attributes.values()).sort((a, b) => 
+    a.canonicalPath.localeCompare(b.canonicalPath)
+  );
+
+  fs.writeFileSync(outputPath, JSON.stringify(registry, null, 2));
+  console.log(`\n✓ Wrote attribute registry to ${outputPath}`);
+  console.log(`\nTotal attributes: ${registry.length}`);
+
+  // Summary by category
+  const byCategory = registry.reduce((acc, attr) => {
+    acc[attr.category] = (acc[attr.category] || 0) + 1;
+    return acc;
+```
+
+Assessment: ⚠️ UNGUARDED - Build script only, LOW PRIORITY
+Not used at runtime, but should be guarded for robustness

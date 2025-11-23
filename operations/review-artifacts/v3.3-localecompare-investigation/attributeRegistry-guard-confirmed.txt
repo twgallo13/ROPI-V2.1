@@ -1,0 +1,15 @@
+attributeRegistry guard present: YES
+
+Verification details:
+- File: src/utils/attributeRegistry.ts
+- Lines: 76-83
+- Guard pattern confirmed:
+  ```
+  const aCat = (a.category || '').toString();
+  const bCat = (b.category || '').toString();
+  if (aCat !== bCat) return aCat.localeCompare(bCat);
+  const aLabel = (a.label || '').toString();
+  const bLabel = (b.label || '').toString();
+  return aLabel.localeCompare(bLabel);
+  ```
+- Status: ✅ Previously patched in PR #119 and still present in main

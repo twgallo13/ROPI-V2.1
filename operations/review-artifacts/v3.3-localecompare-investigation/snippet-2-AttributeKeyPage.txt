@@ -1,0 +1,32 @@
+File: src/pages/settings/AttributeKeyPage.tsx
+Lines: 35-55 (around line 45)
+
+Context: Sort attributes after loading from Firestore in AttributeKeyPage
+
+```tsx
+    try {
+      setLoading(true);
+      const keysRef = collection(db, 'settings', 'attributes', 'keys');
+      const snapshot = await getDocs(keysRef);
+      
+      const loaded: AttributeMetadata[] = [];
+      snapshot.forEach(doc => {
+        loaded.push(doc.data() as AttributeMetadata);
+      });
+
+      loaded.sort((a, b) => a.canonicalPath.localeCompare(b.canonicalPath));
+      setAttributes(loaded);
+      setError(null);
+    } catch (err) {
+      const error = err as Error;
+      console.error('Failed to load attributes:', error);
+      setError(error.message || 'Failed to load attribute keys');
+      // Fallback: Try loading from local JSON (development mode)
+      try {
+        const response = await fetch('/scripts/attribute-registry-normalized.json');
+        if (response.ok) {
+```
+
+Assessment: ⚠️ UNGUARDED - LIKELY CAUSE OF STAGING ERROR
+Direct access to a.canonicalPath without null/undefined guard
+Used during ACC page load - HIGH PRIORITY FIX
