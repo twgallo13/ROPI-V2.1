@@ -12,6 +12,10 @@
 
 ### PR C: Types chore (fix/v3.3-types-attribute-detail)
 - Types chore: Replaced explicit `any` in AttributeDetailDrawer with AttributeMetadata and narrowed handler types to satisfy @typescript-eslint/no-explicit-any.
+
+### ESLint cleanup: PR #122 (fix/v3.3-eslint-acc-unused-vars) - MERGED ✅
+- ESLint cleanup: removed unused vars in AttributesCommandCenter; merged PR #122 after CI green. Verified ACC on staging (no errors).
+
 ## [2025-11-23 06:57 UTC] v3.2.2 — Merge conflict resolution (PR #117)
 
 **Timestamp:** 2025-11-23T06:57:28Z
