@@ -1,0 +1,19 @@
+v3.3 PR #118 Conflict Resolution Summary
+=========================================
+
+Resolved 3 merge conflicts when merging main (4469715) into feature/v3.3-acc-vocab-preview:
+
+1. OPERATIONS/HOMER_LOG.md: Combined both v3.3.0 feature entry and micro-fixes section chronologically
+2. AttributesCommandCenter.tsx (line 570): Chose main's ESLint fix (removed unused parameter)
+3. AttributeDetailDrawer.tsx (lines 16-24): Merged both import sets (AttributeMetadata from main + product preview imports from feature)
+
+Auto-merged files preserved all micro-fixes:
+- src/utils/attributeRegistry.ts: Kept main's localeCompare guard (PR #119)
+- src/__tests__/DescriptionPanel.test.tsx: Kept main's test stabilization (PR #120)
+
+Local validation: lint 0 errors, tests 225 passed, build 4.39s
+Staging seeded: 78 attributes
+Staging deployed: https://ropi-bccee.web.app/settings/attributes
+
+Resolution branch: axs/v3.3-resolve-118
+Merge commit: 3442917

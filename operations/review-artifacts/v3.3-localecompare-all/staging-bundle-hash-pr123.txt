@@ -1,0 +1,11 @@
+Bundle Hash: index-C8uoxkKp.js
+
+This is the new bundle deployed to staging with the localeCompare fix.
+The fix guards all localeCompare calls with String(field || '') pattern.
+
+Critical fix location:
+- src/pages/settings/AttributeKeyPage.tsx line 45
+
+Robustness fixes:
+- scripts/parseAttributesFromCode.ts line 297
+- scripts/update-importer-aliases.ts line 262

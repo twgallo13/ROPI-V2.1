@@ -1,0 +1,22 @@
+Staging ACC Verification - After Fix
+=====================================
+
+Date: 2025-11-23 22:50 UTC
+URL: https://ropi-bccee.web.app/settings/attributes
+Branch: fix/v3.3-localecompare-all
+Build: index-C8uoxkKp.js (new bundle hash after fix)
+
+Expected Results:
+✅ No localeCompare TypeError in console
+✅ ACC loads without blank/white screen
+✅ Attributes display properly sorted
+✅ No console errors related to undefined properties
+
+Manual verification pending - browser opened for Lisa to check.
+
+The fix applied defensive guards to:
+1. src/pages/settings/AttributeKeyPage.tsx (CRITICAL - runtime ACC page)
+2. scripts/parseAttributesFromCode.ts (build script)
+3. scripts/update-importer-aliases.ts (build script)
+
+All localeCompare calls now use: String(field || '') pattern.
