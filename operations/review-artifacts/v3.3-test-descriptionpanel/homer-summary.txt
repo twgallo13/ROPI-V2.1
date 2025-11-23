@@ -1,0 +1,6 @@
+PR B - DescriptionPanel Test Stabilization
+
+Changed: src/__tests__/DescriptionPanel.test.tsx - Widened button accessible-name regex from /generate|refresh|regenerate/i to /generat(e|ing)|refresh|regenerate/i to accept both idle ("Generate") and loading ("Generating...") states.
+Tests: 3/3 passed in DescriptionPanel.test.tsx. Test no longer flaps due to race condition where button transitions to loading state before test can interact.
+Build: Not required (test-only change).
+Caveat: This is a test-only change with no UI modifications. Improves CI stability by making selector tolerant of button label changes during loading.
