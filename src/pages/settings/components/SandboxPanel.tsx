@@ -10,6 +10,7 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon
 } from '@heroicons/react/24/outline';
+import { readFileText } from '../../../utils/readFileText';
 
 interface SandboxPanelProps {
   onClose: () => void;
@@ -75,7 +76,7 @@ export default function SandboxPanel({ onClose }: SandboxPanelProps) {
       setLoading(true);
       
       // Read file as text and send as JSON (v3.0.3)
-      const csvData = await file.text();
+      const csvData = await readFileText(file);
       
       const response = await fetch('/api/attributes/propose-mapping', {
         method: 'POST',

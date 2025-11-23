@@ -3,6 +3,7 @@ import MappingReview from '../components/MappingReview';
 import Toast from '../components/Toast';
 import { parseCSVAsync, generateErrorCSV, downloadFile, getDelimiterName, type ColumnMapping, type ParseResult } from '../utils/csvParser';
 import { importToFirestore, generateErrorCSV as generateErrorCSVV2, type ImportRow } from '../utils/firestoreImportV2';
+import { readFileText } from '../utils/readFileText';
 
 type ImportStep = 'upload' | 'mapping' | 'importing' | 'complete';
 
@@ -39,7 +40,7 @@ const ImportPage: React.FC = () => {
 
     try {
       setFileName(file.name);
-      const content = await file.text();
+      const content = await readFileText(file);
       // Lisa v2.0: Use async parser with registry support
       const result = await parseCSVAsync(content);
       
