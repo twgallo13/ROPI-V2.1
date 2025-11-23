@@ -1,0 +1,6 @@
+PR A - Registry Sort Guard Fix
+
+Changed: src/utils/attributeRegistry.ts - Added defensive guards in sort comparator to handle undefined category/label values by converting to empty strings before calling localeCompare().
+Tests: 213 passed (25 test files), no new failures introduced.
+Build: Successful (dist/ created, 1.16MB main bundle).
+Caveat: This is a safe runtime-only guard with no behavior changes for valid data. Prevents TypeError when attributes have missing category/label fields.

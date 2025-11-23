@@ -1,5 +1,10 @@
 # HOMER Operations Log
 
+## [2025-11-23] v3.3.0 — Micro-fixes (PRs A, B, C)
+
+### PR A: Runtime fix (fix/v3.3-registry-sort-guard)
+- Runtime fix: Guarded attribute registry sort comparator against undefined category/label to avoid localeCompare TypeError on ACC load.
+
 ## [2025-11-23 06:57 UTC] v3.2.2 — Merge conflict resolution (PR #117)
 
 **Timestamp:** 2025-11-23T06:57:28Z
