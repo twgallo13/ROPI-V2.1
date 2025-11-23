@@ -11,6 +11,7 @@ import {
   ClockIcon,
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
+import { getFeatureFlag } from '../../../config/appConfig';
 
 interface AttributeDetailDrawerProps {
   attribute: any;
@@ -32,6 +33,7 @@ export default function AttributeDetailDrawer({
   const [activeTab, setActiveTab] = useState<'details' | 'ai' | 'validation' | 'audit'>('details');
   const [newAlias, setNewAlias] = useState('');
   const [showAiConfirmation, setShowAiConfirmation] = useState(false);
+  const aiSuggestEnabled = getFeatureFlag('AI_SUGGEST');
 
   useEffect(() => {
     setFormData(attribute);
@@ -67,6 +69,52 @@ export default function AttributeDetailDrawer({
   function handleRemoveAlias(index: number) {
     const currentAliases = formData.importerColumns || [];
     handleChange('importerColumns', currentAliases.filter((_: any, i: number) => i !== index));
+  }
+
+  async function handleAiSuggestAliases() {
+    if (!formData.label) return;
+
+    try {
+      const response = await fetch('/api/attributes/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          canonicalPath: formData.canonicalPath,
+          label: formData.label,
+          category: formData.category,
+          dataType: formData.dataType
+        })
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(body.message || `HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      const suggestions = result.suggestions || result.aliases || [];
+      
+      if (suggestions.length > 0) {
+        // Merge suggested aliases with existing ones (avoiding duplicates)
+        const currentAliases = formData.importerColumns || [];
+        const newAliases = [...currentAliases];
+        
+        suggestions.forEach((suggestion: string) => {
+          if (!newAliases.includes(suggestion)) {
+            newAliases.push(suggestion);
+          }
+        });
+        
+        handleChange('importerColumns', newAliases);
+        alert(`Added ${suggestions.length} AI-suggested alias(es)`);
+      } else {
+        alert('No suggestions available');
+      }
+    } catch (error) {
+      console.error('AI Suggest error:', error);
+      alert(`Failed to get AI suggestions: ${(error as Error).message}`);
+    }
   }
 
   function handleAiCanWriteToggle(value: boolean) {
@@ -351,6 +399,17 @@ export default function AttributeDetailDrawer({
                   >
                     <PlusIcon className="w-4 h-4" />
                   </button>
+                  {aiSuggestEnabled && (
+                    <button
+                      onClick={handleAiSuggestAliases}
+                      disabled={!isEditable || !formData.label}
+                      title={!isEditable ? "AI Suggestions — Editor role required" : "Get AI-suggested aliases"}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      <SparklesIcon className="w-4 h-4" />
+                      Suggest
+                    </button>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {(formData.importerColumns || []).map((alias: string, index: number) => (

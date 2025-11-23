@@ -1,0 +1,127 @@
+## v3.0.2 Summary — 2025-11-22 20:28 UTC
+
+### Completed
+
+✅ **Frontend Fixes**
+- SandboxPanel: CSV upload now uses FormData (multipart/form-data)
+- Removed manual Content-Type header setting
+- Added robust error handling with server-provided error messages
+- Both "Load Test 2 CSV" and "Upload CSV File" use multipart
+
+✅ **Feature Flag**
+- Added AI_SUGGEST feature flag to appConfig.ts
+- Defaults to true, can be overridden via VITE_FEATURE_AI_SUGGEST
+
+✅ **Suggest Button**
+- Added to AttributeDetailDrawer for AI alias suggestions
+- Visible only when AI_SUGGEST=true and user is editor/admin
+- Calls POST /api/attributes/suggest endpoint
+- Merges suggestions with existing aliases (no duplicates)
+
+✅ **Tests**
+- SandboxPanel.propose-mapping.test.tsx (4 tests passing)
+- AttributeDetailDrawer.suggest-visibility.test.tsx (7 tests passing)
+- All 213 tests passing in CI
+
+✅ **Deployment**
+- PR #114 created and CI passed
+- Frontend built and deployed to https://ropi-bccee.web.app
+- Artifacts saved in operations/review-artifacts/attribute-command-center-v3.0.2/
+
+### Blocked
+
+❌ **Backend multipart upload support needed**
+
+Current issue:
+```
+POST https://ropi-bccee.web.app/api/attributes/propose-mapping
+Body: FormData with 'file' field
+Response: 400 {"error":"csvData required","details":"Send CSV content as string in request body {csvData: \"...\"}"}
+```
+
+Backend expects JSON with `csvData` or `csvPath`, but frontend now sends multipart.
+
+**Required backend changes:**
+1. Add busboy or multer to functions/package.json
+2. Update functions/src/handlers/attributes.ts proposeMapping() to parse multipart uploads
+3. Extract file from req using middleware
+4. Deploy functions to staging
+
+❌ **/api/attributes/suggest endpoint missing**
+
+Suggest button calls this endpoint but it returns 404.
+Needs implementation in functions/src/handlers/attributes.ts
+
+### Next Actions (for backend engineer)
+
+1. **Add multipart support to proposeMapping:**
+   ```typescript
+   import busboy from 'busboy');
+   
+   export async function proposeMapping(req: Request, res: Response) {
+     // Parse multipart if Content-Type is multipart/form-data
+     if (req.headers['content-type']?.includes('multipart/form-data')) {
+       const bb = busboy({ headers: req.headers });
+       let csvContent = '';
+       
+       bb.on('file', (name, file) => {
+         file.on('data', (data) => {
+           csvContent += data.toString();
+         });
+       });
+       
+       bb.on('finish', async () => {
+         // Process csvContent...
+       });
+       
+       req.pipe(bb);
+     } else {
+       // Existing JSON body handling
+       const { csvPath, csvData } = req.body;
+       // ...
+     }
+   }
+   ```
+
+2. **Add suggest endpoint:**
+   ```typescript
+   export async function suggestAliases(req: Request, res: Response) {
+     const { canonicalPath, label, category } = req.body;
+     // Use Gemini or rule-based logic to suggest aliases
+     // Return: { suggestions: string[] }
+   }
+   ```
+
+3. **Update functions/src/api/index.ts:**
+   ```typescript
+   app.post('/api/attributes/suggest', suggestAliases);
+   ```
+
+4. **Deploy:**
+   ```bash
+   cd functions && npm run build
+   npx firebase-tools deploy --only functions --project ropi-bccee
+   ```
+
+### Verification Steps (once backend is updated)
+
+1. Hard refresh https://ropi-bccee.web.app/settings/attributes
+2. Upload test-import.csv via UI → mapping preview should populate (no 404)
+3. Check Network tab → POST to /api/attributes/propose-mapping returns 200
+4. As editor, click Suggest in attribute drawer → verify suggestions appear
+5. Save & Seed → confirm success
+
+### Files Changed
+
+- src/config/appConfig.ts (added AI_SUGGEST flag)
+- src/pages/settings/components/SandboxPanel.tsx (FormData upload)
+- src/pages/settings/components/AttributeDetailDrawer.tsx (Suggest button)
+- src/__tests__/SandboxPanel.propose-mapping.test.tsx (new)
+- src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx (new)
+
+### Git References
+
+- Branch: fix/attribute-frontend-v3.0.2
+- PR: #114
+- Commits: 6c02c1b, 79f993e, 7eaa7b3
+- Deployed: https://ropi-bccee.web.app
