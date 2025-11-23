@@ -186,7 +186,10 @@ describe('DescriptionPanel', () => {
     vi.mocked(describeService.describeProduct).mockResolvedValue(mockDescribeResponse);
 
     // Find and click the Generate button
-    const generateButton = screen.getByRole('button', { name: /generate|refresh|regenerate/i });
+    // Allow idle ("Generate") and loading ("Generating...") states while retaining accessibility-based query
+    const generateButton = screen.getByRole('button', {
+      name: /generat(e|ing)|refresh|regenerate/i,
+    });
     fireEvent.click(generateButton);
 
     // Verify describeProduct was called again
