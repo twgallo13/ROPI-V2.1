@@ -1,5 +1,69 @@
 # HOMER Operations Log
 
+## [2025-11-23 02:37 UTC] v3.1.propose — Attribute Registry Duplicate Analysis (NO DUPLICATES FOUND)
+
+**Timestamp:** 2025-11-23T02:37:58Z
+
+**Branch:** fix/attribute-duplicates-propose-v3.1
+
+**PR:** #116 (https://github.com/twgallo13/ROPI-V2.1/pull/116)
+
+**Commit:** 4462f5d - "v3.1.propose: attribute registry duplicate analysis - NO DUPLICATES FOUND"
+
+**Objective:** Scan attribute registry for duplicate canonicalPaths, score keepers, propose merges. Investigate why ACC not displaying vocabulary values for attributes like sku_core.department.
+
+**Analysis Summary:**
+
+Source Registry:
+- ✅ File: scripts/attribute-registry-normalized.json (2025-11-22, 78 entries)
+- ✅ Duplicate Groups: 0
+- ✅ Blank Labels: 0
+- ✅ Status: **CLEAN REGISTRY** — no merge operations needed
+
+Root Cause Analysis - Vocabulary Display Issue:
+- ✅ Confirmed: sku_core.department, sku_core.class, descriptive.primaryColor have allowedValuesRef = null
+- ✅ Identified: AttributeDetailDrawer.tsx shows input field but doesn't fetch/display vocabulary
+- ✅ Documented: ACC code lacks VocabularyValuesList component to display Firestore lists
+
+Artifacts Generated (in operations/review-artifacts/attribute-duplicates-propose-v3.1-20251123T023758Z/):
+- ✅ COMPREHENSIVE_REPORT.md - Full analysis with executive summary
+- ✅ VERIFICATION_INSTRUCTIONS.md - Optional vocabulary configuration steps
+- ✅ repo-code-scan-results.txt - ACC code analysis + VocabularyValuesList implementation
+- ✅ attribute-allowed-values-check.json - Current allowedValuesRef audit
+- ✅ homer-summary-v3.1-propose.txt - One-page summary
+- ✅ duplicates-by-canonical.json - Empty (no duplicates)
+- ✅ blank-labels.json - Empty (no blank labels)
+- ✅ proposed-keepers.json - Empty (no keepers needed)
+- ✅ merge-plan.json - Empty (no merges needed)
+- ✅ registry-proposed-patch.json - No changes proposed
+- ✅ attribute-registry-source-20251123T023758Z.json - Backup
+- ✅ attribute-registry-original-20251123T023758Z.json - Pre-normalization backup
+
+**Actions Taken:**
+1. Backed up registry files (normalized + original)
+2. Parsed and analyzed 78 attributes
+3. Grouped by canonicalPath — found 0 groups with count > 1
+4. Scanned for blank labels — found 0
+5. Audited allowedValuesRef configuration
+6. Scanned ACC codebase for vocabulary logic
+7. Documented root cause + implementation recommendations
+8. Generated comprehensive artifacts + verification instructions
+9. Created PR with analysis results
+
+**Status:** ✅ COMPLETE — No registry changes needed. Proposal produced; no changes applied. Awaiting Lisa/Theo review.
+
+**Recommendation:** Close this duplicate-detection task as successful. Consider separate task for vocabulary configuration if needed.
+
+**Files Modified:** None (artifacts only)
+
+**Next Steps (Optional):**
+- Review COMPREHENSIVE_REPORT.md for detailed findings
+- Review repo-code-scan-results.txt for vocabulary fix options
+- Optionally configure allowedValuesRef for vocab attributes (separate task)
+- Optionally add VocabularyValuesList component to ACC (separate task)
+
+---
+
 ## [2025-11-22 20:28 UTC] v3.0.2 — Frontend endpoint repair + multipart upload + Suggest button
 
 **Timestamp:** 2025-11-22T20:28:00Z
