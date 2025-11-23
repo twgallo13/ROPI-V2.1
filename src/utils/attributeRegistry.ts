@@ -72,9 +72,14 @@ export async function getAttributeRegistry(options: { forceRefresh?: boolean } =
     });
     
     // Sort by category then label for UI consistency
+    // Guard against undefined category/label to avoid runtime errors (localeCompare on undefined).
     attributes.sort((a, b) => {
-      if (a.category !== b.category) return a.category.localeCompare(b.category);
-      return a.label.localeCompare(b.label);
+      const aCat = (a.category || '').toString();
+      const bCat = (b.category || '').toString();
+      if (aCat !== bCat) return aCat.localeCompare(bCat);
+      const aLabel = (a.label || '').toString();
+      const bLabel = (b.label || '').toString();
+      return aLabel.localeCompare(bLabel);
     });
     
     cachedRegistry = attributes;
