@@ -3114,3 +3114,10 @@ node admin-import-staging.cjs test-import.csv --validation=full
 **RESULT:** SUCCESS
 
 **HOMER:** embed-version v2.3 applied to .lisa_version.json and staging settings/meta/lisaVersion
+
+### v3.2.3 — 2025-11-23T18:18:43Z
+- Action: Merged PR #117 (fix/tests-file-read-v3.2) and updated main.
+- Merge Commit: 9c62306a3a5d3cc95fb95ebff8419794b3e25cc9
+- Notes: Added robust file read helper, jest File polyfill, and test fixes. CI was green for PR after handling known flaky DescriptionPanel test historically.
+- Artifacts: operations/review-artifacts/tests-fix-v3.2.3/
+

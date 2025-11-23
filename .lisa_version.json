@@ -1,6 +1,6 @@
 {
-  "version": "v3.2",
-  "timestamp": "2025-11-23T06:28:04Z",
-  "commit": "87153e0e18c79d500433903fbff5413702a48f70",
-  "notes": "Test fixes: added readFileText helper, File polyfill for vitest, fixed SandboxPanel tests. CI passing. PR #117 awaiting Lisa approval."
+  "version": "v3.2.3",
+  "timestamp": "2025-11-23T18:18:43Z",
+  "commit": "9c62306a3a5d3cc95fb95ebff8419794b3e25cc9",
+  "notes": "Merged PR #117 (tests fix) — Lisa v3.2.3"
 }
