@@ -1,5 +1,40 @@
 # HOMER Operations Log
 
+## [2025-11-23 22:50 UTC] v3.3 — localeCompare TypeError Fix (PR #123)
+
+**Timestamp:** 2025-11-23T22:50:00Z
+
+**Branch:** fix/v3.3-localecompare-all
+
+**PR:** #123 - https://github.com/twgallo13/ROPI-V2.1/pull/123
+
+**Status:** ⚠️ Awaiting Lisa's approval - DO NOT MERGE
+
+**Problem:** Recurring `TypeError: Cannot read properties of undefined (reading 'localeCompare')` on staging ACC after PR #118 conflict resolution.
+
+**Root Cause:** `src/pages/settings/AttributeKeyPage.tsx` line 45 had unguarded `a.canonicalPath.localeCompare(b.canonicalPath)` - threw TypeError when any attribute doc had `canonicalPath: undefined`.
+
+**Investigation:** Full analysis in `operations/review-artifacts/v3.3-localecompare-investigation/`
+- Found 6 total localeCompare usages via `git grep`
+- 1 already guarded (attributeRegistry.ts - PR #119) ✅
+- 3 unguarded: AttributeKeyPage.tsx (CRITICAL), 2 build scripts (robustness)
+
+**Changes:**
+1. **CRITICAL:** `src/pages/settings/AttributeKeyPage.tsx` - Added defensive `String(field || '')` guard
+2. **Robustness:** `scripts/parseAttributesFromCode.ts` - Added same guard
+3. **Robustness:** `scripts/update-importer-aliases.ts` - Added same guard
+
+**Validation:**
+- Lint: 0 errors ✅
+- Tests: 213 passed, 9 skipped ✅
+- Build: 4.35s clean pass ✅
+- Seeder: 78 attributes seeded ✅
+- Staging deployed: https://ropi-bccee.web.app/settings/attributes ✅
+
+**Artifacts:** operations/review-artifacts/v3.3-localecompare-investigation/
+
+---
+
 ## [2025-11-23] v3.3.0 — Micro-fixes (PRs A, B, C)
 
 ### PR A: Runtime fix (fix/v3.3-registry-sort-guard) - MERGED ✅
