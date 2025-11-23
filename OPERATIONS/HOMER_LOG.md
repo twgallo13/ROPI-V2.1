@@ -1,5 +1,55 @@
 # HOMER Operations Log
 
+## [2025-11-23 06:57 UTC] v3.2.2 — Merge conflict resolution (PR #117)
+
+**Timestamp:** 2025-11-23T06:57:28Z
+
+**Action:** Resolve merge conflicts for PR #117 (fix/tests-file-read-v3.2)
+
+**Branch:** fix/tests-file-read-v3.2
+
+**Merge Result:** No conflicts - branch already up-to-date with main
+
+**Details:**
+- Branch SHA: 150e6c8c8c817adca5df125cc6591499665c9c0d
+- Main SHA: efd8561e98d4fbf4d2f5f9952ab3e38f8dcfa6d5
+- The PR branch was created after the most recent main commits
+- No merge operation was needed
+
+**Local Tests:** ✅ PASS
+```
+Test Files: 25 passed | 1 skipped (26)
+Tests: 213 passed | 9 skipped (222)
+Duration: 16.15s
+```
+
+**CI Tests:** ❌ FAIL (unrelated flaky test)
+- Run ID: 19607178192
+- Failed Test: DescriptionPanel.test.tsx (race condition/timing issue)
+- Failure: Button transitioned to "Generating..." state before test could interact
+- **Not related to v3.2 file.text fixes**
+- Previous CI run on same code: ✅ SUCCESS (run #19607142386)
+
+**Artifacts:** operations/review-artifacts/tests-fix-v3.2.2-20251123T065728Z/
+- orig-branch-sha.txt, orig-main-sha.txt, merge-commit-sha.txt
+- git-status-after-merge.txt
+- npm-test-local.log (PASS)
+- test-summary.txt
+- ci-failure-last200.log (DescriptionPanel flaky test)
+- ci-failure-info.json
+- resolution-summary.md
+
+**Conflict Resolution Policy:** Not applied (no conflicts found)
+- Test files: prefer branch changes
+- Docs/metadata: prefer main, append resolution note
+- Manual merges only where required
+
+**Status:** ✅ Merge resolution complete. Local tests pass. CI failure is pre-existing flaky test unrelated to v3.2 changes. **Ready for Lisa review.**
+
+**Notes:** The DescriptionPanel test failure is a known flaky test where the component transitions to loading state before the test can interact with the button. The v3.2 file reading fixes are solid and all related tests pass.
+
+---
+
 ## [2025-11-23 06:28 UTC] v3.2 — Tests fixing run (file.text / Sandbox CSV)
 
 **Timestamp:** 2025-11-23T06:28:04Z
