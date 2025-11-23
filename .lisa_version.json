@@ -1,6 +1,6 @@
 {
   "version": "v3.2",
-  "timestamp": "2025-11-23T08:30:00Z",
-  "commit": "c0bb109202494373defe4b427be7b3c7c17c3d2c",
-  "notes": "Merged PRs 115, 116, 114 (attribute v3.0.3, v3.1.propose) and cleaned branches. Branch cleanup v3.2 complete."
+  "timestamp": "2025-11-23T06:28:04Z",
+  "commit": "87153e0e18c79d500433903fbff5413702a48f70",
+  "notes": "Test fixes: added readFileText helper, File polyfill for vitest, fixed SandboxPanel tests. CI passing. PR #117 awaiting Lisa approval."
 }
