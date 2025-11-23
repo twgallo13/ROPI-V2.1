@@ -1,0 +1,55 @@
+{
+    "success": true,
+    "mappingsCount": 5,
+    "mappings": [
+        {
+            "csvHeader": "Brand",
+            "canonicalPath": "brand",
+            "confidence": 0.95,
+            "matchType": "synonym",
+            "matchedAlias": "brand"
+        },
+        {
+            "csvHeader": "Name",
+            "canonicalPath": "name",
+            "confidence": 0.95,
+            "matchType": "synonym",
+            "matchedAlias": "name"
+        },
+        {
+            "csvHeader": "Gender",
+            "canonicalPath": "descriptive.gender",
+            "confidence": 1,
+            "matchType": "exact",
+            "matchedAlias": "Gender"
+        },
+        {
+            "csvHeader": "Department",
+            "canonicalPath": "department",
+            "confidence": 0.95,
+            "matchType": "synonym",
+            "matchedAlias": "department"
+        },
+        {
+            "csvHeader": "Primary Color",
+            "canonicalPath": "descriptive.primaryColor",
+            "confidence": 1,
+            "matchType": "exact",
+            "matchedAlias": "Primary Color"
+        }
+    ],
+    "headers": [
+        "Brand",
+        "Name",
+        "Gender",
+        "Department",
+        "Primary Color"
+    ],
+    "summary": {
+        "exact": 2,
+        "synonym": 3,
+        "fuzzy": 0,
+        "unmapped": 0
+    },
+    "registrySize": 155
+}

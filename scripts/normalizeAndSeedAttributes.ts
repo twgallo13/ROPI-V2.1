@@ -34,6 +34,12 @@ interface AttributeMetadata {
   examples: {
     sampleValues: string[];
   };
+  validation?: {
+    required?: boolean;
+    pattern?: string | null;
+    allowedValuesRef?: string | null;
+    allowedValues?: string[];
+  };
   normalizedValues?: string[];
   normalizationNote?: string;
 }
@@ -200,6 +206,7 @@ function toTitleCase(str: string): string {
 
 /**
  * Apply normalization rules to attribute metadata
+ * Lisa v3.3.0: Added vocab denormalization for select-style attributes
  */
 function normalizeAttributes(attributes: AttributeMetadata[]): AttributeMetadata[] {
   return attributes.map(attr => {
@@ -209,6 +216,12 @@ function normalizeAttributes(attributes: AttributeMetadata[]): AttributeMetadata
     if (attr.canonicalPath === 'descriptive.sportsTeam' && attr.examples.sampleValues.length > 0) {
       normalized.normalizedValues = attr.examples.sampleValues.map(normalizeTeam);
       normalized.normalizationNote = 'Teams normalized to "City TeamName" format using pro-team canonical list';
+      
+      // Denormalize as allowedValues for v3.3 vocab UX
+      if (!normalized.validation) {
+        normalized.validation = {};
+      }
+      normalized.validation.allowedValues = normalized.normalizedValues;
     }
 
     // Normalize color examples
@@ -216,6 +229,12 @@ function normalizeAttributes(attributes: AttributeMetadata[]): AttributeMetadata
         && attr.examples.sampleValues.length > 0) {
       normalized.normalizedValues = attr.examples.sampleValues.map(normalizeColor);
       normalized.normalizationNote = 'Colors normalized to Title Case';
+      
+      // Denormalize as allowedValues for v3.3 vocab UX
+      if (!normalized.validation) {
+        normalized.validation = {};
+      }
+      normalized.validation.allowedValues = normalized.normalizedValues;
     }
 
     // Material normalization note
@@ -226,6 +245,18 @@ function normalizeAttributes(attributes: AttributeMetadata[]): AttributeMetadata
     // Collection canonicalization note
     if (attr.canonicalPath === 'launch.newCollection') {
       normalized.normalizationNote = 'Canonicalized from legacy "collection" field';
+    }
+    
+    // v3.3.0: For attributes with allowedValuesRef, attempt to denormalize if we have sample values
+    // TODO v3.4: Extend to actually fetch from settings/lists/* collection
+    if (attr.validation?.allowedValuesRef && attr.examples.sampleValues.length > 0) {
+      if (!normalized.validation) {
+        normalized.validation = { ...attr.validation };
+      }
+      // Use sample values as a fallback until we wire up full vocab resolution
+      normalized.validation.allowedValues = attr.examples.sampleValues;
+      normalized.normalizationNote = (normalized.normalizationNote || '') + 
+        ' | Vocab values denormalized from samples (TODO: wire to settings/lists/*)';
     }
 
     return normalized;

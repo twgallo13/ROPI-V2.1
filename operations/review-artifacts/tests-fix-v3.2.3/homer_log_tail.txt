@@ -1,0 +1,60 @@
+**Preflight Import Tests:**
+
+Minimal Mode:
+```
+node admin-import-staging.cjs test-import.csv --validation=minimal
+✓ SUCCESS - Imported with SKU→MPN fallback (XTEST-456)
+✓ Applied default values for missing brand, name, department, category
+✓ Product doc written to products_v2/_X_T_E_S_T_-_4_5_6_
+✓ UNMAPPED HEADER: variant_count (correct, non-importable)
+```
+
+Full Mode:
+```
+node admin-import-staging.cjs test-import.csv --validation=full
+✗ VALIDATION ERROR (full mode): Missing required fields: Brand, Name, Category
+✓ Correctly enforced registry required rules
+```
+
+**Test Logs:**
+- operations/review-artifacts/attribute-registry/npm-test-v2.3.log (11/11 v2.3 tests passing)
+- operations/review-artifacts/attribute-registry/npm-build-v2.3.log (build complete 4.15s)
+- operations/review-artifacts/attribute-registry/normalize-dryrun-v2.3.log (dry-run output)
+- operations/review-artifacts/attribute-registry/normalize-seed-v2.3.log (78 attributes seeded)
+- operations/review-artifacts/attribute-registry/firebase-deploy-staging-v2.3.log (deploy complete)
+- operations/review-artifacts/attribute-registry/admin-import-staging-v2.3-minimal.log (minimal mode success)
+- operations/review-artifacts/attribute-registry/admin-import-staging-v2.3-full.log (full mode validation error as expected)
+- operations/review-artifacts/attribute-registry/mapping-decisions-v2.3.json (mapping decisions with validation mode)
+- operations/review-artifacts/attribute-registry/firestore-XTEST-456-staging-v2.3.json (product snapshot with verified fields)
+- operations/review-artifacts/attribute-registry/registry-v2.2-required.json (registry with required metadata)
+- operations/review-artifacts/attribute-registry/attribute-keys-backup-20251122-085934.json (Firestore backup)
+
+**Verified Fields (Minimal Mode Import):**
+- ✓ dropshipName: "AcmeDropship"
+- ✓ productIsActive: true
+- ✓ lastReceived: "2025-11-14T00:00:00.000Z"
+- ✓ storeInv: 10
+- ✓ warehouseInv: 20
+- ✓ rics.color: "Black"
+- ✓ rics.shortDescription: "This is short desc"
+- ✓ variant_count: UNMAPPED (correct, importRequired=false)
+
+**Special Notes:**
+- technical.variantCount confirmed non-importable: importerColumns=[], importRequired=false, requiredForExport=false
+- All Phase A changes are metadata-only (no code changes)
+- Phase B fully tested in staging before main merge
+- SKU can serve as MPN if MPN column missing (flexible import)
+- Default mode is 'full' for safety, 'minimal' available in Advanced Options
+
+**Final Commit SHA:** 5e8f867
+
+**RESULT:** SUCCESS
+
+**HOMER:** embed-version v2.3 applied to .lisa_version.json and staging settings/meta/lisaVersion
+
+### v3.2.3 — 2025-11-23T18:18:43Z
+- Action: Merged PR #117 (fix/tests-file-read-v3.2) and updated main.
+- Merge Commit: 9c62306a3a5d3cc95fb95ebff8419794b3e25cc9
+- Notes: Added robust file read helper, jest File polyfill, and test fixes. CI was green for PR after handling known flaky DescriptionPanel test historically.
+- Artifacts: operations/review-artifacts/tests-fix-v3.2.3/
+

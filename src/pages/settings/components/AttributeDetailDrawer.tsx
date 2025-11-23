@@ -1,6 +1,7 @@
 /**
  * Attribute Detail Drawer
  * Edit attribute metadata, AI settings, validation rules, and view audit history
+ * Lisa v3.3.0 - Added vocab display and product-value preview
  */
 import React, { useState, useEffect } from 'react';
 import { 
@@ -13,6 +14,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { getFeatureFlag } from '../../../config/appConfig';
 import { AttributeMetadata } from '../../../utils/attributeRegistry';
+import { 
+  getAttributeValuePreview, 
+  looksLikeVocabSet,
+  type AttributeValuePreview 
+} from '../../../utils/attributeValuePreview';
 
 interface AttributeDetailDrawerProps {
   attribute: AttributeMetadata;
@@ -34,11 +40,34 @@ export default function AttributeDetailDrawer({
   const [activeTab, setActiveTab] = useState<'details' | 'ai' | 'validation' | 'audit'>('details');
   const [newAlias, setNewAlias] = useState('');
   const [showAiConfirmation, setShowAiConfirmation] = useState(false);
+  const [valuePreview, setValuePreview] = useState<AttributeValuePreview | null>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
+  const [showAttachVocabModal, setShowAttachVocabModal] = useState(false);
   const aiSuggestEnabled = getFeatureFlag('AI_SUGGEST');
 
   useEffect(() => {
     setFormData(attribute);
-  }, [attribute]);
+    
+    // Load value preview when drawer opens or attribute changes
+    if (isOpen && attribute.canonicalPath) {
+      loadValuePreview();
+    }
+  }, [attribute, isOpen]);
+  
+  async function loadValuePreview() {
+    if (!formData.canonicalPath) return;
+    
+    try {
+      setLoadingPreview(true);
+      const preview = await getAttributeValuePreview(formData.canonicalPath);
+      setValuePreview(preview);
+    } catch (error) {
+      console.error('[AttributeDetailDrawer] Failed to load value preview:', error);
+      setValuePreview(null);
+    } finally {
+      setLoadingPreview(false);
+    }
+  }
 
   function handleChange(field: keyof AttributeMetadata | string, value: unknown) {
     // small, local 'any' cast for dynamic assignment only; top-level types now explicit
@@ -632,6 +661,82 @@ export default function AttributeDetailDrawer({
                 <p className="text-xs text-gray-500 mt-1">Reference to Firestore settings/lists/* collection</p>
               </div>
 
+              {/* Allowed Values Display - v3.3.0 */}
+              {(formData.validation?.allowedValues && formData.validation.allowedValues.length > 0) && (
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Allowed Values</h3>
+                  <div className="flex flex-wrap gap-2 max-h-40 overflow-auto">
+                    {formData.validation.allowedValues.map((value: string) => (
+                      <span
+                        key={value}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm text-gray-700"
+                      >
+                        {value}
+                      </span>
+                    ))}
+                  </div>
+                  {formData.validation.allowedValuesRef && (
+                    <p className="text-xs text-gray-500 mt-3">
+                      Sourced from: <code className="bg-white px-1 rounded">{formData.validation.allowedValuesRef}</code>
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Product Value Preview - v3.3.0 */}
+              {valuePreview && (
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-medium text-gray-700">Current Product Values</h3>
+                    <span className="text-xs text-gray-500">{valuePreview.totalSampled} samples</span>
+                  </div>
+                  
+                  {valuePreview.previewAvailable ? (
+                    <div className="space-y-2">
+                      {valuePreview.distribution.map((item) => (
+                        <div key={item.value} className="flex items-center justify-between text-sm">
+                          <span className={item.value === '(Unknown)' || item.value === '(Other)' ? 'text-gray-400 italic' : 'text-gray-700'}>
+                            {item.value}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-32 bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-indigo-500 h-2 rounded-full"
+                                style={{ width: `${(item.count / valuePreview.totalSampled) * 100}%` }}
+                              />
+                            </div>
+                            <span className="text-gray-500 min-w-[3rem] text-right">{item.count}</span>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {/* Attach Vocab Helper */}
+                      {!formData.validation?.allowedValuesRef && looksLikeVocabSet(valuePreview) && (
+                        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm text-blue-800 mb-2">
+                            Ropi detected a stable set of values for this attribute. Consider attaching a vocab set to enforce consistency.
+                          </p>
+                          <button
+                            onClick={() => setShowAttachVocabModal(true)}
+                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                          >
+                            Attach vocab...
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      {valuePreview.error || 'No product-value preview available yet'}
+                    </p>
+                  )}
+                  
+                  {loadingPreview && (
+                    <p className="text-sm text-gray-500">Loading preview...</p>
+                  )}
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   UI Hint
@@ -763,6 +868,83 @@ export default function AttributeDetailDrawer({
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Attach Vocab Modal - v3.3.0 */}
+      {showAttachVocabModal && valuePreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-lg shadow-xl">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              Attach Vocabulary Set
+            </h3>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-3">
+                Detected values from product data:
+              </p>
+              <div className="flex flex-wrap gap-2 p-3 bg-gray-50 border border-gray-200 rounded max-h-40 overflow-auto">
+                {valuePreview.distribution
+                  .filter(d => d.value !== '(Unknown)' && d.value !== '(Other)')
+                  .map((item) => (
+                    <span
+                      key={item.value}
+                      className="px-2 py-1 bg-white border border-gray-300 rounded text-sm"
+                    >
+                      {item.value}
+                    </span>
+                  ))}
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <p className="text-sm text-gray-700 font-medium">What would you like to do?</p>
+              
+              <div className="border border-gray-200 rounded p-3 hover:bg-gray-50">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="vocab-action" className="mt-1" disabled />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Attach to existing vocab ref</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Link to a settings/lists/* reference (feature coming in v3.4)
+                    </p>
+                  </div>
+                </label>
+              </div>
+              
+              <div className="border border-gray-200 rounded p-3 hover:bg-gray-50">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="vocab-action" className="mt-1" defaultChecked />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Leave as-is</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      No changes; keep attribute validation as open text
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 mt-6">
+              <button
+                onClick={() => setShowAttachVocabModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  // For v3.3, this is a placeholder. In v3.4, implement actual attach logic
+                  setShowAttachVocabModal(false);
+                  alert('Vocab attachment will be implemented in v3.4. For now, manually set allowedValuesRef.');
+                }}
+                className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                disabled
+              >
+                Attach (v3.4)
+              </button>
             </div>
           </div>
         </div>
