@@ -1,8 +1,9 @@
 /**
  * Attributes Command Center
  * View, add, edit, and test RO Product Attributes and Ropi (AI) attributes
+ * Lisa v3.3.0 - Grouping by canonical path with source badges
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   MagnifyingGlassIcon, 
   PlusIcon, 
@@ -10,11 +11,17 @@ import {
   ArrowUpTrayIcon,
   BeakerIcon,
   CheckCircleIcon,
-  ExclamationCircleIcon
+  ChevronRightIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline';
 import AttributeDetailDrawer from './components/AttributeDetailDrawer';
 import SandboxPanel from './components/SandboxPanel';
 import { useAuth } from '../../contexts/AuthContext';
+import { 
+  groupAttributesByPath, 
+  filterGroupedAttributes,
+  type AttributeData
+} from '../../utils/attributeGrouping';
 
 interface Attribute {
   canonicalPath: string;
@@ -54,7 +61,7 @@ interface Attribute {
 }
 
 export default function AttributesCommandCenter() {
-  const { user, role } = useAuth();
+  const { role } = useAuth();
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -66,8 +73,27 @@ export default function AttributesCommandCenter() {
   const [sandboxOpen, setSandboxOpen] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   const isEditorOrAdmin = role === 'admin' || role === 'editor';
+  
+  // Group attributes by canonical path
+  const groupedAttributes = useMemo(() => {
+    const groups = groupAttributesByPath(attributes as AttributeData[]);
+    return filterGroupedAttributes(groups, searchTerm);
+  }, [attributes, searchTerm]);
+  
+  function toggleGroup(canonicalPath: string) {
+    setExpandedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(canonicalPath)) {
+        next.delete(canonicalPath);
+      } else {
+        next.add(canonicalPath);
+      }
+      return next;
+    });
+  }
 
   useEffect(() => {
     fetchAttributes();
@@ -330,82 +356,172 @@ export default function AttributesCommandCenter() {
         <div className="flex-1 overflow-auto">
           {loading ? (
             <div className="p-6 text-center text-gray-500">Loading attributes...</div>
-          ) : attributes.length === 0 ? (
+          ) : groupedAttributes.length === 0 ? (
             <div className="p-6 text-center text-gray-500">No attributes found</div>
           ) : (
             <table className="w-full">
               <thead className="bg-gray-50 sticky top-0">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Label</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase w-8"></th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Attribute</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Canonical Path</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tags</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Import Req</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Import</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Export</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Foundation</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">AI Use</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">AI Write</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Modified</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {attributes.map((attr) => (
-                  <tr
-                    key={attr.canonicalPath}
-                    onClick={() => handleRowClick(attr)}
-                    className="hover:bg-gray-50 cursor-pointer"
-                  >
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{attr.label}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500 font-mono text-xs">{attr.canonicalPath}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      <span className="px-2 py-1 bg-gray-100 rounded text-xs">{attr.category}</span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{attr.dataType}</td>
-                    <td className="px-4 py-3 text-center">
-                      {attr.importRequired ? (
-                        <CheckCircleIcon className="w-5 h-5 text-green-500 mx-auto" />
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {attr.export ? (
-                        <CheckCircleIcon className="w-5 h-5 text-green-500 mx-auto" />
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {attr.foundation ? (
-                        <CheckCircleIcon className="w-5 h-5 text-purple-500 mx-auto" />
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      {attr.ai?.use && attr.ai.use.length > 0 ? (
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                          {attr.ai.use.join(', ')}
-                        </span>
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {attr.ai?.can_write ? (
-                        <ExclamationCircleIcon className="w-5 h-5 text-amber-500 mx-auto" />
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      {attr.audit?.updatedAt 
-                        ? new Date(attr.audit.updatedAt).toLocaleDateString()
-                        : '—'
-                      }
-                    </td>
-                  </tr>
-                ))}
+                {groupedAttributes.map((group) => {
+                  const isExpanded = expandedGroups.has(group.canonicalPath);
+                  const attr = group.primaryAttribute;
+                  
+                  return (
+                    <React.Fragment key={group.canonicalPath}>
+                      {/* Group Row */}
+                      <tr
+                        className="hover:bg-gray-50 cursor-pointer"
+                      >
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => toggleGroup(group.canonicalPath)}
+                            className="text-gray-400 hover:text-gray-600"
+                          >
+                            {isExpanded ? (
+                              <ChevronDownIcon className="w-4 h-4" />
+                            ) : (
+                              <ChevronRightIcon className="w-4 h-4" />
+                            )}
+                          </button>
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-sm font-medium text-gray-900"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {group.displayName}
+                          {group.variants.length > 1 && (
+                            <span className="ml-2 text-xs text-gray-500">
+                              ({group.variants.length} variants)
+                            </span>
+                          )}
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-sm text-gray-500 font-mono text-xs"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {group.canonicalPath}
+                        </td>
+                        <td 
+                          className="px-4 py-3"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          <div className="flex gap-1 flex-wrap">
+                            {group.tags.map(tag => (
+                              <span
+                                key={tag}
+                                className={`px-2 py-1 text-xs rounded ${
+                                  tag === 'Core' ? 'bg-purple-100 text-purple-700' :
+                                  tag === 'Vendor' ? 'bg-blue-100 text-blue-700' :
+                                  tag === 'Legacy' ? 'bg-gray-100 text-gray-700' :
+                                  tag === 'AI' ? 'bg-green-100 text-green-700' :
+                                  tag === 'Deprecated' ? 'bg-red-100 text-red-700' :
+                                  'bg-gray-100 text-gray-600'
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-sm text-gray-500"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          <span className="px-2 py-1 bg-gray-100 rounded text-xs">{attr.category}</span>
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-sm text-gray-500"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {attr.dataType}
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-center"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {attr.importRequired ? (
+                            <CheckCircleIcon className="w-5 h-5 text-green-500 mx-auto" />
+                          ) : (
+                            <span className="text-gray-300">—</span>
+                          )}
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-center"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {attr.export ? (
+                            <CheckCircleIcon className="w-5 h-5 text-green-500 mx-auto" />
+                          ) : (
+                            <span className="text-gray-300">—</span>
+                          )}
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-sm text-gray-500"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {attr.ai?.use && attr.ai.use.length > 0 ? (
+                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                              {attr.ai.use.join(', ')}
+                            </span>
+                          ) : (
+                            <span className="text-gray-300">—</span>
+                          )}
+                        </td>
+                        <td 
+                          className="px-4 py-3 text-sm text-gray-500"
+                          onClick={() => handleRowClick(attr)}
+                        >
+                          {attr.audit?.updatedAt 
+                            ? new Date(attr.audit.updatedAt).toLocaleDateString()
+                            : '—'
+                          }
+                        </td>
+                      </tr>
+                      
+                      {/* Expanded Variants */}
+                      {isExpanded && group.variants.length > 1 && group.variants.map((variant) => (
+                        <tr
+                          key={variant.id}
+                          className="bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => handleRowClick(variant.fullData)}
+                        >
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2 pl-12 text-sm text-gray-700">
+                            • {variant.label}
+                            <span className="ml-2 text-xs text-gray-500">
+                              ({variant.sourceKind})
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 text-sm text-gray-400 font-mono text-xs">
+                            {variant.importerColumns && variant.importerColumns.length > 0 && (
+                              <span>Columns: {variant.importerColumns.join(', ')}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2"></td>
+                          <td className="px-4 py-2"></td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  );
+                })}
               </tbody>
             </table>
           )}
@@ -451,7 +567,7 @@ export default function AttributesCommandCenter() {
             setDrawerOpen(false);
             setSelectedAttribute(null);
           }}
-          onSave={(updated) => {
+          onSave={(_updated) => {
             fetchAttributes();
             setDrawerOpen(false);
             setSelectedAttribute(null);

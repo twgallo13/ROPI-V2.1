@@ -1,5 +1,72 @@
 # HOMER Operations Log
 
+## [2025-11-23 19:53 UTC] v3.3.0 — ACC Vocabulary UX & Product-value Preview
+
+**Timestamp:** 2025-11-23T19:53:00Z
+
+**Branch:** feature/v3.3-acc-vocab-preview
+
+**Base:** main @ 9c62306a3a5d3cc95fb95ebff8419794b3e25cc9
+
+**Summary:**
+- Added canonical-path grouping in ACC to reduce perceived duplicates
+- Introduced vocab UX: inline allowed-values display for attributes with validation.allowedValuesRef
+- Implemented minimal product-value preview (safe sample-based) in Attribute Detail
+- Enhanced seeder to denormalize vocab values into validation.allowedValues
+- Added "attach vocab" helper UI for attributes with stable value sets
+
+**Key Changes:**
+1. **Grouping & Badges** (`src/utils/attributeGrouping.ts`, `src/pages/settings/AttributesCommandCenter.tsx`):
+   - Attributes grouped by canonical path (e.g., `descriptive.gender` shows one row with variants)
+   - Source badges: Core, Vendor, Legacy, AI, Deprecated
+   - Expandable variant details showing labels and importer columns
+   
+2. **Vocab Display** (`src/pages/settings/components/AttributeDetailDrawer.tsx`):
+   - Validation tab shows allowed values as pills when `validation.allowedValues` present
+   - References source collection path if `allowedValuesRef` exists
+   
+3. **Product Value Preview** (`src/utils/attributeValuePreview.ts`):
+   - Fetches sample of up to 500 product docs
+   - Shows value distribution with counts and percentages
+   - Detects stable vocab sets (2-20 values, 60%+ coverage)
+   
+4. **Attach Vocab Helper**:
+   - Modal shows detected values when stable set found
+   - Placeholder UI for v3.4 full implementation
+   - Current: manual allowedValuesRef entry still required
+   
+5. **Seeder Enhancement** (`scripts/normalizeAndSeedAttributes.ts`):
+   - Denormalizes sportsTeam and color normalized values to validation.allowedValues
+   - Preserves allowedValuesRef for future full vocab resolution
+   - TODO comment for v3.4 settings/lists/* integration
+
+**Tests:**
+```
+npm test -- attributeGrouping
+```
+✅ All tests pass (12 new grouping tests + 213 existing)
+
+**Seeder:** Not run yet (will run in deployment step)
+
+**Deploy:** Not deployed (will deploy to staging after approval)
+
+**Artifacts:** operations/review-artifacts/v3.3-acc-vocab-preview/ (to be created)
+
+**Next Steps:**
+1. Run seeder dry-run
+2. Run seeder with --seed
+3. Build and deploy to staging
+4. Theo verification checklist
+5. Update lisaVersion in Firestore
+6. Push branch and open PR
+
+**Notes:**
+- Product-value preview currently uses products collection; may need adjustment for actual data structure
+- Attach vocab feature is UI-only for v3.3; full implementation planned for v3.4
+- Seeder vocab denormalization is minimal/safe; does not modify existing attributes unless they have samples
+
+---
+
 ## [2025-11-23 06:57 UTC] v3.2.2 — Merge conflict resolution (PR #117)
 
 **Timestamp:** 2025-11-23T06:57:28Z

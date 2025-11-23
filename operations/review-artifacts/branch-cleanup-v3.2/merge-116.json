@@ -1,0 +1,18 @@
+{
+  "pr_number": 116,
+  "pr_title": "v3.1.propose: Attribute Registry Duplicate Analysis - NO DUPLICATES FOUND",
+  "merge_timestamp": "2025-11-23T08:20:00Z",
+  "merge_method": "manual_merge_with_conflict_resolution",
+  "merge_commit_sha": "c0bb109202494373defe4b427be7b3c7c17c3d2c",
+  "main_head_sha": "c0bb109202494373defe4b427be7b3c7c17c3d2c",
+  "pr_head_sha": "2811195a215311adc17a7ef9b025704b515edaa5",
+  "base_branch": "main",
+  "conflicts_resolved": [
+    {
+      "file": "OPERATIONS/HOMER_LOG.md",
+      "resolution": "added v3.1.propose entry at top, preserved all previous entries"
+    }
+  ],
+  "commits_merged": 10,
+  "status": "SUCCESS"
+}

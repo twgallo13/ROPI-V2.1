@@ -1,0 +1,22 @@
+{
+  "pr_number": 115,
+  "pr_title": "feat(attributes): v3.0.3 - Complete end-to-end propose-mapping and suggest",
+  "merge_timestamp": "2025-11-23T08:15:00Z",
+  "merge_method": "manual_merge_with_conflict_resolution",
+  "merge_commit_sha": "e056c644f3b76f36b4e68fc07c67bf980b80aa59",
+  "main_head_sha": "e056c644f3b76f36b4e68fc07c67bf980b80aa59",
+  "pr_head_sha": "4fbd8c05e96f92ba444d282539ffb2256421bc46",
+  "base_branch": "main",
+  "conflicts_resolved": [
+    {
+      "file": "OPERATIONS/HOMER_LOG.md",
+      "resolution": "kept both v3.0 (main) and v3.0.2+v3.0.3 (PR) sections in chronological order"
+    },
+    {
+      "file": ".firebase/hosting.ZGlzdA.cache",
+      "resolution": "accepted PR version (build artifact)"
+    }
+  ],
+  "commits_merged": 7,
+  "status": "SUCCESS"
+}
