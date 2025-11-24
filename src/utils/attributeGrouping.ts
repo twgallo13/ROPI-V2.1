@@ -90,10 +90,10 @@ function determineSourceKind(attr: AttributeData): SourceKind {
   
   // Check if vendor (has RICS or vendor-specific columns)
   const columns = attr.importerColumns || [];
-  if (columns.some((col: string) => 
-    col.toLowerCase().includes('rics') || 
-    col.toLowerCase().includes('vendor')
-  )) {
+  if (columns.some((col: string) => {
+    const colLower = String(col || '').toLowerCase();
+    return colLower.includes('rics') || colLower.includes('vendor');
+  })) {
     return 'vendor';
   }
   
@@ -214,26 +214,32 @@ export function filterGroupedAttributes(
     return groups;
   }
   
-  const term = searchTerm.toLowerCase().trim();
+  const term = String(searchTerm || '').toLowerCase().trim();
   
   return groups.filter(group => {
     // Search in canonical path
-    if (group.canonicalPath.toLowerCase().includes(term)) {
+    const pathLower = String(group.canonicalPath || '').toLowerCase();
+    if (pathLower.includes(term)) {
       return true;
     }
     
     // Search in display name
-    if (group.displayName.toLowerCase().includes(term)) {
+    const nameLower = String(group.displayName || '').toLowerCase();
+    if (nameLower.includes(term)) {
       return true;
     }
     
     // Search in any variant label
-    if (group.variants.some(v => v.label.toLowerCase().includes(term))) {
+    if (group.variants.some(v => {
+      const labelLower = String(v.label || '').toLowerCase();
+      return labelLower.includes(term);
+    })) {
       return true;
     }
     
     // Search in description
-    if (group.primaryAttribute.description?.toLowerCase().includes(term)) {
+    const descLower = String(group.primaryAttribute.description || '').toLowerCase();
+    if (descLower.includes(term)) {
       return true;
     }
     
