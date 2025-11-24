@@ -190,10 +190,15 @@ export function groupAttributesByPath(attributes: AttributeData[]): GroupedAttri
   
   return Array.from(groupMap.values()).sort((a, b) => {
     // Sort by category then display name
-    if (a.primaryAttribute.category !== b.primaryAttribute.category) {
-      return a.primaryAttribute.category.localeCompare(b.primaryAttribute.category);
+    // Lisa v3.3.0: Guard against undefined category/displayName to prevent TypeError
+    const aCat = String(a.primaryAttribute.category || '');
+    const bCat = String(b.primaryAttribute.category || '');
+    if (aCat !== bCat) {
+      return aCat.localeCompare(bCat);
     }
-    return a.displayName.localeCompare(b.displayName);
+    const aName = String(a.displayName || '');
+    const bName = String(b.displayName || '');
+    return aName.localeCompare(bName);
   });
 }
 
