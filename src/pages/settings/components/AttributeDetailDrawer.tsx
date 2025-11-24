@@ -20,6 +20,8 @@ import {
   type AttributeValuePreview 
 } from '../../../utils/attributeValuePreview';
 import { useAttributeValuePreview } from '../../../hooks/useAttributeValuePreview';
+import { useAuth } from '../../../contexts/AuthContext';
+import PermissionRequestModal from './PermissionRequestModal';
 
 interface AttributeDetailDrawerProps {
   attribute: AttributeMetadata;
@@ -36,6 +38,7 @@ export default function AttributeDetailDrawer({
   onSave,
   isEditable
 }: AttributeDetailDrawerProps) {
+  const { role } = useAuth();
   const [formData, setFormData] = useState<AttributeMetadata>(() => attribute || ({} as AttributeMetadata));
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'ai' | 'validation' | 'audit'>('details');
@@ -44,6 +47,7 @@ export default function AttributeDetailDrawer({
   const [valuePreview, setValuePreview] = useState<AttributeValuePreview | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [showAttachVocabModal, setShowAttachVocabModal] = useState(false);
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
   const aiSuggestEnabled = getFeatureFlag('AI_SUGGEST');
   
   // v3.3.0 - SKU Preview Hook
@@ -175,7 +179,10 @@ export default function AttributeDetailDrawer({
   }
 
   async function handleSave() {
-    if (!isEditable) return;
+    if (!isEditable) {
+      setShowPermissionModal(true);
+      return;
+    }
 
     try {
       setSaving(true);
@@ -894,6 +901,14 @@ export default function AttributeDetailDrawer({
           </div>
         </div>
       </div>
+
+      {/* Permission Request Modal */}
+      <PermissionRequestModal
+        isOpen={showPermissionModal}
+        onClose={() => setShowPermissionModal(false)}
+        currentRole={role || 'viewer'}
+        requiredRole="editor"
+      />
 
       {/* AI Can Write Confirmation Modal */}
       {showAiConfirmation && (
