@@ -1,0 +1,82 @@
+HOMER v3.3.0 RELEASE SUMMARY — STAGING DEPLOYMENT COMPLETE
+===========================================================
+
+MERGE & TAG INFORMATION
+-----------------------
+Merge commit SHA: 8f25ad007f1a0a837a29d92e1e03fc2002004af2
+Tag v3.3.0 SHA:   2e1d26948c443abc5662931335ce2cd02a4c389e
+Merged branch:    axs/v3.3-resolve-118 → main
+PR #130 merged:   fix(v3.3): guard functions Firestore types & lint fixes
+PR #118 merged:   feat(acc) v3.3 ACC Vocabulary UX & Product-value Preview
+
+SANITY CHECKS (ALL PASSED)
+---------------------------
+✓ npm lint:         334 warnings, 0 errors
+✓ npm test:         225 passed, 9 skipped
+✓ npm build:        SUCCESS (1,173 KB bundle)
+✓ functions build:  SUCCESS (no TypeScript errors)
+
+SEEDER & NORMALIZATION
+----------------------
+✓ Dry-run completed: /tmp/normalize-dryrun-postmerge.log
+✓ Seed completed:    /tmp/normalize-seed-postmerge.log
+
+FIREBASE DEPLOYMENT (STAGING)
+------------------------------
+Project:     ropi-bccee
+Environment: STAGING (https://ropi-bccee.web.app)
+Status:      ✓ Deploy complete
+Functions:   13 functions deployed successfully (all nodejs20)
+  - api, apiDescribe, apiDescribeStart, apiDescribeStatus
+  - apiExporter, apiImport, apiSmartDetect, apiValidate
+  - describeWorker, exportRulesPreview, seedMaterials
+  - seedSettingsVocab, setUserRole
+
+PROGRAMMATIC VERIFICATION (ALL PASSED)
+---------------------------------------
+✓ propose-mapping endpoint: SUCCESS (3 mappings returned)
+✓ suggest endpoint:         SUCCESS (5 suggestions with confidence scores)
+
+FIRESTORE META UPDATE
+---------------------
+✓ settings/meta/lisaVersion updated to v3.3.0
+
+ARTIFACTS LOCATION
+------------------
+operations/review-artifacts/v3.3-release/
+  - npm-lint-final.log
+  - npm-test-final.log
+  - npm-build-final.log
+  - functions-build.log
+  - normalize-dryrun-postmerge.log
+  - normalize-seed-postmerge.log
+  - firebase-deploy-main-v3.3.log
+  - propose-response-main.pretty.json
+  - suggest-response-main.pretty.json
+  - staging-verification-manual.txt
+  - functions-deployment-status.txt
+  - homer-summary-v3.3-final.txt
+
+MANUAL VERIFICATION REQUIRED
+-----------------------------
+Lisa — please complete manual UI verification at:
+https://ropi-bccee.web.app/settings/attributes
+
+Checklist:
+□ ACC loads (no white screen)
+□ No console errors (localeCompare/toLowerCase)
+□ Search/filter functional
+□ Grouping by canonical path visible
+□ Attribute Detail drawer: Validation tab shows values
+□ Product-value preview working
+□ Audit writes successful
+
+NEXT STEPS
+----------
+1. Lisa completes manual verification checklist above
+2. If verification passes → production deployment planning
+3. If issues found → investigate and remediate
+
+STATUS: STAGING DEPLOYMENT COMPLETE — AWAITING MANUAL VERIFICATION
+
+Homer — 2025-11-24

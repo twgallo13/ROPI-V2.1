@@ -78,11 +78,17 @@ export async function getAttributes(req: Request, res: Response) {
     // Apply search filter if provided
     if (search && typeof search === 'string') {
       const searchLower = search.toLowerCase();
-      attributes = attributes.filter(attr => 
-        attr.label?.toLowerCase().includes(searchLower) ||
-        attr.canonicalPath?.toLowerCase().includes(searchLower) ||
-        attr.description?.toLowerCase().includes(searchLower)
-      );
+      attributes = attributes.filter(attr => {
+        const importerText = (attr.importerColumns || []).join(' ').toLowerCase();
+        const aiUse = ((attr as any).ai?.use || []).join(' ').toLowerCase();
+        return (
+          String(attr.label || '').toLowerCase().includes(searchLower) ||
+          String(attr.canonicalPath || '').toLowerCase().includes(searchLower) ||
+          String(attr.description || '').toLowerCase().includes(searchLower) ||
+          importerText.includes(searchLower) ||
+          aiUse.includes(searchLower)
+        );
+      });
     }
     
     // Pagination
@@ -118,6 +124,7 @@ export async function createAttribute(req: RequestWithUser, res: Response) {
     // Validate schema
     const valid = validateAttribute(attribute);
     if (!valid) {
+      console.error('Invalid attribute schema (create):', validateAttribute.errors, attribute);
       return res.status(400).json({ 
         error: 'Invalid attribute schema', 
         details: validateAttribute.errors 
@@ -219,6 +226,7 @@ export async function updateAttribute(req: RequestWithUser, res: Response) {
     // Validate merged result
     const valid = validateAttribute(updatedAttribute);
     if (!valid) {
+      console.error('Invalid attribute schema (update):', validateAttribute.errors, updatedAttribute);
       return res.status(400).json({ 
         error: 'Invalid attribute schema', 
         details: validateAttribute.errors 
@@ -674,11 +682,11 @@ function levenshteinDistance(str1: string, str2: string): number {
 /**
  * GET /api/attributes/value-preview
  * Returns sample SKUs and their raw values for a canonical path
- * Helps explain "Unknown" values in attribute validation
+ * Normalizes values, maps to allowed values if validation exists, and provides structured counts
  */
 export async function getValuePreview(req: Request, res: Response) {
   try {
-    const { path: canonicalPath, limit = 10 } = req.query;
+    const { path: canonicalPath, limit = 100 } = req.query;
     
     if (!canonicalPath || typeof canonicalPath !== 'string') {
       return res.status(400).json({
@@ -686,75 +694,115 @@ export async function getValuePreview(req: Request, res: Response) {
       });
     }
     
-    const limitNum = Math.min(Number(limit) || 10, 50); // Cap at 50 samples
+    const limitNum = Math.min(Number(limit) || 100, 500); // Cap at 500 samples for better stats
     
-    // Query products collection for samples where the canonical path exists
+    // Fetch attribute metadata to get allowedValuesRef
     const db = admin.firestore();
+    const attrDoc = await db.collection('settings').doc('attributes').collection('keys').doc(canonicalPath).get();
+    const attrData = attrDoc.exists ? attrDoc.data() : null;
+    const allowedValuesRef = attrData?.validation?.allowedValuesRef;
+    
+    // Build allowed values map if validation exists
+    let allowedValuesMap: Map<string, string> | null = null;
+    if (allowedValuesRef && typeof allowedValuesRef === 'string') {
+      const vocabDoc = await db.collection('settings').doc('vocabs').collection('list').doc(allowedValuesRef).get();
+      if (vocabDoc.exists) {
+        const vocabData = vocabDoc.data();
+        const allowedValues = vocabData?.values || [];
+        allowedValuesMap = new Map();
+        for (const val of allowedValues) {
+          const normalized = String(val).toLowerCase().trim();
+          allowedValuesMap.set(normalized, String(val)); // map normalized -> canonical display
+        }
+      }
+    }
+    
+    // Query products collection
     const productsRef = db.collection('products');
+    const snapshot = await productsRef.limit(limitNum).get();
     
-    // Try to find products with this canonical path
-    // Note: Firestore doesn't support dynamic field queries, so we'll fetch a sample and filter
-    const snapshot = await productsRef.limit(limitNum * 5).get(); // Get more to ensure we find matches
-    
-    const samples: Array<{
-      sku: string;
-      value: any;
-      rawPath: string;
-      docId: string;
-    }> = [];
+    const counts: Record<string, number> = {};
+    const sampleSkusForValue: Record<string, string[]> = {};
+    let unknownCount = 0;
+    let totalSamples = 0;
     
     for (const doc of snapshot.docs) {
-      if (samples.length >= limitNum) break;
-      
+      totalSamples++;
       const data = doc.data();
       if (!data) {
-        console.warn('Missing document data for product', doc.id);
+        unknownCount++;
         continue;
       }
       const docId = doc.id;
       const sku = data.sku || data.SKU || docId;
       
-      // Try to find the value using the canonical path
-      // Split by dots to navigate nested structure
+      // Navigate canonical path
       const pathParts = canonicalPath.split('.');
       let value: unknown = data;
-      let foundPath = '';
       
       for (const part of pathParts) {
         if (value && typeof value === 'object' && part in value) {
           value = (value as Record<string, unknown>)[part];
-          foundPath += (foundPath ? '.' : '') + part;
         } else {
           value = undefined;
           break;
         }
       }
       
-      // If not found via canonical path, try to find via common field names
+      // If not found via canonical path, try last part as fallback
       if (value === undefined) {
-        // Try some common variations
         const lastPart = pathParts[pathParts.length - 1];
         if (lastPart && lastPart in data) {
           value = data[lastPart];
-          foundPath = lastPart;
         }
       }
       
-      if (value !== undefined && value !== null) {
-        samples.push({
-          sku,
-          value: String(value),
-          rawPath: foundPath || canonicalPath,
-          docId
-        });
+      // Treat null, undefined, empty string as Unknown
+      if (value === undefined || value === null || String(value).trim() === '') {
+        unknownCount++;
+        continue;
+      }
+      
+      // Normalize value
+      let normalizedValue = String(value).trim();
+      
+      // Map to allowed value if validation exists
+      if (allowedValuesMap) {
+        const match = allowedValuesMap.get(normalizedValue.toLowerCase());
+        if (match) {
+          normalizedValue = match; // Use canonical display value
+        }
+      }
+      
+      // Bucket the value
+      const key = normalizedValue;
+      counts[key] = (counts[key] || 0) + 1;
+      sampleSkusForValue[key] = sampleSkusForValue[key] || [];
+      if (sampleSkusForValue[key].length < 3) {
+        sampleSkusForValue[key].push(sku);
       }
     }
+    
+    // Build top N (top 5 by count)
+    const top = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([value, count]) => ({
+        value,
+        count,
+        percentage: ((count / totalSamples) * 100).toFixed(1),
+        samples: sampleSkusForValue[value]
+      }));
     
     return res.status(200).json({
       success: true,
       canonicalPath,
-      samples,
-      totalFound: samples.length
+      totalSamples,
+      unknownCount,
+      unknownPercentage: ((unknownCount / totalSamples) * 100).toFixed(1),
+      top,
+      valueCounts: counts,
+      allowedValuesRef: allowedValuesRef || null
     });
     
   } catch (error) {
