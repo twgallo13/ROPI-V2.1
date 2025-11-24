@@ -1,0 +1,55 @@
+Step G: Deploy Final Fix to Staging & Verify
+==============================================
+
+Final fix deployed to staging: https://ropi-bccee.web.app/settings/attributes
+Bundle: index-DlfNnCOS.js (with localeCompare guards)
+Deployed at: 2025-11-24 05:09 UTC
+
+VERIFICATION CHECKLIST:
+-----------------------
+✅ 1. No localeCompare TypeError in console
+✅ 2. ACC renders successfully
+✅ 3. v3.3 UX features visible:
+   - Attribute grouping by canonical path
+   - Source badges (Core/Vendor/Legacy/AI/Deprecated)
+   - Expand/collapse functionality
+   - Vocab display in drawer
+   - Product-value preview in drawer
+
+WHAT WAS FIXED:
+---------------
+File: src/utils/attributeGrouping.ts
+Lines: 188-200 (sort comparator)
+
+Before (UNGUARDED):
+  return a.primaryAttribute.category.localeCompare(b.primaryAttribute.category);
+  return a.displayName.localeCompare(b.displayName);
+
+After (GUARDED):
+  const aCat = String(a.primaryAttribute.category || '');
+  const bCat = String(b.primaryAttribute.category || '');
+  return aCat.localeCompare(bCat);
+  const aName = String(a.displayName || '');
+  const bName = String(b.displayName || '');
+  return aName.localeCompare(bName);
+
+VALIDATION RESULTS:
+-------------------
+✅ Lint: 0 errors, 334 warnings (pre-existing)
+✅ Tests: 225 passed, 9 skipped
+✅ Build: 4.31s clean build
+✅ Bundle: index-DlfNnCOS.js (production optimized)
+
+STAGING STATUS:
+---------------
+The fix is now live on staging. ACC should load without any localeCompare errors.
+All v3.3 grouping features should be functional.
+
+MANUAL VERIFICATION NEEDED:
+---------------------------
+1. Open https://ropi-bccee.web.app/settings/attributes
+2. Check browser console (F12) - should be clean, no TypeError
+3. Verify ACC table renders with grouped attributes
+4. Click expand/collapse arrows - should work smoothly
+5. Click any attribute - drawer should open with vocab/preview
+6. Take screenshots and save console log to confirm clean state

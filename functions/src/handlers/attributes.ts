@@ -642,6 +642,97 @@ function levenshteinDistance(str1: string, str2: string): number {
   return matrix[str2.length][str1.length];
 }
 
+/**
+ * GET /api/attributes/value-preview
+ * Returns sample SKUs and their raw values for a canonical path
+ * Helps explain "Unknown" values in attribute validation
+ */
+export async function getValuePreview(req: Request, res: Response) {
+  try {
+    const { path: canonicalPath, limit = 10 } = req.query;
+    
+    if (!canonicalPath || typeof canonicalPath !== 'string') {
+      return res.status(400).json({
+        error: 'Missing or invalid path parameter'
+      });
+    }
+    
+    const limitNum = Math.min(Number(limit) || 10, 50); // Cap at 50 samples
+    
+    // Query products collection for samples where the canonical path exists
+    const db = admin.firestore();
+    const productsRef = db.collection('products');
+    
+    // Try to find products with this canonical path
+    // Note: Firestore doesn't support dynamic field queries, so we'll fetch a sample and filter
+    const snapshot = await productsRef.limit(limitNum * 5).get(); // Get more to ensure we find matches
+    
+    const samples: Array<{
+      sku: string;
+      value: any;
+      rawPath: string;
+      docId: string;
+    }> = [];
+    
+    for (const doc of snapshot.docs) {
+      if (samples.length >= limitNum) break;
+      
+      const data = doc.data();
+      const docId = doc.id;
+      const sku = data.sku || data.SKU || docId;
+      
+      // Try to find the value using the canonical path
+      // Split by dots to navigate nested structure
+      const pathParts = canonicalPath.split('.');
+      let value = data;
+      let foundPath = '';
+      
+      for (const part of pathParts) {
+        if (value && typeof value === 'object' && part in value) {
+          value = value[part];
+          foundPath += (foundPath ? '.' : '') + part;
+        } else {
+          value = undefined;
+          break;
+        }
+      }
+      
+      // If not found via canonical path, try to find via common field names
+      if (value === undefined) {
+        // Try some common variations
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart in data) {
+          value = data[lastPart];
+          foundPath = lastPart;
+        }
+      }
+      
+      if (value !== undefined && value !== null) {
+        samples.push({
+          sku,
+          value: String(value),
+          rawPath: foundPath || canonicalPath,
+          docId
+        });
+      }
+    }
+    
+    return res.status(200).json({
+      success: true,
+      canonicalPath,
+      samples,
+      totalFound: samples.length
+    });
+    
+  } catch (error) {
+    console.error('Value preview error:', error);
+    return res.status(500).json({
+      error: 'Failed to fetch value preview',
+      details: error instanceof Error ? error.message : String(error)
+    });
+  }
+}
+
 export default {
   getAttributes,
   createAttribute,
@@ -649,5 +740,6 @@ export default {
   deleteAttribute,
   seedAttributes,
   proposeMapping,
-  suggestAliases
+  suggestAliases,
+  getValuePreview
 };
