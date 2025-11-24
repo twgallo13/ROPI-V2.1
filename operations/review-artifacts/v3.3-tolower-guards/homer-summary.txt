@@ -56,3 +56,4 @@ Lisa should verify:
 2. Confirm no console errors
 3. Verify attribute details still show validation info
 4. Test filtering with various search terms
+
