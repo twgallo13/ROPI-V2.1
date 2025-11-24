@@ -64,10 +64,16 @@ export async function getAttributes(req: Request, res: Response) {
     
     // Execute query
     const snapshot = await query.get();
-    let attributes = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as unknown as AttributeData[];
+    let attributes = snapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        if (!data) return null;
+        return {
+          id: doc.id,
+          ...data
+        };
+      })
+      .filter((attr): attr is AttributeData & { id: string } => attr !== null) as AttributeData[];
     
     // Apply search filter if provided
     if (search && typeof search === 'string') {
@@ -469,11 +475,14 @@ export async function suggestAliases(req: Request, res: Response) {
       .get();
     
     const registry = snapshot.docs.reduce((acc, doc) => {
-      acc[doc.id] = doc.data() as AttributeData;
+      const data = doc.data();
+      if (data) {
+        acc[doc.id] = data as AttributeData;
+      }
       return acc;
     }, {} as Record<string, AttributeData>);
     
-    // Find best matches using existing matching logic
+    // Filter registry to find potential matches
     const proposal = findBestMatch(header, registry);
     
     // Generate suggestions based on similar attributes
@@ -698,6 +707,10 @@ export async function getValuePreview(req: Request, res: Response) {
       if (samples.length >= limitNum) break;
       
       const data = doc.data();
+      if (!data) {
+        console.warn('Missing document data for product', doc.id);
+        continue;
+      }
       const docId = doc.id;
       const sku = data.sku || data.SKU || docId;
       
