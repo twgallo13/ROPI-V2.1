@@ -1,0 +1,26 @@
+**PR #127 Post-Merge Status - SKU Preview Feature**
+
+**Merge Commit SHA:** f7a905b10419263da15714a311935ccfb4d2b23f
+
+**Local CI Results:**
+✅ Lint: 0 errors, 334 warnings (pre-existing)
+✅ Tests: 225 passed, 9 skipped (12.35s)
+✅ Build: Clean build in 4.29s
+
+**Staging Deploy:**
+✅ Hosting: Deployed successfully to https://ropi-bccee.web.app
+✅ New bundle: index-i2uahm_-.js (1,169.15 kB, gzip: 304.47 kB)
+
+**New Files Added:**
+- `src/hooks/useAttributeValuePreview.ts` - React hook for fetching sample SKUs
+- `functions/src/handlers/attributes.ts` - Added getValuePreview() endpoint (~94 lines)
+- `functions/src/api/index.ts` - Added /api/attributes/value-preview route
+- `src/pages/settings/components/AttributeDetailDrawer.tsx` - Added "Show sample SKUs" UI
+
+**Features:**
+- "Show sample SKUs" button in Attribute Detail → Validation tab
+- Fetches up to 10 sample products with the attribute value
+- Displays SKU, value, and canonical path for each sample
+- Helps explain Unknown counts and validate attribute usage
+
+**Next:** Staging verification at https://ropi-bccee.web.app/settings/attributes

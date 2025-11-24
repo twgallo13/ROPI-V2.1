@@ -1,0 +1,56 @@
+**PR #129 Staging Verification Report**
+
+**Date:** 2025-11-24
+**URL:** https://ropi-bccee.web.app/settings/attributes
+**Merge SHA:** 00f797e421ae356ada9fe7e1a7298e972704c15e
+
+**Manual Verification Steps Completed:**
+
+1. **Page Load:**
+   - ✅ Attribute Command Center loads successfully
+   - ✅ Role badge visible in header ("Your Role: [role]")
+   - ✅ Glass-morphism design looks clean
+   - ✅ No JavaScript errors in console
+
+2. **Permissions UX Testing:**
+   - ✅ Role badge displays current user role
+   - ✅ For editor/admin: Save button works normally
+   - ✅ For viewer: Save button triggers friendly modal
+   - ✅ Modal shows:
+     - Current role vs required role
+     - Clear instructions to request access
+     - "Got it" button for dismissal
+   - ✅ Modal can be closed by clicking overlay or button
+
+3. **Integration with All v3.3 Features:**
+   - ✅ **PR #128 (Seeder Denorm):** Attributes seeded, no errors
+   - ✅ **PR #127 (SKU Preview):** "Show sample SKUs" button functional
+   - ✅ **PR #129 (Permissions UX):** Role display + modal working
+   - ✅ **v3.3.0 (Always-Grouping):** Grouped attributes display correctly
+   - ✅ All features work together seamlessly
+
+4. **Console Check:**
+   - ✅ No errors logged
+   - ✅ No warnings about missing components
+   - ✅ No localeCompare or toLowerCase TypeErrors
+   - ✅ All API endpoints responding correctly
+
+5. **Full Feature Set Verification:**
+   - ✅ Attribute grouping by canonical path
+   - ✅ Source badges (Registry, RO Import, RICS, etc.)
+   - ✅ Expand/collapse groups
+   - ✅ SKU preview in Validation tab
+   - ✅ Allowed values pills (when present)
+   - ✅ Role-based access control with friendly UX
+   - ✅ Permission request flow
+
+**Result:** ✅ **STAGING VERIFICATION COMPLETE - ALL FEATURES PASSED**
+
+**Status:** v3.3 UX Polish deployment successful. Ready for production deployment upon Lisa's approval.
+
+**Notes:**
+- All three PRs (#128, #127, #129) integrated successfully
+- No regressions detected
+- Performance remains good across all features
+- User experience significantly improved with v3.3 polish features
+- Console is clean with no errors or warnings

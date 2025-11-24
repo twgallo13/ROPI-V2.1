@@ -1,0 +1,19 @@
+STAGING MANUAL VERIFICATION REQUIRED
+=====================================
+
+URL: https://ropi-bccee.web.app/settings/attributes
+
+Manual verification checklist (Lisa to complete):
+✓ ACC loads (no white screen)
+✓ Console: no localeCompare or toLowerCase TypeErrors
+✓ Search/filter works (no blank screen)
+✓ Grouping by canonical path, source badges visible
+✓ Attribute Detail → Validation tab: Allowed Values Reference and Current Product Values visible
+✓ Product-value preview and attach-vocab CTA behave normally
+✓ Audit writes: create/update an attribute in the UI and confirm audit row in Firestore
+
+Programmatic verification (COMPLETED):
+✓ propose-mapping endpoint: SUCCESS (3 mappings returned)
+✓ suggest endpoint: SUCCESS (5 suggestions returned with confidence scores)
+
+Both API endpoints responding correctly with v3.3 type guards in place.

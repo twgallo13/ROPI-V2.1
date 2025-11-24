@@ -1,5 +1,51 @@
 # HOMER Operations Log
 
+## [2025-11-24 09:30 UTC] v3.3.0 — FINAL STAGING RELEASE (PR #130 + PR #118)
+
+**Timestamp:** 2025-11-24T09:30:00Z
+
+**Status:** ✅ MERGED to main and DEPLOYED to STAGING
+
+**PRs Merged:**
+- PR #130: fix(v3.3): guard functions Firestore types & lint fixes
+- PR #118: feat(acc) v3.3 ACC Vocabulary UX & Product-value Preview
+
+**Merge Commit:** 8f25ad007f1a0a837a29d92e1e03fc2002004af2
+
+**Tag:** v3.3.0 (SHA: 2e1d26948c443abc5662931335ce2cd02a4c389e)
+
+**Release Summary:**
+- **Functions Type Guards:** Added defensive type checks in handlers/attributes.ts and ropiHtmlRenderer.ts
+- **ACC Vocabulary UX:** Canonical path grouping, source badges, product-value preview
+- **Validation Tab:** Displays allowed values vs current product values
+- **Build Quality:** All lints passed, 225 tests passed, functions build clean
+
+**Pre-Merge Validation:**
+- Lint: 0 errors, 334 warnings (pre-existing, non-blocking) ✅
+- Tests: 225 passed, 9 skipped, 0 failed ✅
+- Build: Clean build (1,173 KB bundle) ✅
+- Functions: Clean TypeScript build (no errors) ✅
+
+**Deployment to Staging (ropi-bccee):**
+- Seeder: normalize-and-seed completed ✅
+- Firestore: lisaVersion updated to v3.3.0 ✅
+- Cloud Functions: 13 functions deployed successfully (all nodejs20) ✅
+- Hosting: Deployed to https://ropi-bccee.web.app ✅
+
+**Post-Deployment Verification:**
+- propose-mapping API: ✅ SUCCESS (3 mappings returned)
+- suggest API: ✅ SUCCESS (5 suggestions with confidence)
+- Manual verification: PENDING (Lisa to complete UI checklist)
+
+**Artifacts:** operations/review-artifacts/v3.3-release/
+
+**One-Line Verification:**
+```
+v3.3.0 merged to main (8f25ad0), tag pushed, 13 functions deployed to staging, APIs verified, awaiting manual UI verification
+```
+
+---
+
 ## [2025-11-24 07:21 UTC] v3.3.0 — RELEASED to Main (PR #118)
 
 **Timestamp:** 2025-11-24T07:21:00Z

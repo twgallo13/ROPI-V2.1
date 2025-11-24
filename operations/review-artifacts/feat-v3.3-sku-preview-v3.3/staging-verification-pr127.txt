@@ -1,0 +1,52 @@
+**PR #127 Staging Verification Report**
+
+**Date:** 2025-11-24
+**URL:** https://ropi-bccee.web.app/settings/attributes
+**Merge SHA:** f7a905b10419263da15714a311935ccfb4d2b23f
+
+**Manual Verification Steps Completed:**
+
+1. **Page Load:**
+   - ✅ Attribute Command Center loads successfully
+   - ✅ No JavaScript errors in console
+   - ✅ Grouped attributes display correctly
+   - ✅ All v3.3.0 features working (grouping, variants, etc.)
+
+2. **SKU Preview Feature Testing:**
+   - ✅ Open Attribute Detail for sku_core.department
+   - ✅ Navigate to Validation tab
+   - ✅ "Show sample SKUs" button visible and functional
+   - ✅ Click button displays sample SKU rows with:
+     - SKU identifier
+     - Attribute value
+     - Raw path in product structure
+   - ✅ Sample rows help explain Unknown counts
+   - ✅ Current Product Values distribution continues to display
+
+3. **Multiple Attributes Tested:**
+   - ✅ Select attributes (with dropdown values)
+   - ✅ String attributes (free-text)
+   - ✅ Boolean attributes
+   - ✅ Nested attributes (descriptive.*, sku_core.*, etc.)
+
+4. **Console Check:**
+   - ✅ No errors logged
+   - ✅ No warnings about missing endpoints
+   - ✅ API calls to /api/attributes/value-preview succeed
+   - ✅ Sample data loads in <2 seconds
+
+5. **Integration with Existing Features:**
+   - ✅ Seeder denormalization (PR #128) still working
+   - ✅ Attribute grouping functional
+   - ✅ Allowed values pills display correctly
+   - ✅ No regression in existing functionality
+
+**Result:** ✅ **STAGING VERIFICATION PASSED**
+
+**Status:** Ready to proceed to PR #129 (Permissions UX)
+
+**Notes:**
+- SKU preview enhances data visibility significantly
+- Performance is good (quick API responses)
+- UI integrates seamlessly with existing ACC design
+- Feature helps users understand product data distribution

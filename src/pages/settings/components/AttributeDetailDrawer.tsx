@@ -184,6 +184,12 @@ export default function AttributeDetailDrawer({
       return;
     }
 
+    // Client-side validation: check required fields
+    if (!formData.canonicalPath || !formData.label || !formData.category || !formData.dataType) {
+      alert('Please fill required fields: Canonical Path, Label, Category, and Data Type.');
+      return;
+    }
+
     try {
       setSaving(true);
 
@@ -202,8 +208,16 @@ export default function AttributeDetailDrawer({
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to save attribute');
+        const error = await response.json().catch(() => ({ message: response.statusText }));
+        const message = error.error || error.message || 'Failed to save attribute';
+        // If AJV details present, show human-friendly message
+        if (Array.isArray(error.details)) {
+          const details = error.details.map((d: any) => `${d.instancePath || d.dataPath || ''}: ${d.message}`).join('\n');
+          alert(`${message}\n\nValidation Details:\n${details}`);
+        } else {
+          alert(message);
+        }
+        return;
       }
 
       const result = await response.json();
@@ -217,6 +231,13 @@ export default function AttributeDetailDrawer({
   }
 
   async function handleSaveAndSeed() {
+    // Check permission before attempting seed
+    const canSeed = ['admin', 'editor', 'coordinator'].includes(role || '');
+    if (!canSeed) {
+      alert('Insufficient permissions to seed. Only admin, editor, or coordinator roles can seed to staging.');
+      return;
+    }
+
     await handleSave();
     
     // Trigger seed to staging
@@ -230,9 +251,13 @@ export default function AttributeDetailDrawer({
 
       if (response.ok) {
         alert('Attribute saved and seeded to staging');
+      } else {
+        const error = await response.json().catch(() => ({}));
+        alert(error.error || 'Failed to seed to staging');
       }
     } catch (error) {
       console.error('Seed error:', error);
+      alert('Failed to seed to staging');
     }
   }
 
@@ -891,8 +916,9 @@ export default function AttributeDetailDrawer({
                 </button>
                 <button
                   onClick={handleSaveAndSeed}
-                  disabled={saving}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+                  disabled={saving || !['admin', 'editor', 'coordinator'].includes(role || '')}
+                  title={!['admin', 'editor', 'coordinator'].includes(role || '') ? 'Insufficient permissions to seed (requires admin, editor, or coordinator role)' : ''}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Save & Seed to Staging
                 </button>
