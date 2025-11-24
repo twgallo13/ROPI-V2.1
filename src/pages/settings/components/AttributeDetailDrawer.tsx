@@ -19,6 +19,9 @@ import {
   looksLikeVocabSet,
   type AttributeValuePreview 
 } from '../../../utils/attributeValuePreview';
+import { useAttributeValuePreview } from '../../../hooks/useAttributeValuePreview';
+import { useAuth } from '../../../contexts/AuthContext';
+import PermissionRequestModal from './PermissionRequestModal';
 
 interface AttributeDetailDrawerProps {
   attribute: AttributeMetadata;
@@ -35,6 +38,7 @@ export default function AttributeDetailDrawer({
   onSave,
   isEditable
 }: AttributeDetailDrawerProps) {
+  const { role } = useAuth();
   const [formData, setFormData] = useState<AttributeMetadata>(() => attribute || ({} as AttributeMetadata));
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'ai' | 'validation' | 'audit'>('details');
@@ -43,7 +47,16 @@ export default function AttributeDetailDrawer({
   const [valuePreview, setValuePreview] = useState<AttributeValuePreview | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [showAttachVocabModal, setShowAttachVocabModal] = useState(false);
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
   const aiSuggestEnabled = getFeatureFlag('AI_SUGGEST');
+  
+  // v3.3.0 - SKU Preview Hook
+  const { 
+    samples: skuSamples, 
+    loading: skuLoading, 
+    error: skuError, 
+    load: loadSkuSamples 
+  } = useAttributeValuePreview(formData.canonicalPath);
 
   useEffect(() => {
     setFormData(attribute);
@@ -166,7 +179,10 @@ export default function AttributeDetailDrawer({
   }
 
   async function handleSave() {
-    if (!isEditable) return;
+    if (!isEditable) {
+      setShowPermissionModal(true);
+      return;
+    }
 
     try {
       setSaving(true);
@@ -737,6 +753,53 @@ export default function AttributeDetailDrawer({
                 </div>
               )}
 
+              {/* SKU Sample Preview - v3.3.0 */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-gray-700">Product Value Samples</h3>
+                  <button
+                    onClick={() => loadSkuSamples(10)}
+                    disabled={!formData.canonicalPath || skuLoading}
+                    className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {skuLoading ? 'Loading...' : 'Show sample SKUs'}
+                  </button>
+                </div>
+
+                {skuError && (
+                  <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+                    {skuError}
+                  </div>
+                )}
+
+                {skuSamples.length > 0 && (
+                  <div className="space-y-2">
+                    {skuSamples.map((sample) => (
+                      <div key={sample.docId} className="p-2 border border-gray-200 rounded bg-gray-50 text-sm">
+                        <div className="font-medium text-gray-900">
+                          <span className="text-gray-500">SKU:</span> {sample.sku}
+                        </div>
+                        <div className="text-gray-700">
+                          <span className="text-gray-500">Value:</span> {sample.value}
+                        </div>
+                        <div className="text-xs text-gray-500 font-mono">
+                          <span className="text-gray-400">Raw Path:</span> {sample.rawPath}
+                        </div>
+                      </div>
+                    ))}
+                    <p className="text-xs text-gray-500 mt-2">
+                      Showing {skuSamples.length} sample products with values for this attribute
+                    </p>
+                  </div>
+                )}
+
+                {!skuSamples.length && !skuLoading && !skuError && (
+                  <p className="text-sm text-gray-500">
+                    Click "Show sample SKUs" to see example product values for this attribute
+                  </p>
+                )}
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   UI Hint
@@ -838,6 +901,14 @@ export default function AttributeDetailDrawer({
           </div>
         </div>
       </div>
+
+      {/* Permission Request Modal */}
+      <PermissionRequestModal
+        isOpen={showPermissionModal}
+        onClose={() => setShowPermissionModal(false)}
+        currentRole={role || 'viewer'}
+        requiredRole="editor"
+      />
 
       {/* AI Can Write Confirmation Modal */}
       {showAiConfirmation && (

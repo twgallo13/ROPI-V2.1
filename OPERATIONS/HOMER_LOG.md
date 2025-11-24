@@ -1,5 +1,52 @@
 # HOMER Operations Log
 
+## [2025-11-24 07:21 UTC] v3.3.0 — RELEASED to Main (PR #118)
+
+**Timestamp:** 2025-11-24T07:21:00Z
+
+**Status:** ✅ MERGED to main and RELEASED
+
+**PR:** #118 - v3.3.0: ACC Vocabulary UX & Product-value Preview
+
+**Merge Commit:** e55e51bf5141e931ebf157221ddb915672036033
+
+**Tag:** v3.3.0 (pushed to origin)
+
+**Release Summary:**
+- **ACC Vocabulary UX:** Canonical path grouping, source badges (Import/Smart/Manual/Vocab)
+- **Product-value Preview:** Attribute details show current product values
+- **Validation Tab:** Displays allowed values vs current product values
+- **toLowerCase Guards:** Merged from PR #126 (defensive String() coercion)
+
+**Pre-Merge Validation:**
+- Lint: 0 errors, 334 warnings (pre-existing) ✅
+- Tests: 225 passed, 9 skipped, 0 failed (12.85s) ✅
+- Build: Clean build 4.41s → bundle `index-CU8tU5kv.js` (1,167.02 kB) ✅
+
+**Deployment to Staging (ropi-bccee):**
+- Seeder: 78 attributes validated and seeded ✅
+- Firestore: lisaVersion updated to v3.3.0 ✅
+- Cloud Functions: 13 functions updated successfully ✅
+  - seedSettingsVocab, seedMaterials, describeWorker
+  - apiImport, apiDescribe, apiDescribeStart, apiDescribeStatus
+  - apiExporter, apiSmartDetect, apiValidate, api
+  - setUserRole, exportRulesPreview
+- Hosting: Deployed to https://ropi-bccee.web.app/settings/attributes ✅
+
+**Post-Deployment Verification:**
+- API Tests: propose-mapping (46 mappings), suggest (color @ 0.95 confidence) ✅
+- Cloud Functions: All 13 functions deployed and operational ✅
+- Manual Verification: Required by Lisa (browser console, ACC UX features)
+
+**Artifacts:** operations/review-artifacts/v3.3-release/
+
+**One-Line Verification:**
+```
+v3.3.0 merged to main (e55e51b), 13 functions deployed, ACC loads on staging, APIs verified, no runtime errors detected
+```
+
+---
+
 ## [2025-11-23 22:50 UTC] v3.3 — localeCompare TypeError Fix (PR #123)
 
 **Timestamp:** 2025-11-23T22:50:00Z

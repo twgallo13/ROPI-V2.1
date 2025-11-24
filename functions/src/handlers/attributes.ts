@@ -64,10 +64,16 @@ export async function getAttributes(req: Request, res: Response) {
     
     // Execute query
     const snapshot = await query.get();
-    let attributes = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as unknown as AttributeData[];
+    let attributes = snapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        if (!data) return null;
+        return {
+          id: doc.id,
+          ...data
+        };
+      })
+      .filter((attr): attr is AttributeData & { id: string } => attr !== null) as AttributeData[];
     
     // Apply search filter if provided
     if (search && typeof search === 'string') {
@@ -190,7 +196,12 @@ export async function updateAttribute(req: RequestWithUser, res: Response) {
       return res.status(404).json({ error: 'Attribute not found' });
     }
     
-    const existingAttribute = doc.data() as AttributeData;
+    const existingAttributeRaw = doc.data();
+    if (!existingAttributeRaw) {
+      console.error('Missing document data for attribute', doc.id);
+      return res.status(500).json({ error: 'Attribute document data missing' });
+    }
+    const existingAttribute = existingAttributeRaw as AttributeData;
     
     // Merge updates with existing data
     const updatedAttribute: AttributeData & { audit: Record<string, unknown> } = {
@@ -257,7 +268,12 @@ export async function deleteAttribute(req: RequestWithUser, res: Response) {
       return res.status(404).json({ error: 'Attribute not found' });
     }
     
-    const existingAttribute = doc.data();
+    const existingAttributeRaw = doc.data();
+    if (!existingAttributeRaw) {
+      console.error('Missing document data for attribute', doc.id);
+      return res.status(500).json({ error: 'Attribute document data missing' });
+    }
+    const existingAttribute = existingAttributeRaw;
     const now = new Date().toISOString();
     
     // Soft delete by marking as deprecated
@@ -459,11 +475,14 @@ export async function suggestAliases(req: Request, res: Response) {
       .get();
     
     const registry = snapshot.docs.reduce((acc, doc) => {
-      acc[doc.id] = doc.data() as AttributeData;
+      const data = doc.data();
+      if (data) {
+        acc[doc.id] = data as AttributeData;
+      }
       return acc;
     }, {} as Record<string, AttributeData>);
     
-    // Find best matches using existing matching logic
+    // Filter registry to find potential matches
     const proposal = findBestMatch(header, registry);
     
     // Generate suggestions based on similar attributes
@@ -539,14 +558,24 @@ export async function suggestAliases(req: Request, res: Response) {
 
 // Helper functions
 
-function createAuditEntry(db: admin.firestore.Firestore, entry: Record<string, unknown>) {
-  const timestamp = (entry.timestamp as string) || new Date().toISOString();
+function createAuditEntry(db: admin.firestore.Firestore, entry: {
+  action: string;
+  canonicalPath?: string;
+  user?: string;
+  timestamp?: string;
+  changes?: unknown;
+  previous?: admin.firestore.DocumentData | undefined;
+}) {
+  const timestamp = entry.timestamp || new Date().toISOString();
   const auditRef = db.collection('settings')
     .doc('attributes')
     .collection('audit')
     .doc(timestamp.replace(/[:.]/g, '-'));
   
-  return auditRef.set(entry);
+  return auditRef.set({
+    ...entry,
+    previous: entry.previous ?? null
+  } as admin.firestore.DocumentData);
 }
 
 function incrementVersion(version: string): string {
@@ -642,6 +671,101 @@ function levenshteinDistance(str1: string, str2: string): number {
   return matrix[str2.length][str1.length];
 }
 
+/**
+ * GET /api/attributes/value-preview
+ * Returns sample SKUs and their raw values for a canonical path
+ * Helps explain "Unknown" values in attribute validation
+ */
+export async function getValuePreview(req: Request, res: Response) {
+  try {
+    const { path: canonicalPath, limit = 10 } = req.query;
+    
+    if (!canonicalPath || typeof canonicalPath !== 'string') {
+      return res.status(400).json({
+        error: 'Missing or invalid path parameter'
+      });
+    }
+    
+    const limitNum = Math.min(Number(limit) || 10, 50); // Cap at 50 samples
+    
+    // Query products collection for samples where the canonical path exists
+    const db = admin.firestore();
+    const productsRef = db.collection('products');
+    
+    // Try to find products with this canonical path
+    // Note: Firestore doesn't support dynamic field queries, so we'll fetch a sample and filter
+    const snapshot = await productsRef.limit(limitNum * 5).get(); // Get more to ensure we find matches
+    
+    const samples: Array<{
+      sku: string;
+      value: any;
+      rawPath: string;
+      docId: string;
+    }> = [];
+    
+    for (const doc of snapshot.docs) {
+      if (samples.length >= limitNum) break;
+      
+      const data = doc.data();
+      if (!data) {
+        console.warn('Missing document data for product', doc.id);
+        continue;
+      }
+      const docId = doc.id;
+      const sku = data.sku || data.SKU || docId;
+      
+      // Try to find the value using the canonical path
+      // Split by dots to navigate nested structure
+      const pathParts = canonicalPath.split('.');
+      let value: unknown = data;
+      let foundPath = '';
+      
+      for (const part of pathParts) {
+        if (value && typeof value === 'object' && part in value) {
+          value = (value as Record<string, unknown>)[part];
+          foundPath += (foundPath ? '.' : '') + part;
+        } else {
+          value = undefined;
+          break;
+        }
+      }
+      
+      // If not found via canonical path, try to find via common field names
+      if (value === undefined) {
+        // Try some common variations
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart in data) {
+          value = data[lastPart];
+          foundPath = lastPart;
+        }
+      }
+      
+      if (value !== undefined && value !== null) {
+        samples.push({
+          sku,
+          value: String(value),
+          rawPath: foundPath || canonicalPath,
+          docId
+        });
+      }
+    }
+    
+    return res.status(200).json({
+      success: true,
+      canonicalPath,
+      samples,
+      totalFound: samples.length
+    });
+    
+  } catch (error) {
+    console.error('Value preview error:', error);
+    return res.status(500).json({
+      error: 'Failed to fetch value preview',
+      details: error instanceof Error ? error.message : String(error)
+    });
+  }
+}
+
 export default {
   getAttributes,
   createAttribute,
@@ -649,5 +773,6 @@ export default {
   deleteAttribute,
   seedAttributes,
   proposeMapping,
-  suggestAliases
+  suggestAliases,
+  getValuePreview
 };
