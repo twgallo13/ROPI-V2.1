@@ -188,13 +188,33 @@ export function groupAttributesByPath(attributes: AttributeData[]): GroupedAttri
     group.tags = Array.from(tagSet);
   }
   
-  return Array.from(groupMap.values()).sort((a, b) => {
-    // Sort by category then display name
-    if (a.primaryAttribute.category !== b.primaryAttribute.category) {
-      return a.primaryAttribute.category.localeCompare(b.primaryAttribute.category);
-    }
-    return a.displayName.localeCompare(b.displayName);
-  });
+  // DEBUG INSTRUMENTATION - localeCompare safety check
+  const groups = Array.from(groupMap.values());
+  try {
+    return groups.sort((a, b) => {
+      // Sort by category then display name
+      const aCat = String(a.primaryAttribute?.category || '');
+      const bCat = String(b.primaryAttribute?.category || '');
+      if (aCat !== bCat) {
+        return aCat.localeCompare(bCat);
+      }
+      const aName = String(a.displayName || '');
+      const bName = String(b.displayName || '');
+      return aName.localeCompare(bName);
+    });
+  } catch (err) {
+    console.error('[localeCompare-debug] sort error in attributeGrouping', {
+      err: err && (err as Error).message,
+      totalGroups: groups.length,
+      firstItems: groups.slice(0, 5).map(x => ({
+        canonicalPath: x.canonicalPath,
+        displayName: x.displayName,
+        primaryCategory: x.primaryAttribute?.category,
+        primaryKeys: x.primaryAttribute ? Object.keys(x.primaryAttribute) : []
+      }))
+    });
+    throw err;
+  }
 }
 
 /**
