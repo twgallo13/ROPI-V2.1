@@ -8,7 +8,7 @@
 
 **PR:** #123 - https://github.com/twgallo13/ROPI-V2.1/pull/123
 
-**Status:** ⚠️ Awaiting Lisa's approval - DO NOT MERGE
+**Status:** ✅ MERGED to main (commit 5772dcf) - Staging verified, no localeCompare errors
 
 **Problem:** Recurring `TypeError: Cannot read properties of undefined (reading 'localeCompare')` on staging ACC after PR #118 conflict resolution.
 
