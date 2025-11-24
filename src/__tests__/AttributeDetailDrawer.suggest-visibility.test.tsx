@@ -16,6 +16,15 @@ vi.mock('../config/appConfig', async () => {
   };
 });
 
+// Mock AuthContext
+vi.mock('../contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: { email: 'test@example.com', displayName: 'Test User' },
+    role: 'editor',
+    loading: false
+  })
+}));
+
 // Mock fetch
 global.fetch = vi.fn();
 

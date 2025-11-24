@@ -227,16 +227,30 @@ export default function AttributesCommandCenter() {
     }
   }
 
+  const roleDisplay = {
+    viewer: 'Viewer',
+    editor: 'Editor',
+    admin: 'Administrator'
+  }[role || 'viewer'] || 'Viewer';
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Main Content Area */}
       <div className={`flex-1 flex flex-col ${sandboxOpen ? 'w-2/3' : 'w-full'}`}>
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6">
-          <h1 className="text-2xl font-bold mb-2">Attribute Command Center</h1>
-          <p className="text-indigo-100">
-            Manage canonical attributes and AI policies — import/export flags, foundation attributes, and audit trails
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold mb-2">Attribute Command Center</h1>
+              <p className="text-indigo-100">
+                Manage canonical attributes and AI policies — import/export flags, foundation attributes, and audit trails
+              </p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/30">
+              <p className="text-xs text-indigo-100 uppercase tracking-wide">Your Role</p>
+              <p className="text-white font-medium">{roleDisplay}</p>
+            </div>
+          </div>
         </div>
 
         {/* Toolbar */}
