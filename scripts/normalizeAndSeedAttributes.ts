@@ -247,40 +247,71 @@ function normalizeAttributes(attributes: AttributeMetadata[]): AttributeMetadata
       normalized.normalizationNote = 'Canonicalized from legacy "collection" field';
     }
     
-    // v3.3.0: For attributes with allowedValuesRef, attempt to denormalize if we have sample values
-    // TODO v3.4: Extend to actually fetch from settings/lists/* collection
-    if (attr.validation?.allowedValuesRef && attr.examples.sampleValues.length > 0) {
-      if (!normalized.validation) {
-        normalized.validation = { ...attr.validation };
-      }
-      // Use sample values as a fallback until we wire up full vocab resolution
-      normalized.validation.allowedValues = attr.examples.sampleValues;
-      normalized.normalizationNote = (normalized.normalizationNote || '') + 
-        ' | Vocab values denormalized from samples (TODO: wire to settings/lists/*)';
-    }
+    // v3.3.0: allowedValuesRef will be resolved during seeding phase
+    // The seedFirestore function now handles denormalization from Firestore collections
 
     return normalized;
   });
 }
 
 /**
+ * Resolve allowedValuesRef from Firestore collection
+ * v3.3.0: Denormalize vocab values from settings/lists/* collections
+ */
+async function resolveAllowedValuesRef(db: any, refPath: string): Promise<string[]> {
+  try {
+    // Parse the ref path (e.g., "settings/lists/colors" or "settings/vocab/sizes")
+    // Split and build collection reference
+    const pathParts = refPath.split('/');
+    
+    if (pathParts.length < 2) {
+      console.warn(`  ⚠ Invalid allowedValuesRef format: ${refPath}`);
+      return [];
+    }
+    
+    // Build collection ref dynamically
+    let collectionRef: any = db;
+    for (let i = 0; i < pathParts.length; i++) {
+      if (i % 2 === 0) {
+        // Collection
+        collectionRef = collectionRef.collection(pathParts[i]);
+      } else {
+        // Document
+        collectionRef = collectionRef.doc(pathParts[i]);
+      }
+    }
+    
+    // Get documents from the collection
+    const snapshot = await collectionRef.get();
+    
+    if (!snapshot || !snapshot.docs) {
+      console.warn(`  ⚠ No documents found at ${refPath}`);
+      return [];
+    }
+    
+    // Extract values from docs (try common field names: value, name, label, or use doc ID)
+    const values = snapshot.docs
+      .map((doc: any) => {
+        const data = doc.data();
+        return data?.value || data?.name || data?.label || doc.id;
+      })
+      .filter((v: any) => v && typeof v === 'string');
+    
+    console.log(`  ✓ Resolved ${values.length} values from ${refPath}`);
+    return values;
+    
+  } catch (error) {
+    console.error(`  ✗ Error resolving ${refPath}:`, error);
+    return [];
+  }
+}
+
+/**
  * Seed Firestore settings/attributes/* collection
+ * v3.3.0: Now denormalizes allowedValuesRef to allowedValues array
  */
 async function seedFirestore(attributes: AttributeMetadata[], dryRun: boolean): Promise<void> {
-  if (dryRun) {
-    console.log('\n[DRY RUN] Would seed to Firestore settings/attributes/*');
-    console.log(`Total attributes: ${attributes.length}\n`);
-    
-    // Show sample
-    console.log('Sample attribute (descriptive.sportsTeam):');
-    const sample = attributes.find(a => a.canonicalPath === 'descriptive.sportsTeam');
-    if (sample) {
-      console.log(JSON.stringify(sample, null, 2));
-    }
-    return;
-  }
-
-  // Initialize Firebase Admin
+  // Initialize Firebase Admin (needed even for dry-run to resolve refs)
   const serviceAccountPath = path.join(__dirname, '../service-account.json');
   if (!fs.existsSync(serviceAccountPath)) {
     throw new Error('service-account.json not found. Cannot seed Firestore.');
@@ -292,6 +323,47 @@ async function seedFirestore(attributes: AttributeMetadata[], dryRun: boolean): 
   });
 
   const db = getFirestore();
+  
+  // v3.3.0: Resolve all allowedValuesRef before seeding
+  console.log('\n✓ Resolving allowedValuesRef for attributes...');
+  let resolvedCount = 0;
+  
+  for (const attr of attributes) {
+    if (attr.validation?.allowedValuesRef) {
+      const refPath = attr.validation.allowedValuesRef;
+      console.log(`  Resolving ${attr.canonicalPath} → ${refPath}`);
+      
+      const allowedValues = await resolveAllowedValuesRef(db, refPath);
+      
+      if (allowedValues.length > 0) {
+        if (!attr.validation) {
+          attr.validation = {};
+        }
+        attr.validation.allowedValues = allowedValues;
+        resolvedCount++;
+      }
+    }
+  }
+  
+  console.log(`✓ Resolved ${resolvedCount} allowedValuesRef references\n`);
+  
+  if (dryRun) {
+    console.log('[DRY RUN] Would seed to Firestore settings/attributes/*');
+    console.log(`Total attributes: ${attributes.length}\n`);
+    
+    // Show sample with denormalized values
+    const sampleWithVocab = attributes.find(a => 
+      a.validation?.allowedValues && a.validation.allowedValues.length > 0
+    );
+    
+    if (sampleWithVocab) {
+      console.log('Sample attribute with denormalized allowedValues:');
+      console.log(JSON.stringify(sampleWithVocab, null, 2));
+    }
+    
+    return;
+  }
+
   const batch = db.batch();
   let count = 0;
 
