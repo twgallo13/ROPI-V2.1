@@ -14,6 +14,16 @@ import type {
 } from '../types/ai-output';
 
 /**
+ * Minimal product interface for renderer
+ */
+interface RenderProduct {
+  id?: string;
+  sku?: string;
+  familySizing?: boolean;
+  [key: string]: unknown;
+}
+
+/**
  * Escape HTML to prevent XSS
  */
 function escapeHtml(unsafe: string): string {
@@ -53,7 +63,7 @@ function renderFaq(faq?: Array<{question: string; answer: string}>): string {
  */
 function renderFootwearAdult(
   structured: ROPIStructuredDescription,
-  product: any
+  product: RenderProduct
 ): RopiHtmlResult {
   const blocks: ROPIHtmlBlocks = {};
   const sections: string[] = [];
@@ -124,7 +134,7 @@ function renderFootwearAdult(
  */
 function renderFootwearGs(
   structured: ROPIStructuredDescription,
-  product: any
+  product: RenderProduct
 ): RopiHtmlResult {
   const blocks: ROPIHtmlBlocks = {};
   const sections: string[] = [];
@@ -181,7 +191,7 @@ function renderFootwearGs(
  */
 function renderFootwearToddler(
   structured: ROPIStructuredDescription,
-  product: any
+  product: RenderProduct
 ): RopiHtmlResult {
   const blocks: ROPIHtmlBlocks = {};
   const sections: string[] = [];
@@ -232,7 +242,7 @@ function renderFootwearToddler(
  */
 function renderApparel(
   structured: ROPIStructuredDescription,
-  product: any
+  product: RenderProduct
 ): RopiHtmlResult {
   const blocks: ROPIHtmlBlocks = {};
   const sections: string[] = [];
@@ -289,7 +299,7 @@ function renderApparel(
  */
 function renderAccessories(
   structured: ROPIStructuredDescription,
-  product: any
+  product: RenderProduct
 ): RopiHtmlResult {
   const blocks: ROPIHtmlBlocks = {};
   const sections: string[] = [];
@@ -340,7 +350,7 @@ function renderAccessories(
  */
 function renderDefault(
   structured: ROPIStructuredDescription,
-  product: any
+  product: RenderProduct
 ): RopiHtmlResult {
   const blocks: ROPIHtmlBlocks = {};
   const sections: string[] = [];

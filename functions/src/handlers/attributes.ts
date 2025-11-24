@@ -190,7 +190,12 @@ export async function updateAttribute(req: RequestWithUser, res: Response) {
       return res.status(404).json({ error: 'Attribute not found' });
     }
     
-    const existingAttribute = doc.data() as AttributeData;
+    const existingAttributeRaw = doc.data();
+    if (!existingAttributeRaw) {
+      console.error('Missing document data for attribute', doc.id);
+      return res.status(500).json({ error: 'Attribute document data missing' });
+    }
+    const existingAttribute = existingAttributeRaw as AttributeData;
     
     // Merge updates with existing data
     const updatedAttribute: AttributeData & { audit: Record<string, unknown> } = {
@@ -257,7 +262,12 @@ export async function deleteAttribute(req: RequestWithUser, res: Response) {
       return res.status(404).json({ error: 'Attribute not found' });
     }
     
-    const existingAttribute = doc.data();
+    const existingAttributeRaw = doc.data();
+    if (!existingAttributeRaw) {
+      console.error('Missing document data for attribute', doc.id);
+      return res.status(500).json({ error: 'Attribute document data missing' });
+    }
+    const existingAttribute = existingAttributeRaw;
     const now = new Date().toISOString();
     
     // Soft delete by marking as deprecated
@@ -539,14 +549,24 @@ export async function suggestAliases(req: Request, res: Response) {
 
 // Helper functions
 
-function createAuditEntry(db: admin.firestore.Firestore, entry: Record<string, unknown>) {
-  const timestamp = (entry.timestamp as string) || new Date().toISOString();
+function createAuditEntry(db: admin.firestore.Firestore, entry: {
+  action: string;
+  canonicalPath?: string;
+  user?: string;
+  timestamp?: string;
+  changes?: unknown;
+  previous?: admin.firestore.DocumentData | undefined;
+}) {
+  const timestamp = entry.timestamp || new Date().toISOString();
   const auditRef = db.collection('settings')
     .doc('attributes')
     .collection('audit')
     .doc(timestamp.replace(/[:.]/g, '-'));
   
-  return auditRef.set(entry);
+  return auditRef.set({
+    ...entry,
+    previous: entry.previous ?? null
+  } as admin.firestore.DocumentData);
 }
 
 function incrementVersion(version: string): string {
