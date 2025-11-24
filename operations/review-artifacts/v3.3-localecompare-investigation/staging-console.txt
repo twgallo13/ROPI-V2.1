@@ -1,0 +1,9 @@
+Staging ACC Console Log - 2025-11-23
+URL: https://ropi-bccee.web.app/settings/attributes
+
+Note: Browser opened for manual verification. If error reproduces, will capture:
+- Full console log showing TypeError
+- Bundle hash from network tab
+- Screenshot of white screen / error state
+
+Proceeding with code investigation while staging loads...

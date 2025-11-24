@@ -259,7 +259,12 @@ function main() {
   }
   
   // Sort attributes by canonicalPath for consistency
-  attributes.sort((a, b) => a.canonicalPath.localeCompare(b.canonicalPath));
+  // Guard against undefined to avoid localeCompare errors
+  attributes.sort((a, b) => {
+    const aPath = String(a.canonicalPath || '');
+    const bPath = String(b.canonicalPath || '');
+    return aPath.localeCompare(bPath);
+  });
   
   // Write back to file
   fs.writeFileSync(registryPath, JSON.stringify(attributes, null, 2) + '\n', 'utf-8');

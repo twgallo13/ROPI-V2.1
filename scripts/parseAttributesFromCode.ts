@@ -293,9 +293,11 @@ async function main() {
 
   // Output attribute registry
   const outputPath = path.join(rootDir, 'scripts/attribute-registry.json');
-  const registry = Array.from(attributes.values()).sort((a, b) => 
-    a.canonicalPath.localeCompare(b.canonicalPath)
-  );
+  const registry = Array.from(attributes.values()).sort((a, b) => {
+    const aPath = String(a.canonicalPath || '');
+    const bPath = String(b.canonicalPath || '');
+    return aPath.localeCompare(bPath);
+  });
 
   fs.writeFileSync(outputPath, JSON.stringify(registry, null, 2));
   console.log(`\n✓ Wrote attribute registry to ${outputPath}`);

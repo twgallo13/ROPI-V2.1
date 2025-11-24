@@ -42,7 +42,12 @@ const AttributeKeyPage: React.FC = () => {
         loaded.push(doc.data() as AttributeMetadata);
       });
 
-      loaded.sort((a, b) => a.canonicalPath.localeCompare(b.canonicalPath));
+      // Guard against undefined canonicalPath to avoid localeCompare TypeError
+      loaded.sort((a, b) => {
+        const aPath = String(a.canonicalPath || '');
+        const bPath = String(b.canonicalPath || '');
+        return aPath.localeCompare(bPath);
+      });
       setAttributes(loaded);
       setError(null);
     } catch (err) {
