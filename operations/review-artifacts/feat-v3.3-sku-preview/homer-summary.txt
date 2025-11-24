@@ -1,0 +1,76 @@
+feat/v3.3-sku-preview — Product Value Sample Preview
+
+**Branch:** feat/v3.3-sku-preview
+**Status:** ✅ Ready for Review
+
+## Summary
+
+Added "Show sample SKUs" feature to Attribute Detail Drawer (Validation tab) that displays concrete product examples showing SKU, value, and raw field path for a canonical attribute.
+
+## Changes Made
+
+### Backend (Cloud Functions)
+
+**File:** `functions/src/handlers/attributes.ts`
+- Added `getValuePreview()` function
+- Queries products collection for up to 50 docs (configurable limit)
+- Navigates nested product structure using canonical path
+- Returns array of samples with SKU, value, rawPath, docId
+
+**File:** `functions/src/api/index.ts`
+- Added route: `GET /api/attributes/value-preview?path=<canonicalPath>&limit=<number>`
+
+### Frontend (Client)
+
+**File:** `src/hooks/useAttributeValuePreview.ts` (NEW)
+- React hook for fetching value preview
+- Manages loading, samples, and error states
+- Returns `{ samples, loading, error, load }` interface
+
+**File:** `src/pages/settings/components/AttributeDetailDrawer.tsx`
+- Import added: `useAttributeValuePreview` hook
+- Hook instantiated with `formData.canonicalPath`
+- UI section added below "Current Product Values":
+  - "Show sample SKUs" button
+  - Sample cards showing SKU, Value, Raw Path
+  - Error handling display
+  - Loading state
+
+## Validation
+
+### CI Checks
+- ✅ Lint: 0 errors, 334 warnings (pre-existing)
+- ✅ Tests: 225 passed, 9 skipped (13.00s)
+- ✅ Build: Clean build 4.41s → bundle `index-i2uahm_-.js` (1,169.15 kB)
+
+### Logs
+- `operations/review-artifacts/feat-v3.3-sku-preview/npm-lint.log`
+- `operations/review-artifacts/feat-v3.3-sku-preview/npm-test.log`
+- `operations/review-artifacts/feat-v3.3-sku-preview/npm-build.log`
+
+## What's Next
+
+1. **Manual Testing:** Deploy to staging and verify:
+   - Click "Show sample SKUs" button in Attribute Detail Drawer
+   - Verify API returns correct samples from products collection
+   - Confirm SKU, value, and raw path are displayed correctly
+   - Test with different canonical paths
+
+2. **Seeder & Deploy:** (Done in separate branch)
+   - chore/v3.3-seeder-denorm will handle seeder updates
+   - Staging deployment will test end-to-end
+
+3. **PR Review:** Ready for Lisa's approval
+
+## Files Changed
+
+```
+functions/src/handlers/attributes.ts (+ ~70 lines)
+functions/src/api/index.ts (+ ~4 lines)
+src/hooks/useAttributeValuePreview.ts (NEW, 61 lines)
+src/pages/settings/components/AttributeDetailDrawer.tsx (+ ~50 lines)
+```
+
+## One-Line Summary
+
+Added product value sample preview (SKU, value, raw path) accessible via "Show sample SKUs" button in Attribute Detail Drawer → Validation tab

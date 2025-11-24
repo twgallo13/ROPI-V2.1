@@ -93,6 +93,10 @@ app.post('/api/attributes/suggest', (req, res, next) => {
   Promise.resolve(attributesHandler.suggestAliases(req, res)).catch(next);
 });
 
+app.get('/api/attributes/value-preview', (req, res, next) => {
+  Promise.resolve(attributesHandler.getValuePreview(req, res)).catch(next);
+});
+
 // Root endpoint for health checks
 app.all('/', (req, res) => {
   res.status(200).json({ 
