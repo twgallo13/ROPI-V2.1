@@ -1,0 +1,6 @@
+.firebase/hosting.ZGlzdA.cache
+src/__tests__/SandboxPanel.propose-mapping.test.tsx
+src/pages/ImportPage.tsx
+src/pages/settings/components/SandboxPanel.tsx
+src/setupTests.ts
+src/utils/readFileText.ts

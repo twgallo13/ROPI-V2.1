@@ -1,0 +1,1318 @@
+
+> react-typescript-starter@0.0.0 test
+> vitest --run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.9 [39m[90m/workspaces/ROPI-V2.1[39m
+
+ [32m✓[39m src/__tests__/DescriptionPanel.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 500[2mms[22m[39m
+     [33m[2m✓[22m[39m triggers loadDescription when Generate button is clicked [33m 333[2mms[22m[39m
+[90mstdout[2m | src/__tests__/AttributesCommandCenter.test.tsx
+[22m[39mLoaded env: {
+  GITHUB_TOKEN: [32m'ghu_aFexSG41oNhBKZdaeTtceQbIrrntah0vEBj0'[39m,
+  DOCKER_BUILDKIT: [32m'1'[39m,
+  LESSOPEN: [32m'| /usr/bin/lesspipe %s'[39m,
+  ENABLE_DYNAMIC_INSTALL: [32m'true'[39m,
+  GITHUB_CODESPACE_TOKEN: [32m'BVDIZAYWGHYDLFWCBEY6XNLJEQGNRANCNFSM4ARG4TKA'[39m,
+  PYTHONIOENCODING: [32m'UTF-8'[39m,
+  USER: [32m'codespace'[39m,
+  npm_config_user_agent: [32m'npm/9.8.1 node/v22.17.0 linux x64 workspaces/false'[39m,
+  NVS_ROOT: [32m'/usr/local/nvs'[39m,
+  GIT_EDITOR: [32m'code --wait'[39m,
+  RVM_PATH: [32m'/usr/local/rvm'[39m,
+  FEATURE_SPARK_POST_COMMIT_CREATE_ITERATION: [32m'true'[39m,
+  HOSTNAME: [32m'codespaces-868ac7'[39m,
+  GIT_ASKPASS: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/extensions/git/dist/askpass.sh'[39m,
+  PIPX_HOME: [32m'/usr/local/py-utils'[39m,
+  CONDA_SCRIPT: [32m'/opt/conda/etc/profile.d/conda.sh'[39m,
+  DOTNET_USE_POLLING_FILE_WATCHER: [32m'true'[39m,
+  npm_node_execpath: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin/node'[39m,
+  GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN: [32m'app.github.dev'[39m,
+  SHLVL: [32m'2'[39m,
+  BROWSER: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/bin/helpers/browser.sh'[39m,
+  npm_config_noproxy: [32m''[39m,
+  HUGO_ROOT: [32m'/home/codespace/.hugo'[39m,
+  HOME: [32m'/home/codespace'[39m,
+  OLDPWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  TERM_PROGRAM_VERSION: [32m'1.106.2'[39m,
+  ORYX_ENV_TYPE: [32m'vsonline-present'[39m,
+  NVM_BIN: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin'[39m,
+  VSCODE_IPC_HOOK_CLI: [32m'/tmp/vscode-ipc-2fc09eaf-beb1-4e06-9dcd-430de1825794.sock'[39m,
+  npm_package_json: [32m'/workspaces/ROPI-V2.1/package.json'[39m,
+  NVM_INC: [32m'/usr/local/share/nvm/versions/node/v22.17.0/include/node'[39m,
+  CODESPACES: [32m'true'[39m,
+  PIPX_BIN_DIR: [32m'/usr/local/py-utils/bin'[39m,
+  DYNAMIC_INSTALL_ROOT_DIR: [32m'/opt'[39m,
+  NVM_SYMLINK_CURRENT: [32m'true'[39m,
+  DOTNET_RUNNING_IN_CONTAINER: [32m'true'[39m,
+  GRADLE_HOME: [32m'/usr/local/sdkman/candidates/gradle/current'[39m,
+  ORYX_DIR: [32m'/usr/local/oryx'[39m,
+  VSCODE_GIT_ASKPASS_MAIN: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/extensions/git/dist/askpass-main.js'[39m,
+  VSCODE_GIT_ASKPASS_NODE: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/node'[39m,
+  MAVEN_HOME: [32m'/usr/local/sdkman/candidates/maven/current'[39m,
+  JUPYTERLAB_PATH: [32m'/home/codespace/.local/bin'[39m,
+  npm_config_userconfig: [32m'/home/codespace/.npmrc'[39m,
+  npm_config_local_prefix: [32m'/workspaces/ROPI-V2.1'[39m,
+  GOROOT: [32m'/usr/local/go'[39m,
+  VSCODE_PYTHON_AUTOACTIVATE_GUARD: [32m'1'[39m,
+  NODE_ROOT: [32m'/home/codespace/nvm'[39m,
+  COLORTERM: [32m'truecolor'[39m,
+  GITHUB_USER: [32m'twgallo13'[39m,
+  GITHUB_GRAPHQL_URL: [32m'https://api.github.com/graphql'[39m,
+  COLOR: [32m'0'[39m,
+  PYTHON_PATH: [32m'/usr/local/python/current'[39m,
+  NVM_DIR: [32m'/usr/local/share/nvm'[39m,
+  DEBUGINFOD_URLS: [32m'https://debuginfod.ubuntu.com '[39m,
+  npm_config_metrics_registry: [32m'https://registry.npmjs.org/'[39m,
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: [32m'1'[39m,
+  ContainerVersion: [32m'13'[39m,
+  GITHUB_API_URL: [32m'https://api.github.com'[39m,
+  NVS_HOME: [32m'/usr/local/nvs'[39m,
+  rvm_bin_path: [32m'/usr/local/rvm/bin'[39m,
+  SDKMAN_CANDIDATES_API: [32m'https://api.sdkman.io/2'[39m,
+  _: [32m'/home/codespace/nvm/current/bin/npm'[39m,
+  npm_config_prefix: [32m'/usr/local/share/nvm/versions/node/v22.17.0'[39m,
+  npm_config_npm_version: [32m'9.8.1'[39m,
+  CLOUDENV_ENVIRONMENT_ID: [32m'b103cb16-9561-4a0e-ad81-4b7e69c0d077'[39m,
+  RUBY_VERSION: [32m'ruby-3.4.1'[39m,
+  PROMPT_DIRTRIM: [32m'4'[39m,
+  IRBRC: [32m'/usr/local/rvm/rubies/ruby-3.4.1/.irbrc'[39m,
+  TERM: [32m'xterm-256color'[39m,
+  npm_config_cache: [32m'/home/codespace/.npm'[39m,
+  DOTNET_ROOT: [32m'/usr/share/dotnet'[39m,
+  NVS_DIR: [32m'/usr/local/nvs'[39m,
+  PHP_ROOT: [32m'/home/codespace/.php'[39m,
+  npm_config_node_gyp: [32m'/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js'[39m,
+  PATH: [32m'/workspaces/ROPI-V2.1/node_modules/.bin:/workspaces/node_modules/.bin:/node_modules/.bin:/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/usr/local/rvm/gems/ruby-3.4.1/bin:/usr/local/rvm/gems/ruby-3.4.1@global/bin:/usr/local/rvm/rubies/ruby-3.4.1/bin:/home/codespace/.vscode-remote/data/User/globalStorage/github.copilot-chat/debugCommand:/home/codespace/.vscode-remote/data/User/globalStorage/github.copilot-chat/copilotCli:/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/bin/remote-cli:/home/codespace/.local/bin:/home/codespace/.dotnet:/home/codespace/nvm/current/bin:/home/codespace/.php/current/bin:/home/codespace/.python/current/bin:/home/codespace/java/current/bin:/home/codespace/.ruby/current/bin:/home/codespace/.local/bin:/usr/local/python/current/bin:/usr/local/py-utils/bin:/usr/local/jupyter:/usr/local/oryx:/usr/local/go/bin:/go/bin:/usr/local/sdkman/bin:/usr/local/sdkman/candidates/java/current/bin:/usr/local/sdkman/candidates/gradle/current/bin:/usr/local/sdkman/candidates/maven/current/bin:/usr/local/sdkman/candidates/ant/current/bin:/usr/local/rvm/gems/default/bin:/usr/local/rvm/gems/default@global/bin:/usr/local/rvm/rubies/default/bin:/usr/local/share/rbenv/bin:/usr/local/php/current/bin:/opt/conda/bin:/usr/local/nvs:/usr/local/share/nvm/versions/node/v22.17.0/bin:/usr/local/hugo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/dotnet:/home/codespace/.dotnet/tools:/usr/local/rvm/bin'[39m,
+  JAVA_ROOT: [32m'/home/codespace/java'[39m,
+  SDKMAN_CANDIDATES_DIR: [32m'/usr/local/sdkman/candidates'[39m,
+  NODE: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin/node'[39m,
+  npm_package_name: [32m'react-typescript-starter'[39m,
+  NPM_GLOBAL: [32m'/home/codespace/.npm-global'[39m,
+  HUGO_DIR: [32m'/usr/local/hugo/bin'[39m,
+  SHELL_LOGGED_IN: [32m'true'[39m,
+  MY_RUBY_HOME: [32m'/usr/local/rvm/rubies/ruby-3.4.1'[39m,
+  LANG: [32m'C.UTF-8'[39m,
+  LS_COLORS: [32m'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:'[39m,
+  VSCODE_GIT_IPC_HANDLE: [32m'/tmp/vscode-git-5e09547bac.sock'[39m,
+  SDKMAN_DIR: [32m'/usr/local/sdkman'[39m,
+  GITHUB_REPOSITORY: [32m'twgallo13/ROPI-V2.1'[39m,
+  RUBY_ROOT: [32m'/home/codespace/.ruby'[39m,
+  SDKMAN_PLATFORM: [32m'linuxx64'[39m,
+  TERM_PROGRAM: [32m'vscode'[39m,
+  npm_lifecycle_script: [32m'vitest'[39m,
+  SHELL: [32m'/bin/bash'[39m,
+  GOPATH: [32m'/go'[39m,
+  npm_package_version: [32m'0.0.0'[39m,
+  npm_lifecycle_event: [32m'test'[39m,
+  rvm_prefix: [32m'/usr/local'[39m,
+  GEM_HOME: [32m'/usr/local/rvm/gems/ruby-3.4.1'[39m,
+  LESSCLOSE: [32m'/usr/bin/lesspipe %s %s'[39m,
+  ORYX_PREFER_USER_INSTALLED_SDKS: [32m'true'[39m,
+  ORYX_SDK_STORAGE_BASE_URL: [32m'https://oryx-cdn.microsoft.io'[39m,
+  rvm_version: [32m'1.29.12 (latest)'[39m,
+  CONDA_DIR: [32m'/opt/conda'[39m,
+  DEBIAN_FLAVOR: [32m'focal-scm'[39m,
+  VSCODE_GIT_ASKPASS_EXTRA_ARGS: [32m''[39m,
+  GIT_PAGER: [32m'cat'[39m,
+  npm_config_globalconfig: [32m'/usr/local/share/nvm/versions/node/v22.17.0/etc/npmrc'[39m,
+  npm_config_init_module: [32m'/home/codespace/.npm-init.js'[39m,
+  JAVA_HOME: [32m'/usr/local/sdkman/candidates/java/current'[39m,
+  NVS_USE_XZ: [32m'1'[39m,
+  PWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  INTERNAL_VSCS_TARGET_URL: [32m'https://westus3.online.visualstudio.com'[39m,
+  GEM_PATH: [32m'/usr/local/rvm/gems/ruby-3.4.1:/usr/local/rvm/gems/ruby-3.4.1@global'[39m,
+  npm_execpath: [32m'/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/bin/npm-cli.js'[39m,
+  GITHUB_SERVER_URL: [32m'https://github.com'[39m,
+  NVM_CD_FLAGS: [32m''[39m,
+  npm_config_global_prefix: [32m'/usr/local/share/nvm/versions/node/v22.17.0'[39m,
+  npm_command: [32m'test'[39m,
+  CODESPACE_NAME: [32m'scaling-robot-7v499w6pq9x6cppxx'[39m,
+  PYTHON_ROOT: [32m'/home/codespace/.python'[39m,
+  NVS_OS: [32m'linux'[39m,
+  PHP_PATH: [32m'/usr/local/php/current'[39m,
+  RAILS_DEVELOPMENT_HOSTS: [32m'.githubpreview.dev,.preview.app.github.dev,.app.github.dev'[39m,
+  CODESPACE_VSCODE_FOLDER: [32m'/workspaces/ROPI-V2.1'[39m,
+  MAVEN_ROOT: [32m'/home/codespace/.maven'[39m,
+  RUBY_HOME: [32m'/usr/local/rvm/rubies/default'[39m,
+  rvm_path: [32m'/usr/local/rvm'[39m,
+  NUGET_XMLDOC_MODE: [32m'skip'[39m,
+  INIT_CWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  EDITOR: [32m'vi'[39m,
+  TEST: [32m'true'[39m,
+  VITEST: [32m'true'[39m,
+  NODE_ENV: [32m'test'[39m,
+  PROD: [32m''[39m,
+  DEV: [32m'1'[39m,
+  VITE_FIREBASE_API_KEY: [32m'AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8'[39m,
+  VITE_FIREBASE_AUTH_DOMAIN: [32m'ropi-bccee.firebaseapp.com'[39m,
+  VITE_FIREBASE_PROJECT_ID: [32m'ropi-bccee'[39m,
+  VITE_FIREBASE_STORAGE_BUCKET: [32m'ropi-bccee.appspot.com'[39m,
+  VITE_FIREBASE_MESSAGING_SENDER_ID: [32m'892791174441'[39m,
+  VITE_FIREBASE_APP_ID: [32m'1:892791174441:web:2ea5843a253b167d12b338'[39m,
+  VITE_ORG_DOMAIN: [32m'shiekhshoes.org'[39m,
+  VITE_ADMIN_EMAILS: [32m'theo@shiekhshoes.org'[39m,
+  VITE_EDITOR_V2: [32m'true'[39m,
+  BASE_URL: [32m'/'[39m,
+  MODE: [32m'test'[39m,
+  VITEST_MODE: [32m'RUN'[39m,
+  FORCE_TTY: [32m''[39m,
+  VITEST_POOL_ID: [32m'2'[39m,
+  VITEST_WORKER_ID: [32m'2'[39m,
+  SSR: [32m''[39m
+}
+
+[90mstderr[2m | src/__tests__/AttributesCommandCenter.test.tsx[2m > [22m[2mAttributesCommandCenter[2m > [22m[2mshould render the command center header
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+[90mstderr[2m | src/__tests__/AttributesCommandCenter.test.tsx[2m > [22m[2mAttributesCommandCenter[2m > [22m[2mshould render the command center header
+[22m[39mAn update to AttributesCommandCenter inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AttributesCommandCenter inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AttributesCommandCenter inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould show Suggest button when AI_SUGGEST feature flag is true and user is editor
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould show Suggest button when AI_SUGGEST feature flag is true and user is editor
+[22m[39mAn update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould hide Suggest button when AI_SUGGEST feature flag is false
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould hide Suggest button when AI_SUGGEST feature flag is false
+[22m[39mAn update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould disable Suggest button when user lacks editor role (isEditable=false)
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould disable Suggest button when user lacks editor role (isEditable=false)
+[22m[39mAn update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ [32m✓[39m src/__tests__/AttributesCommandCenter.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 703[2mms[22m[39m
+     [33m[2m✓[22m[39m should show foundation indicator for foundation attributes [33m 305[2mms[22m[39m
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould enable Suggest button for editor role (isEditable=true)
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould enable Suggest button for editor role (isEditable=true)
+[22m[39mAn update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to AttributeDetailDrawer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould call /api/attributes/suggest when Suggest button is clicked
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould merge AI suggestions with existing aliases without duplicates
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+Not implemented: Window's alert() method
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould show detailed error message when suggest API fails
+[22m[39m[attributeValuePreview] Error fetching preview: FirebaseError: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at getApp [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/app/dist/esm/index.esm.js:726:29[90m)[39m
+    at getFirestore [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@firebase[24m/firestore/dist/index.node.mjs:29063:73[90m)[39m
+    at getAttributeValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/utils/attributeValuePreview.ts:35:16[90m)[39m
+    at loadValuePreview [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:61:29[90m)[39m
+    at [90m/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:52:7
+    at Object.react_stack_bottom_frame [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:25989:20[90m)[39m
+    at runWithFiberInDEV [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:874:13[90m)[39m
+    at commitHookEffectListMount [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13249:29[90m)[39m
+    at commitHookPassiveMountEffects [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:13336:11[90m)[39m
+    at commitPassiveMountOnFiber [90m(/workspaces/ROPI-V2.1/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15484:13[90m)[39m {
+  code: [32m'app/no-app'[39m,
+  customData: { appName: [32m'[DEFAULT]'[39m }
+}
+
+[90mstderr[2m | src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx[2m > [22m[2mAttributeDetailDrawer - Suggest button visibility[2m > [22m[2mshould show detailed error message when suggest API fails
+[22m[39mAI Suggest error: Error: AI service unavailable
+    at handleAiSuggestAliases [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/AttributeDetailDrawer.tsx:121:15[90m)[39m
+
+ [32m✓[39m src/__tests__/AttributeDetailDrawer.suggest-visibility.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 1461[2mms[22m[39m
+     [33m[2m✓[22m[39m should show Suggest button when AI_SUGGEST feature flag is true and user is editor [33m 556[2mms[22m[39m
+[90mstderr[2m | src/__tests__/AttributeKeyPage.test.tsx[2m > [22m[2mAttributeKeyPage[2m > [22m[2mhandles Firestore error gracefully
+[22m[39mFailed to load attributes: Error: Firestore unavailable
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/AttributeKeyPage.test.tsx:209:37
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+Not implemented: navigation to another Document
+[90mstderr[2m | src/__tests__/AttributeKeyPage.test.tsx[2m > [22m[2mAttributeKeyPage[2m > [22m[2mloads fallback JSON when Firestore fails
+[22m[39mFailed to load attributes: Error: Firestore unavailable
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/AttributeKeyPage.test.tsx:225:37
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+ [32m✓[39m src/__tests__/AttributeKeyPage.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 418[2mms[22m[39m
+[90mstderr[2m | src/__tests__/MappingReview.dynamic.test.tsx[2m > [22m[2mMappingReview - Dynamic Registry Integration[2m > [22m[2mshould handle registry load error gracefully
+[22m[39m[MappingReview] Failed to load attribute registry: Error: Firestore connection failed
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/MappingReview.dynamic.test.tsx:239:7
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+ [32m✓[39m src/__tests__/MappingReview.dynamic.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 263[2mms[22m[39m
+ [32m✓[39m src/__tests__/ProductEditorV2.ai.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 308[2mms[22m[39m
+[90mstderr[2m | src/__tests__/SandboxPanel.propose-mapping.test.tsx[2m > [22m[2mSandboxPanel - propose-mapping endpoint[2m > [22m[2mshould handle CSV upload errors gracefully and show detailed error message
+[22m[39mFile upload error: Error: Invalid CSV format
+    at handleFileUpload [90m(/workspaces/ROPI-V2.1/[39msrc/pages/settings/components/SandboxPanel.tsx:92:15[90m)[39m
+
+ [32m✓[39m src/__tests__/SandboxPanel.propose-mapping.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 181[2mms[22m[39m
+[90mstderr[2m | src/__tests__/SmartDetectPanel.persist.test.tsx[2m > [22m[2mSmartDetectPanel - Persist and Undo[2m > [22m[2mshould show error toast on persist failure
+[22m[39mFailed to apply suggestion: Error: Firestore error
+    at [90m/workspaces/ROPI-V2.1/[39msrc/__tests__/SmartDetectPanel.persist.test.tsx:342:38
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:157:11
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:753:26
+    at [90mfile:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1636:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1602:10[90m)[39m
+    at runTest [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1309:12[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runSuite [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1468:8[90m)[39m
+    at runFiles [90m(file:///workspaces/ROPI-V2.1/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:1526:3[90m)[39m
+
+ [32m✓[39m src/__tests__/SmartDetectPanel.persist.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[32m 236[2mms[22m[39m
+ [32m✓[39m src/__tests__/AIWorkflowPanel.applyPersist.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 137[2mms[22m[39m
+[90mstderr[2m | src/utils/__tests__/csvParser.test.ts[2m > [22m[2mCSV Parser - Delimiter Detection[2m > [22m[2mdefaults to comma when no delimiters found
+[22m[39mDelimiter detection: detected ',' (comma), but all rows parsed as single field. File might use a different delimiter.
+
+ [32m✓[39m src/utils/__tests__/csvParser.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould normalize "Product Is Dropship.Name" to match "product_is_dropship_name"
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Product Is Dropship.Name",
+    "normalizedHeader": "product_is_dropship_name",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.dropshipName",
+        "confidence": "Exact Match",
+        "matchedAlias": "product_is_dropship_name",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.dropshipName",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.dropshipName",
+        "confidence": "Synonym",
+        "matchedAlias": "sku",
+        "score": 0.95
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.dropshipName",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "RICS Short Description" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "RICS Short Description",
+    "normalizedHeader": "rics_short_description",
+    "candidateList": [
+      {
+        "canonicalPath": "rics_source.shortDescription",
+        "confidence": "Exact Match",
+        "matchedAlias": "rics_short_description",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "rics_source.shortDescription",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "RICS Long Desc" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "RICS Long Desc",
+    "normalizedHeader": "rics_long_desc",
+    "candidateList": [
+      {
+        "canonicalPath": "rics_source.longDescription",
+        "confidence": "Exact Match",
+        "matchedAlias": "RICS Long Desc",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "rics_source.longDescription",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "RICS Category" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "RICS Category",
+    "normalizedHeader": "rics_category",
+    "candidateList": [
+      {
+        "canonicalPath": "rics_source.category",
+        "confidence": "Exact Match",
+        "matchedAlias": "rics_category",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "rics_source.category",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "Product Is Active" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Product Is Active",
+    "normalizedHeader": "product_is_active",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.productIsActive",
+        "confidence": "Exact Match",
+        "matchedAlias": "product_is_active",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.productIsActive",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.productIsActive",
+        "confidence": "Synonym",
+        "matchedAlias": "sku",
+        "score": 0.95
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.productIsActive",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "Last Received" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Last Received",
+    "normalizedHeader": "last_received",
+    "candidateList": [
+      {
+        "canonicalPath": "technical.lastReceived",
+        "confidence": "Exact Match",
+        "matchedAlias": "last_received",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "technical.lastReceived",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "Warehouse Inv" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Warehouse Inv",
+    "normalizedHeader": "warehouse_inv",
+    "candidateList": [
+      {
+        "canonicalPath": "technical.warehouseInv",
+        "confidence": "Exact Match",
+        "matchedAlias": "warehouse_inv",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "technical.warehouseInv",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould match "Store Inv" exactly
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Store Inv",
+    "normalizedHeader": "store_inv",
+    "candidateList": [
+      {
+        "canonicalPath": "technical.storeInv",
+        "confidence": "Exact Match",
+        "matchedAlias": "store_inv",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "technical.storeInv",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould NOT map "variant_count" (empty importerColumns)
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "variant_count",
+    "normalizedHeader": "variant_count",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould auto-select fuzzy match with score >= 0.8
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "dropship_nam",
+    "normalizedHeader": "dropship_nam",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.dropshipName",
+        "confidence": "Fuzzy",
+        "matchedAlias": "dropship_name",
+        "score": 0.9846153846153847
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.dropshipName",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.dropshipName",
+        "confidence": "Synonym",
+        "matchedAlias": "sku",
+        "score": 0.95
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.dropshipName",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould handle multiple exact matches and auto-select the first
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "category",
+    "normalizedHeader": "category",
+    "candidateList": [
+      {
+        "canonicalPath": "rics_source.category",
+        "confidence": "Exact Match",
+        "matchedAlias": "category",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "rics_source.category",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.category",
+        "confidence": "Synonym",
+        "matchedAlias": "sku",
+        "score": 0.95
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.category",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould include metadata in mapping (category, label, allAliases)
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Product Is Active",
+    "normalizedHeader": "product_is_active",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.productIsActive",
+        "confidence": "Exact Match",
+        "matchedAlias": "product_is_active",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.productIsActive",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.productIsActive",
+        "confidence": "Synonym",
+        "matchedAlias": "sku",
+        "score": 0.95
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.productIsActive",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.mapping-v2.2.test.ts[2m > [22m[2mcsvParser v2.2 - Normalized Matching & Auto-Selection[2m > [22m[2mshould generate debug decisions structure
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "product_is_dropship_name",
+    "normalizedHeader": "product_is_dropship_name",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.dropshipName",
+        "confidence": "Exact Match",
+        "matchedAlias": "product_is_dropship_name",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.dropshipName",
+    "autoSelected": true
+  },
+  {
+    "header": "sku",
+    "normalizedHeader": "sku",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.dropshipName",
+        "confidence": "Synonym",
+        "matchedAlias": "sku",
+        "score": 0.95
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.dropshipName",
+    "autoSelected": true
+  }
+]
+
+ [32m✓[39m src/__tests__/csvParser.mapping-v2.2.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+[90mstdout[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould resolve "Group" header to descriptive.gender via registry
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Group",
+    "normalizedHeader": "group",
+    "candidateList": [
+      {
+        "canonicalPath": "descriptive.gender",
+        "confidence": "Exact Match",
+        "matchedAlias": "group",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "descriptive.gender",
+    "autoSelected": true
+  },
+  {
+    "header": "MPN",
+    "normalizedHeader": "mpn",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould resolve "Primary Color" to descriptive.primaryColor
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Primary Color",
+    "normalizedHeader": "primary_color",
+    "candidateList": [
+      {
+        "canonicalPath": "descriptive.primaryColor",
+        "confidence": "Exact Match",
+        "matchedAlias": "primary_color",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "descriptive.primaryColor",
+    "autoSelected": true
+  },
+  {
+    "header": "MPN",
+    "normalizedHeader": "mpn",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould NOT map "Variant Count" when registry returns null
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Variant Count",
+    "normalizedHeader": "variant_count",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  },
+  {
+    "header": "MPN",
+    "normalizedHeader": "mpn",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.mpn",
+        "confidence": "Exact Match",
+        "matchedAlias": "mpn",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.mpn",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould handle multiple headers with registry and static mix
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Group",
+    "normalizedHeader": "group",
+    "candidateList": [
+      {
+        "canonicalPath": "descriptive.gender",
+        "confidence": "Exact Match",
+        "matchedAlias": "group",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "descriptive.gender",
+    "autoSelected": true
+  },
+  {
+    "header": "Custom 2",
+    "normalizedHeader": "custom_2",
+    "candidateList": [
+      {
+        "canonicalPath": "descriptive.custom2",
+        "confidence": "Exact Match",
+        "matchedAlias": "custom 2",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "descriptive.custom2",
+    "autoSelected": true
+  },
+  {
+    "header": "Product Is Dropship",
+    "normalizedHeader": "product_is_dropship",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.productIsDropship",
+        "confidence": "Exact Match",
+        "matchedAlias": "product is dropship",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.productIsDropship",
+    "autoSelected": true
+  },
+  {
+    "header": "Brand",
+    "normalizedHeader": "brand",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.brand",
+        "confidence": "Exact Match",
+        "matchedAlias": "brand",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.brand",
+    "autoSelected": true
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould ignore duplicate headers
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "MPN",
+    "normalizedHeader": "mpn",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.mpn",
+        "confidence": "Exact Match",
+        "matchedAlias": "mpn",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.mpn",
+    "autoSelected": true
+  },
+  {
+    "header": "MPN",
+    "normalizedHeader": "mpn",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  },
+  {
+    "header": "Brand",
+    "normalizedHeader": "brand",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  }
+]
+
+[90mstdout[2m | src/__tests__/csvParser.registry.test.ts[2m > [22m[2mcsvParser - Registry-Driven Mapping[2m > [22m[2mshould handle empty importerColumns (non-importable attributes)
+[22m[39m[csvParser v2.2] Mapping decisions: [
+  {
+    "header": "Variant Count",
+    "normalizedHeader": "variant_count",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  },
+  {
+    "header": "variant_count",
+    "normalizedHeader": "variant_count",
+    "candidateList": [
+      {
+        "canonicalPath": "null",
+        "confidence": "Unmapped",
+        "matchedAlias": null,
+        "score": null
+      }
+    ],
+    "selectedCanonicalPath": null,
+    "autoSelected": false
+  },
+  {
+    "header": "MPN",
+    "normalizedHeader": "mpn",
+    "candidateList": [
+      {
+        "canonicalPath": "sku_core.mpn",
+        "confidence": "Exact Match",
+        "matchedAlias": "mpn",
+        "score": 1
+      }
+    ],
+    "selectedCanonicalPath": "sku_core.mpn",
+    "autoSelected": true
+  }
+]
+
+ [32m✓[39m src/__tests__/csvParser.registry.test.ts [2m([22m[2m8 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smartDetect.rules.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smartDetect.schema.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/__tests__/firestoreImport.mappings.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/__tests__/firestoreImportV2.adapt.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/__tests__/importValidation.v2.3.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/__tests__/schemaAdapter.mappings.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+[90mstdout[2m | src/hooks/__tests__/useAttributesSettings.test.ts
+[22m[39mLoaded env: {
+  GITHUB_TOKEN: [32m'ghu_aFexSG41oNhBKZdaeTtceQbIrrntah0vEBj0'[39m,
+  DOCKER_BUILDKIT: [32m'1'[39m,
+  LESSOPEN: [32m'| /usr/bin/lesspipe %s'[39m,
+  ENABLE_DYNAMIC_INSTALL: [32m'true'[39m,
+  GITHUB_CODESPACE_TOKEN: [32m'BVDIZAYWGHYDLFWCBEY6XNLJEQGNRANCNFSM4ARG4TKA'[39m,
+  PYTHONIOENCODING: [32m'UTF-8'[39m,
+  USER: [32m'codespace'[39m,
+  npm_config_user_agent: [32m'npm/9.8.1 node/v22.17.0 linux x64 workspaces/false'[39m,
+  NVS_ROOT: [32m'/usr/local/nvs'[39m,
+  GIT_EDITOR: [32m'code --wait'[39m,
+  RVM_PATH: [32m'/usr/local/rvm'[39m,
+  FEATURE_SPARK_POST_COMMIT_CREATE_ITERATION: [32m'true'[39m,
+  HOSTNAME: [32m'codespaces-868ac7'[39m,
+  GIT_ASKPASS: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/extensions/git/dist/askpass.sh'[39m,
+  PIPX_HOME: [32m'/usr/local/py-utils'[39m,
+  CONDA_SCRIPT: [32m'/opt/conda/etc/profile.d/conda.sh'[39m,
+  DOTNET_USE_POLLING_FILE_WATCHER: [32m'true'[39m,
+  npm_node_execpath: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin/node'[39m,
+  GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN: [32m'app.github.dev'[39m,
+  SHLVL: [32m'2'[39m,
+  BROWSER: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/bin/helpers/browser.sh'[39m,
+  npm_config_noproxy: [32m''[39m,
+  HUGO_ROOT: [32m'/home/codespace/.hugo'[39m,
+  HOME: [32m'/home/codespace'[39m,
+  OLDPWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  TERM_PROGRAM_VERSION: [32m'1.106.2'[39m,
+  ORYX_ENV_TYPE: [32m'vsonline-present'[39m,
+  NVM_BIN: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin'[39m,
+  VSCODE_IPC_HOOK_CLI: [32m'/tmp/vscode-ipc-2fc09eaf-beb1-4e06-9dcd-430de1825794.sock'[39m,
+  npm_package_json: [32m'/workspaces/ROPI-V2.1/package.json'[39m,
+  NVM_INC: [32m'/usr/local/share/nvm/versions/node/v22.17.0/include/node'[39m,
+  CODESPACES: [32m'true'[39m,
+  PIPX_BIN_DIR: [32m'/usr/local/py-utils/bin'[39m,
+  DYNAMIC_INSTALL_ROOT_DIR: [32m'/opt'[39m,
+  NVM_SYMLINK_CURRENT: [32m'true'[39m,
+  DOTNET_RUNNING_IN_CONTAINER: [32m'true'[39m,
+  GRADLE_HOME: [32m'/usr/local/sdkman/candidates/gradle/current'[39m,
+  ORYX_DIR: [32m'/usr/local/oryx'[39m,
+  VSCODE_GIT_ASKPASS_MAIN: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/extensions/git/dist/askpass-main.js'[39m,
+  VSCODE_GIT_ASKPASS_NODE: [32m'/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/node'[39m,
+  MAVEN_HOME: [32m'/usr/local/sdkman/candidates/maven/current'[39m,
+  JUPYTERLAB_PATH: [32m'/home/codespace/.local/bin'[39m,
+  npm_config_userconfig: [32m'/home/codespace/.npmrc'[39m,
+  npm_config_local_prefix: [32m'/workspaces/ROPI-V2.1'[39m,
+  GOROOT: [32m'/usr/local/go'[39m,
+  VSCODE_PYTHON_AUTOACTIVATE_GUARD: [32m'1'[39m,
+  NODE_ROOT: [32m'/home/codespace/nvm'[39m,
+  COLORTERM: [32m'truecolor'[39m,
+  GITHUB_USER: [32m'twgallo13'[39m,
+  GITHUB_GRAPHQL_URL: [32m'https://api.github.com/graphql'[39m,
+  COLOR: [32m'0'[39m,
+  PYTHON_PATH: [32m'/usr/local/python/current'[39m,
+  NVM_DIR: [32m'/usr/local/share/nvm'[39m,
+  DEBUGINFOD_URLS: [32m'https://debuginfod.ubuntu.com '[39m,
+  npm_config_metrics_registry: [32m'https://registry.npmjs.org/'[39m,
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: [32m'1'[39m,
+  ContainerVersion: [32m'13'[39m,
+  GITHUB_API_URL: [32m'https://api.github.com'[39m,
+  NVS_HOME: [32m'/usr/local/nvs'[39m,
+  rvm_bin_path: [32m'/usr/local/rvm/bin'[39m,
+  SDKMAN_CANDIDATES_API: [32m'https://api.sdkman.io/2'[39m,
+  _: [32m'/home/codespace/nvm/current/bin/npm'[39m,
+  npm_config_prefix: [32m'/usr/local/share/nvm/versions/node/v22.17.0'[39m,
+  npm_config_npm_version: [32m'9.8.1'[39m,
+  CLOUDENV_ENVIRONMENT_ID: [32m'b103cb16-9561-4a0e-ad81-4b7e69c0d077'[39m,
+  RUBY_VERSION: [32m'ruby-3.4.1'[39m,
+  PROMPT_DIRTRIM: [32m'4'[39m,
+  IRBRC: [32m'/usr/local/rvm/rubies/ruby-3.4.1/.irbrc'[39m,
+  TERM: [32m'xterm-256color'[39m,
+  npm_config_cache: [32m'/home/codespace/.npm'[39m,
+  DOTNET_ROOT: [32m'/usr/share/dotnet'[39m,
+  NVS_DIR: [32m'/usr/local/nvs'[39m,
+  PHP_ROOT: [32m'/home/codespace/.php'[39m,
+  npm_config_node_gyp: [32m'/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js'[39m,
+  PATH: [32m'/workspaces/ROPI-V2.1/node_modules/.bin:/workspaces/node_modules/.bin:/node_modules/.bin:/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/usr/local/rvm/gems/ruby-3.4.1/bin:/usr/local/rvm/gems/ruby-3.4.1@global/bin:/usr/local/rvm/rubies/ruby-3.4.1/bin:/home/codespace/.vscode-remote/data/User/globalStorage/github.copilot-chat/debugCommand:/home/codespace/.vscode-remote/data/User/globalStorage/github.copilot-chat/copilotCli:/vscode/bin/linux-x64/1e3c50d64110be466c0b4a45222e81d2c9352888/bin/remote-cli:/home/codespace/.local/bin:/home/codespace/.dotnet:/home/codespace/nvm/current/bin:/home/codespace/.php/current/bin:/home/codespace/.python/current/bin:/home/codespace/java/current/bin:/home/codespace/.ruby/current/bin:/home/codespace/.local/bin:/usr/local/python/current/bin:/usr/local/py-utils/bin:/usr/local/jupyter:/usr/local/oryx:/usr/local/go/bin:/go/bin:/usr/local/sdkman/bin:/usr/local/sdkman/candidates/java/current/bin:/usr/local/sdkman/candidates/gradle/current/bin:/usr/local/sdkman/candidates/maven/current/bin:/usr/local/sdkman/candidates/ant/current/bin:/usr/local/rvm/gems/default/bin:/usr/local/rvm/gems/default@global/bin:/usr/local/rvm/rubies/default/bin:/usr/local/share/rbenv/bin:/usr/local/php/current/bin:/opt/conda/bin:/usr/local/nvs:/usr/local/share/nvm/versions/node/v22.17.0/bin:/usr/local/hugo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/dotnet:/home/codespace/.dotnet/tools:/usr/local/rvm/bin'[39m,
+  JAVA_ROOT: [32m'/home/codespace/java'[39m,
+  SDKMAN_CANDIDATES_DIR: [32m'/usr/local/sdkman/candidates'[39m,
+  NODE: [32m'/usr/local/share/nvm/versions/node/v22.17.0/bin/node'[39m,
+  npm_package_name: [32m'react-typescript-starter'[39m,
+  NPM_GLOBAL: [32m'/home/codespace/.npm-global'[39m,
+  HUGO_DIR: [32m'/usr/local/hugo/bin'[39m,
+  SHELL_LOGGED_IN: [32m'true'[39m,
+  MY_RUBY_HOME: [32m'/usr/local/rvm/rubies/ruby-3.4.1'[39m,
+  LANG: [32m'C.UTF-8'[39m,
+  LS_COLORS: [32m'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:'[39m,
+  VSCODE_GIT_IPC_HANDLE: [32m'/tmp/vscode-git-5e09547bac.sock'[39m,
+  SDKMAN_DIR: [32m'/usr/local/sdkman'[39m,
+  GITHUB_REPOSITORY: [32m'twgallo13/ROPI-V2.1'[39m,
+  RUBY_ROOT: [32m'/home/codespace/.ruby'[39m,
+  SDKMAN_PLATFORM: [32m'linuxx64'[39m,
+  TERM_PROGRAM: [32m'vscode'[39m,
+  npm_lifecycle_script: [32m'vitest'[39m,
+  SHELL: [32m'/bin/bash'[39m,
+  GOPATH: [32m'/go'[39m,
+  npm_package_version: [32m'0.0.0'[39m,
+  npm_lifecycle_event: [32m'test'[39m,
+  rvm_prefix: [32m'/usr/local'[39m,
+  GEM_HOME: [32m'/usr/local/rvm/gems/ruby-3.4.1'[39m,
+  LESSCLOSE: [32m'/usr/bin/lesspipe %s %s'[39m,
+  ORYX_PREFER_USER_INSTALLED_SDKS: [32m'true'[39m,
+  ORYX_SDK_STORAGE_BASE_URL: [32m'https://oryx-cdn.microsoft.io'[39m,
+  rvm_version: [32m'1.29.12 (latest)'[39m,
+  CONDA_DIR: [32m'/opt/conda'[39m,
+  DEBIAN_FLAVOR: [32m'focal-scm'[39m,
+  VSCODE_GIT_ASKPASS_EXTRA_ARGS: [32m''[39m,
+  GIT_PAGER: [32m'cat'[39m,
+  npm_config_globalconfig: [32m'/usr/local/share/nvm/versions/node/v22.17.0/etc/npmrc'[39m,
+  npm_config_init_module: [32m'/home/codespace/.npm-init.js'[39m,
+  JAVA_HOME: [32m'/usr/local/sdkman/candidates/java/current'[39m,
+  NVS_USE_XZ: [32m'1'[39m,
+  PWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  INTERNAL_VSCS_TARGET_URL: [32m'https://westus3.online.visualstudio.com'[39m,
+  GEM_PATH: [32m'/usr/local/rvm/gems/ruby-3.4.1:/usr/local/rvm/gems/ruby-3.4.1@global'[39m,
+  npm_execpath: [32m'/usr/local/share/nvm/versions/node/v22.17.0/lib/node_modules/npm/bin/npm-cli.js'[39m,
+  GITHUB_SERVER_URL: [32m'https://github.com'[39m,
+  NVM_CD_FLAGS: [32m''[39m,
+  npm_config_global_prefix: [32m'/usr/local/share/nvm/versions/node/v22.17.0'[39m,
+  npm_command: [32m'test'[39m,
+  CODESPACE_NAME: [32m'scaling-robot-7v499w6pq9x6cppxx'[39m,
+  PYTHON_ROOT: [32m'/home/codespace/.python'[39m,
+  NVS_OS: [32m'linux'[39m,
+  PHP_PATH: [32m'/usr/local/php/current'[39m,
+  RAILS_DEVELOPMENT_HOSTS: [32m'.githubpreview.dev,.preview.app.github.dev,.app.github.dev'[39m,
+  CODESPACE_VSCODE_FOLDER: [32m'/workspaces/ROPI-V2.1'[39m,
+  MAVEN_ROOT: [32m'/home/codespace/.maven'[39m,
+  RUBY_HOME: [32m'/usr/local/rvm/rubies/default'[39m,
+  rvm_path: [32m'/usr/local/rvm'[39m,
+  NUGET_XMLDOC_MODE: [32m'skip'[39m,
+  INIT_CWD: [32m'/workspaces/ROPI-V2.1'[39m,
+  EDITOR: [32m'vi'[39m,
+  TEST: [32m'true'[39m,
+  VITEST: [32m'true'[39m,
+  NODE_ENV: [32m'test'[39m,
+  PROD: [32m''[39m,
+  DEV: [32m'1'[39m,
+  VITE_FIREBASE_API_KEY: [32m'AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8'[39m,
+  VITE_FIREBASE_AUTH_DOMAIN: [32m'ropi-bccee.firebaseapp.com'[39m,
+  VITE_FIREBASE_PROJECT_ID: [32m'ropi-bccee'[39m,
+  VITE_FIREBASE_STORAGE_BUCKET: [32m'ropi-bccee.appspot.com'[39m,
+  VITE_FIREBASE_MESSAGING_SENDER_ID: [32m'892791174441'[39m,
+  VITE_FIREBASE_APP_ID: [32m'1:892791174441:web:2ea5843a253b167d12b338'[39m,
+  VITE_ORG_DOMAIN: [32m'shiekhshoes.org'[39m,
+  VITE_ADMIN_EMAILS: [32m'theo@shiekhshoes.org'[39m,
+  VITE_EDITOR_V2: [32m'true'[39m,
+  BASE_URL: [32m'/'[39m,
+  MODE: [32m'test'[39m,
+  VITEST_MODE: [32m'RUN'[39m,
+  FORCE_TTY: [32m''[39m,
+  VITEST_POOL_ID: [32m'2'[39m,
+  VITEST_WORKER_ID: [32m'18'[39m,
+  SSR: [32m''[39m
+}
+
+ [32m✓[39m src/hooks/__tests__/useAttributesSettings.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/validate.legacy.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smartDetect.legacy.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/__tests__/attributeGrouping.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/__tests__/attribute-schema.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/__tests__/admin-import-normalize.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m functions/src/__tests__/smoke.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/__tests__/smoke.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [2m[90m↓[39m[22m src/__tests__/AIWorkflowPanel.describeUpdate.test.tsx [2m([22m[2m7 tests[22m[2m | [22m[33m7 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m26 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (27)[39m
+[2m      Tests [22m [1m[32m225 passed[39m[22m[2m | [22m[33m9 skipped[39m[90m (234)[39m
+[2m   Start at [22m 19:56:17
+[2m   Duration [22m 12.55s[2m (transform 1.51s, setup 2.21s, collect 4.73s, tests 4.47s, environment 20.00s, prepare 365ms)[22m
+

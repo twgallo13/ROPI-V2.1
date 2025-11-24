@@ -1,0 +1,10 @@
+{
+  "status": "FAILURE",
+  "runId": 19607178192,
+  "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/19607178192",
+  "createdAt": "2025-11-23T06:29:05Z",
+  "failedTest": "DescriptionPanel.test.tsx > triggers loadDescription when Generate button is clicked",
+  "failureReason": "Race condition - button transitioned to 'Generating...' state before test could interact",
+  "relatedToV32Changes": false,
+  "notes": "This is a flaky test unrelated to the file.text fixes. The same code passed CI in run #19607142386."
+}

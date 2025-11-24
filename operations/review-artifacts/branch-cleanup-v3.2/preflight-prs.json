@@ -1,0 +1,61 @@
+{
+  "timestamp": "2025-11-23T08:00:00Z",
+  "status": "PREFLIGHT_FAILED",
+  "failure_reason": "All PRs have merge conflicts with main branch",
+  "prs": {
+    "115": {
+      "title": "feat(attributes): v3.0.3 - Complete end-to-end propose-mapping and suggest",
+      "author": "twgallo13",
+      "headRefOid": "4fbd8c05e96f92ba444d282539ffb2256421bc46",
+      "baseRefName": "main",
+      "mergeable": "CONFLICTING",
+      "commits_count": 7,
+      "ci_status": "SUCCESS (CodeRabbit)",
+      "commits": [
+        "6c02c1b72b9128a0a906a998f4a044d8fdf7c43b - v3.0.2: fix multipart CSV upload, add AI Suggest button, and unit tests",
+        "79f993ea104950924c2cc72e92300387d99c80a8 - test: fix SandboxPanel test selectors and assertions",
+        "7eaa7b3daa2b6ef88a020e15b4db6474bf895b98 - test: simplify SandboxPanel assertion to use getAllByText",
+        "12edfcabaf6613798fdb0373c563b2495e83ec4c - docs: add v3.0.2 entry to HOMER_LOG with complete summary and artifacts",
+        "783d5b8c4e4859b3aa17efecbd653f7c075618d0 - feat(attributes): v3.0.3 - Add propose-mapping and suggest endpoints",
+        "ee00aebb752d24c76a3a027b8fca2cc944a199ed - docs: Add v3.0.3 release summary",
+        "4fbd8c05e96f92ba444d282539ffb2256421bc46 - docs: Add v3.0.3 verification report with test results"
+      ]
+    },
+    "116": {
+      "title": "v3.1.propose: Attribute Registry Duplicate Analysis - NO DUPLICATES FOUND",
+      "author": "twgallo13",
+      "headRefOid": "2811195a215311adc17a7ef9b025704b515edaa5",
+      "baseRefName": "main",
+      "mergeable": "CONFLICTING",
+      "commits_count": 10,
+      "ci_status": "SUCCESS (CodeRabbit)",
+      "commits": [
+        "6c02c1b72b9128a0a906a998f4a044d8fdf7c43b - v3.0.2: fix multipart CSV upload, add AI Suggest button, and unit tests",
+        "79f993ea104950924c2cc72e92300387d99c80a8 - test: fix SandboxPanel test selectors and assertions",
+        "7eaa7b3daa2b6ef88a020e15b4db6474bf895b98 - test: simplify SandboxPanel assertion to use getAllByText",
+        "12edfcabaf6613798fdb0373c563b2495e83ec4c - docs: add v3.0.2 entry to HOMER_LOG with complete summary and artifacts",
+        "783d5b8c4e4859b3aa17efecbd653f7c075618d0 - feat(attributes): v3.0.3 - Add propose-mapping and suggest endpoints",
+        "ee00aebb752d24c76a3a027b8fca2cc944a199ed - docs: Add v3.0.3 release summary",
+        "4fbd8c05e96f92ba444d282539ffb2256421bc46 - docs: Add v3.0.3 verification report with test results",
+        "4462f5d88690a27d36a007eb76b0b6cc265f61d4 - v3.1.propose: attribute registry duplicate analysis - NO DUPLICATES FOUND",
+        "7525bb06e9e3e963f0b387efa6ba38814945d652 - docs: update HOMER_LOG.md for v3.1.propose analysis",
+        "2811195a215311adc17a7ef9b025704b515edaa5 - docs: add task completion summary"
+      ]
+    },
+    "114": {
+      "title": "v3.0.2: frontend fix - propose-mapping path, multipart upload, Suggest button",
+      "author": "twgallo13",
+      "headRefOid": "12edfcabaf6613798fdb0373c563b2495e83ec4c",
+      "baseRefName": "main",
+      "mergeable": "CONFLICTING",
+      "commits_count": 4,
+      "ci_status": "SUCCESS (CodeRabbit)",
+      "commits": [
+        "6c02c1b72b9128a0a906a998f4a044d8fdf7c43b - v3.0.2: fix multipart CSV upload, add AI Suggest button, and unit tests",
+        "79f993ea104950924c2cc72e92300387d99c80a8 - test: fix SandboxPanel test selectors and assertions",
+        "7eaa7b3daa2b6ef88a020e15b4db6474bf895b98 - test: simplify SandboxPanel assertion to use getAllByText",
+        "12edfcabaf6613798fdb0373c563b2495e83ec4c - docs: add v3.0.2 entry to HOMER_LOG with complete summary and artifacts"
+      ]
+    }
+  }
+}

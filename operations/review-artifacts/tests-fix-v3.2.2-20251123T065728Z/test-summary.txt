@@ -1,0 +1,4 @@
+Test Files: 25 passed | 1 skipped (26)
+Tests: 213 passed | 9 skipped (222)
+Duration: 16.15s
+Status: PASS
