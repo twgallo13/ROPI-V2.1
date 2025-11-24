@@ -717,12 +717,12 @@ export async function getValuePreview(req: Request, res: Response) {
       // Try to find the value using the canonical path
       // Split by dots to navigate nested structure
       const pathParts = canonicalPath.split('.');
-      let value = data;
+      let value: unknown = data;
       let foundPath = '';
       
       for (const part of pathParts) {
         if (value && typeof value === 'object' && part in value) {
-          value = value[part];
+          value = (value as Record<string, unknown>)[part];
           foundPath += (foundPath ? '.' : '') + part;
         } else {
           value = undefined;
