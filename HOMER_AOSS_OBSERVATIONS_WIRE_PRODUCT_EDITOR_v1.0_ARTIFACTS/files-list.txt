@@ -1,0 +1,5 @@
+M	packages/web/src/components/product/ObservationsPanel.css
+A	packages/web/src/components/product/ObservationsPanel.test.tsx
+M	packages/web/src/components/product/ObservationsPanel.tsx
+M	packages/web/src/pages/ProductEditorPage.tsx
+A	packages/web/test/smoke.product-editor-observations.test.tsx
