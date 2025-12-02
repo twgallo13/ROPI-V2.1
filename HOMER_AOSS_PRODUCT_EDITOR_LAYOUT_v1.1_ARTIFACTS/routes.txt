@@ -1,0 +1,21 @@
+AOSS Product Editor Routes
+========================
+
+/products/:id - Product Editor Page
+  - Tab: ?tab=core - Core Information
+  - Tab: ?tab=attributes - Product Attributes
+  - Tab: ?tab=descriptions - Descriptions & SEO
+  - Tab: ?tab=launch - Launch & Media
+  - Tab: ?tab=ai - AI Actions
+
+Deep-linkable URLs:
+- /products/123?tab=core
+- /products/123?tab=attributes
+- /products/123?tab=descriptions
+- /products/123?tab=launch
+- /products/123?tab=ai
+
+Sidebar Panels (always visible):
+- Observations Panel
+- Smart Suggestions Panel
+- Export Readiness Panel

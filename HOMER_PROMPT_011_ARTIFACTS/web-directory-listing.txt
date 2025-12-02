@@ -1,0 +1,13 @@
+total 48
+drwxrwxrwx+ 6 codespace codespace 4096 Dec  2 12:54 .
+drwxrwxrwx+ 6 codespace codespace 4096 Dec  2 10:44 ..
+drwxrwxrwx+ 3 codespace codespace 4096 Dec  2 12:20 dist
+-rw-rw-rw-  1 codespace codespace  358 Dec  2 12:54 index.html
+drwxrwxrwx+ 7 codespace codespace 4096 Dec  2 12:12 node_modules
+-rw-rw-rw-  1 codespace codespace  887 Dec  2 12:54 package.json
+drwxrwxrwx+ 5 codespace codespace 4096 Dec  2 12:54 src
+drwxrwxrwx+ 2 codespace codespace 4096 Dec  2 12:54 test
+-rw-rw-rw-  1 codespace codespace  747 Dec  2 12:54 tsconfig.json
+-rw-rw-rw-  1 codespace codespace  213 Dec  2 12:54 tsconfig.node.json
+-rw-rw-rw-  1 codespace codespace  319 Dec  2 12:54 vite.config.ts
+-rw-rw-rw-  1 codespace codespace  309 Dec  2 12:54 vitest.config.ts
