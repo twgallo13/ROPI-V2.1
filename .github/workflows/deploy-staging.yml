@@ -1,0 +1,62 @@
+name: Deploy AOSS Staging
+# Deploys aoss-main to stable staging site: https://ropi-aoss-staging.web.app
+
+on:
+  push:
+    branches:
+      - aoss-main
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+
+      - name: Install dependencies
+        run: |
+          if [ -f package.json ]; then
+            pnpm install
+          else
+            echo "No package.json found, skipping dependency installation"
+          fi
+
+      - name: Build (if web exists)
+        run: |
+          if [ -f packages/web/package.json ]; then
+            pnpm --filter @ropi-aoss/web build || echo "Web build failed (not implemented)"
+          else
+            mkdir -p public
+            echo "<!doctype html><html><body><h1>Ropi AOSS Staging</h1><p>Stable staging environment for aoss-main branch</p></body></html>" > public/index.html
+          fi
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@13
+
+      - name: Deploy to stable staging site
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          # Validate token
+          if [ -z "${FIREBASE_TOKEN:-}" ]; then
+            echo "::error::FIREBASE_TOKEN is not set in 'staging' environment"
+            exit 1
+          fi
+
+          # Deploy preview channel (keep existing behavior if present)
+          firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --token "$FIREBASE_TOKEN" --json || true
+
+          # Deploy to stable site (aoss-staging)
+          firebase deploy --only hosting:aoss-staging --project ropi-bccee --token "$FIREBASE_TOKEN" --json
+          echo "Stable staging URL: https://ropi-aoss-staging.web.app"

@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "ropi-bccee"
+  },
+  "targets": {
+    "ropi-bccee": {
+      "hosting": {
+        "aoss-staging": ["ropi-aoss-staging"]
+      }
+    }
+  }
+}

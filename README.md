@@ -11,3 +11,22 @@ Single source of truth lives in Notion: Section 1..14 (ROPI AOSS).
 - `scripts/seed.js` — temporary seed entry point that will later call into `@ropi-aoss/cli`.
 
 **Note:** The behavior and data shapes are NOT defined in this repository but in the Ropi AOSS Notion space (Sections 1–14). This repository only implements what the Notion spec describes.
+
+## Staging Environment
+
+**Stable Staging URL**: https://ropi-aoss-staging.web.app
+
+This site is automatically updated from the `aoss-main` branch. Every push to `aoss-main` triggers a deployment to the stable staging site.
+
+### Deployment Behavior
+- **Stable staging site**: Updated on every `aoss-main` push via the `deploy-staging` workflow
+- **Preview channels**: Each PR creates a separate preview channel (e.g., `pr-123`) for isolated testing
+- **Environment**: Deployments use the `staging` environment and require `FIREBASE_TOKEN` secret
+
+### Manual Deployment
+You can manually trigger the staging deployment:
+```bash
+# Via GitHub Actions UI (workflow_dispatch)
+# Or via CLI:
+gh workflow run deploy-staging.yml --repo twgallo13/ROPI-V2.1
+```
