@@ -1,0 +1,344 @@
+================================================================================
+HOMER PROMPT_017 DIAGNOSIS REPORT
+================================================================================
+
+Prompt: PROMPT_017_DIAGNOSE_AND_FIX_STAGING_FIRESTORE_PERMS_v1.0
+Objective: Diagnose Firestore permission errors on ropi-aoss-staging.web.app
+Diagnosis Date: 2025-12-02T15:18:00Z
+Status: ✅ ROOT CAUSE IDENTIFIED
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+**Root Cause**: ropi-aoss-staging.web.app uses a **DUMMY/PLACEHOLDER Firebase config**
+instead of the real ropi-bccee project configuration, causing all Firebase operations
+(Auth, Firestore, Storage) to fail.
+
+**Impact**:
+- ❌ Firebase Auth initialization fails (dummy API key invalid)
+- ❌ Firestore permission errors (no authenticated user)
+- ❌ Observations UI falls back to localStorage-only mode
+- ⚠️ App shows "Offline Mode" banner despite internet connectivity
+
+**Comparison**:
+- ✅ ropi-bccee.web.app: Uses REAL Firebase config, fully functional
+- ❌ ropi-aoss-staging.web.app: Uses DUMMY config, broken Firebase integration
+
+**Fix Required**: Rebuild and redeploy ropi-aoss-staging.web.app with correct
+Firebase environment variables (VITE_FIREBASE_* values from ropi-bccee config).
+
+================================================================================
+DIAGNOSIS STEP 1: FETCH STAGING SITE CONFIGS
+================================================================================
+
+**Command**:
+```bash
+curl -s https://ropi-bccee.web.app | head -n 400 > /tmp/bccee_index.html
+curl -s https://ropi-aoss-staging.web.app | head -n 400 > /tmp/aoss_index.html
+```
+
+**Result**: ✅ SUCCESS
+- Both index.html files fetched
+- Both sites use Vite-bundled apps with hashed JS bundles
+
+**Key Findings**:
+- ropi-bccee.web.app bundle: `/assets/index-IjlYPYS6.js` (3609 lines)
+- ropi-aoss-staging.web.app bundle: `/assets/index-CrgUsCf2.js` (similar size)
+- Different bundle hashes indicate different build artifacts
+
+================================================================================
+DIAGNOSIS STEP 2: EXTRACT FIREBASE CONFIGS
+================================================================================
+
+**Method**: Downloaded and analyzed JavaScript bundles from both sites
+
+**ropi-bccee.web.app Firebase Config** (PRODUCTION):
+```javascript
+const z5 = {
+  BASE_URL:"/",
+  DEV:!1,
+  MODE:"production",
+  PROD:!0,
+  SSR:!1,
+  VITE_FIREBASE_API_KEY:"AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+  VITE_FIREBASE_APP_ID:"1:892791174441:web:2ea5843a253b167d12b338",
+  VITE_FIREBASE_AUTH_DOMAIN:"ropi-bccee.firebaseapp.com",
+  VITE_FIREBASE_MESSAGING_SENDER_ID:"892791174441",
+  VITE_FIREBASE_PROJECT_ID:"ropi-bccee",
+  VITE_FIREBASE_STORAGE_BUCKET:"ropi-bccee.appspot.com"
+};
+
+const Ty = {
+  apiKey:"AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+  authDomain:"ropi-bccee.firebaseapp.com",
+  projectId:"ropi-bccee",
+  storageBucket:"ropi-bccee.appspot.com",
+  appId:"1:892791174441:web:2ea5843a253b167d12b338",
+  messagingSenderId:"892791174441",
+  measurementId:void 0
+};
+```
+
+**Status**: ✅ VALID PRODUCTION CONFIG
+- API Key: Real Google API key (AIzaSy...)
+- Project ID: ropi-bccee
+- App ID: Valid Firebase app ID
+- All credentials properly set
+
+---
+
+**ropi-aoss-staging.web.app Firebase Config** (BROKEN):
+```javascript
+const nO = {
+  apiKey:"AIzaSyDummy_ReplaceInProduction",
+  authDomain:"ropi-bccee.firebaseapp.com",
+  projectId:"ropi-bccee",
+  storageBucket:"ropi-bccee.appspot.com",
+  messagingSenderId:"",
+  appId:""
+};
+```
+
+**Status**: ❌ DUMMY/PLACEHOLDER CONFIG
+- API Key: **"AIzaSyDummy_ReplaceInProduction"** (invalid placeholder)
+- App ID: **Empty string** (invalid)
+- Messaging Sender ID: **Empty string** (invalid)
+- Project ID: Correct ("ropi-bccee") but unusable without valid API key
+
+**Console Error** (expected in browser):
+```
+❌ Firebase initialization failed: [Invalid API key]
+⚠️ Running in offline mode - using localStorage fallback
+```
+
+================================================================================
+DIAGNOSIS STEP 3: VERIFY PROJECT ID
+================================================================================
+
+**Command**:
+```bash
+grep -o "ropi-[a-z]*" /tmp/bccee_bundle.js | sort -u
+grep -o "ropi-[a-z]*" /tmp/aoss_bundle.js | sort -u
+```
+
+**Result**:
+- ropi-bccee.web.app: `ropi-bccee`
+- ropi-aoss-staging.web.app: `ropi-bccee`
+
+**Conclusion**: Both sites reference the same Firebase project ID (`ropi-bccee`),
+but ropi-aoss-staging uses invalid credentials, preventing actual connection.
+
+================================================================================
+DIAGNOSIS STEP 4: FIRESTORE RULES ANALYSIS
+================================================================================
+
+**Firebase Project**: ropi-bccee (892791174441)
+**Current Project**: ✅ Active (confirmed via `firebase projects:list`)
+**Rules Source**: /workspaces/ROPI-V2.1/firestore.rules
+**Deployed**: Yes (via PROMPT_015, commit c9fbf5d)
+
+**Key Rules**:
+1. **Observations Collection**:
+   - `allow read: if request.auth != null` (authentication REQUIRED)
+   - `allow create: if request.auth != null && ...` (authentication REQUIRED)
+   - `allow update: if request.auth != null && ...` (authentication REQUIRED)
+
+2. **Products Collection**:
+   - `allow read, write: if request.auth != null` (authentication REQUIRED)
+
+3. **Default**:
+   - `allow read, write: if false` (deny all other collections)
+
+**Critical Finding**: ALL Firestore operations require `request.auth != null`
+- Unauthenticated clients are blocked from reading/writing
+- No anonymous access configured
+- No public read rules
+
+**Why ropi-aoss-staging Fails**:
+1. Dummy API key → Firebase Auth initialization fails
+2. No authenticated user → `request.auth` is `null`
+3. Firestore rules reject all operations → Permission denied errors
+4. App falls back to localStorage-only mode
+
+**Why ropi-bccee.web.app Succeeds**:
+- Valid API key → Firebase Auth initializes successfully
+- Even without explicit sign-in, Firebase SDK can make authenticated requests
+  (if auth state persists from previous session or anonymous sign-in is triggered)
+
+================================================================================
+DIAGNOSIS STEP 5: BUILD-TIME ENVIRONMENT VARIABLES
+================================================================================
+
+**Analysis**: Firebase config is embedded at build time via Vite environment variables.
+
+**Expected .env or build-time variables**:
+```env
+VITE_FIREBASE_API_KEY="AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8"
+VITE_FIREBASE_AUTH_DOMAIN="ropi-bccee.firebaseapp.com"
+VITE_FIREBASE_PROJECT_ID="ropi-bccee"
+VITE_FIREBASE_STORAGE_BUCKET="ropi-bccee.appspot.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID="892791174441"
+VITE_FIREBASE_APP_ID="1:892791174441:web:2ea5843a253b167d12b338"
+```
+
+**What ropi-aoss-staging was built with**:
+```env
+VITE_FIREBASE_API_KEY="AIzaSyDummy_ReplaceInProduction"  # ❌ PLACEHOLDER
+VITE_FIREBASE_APP_ID=""                                   # ❌ EMPTY
+VITE_FIREBASE_MESSAGING_SENDER_ID=""                      # ❌ EMPTY
+```
+
+**Conclusion**: ropi-aoss-staging was deployed with an **old or dev build**
+that used placeholder environment variables instead of production values.
+
+================================================================================
+ROOT CAUSE SUMMARY
+================================================================================
+
+**Problem**: ropi-aoss-staging.web.app cannot connect to Firebase
+
+**Why**:
+1. **Wrong Build Artifact**: Site deployed with development/placeholder build
+2. **Invalid API Key**: "AIzaSyDummy_ReplaceInProduction" is not a real Google API key
+3. **Missing Credentials**: appId and messagingSenderId are empty strings
+4. **Auth Failure**: Firebase SDK cannot initialize, no auth context
+5. **Rules Rejection**: Firestore rules require authentication, block all requests
+
+**NOT THE PROBLEM**:
+- ✅ Firestore rules are correct (deployed via PROMPT_015)
+- ✅ Firebase project (ropi-bccee) is accessible and healthy
+- ✅ ropi-bccee.web.app works correctly with same rules
+- ✅ Network connectivity is fine
+
+**THE PROBLEM**:
+- ❌ ropi-aoss-staging.web.app deployed with wrong build
+- ❌ Build used dummy Firebase config instead of real credentials
+- ❌ No authentication possible → all Firestore operations fail
+
+================================================================================
+COMPARISON: ropi-bccee.web.app vs ropi-aoss-staging.web.app
+================================================================================
+
+| Aspect                | ropi-bccee.web.app         | ropi-aoss-staging.web.app     |
+|-----------------------|----------------------------|-------------------------------|
+| **Firebase API Key**  | Real (AIzaSyD1aYB4...)     | Dummy (AIzaSyDummy_...)       |
+| **App ID**            | Valid (1:892791174441...)  | Empty string                  |
+| **Sender ID**         | 892791174441               | Empty string                  |
+| **Project ID**        | ropi-bccee                 | ropi-bccee                    |
+| **Auth Domain**       | ropi-bccee.firebaseapp.com | ropi-bccee.firebaseapp.com    |
+| **Firebase Init**     | ✅ Success                 | ❌ Fails (invalid key)        |
+| **Auth State**        | ✅ Available               | ❌ Null (no auth)             |
+| **Firestore Access**  | ✅ Works                   | ❌ Permission denied          |
+| **Observations UI**   | ✅ Loads from Firestore    | ❌ localStorage fallback      |
+| **Bundle Hash**       | index-IjlYPYS6.js          | index-CrgUsCf2.js             |
+| **Build**             | Production (correct env)   | Dev/Old (placeholder env)     |
+
+================================================================================
+RECOMMENDED FIX
+================================================================================
+
+**Option A: Rebuild and Redeploy ropi-aoss-staging (RECOMMENDED)**
+
+**Why**: Permanent fix, aligns both staging URLs with correct config
+
+**Steps**:
+1. Ensure build-time environment variables are set:
+   ```bash
+   export VITE_FIREBASE_API_KEY="AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8"
+   export VITE_FIREBASE_AUTH_DOMAIN="ropi-bccee.firebaseapp.com"
+   export VITE_FIREBASE_PROJECT_ID="ropi-bccee"
+   export VITE_FIREBASE_STORAGE_BUCKET="ropi-bccee.appspot.com"
+   export VITE_FIREBASE_MESSAGING_SENDER_ID="892791174441"
+   export VITE_FIREBASE_APP_ID="1:892791174441:web:2ea5843a253b167d12b338"
+   ```
+
+2. Rebuild packages/web:
+   ```bash
+   cd /workspaces/ROPI-V2.1/packages/web
+   pnpm build
+   ```
+
+3. Deploy to ropi-aoss-staging only:
+   ```bash
+   firebase deploy --only hosting:ropi-aoss-staging
+   ```
+
+4. Verify:
+   ```bash
+   curl -s https://ropi-aoss-staging.web.app/assets/*.js | grep "AIzaSy"
+   # Should show real API key, not "Dummy"
+   ```
+
+**Expected Outcome**:
+- ✅ Firebase SDK initializes successfully
+- ✅ Auth context available (even without explicit sign-in)
+- ✅ Firestore rules permit reads for authenticated context
+- ✅ Observations UI loads data from Firestore
+- ✅ No "Offline Mode" banner
+
+---
+
+**Option B: Add Anonymous Sign-In to Staging (ADDITIONAL, NOT PRIMARY FIX)**
+
+**Why**: Even with correct config, Firestore rules require auth. Anonymous sign-in
+ensures all users have auth context.
+
+**Implementation**: See PROMPT_017_FIX_AUDIT.txt for code changes
+
+**Note**: This is a **secondary measure** after fixing the config. The primary
+issue is the dummy API key, which must be fixed regardless.
+
+================================================================================
+EDGE CASES & BLOCKERS ENCOUNTERED
+================================================================================
+
+**1. Firebase Config Hidden in Minified Bundle** ✅ Resolved
+- Challenge: Config not in index.html, embedded in JS bundle
+- Solution: Downloaded full bundle, searched for Firebase config object patterns
+
+**2. Multiple Staging URLs** ✅ Clarified
+- Challenge: Two staging URLs (ropi-bccee, ropi-aoss-staging)
+- Finding: Different builds deployed to each URL
+- ropi-bccee.web.app: Correct build (from PROMPT_016)
+- ropi-aoss-staging.web.app: Old/dev build (placeholder config)
+
+**3. Firestore Rules Command** ✅ Workaround
+- Challenge: `firebase firestore:rules` command doesn't exist
+- Solution: Read firestore.rules file from local workspace
+- Rules source: /workspaces/ROPI-V2.1/firestore.rules (deployed via PROMPT_015)
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+✅ **Diagnosis Complete**: Root cause identified (dummy Firebase config)
+
+⏳ **Pending**: Implement fix (rebuild with correct environment variables)
+
+**Fix Priority**: HIGH
+- Current state: ropi-aoss-staging completely non-functional for Firebase features
+- Impact: QA testing blocked on this URL
+- Timeline: Can be fixed immediately (rebuild + redeploy ~5 minutes)
+
+**Recommendation**: Proceed with Option A (rebuild and redeploy) to permanently
+fix ropi-aoss-staging.web.app.
+
+================================================================================
+ARTIFACTS GENERATED
+================================================================================
+
+✅ `/tmp/bccee_index.html` - ropi-bccee.web.app HTML (cached)
+✅ `/tmp/aoss_index.html` - ropi-aoss-staging.web.app HTML (cached)
+✅ `/tmp/bccee_bundle.js` - ropi-bccee.web.app JS bundle (3609 lines)
+✅ `/tmp/aoss_bundle.js` - ropi-aoss-staging.web.app JS bundle
+✅ `HOMER_PROMPT_017_ARTIFACTS/ropi-bccee_firestore_rules.txt` - Current Firestore rules
+✅ `HOMER_PROMPT_017_DIAGNOSE.txt` (this file) - Full diagnosis report
+
+================================================================================
+END OF DIAGNOSIS REPORT
+================================================================================
+
+Generated: 2025-12-02T15:18:00Z
+Branch: feature/aoss-seed-products-v1-0
+Homer Version: AOSS v2.1

@@ -1,0 +1,19 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0   456    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+cache-control: max-age=3600
+content-type: text/html; charset=utf-8
+etag: "611b142295b631cf311f0431de151b0a8bc73a315a3f8933ccfb146ff7336237"
+last-modified: Tue, 02 Dec 2025 15:50:26 GMT
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+accept-ranges: bytes
+date: Tue, 02 Dec 2025 15:50:54 GMT
+x-served-by: cache-bur-kbur8200057-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1764690654.259388,VS0,VE87
+vary: x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 456
+

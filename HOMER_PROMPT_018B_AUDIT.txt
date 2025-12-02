@@ -1,0 +1,604 @@
+================================================================================
+HOMER_PROMPT_018B_AUDIT.txt
+AOSS_AUTH_UI_GOOGLE_EMAIL_v1.0 — Staging Auth + Launch Calendar Signup
+================================================================================
+
+Date: 2025-06-12
+Branch: feature/aoss-auth-ui-v1-0
+Base Branch: aoss-main
+Base Commit: c9fbf5d84afd9d3dada0f46a4ca8777112c97f2d
+Staging Project: ropi-bccee (892791174441)
+Staging URL: https://ropi-aoss-staging.web.app
+
+================================================================================
+SPEC SUMMARY — NOTION PAGES READ
+================================================================================
+
+Notion Pages Analyzed (3):
+1. Main AOSS Spec: https://www.notion.so/Ropi-AOSS-2b645ee1ec5a80e5b64fd04cea9e0d52
+2. Launch Calendar: https://www.notion.so/27e45ee1ec5a81ecac18fa5c2bf3842e
+3. Launch Calendar DB Schema: https://www.notion.so/29745ee1ec5a80be8b83f113074a1837
+
+--------------------------------------------------------------------------------
+1. AUTHENTICATION REQUIREMENTS
+--------------------------------------------------------------------------------
+
+From Main AOSS Spec — Section 9: Security & IAM
+
+Authentication Methods:
+✅ Google OAuth Sign-in (Primary)
+   - One-click sign-in with Google account
+   - Automatically extracts email for admin detection
+   
+✅ Email/Password Sign-in (Secondary)
+   - Traditional email + password authentication
+   - Email verification required for new sign-ups
+   - Password reset flow
+   - Friendly error messages for Firebase auth errors:
+     * "auth/user-not-found" → "No account found with this email"
+     * "auth/wrong-password" → "Incorrect password"
+     * "auth/invalid-email" → "Please enter a valid email address"
+     * "auth/user-disabled" → "This account has been disabled"
+     * "auth/email-already-in-use" → "An account with this email already exists"
+
+Sign-in Modal Requirements:
+- Appears when user clicks "Sign In" button in TopBar
+- Appears when unauthenticated user tries protected actions
+- Tabs/toggle between "Sign In" and "Sign Up" modes
+- Google sign-in button at top
+- Email/password form below
+- "Forgot password?" link for password reset
+- Clear error messaging
+- Close button/overlay dismiss
+- Post-auth: Resume user's intended action (e.g., navigate to route they tried to access)
+
+--------------------------------------------------------------------------------
+2. ADMIN DETECTION & PERMISSIONS
+--------------------------------------------------------------------------------
+
+From Main AOSS Spec — Section 9: Security & IAM
+
+Admin Allow-List:
+- Firestore path: metadata/admins
+- Document structure:
+  {
+    emails: ["theo@shiekhshoes.org", "theo@shiekh.com"],
+    updatedAt: Timestamp,
+    updatedBy: "system"
+  }
+
+Admin Semantics:
+- Admin status computed from currentUser.email in admins list
+- isAdmin boolean exposed in AuthContext
+- No role hierarchy (just admin/non-admin)
+- Admin users can:
+  * Resolve ANY observation (not just their own)
+  * Access future admin-only features (workflows, bulk actions, etc.)
+
+Non-Admin Users:
+- Can create observations on any product
+- Can resolve ONLY their own observations
+- Full read access to all observations
+- Can use Launch Calendar "Notify Me" feature
+
+--------------------------------------------------------------------------------
+3. OBSERVATIONS AUTH INTEGRATION
+--------------------------------------------------------------------------------
+
+From Main AOSS Spec — Section 4: Observations Management
+
+Current State (PROMPT_018B Baseline):
+- Mock UserContext with hardcoded "Demo User"
+- localStorage fallback for observations
+- No real authentication
+
+Required Changes:
+- Replace mock UserContext with real useAuth() hook
+- Use Firebase Auth user.uid for createdBy field
+- Compute canResolve permission:
+  const canResolve = !!currentUser && 
+    (observation.createdBy === currentUser.uid || isAdmin);
+- Show banner when !currentUser:
+  "Sign in to use live Observations. Data is view-only until authenticated."
+- Remove localStorage fallback mechanism (always use Firestore)
+- Ensure createdBy field uses Firebase uid (not hardcoded "mock_user_001")
+
+Observations Panel Behavior:
+- Authenticated users: Full create/resolve access (subject to permissions)
+- Unauthenticated users: Read-only view with sign-in banner
+- Resolve button:
+  * Enabled for observation creator
+  * Enabled for admin users (even if not creator)
+  * Disabled for other authenticated users
+  * Hidden for unauthenticated users (show sign-in banner instead)
+
+--------------------------------------------------------------------------------
+4. LAUNCH CALENDAR SIGNUP FLOW
+--------------------------------------------------------------------------------
+
+From Launch Calendar Pages (27e45ee1ec5a81ecac18fa5c2bf3842e, 29745ee1ec5a80be8b83f113074a1837)
+
+Public Launch Calendar (/) Behavior:
+- URL: / (root route, public access)
+- Shows upcoming product launches in calendar/list view
+- Each launch has "NOTIFY ME" CTA button
+- When unauthenticated user clicks "NOTIFY ME":
+  1. Open SignInModal
+  2. User signs in with Google or Email/Password
+  3. Modal closes, signup action completes automatically
+  4. Show confirmation: "You're in. We'll notify you about this launch."
+- When authenticated user clicks "NOTIFY ME":
+  1. Write to Firestore immediately (no modal)
+  2. Show confirmation: "You're in. We'll notify you about this launch."
+
+Internal Launch Calendar (/launch-calendar) Behavior:
+- URL: /launch-calendar (internal app route, requires auth)
+- Same signup mechanism as public page
+- Additional admin features (create/edit launches - future scope)
+- Show "Sign up / Sign in to join launches" action if not authenticated
+
+Firestore Collection: launchSignups
+- Document ID: `${launchId}_${currentUser.uid}` (composite key)
+- Fields:
+  {
+    launchId: string,         // e.g., "launch_2025_q1_ropi_runner"
+    userUid: string,           // Firebase user UID
+    email: string,             // User's email for notifications
+    createdAt: Timestamp,      // Signup timestamp
+    source: string,            // "aoss-staging" (env identifier)
+  }
+- Idempotent writes (doc ID prevents duplicates)
+- No update/delete logic (one signup per user per launch)
+
+Centralized Logic:
+- Create useLaunchSignup hook in packages/web/src/hooks/useLaunchSignup.ts
+- Interface:
+  ```typescript
+  interface UseLaunchSignupReturn {
+    signupForLaunch: (launchId: string) => Promise<void>;
+    isSignedUp: (launchId: string) => boolean;
+    loading: boolean;
+    error: string | null;
+  }
+  ```
+- Check authentication state from useAuth()
+- If !currentUser: Open SignInModal, defer signup until authenticated
+- If currentUser: Write to Firestore immediately
+
+--------------------------------------------------------------------------------
+5. TOPBAR & NAVIGATION CHANGES
+--------------------------------------------------------------------------------
+
+From Main AOSS Spec — Section 1: Navigation & Page Index
+
+TopBar Requirements:
+- Current state: Placeholder "👤 User" button
+- Required changes:
+
+When currentUser == null (unauthenticated):
+- Show "Sign In" button (replaces user menu)
+- Clicking opens SignInModal
+- Consistent on all routes (public and /app/*)
+
+When currentUser != null (authenticated):
+- Show user avatar/dropdown menu
+- Avatar: User's photoURL (Google) or initial letter of email
+- Dropdown menu:
+  * Display name or email
+  * "Profile" (placeholder, future scope)
+  * "Sign out" (calls signOut() from AuthContext)
+- Menu closes on blur/click outside
+- Menu items navigate or trigger actions
+
+Route Guards:
+- Public routes (/): Accessible without auth
+- Internal routes (/home, /products, /observations, etc.): Require auth
+- Auth check flow:
+  1. Show loading spinner while Firebase initializing (loading=true)
+  2. If !loading && !currentUser: Show sign-in gate with "Sign In to Continue" button
+  3. If !loading && currentUser: Render route normally
+  4. Post-auth: Resume navigation to attempted route (no redirect to /home)
+
+--------------------------------------------------------------------------------
+6. FIREBASE AUTH CONFIGURATION
+--------------------------------------------------------------------------------
+
+Firebase SDK:
+- Use modular SDK: firebase/auth (already in package.json)
+- Initialize in firebaseConfig.ts (already exists for Firestore/Storage)
+- Export auth instance
+
+AuthProvider Implementation:
+- Context location: packages/web/src/contexts/AuthProvider.tsx (create new)
+- Interface:
+  ```typescript
+  interface AuthContextValue {
+    currentUser: User | null;           // Firebase User object
+    isAdmin: boolean;                   // Computed from metadata/admins
+    loading: boolean;                   // Auth initialization state
+    signInWithGoogle: () => Promise<void>;
+    signInWithEmail: (email: string, password: string) => Promise<void>;
+    signUpWithEmail: (email: string, password: string) => Promise<void>;
+    signOut: () => Promise<void>;
+  }
+  ```
+
+AuthProvider Logic:
+- Subscribe to onAuthStateChanged in useEffect on mount
+- On auth state change:
+  1. Update currentUser
+  2. If user exists: Read metadata/admins from Firestore
+  3. Check if user.email in admins.emails array
+  4. Set isAdmin boolean
+  5. Set loading=false
+- Handle errors gracefully (console.warn, don't crash)
+- Unsubscribe on unmount
+
+SignUpWithEmail Flow:
+- Call createUserWithEmailAndPassword(auth, email, password)
+- On success: Send email verification
+  await sendEmailVerification(auth.currentUser!)
+- Show message: "Verification email sent. Please check your inbox."
+- User must verify email before full access (future: add verification gate)
+
+--------------------------------------------------------------------------------
+7. SECURITY RULES (NO CHANGES REQUIRED)
+--------------------------------------------------------------------------------
+
+Firestore Rules:
+- Already deployed in PROMPT_AOSS_FIRESTORE_RULES_DEPLOY_v1.0
+- observations collection: Authenticated users can create/read/update/resolve
+- metadata collection: Authenticated read access
+- launchSignups collection: Need to add rules (NEW)
+
+Required Rule Addition for launchSignups:
+```
+match /launchSignups/{signupId} {
+  // Allow authenticated users to create their own signups
+  allow create: if request.auth != null
+                && request.resource.data.userUid == request.auth.uid
+                && request.resource.data.keys().hasAll(['launchId', 'userUid', 'email', 'createdAt', 'source']);
+  
+  // Allow users to read their own signups
+  allow read: if request.auth != null
+              && resource.data.userUid == request.auth.uid;
+  
+  // No updates or deletes (signups are immutable)
+  allow update, delete: if false;
+}
+```
+
+Storage Rules:
+- Already deployed (observations images)
+- No changes required for auth UI
+
+--------------------------------------------------------------------------------
+8. OAUTH CONFIGURATION CHECKLIST (MANUAL)
+--------------------------------------------------------------------------------
+
+Required Firebase Console Configuration (Lisa/Theo):
+
+1. Enable Authentication Providers:
+   - Firebase Console → Authentication → Sign-in method
+   - Enable "Google" provider
+   - Enable "Email/Password" provider
+
+2. Authorized Domains:
+   - Firebase Console → Authentication → Settings → Authorized domains
+   - Add: ropi-aoss-staging.web.app
+   - Add: ropi-bccee.web.app
+   - Verify: localhost (should already exist)
+
+3. Google OAuth Redirect URIs:
+   - Automatic via Firebase (no manual config needed)
+   - URIs: https://ropi-aoss-staging.web.app/__/auth/handler
+   - URIs: https://ropi-bccee.web.app/__/auth/handler
+
+4. Email Templates (Optional):
+   - Firebase Console → Authentication → Templates
+   - Customize email verification template
+   - Customize password reset template
+   - Use Shiekh branding/logo (future scope)
+
+Troubleshooting:
+- If "auth/unauthorized-domain" error: Check Authorized domains list
+- If "auth/popup-blocked" error: User must allow popups for Google sign-in
+- If "auth/operation-not-allowed" error: Provider not enabled in Console
+
+--------------------------------------------------------------------------------
+9. SPEC AMBIGUITIES & QUESTIONS FOR LISA
+--------------------------------------------------------------------------------
+
+Ambiguity 1: Public vs Internal Route Structure
+- Notion spec mentions "public Launch Calendar" and "internal Launch Calendar"
+- Current App.tsx has all routes under AppLayout (internal)
+- Question: Should we create separate public route structure?
+  * Option A: Keep all routes internal, require auth for everything
+  * Option B: Create public landing page (/) with Launch Calendar, require auth for /app/*
+- Recommendation: Option A (simpler, staging-only)
+- Resolution: Lisa to confirm route structure intent
+
+Ambiguity 2: Email Verification Gate
+- signUpWithEmail sends verification email
+- Question: Should we block access until email verified?
+  * Option A: Allow access immediately, show banner "Please verify your email"
+  * Option B: Block access until verified, show "Check your email" gate
+- Recommendation: Option A (better UX, verification is future enhancement)
+- Resolution: Lisa to confirm verification enforcement
+
+Ambiguity 3: Admin Seeding Process
+- Need to seed theo@shiekhshoes.org, theo@shiekh.com to metadata/admins
+- Question: Should we include Lisa's email? Other team members?
+- Recommendation: Start with Theo only, add others via manual Firestore writes
+- Resolution: Lisa to provide complete admin email list
+
+Ambiguity 4: Launch Calendar "Notify Me" Data Source
+- launchSignups collection tracks user signups
+- Question: Where does launchId come from? Is there a launches collection?
+- Current assumption: launchId is hardcoded in UI (e.g., "launch_ropi_runner_q1")
+- Recommendation: Use hardcoded IDs for PROMPT_018B, implement launches collection later
+- Resolution: Lisa to confirm launch data source
+
+Ambiguity 5: Profile Page Implementation
+- TopBar dropdown mentions "Profile" menu item
+- Question: Should we implement profile page or leave as placeholder?
+- Recommendation: Leave as placeholder (navigate to /profile stub page)
+- Resolution: Lisa to confirm if profile page is in scope
+
+================================================================================
+CODE CHANGES SUMMARY
+================================================================================
+
+Files to Create (6):
+--------------------
+1. packages/web/src/contexts/AuthProvider.tsx
+   - Firebase Auth context provider
+   - onAuthStateChanged subscription
+   - Admin detection logic
+   - Sign-in/sign-up/sign-out methods
+
+2. packages/web/src/components/Auth/SignInModal.tsx
+   - Modal UI for sign-in/sign-up
+   - Google sign-in button
+   - Email/password form with validation
+   - Tab/toggle between sign-in and sign-up
+
+3. packages/web/src/hooks/useAuth.ts
+   - Re-export useContext(AuthContext) for convenience
+   - Type-safe hook for consuming auth state
+
+4. packages/web/src/hooks/useLaunchSignup.ts
+   - Launch Calendar signup logic
+   - Firestore write to launchSignups collection
+   - Integration with AuthProvider
+
+5. packages/web/src/components/Auth/SignInModal.css
+   - Modal styling
+   - Form layout
+   - Error message styling
+   - Google button branding
+
+6. scripts/seed-admin-allowlist.js
+   - Seed metadata/admins to staging Firestore
+   - Pattern based on seed-products-rest.js
+   - Idempotent (merge if exists)
+
+Files to Modify (7):
+--------------------
+1. packages/web/src/firebaseConfig.ts
+   - Add Firebase Auth initialization
+   - Export auth instance
+   - Add isAuthAvailable() utility
+
+2. packages/web/src/components/layout/TopBar.tsx
+   - Replace placeholder user menu with auth-aware UI
+   - Show "Sign In" button when !currentUser
+   - Show avatar/dropdown when authenticated
+   - Trigger SignInModal on "Sign In" click
+
+3. packages/web/src/main.tsx
+   - Wrap App with AuthProvider (replaces UserProvider)
+   - Ensure AuthProvider wraps Router
+
+4. packages/web/src/contexts/UserContext.tsx
+   - DEPRECATE (replace with AuthProvider)
+   - Keep file for backwards compatibility during migration
+   - Update to export useAuth instead
+
+5. packages/web/src/components/product/ObservationsPanel.tsx
+   - Replace useUser() with useAuth()
+   - Update createdBy to use currentUser.uid
+   - Show banner when !currentUser: "Sign in to use live Observations..."
+   - Compute canResolve with isAdmin check
+
+6. packages/web/src/services/observations.ts
+   - Remove localStorage fallback (always use Firestore)
+   - Update addObservation to require authenticated user
+   - Update resolveObservation to check permissions
+
+7. packages/web/src/pages/LaunchCalendarPage.tsx
+   - Implement "NOTIFY ME" button on launch items
+   - Use useLaunchSignup hook
+   - Show SignInModal when !currentUser
+   - Show confirmation message after signup
+
+Files to Delete (1):
+--------------------
+1. packages/web/src/contexts/UserContext.tsx (after migration complete)
+
+Security Rules to Add:
+----------------------
+1. firestore.rules (append launchSignups rules)
+   - Create rules for launchSignups collection
+   - Deploy via: firebase deploy --only firestore:rules --project ropi-bccee
+
+================================================================================
+TESTING PLAN
+================================================================================
+
+Unit Tests:
+-----------
+1. test/auth/SignInModal.test.tsx (NEW)
+   - Google button calls signInWithGoogle
+   - Email sign-in form calls signInWithEmail with correct values
+   - Sign-up form calls signUpWithEmail
+   - Validation errors display correctly
+   - Firebase auth errors show friendly messages
+   - Tab toggle between sign-in and sign-up modes
+
+2. test/auth/AuthProvider.test.tsx (NEW)
+   - onAuthStateChanged subscription established
+   - Admin detection reads metadata/admins
+   - isAdmin computed correctly
+   - signOut clears currentUser
+   - Loading state handled correctly
+
+3. test/hooks/useLaunchSignup.test.tsx (NEW)
+   - signupForLaunch writes to Firestore
+   - isSignedUp checks existing signups
+   - Error handling for Firestore failures
+
+Integration Tests:
+------------------
+1. test/observations-auth.test.tsx (MODIFY)
+   - currentUser=null: Banner visible, resolve button disabled
+   - currentUser=creator: Resolve button enabled
+   - currentUser=admin: Resolve button enabled (even if not creator)
+   - currentUser=other: Resolve button disabled
+
+2. test/launch-calendar-signup.test.tsx (NEW)
+   - "NOTIFY ME" present in LaunchCalendarPage
+   - When authenticated: calls useLaunchSignup
+   - When unauthenticated: opens SignInModal
+   - Post-auth: completes signup automatically
+
+Smoke Tests:
+------------
+1. test/smoke.auth.test.tsx (NEW)
+   - AuthProvider exports useAuth hook
+   - useAuth returns AuthContextValue interface
+   - No TypeScript errors
+
+Manual QA Checklist (Post-Deploy):
+-----------------------------------
+1. ✅ TopBar shows "Sign In" when logged out
+2. ✅ Clicking "Sign In" opens SignInModal
+3. ✅ Google sign-in works, redirects back to app
+4. ✅ Email/password sign-in works
+5. ✅ Email/password sign-up sends verification email
+6. ✅ TopBar shows avatar/dropdown when logged in
+7. ✅ Dropdown "Sign out" logs user out
+8. ✅ /observations shows sign-in banner when logged out
+9. ✅ /observations allows create/resolve when logged in
+10. ✅ Admin (theo@shiekhshoes.org) can resolve any observation
+11. ✅ Non-admin can only resolve their own observations
+12. ✅ Launch Calendar "NOTIFY ME" opens modal when logged out
+13. ✅ Launch Calendar "NOTIFY ME" writes to Firestore when logged in
+14. ✅ Confirmation message shows after signup
+15. ✅ Hard refresh maintains authentication state
+
+================================================================================
+DEPLOYMENT CHECKLIST
+================================================================================
+
+Pre-Deploy:
+-----------
+1. ✅ All tests passing (unit + integration)
+2. ✅ Build successful (pnpm --filter @ropi-aoss/web build)
+3. ✅ Admin allow-list seeded to staging Firestore
+4. ✅ Firestore rules updated and deployed
+5. ✅ Firebase Console: Google + Email/Password providers enabled
+6. ✅ Firebase Console: Authorized domains configured
+7. ✅ No TypeScript errors
+8. ✅ No console errors in dev mode
+
+Deploy Commands:
+----------------
+```bash
+# Install dependencies
+pnpm install
+
+# Run tests
+pnpm --filter @ropi-aoss/web test
+
+# Build web app
+pnpm --filter @ropi-aoss/web build
+
+# Deploy to staging
+firebase deploy --only hosting:aoss-staging --project ropi-bccee
+```
+
+Post-Deploy:
+------------
+1. ✅ Verify staging URL: https://ropi-aoss-staging.web.app
+2. ✅ Test Google sign-in flow
+3. ✅ Test email/password sign-in flow
+4. ✅ Test email/password sign-up flow
+5. ✅ Verify admin detection (theo@shiekhshoes.org)
+6. ✅ Test observations create/resolve with auth
+7. ✅ Test Launch Calendar signup flow
+8. ✅ Check Firebase Console for new users
+9. ✅ Check Firestore for launchSignups documents
+10. ✅ Verify no console errors in production build
+
+================================================================================
+NOTION UPDATE CHECKLIST
+================================================================================
+
+Notion Build Progress Log:
+---------------------------
+- Branch: feature/aoss-auth-ui-v1-0
+- PR URL: [To be added after PR creation]
+- Status: ✅ In Progress
+- CI Run IDs: [To be added after deploy]
+- Staging URL: https://ropi-aoss-staging.web.app
+
+Done:
+- ✅ Spec analysis complete
+- ✅ Branch created
+- ⏳ AuthProvider implementation (next)
+- ⏳ SignInModal UI (next)
+- ⏳ TopBar integration (next)
+- ⏳ Observations auth integration (next)
+- ⏳ Launch Calendar signup (next)
+- ⏳ Admin allow-list seeding (next)
+- ⏳ Tests (next)
+- ⏳ Deploy (next)
+
+Blocked:
+- None
+
+Next Steps:
+- Implement AuthProvider and SignInModal
+- Integrate with TopBar and Observations
+- Test auth flows end-to-end
+- Deploy to staging
+
+Ambiguities for Lisa:
+- See "SPEC AMBIGUITIES & QUESTIONS FOR LISA" section above
+
+================================================================================
+NO NOTION IMPORTER CHANGES CONFIRMATION
+================================================================================
+
+Notion Importer v0.2.0 Status: ✅ RETIRED
+
+Confirmation:
+- NO changes to packages/cli (Notion Importer)
+- NO changes to scripts/notion-bootstrap.js
+- NO changes to scripts/exportNotion.ts
+- NO new Notion API integrations
+- All work confined to packages/web (frontend only)
+
+Rationale:
+PROMPT_018B focuses on frontend authentication UI and integration.
+No backend or Notion sync required. All data (users, signups, observations)
+stored in Firestore, not Notion.
+
+================================================================================
+END OF SPEC SUMMARY
+================================================================================
+
+Next Section: Implementation Progress (to be updated during implementation)
+
+================================================================================
