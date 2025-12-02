@@ -40,8 +40,6 @@ function ProductEditorPage() {
     loading,
     saveProduct,
     updateField,
-    addObservation,
-    resolveObservation,
     applySuggestion,
     ignoreSuggestion,
   } = useProduct(id || '123');
@@ -139,9 +137,7 @@ function ProductEditorPage() {
         {/* Right Sidebar with Panels */}
         <div className="product-sidebar">
           <ObservationsPanel
-            observations={product.observations}
-            onAddObservation={addObservation}
-            onResolveObservation={resolveObservation}
+            productId={product.id}
           />
           
           <SmartSuggestionsPanel
