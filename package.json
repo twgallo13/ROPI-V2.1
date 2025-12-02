@@ -1,0 +1,21 @@
+{
+  "name": "ropi-aoss",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "pnpm -w install",
+    "build": "pnpm -r --filter ./... build",
+    "lint": "pnpm -r --filter ./... lint || eslint . --ext .ts,.tsx,.js,.jsx || true",
+    "test": "pnpm -r --filter ./... test || echo \"No tests yet\"",
+    "seed": "node scripts/seed.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^2.8.0",
+    "pnpm": "^8.0.0"
+  }
+}
