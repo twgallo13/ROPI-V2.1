@@ -137,7 +137,7 @@ jobs:
           # Set ADC for this step
           export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
           # Authenticate with gcloud
-          sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+          sudo apt-get update && sudo apt-get install -y google-cloud-cli
           gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud config set project ropi-bccee
           # Persist ADC env var for subsequent steps
