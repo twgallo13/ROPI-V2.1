@@ -1,33 +1,395 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
+import { listObservations, resolveObservation, syncLocalToFirestore } from '../services/observations';
+import { Observation, ObservationSeverity, ObservationStatus } from '../types/observation';
+import { useUser } from '../contexts/UserContext';
+import { isFirebaseAvailable } from '../firebaseConfig';
 
 /**
  * Observations Page
  * 
- * TODO: Implement observations UI according to:
+ * Displays all observations across all products with filtering and resolution capabilities.
+ * Uses Firestore when available, falls back to localStorage when offline.
+ * 
+ * Related Notion docs:
  * - Workflow W1 — Observations Capture & Apply: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations — Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
  * - Product Completion Workflows: https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
  * 
- * Expected features:
- * - List of all observations with filters
- * - Observation status (pending, applied, dismissed)
- * - AI-generated suggestions
- * - Bulk actions (apply, dismiss)
- * - Observation details and context
+ * TODO: Implement cross-product observation aggregation
+ * TODO: Add bulk operations (resolve multiple, export)
+ * TODO: Add filtering by severity, status, date range
+ * TODO: Add search functionality
  */
 function ObservationsPage() {
+  const navigate = useNavigate();
+  const { user } = useUser();
+  const [observations, setObservations] = useState<Observation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<ObservationStatus | 'all'>('all');
+  const [severityFilter, setSeverityFilter] = useState<ObservationSeverity | 'all'>('all');
+  const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
+  const [syncing, setSyncing] = useState(false);
+
+  // Mock product IDs for demo - in production, this would aggregate across all products
+  const demoProductIds = ['123', '456', '789'];
+
+  useEffect(() => {
+    loadObservations();
+  }, []);
+
+  async function loadObservations() {
+    setLoading(true);
+    setError(null);
+    try {
+      // In production, this would query all observations the user has access to
+      // For now, load from demo product IDs
+      const allObservations: Observation[] = [];
+      for (const productId of demoProductIds) {
+        const obs = await listObservations(productId);
+        allObservations.push(...obs);
+      }
+      
+      // Sort by creation date (newest first)
+      allObservations.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      
+      setObservations(allObservations);
+      setIsOffline(!isFirebaseAvailable());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load observations');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResolve(obs: Observation) {
+    try {
+      await resolveObservation(obs.id, obs.productId, user);
+      
+      // Update local state optimistically
+      setObservations((prev) =>
+        prev.map((o) =>
+          o.id === obs.id
+            ? { ...o, status: 'resolved', resolvedBy: user, resolvedAt: new Date() }
+            : o
+        )
+      );
+    } catch (err) {
+      alert('Failed to resolve observation: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    }
+  }
+
+  async function handleSync() {
+    if (!isFirebaseAvailable()) {
+      alert('Firestore is not available. Cannot sync.');
+      return;
+    }
+
+    setSyncing(true);
+    try {
+      let totalSuccess = 0;
+      let totalFailed = 0;
+
+      for (const productId of demoProductIds) {
+        const result = await syncLocalToFirestore(productId);
+        totalSuccess += result.success;
+        totalFailed += result.failed;
+      }
+
+      alert(`Sync complete: ${totalSuccess} synced, ${totalFailed} failed`);
+      await loadObservations();
+    } catch (err) {
+      alert('Sync failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  const filteredObservations = observations.filter((obs) => {
+    if (filter !== 'all' && obs.status !== filter) return false;
+    if (severityFilter !== 'all' && obs.severity !== severityFilter) return false;
+    return true;
+  });
+
+  const getSeverityColor = (severity: ObservationSeverity) => {
+    switch (severity) {
+      case 'high': return '#ef4444';
+      case 'medium': return '#f59e0b';
+      case 'low': return '#3b82f6';
+      default: return '#6b7280';
+    }
+  };
+
+  const getSeverityBadge = (severity: ObservationSeverity) => {
+    const color = getSeverityColor(severity);
+    return (
+      <span style={{
+        display: 'inline-block',
+        padding: '2px 8px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '600',
+        backgroundColor: color + '20',
+        color: color,
+      }}>
+        {severity.toUpperCase()}
+      </span>
+    );
+  };
+
   return (
     <PageLayout title="Observations">
-      <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-        <h3>Observations list placeholder</h3>
-        <p>This will display AI-generated observations and allow bulk review and application.</p>
-        <p style={{ marginTop: '1rem', fontSize: 'var(--font-size-sm)' }}>
-          📋 Implementation details in Notion:
-        </p>
-        <ul style={{ listStyle: 'none', padding: 0, fontSize: 'var(--font-size-sm)' }}>
-          <li>• Workflow W1 — Observations Capture & Apply</li>
-          <li>• Observations — Overview, purpose, workflow, and logic</li>
-          <li>• Product Completion Workflows</li>
+      {isOffline && (
+        <div style={{
+          padding: '12px 16px',
+          backgroundColor: '#fef3c7',
+          border: '1px solid #fbbf24',
+          borderRadius: '6px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <div>
+            <strong>⚠️ Offline Mode</strong>
+            <p style={{ margin: '4px 0 0', fontSize: '14px', color: '#78716c' }}>
+              Observations are saved locally. They will sync when Firestore is available.
+            </p>
+          </div>
+          <button
+            onClick={handleSync}
+            disabled={syncing || !isFirebaseAvailable()}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: isFirebaseAvailable() ? '#3b82f6' : '#9ca3af',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: isFirebaseAvailable() ? 'pointer' : 'not-allowed',
+              fontSize: '14px',
+              fontWeight: '500',
+            }}
+          >
+            {syncing ? 'Syncing...' : 'Retry Sync'}
+          </button>
+        </div>
+      )}
+
+      <div style={{ marginBottom: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div>
+          <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Status:</label>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as ObservationStatus | 'all')}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--color-border)',
+              backgroundColor: 'var(--color-background)',
+            }}
+          >
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Severity:</label>
+          <select
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value as ObservationSeverity | 'all')}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--color-border)',
+              backgroundColor: 'var(--color-background)',
+            }}
+          >
+            <option value="all">All</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        <div style={{ marginLeft: 'auto', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+          {filteredObservations.length} observation{filteredObservations.length !== 1 ? 's' : ''}
+        </div>
+      </div>
+
+      {loading && (
+        <div style={{ textAlign: 'center', padding: '48px', color: 'var(--color-text-secondary)' }}>
+          Loading observations...
+        </div>
+      )}
+
+      {error && (
+        <div style={{
+          padding: '16px',
+          backgroundColor: '#fef2f2',
+          border: '1px solid #ef4444',
+          borderRadius: '6px',
+          color: '#991b1b',
+          marginBottom: '16px',
+        }}>
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      {!loading && !error && filteredObservations.length === 0 && (
+        <div style={{
+          textAlign: 'center',
+          padding: '48px',
+          color: 'var(--color-text-secondary)',
+          backgroundColor: 'var(--color-background)',
+          borderRadius: '8px',
+        }}>
+          <p style={{ fontSize: '18px', marginBottom: '8px' }}>👁️ No observations found</p>
+          <p style={{ fontSize: '14px' }}>
+            {filter !== 'all' || severityFilter !== 'all'
+              ? 'Try adjusting your filters'
+              : 'Observations will appear here as products are analyzed'}
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && filteredObservations.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {filteredObservations.map((obs) => (
+            <div
+              key={obs.id}
+              style={{
+                padding: '16px',
+                border: '1px solid var(--color-border)',
+                borderRadius: '8px',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={() => navigate(`/products/${obs.productId}`)}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+                      {obs.title}
+                    </h4>
+                    {getSeverityBadge(obs.severity)}
+                    {obs.status === 'resolved' && (
+                      <span style={{
+                        display: 'inline-block',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        backgroundColor: '#22c55e20',
+                        color: '#22c55e',
+                      }}>
+                        ✓ RESOLVED
+                      </span>
+                    )}
+                  </div>
+                  <p style={{
+                    margin: '8px 0',
+                    fontSize: '14px',
+                    color: 'var(--color-text-secondary)',
+                    lineHeight: '1.5',
+                  }}>
+                    {obs.body}
+                  </p>
+                  <div style={{
+                    display: 'flex',
+                    gap: '16px',
+                    fontSize: '12px',
+                    color: 'var(--color-text-secondary)',
+                  }}>
+                    <span>Product: <strong>{obs.productId}</strong></span>
+                    <span>Created: {obs.createdAt.toLocaleDateString()}</span>
+                    <span>By: {obs.createdBy.name}</span>
+                    {obs.linkedField && <span>Field: <strong>{obs.linkedField}</strong></span>}
+                    {obs.resolvedBy && (
+                      <span>Resolved by: {obs.resolvedBy.name} on {obs.resolvedAt?.toLocaleDateString()}</span>
+                    )}
+                  </div>
+                  {obs.images && obs.images.length > 0 && (
+                    <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                      {obs.images.slice(0, 3).map((img, idx) => (
+                        <img
+                          key={idx}
+                          src={img}
+                          alt={`Observation attachment ${idx + 1}`}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'cover',
+                            borderRadius: '4px',
+                            border: '1px solid var(--color-border)',
+                          }}
+                        />
+                      ))}
+                      {obs.images.length > 3 && (
+                        <div style={{
+                          width: '60px',
+                          height: '60px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: 'var(--color-background)',
+                          borderRadius: '4px',
+                          border: '1px solid var(--color-border)',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                        }}>
+                          +{obs.images.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {obs.status === 'open' && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleResolve(obs);
+                    }}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#22c55e',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Resolve
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{
+        marginTop: '32px',
+        padding: '16px',
+        backgroundColor: 'var(--color-background)',
+        borderRadius: '8px',
+        fontSize: '12px',
+        color: 'var(--color-text-secondary)',
+      }}>
+        <p style={{ margin: '0 0 8px', fontWeight: '600' }}>📋 Implementation Notes:</p>
+        <ul style={{ margin: 0, paddingLeft: '20px' }}>
+          <li>Observations are loaded from Firestore with localStorage fallback</li>
+          <li>Click any observation to view the product details</li>
+          <li>Use "Resolve" to mark observations as completed</li>
+          <li>In offline mode, use "Retry Sync" to push local observations to Firestore</li>
+          <li>Related Notion docs: Workflow W1, Observations Overview, Product Completion Workflows</li>
         </ul>
       </div>
     </PageLayout>

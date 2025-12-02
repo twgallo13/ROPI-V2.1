@@ -1,0 +1,19 @@
+{
+  "id": "obs_001",
+  "productId": "PROD-123",
+  "title": "Missing brand attribute",
+  "body": "Product is missing the required brand attribute. This should be populated from the source data or manually entered.",
+  "severity": "high",
+  "status": "open",
+  "linkedField": "attributes.brand",
+  "images": [
+    "gs://ropi-bccee.appspot.com/observations/PROD-123/1701234567890_screenshot.png"
+  ],
+  "createdBy": {
+    "uid": "user_001",
+    "name": "AI Analyzer"
+  },
+  "createdAt": "2025-12-02T13:30:00.000Z",
+  "resolvedBy": null,
+  "resolvedAt": null
+}

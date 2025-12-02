@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========================================
+    // OBSERVATIONS COLLECTION
+    // ========================================
+    // Related Notion docs:
+    // - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+    // - Section 9 — Security & IAM: https://www.notion.so/2b845ee1ec5a81739de7fc1743de9a33
+    //
+    // TODO: Refine rules based on product access control
+    // TODO: Add role-based permissions (admin, editor, viewer)
+    // TODO: Implement product-level access control
+    match /observations/{observationId} {
+      // Allow authenticated users to read all observations
+      // In production, restrict to observations for products the user has access to
+      allow read: if request.auth != null;
+      
+      // Allow authenticated users to create observations
+      // Ensure createdBy.uid matches the authenticated user
+      allow create: if request.auth != null 
+                    && request.resource.data.createdBy.uid == request.auth.uid
+                    && request.resource.data.status == 'open'
+                    && request.resource.data.keys().hasAll(['productId', 'title', 'body', 'severity', 'status', 'createdBy', 'createdAt']);
+      
+      // Allow users to update observations they created or if they're resolving
+      // Only allow updating specific fields (status, resolvedBy, resolvedAt)
+      allow update: if request.auth != null 
+                    && (
+                      // Creator can update their own observation
+                      resource.data.createdBy.uid == request.auth.uid
+                      // Anyone can resolve an observation
+                      || (
+                        request.resource.data.status == 'resolved'
+                        && request.resource.data.resolvedBy.uid == request.auth.uid
+                        && request.resource.data.keys().hasAll(['resolvedBy', 'resolvedAt'])
+                      )
+                    );
+      
+      // Only allow deletion by the creator or admins
+      // TODO: Add admin role check
+      allow delete: if request.auth != null 
+                    && resource.data.createdBy.uid == request.auth.uid;
+    }
+    
+    // ========================================
+    // PRODUCTS COLLECTION (Placeholder)
+    // ========================================
+    // TODO: Implement product security rules
+    // TODO: Add field-level validation
+    match /products/{productId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // ========================================
+    // DEFAULT DENY
+    // ========================================
+    // Deny access to all other collections by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

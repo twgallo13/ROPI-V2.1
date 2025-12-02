@@ -1,0 +1,14 @@
+ M packages/web/package.json
+ M packages/web/src/main.tsx
+ M packages/web/src/pages/ObservationsPage.tsx
+ M pnpm-lock.yaml
+?? HOMER_AOSS_OBSERVATIONS_FIRESTORE_v1.0_ARTIFACTS/
+?? firestore.indexes.json
+?? firestore.rules
+?? packages/web/src/contexts/
+?? packages/web/src/firebaseConfig.ts
+?? packages/web/src/services/
+?? packages/web/src/types/
+?? packages/web/src/vite-env.d.ts
+?? packages/web/test/smoke.observations.test.tsx
+?? storage.rules
