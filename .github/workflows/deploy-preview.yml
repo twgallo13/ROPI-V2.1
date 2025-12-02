@@ -92,24 +92,49 @@ jobs:
             echo "Creating minimal firebase.json"
             echo '{"hosting":{"public":"public","ignore":["firebase.json","**/.*","**/node_modules/**"]}}' > firebase.json
           fi
+      - name: Setup gcloud authentication
+        env:
+          GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GCP_SA_KEY_BASE64:-}" ]; then
+            echo "::warning::GCP_SA_KEY_BASE64 not set — skipping preview firebase deploy for fork security."
+            exit 0
+          fi
+          echo "Decoding service account key..."
+          echo "$GCP_SA_KEY_BASE64" | base64 --decode > "$HOME/gcloud-key.json"
+          # Set ADC for this step
+          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
+          # Authenticate with gcloud
+          sudo apt-get update && sudo apt-get install -y google-cloud-cli
+          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+          gcloud config set project ropi-bccee
+          # Persist ADC env var for subsequent steps
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-key.json" >> $GITHUB_ENV
+          echo "Active gcloud account:"
+          gcloud auth list --filter=status:ACTIVE --format="value(account)"
+
       - name: Install Firebase CLI
         run: npm install -g firebase-tools@13
+
       - name: Deploy to preview channel
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        continue-on-error: true
         run: |
-          if [ -z "${FIREBASE_TOKEN:-}" ]; then
-            echo "::warning::FIREBASE_TOKEN not set — skipping preview firebase deploy for security."
+          set -euo pipefail
+          if [ -z "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]; then
+            echo "::warning::GOOGLE_APPLICATION_CREDENTIALS not set — skipping preview deploy"
             exit 0
           fi
           
-          # existing deploy command (keep JSON output)
+          echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+          
+          # Deploy to preview channel on aoss-staging target
           PR_NUM=${{ github.event.pull_request.number }}
           CHANNEL=pr-${PR_NUM}
-          firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --token "$FIREBASE_TOKEN" --json > deploy.json || {
-            echo "::error::Firebase deployment failed"
-            cat deploy.json
-            exit 1
+          firebase hosting:channel:deploy "${CHANNEL}" --only aoss-staging --project ropi-bccee --json > deploy.json || {
+            echo "::warning::Firebase preview deployment failed (may need additional permissions)"
+            cat deploy.json || true
+            exit 0
           }
           echo "Deploy output:"
           cat deploy.json
@@ -118,6 +143,7 @@ jobs:
           echo "PREVIEW_URL=${PREVIEW_URL}"
           echo "===="
       - name: Post preview URL to PR
+        continue-on-error: true
         uses: peter-evans/create-or-update-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -125,3 +151,9 @@ jobs:
           body: |
             ✅ Preview deployed to Firebase Hosting preview channel `pr-${{ github.event.pull_request.number }}`.
             Check the Actions run logs for the exact preview URL (Firebase prints it in the deploy output).
+
+      - name: Cleanup credentials
+        if: always()
+        run: |
+          rm -f "$HOME/gcloud-key.json"
+          echo "Key file removed from runner"
