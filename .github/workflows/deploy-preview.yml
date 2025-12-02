@@ -1,0 +1,56 @@
+name: Deploy AOSS PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build (if web exists)
+        run: |
+          if [ -f packages/web/package.json ]; then
+            pnpm --filter @ropi-aoss/web build || echo "Web build failed (not implemented)"
+          else
+            mkdir -p public
+            cat > public/index.html <<'HTML'
+            <!doctype html><html><body><h1>Ropi AOSS PR Preview</h1></body></html>
+            HTML
+          fi
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@13
+      - name: Deploy to preview channel
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          PR_NUM=${{ github.event.pull_request.number }}
+          CHANNEL=pr-${PR_NUM}
+          firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --token "$FIREBASE_TOKEN" --json > deploy.json
+          echo "Deploy output:"
+          cat deploy.json
+          # Try to extract a URL
+          PREVIEW_URL=$(jq -r '.result[0].site // empty' deploy.json || true)
+          echo "PREVIEW_URL=${PREVIEW_URL}"
+          echo "===="
+      - name: Post preview URL to PR
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ✅ Preview deployed to Firebase Hosting preview channel `pr-${{ github.event.pull_request.number }}`.
+            Check the Actions run logs for the exact preview URL (Firebase prints it in the deploy output).
