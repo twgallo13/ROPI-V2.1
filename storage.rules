@@ -1,0 +1,49 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ========================================
+    // OBSERVATIONS IMAGES
+    // ========================================
+    // Related Notion docs:
+    // - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+    // - Section 9 — Security & IAM: https://www.notion.so/2b845ee1ec5a81739de7fc1743de9a33
+    //
+    // TODO: Add file size limits (e.g., max 5MB per image)
+    // TODO: Add file type validation (only images)
+    // TODO: Implement virus scanning for uploads
+    // TODO: Add product-level access control
+    match /observations/{productId}/{filename} {
+      // Allow authenticated users to read observation images
+      allow read: if request.auth != null;
+      
+      // Allow authenticated users to upload images
+      // TODO: Validate file size and type
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024  // Max 5MB
+                   && request.resource.contentType.matches('image/.*');
+      
+      // Allow deletion by authenticated users
+      // TODO: Restrict to observation creator or admin
+      allow delete: if request.auth != null;
+    }
+    
+    // ========================================
+    // PRODUCT IMAGES (Placeholder)
+    // ========================================
+    // TODO: Implement product image storage rules
+    match /products/{productId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024;  // Max 10MB
+    }
+    
+    // ========================================
+    // DEFAULT DENY
+    // ========================================
+    // Deny access to all other paths by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
