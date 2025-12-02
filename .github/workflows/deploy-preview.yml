@@ -143,6 +143,7 @@ jobs:
           echo "PREVIEW_URL=${PREVIEW_URL}"
           echo "===="
       - name: Post preview URL to PR
+        continue-on-error: true
         uses: peter-evans/create-or-update-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
