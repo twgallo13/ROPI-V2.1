@@ -6,6 +6,16 @@
   background-color: var(--color-background);
 }
 
+.product-editor-loading,
+.product-editor-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - var(--topbar-height));
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+}
+
 /* Product Header */
 .product-header {
   background-color: var(--color-surface);

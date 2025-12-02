@@ -1,0 +1,353 @@
+deploy-staging	Set up job	﻿2025-12-02T12:57:02.6060394Z Current runner version: '2.329.0'
+deploy-staging	Set up job	2025-12-02T12:57:02.6142641Z ##[group]Runner Image Provisioner
+deploy-staging	Set up job	2025-12-02T12:57:02.6143904Z Hosted Compute Agent
+deploy-staging	Set up job	2025-12-02T12:57:02.6144845Z Version: 20251016.436
+deploy-staging	Set up job	2025-12-02T12:57:02.6145746Z Commit: 8ab8ac8bfd662a3739dab9fe09456aba92132568
+deploy-staging	Set up job	2025-12-02T12:57:02.6146730Z Build Date: 2025-10-15T20:44:12Z
+deploy-staging	Set up job	2025-12-02T12:57:02.6147721Z ##[endgroup]
+deploy-staging	Set up job	2025-12-02T12:57:02.6148497Z ##[group]Operating System
+deploy-staging	Set up job	2025-12-02T12:57:02.6149251Z Ubuntu
+deploy-staging	Set up job	2025-12-02T12:57:02.6150035Z 24.04.3
+deploy-staging	Set up job	2025-12-02T12:57:02.6150663Z LTS
+deploy-staging	Set up job	2025-12-02T12:57:02.6151315Z ##[endgroup]
+deploy-staging	Set up job	2025-12-02T12:57:02.6152178Z ##[group]Runner Image
+deploy-staging	Set up job	2025-12-02T12:57:02.6173197Z Image: ubuntu-24.04
+deploy-staging	Set up job	2025-12-02T12:57:02.6174275Z Version: 20251112.124.1
+deploy-staging	Set up job	2025-12-02T12:57:02.6175956Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251112.124/images/ubuntu/Ubuntu2404-Readme.md
+deploy-staging	Set up job	2025-12-02T12:57:02.6178200Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251112.124
+deploy-staging	Set up job	2025-12-02T12:57:02.6180094Z ##[endgroup]
+deploy-staging	Set up job	2025-12-02T12:57:02.6181777Z ##[group]GITHUB_TOKEN Permissions
+deploy-staging	Set up job	2025-12-02T12:57:02.6184632Z Contents: read
+deploy-staging	Set up job	2025-12-02T12:57:02.6185440Z Metadata: read
+deploy-staging	Set up job	2025-12-02T12:57:02.6186261Z Packages: read
+deploy-staging	Set up job	2025-12-02T12:57:02.6186919Z ##[endgroup]
+deploy-staging	Set up job	2025-12-02T12:57:02.6189764Z Secret source: Actions
+deploy-staging	Set up job	2025-12-02T12:57:02.6191090Z Prepare workflow directory
+deploy-staging	Set up job	2025-12-02T12:57:02.6717443Z Prepare all required actions
+deploy-staging	Set up job	2025-12-02T12:57:02.6772358Z Getting action download info
+deploy-staging	Set up job	2025-12-02T12:57:02.9970845Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+deploy-staging	Set up job	2025-12-02T12:57:03.9173810Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+deploy-staging	Set up job	2025-12-02T12:57:04.1025290Z Complete job name: deploy-staging
+deploy-staging	Checkout code	﻿2025-12-02T12:57:04.1782434Z ##[group]Run actions/checkout@v4
+deploy-staging	Checkout code	2025-12-02T12:57:04.1783783Z with:
+deploy-staging	Checkout code	2025-12-02T12:57:04.1784465Z   repository: twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2025-12-02T12:57:04.1785546Z   token: ***
+deploy-staging	Checkout code	2025-12-02T12:57:04.1786204Z   ssh-strict: true
+deploy-staging	Checkout code	2025-12-02T12:57:04.1786871Z   ssh-user: git
+deploy-staging	Checkout code	2025-12-02T12:57:04.1787558Z   persist-credentials: true
+deploy-staging	Checkout code	2025-12-02T12:57:04.1788311Z   clean: true
+deploy-staging	Checkout code	2025-12-02T12:57:04.1788998Z   sparse-checkout-cone-mode: true
+deploy-staging	Checkout code	2025-12-02T12:57:04.1789825Z   fetch-depth: 1
+deploy-staging	Checkout code	2025-12-02T12:57:04.1790488Z   fetch-tags: false
+deploy-staging	Checkout code	2025-12-02T12:57:04.1791185Z   show-progress: true
+deploy-staging	Checkout code	2025-12-02T12:57:04.1791878Z   lfs: false
+deploy-staging	Checkout code	2025-12-02T12:57:04.1792531Z   submodules: false
+deploy-staging	Checkout code	2025-12-02T12:57:04.1793359Z   set-safe-directory: true
+deploy-staging	Checkout code	2025-12-02T12:57:04.1794335Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.2955408Z Syncing repository: twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2025-12-02T12:57:04.2958845Z ##[group]Getting Git version info
+deploy-staging	Checkout code	2025-12-02T12:57:04.2960795Z Working directory is '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+deploy-staging	Checkout code	2025-12-02T12:57:04.2964132Z [command]/usr/bin/git version
+deploy-staging	Checkout code	2025-12-02T12:57:04.3029100Z git version 2.51.2
+deploy-staging	Checkout code	2025-12-02T12:57:04.3069490Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.3084672Z Temporarily overriding HOME='/home/runner/work/_temp/0183d702-b372-4e9d-a4b2-08613e29433c' before making global git config changes
+deploy-staging	Checkout code	2025-12-02T12:57:04.3088417Z Adding repository directory to the temporary git global config as a safe directory
+deploy-staging	Checkout code	2025-12-02T12:57:04.3102670Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Checkout code	2025-12-02T12:57:04.3150905Z Deleting the contents of '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+deploy-staging	Checkout code	2025-12-02T12:57:04.3156916Z ##[group]Initializing the repository
+deploy-staging	Checkout code	2025-12-02T12:57:04.3159467Z [command]/usr/bin/git init /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Checkout code	2025-12-02T12:57:04.3274137Z hint: Using 'master' as the name for the initial branch. This default branch name
+deploy-staging	Checkout code	2025-12-02T12:57:04.3278576Z hint: is subject to change. To configure the initial branch name to use in all
+deploy-staging	Checkout code	2025-12-02T12:57:04.3281217Z hint: of your new repositories, which will suppress this warning, call:
+deploy-staging	Checkout code	2025-12-02T12:57:04.3283505Z hint:
+deploy-staging	Checkout code	2025-12-02T12:57:04.3285003Z hint: 	git config --global init.defaultBranch <name>
+deploy-staging	Checkout code	2025-12-02T12:57:04.3287198Z hint:
+deploy-staging	Checkout code	2025-12-02T12:57:04.3288915Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+deploy-staging	Checkout code	2025-12-02T12:57:04.3291567Z hint: 'development'. The just-created branch can be renamed via this command:
+deploy-staging	Checkout code	2025-12-02T12:57:04.3294649Z hint:
+deploy-staging	Checkout code	2025-12-02T12:57:04.3295832Z hint: 	git branch -m <name>
+deploy-staging	Checkout code	2025-12-02T12:57:04.3297497Z hint:
+deploy-staging	Checkout code	2025-12-02T12:57:04.3299198Z hint: Disable this message with "git config set advice.defaultBranchName false"
+deploy-staging	Checkout code	2025-12-02T12:57:04.3302173Z Initialized empty Git repository in /home/runner/work/ROPI-V2.1/ROPI-V2.1/.git/
+deploy-staging	Checkout code	2025-12-02T12:57:04.3306867Z [command]/usr/bin/git remote add origin https://github.com/twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2025-12-02T12:57:04.3346733Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.3348869Z ##[group]Disabling automatic garbage collection
+deploy-staging	Checkout code	2025-12-02T12:57:04.3350660Z [command]/usr/bin/git config --local gc.auto 0
+deploy-staging	Checkout code	2025-12-02T12:57:04.3387689Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.3389574Z ##[group]Setting up auth
+deploy-staging	Checkout code	2025-12-02T12:57:04.3391420Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy-staging	Checkout code	2025-12-02T12:57:04.3425056Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy-staging	Checkout code	2025-12-02T12:57:04.3762447Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy-staging	Checkout code	2025-12-02T12:57:04.3798162Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy-staging	Checkout code	2025-12-02T12:57:04.4025629Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+deploy-staging	Checkout code	2025-12-02T12:57:04.4060599Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+deploy-staging	Checkout code	2025-12-02T12:57:04.4401193Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+deploy-staging	Checkout code	2025-12-02T12:57:04.4466383Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.4480144Z ##[group]Fetching the repository
+deploy-staging	Checkout code	2025-12-02T12:57:04.4488380Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a1b02f8f5da22fd30f9331a8e8b98e61a21a5520:refs/remotes/origin/aoss-main
+deploy-staging	Checkout code	2025-12-02T12:57:04.8059336Z From https://github.com/twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2025-12-02T12:57:04.8060266Z  * [new ref]         a1b02f8f5da22fd30f9331a8e8b98e61a21a5520 -> origin/aoss-main
+deploy-staging	Checkout code	2025-12-02T12:57:04.8062184Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.8063279Z ##[group]Determining the checkout info
+deploy-staging	Checkout code	2025-12-02T12:57:04.8064239Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.8064800Z [command]/usr/bin/git sparse-checkout disable
+deploy-staging	Checkout code	2025-12-02T12:57:04.8066268Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+deploy-staging	Checkout code	2025-12-02T12:57:04.8068015Z ##[group]Checking out the ref
+deploy-staging	Checkout code	2025-12-02T12:57:04.8068911Z [command]/usr/bin/git checkout --progress --force -B aoss-main refs/remotes/origin/aoss-main
+deploy-staging	Checkout code	2025-12-02T12:57:04.8114258Z Switched to a new branch 'aoss-main'
+deploy-staging	Checkout code	2025-12-02T12:57:04.8118736Z branch 'aoss-main' set up to track 'origin/aoss-main'.
+deploy-staging	Checkout code	2025-12-02T12:57:04.8127611Z ##[endgroup]
+deploy-staging	Checkout code	2025-12-02T12:57:04.8162678Z [command]/usr/bin/git log -1 --format=%H
+deploy-staging	Checkout code	2025-12-02T12:57:04.8185592Z a1b02f8f5da22fd30f9331a8e8b98e61a21a5520
+deploy-staging	Setup Node.js 20	﻿2025-12-02T12:57:04.8425076Z ##[group]Run actions/setup-node@v4
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:04.8425566Z with:
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:04.8425909Z   node-version: 20
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:04.8426270Z   always-auth: false
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:04.8426636Z   check-latest: false
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:04.8427136Z   token: ***
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:04.8427486Z ##[endgroup]
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:05.0333669Z Found in cache @ /opt/hostedtoolcache/node/20.19.5/x64
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:05.0339362Z ##[group]Environment details
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:05.5047475Z node: v20.19.5
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:05.5055818Z npm: 10.8.2
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:05.5056370Z yarn: 1.22.22
+deploy-staging	Setup Node.js 20	2025-12-02T12:57:05.5057512Z ##[endgroup]
+deploy-staging	Install pnpm	﻿2025-12-02T12:57:05.5166181Z ##[group]Run npm install -g pnpm@8
+deploy-staging	Install pnpm	2025-12-02T12:57:05.5166929Z [36;1mnpm install -g pnpm@8[0m
+deploy-staging	Install pnpm	2025-12-02T12:57:05.5211959Z shell: /usr/bin/bash -e {0}
+deploy-staging	Install pnpm	2025-12-02T12:57:05.5212391Z ##[endgroup]
+deploy-staging	Install pnpm	2025-12-02T12:57:07.0582359Z 
+deploy-staging	Install pnpm	2025-12-02T12:57:07.0593241Z added 1 package in 1s
+deploy-staging	Install pnpm	2025-12-02T12:57:07.0595032Z 
+deploy-staging	Install pnpm	2025-12-02T12:57:07.0595457Z 1 package is looking for funding
+deploy-staging	Install pnpm	2025-12-02T12:57:07.0596074Z   run `npm fund` for details
+deploy-staging	Install dependencies	﻿2025-12-02T12:57:07.0720550Z ##[group]Run if [ -f package.json ]; then
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0720902Z [36;1mif [ -f package.json ]; then[0m
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0721164Z [36;1m  pnpm install[0m
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0721367Z [36;1melse[0m
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0721650Z [36;1m  echo "No package.json found, skipping dependency installation"[0m
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0721991Z [36;1mfi[0m
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0756097Z shell: /usr/bin/bash -e {0}
+deploy-staging	Install dependencies	2025-12-02T12:57:07.0756336Z ##[endgroup]
+deploy-staging	Install dependencies	2025-12-02T12:57:07.6006832Z Scope: all 5 workspace projects
+deploy-staging	Install dependencies	2025-12-02T12:57:07.6912625Z  WARN  Ignoring not compatible lockfile at /home/runner/work/ROPI-V2.1/ROPI-V2.1/pnpm-lock.yaml
+deploy-staging	Install dependencies	2025-12-02T12:57:07.9193622Z Progress: resolved 1, reused 0, downloaded 0, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:08.0780014Z  WARN  deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+deploy-staging	Install dependencies	2025-12-02T12:57:09.1610924Z Progress: resolved 19, reused 0, downloaded 10, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:10.1623499Z Progress: resolved 75, reused 0, downloaded 20, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:11.1656888Z Progress: resolved 94, reused 0, downloaded 69, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:12.1675995Z Progress: resolved 149, reused 0, downloaded 122, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:13.1704877Z Progress: resolved 267, reused 0, downloaded 206, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:14.1827405Z  WARN  5 deprecated subdependencies found: @humanwhocodes/config-array@0.13.0, @humanwhocodes/object-schema@2.0.3, glob@7.2.3, inflight@1.0.6, rimraf@3.0.2
+deploy-staging	Install dependencies	2025-12-02T12:57:14.2163236Z Progress: resolved 346, reused 0, downloaded 301, added 0
+deploy-staging	Install dependencies	2025-12-02T12:57:14.2185988Z Packages: +304
+deploy-staging	Install dependencies	2025-12-02T12:57:14.2186735Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+deploy-staging	Install dependencies	2025-12-02T12:57:14.7051271Z Progress: resolved 346, reused 0, downloaded 303, added 304, done
+deploy-staging	Install dependencies	2025-12-02T12:57:14.8404638Z .../esbuild@0.21.5/node_modules/esbuild postinstall$ node install.js
+deploy-staging	Install dependencies	2025-12-02T12:57:14.9020664Z .../esbuild@0.21.5/node_modules/esbuild postinstall: Done
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6255614Z 
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6304146Z dependencies:
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6304898Z + @notionhq/client 3.1.3 (5.4.0 is available)
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6315042Z 
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6315283Z devDependencies:
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6315852Z + eslint 8.57.1 (9.39.1 is available) deprecated
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6316668Z + pnpm 8.15.9 (10.24.0 is available)
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6317353Z + prettier 2.8.8 (3.7.3 is available)
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6317981Z + typescript 5.9.3
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6318340Z 
+deploy-staging	Install dependencies	2025-12-02T12:57:15.6343533Z Done in 8.5s
+deploy-staging	Build packages/web	﻿2025-12-02T12:57:15.7157070Z ##[group]Run set -euo pipefail
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7157566Z [36;1mset -euo pipefail[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7157986Z [36;1mecho "Building packages/web with Vite..."[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7158472Z [36;1mpnpm --filter @ropi-aoss/web build[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7158872Z [36;1m[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7159164Z [36;1m# Verify build output[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7159583Z [36;1mif [ ! -f packages/web/dist/index.html ]; then[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7160188Z [36;1m  echo "::error::packages/web/dist/index.html not found after build"[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7160729Z [36;1m  exit 1[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7160996Z [36;1mfi[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7161260Z [36;1m[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7161672Z [36;1mecho "✅ Build complete: packages/web/dist ready for deployment"[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7162225Z [36;1mls -lh packages/web/dist/[0m
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7204033Z shell: /usr/bin/bash -e {0}
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7204397Z ##[endgroup]
+deploy-staging	Build packages/web	2025-12-02T12:57:15.7275748Z Building packages/web with Vite...
+deploy-staging	Build packages/web	2025-12-02T12:57:16.3079254Z 
+deploy-staging	Build packages/web	2025-12-02T12:57:16.3103861Z > @ropi-aoss/web@1.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web
+deploy-staging	Build packages/web	2025-12-02T12:57:16.3104648Z > tsc && vite build
+deploy-staging	Build packages/web	2025-12-02T12:57:16.3104934Z 
+deploy-staging	Build packages/web	2025-12-02T12:57:19.3299792Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+deploy-staging	Build packages/web	2025-12-02T12:57:19.3868248Z transforming...
+deploy-staging	Build packages/web	2025-12-02T12:57:20.5732216Z [32m✓[39m 56 modules transformed.
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7249793Z rendering chunks...
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7312687Z computing gzip size...
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7386832Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  0.46 kB[22m[1m[22m[2m │ gzip:  0.29 kB[22m
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7395343Z [2mdist/[22m[2massets/[22m[35mindex-D6tpF9Hw.css  [39m[1m[2m 10.19 kB[22m[1m[22m[2m │ gzip:  2.19 kB[22m
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7396714Z [2mdist/[22m[2massets/[22m[36mindex-DxEe_DAt.js   [39m[1m[2m182.93 kB[22m[1m[22m[2m │ gzip: 57.28 kB[22m
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7397547Z [32m✓ built in 1.39s[39m
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7628439Z ✅ Build complete: packages/web/dist ready for deployment
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7643976Z total 8.0K
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7646338Z drwxr-xr-x 2 runner runner 4.0K Dec  2 12:57 assets
+deploy-staging	Build packages/web	2025-12-02T12:57:20.7649034Z -rw-r--r-- 1 runner runner  456 Dec  2 12:57 index.html
+deploy-staging	Setup gcloud authentication	﻿2025-12-02T12:57:20.7686903Z ##[group]Run set -euo pipefail
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7687245Z [36;1mset -euo pipefail[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7687505Z [36;1mif [ -z "${GCP_SA_KEY_BASE64:-}" ]; then[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7687882Z [36;1m  echo "::error::GCP_SA_KEY_BASE64 secret not set in 'staging' environment"[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7688218Z [36;1m  exit 1[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7688386Z [36;1mfi[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7688576Z [36;1mecho "Decoding service account key..."[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7688931Z [36;1mecho "$GCP_SA_KEY_BASE64" | base64 --decode > "$HOME/gcloud-key.json"[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7689266Z [36;1m# Set ADC for this step[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7689580Z [36;1mexport GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7689933Z [36;1m# Authenticate with gcloud[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7690252Z [36;1msudo apt-get update && sudo apt-get install -y google-cloud-cli[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7690735Z [36;1mgcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7691188Z [36;1mgcloud config set project ropi-bccee[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7691483Z [36;1m# Persist ADC env var for subsequent steps[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7691868Z [36;1mecho "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-key.json" >> $GITHUB_ENV[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7692238Z [36;1mecho "Active gcloud account:"[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7692566Z [36;1mgcloud auth list --filter=status:ACTIVE --format="value(account)"[0m
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7724633Z shell: /usr/bin/bash -e {0}
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7724856Z env:
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7804454Z   GCP_SA_KEY_BASE64: ***
+deploy-staging	Setup gcloud authentication	
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7804687Z ##[endgroup]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.7858190Z Decoding service account key...
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.8874525Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.9374672Z Get:6 https://packages.microsoft.com/repos/azure-cli noble InRelease [3564 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.9804307Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.9805818Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.9856550Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:20.9954314Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.0078693Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.1019100Z Get:8 https://packages.microsoft.com/repos/azure-cli noble/main amd64 Packages [1763 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.2396161Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [73.3 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.2443566Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [55.0 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.2508074Z Get:11 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [11.2 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.2964448Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1619 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3076951Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [303 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3125250Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [175 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3159601Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 c-n-f Metadata [15.7 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3173770Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1500 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3345365Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [304 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3376365Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [378 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3438293Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [31.4 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3474051Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2307 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.3695018Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [526 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4149717Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4156979Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [5808 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4173343Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4197847Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [7136 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4209192Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [29.2 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4227999Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe Translation-en [17.6 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4257736Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [11.0 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4274210Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4277134Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4671489Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1340 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4756281Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [219 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4778848Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [21.5 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4791995Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 c-n-f Metadata [9448 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.4814833Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [915 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5356686Z Get:36 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [206 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5391405Z Get:37 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [71.5 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5415549Z Get:38 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [19.4 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5435162Z Get:39 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [2194 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5592080Z Get:40 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [501 kB]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5633441Z Get:41 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Components [208 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5651090Z Get:42 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [5956 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:21.5658065Z Get:43 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [208 B]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:30.4698105Z Fetched 13.3 MB in 2s (7200 kB/s)
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:31.2262565Z Reading package lists...
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:31.2604138Z Reading package lists...
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:31.4529212Z Building dependency tree...
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:31.4537141Z Reading state information...
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:31.6352239Z google-cloud-cli is already the newest version (547.0.0-0).
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:31.6354577Z 0 upgraded, 0 newly installed, 0 to remove and 68 not upgraded.
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:35.4475896Z Activated service account credentials for: [ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com]
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:36.9858156Z INFORMATION: Project 'ropi-bccee' has no 'environment' tag set. Use either 'Production', 'Development', 'Test', or 'Staging'. Add an 'environment' tag using `gcloud resource-manager tags bindings create`.
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:36.9866317Z Updated property [core/project].
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:37.0600644Z Active gcloud account:
+deploy-staging	Setup gcloud authentication	2025-12-02T12:57:37.5573219Z ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+deploy-staging	Install Firebase CLI	﻿2025-12-02T12:57:37.6253990Z ##[group]Run npm install -g firebase-tools@13
+deploy-staging	Install Firebase CLI	2025-12-02T12:57:37.6254337Z [36;1mnpm install -g firebase-tools@13[0m
+deploy-staging	Install Firebase CLI	2025-12-02T12:57:37.6288341Z shell: /usr/bin/bash -e {0}
+deploy-staging	Install Firebase CLI	2025-12-02T12:57:37.6288571Z env:
+deploy-staging	Install Firebase CLI	2025-12-02T12:57:37.6288836Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Install Firebase CLI	2025-12-02T12:57:37.6289150Z ##[endgroup]
+deploy-staging	Install Firebase CLI	2025-12-02T12:58:05.2677720Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+deploy-staging	Install Firebase CLI	2025-12-02T12:58:10.5885341Z 
+deploy-staging	Install Firebase CLI	2025-12-02T12:58:10.5887923Z added 661 packages in 33s
+deploy-staging	Install Firebase CLI	2025-12-02T12:58:10.5888660Z 
+deploy-staging	Install Firebase CLI	2025-12-02T12:58:10.5891036Z 80 packages are looking for funding
+deploy-staging	Install Firebase CLI	2025-12-02T12:58:10.5891923Z   run `npm fund` for details
+deploy-staging	Deploy to stable staging site	﻿2025-12-02T12:58:10.6249641Z ##[group]Run set -euo pipefail
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6250166Z [36;1mset -euo pipefail[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6250855Z [36;1mecho "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6251528Z [36;1m[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6251987Z [36;1m# Deploy preview channel (keep existing behavior)[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6252789Z [36;1mfirebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json || true[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6253828Z [36;1m[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6254156Z [36;1m# Deploy to stable aoss-staging target[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6254801Z [36;1mfirebase deploy --only hosting:aoss-staging --project ropi-bccee --json[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6255623Z [36;1mecho "Stable staging URL: https://ropi-aoss-staging.web.app"[0m
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6304371Z shell: /usr/bin/bash -e {0}
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6304597Z env:
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6304857Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6305189Z ##[endgroup]
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:10.6386917Z Using GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3233931Z {
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3244085Z   "status": "success",
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3244733Z   "result": {
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3245326Z     "aoss-staging": {
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3245946Z       "target": "aoss-staging",
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3246551Z       "site": "ropi-aoss-staging",
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3247423Z       "url": "https://ropi-aoss-staging--aoss-main-staging-66cwdo2b.web.app",
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3248231Z       "version": "",
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3254483Z       "expireTime": "2025-12-09T12:58:13.070633104Z"
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3255137Z     }
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:14.3255421Z   }
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:17.2459824Z }{
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:17.2467262Z   "status": "success",
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:17.2467669Z   "result": {
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:17.2468339Z     "hosting": "projects/892791174441/sites/ropi-aoss-staging/versions/01314e745af083f0"
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:17.2469022Z   }
+deploy-staging	Deploy to stable staging site	2025-12-02T12:58:17.2725414Z }Stable staging URL: https://ropi-aoss-staging.web.app
+deploy-staging	Smoke check stable staging	﻿2025-12-02T12:58:17.2768323Z ##[group]Run set -e
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2768723Z [36;1mset -e[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2769140Z [36;1mecho "Waiting briefly for hosting to warm up..."[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2769643Z [36;1msleep 3[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2770561Z [36;1mSTATUS=$(curl -s -o /dev/null -w '%{http_code}' https://ropi-aoss-staging.web.app || true)[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2771275Z [36;1mecho "HTTP status: $STATUS"[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2771763Z [36;1mif [ "$STATUS" != "200" ]; then[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2772444Z [36;1m  echo "::warning::Staging returned HTTP $STATUS. Check hosting logs and content."[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2773290Z [36;1mfi[0m
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2809880Z shell: /usr/bin/bash -e {0}
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2810116Z env:
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2810368Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2810684Z ##[endgroup]
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:17.2879001Z Waiting briefly for hosting to warm up...
+deploy-staging	Smoke check stable staging	2025-12-02T12:58:20.5869897Z HTTP status: 200
+deploy-staging	Cleanup credentials	﻿2025-12-02T12:58:20.5898962Z ##[group]Run rm -f "$HOME/gcloud-key.json"
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5899289Z [36;1mrm -f "$HOME/gcloud-key.json"[0m
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5899570Z [36;1mecho "Key file removed from runner"[0m
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5933700Z shell: /usr/bin/bash -e {0}
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5933926Z env:
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5934170Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5934480Z ##[endgroup]
+deploy-staging	Cleanup credentials	2025-12-02T12:58:20.5996803Z Key file removed from runner
+deploy-staging	Post Setup Node.js 20	﻿2025-12-02T12:58:20.6056163Z Post job cleanup.
+deploy-staging	Post Checkout code	﻿2025-12-02T12:58:20.7902317Z Post job cleanup.
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9400808Z [command]/usr/bin/git version
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9466863Z git version 2.51.2
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9517912Z Temporarily overriding HOME='/home/runner/work/_temp/76c969a1-cb24-4bcb-88d6-72d5b9d8cfc1' before making global git config changes
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9520774Z Adding repository directory to the temporary git global config as a safe directory
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9525232Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9561839Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9607590Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9844389Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9866441Z http.https://github.com/.extraheader
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9880663Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+deploy-staging	Post Checkout code	2025-12-02T12:58:20.9914531Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy-staging	Post Checkout code	2025-12-02T12:58:21.0143983Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+deploy-staging	Post Checkout code	2025-12-02T12:58:21.0180604Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+deploy-staging	Complete job	﻿2025-12-02T12:58:21.0526045Z Cleaning up orphan processes
