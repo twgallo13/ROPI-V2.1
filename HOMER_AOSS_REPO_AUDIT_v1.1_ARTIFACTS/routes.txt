@@ -1,0 +1,29 @@
+# ROPI AOSS Route Mapping
+# Generated: 2025-12-02
+# Source: feature/aoss-frontend-nav-v1-0 (PR #154)
+
+## Main Routes
+/ → Navigate (redirect to /home) | packages/web/src/App.tsx
+/home → HomePage | packages/web/src/pages/HomePage.tsx
+/products → ProductsPage | packages/web/src/pages/ProductsPage.tsx
+/products/:id → ProductEditorPage | packages/web/src/pages/ProductEditorPage.tsx
+/launch-calendar → LaunchCalendarPage | packages/web/src/pages/LaunchCalendarPage.tsx
+/import → ImportPage | packages/web/src/pages/ImportPage.tsx
+/export → ExportPage | packages/web/src/pages/ExportPage.tsx
+/observations → ObservationsPage | packages/web/src/pages/ObservationsPage.tsx
+/attributes → AttributesPage | packages/web/src/pages/AttributesPage.tsx
+/smart-rules → SmartRulesPage | packages/web/src/pages/SmartRulesPage.tsx
+
+## Settings Routes
+/settings → SettingsPage | packages/web/src/pages/SettingsPage.tsx
+/settings/ai-templates → SettingsSubPage (ai-templates) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/search → SettingsSubPage (search) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/import-settings → SettingsSubPage (import-settings) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/export-settings → SettingsSubPage (export-settings) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/bulk-actions → SettingsSubPage (bulk-actions) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/workflows → SettingsSubPage (workflows) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/ai-performance → SettingsSubPage (ai-performance) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/users → SettingsSubPage (users) | packages/web/src/pages/settings/SettingsSubPage.tsx
+/settings/permissions → SettingsSubPage (permissions) | packages/web/src/pages/settings/SettingsSubPage.tsx
+
+## Total Routes: 20 (10 main + 10 settings)

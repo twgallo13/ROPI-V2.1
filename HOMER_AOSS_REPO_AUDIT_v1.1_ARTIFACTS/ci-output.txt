@@ -1,0 +1,38 @@
+# CI Build & Test Output for PR #154
+# Date: 2025-12-02
+# Branch: feature/aoss-frontend-nav-v1-0
+
+## Build Output
+$ cd packages/web && pnpm build
+> @ropi-aoss/web@1.0.0 build
+> tsc && vite build
+
+vite v5.4.21 building for production...
+✓ 56 modules transformed.
+dist/index.html                   0.46 kB │ gzip:  0.29 kB
+dist/assets/index-D6tpF9Hw.css   10.19 kB │ gzip:  2.19 kB
+dist/assets/index-DxEe_DAt.js   182.93 kB │ gzip: 57.28 kB
+✓ built in 946ms
+
+## Test Output
+$ cd packages/web && pnpm test run
+> @ropi-aoss/web@1.0.0 test
+> vitest run
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+ ✓ test/nav.test.ts (4)
+   ✓ Navigation Configuration (4)
+     ✓ should have all required main navigation items
+     ✓ should have valid routes for all navigation items
+     ✓ should have all required settings sub-navigation items
+     ✓ should have /settings prefix for all settings routes
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  12:20:51
+   Duration  847ms
+
+## Status
+✅ Build: SUCCESS
+✅ Tests: 4/4 PASSING

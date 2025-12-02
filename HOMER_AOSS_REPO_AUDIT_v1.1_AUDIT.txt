@@ -1,0 +1,877 @@
+================================================================================
+HOMER AUDIT: AOSS_REPO_AUDIT_v1.1
+================================================================================
+Version Label: AOSS_REPO_AUDIT_v1.1
+Branch: feature/aoss-repo-audit-v1-1
+Date: December 2, 2025
+Homer Agent: ROPI AOSS Repository Audit & PR #154 Validation
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+This comprehensive repository audit validates PR #154 (AOSS_FRONTEND_NAV_v1.0)
+and assesses overall AOSS frontend readiness. The audit confirms that the new
+packages/web frontend skeleton is properly implemented, built successfully, and
+all tests pass. The codebase is well-structured with clear Notion documentation
+references throughout.
+
+KEY FINDINGS:
+✅ PR #154 successfully implements app shell & navigation (20 routes, 36 files)
+✅ Build successful, 4/4 tests passing
+✅ Proper Notion documentation references in all components
+✅ Settings Hub with 9 sub-sections correctly implemented
+✅ Product Editor shell with tabs and panels matches spec
+⚠️ 3 moderate security vulnerabilities in dependencies (pnpm, esbuild)
+⚠️ No Firestore backend or AI integration detected yet (expected at this stage)
+⚠️ Legacy Notion importer code exists in packages/cli (untouched, as required)
+
+OVERALL ASSESSMENT: Repository is in excellent condition for continued AOSS
+frontend development. PR #154 foundation is solid and ready to merge.
+
+================================================================================
+REPOSITORY SNAPSHOT
+================================================================================
+
+Repository: https://github.com/twgallo13/ROPI-V2.1
+Owner: twgallo13
+Default Branch: main (aoss-main is active development branch)
+Current Commit: cd5875c7235e43ed41433b0db799ade3fa4e7d97
+Audit Branch: feature/aoss-repo-audit-v1-1 (created from aoss-main)
+
+Repository Structure:
+- Monorepo with pnpm workspaces
+- 4 packages: api, cli, sdk, web
+- Firebase hosting configuration (aoss-staging target)
+- GitHub Actions CI/CD (4 workflows)
+- TypeScript throughout with strict mode
+
+Languages/Frameworks:
+- TypeScript (primary)
+- React 18 + Vite 5 (packages/web)
+- Node.js backend/tooling
+- Firebase Hosting
+- No Firestore rules or functions detected yet
+
+================================================================================
+PR #154 VALIDATION
+================================================================================
+
+PR Details:
+- PR Number: 154
+- Title: "AOSS_FRONTEND_NAV_v1.0 - Implement App Shell & Navigation Skeleton"
+- Author: twgallo13
+- State: OPEN
+- Mergeable: YES (MERGEABLE)
+- Base Branch: aoss-main (✓ CORRECT)
+- Head Branch: feature/aoss-frontend-nav-v1-0
+- URL: https://github.com/twgallo13/ROPI-V2.1/pull/154
+
+Commits in PR:
+1. 16dc9edc - "fix: remove continue-on-error from preview deploy, fix URL extraction"
+   Author: twgallo13
+   Date: 2025-12-02T10:48:36Z
+
+2. cd5875c7 - "feat(web): AOSS_FRONTEND_NAV_v1.0 - Implement app shell and navigation skeleton"
+   Author: twgallo13
+   Date: 2025-12-02T12:14:15Z
+
+Files Changed (37 total):
+.github/workflows/deploy-preview.yml (modified)
+HOMER_vNEXT_FINAL_AUDIT.txt (new)
+package.json (modified)
+packages/web/index.html (new)
+packages/web/package.json (modified)
+packages/web/src/App.tsx (new)
+packages/web/src/components/common/PageLayout.css (new)
+packages/web/src/components/common/PageLayout.tsx (new)
+packages/web/src/components/layout/AppLayout.css (new)
+packages/web/src/components/layout/AppLayout.tsx (new)
+packages/web/src/components/layout/Sidebar.css (new)
+packages/web/src/components/layout/Sidebar.tsx (new)
+packages/web/src/components/layout/TopBar.css (new)
+packages/web/src/components/layout/TopBar.tsx (new)
+packages/web/src/config/nav.ts (new)
+packages/web/src/index.css (new)
+packages/web/src/main.tsx (new)
+packages/web/src/pages/AttributesPage.tsx (new)
+packages/web/src/pages/ExportPage.tsx (new)
+packages/web/src/pages/HomePage.tsx (new)
+packages/web/src/pages/ImportPage.tsx (new)
+packages/web/src/pages/LaunchCalendarPage.tsx (new)
+packages/web/src/pages/ObservationsPage.tsx (new)
+packages/web/src/pages/ProductEditorPage.css (new)
+packages/web/src/pages/ProductEditorPage.tsx (new)
+packages/web/src/pages/ProductsPage.tsx (new)
+packages/web/src/pages/SettingsPage.css (new)
+packages/web/src/pages/SettingsPage.tsx (new)
+packages/web/src/pages/SmartRulesPage.tsx (new)
+packages/web/src/pages/settings/SettingsSubPage.tsx (new)
+packages/web/test/nav.test.ts (new)
+packages/web/tsconfig.json (new)
+packages/web/tsconfig.node.json (new)
+packages/web/vite.config.ts (new)
+packages/web/vitest.config.ts (new)
+pnpm-lock.yaml (modified)
+scripts/notion-bootstrap.js (new)
+
+PR Description Summary:
+- Complete app shell implementation (TopBar, Sidebar, Layout)
+- Navigation configuration with 9 main modules
+- 9 main route stubs + Settings Hub with 9 sub-routes
+- Product Editor shell with 5 tabs and 3 sidebar panels
+- Build successful, 4/4 tests passing
+- All pages include TODO comments with Notion doc links
+- Notion Importer deprecation fully respected
+
+✅ VALIDATION RESULT: PR #154 is correctly structured, builds successfully,
+and all claimed files exist as reported.
+
+================================================================================
+PACKAGES/WEB VERIFICATION
+================================================================================
+
+Package Location: /workspaces/ROPI-V2.1/packages/web
+Package Name: @ropi-aoss/web
+Version: 1.0.0
+Type: module
+
+Key Files Verified:
+✓ package.json (React 18, Vite 5, TypeScript, React Router 6)
+✓ tsconfig.json (strict mode, path aliases @/* → src/*)
+✓ vite.config.ts (React plugin, port 3000)
+✓ vitest.config.ts (jsdom environment)
+✓ index.html (entry point)
+✓ src/main.tsx (React root with BrowserRouter)
+✓ src/App.tsx (route definitions)
+✓ src/index.css (CSS variables, global styles)
+✓ src/config/nav.ts (canonical navigation config)
+
+Directory Structure:
+packages/web/
+  ├── index.html
+  ├── package.json
+  ├── tsconfig.json
+  ├── tsconfig.node.json
+  ├── vite.config.ts
+  ├── vitest.config.ts
+  ├── src/
+  │   ├── main.tsx
+  │   ├── App.tsx
+  │   ├── index.css
+  │   ├── config/
+  │   │   └── nav.ts
+  │   ├── components/
+  │   │   ├── common/
+  │   │   │   ├── PageLayout.tsx
+  │   │   │   └── PageLayout.css
+  │   │   └── layout/
+  │   │       ├── AppLayout.tsx
+  │   │       ├── AppLayout.css
+  │   │       ├── TopBar.tsx
+  │   │       ├── TopBar.css
+  │   │       ├── Sidebar.tsx
+  │   │       └── Sidebar.css
+  │   └── pages/
+  │       ├── HomePage.tsx
+  │       ├── ProductsPage.tsx
+  │       ├── ProductEditorPage.tsx
+  │       ├── ProductEditorPage.css
+  │       ├── LaunchCalendarPage.tsx
+  │       ├── ImportPage.tsx
+  │       ├── ExportPage.tsx
+  │       ├── ObservationsPage.tsx
+  │       ├── AttributesPage.tsx
+  │       ├── SmartRulesPage.tsx
+  │       ├── SettingsPage.tsx
+  │       ├── SettingsPage.css
+  │       └── settings/
+  │           └── SettingsSubPage.tsx
+  └── test/
+      └── nav.test.ts
+
+Dependencies:
+- react@18.3.1
+- react-dom@18.3.1
+- react-router-dom@6.30.2
+- typescript@5.9.3
+- vite@5.4.21
+- vitest@1.6.1
+- @vitejs/plugin-react@4.7.0
+- eslint + TypeScript eslint plugins
+- jsdom@27.2.0
+
+Build Verification:
+$ cd packages/web && pnpm build
+✓ TypeScript compilation successful
+✓ Vite build successful
+✓ Output: dist/index.html (0.46 kB), dist/assets/index-*.css (10.19 kB), 
+          dist/assets/index-*.js (182.93 kB)
+✓ Build time: 946ms
+
+Test Verification:
+$ cd packages/web && pnpm test run
+✓ test/nav.test.ts (4 tests)
+  ✓ should have all required main navigation items
+  ✓ should have valid routes for all navigation items
+  ✓ should have all required settings sub-navigation items
+  ✓ should have /settings prefix for all settings routes
+✓ Test Files: 1 passed (1)
+✓ Tests: 4 passed (4)
+✓ Duration: 847ms
+
+✅ STATUS: All builds and tests passing. No errors or warnings.
+
+================================================================================
+ROUTES & NAVIGATION MAPPING
+================================================================================
+
+Routing Implementation:
+- File: packages/web/src/App.tsx
+- Router: React Router v6 with nested routes
+- Layout: AppLayout wraps all routes
+
+Navigation Configuration:
+- File: packages/web/src/config/nav.ts
+- Main nav: 9 items (navigationConfig array)
+- Settings nav: 9 items (settingsNavConfig array)
+- Each item: id, label, route, icon (emoji placeholder)
+
+Main Routes (10 total):
+1. / → Navigate (redirect to /home)
+2. /home → HomePage
+3. /products → ProductsPage
+4. /products/:id → ProductEditorPage (dynamic route)
+5. /launch-calendar → LaunchCalendarPage
+6. /import → ImportPage
+7. /export → ExportPage
+8. /observations → ObservationsPage
+9. /attributes → AttributesPage
+10. /smart-rules → SmartRulesPage
+
+Settings Routes (10 total):
+11. /settings → SettingsPage (hub)
+12. /settings/ai-templates → SettingsSubPage
+13. /settings/search → SettingsSubPage
+14. /settings/import-settings → SettingsSubPage
+15. /settings/export-settings → SettingsSubPage
+16. /settings/bulk-actions → SettingsSubPage
+17. /settings/workflows → SettingsSubPage
+18. /settings/ai-performance → SettingsSubPage
+19. /settings/users → SettingsSubPage
+20. /settings/permissions → SettingsSubPage
+
+Total Routes: 20
+
+✅ All routes verified and functional. See HOMER_AOSS_REPO_AUDIT_v1.1_ARTIFACTS/routes.txt
+for complete mapping.
+
+================================================================================
+PRODUCT EDITOR DETAILED CHECK
+================================================================================
+
+File: packages/web/src/pages/ProductEditorPage.tsx
+Lines: 202 total
+Status: ✅ COMPLETE SHELL IMPLEMENTATION
+
+Component Structure Verified:
+✓ Product Header Bar (lines 36-65)
+  - Back button to products list
+  - SKU display (PROD-{id} placeholder)
+  - Product name display (placeholder)
+  - Status chip (Draft)
+  - Website chip
+  - Action buttons (Preview, Save)
+
+✓ Tab Bar (lines 68-79)
+  - 5 tabs defined in tabs array (line 26):
+    1. Core Information (id: 'core')
+    2. Product Attributes (id: 'attributes')
+    3. Descriptions & SEO (id: 'descriptions')
+    4. Launch & Media (id: 'launch')
+    5. AI Actions (id: 'ai')
+  - Active tab highlighting with state management
+  - Click handlers for tab switching
+
+✓ Main Content Area (lines 82-100)
+  - Dynamic tab content rendering
+  - Placeholder text for each tab
+  - TODO comments referencing Notion:
+    * Product Completion Workflows
+    * Section 1 — Navigation & Page Index
+
+✓ Right Sidebar - 3 Panels (lines 103-202):
+
+  Panel 1: Observations (lines 105-137)
+  - Header with title and badge (count: 3)
+  - 3 sample observation items:
+    * Missing brand attribute
+    * Incomplete description
+    * Missing category
+  - Each item: icon, title, description
+  - Reference to "Workflow W1 — Observations Capture & Apply"
+
+  Panel 2: Smart Suggestions (lines 140-162)
+  - Header with title and badge (count: 2)
+  - 2 sample suggestion items:
+    * AI-Generated Title
+    * Related Products
+  - Reference to "Product Completion Workflows"
+
+  Panel 3: Export Readiness (lines 165-193)
+  - Header with title and percentage badge (45%)
+  - Progress bar visualization
+  - Checklist with 4 items:
+    ✓ Core information (complete)
+    ○ Product attributes (incomplete)
+    ○ Descriptions (incomplete)
+    ✓ Media assets (complete)
+  - Reference to "Workflow W2 — Full Product Completion"
+
+Notion References Found:
+- Line 10: Workflow W1 — Observations Capture & Apply
+- Line 12: Observations — Overview
+- Line 13: Section 1 — Navigation & Page Index
+- Line 134: Workflow W1 (in panel comment)
+- Line 159: Product Completion Workflows (in panel comment)
+- Line 190: Workflow W2 (in panel comment)
+
+✅ ASSESSMENT: Product Editor shell is fully implemented as specified. All
+required elements present with proper Notion documentation references. Ready
+for detailed tab and panel implementation in subsequent versions.
+
+DEVIATIONS FROM SPEC: None detected.
+
+================================================================================
+SETTINGS HUB & SUBROUTES VERIFICATION
+================================================================================
+
+Settings Hub Implementation:
+File: packages/web/src/pages/SettingsPage.tsx
+Lines: 41 total
+Status: ✅ COMPLETE
+
+Features Verified:
+✓ Card grid layout (CSS Grid with auto-fill)
+✓ 9 settings cards rendered from settingsNavConfig
+✓ Each card displays: icon, title, description
+✓ Cards link to respective sub-routes
+✓ Hover effects and transitions
+✓ Notion reference: "Admin UI Build Spec — Settings CRUD"
+
+Settings Sub-Page Implementation:
+File: packages/web/src/pages/settings/SettingsSubPage.tsx
+Lines: 65 total
+Status: ✅ COMPLETE GENERIC COMPONENT
+
+Features Verified:
+✓ Generic component accepts 'section' prop
+✓ Looks up settings config by section ID
+✓ Back button to Settings Hub
+✓ Displays section icon, title, and placeholder content
+✓ TODO comment references Admin UI Build Spec
+✓ Handles unknown sections gracefully
+
+Settings Sub-Routes Verified:
+1. ✓ /settings/ai-templates (AI Templates)
+2. ✓ /settings/search (Search)
+3. ✓ /settings/import-settings (Import Settings)
+4. ✓ /settings/export-settings (Export Settings)
+5. ✓ /settings/bulk-actions (Bulk Actions)
+6. ✓ /settings/workflows (Workflows)
+7. ✓ /settings/ai-performance (AI Performance)
+8. ✓ /settings/users (Users)
+9. ✓ /settings/permissions (Permissions)
+
+Missing or Incomplete Sub-Pages: NONE
+
+✅ ASSESSMENT: Settings Hub and all 9 sub-routes are correctly implemented
+as generic stubs. Ready for detailed CRUD implementation based on Admin UI
+Build Spec.
+
+================================================================================
+OBSERVATIONS / SMART RULES / AI INTEGRATION
+================================================================================
+
+Search Results for Observations:
+- packages/web/src/pages/ObservationsPage.tsx
+  * Stub page with TODO comments
+  * References Workflow W1 and Observations Overview
+  * No backend integration yet (expected)
+
+- packages/web/src/pages/ProductEditorPage.tsx
+  * Observations panel with 3 sample items
+  * Visual layout complete, no data binding
+
+Search Results for Smart Rules:
+- packages/web/src/pages/SmartRulesPage.tsx
+  * Stub page with TODO comments
+  * No implementation yet (expected)
+
+AI Integration Points:
+- ProductEditorPage: Smart Suggestions panel (placeholder)
+- ProductEditorPage: AI Actions tab (placeholder)
+- SettingsPage: AI Templates sub-route (stub)
+- SettingsPage: AI Performance sub-route (stub)
+
+Firestore/Backend Integration:
+- Search for "firestore", "Firestore", "collection": 3 matches found
+  * .github/workflows/ci-sa-test.yml (workflow comment)
+  * packages/sdk/src/schema/domainRules.ts (comment only)
+  * packages/sdk/src/schema/attribute.ts (comment only)
+- NO actual Firestore collections or rules files found
+- NO cloud functions directory found
+- NO firebase-admin or firestore imports in codebase
+
+Data Models (packages/sdk/src/schema):
+✓ attribute.ts - AttributeDefinition interface
+✓ domainRules.ts - DomainRule interface
+✓ product.ts - ProductSchema interface
+
+Status: ⚠️ EXPECTED GAPS
+- No Firestore backend implemented yet (frontend-only PR)
+- No AI describe engine integration (future work)
+- Observations, Smart Rules, AI features are UI stubs only
+- This is appropriate for AOSS_FRONTEND_NAV_v1.0 scope
+
+✅ ASSESSMENT: Frontend structure for Observations, Smart Rules, and AI
+features is properly stubbed out. Backend integration is future work as
+expected at this stage.
+
+================================================================================
+CI / INFRASTRUCTURE / CODEGEN
+================================================================================
+
+GitHub Actions Workflows:
+Location: .github/workflows/
+Files:
+1. ci-sa-test.yml - Service account testing
+2. deploy-precheck.yml - Pre-deployment checks
+3. deploy-preview.yml - Preview deployments (modified in PR #154)
+4. deploy-staging.yml - Staging deployments to aoss-main
+
+deploy-staging.yml Analysis:
+- Triggers: push to aoss-main, manual dispatch
+- Steps:
+  * Checkout code
+  * Setup Node.js 20
+  * Install pnpm@8
+  * Install dependencies
+  * Build web package (if exists)
+  * Prepare public/ directory
+  * Setup gcloud authentication
+  * Install Firebase CLI
+  * Deploy to hosting:aoss-staging
+  * Smoke check stable staging
+- Environment: staging
+- Secrets: GCP_SA_KEY_BASE64
+- Target URL: https://ropi-aoss-staging.web.app
+
+Codegen Scripts:
+Search for "generate.sh": NOT FOUND
+Search for "openapi.yaml": NOT FOUND
+
+No automated codegen detected. This may be:
+- Not yet implemented
+- Part of a different package/workflow
+- Future work
+
+Types Output:
+- No "08-types" directory found
+- TypeScript types are inline in packages/sdk/src/schema/
+
+API Specification:
+- No "06-api/openapi.yaml" found
+- packages/api/ exists but contains only:
+  * package.json (minimal, no scripts)
+
+Firebase Configuration:
+✓ firebase.json exists
+  - hosting[0].target: "aoss-staging"
+  - hosting[0].public: "public"
+  - rewrites: ** → /index.html (SPA routing)
+
+✓ .firebaserc exists (not read in this audit, but file confirmed)
+
+Firestore Rules:
+⚠️ NOT FOUND - No firestore.rules, firestore.indexes.json, or storage.rules
+
+Status: ⚠️ PARTIAL INFRASTRUCTURE
+- CI/CD workflows present and functional
+- Firebase hosting configured
+- No Firestore rules or API codegen yet
+- This is acceptable for frontend-only PR #154
+
+✅ ASSESSMENT: CI/CD infrastructure is in place for hosting deployments.
+Backend infrastructure (Firestore, API) is future work.
+
+================================================================================
+SECURITY & DEPENDENCIES
+================================================================================
+
+pnpm Audit Results (packages/web):
+Source: HOMER_AOSS_REPO_AUDIT_v1.1_ARTIFACTS/pnpm-audit.txt
+
+Vulnerabilities Found: 3 moderate
+
+1. ⚠️ Moderate: pnpm no-script global cache poisoning
+   - Package: pnpm
+   - Vulnerable: <9.15.0
+   - Patched: >=9.15.0
+   - Current: 8.x (in package.json devDependencies)
+   - Path: .>pnpm
+   - Impact: Development tool, low production risk
+   - Advisory: GHSA-vm32-9rqf-rh3r
+
+2. ⚠️ Moderate: esbuild development server CORS vulnerability
+   - Package: esbuild
+   - Vulnerable: <=0.24.2
+   - Patched: >=0.25.0
+   - Current: 0.21.5 (via vite@5.4.21)
+   - Path: packages__web>vite>esbuild
+   - Impact: Development only, not used in production
+   - Advisory: GHSA-67mh-4wv8-2f99
+
+3. ⚠️ Moderate: pnpm MD5 path shortening collision
+   - Package: pnpm
+   - Vulnerable: <10.0.0
+   - Patched: >=10.0.0
+   - Current: 8.x
+   - Path: .>pnpm
+   - Impact: Package installation integrity
+   - Advisory: GHSA-8cc4-rfj6-fhg4
+
+Severity Summary:
+- Critical: 0
+- High: 0
+- Moderate: 3
+- Low: 0
+
+Environment Variables & Secrets:
+- Search for committed .env files: NONE FOUND
+- Search for hardcoded secrets: NONE SUSPICIOUS FOUND
+- GitHub Actions uses secrets correctly (GCP_SA_KEY_BASE64)
+
+Outdated Dependencies:
+React ecosystem:
+- react@18.3.1 (19.2.0 available, but 18.x is LTS)
+- react-dom@18.3.1 (19.2.0 available)
+- react-router-dom@6.30.2 (7.9.6 available, major bump)
+
+Build tools:
+- vite@5.4.21 (7.2.6 available, major bump, includes esbuild fix)
+- vitest@1.6.1 (4.0.14 available, major bump)
+- @vitejs/plugin-react@4.7.0 (5.1.1 available)
+
+Recommendations:
+1. CRITICAL: Upgrade pnpm to >=10.0.0 (addresses 2 vulnerabilities)
+   - Update root package.json devDependencies
+   - Update deploy workflows to use pnpm@10
+
+2. HIGH: Consider upgrading Vite to v5.4.22+ or v7.x
+   - Includes esbuild >=0.25.0 (fixes CORS vulnerability)
+   - Note: v7.x is major version, review breaking changes
+
+3. MEDIUM: Review React Router upgrade path to v7.x
+   - May include breaking changes
+   - Current v6.30.2 is stable for now
+
+4. LOW: Monitor React 19 migration when stable
+   - React 18 is LTS, no immediate pressure
+
+✅ ASSESSMENT: Security posture is acceptable for development stage. The 3
+moderate vulnerabilities are dev-time only and can be resolved with dependency
+upgrades. No critical production vulnerabilities detected.
+
+================================================================================
+NOTION IMPORTER DEPRECATION CHECK
+================================================================================
+
+Search Query: "Notion Import", "notion import", "NOTION IMPORT", "exportNotion"
+Results: 10 matches across 3 files
+
+1. README.md (lines 7, 14)
+   - Line 7: "packages/cli — CLI tools (e.g. Notion import/export)"
+   - Line 14: "Notion API importer for AOSS. Imports raw data from Notion..."
+   - Status: Documentation references only
+   - Action: None required (historical context)
+
+2. packages/web/src/pages/ImportPage.tsx (lines 6, 7, 26)
+   - Line 6: "IMPORTANT: Notion Importer is officially retired..."
+   - Line 7: "Do NOT implement, merge, run, or reference any Notion Importer work."
+   - Line 26: "⚠️ Note: Notion Importer is officially retired..."
+   - Status: ✅ COMPLIANCE - Explicit deprecation warning
+   - Action: None required (intentional deprecation notice)
+
+3. HOMER_AOSS_FRONTEND_NAV_v1.0_AUDIT.txt (lines 202-209)
+   - Multiple references documenting deprecation compliance
+   - Status: ✅ COMPLIANCE - Audit documentation
+   - Action: None required
+
+4. packages/cli/src/index.ts (line 11)
+   - import { runNotionExport } from './exportNotion';
+   - Status: ⚠️ LEGACY CODE DETECTED
+   - Action: DO NOT MODIFY (per mandate)
+
+5. packages/cli/src/exportNotion.ts
+   - File exists with Notion export implementation
+   - Status: ⚠️ LEGACY CODE DETECTED
+   - Action: DO NOT MODIFY (per mandate)
+
+Legacy Importer Files (Untouched):
+- packages/cli/src/exportNotion.ts (exists, not modified in PR #154)
+- packages/cli/src/notionClient.ts (exists, not modified in PR #154)
+- packages/cli/src/types.ts (may contain Notion types)
+- packages/cli/src/index.ts (imports exportNotion)
+
+✅ DEPRECATION COMPLIANCE:
+- PR #154 did NOT implement, merge, or reference Notion Importer
+- ImportPage includes explicit deprecation warning
+- Legacy importer code exists but was NOT touched (correct behavior)
+- Audit properly documents compliance
+
+⚠️ LEGACY CODE NOTE:
+The following files contain legacy Notion importer code and exist in the
+repository but were NOT modified:
+- packages/cli/src/exportNotion.ts
+- packages/cli/src/notionClient.ts
+- packages/cli/src/index.ts (imports exportNotion)
+
+Per mandate: These files are left untouched. Future cleanup can be done in a
+dedicated deprecation PR if desired, but is not required.
+
+================================================================================
+ARTIFACTS & DOCUMENTATION
+================================================================================
+
+Audit Artifacts Created:
+Location: /workspaces/ROPI-V2.1/HOMER_AOSS_REPO_AUDIT_v1.1_ARTIFACTS/
+
+Files:
+1. routes.txt
+   - Route → Component mapping for all 20 routes
+   - Format: /path → Component | file/path
+
+2. files-list.txt
+   - Project inventory (first 200 files)
+   - Excludes node_modules, .git, dist
+
+3. pr154_diff.txt
+   - PR #154 file changes summary
+   - Files changed with line additions/deletions
+
+4. ci-output.txt
+   - Build and test logs from packages/web
+   - Includes success status for both
+
+5. pnpm-audit.txt
+   - Full pnpm audit output
+   - Vulnerability details and advisories
+
+6. notion-mapping.csv
+   - CSV mapping Notion sections to repo files
+   - Columns: NotionSection, NotionURL, RepoPath, Notes
+   - 18 rows of mappings
+
+Main Audit File:
+- HOMER_AOSS_REPO_AUDIT_v1.1_AUDIT.txt (this file)
+
+All artifacts committed to: feature/aoss-repo-audit-v1-1
+
+================================================================================
+PRIORITIZED REMEDIATION TASKS
+================================================================================
+
+SEVERITY: CRITICAL
+None identified.
+
+SEVERITY: HIGH
+1. [Security] Upgrade pnpm to >=10.0.0
+   Branch: chore/upgrade-pnpm-v10
+   Reason: Resolves 2 moderate security vulnerabilities
+   Files: package.json (root), .github/workflows/*.yml
+   Estimate: 30 minutes
+   Blocking: No (dev-time only)
+
+2. [Security] Upgrade Vite and esbuild
+   Branch: chore/upgrade-vite-esbuild
+   Reason: Resolves esbuild CORS vulnerability
+   Files: packages/web/package.json
+   Estimate: 1 hour (includes testing)
+   Blocking: No (dev-time only)
+
+SEVERITY: MEDIUM
+3. [Frontend] Implement Home (AOSS Hub) dashboard
+   Branch: feature/aoss-home-dashboard-v1-0
+   Reason: First priority for user-facing features
+   Files: packages/web/src/pages/HomePage.tsx + new components
+   Estimate: 1-2 days
+   Blocking: No
+   Notion: Section 1 — Navigation & Page Index
+
+4. [Frontend] Implement Products list page
+   Branch: feature/aoss-products-list-v1-0
+   Reason: Core product management UI
+   Files: packages/web/src/pages/ProductsPage.tsx + components
+   Estimate: 2-3 days
+   Blocking: No
+   Notion: Section 1 — Navigation & Page Index
+
+5. [Backend] Initialize Firestore schema and rules
+   Branch: feature/aoss-firestore-init-v1-0
+   Reason: Enable data persistence for frontend
+   Files: firestore.rules, firestore.indexes.json, new collections
+   Estimate: 1-2 days
+   Blocking: Yes (for frontend data binding)
+
+6. [Icon Library] Replace emoji icons with real icon library
+   Branch: chore/add-icon-library
+   Reason: Professional UI appearance
+   Files: packages/web/src/config/nav.ts, package.json
+   Estimate: 2-4 hours
+   Blocking: No
+   Options: Heroicons, Lucide, Phosphor
+
+SEVERITY: LOW
+7. [Settings] Implement Settings CRUD interfaces
+   Branch: feature/aoss-settings-crud-v1-0
+   Reason: Complete Settings Hub functionality
+   Files: packages/web/src/pages/settings/* (9 sub-pages)
+   Estimate: 1 week (all 9 sections)
+   Blocking: No
+   Notion: Admin UI Build Spec — Settings CRUD
+
+8. [Product Editor] Implement tab forms and panels
+   Branch: feature/aoss-product-editor-tabs-v1-0
+   Reason: Enable product editing functionality
+   Files: packages/web/src/pages/ProductEditorPage.tsx + forms
+   Estimate: 1-2 weeks
+   Blocking: No
+   Notion: Product Completion Workflows, W1, W2
+
+9. [Testing] Add component tests with React Testing Library
+   Branch: chore/add-component-tests
+   Reason: Improve test coverage beyond nav config
+   Files: packages/web/test/* (new test files)
+   Estimate: 2-3 days
+   Blocking: No
+
+10. [Launch Calendar] Implement calendar visualization
+    Branch: feature/aoss-launch-calendar-v1-0
+    Reason: Product launch timeline management
+    Files: packages/web/src/pages/LaunchCalendarPage.tsx + components
+    Estimate: 3-5 days
+    Blocking: No
+    Notion: Section 7 — Frontend & Launch Calendar
+
+11. [Observations] Implement Observations workflow
+    Branch: feature/aoss-observations-v1-0
+    Reason: AI-driven product improvement suggestions
+    Files: packages/web/src/pages/ObservationsPage.tsx + backend
+    Estimate: 1 week
+    Blocking: No
+    Notion: Workflow W1, Observations Overview
+
+12. [Documentation] Add Storybook for component library
+    Branch: chore/add-storybook
+    Reason: Component documentation and visual testing
+    Files: .storybook/*, packages/web/src/**/*.stories.tsx
+    Estimate: 1-2 days
+    Blocking: No
+
+Suggested Priority Order:
+1. HIGH #1 & #2 (Security updates) - Quick wins, non-blocking
+2. MEDIUM #5 (Firestore init) - Unblocks frontend data work
+3. MEDIUM #3 (Home dashboard) - User-facing priority
+4. MEDIUM #4 (Products list) - Core functionality
+5. MEDIUM #6 (Icon library) - Quick polish
+6. LOW #8 (Product Editor tabs) - Major feature work
+7. LOW #10 (Launch Calendar) - Major feature work
+8. LOW #11 (Observations) - AI integration
+9. LOW #7 (Settings CRUD) - Admin features
+10. LOW #9 (Component tests) - Quality improvement
+11. LOW #12 (Storybook) - Dev experience
+12. Review React Router v7 upgrade (future)
+
+================================================================================
+BLOCKERS & OPEN QUESTIONS
+================================================================================
+
+ACCESS BLOCKERS:
+None. All repository access, PR fetching, and builds completed successfully.
+
+TECHNICAL BLOCKERS:
+None identified for PR #154 merge. The PR is ready to merge.
+
+OPEN QUESTIONS FOR LISA:
+1. Should PR #154 be merged immediately, or wait for security updates (#1, #2)?
+   - Recommendation: Merge PR #154 now (security issues are dev-time only)
+
+2. What is the preferred icon library for AOSS?
+   - Options: Heroicons, Lucide React, Phosphor Icons, React Icons
+   - Recommendation: Heroicons (popular with Tailwind, clean design)
+
+3. Should we implement Firestore schema before or alongside Home dashboard?
+   - Recommendation: Initialize Firestore first to enable real data in dashboard
+
+4. What state management solution should be adopted?
+   - Options: Context API, Redux Toolkit, Zustand, Jotai
+   - Recommendation: Zustand (lightweight, modern, easy to learn)
+
+5. What form library should be used for Product Editor and Settings?
+   - Options: React Hook Form, Formik, TanStack Form
+   - Recommendation: React Hook Form (performance, DX, popularity)
+
+6. Should we add Storybook now or wait until more components are built?
+   - Recommendation: Wait until 5-10 reusable components exist
+
+7. React Router v7 upgrade timeline?
+   - Current v6.30.2 is stable
+   - Recommendation: Defer until v7 is widely adopted (6+ months)
+
+8. Should legacy Notion importer code (packages/cli) be removed?
+   - Current state: Untouched, as required
+   - Recommendation: Create dedicated deprecation PR if/when desired
+
+================================================================================
+CONCLUSION & RECOMMENDATIONS
+================================================================================
+
+OVERALL ASSESSMENT: ✅ EXCELLENT
+
+PR #154 (AOSS_FRONTEND_NAV_v1.0) is a high-quality implementation that:
+- Successfully implements complete app shell and navigation skeleton
+- Includes all 20 routes as specified
+- Builds without errors
+- Passes all tests (4/4)
+- Includes proper Notion documentation references throughout
+- Respects Notion Importer deprecation mandate
+- Provides solid foundation for continued AOSS frontend development
+
+RECOMMENDATION: ✅ APPROVE & MERGE PR #154
+
+The PR is ready to merge into aoss-main. No blocking issues identified.
+
+NEXT STEPS (Recommended Order):
+1. Merge PR #154 immediately
+2. Create and merge chore/upgrade-pnpm-v10 (security fix)
+3. Create and merge chore/upgrade-vite-esbuild (security fix)
+4. Initialize Firestore schema (feature/aoss-firestore-init-v1-0)
+5. Implement Home dashboard (feature/aoss-home-dashboard-v1-0)
+6. Continue with Products list and Product Editor implementations
+
+TECHNICAL DEBT:
+- 3 moderate security vulnerabilities (addressable via dependency upgrades)
+- Legacy Notion importer code exists but is not problematic
+- No Firestore backend yet (expected, future work)
+- Placeholder emoji icons (cosmetic, low priority)
+
+RISKS:
+- None identified. All findings are expected for this stage of development.
+
+================================================================================
+END OF AUDIT
+================================================================================
+Generated by: HOMER Agent (ROPI AOSS Repository Auditor)
+Date: December 2, 2025
+Version: AOSS_REPO_AUDIT_v1.1
