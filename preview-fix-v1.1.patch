@@ -1,0 +1,102 @@
+*** Update File: .github/workflows/deploy-preview.yml
+@@
+-      - name: Build (if web exists)
+-        run: |
+-          if [ -f packages/web/package.json ]; then
+-            pnpm --filter @ropi-aoss/web build || echo "Web build failed (not implemented)"
+-          else
+-            echo "No packages/web found — will create placeholder later"
+-          fi
++      - name: Build (web)
++        run: |
++          if [ -f packages/web/package.json ]; then
++            echo "Building @ropi-aoss/web..."
++            # Fail loudly on build error so CI surfaces real issues
++            pnpm --filter @ropi-aoss/web build || { echo "::error::Web build failed"; exit 1; }
++            echo "Build completed. Listing packages/web and common output directories:"
++            ls -la packages/web || true
++            for d in "packages/web/dist" "packages/web/build" "packages/web/out" "packages/web/.next"; do
++              echo "=== $d ==="
++              if [ -d "$d" ]; then
++                ls -la "$d"
++              else
++                echo "$d does not exist"
++              fi
++            done
++          else
++            echo "No packages/web found — will create placeholder later"
++          fi
+@@
+-      - name: Deploy to preview channel
+-        run: |
+-          set -euo pipefail
+-          if [ -z "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]; then
+-            echo "::warning::GOOGLE_APPLICATION_CREDENTIALS not set — skipping preview deploy"
+-            exit 0
+-          fi
+-          
+-          echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+-          
+-          # Deploy to preview channel on aoss-staging target
+-          PR_NUM=${{ github.event.pull_request.number }}
+-          CHANNEL=pr-${PR_NUM}
+-          firebase hosting:channel:deploy "${CHANNEL}" --only aoss-staging --project ropi-bccee --json > deploy.json || {
+-            echo "::error::Firebase preview deployment failed"
+-            cat deploy.json || true
+-            exit 1
+-          }
+-          echo "Deploy output:"
+-          cat deploy.json
+-          # Extract preview URL from the correct path
+-          PREVIEW_URL=$(jq -r '.result["aoss-staging"].url // empty' deploy.json || true)
+-          echo "PREVIEW_URL=${PREVIEW_URL}"
+-          if [ -n "$PREVIEW_URL" ]; then
+-            echo "Preview available at: $PREVIEW_URL"
+-          fi
+-          echo "===="
++      - name: Deploy to preview channel
++        run: |
++          set -euo pipefail
++          if [ -z "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]; then
++            echo "::warning::GOOGLE_APPLICATION_CREDENTIALS not set — skipping preview deploy"
++            exit 0
++          fi
++
++          echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
++
++          # Create a temporary firebase config that points hosting at the prepared public/ folder.
++          cat > firebase_preview.json <<'JSON'
++          {
++            "hosting": [
++              {
++                "target": "aoss-staging",
++                "public": "public",
++                "ignore": [
++                  "firebase.json",
++                  "**/.*",
++                  "**/node_modules/**"
++                ],
++                "rewrites": [
++                  { "source": "**", "destination": "/index.html" }
++                ]
++              }
++            ]
++          }
++          JSON
++
++          # Deploy to preview channel on aoss-staging target using the temporary config
++          PR_NUM=${{ github.event.pull_request.number }}
++          CHANNEL=pr-${PR_NUM}
++          firebase hosting:channel:deploy "${CHANNEL}" --only aoss-staging --project ropi-bccee --config firebase_preview.json --json > deploy.json || {
++            echo "::error::Firebase preview deployment failed"
++            cat deploy.json || true
++            exit 1
++          }
++          echo "Deploy output:"
++          cat deploy.json
++          PREVIEW_URL=$(jq -r '.result["aoss-staging"].url // empty' deploy.json || true)
++          echo "PREVIEW_URL=${PREVIEW_URL}"
++          if [ -n "$PREVIEW_URL" ]; then
++            echo "Preview available at: $PREVIEW_URL"
++          fi
++          echo "===="

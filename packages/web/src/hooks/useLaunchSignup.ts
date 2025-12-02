@@ -31,7 +31,7 @@
  * ```
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useAuth } from './useAuth';
