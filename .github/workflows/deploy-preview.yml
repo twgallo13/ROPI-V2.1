@@ -31,9 +31,8 @@ jobs:
             pnpm --filter @ropi-aoss/web build || echo "Web build failed (not implemented)"
           else
             mkdir -p public
-            cat > public/index.html <<'HTML'
-            <!doctype html><html><body><h1>Ropi AOSS PR Preview</h1><p>This is a preview deployment for PR #${{ github.event.pull_request.number }}</p></body></html>
-            HTML
+            PR_NUM="${{ github.event.pull_request.number }}"
+            echo "<!doctype html><html><body><h1>Ropi AOSS PR Preview</h1><p>This is a preview deployment for PR #${PR_NUM}</p></body></html>" > public/index.html
           fi
       - name: Ensure firebase.json exists
         run: |
