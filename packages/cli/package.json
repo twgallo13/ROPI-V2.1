@@ -3,16 +3,23 @@
   "version": "0.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "ropi-aoss": "./dist/index.js"
+  },
   "scripts": {
-    "build": "tsc -p ../../tsconfig.base.json",
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
     "lint": "echo \"No CLI lint config yet\"",
     "test": "echo \"No CLI tests yet\""
   },
   "dependencies": {
-    "@notionhq/client": "^3.0.0",
-    "node-fetch": "^3.0.0"
+    "@notionhq/client": "^3.0.0"
   },
   "devDependencies": {
+    "@types/node": "^18.0.0",
     "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

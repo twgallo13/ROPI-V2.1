@@ -10,6 +10,22 @@ Single source of truth lives in Notion: Section 1..14 (ROPI AOSS).
 - `packages/web` — Admin/front-end UI — will follow Admin UI Build Spec and Frontend sections (Section 7, Section 13).
 - `scripts/seed.js` — temporary seed entry point that will later call into `@ropi-aoss/cli`.
 
+### CLI (`packages/cli`)
+Notion API importer for AOSS. Imports raw data from Notion databases as specified in Section 3.1.
+
+**Usage:**
+```bash
+# Build the CLI
+pnpm --filter @ropi-aoss/cli build
+
+# Run the importer
+NOTION_TOKEN=your_token NOTION_PAGE_IDS=page1,page2 pnpm --filter @ropi-aoss/cli start
+
+# Or use the root seed script
+NOTION_TOKEN=your_token NOTION_PAGE_IDS=page1,page2 pnpm seed
+```
+Raw exports are saved to `data/notion_export/` with timestamps.
+
 **Note:** The behavior and data shapes are NOT defined in this repository but in the Ropi AOSS Notion space (Sections 1–14). This repository only implements what the Notion spec describes.
 
 ## Staging Environment
