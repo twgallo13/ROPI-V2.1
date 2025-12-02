@@ -1,0 +1,21 @@
+name: Deploy pre-check
+on: [push]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate required env secrets
+        run: |
+          missing=false
+          for var in VITE_FIREBASE_API_KEY VITE_FIREBASE_AUTH_DOMAIN VITE_FIREBASE_PROJECT_ID VITE_FIREBASE_STORAGE_BUCKET VITE_FIREBASE_APP_ID GEMINI_API_KEY; do
+            if [ -z "${!var}" ]; then
+              echo "::error::Required env var $var is not set."
+              missing=true
+            else
+              echo "$var OK"
+            fi
+          done
+          if [ "$missing" = "true" ]; then
+            echo "One or more required secrets are missing. Please add them to Actions secrets or Environment secrets."
+            exit 1
+          fi

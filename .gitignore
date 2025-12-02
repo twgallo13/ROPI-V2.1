@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.env*
+.secrets/
+service-account.json
+operations/review-artifacts/
