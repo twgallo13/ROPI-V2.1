@@ -1,0 +1,686 @@
+================================================================================
+HOMER AUDIT: AOSS_PRODUCT_EDITOR_LAYOUT_v1.1
+Implement Detailed Product Editor Layout & Sidebar Interaction
+================================================================================
+
+EXECUTION DATE: December 2, 2025
+PROMPT ID: 012
+VERSION LABEL: AOSS_PRODUCT_EDITOR_LAYOUT_v1.1
+BRANCH: feature/aoss-product-editor-layout-v1-1
+REPO: https://github.com/twgallo13/ROPI-V2.1/
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+✅ STATUS: COMPLETE
+✅ BUILD: Passing (210.70 kB JS, 30.80 kB CSS)
+✅ TESTS: 12/12 passing (2 test files)
+✅ IMPLEMENTATION: Full interactive Product Editor with 5 tabs + 3 sidebar panels
+
+Deliverables:
+- Complete Product Editor UI at /products/:id
+- 5 tabbed editing sections (Core, Attributes, Descriptions, Launch, AI)
+- 3 interactive sidebar panels (Observations, Smart Suggestions, Export Readiness)
+- Mock data structure with localStorage persistence
+- Deep-linkable tabs via URL query params
+- Comprehensive test coverage
+- Ready for PR to aoss-main
+
+================================================================================
+GOALS & ACCEPTANCE CRITERIA
+================================================================================
+
+✅ GOAL 1: Complete Interactive Product Editor UI
+   - Top header bar with SKU, name, status, website chips ✓
+   - 5 tabbed main area ✓
+   - Right sidebar with 3 panels ✓
+   - Deep-linkable tabs via ?tab=<section> ✓
+
+✅ GOAL 2: Local/Mock Data Implementation
+   - Mock product JSON file created ✓
+   - useProduct hook with localStorage persistence ✓
+   - In-memory state updates ✓
+   - Export readiness auto-calculation ✓
+
+✅ GOAL 3: UI-Only with TODO Comments
+   - All TODO comments reference Notion workflows ✓
+   - Clear indicators where backend will be wired ✓
+   - Simulated AI actions with modals ✓
+   - No production backend dependencies ✓
+
+✅ GOAL 4: Test Coverage & CI Build
+   - Unit tests for useProduct hook ✓
+   - All tests passing (12/12) ✓
+   - Build successful ✓
+   - TypeScript strict mode enabled ✓
+
+================================================================================
+ARCHITECTURE & COMPONENTS
+================================================================================
+
+Data Layer:
+-----------
+/packages/web/src/data/mock-product.json
+  - Complete product data structure
+  - 3 sample observations (1 resolved, 2 open)
+  - 3 smart suggestions with confidence scores
+  - Export readiness by website
+  - AI history log
+
+/packages/web/src/types/product.ts
+  - TypeScript interfaces for all data structures
+  - ProductStatus, ObservationSeverity, SuggestionStatus types
+  - Comprehensive Product interface
+
+/packages/web/src/hooks/useProduct.ts
+  - Product data management hook
+  - localStorage persistence
+  - CRUD operations: updateField, addObservation, resolveObservation
+  - Apply/ignore suggestions
+  - Auto-recalculate export readiness
+
+Component Structure:
+-------------------
+ProductEditorPage (Main Container)
+├── ProductHeader (Top Bar)
+│   ├── Back button
+│   ├── SKU, Name, Status, Website chips
+│   └── Save/Publish actions
+├── Tab Bar (5 Tabs)
+│   ├── Core Information
+│   ├── Product Attributes
+│   ├── Descriptions & SEO
+│   ├── Launch & Media
+│   └── AI Actions
+├── Tab Content Area
+│   └── [Active Tab Component]
+└── Sidebar (3 Panels)
+    ├── ObservationsPanel
+    ├── SmartSuggestionsPanel
+    └── ExportReadinessPanel
+
+================================================================================
+DETAILED COMPONENT BREAKDOWN
+================================================================================
+
+1. ProductHeader Component
+---------------------------
+Location: src/components/product/ProductHeader.tsx
+Purpose: Display product metadata and action buttons
+
+Features:
+- SKU and Product Name display
+- Status chip (Draft/In Progress/Export-ready)
+- Website chips for active websites
+- Brand and Category metadata
+- Save Draft button (localStorage)
+- Publish button (disabled if readiness < 80%)
+
+TODO Comments:
+- Wire Save/Publish actions to backend
+- References W2 and Section 1 Notion docs
+
+2. Core Information Tab
+------------------------
+Location: src/components/product/CoreInformationTab.tsx
+Purpose: Product identification, classification, and lifecycle
+
+Form Sections:
+- Identification: SKU, Style ID, Product Name (required)
+- Classification: Brand, Category, Department, Subcategory (required)
+- Lifecycle: First Received, Launch Date, Launch Status
+- Website Assignment: Multi-select checkboxes
+
+Features:
+- Required field indicators (*)
+- Controlled form inputs
+- Website multi-select with live updates
+
+TODO Comments:
+- Wire form submissions to Firestore
+- References W2 and Section 1
+
+3. Product Attributes Tab
+---------------------------
+Location: src/components/product/ProductAttributesTab.tsx
+Purpose: Manage product attributes (color, material, etc.)
+
+Features:
+- Grid layout of attribute cards
+- Inline editing for single-value attributes
+- Chip display for multi-value attributes
+- Add new attribute form
+- Delete attribute button
+- Required attribute badges
+
+TODO Comments:
+- Wire to attribute registry
+- Connect to validation rules
+- References W2 and Admin UI Build Spec
+
+4. Descriptions & SEO Tab
+---------------------------
+Location: src/components/product/DescriptionsTab.tsx
+Purpose: Per-website product descriptions and SEO metadata
+
+Features:
+- Per-website sections (looped from product.websites)
+- Main description textarea with character count
+- SEO Title (60 char limit)
+- Meta Description (160 char limit)
+- AI-generated sample preview box
+- "Regenerate" and "Apply to Description" buttons (UI-only)
+
+TODO Comments:
+- Integrate rich text editor
+- Wire AI description generation
+- References W2
+
+5. Launch & Media Tab
+-----------------------
+Location: src/components/product/LaunchMediaTab.tsx
+Purpose: Launch configuration and media asset management
+
+Features:
+- Launch Date and Status fields
+- Hero image upload with preview
+- Gallery image management (add/remove)
+- File uploads converted to data URLs (base64)
+- Image preview overlays
+
+TODO Comments:
+- Integrate real file upload
+- Connect to CDN storage
+- References W2
+
+6. AI Actions Tab
+------------------
+Location: src/components/product/AIActionsTab.tsx
+Purpose: AI-powered product enhancement tools
+
+Features:
+- 3 action cards: Generate Descriptions, Fix Attributes, Re-run Describe
+- Action buttons trigger mock AI operations
+- Modal display for action results
+- AI History log with timestamp, confidence, and results
+
+TODO Comments:
+- Wire to actual AI services
+- Implement real describe/fix logic
+- References W2
+
+7. Observations Panel
+----------------------
+Location: src/components/product/ObservationsPanel.tsx
+Purpose: Display and manage product observations
+
+Features:
+- List of open observations
+- Severity badges (low/medium/high)
+- Observation images when present
+- Linked field indicators
+- Resolve button (marks observation resolved)
+- "Add Observation" button opens modal
+- Add observation modal:
+  - Title, Description (required)
+  - Severity selector
+  - Optional image upload
+  - Optional linked field path
+
+TODO Comments:
+- Wire to Firestore observations collection
+- References W1 and Observations Overview
+
+8. Smart Suggestions Panel
+---------------------------
+Location: src/components/product/SmartSuggestionsPanel.tsx
+Purpose: Display AI suggestions with Apply/Ignore actions
+
+Features:
+- List of pending suggestions
+- Target field display
+- Current vs. Proposed value comparison
+- Confidence badges (high/medium/low)
+- Reason/explanation text
+- Apply button: Updates product field immediately
+- Ignore button: Marks suggestion ignored
+
+TODO Comments:
+- Wire to AI suggestion service
+- References W2 and W1
+
+9. Export Readiness Panel
+---------------------------
+Location: src/components/product/ExportReadinessPanel.tsx
+Purpose: Display export readiness score and checklist
+
+Features:
+- Overall readiness score (0-100%)
+- Progress bar with color coding
+- Per-website breakdown
+- Per-website score
+- Checklist items (Core Info, Attributes, Descriptions, Media, Pricing)
+- Click checklist items to jump to relevant tab
+- Color coding: Ready (green), Progress (yellow), Incomplete (red)
+
+Algorithm:
+- Core Info: SKU, Name, Brand, Category present (+25%)
+- Attributes: 5+ attributes (+25%)
+- Descriptions: 50+ chars for website (+25%)
+- Media: Hero image + 1+ gallery images (+25%)
+- Pricing: Not yet implemented (0%)
+
+TODO Comments:
+- Implement comprehensive export validation rules
+- References W2
+
+================================================================================
+ROUTING & DEEP LINKING
+================================================================================
+
+URL Structure:
+--------------
+/products/:id - Product Editor Page
+/products/:id?tab=core - Core Information Tab
+/products/:id?tab=attributes - Product Attributes Tab
+/products/:id?tab=descriptions - Descriptions & SEO Tab
+/products/:id?tab=launch - Launch & Media Tab
+/products/:id?tab=ai - AI Actions Tab
+
+Implementation:
+- useSearchParams hook for URL query params
+- Tab changes update URL via setSearchParams
+- URL changes sync to active tab via useEffect
+- Browser back/forward navigation supported
+
+Product ID Handling:
+- ID from URL params (:id)
+- useProduct hook attempts to load from localStorage
+- Falls back to mock data if not found
+- Default ID: 123 if no ID in URL
+
+================================================================================
+DATA PERSISTENCE
+================================================================================
+
+localStorage Keys:
+------------------
+aoss:product:<id> - Product data JSON
+
+Storage Strategy:
+- Read on mount from localStorage or fall back to mock
+- Write on every mutation (updateField, addObservation, etc.)
+- Auto-recalculate export readiness on save
+
+Data Mutations:
+- updateField(path, value) - Update nested field via dot notation
+- addObservation(newObs) - Add observation with timestamp
+- resolveObservation(id) - Toggle observation to resolved
+- applySuggestion(id) - Update field + mark suggestion applied
+- ignoreSuggestion(id) - Mark suggestion ignored
+
+Export Readiness Calculation:
+- Triggered on every saveProduct call
+- Iterates through all websites
+- Checks required fields per website
+- Calculates per-website score (0-100)
+- Averages scores for overall readiness
+
+================================================================================
+TESTS & VALIDATION
+================================================================================
+
+Test Files:
+-----------
+src/hooks/useProduct.test.ts - 8 tests
+
+Test Coverage:
+1. ✓ Load mock product data
+2. ✓ Update a product field
+3. ✓ Add an observation
+4. ✓ Resolve an observation
+5. ✓ Apply a suggestion
+6. ✓ Ignore a suggestion
+7. ✓ Recalculate export readiness on field updates
+8. ✓ Persist to localStorage
+
+Additional Tests:
+test/nav.test.ts - 4 tests (existing navigation tests)
+
+Test Results:
+-------------
+Test Files: 2 passed (2)
+Tests: 12 passed (12)
+Duration: 1.17s
+Status: ✅ ALL PASSING
+
+Build Verification:
+-------------------
+TypeScript: ✓ No errors
+Vite Build: ✓ Successful
+Output Size:
+  - dist/index.html: 0.46 kB (gzip: 0.30 kB)
+  - dist/assets/index-hPjiWCJw.css: 30.80 kB (gzip: 4.76 kB)
+  - dist/assets/index-B9P2TkWI.js: 210.70 kB (gzip: 64.38 kB)
+
+================================================================================
+FILES CREATED & MODIFIED
+================================================================================
+
+New Files Created (24):
+------------------------
+packages/web/src/data/mock-product.json
+packages/web/src/types/product.ts
+packages/web/src/hooks/useProduct.ts
+packages/web/src/hooks/useProduct.test.ts
+packages/web/src/components/product/ProductHeader.tsx
+packages/web/src/components/product/ProductHeader.css
+packages/web/src/components/product/CoreInformationTab.tsx
+packages/web/src/components/product/CoreInformationTab.css
+packages/web/src/components/product/ProductAttributesTab.tsx
+packages/web/src/components/product/ProductAttributesTab.css
+packages/web/src/components/product/DescriptionsTab.tsx
+packages/web/src/components/product/DescriptionsTab.css
+packages/web/src/components/product/LaunchMediaTab.tsx
+packages/web/src/components/product/LaunchMediaTab.css
+packages/web/src/components/product/AIActionsTab.tsx
+packages/web/src/components/product/AIActionsTab.css
+packages/web/src/components/product/ObservationsPanel.tsx
+packages/web/src/components/product/ObservationsPanel.css
+packages/web/src/components/product/SmartSuggestionsPanel.tsx
+packages/web/src/components/product/SmartSuggestionsPanel.css
+packages/web/src/components/product/ExportReadinessPanel.tsx
+packages/web/src/components/product/ExportReadinessPanel.css
+HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/ (directory)
+  - routes.txt
+  - files-list.txt
+  - test-results.txt
+
+Modified Files (5):
+-------------------
+packages/web/src/pages/ProductEditorPage.tsx
+  - Replaced placeholder UI with full implementation
+  - Integrated all tab components and sidebar panels
+  - Added routing logic with URL query params
+  - Wired useProduct hook
+
+packages/web/src/pages/ProductEditorPage.css
+  - Added loading/error states
+  - Enhanced panel scrolling
+
+packages/web/package.json
+  - Added @testing-library/react
+  - Added @testing-library/user-event
+  - Added @testing-library/jest-dom
+
+packages/web/tsconfig.json
+  - Added JSON file support to includes
+
+pnpm-lock.yaml
+  - Updated with new testing dependencies
+
+Total Lines Added: ~2,500
+Total Files: 29
+
+================================================================================
+NOTION REFERENCES
+================================================================================
+
+All TODO comments in code reference:
+
+1. Product Completion Workflows (W2)
+   https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
+   - Used for: Overall product editor workflow
+   - Referenced in: All tab components, Export Readiness
+
+2. Workflow W1 — Observations Capture & Apply
+   https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+   - Used for: Observations panel logic
+   - Referenced in: ObservationsPanel, SmartSuggestionsPanel
+
+3. Observations Overview
+   https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
+   - Used for: Observation data structure
+   - Referenced in: ObservationsPanel, useProduct hook
+
+4. Section 1 — Navigation & Page Index
+   https://www.notion.so/eba3cfdc44fd49ef98c38b183642cc7b
+   - Used for: Page structure and routing
+   - Referenced in: ProductEditorPage, ProductHeader
+
+5. Admin UI Build Spec — Settings CRUD
+   https://www.notion.so/2b845ee1ec5a81e58df8f9633b2e0e2b
+   - Used for: Attribute management patterns
+   - Referenced in: ProductAttributesTab
+
+================================================================================
+KNOWN LIMITATIONS & FUTURE WORK
+================================================================================
+
+Current Limitations:
+--------------------
+1. No Backend Integration
+   - All data stored in localStorage
+   - No API calls or Firestore writes
+   - TODO comments indicate where to wire backend
+
+2. Simulated AI Actions
+   - AI Actions tab shows mock results
+   - No actual AI service calls
+   - Descriptions are static samples
+
+3. Basic Text Editing
+   - Descriptions use plain textarea
+   - No rich text editor integration
+   - TODO: Add WYSIWYG editor
+
+4. Data URL Image Storage
+   - Images stored as base64 data URLs
+   - Not suitable for production
+   - TODO: Wire to CDN/Firebase Storage
+
+5. Simplified Export Rules
+   - Basic heuristic for readiness calculation
+   - No per-website validation rules
+   - TODO: Implement comprehensive export logic
+
+6. No Real-Time Collaboration
+   - Single-user editing only
+   - No conflict resolution
+   - TODO: Add multi-user support
+
+Next Steps (Recommended):
+--------------------------
+1. Connect Observations to Firestore
+   - Create observations collection
+   - Wire addObservation/resolveObservation
+   - Add real-time updates
+
+2. Wire AI Describe Service
+   - Integrate with AI backend
+   - Implement generate descriptions
+   - Add fix attributes logic
+
+3. Implement Export Rules Engine
+   - Define per-website validation rules
+   - Add field-specific requirements
+   - Create blocking/warning levels
+
+4. Add Rich Text Editor
+   - Integrate TinyMCE or similar
+   - Per-website description editing
+   - HTML formatting support
+
+5. File Upload Integration
+   - Connect to Firebase Storage or CDN
+   - Generate thumbnails
+   - Track upload progress
+
+6. Attribute Registry Integration
+   - Load available attributes from settings
+   - Validate attribute values
+   - Enforce required attributes
+
+7. Smart Suggestions AI Service
+   - Wire to observation → suggestion pipeline
+   - Confidence scoring from actual AI
+   - Track applied/ignored metrics
+
+8. Multi-User Collaboration
+   - Real-time editing indicators
+   - Conflict resolution
+   - User activity tracking
+
+================================================================================
+TESTING INSTRUCTIONS
+================================================================================
+
+Local Development:
+------------------
+1. Start dev server:
+   cd /workspaces/ROPI-V2.1/packages/web
+   pnpm dev
+
+2. Navigate to:
+   http://localhost:3000/products/123
+
+3. Test Features:
+   - Switch between tabs
+   - Edit form fields (auto-saved to localStorage)
+   - Add an observation (modal)
+   - Resolve an observation (green checkmark)
+   - Apply a suggestion (updates field immediately)
+   - Ignore a suggestion
+   - Upload images (converted to data URLs)
+   - Click AI action buttons (shows mock modal)
+   - Click export readiness checklist items (jumps to tab)
+
+4. Test Persistence:
+   - Edit product data
+   - Refresh page
+   - Data should persist from localStorage
+
+5. Test Routing:
+   - Click tabs, verify URL changes
+   - Use browser back/forward
+   - Copy URL and open in new tab
+
+Run Tests:
+----------
+cd /workspaces/ROPI-V2.1/packages/web
+pnpm test
+
+Build:
+------
+cd /workspaces/ROPI-V2.1/packages/web
+pnpm build
+
+Expected: No errors, ~210kB JS bundle
+
+================================================================================
+PR INFORMATION
+================================================================================
+
+Branch: feature/aoss-product-editor-layout-v1-1
+Base: aoss-main
+Status: Ready for review
+
+PR Title:
+AOSS_PRODUCT_EDITOR_LAYOUT_v1.1 — Product Editor detailed layout & sidebar interactions
+
+PR Description:
+===============
+
+Implements complete interactive Product Editor UI according to PROMPT_012.
+
+## Summary
+- ✅ Complete Product Editor at `/products/:id` with 5 tabs + 3 sidebar panels
+- ✅ Mock data structure with localStorage persistence
+- ✅ Deep-linkable tabs via URL query params
+- ✅ All tests passing (12/12)
+- ✅ Build successful (210.70 kB)
+
+## Components Created
+### Main Editor (5 Tabs)
+- **Core Information Tab**: Product identification, classification, lifecycle
+- **Product Attributes Tab**: Attribute management with add/delete
+- **Descriptions & SEO Tab**: Per-website descriptions with character counts
+- **Launch & Media Tab**: Launch dates and image upload (data URLs)
+- **AI Actions Tab**: Simulated AI tools with history log
+
+### Sidebar (3 Panels)
+- **Observations Panel**: Add/resolve observations with images
+- **Smart Suggestions Panel**: Apply/ignore AI suggestions
+- **Export Readiness Panel**: Score calculation with per-website checklists
+
+## Key Features
+- 🔗 Deep-linkable tabs (e.g., `/products/123?tab=attributes`)
+- 💾 localStorage persistence via `useProduct` hook
+- 📊 Auto-recalculating export readiness scores
+- 🧪 Comprehensive test coverage (useProduct hook)
+- 🎨 Consistent styling with existing app shell
+
+## TODO & Future Work
+All components include TODO comments referencing Notion workflows:
+- [ ] Wire to Firestore for product data persistence
+- [ ] Integrate AI Describe service for description generation
+- [ ] Implement comprehensive export validation rules
+- [ ] Add rich text editor for descriptions
+- [ ] Connect to CDN for real image uploads
+- [ ] Wire attribute registry from Settings
+
+## Notion References
+- Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
+- Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+- Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
+- Section 1 — Navigation: https://www.notion.so/eba3cfdc44fd49ef98c38b183642cc7b
+- Admin UI Build Spec: https://www.notion.so/2b845ee1ec5a81e58df8f9633b2e0e2b
+
+## Testing
+```bash
+# Run tests
+cd packages/web && pnpm test
+
+# Build
+cd packages/web && pnpm build
+```
+
+All tests passing ✅
+Build successful ✅
+
+## Artifacts
+- Audit: `HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_AUDIT.txt`
+- Routes: `HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/routes.txt`
+- Files: `HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/files-list.txt`
+- Tests: `HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/test-results.txt`
+
+================================================================================
+CONCLUSION
+================================================================================
+
+Status: ✅ COMPLETE AND READY FOR PR
+
+The AOSS Product Editor Layout v1.1 has been successfully implemented with:
+- Complete interactive UI with 5 tabs and 3 sidebar panels
+- Mock data layer with localStorage persistence
+- Comprehensive test coverage (12/12 passing)
+- Clean TODO comments for future backend integration
+- All Notion workflow references included
+- Build passing with optimized bundle sizes
+
+The implementation is UI-complete and ready for backend integration. All 
+components follow the established patterns and include clear paths forward 
+for production wiring.
+
+Ready for Lisa's review and merge to aoss-main.
+
+================================================================================
+END OF AUDIT
+================================================================================
+
+Generated by: Homer (GitHub Copilot)
+Date: December 2, 2025
+Prompt: PROMPT_012
+Version: AOSS_PRODUCT_EDITOR_LAYOUT_v1.1
+Branch: feature/aoss-product-editor-layout-v1-1

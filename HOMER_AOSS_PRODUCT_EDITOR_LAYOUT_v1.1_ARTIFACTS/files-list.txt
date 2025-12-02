@@ -1,0 +1,15 @@
+ M packages/web/package.json
+ M packages/web/src/pages/ProductEditorPage.css
+ M packages/web/src/pages/ProductEditorPage.tsx
+ M packages/web/tsconfig.json
+ M pnpm-lock.yaml
+?? HOMER_AOSS_FRONTEND_NAV_v1.0_AUDIT.txt
+?? HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/
+?? HOMER_PROMPT_010_REPORT.txt
+?? HOMER_PROMPT_011_ARTIFACTS/
+?? HOMER_PROMPT_011_DEPLOY_FIX.txt
+?? PROMPT_011_notion_entry.md
+?? packages/web/src/components/product/
+?? packages/web/src/data/
+?? packages/web/src/hooks/
+?? packages/web/src/types/
