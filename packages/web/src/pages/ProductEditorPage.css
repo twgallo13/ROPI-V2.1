@@ -1,0 +1,298 @@
+/* Product Editor Layout */
+.product-editor {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--topbar-height));
+  background-color: var(--color-background);
+}
+
+/* Product Header */
+.product-header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-md) var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.product-header-left {
+  flex-shrink: 0;
+}
+
+.product-back-button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.product-back-button:hover {
+  background: var(--color-border);
+}
+
+.product-header-center {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex: 1;
+}
+
+.product-header-field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.product-header-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.product-header-value {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.product-status-chip {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.product-status-draft {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.product-website-chip {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  background-color: var(--color-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.product-header-right {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.product-action-button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.product-action-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+}
+
+.product-action-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.product-action-secondary {
+  background-color: white;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.product-action-secondary:hover {
+  background-color: var(--color-background);
+}
+
+/* Tab Bar */
+.product-tabs {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  padding: 0 var(--spacing-xl);
+  gap: var(--spacing-md);
+}
+
+.product-tab {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.product-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.product-tab-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Product Body */
+.product-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.product-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+}
+
+.product-content-inner {
+  max-width: 900px;
+}
+
+.product-content-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* Right Sidebar */
+.product-sidebar {
+  width: 320px;
+  background-color: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  flex-shrink: 0;
+}
+
+/* Sidebar Panels */
+.product-panel {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.product-panel-header {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-panel-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.product-panel-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.product-panel-badge-warning {
+  background-color: var(--color-warning);
+}
+
+.product-panel-content {
+  padding: var(--spacing-md);
+}
+
+.product-panel-item {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: 4px;
+  margin-bottom: var(--spacing-sm);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.product-panel-item:hover {
+  background-color: white;
+}
+
+.product-panel-item-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.product-panel-item-text {
+  flex: 1;
+}
+
+.product-panel-item-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 2px 0;
+}
+
+.product-panel-item-description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Export Readiness Panel */
+.product-readiness-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+}
+
+.product-readiness-bar-fill {
+  height: 100%;
+  background-color: var(--color-warning);
+  transition: width 0.3s;
+}
+
+.product-readiness-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.product-readiness-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.product-readiness-complete {
+  color: var(--color-success);
+}
+
+.product-readiness-incomplete {
+  color: var(--color-text-secondary);
+}
