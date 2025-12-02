@@ -9,8 +9,11 @@
     import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+    /* NOTE: Do NOT commit production secrets into source.
+       Set VITE_FIREBASE_API_KEY in GitHub Actions / Environment → PRODUCTION
+       or inject a runtime config file during deployment. */
     const firebaseConfig = {
-      apiKey: "AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+      apiKey: "REPLACE_WITH_VITE_FIREBASE_API_KEY",
       authDomain: "ropi-bccee.firebaseapp.com",
       projectId: "ropi-bccee",
       storageBucket: "ropi-bccee.firebasestorage.app",
