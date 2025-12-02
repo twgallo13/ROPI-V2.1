@@ -19,91 +19,54 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm@8
       - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build web app
         run: |
-          if [ -f package.json ]; then
-            pnpm install
-          else
-            echo "No package.json found, skipping dependency installation"
-          fi
-      - name: Build (web)
+          set -euo pipefail
+          echo "Building @ropi-aoss/web package..."
+          pnpm --filter @ropi-aoss/web build
+          echo "Build complete. Checking output directory..."
+          ls -lah packages/web/dist || echo "::error::packages/web/dist not found after build"
+      
+      - name: Verify build output
         run: |
-          if [ -f packages/web/package.json ]; then
-            echo "Building @ropi-aoss/web..."
-            # Fail loudly on build error so CI surfaces real issues
-            pnpm --filter @ropi-aoss/web build || { echo "::error::Web build failed"; exit 1; }
-            echo "Build completed. Listing packages/web and common output directories:"
-            ls -la packages/web || true
-            for d in "packages/web/dist" "packages/web/build" "packages/web/out" "packages/web/.next"; do
-              echo "=== $d ==="
-              if [ -d "$d" ]; then
-                ls -la "$d"
-              else
-                echo "$d does not exist"
-              fi
-            done
+          set -euo pipefail
+          echo "Listing packages/web directory structure:"
+          ls -R packages/web
+          echo ""
+          echo "Checking for dist directory:"
+          if [ -d "packages/web/dist" ]; then
+            echo "✅ packages/web/dist exists"
+            echo "Contents:"
+            ls -lah packages/web/dist
+            if [ ! -f "packages/web/dist/index.html" ]; then
+              echo "::error::packages/web/dist/index.html missing"
+              exit 1
+            fi
           else
-            echo "No packages/web found — will create placeholder later"
+            echo "::error::packages/web/dist directory not found"
+            exit 1
           fi
+      
       - name: Prepare public directory for preview
         run: |
           set -euo pipefail
-          echo "Preparing public/ for preview hosting..."
-          # ensure clean public folder
+          echo "Preparing public/ directory from packages/web/dist..."
           rm -rf public || true
           mkdir -p public
-
-          # If packages/web exists, try to build and locate output
-          if [ -f packages/web/package.json ]; then
-            echo "packages/web detected — attempting build"
-            # run build (non-fatal; proceed to check output)
-            pnpm --filter @ropi-aoss/web build || echo "packages/web build returned non-zero; continuing to try to find output"
-
-            CANDIDATES=(
-              "packages/web/dist"
-              "packages/web/build"
-              "packages/web/out"
-              "packages/web/.next"
-            )
-
-            COPIED=false
-            for d in "${CANDIDATES[@]}"; do
-              if [ -d "$d" ]; then
-                echo "Copying build output from ${d} to public/"
-                rsync -a --delete "${d}/" public/
-                COPIED=true
-                break
-              fi
-            done
-
-            # If .next exists and static export present, copy out/
-            if [ "$COPIED" = false ] && [ -d "packages/web/.next" ] && [ -d "packages/web/out" ]; then
-              rsync -a --delete "packages/web/out/" public/
-              COPIED=true
-            fi
-          fi
-
-          # If nothing was copied, create a placeholder index.html
-          if [ ! -f public/index.html ]; then
-            echo "No build output found — creating placeholder public/index.html"
-            cat > public/index.html <<'HTML'
-          <!doctype html><html><head><meta charset="utf-8"><title>Ropi AOSS — PR Preview</title>
-          <style>body{font-family:system-ui, -apple-system, sans-serif;background:#f6f7fb;display:flex;height:100vh;align-items:center;justify-content:center} .card{background:white;padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.08);max-width:720px;text-align:center}</style>
-          </head><body><div class="card"><h1>Ropi AOSS — PR Preview</h1><p>This is an auto-generated preview placeholder.</p><p>If you expect live app content, ensure the packages/web build outputs files under <code>packages/web/dist</code> or similar.</p></div></body></html>
-          HTML
-          fi
-
-          # final check
-          if [ ! -f public/index.html ]; then
-            echo "::error::public/index.html still missing after prepare step"
+          if [ -d "packages/web/dist" ]; then
+            echo "Copying from packages/web/dist to public/"
+            cp -r packages/web/dist/* public/
+          else
+            echo "::error::packages/web/dist not found - cannot prepare public/"
             exit 1
           fi
-          echo "public/ is ready for preview deployment."
-      - name: Ensure firebase.json exists
-        run: |
-          if [ ! -f firebase.json ]; then
-            echo "Creating minimal firebase.json"
-            echo '{"hosting":{"public":"public","ignore":["firebase.json","**/.*","**/node_modules/**"]}}' > firebase.json
+          if [ ! -f public/index.html ]; then
+            echo "::error::public/index.html missing after copy"
+            exit 1
           fi
+          echo "public/ directory prepared successfully"
       - name: Setup gcloud authentication
         env:
           GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}

@@ -1,0 +1,71 @@
+================================================================================
+FIRESTORE RULES - ropi-bccee Project
+================================================================================
+
+Retrieved: 2025-12-02T15:18:00Z
+Source: /workspaces/ROPI-V2.1/firestore.rules
+Deployed: Yes (via PROMPT_015, commit c9fbf5d)
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========================================
+    // OBSERVATIONS COLLECTION
+    // ========================================
+    match /observations/{observationId} {
+      // Allow authenticated users to read all observations
+      allow read: if request.auth != null;
+      
+      // Allow authenticated users to create observations
+      allow create: if request.auth != null 
+                    && request.resource.data.createdBy.uid == request.auth.uid
+                    && request.resource.data.status == 'open'
+                    && request.resource.data.keys().hasAll(['productId', 'title', 'body', 'severity', 'status', 'createdBy', 'createdAt']);
+      
+      // Allow users to update observations
+      allow update: if request.auth != null 
+                    && (
+                      resource.data.createdBy.uid == request.auth.uid
+                      || (
+                        request.resource.data.status == 'resolved'
+                        && request.resource.data.resolvedBy.uid == request.auth.uid
+                        && request.resource.data.keys().hasAll(['resolvedBy', 'resolvedAt'])
+                      )
+                    );
+      
+      // Only allow deletion by the creator
+      allow delete: if request.auth != null 
+                    && resource.data.createdBy.uid == request.auth.uid;
+    }
+    
+    // ========================================
+    // PRODUCTS COLLECTION
+    // ========================================
+    match /products/{productId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // ========================================
+    // DEFAULT DENY
+    // ========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+================================================================================
+KEY REQUIREMENTS
+================================================================================
+
+1. **Authentication Required**: ALL Firestore operations require `request.auth != null`
+2. **No Anonymous Access**: Rules do not permit unauthenticated reads or writes
+3. **User Context Needed**: Operations require authenticated Firebase Auth user
+
+This explains why ropi-aoss-staging.web.app shows permission errors:
+- The deployed app is not authenticating users
+- Firestore rules reject all requests from unauthenticated clients
+- LocalStorage fallback activates, showing "Offline Mode" banner
+
+================================================================================

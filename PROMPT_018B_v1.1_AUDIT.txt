@@ -1,0 +1,302 @@
+================================================================================
+PROMPT_018B_v1.1 — Preview Deploy Fix (Option A)
+Build Progress Log & Audit
+================================================================================
+
+PROMPT TAG: PROMPT_018B_v1.1
+DATE: December 2, 2025
+AGENT: GitHub Copilot (Claude Sonnet 4.5)
+
+================================================================================
+OBJECTIVE
+================================================================================
+
+Implement Option A fix for PR preview deploy workflow to ensure reliable 
+preview channel deployments on Firebase Hosting.
+
+PROBLEM STATEMENT:
+- CI preview workflow was failing with "Directory 'packages/web/dist' for 
+  Hosting does not exist."
+- Root cause: Preview deploy used repository firebase.json which points to 
+  packages/web/dist, but the workflow prepares public/ folder instead
+- Build step was soft-failing (continuing on error), hiding real build issues
+
+================================================================================
+IMPLEMENTATION
+================================================================================
+
+PR DETAILS:
+- Branch: fix/preview-deploy-option-a_PROMPT_018B_v1.1
+- PR #164: https://github.com/twgallo13/ROPI-V2.1/pull/164
+- Base branch: aoss-main
+- Commit: 8933328
+
+FILES CHANGED:
+- .github/workflows/deploy-preview.yml
+
+CHANGES APPLIED:
+
+1. Build Step Enhancement:
+   - Renamed from "Build (if web exists)" to "Build (web)"
+   - Changed soft-fail (|| echo) to hard-fail (|| { echo "::error::"; exit 1; })
+   - Added comprehensive output directory logging:
+     * Lists packages/web
+     * Checks packages/web/dist, build, out, .next directories
+     * Shows ls -la output for existing directories
+   - Purpose: Surface real build failures immediately, provide diagnostic info
+
+2. Deploy Step Fix:
+   - Creates temporary firebase_preview.json in workflow
+   - Config points "public" field to "public" folder (prepared by workflow)
+   - Config includes "aoss-staging" target with SPA rewrites
+   - Uses --config firebase_preview.json flag in firebase CLI deploy command
+   - Purpose: Deploy from prepared public/ folder instead of expecting 
+     packages/web/dist
+
+TECHNICAL APPROACH:
+- Minimal, non-invasive change
+- Does NOT modify repository firebase.json (canonical config untouched)
+- Creates ephemeral firebase_preview.json only during CI workflow execution
+- Safe short-term unblock for PR preview deploys
+
+================================================================================
+SCOPE & SAFETY
+================================================================================
+
+WHAT THIS CHANGES:
+✓ Preview deploy workflow behavior only
+✓ Build step error handling (fail loudly)
+✓ Deploy configuration for preview channels
+
+WHAT THIS DOES NOT CHANGE:
+✗ Repository firebase.json (production/staging config)
+✗ Build output directory (still using whatever packages/web produces)
+✗ Production or staging deployment workflows
+✗ Local development workflow
+
+RISK ASSESSMENT: LOW
+- Preview-only change (does not affect production)
+- Temporary config file created only during CI
+- Improves error visibility (catches build failures)
+- Aligns workflow with existing public/ preparation step
+
+================================================================================
+TESTING & ACCEPTANCE CRITERIA
+================================================================================
+
+EXPECTED BEHAVIOR AFTER MERGE:
+1. PR preview workflow runs without "dist does not exist" error
+2. Build failures are surfaced immediately (CI fails fast)
+3. Preview URL is posted as PR comment
+4. Diagnostic logs show build output directory contents
+
+VERIFICATION STEPS:
+1. Merge PR #164 to aoss-main
+2. Open a test PR that triggers preview workflow
+3. Verify workflow completes successfully
+4. Confirm preview URL is accessible and functional
+
+SUCCESS METRICS:
+- Preview workflow completes without directory errors
+- Build failures (if any) are caught and reported clearly
+- Preview URLs are posted reliably to PRs
+
+================================================================================
+FOLLOW-UP WORK
+================================================================================
+
+RECOMMENDED NEXT STEPS:
+
+1. Permanent Fix (post-verification):
+   - Title: "Align web build output with Firebase hosting (permanent fix)"
+   - Choose one canonical path for web build output (recommended: packages/web/dist)
+   - Update vite.config.ts outDir OR adjust firebase.json accordingly
+   - Ensure build step produces chosen output directory reliably
+   - Update all workflows to use canonical config
+   - Remove temporary firebase_preview.json approach
+   - Estimated effort: 1-2 developer hours
+
+2. Build Standardization:
+   - Document canonical build output location in README
+   - Add build validation tests to CI
+   - Standardize across all deployment targets (staging, production, preview)
+
+3. Monitoring:
+   - Track preview deploy success rate after this fix
+   - Monitor for any new build-related errors
+
+================================================================================
+RELATED PROMPTS & HISTORY
+================================================================================
+
+PROMPT_018B (original):
+- Initial attempt at preview deploy fix
+- Identified the firebase.json vs public/ mismatch
+
+PROMPT_018B_v1.1 (this version):
+- Implements Option A (temporary firebase_preview.json)
+- Adds hard-fail on build errors
+- Adds comprehensive build output logging
+
+================================================================================
+NOTES FOR BUILD PROGRESS LOG / NOTION
+================================================================================
+
+Prompt tag: PROMPT_018B_v1.1
+PR branch: fix/preview-deploy-option-a_PROMPT_018B_v1.1
+PR number: #164
+Purpose: Option A CI fix — firebase_preview.json + hard-fail web build
+Files changed: .github/workflows/deploy-preview.yml
+
+Reason: 
+PR preview CI was failing with "Directory 'packages/web/dist' for Hosting 
+does not exist." — this patch ensures preview deploys use the public/ folder 
+prepared earlier in the job.
+
+Next steps: 
+Follow-up (permanent) to align Vite outDir and canonical firebase.json 
+(assign to Homer).
+
+================================================================================
+DEPLOYMENT CHECKLIST
+================================================================================
+
+[x] Patch created and saved (preview-fix-v1.1.patch)
+[x] New branch created from aoss-main
+[x] Changes applied to deploy-preview.yml
+[x] Changes committed with proper message
+[x] Branch pushed to remote
+[x] PR created with full description
+[x] PR includes PROMPT_018B_v1.1 tracking tag
+[x] Audit file created (this file)
+[x] PR review (CodeRabbit auto-review approved)
+[x] CI passed on PR #164
+[x] Preview deploy verified
+[x] PR merged to aoss-main
+[x] Staging deploy completed
+[x] Automated smoke checks passed
+
+PENDING:
+[ ] Manual Firebase Auth configuration verification
+[ ] Manual sign-in testing (Google & Email/Password)
+[ ] Manual admin verification (theo@shiekh.com, theo@shiekhshoes.org)
+[ ] Manual observations/product editor testing
+[ ] Create follow-up task for permanent fix
+[ ] Update Notion Build Progress Log
+
+================================================================================
+VERIFICATION RESULTS (Post-Merge)
+================================================================================
+
+MERGE DETAILS:
+- Merge Commit SHA: 5b3a3b5
+- Merged By: Homer (via GitHub CLI)
+- Merge Time: 2025-12-02 22:49 UTC
+- Merge Method: Squash merge
+- Commit Message: "ci: preview deploy - use firebase_preview.json and hard-fail 
+  web build (PROMPT_018B_v1.1 — merged by Homer)"
+
+CI RUN IDs & LINKS:
+
+Preview Deploy (PR #164):
+- Run ID: 19875796864
+- URL: https://github.com/twgallo13/ROPI-V2.1/actions/runs/19875796864
+- Status: ✓ SUCCESS (completed 2025-12-02 22:37:59 UTC)
+- Duration: 1m47s
+
+Staging Deploy (post-merge):
+- Run ID: 19876052341
+- URL: https://github.com/twgallo13/ROPI-V2.1/actions/runs/19876052341
+- Status: ✓ SUCCESS (completed 2025-12-02 22:49:33 UTC)
+- Duration: 1m46s
+
+URLS & ACCESSIBILITY:
+
+PR Preview URL:
+- URL: https://ropi-aoss-staging--pr-164-ptc9a9k6.web.app
+- HTTP Status: 200 ✓
+- Verified: 2025-12-02 22:47:30 UTC
+- Result: Site accessible, preview deploy successful
+- Comment: https://github.com/twgallo13/ROPI-V2.1/pull/164#issuecomment-3604264533
+
+Staging URL:
+- URL: https://ropi-aoss-staging.web.app/
+- HTTP Status: 200 ✓
+- Verified: 2025-12-02 22:53:46 UTC
+- Result: Staging site accessible, deploy successful
+
+AUTOMATED CHECKS (Completed by CI):
+✓ Build step completed without errors
+✓ firebase_preview.json configuration created successfully
+✓ Preview channel deploy succeeded
+✓ Staging deploy succeeded
+✓ HTTP 200 status confirmed on staging
+
+MANUAL CHECKS (Require Browser/Firebase Console Access):
+
+⚠️ NOTE: The following checks require manual verification by Lisa or team member
+with Firebase Console access and browser-based authentication testing:
+
+Firebase Auth Configuration:
+[ ] Google provider enabled
+[ ] Email/Password provider enabled
+[ ] Authorized domains include ropi-aoss-staging.web.app
+
+Sign-in Tests:
+[ ] Google sign-in as admin user
+[ ] Email/Password sign-in for theo@shiekh.com
+[ ] Email/Password sign-in for theo@shiekhshoes.org
+[ ] Verify isAdmin: true in console for admin users
+
+Observations/Product Editor:
+[ ] Create test observation on sample product as admin
+[ ] Verify observation appears in UI
+[ ] Verify Resolve button is enabled for admin
+[ ] Check for console errors (Firestore permissions, auth errors)
+
+Console Error Check:
+[ ] No "Missing or insufficient permissions" errors
+[ ] No "auth/unauthorized-domain" errors for Google OAuth
+
+RECOMMENDATIONS FOR MANUAL VERIFICATION:
+
+1. Open https://ropi-aoss-staging.web.app/ in browser
+2. Open browser DevTools Console (F12)
+3. Test Google sign-in with admin account
+4. Test Email/Password sign-in with theo@shiekh.com or theo@shiekhshoes.org
+5. Verify isAdmin: true appears in console or TopBar
+6. Navigate to Products page
+7. Select a product and create test observation
+8. Verify observation saves and Resolve button appears
+9. Check console for any Firestore or Auth errors
+10. Report all findings back to Homer with exact console outputs
+
+================================================================================
+SUMMARY
+================================================================================
+
+SUCCESSFULLY COMPLETED:
+✓ PR #164 merged to aoss-main (commit 5b3a3b5)
+✓ Preview deploy workflow validated with firebase_preview.json approach
+✓ Staging deploy completed successfully
+✓ Both preview and staging URLs return HTTP 200
+✓ CI automation working as expected
+✓ No production/staging firebase.json modifications (as intended)
+
+PENDING MANUAL VERIFICATION:
+⚠️ Firebase Auth provider configuration checks
+⚠️ Sign-in functionality testing (Google, Email/Password)
+⚠️ Admin role verification
+⚠️ Observations/Product Editor functionality
+⚠️ Console error monitoring
+
+NEXT ACTIONS:
+1. Lisa or team member performs manual verification steps above
+2. Report findings to Homer with console outputs and screenshots
+3. Homer creates follow-up GitHub issue for permanent fix
+4. Homer updates Notion Build Progress Log with PROMPT_018B_v1.1 entry
+5. Team schedules permanent fix implementation (1-2 hours estimated)
+
+================================================================================
+END OF AUDIT
+================================================================================

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { Observation, ObservationSeverity } from '../../types/observation';
 import { listenToObservations, addObservation, resolveObservation, syncLocalToFirestore } from '../../services/observations';
-import { useUser } from '../../contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { isFirebaseAvailable } from '../../firebaseConfig';
+import SignInModal from '@/components/Auth/SignInModal';
 import './ObservationsPanel.css';
 
 /**
@@ -16,12 +17,21 @@ import './ObservationsPanel.css';
  * - Image upload with Firebase Storage or data URL fallback
  * - Offline mode banner with sync retry
  * - Scroll-to-field linking with highlight animation
- * - Permission checks for resolve action
+ * - Permission checks for resolve action (creator or admin only)
+ * - Auth integration: Sign-in banner when unauthenticated
+ * 
+ * Auth Integration (PROMPT_018B):
+ * - Replace useUser() with useAuth()
+ * - Use Firebase Auth user.uid for createdBy field
+ * - Compute canResolve: currentUser.uid === observation.createdBy OR isAdmin
+ * - Show banner when !currentUser: "Sign in to use live Observations..."
+ * - Remove localStorage fallback (always use Firestore)
  * 
  * References:
  * - Workflow W1 — Observations Capture & Apply: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
  * - AOSS_OBSERVATIONS_FIRESTORE_v1.0 Implementation
+ * - PROMPT_018B Spec: See HOMER_PROMPT_018B_AUDIT.txt
  */
 
 interface ObservationsPanelProps {
@@ -29,9 +39,10 @@ interface ObservationsPanelProps {
 }
 
 function ObservationsPanel({ productId }: ObservationsPanelProps) {
-  const { user } = useUser();
+  const { currentUser, isAdmin, loading: authLoading } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
   const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,7 +95,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   };
 
   const handleSubmit = async () => {
-    if (!newObsTitle || !newObsBody) return;
+    if (!newObsTitle || !newObsBody || !currentUser) return;
 
     setIsSubmitting(true);
 
@@ -95,7 +106,10 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
         body: newObsBody,
         severity: newObsSeverity,
         linkedField: newObsLinkedField || null,
-        createdBy: user,
+        createdBy: {
+          uid: currentUser.uid,
+          name: currentUser.displayName || currentUser.email || 'Anonymous',
+        },
       }, imageFiles);
 
       // Reset form
@@ -115,12 +129,26 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   };
 
   const handleResolve = async (obsId: string) => {
+    if (!currentUser) {
+      setShowSignInModal(true);
+      return;
+    }
+
     try {
-      await resolveObservation(obsId, productId, user);
+      await resolveObservation(obsId, productId, {
+        uid: currentUser.uid,
+        name: currentUser.displayName || currentUser.email || 'Anonymous',
+      });
     } catch (error) {
       console.error('Failed to resolve observation:', error);
       alert('Failed to resolve observation. Please try again.');
     }
+  };
+
+  // Check if current user can resolve an observation
+  const canResolve = (observation: Observation): boolean => {
+    if (!currentUser) return false;
+    return observation.createdBy.uid === currentUser.uid || isAdmin;
   };
 
   const handleRetrySync = async () => {
@@ -174,6 +202,23 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
         <span className="product-panel-badge">{openObservations.length}</span>
       </div>
       
+      {/* Auth banner when not signed in */}
+      {!authLoading && !currentUser && (
+        <div className="auth-banner">
+          <span className="auth-banner-icon">🔒</span>
+          <div className="auth-banner-content">
+            <div className="auth-banner-title">Sign in to use live Observations</div>
+            <div className="auth-banner-subtitle">Data is view-only until authenticated</div>
+          </div>
+          <button 
+            className="auth-banner-button" 
+            onClick={() => setShowSignInModal(true)}
+          >
+            Sign In
+          </button>
+        </div>
+      )}
+      
       {isOffline && (
         <div className="offline-banner">
           <span className="offline-icon">⚠️</span>
@@ -198,14 +243,20 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
                 <span className={`observation-severity severity-${obs.severity}`}>
                   {obs.severity}
                 </span>
-                <button
-                  className="observation-resolve"
-                  onClick={() => handleResolve(obs.id)}
-                  title={`Resolve observation (created by ${obs.createdBy.name})`}
-                  disabled={isSubmitting}
-                >
-                  ✓
-                </button>
+                {currentUser && canResolve(obs) && (
+                  <button
+                    className="observation-resolve"
+                    onClick={() => handleResolve(obs.id)}
+                    title={
+                      isAdmin 
+                        ? `Resolve observation (Admin access)` 
+                        : `Resolve observation (created by you)`
+                    }
+                    disabled={isSubmitting}
+                  >
+                    ✓
+                  </button>
+                )}
               </div>
               
               {obs.images && obs.images.length > 0 && (
@@ -243,12 +294,22 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
           ))
         )}
         
-        <button className="panel-add-button" onClick={() => setShowModal(true)}>
+        <button 
+          className="panel-add-button" 
+          onClick={() => currentUser ? setShowModal(true) : setShowSignInModal(true)}
+          disabled={authLoading}
+        >
           + Add Observation
         </button>
       </div>
 
-      {showModal && (
+      {/* Sign-In Modal */}
+      <SignInModal
+        isOpen={showSignInModal}
+        onClose={() => setShowSignInModal(false)}
+      />
+
+      {showModal && currentUser && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">

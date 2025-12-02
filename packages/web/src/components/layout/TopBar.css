@@ -65,26 +65,188 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  position: relative;
 }
 
+/* Loading State */
+.topbar-loading {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Sign In Button (Unauthenticated) */
+.topbar-signin-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.topbar-signin-btn:hover {
+  background-color: #1e40af;
+}
+
+/* User Menu Wrapper */
+.topbar-user-wrapper {
+  position: relative;
+}
+
+/* User Menu Button (Authenticated) */
 .topbar-user-menu {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 6px;
-  transition: background-color 0.2s;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
 .topbar-user-menu:hover {
   background-color: var(--color-background);
+  border-color: var(--color-primary);
 }
 
+/* User Avatar */
 .topbar-user-avatar {
-  font-size: var(--font-size-lg);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
 }
 
+.topbar-user-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* User Name */
 .topbar-user-name {
   font-size: var(--font-size-sm);
   font-weight: 500;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Admin Badge */
+.topbar-admin-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  background-color: #fef3c7;
+  color: #92400e;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Dropdown Arrow */
+.topbar-dropdown-arrow {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+/* Dropdown Menu */
+.topbar-user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dropdown Header */
+.topbar-dropdown-header {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbar-dropdown-email {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  word-break: break-word;
+}
+
+.topbar-dropdown-role {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xs);
+}
+
+/* Dropdown Divider */
+.topbar-dropdown-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: var(--spacing-xs) 0;
+}
+
+/* Dropdown Items */
+.topbar-dropdown-item {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.topbar-dropdown-item:hover:not(:disabled) {
+  background-color: var(--color-background);
+}
+
+.topbar-dropdown-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dropdown Overlay (Click Outside to Close) */
+.topbar-dropdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
 }

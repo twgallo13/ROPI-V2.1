@@ -1,0 +1,65 @@
+[
+  {
+    "id": "sku-1001",
+    "status": "In Progress",
+    "brand": "Ropi",
+    "sku": "SKU-1001",
+    "name": "Ropi Runner — Black Leather",
+    "websites": [
+      "shiekh.com"
+    ],
+    "createdAt": "2025-12-02T15:16:57.327Z",
+    "images": [],
+    "updatedAt": "2025-12-02T15:16:57.327Z",
+    "attributes": {
+      "color": "Black",
+      "material": "Leather",
+      "fit": "Regular"
+    },
+    "launchDate": "2025-12-12T15:16:57.327Z",
+    "firstReceived": "2025-11-12T15:16:57.327Z",
+    "category": "Sneakers"
+  },
+  {
+    "id": "sku-1002",
+    "sku": "SKU-1002",
+    "images": [],
+    "status": "Draft",
+    "name": "Ropi Classic — White Canvas",
+    "attributes": {
+      "fit": "Narrow",
+      "color": "White",
+      "material": "Canvas"
+    },
+    "launchDate": "2025-12-27T15:16:57.327Z",
+    "brand": "Ropi",
+    "category": "Casual",
+    "websites": [
+      "shiekh.com"
+    ],
+    "updatedAt": "2025-12-02T15:16:57.327Z",
+    "createdAt": "2025-12-02T15:16:57.327Z",
+    "firstReceived": "2025-11-20T15:16:57.327Z"
+  },
+  {
+    "id": "sku-1003",
+    "createdAt": "2025-12-02T15:16:57.327Z",
+    "updatedAt": "2025-12-02T15:16:57.327Z",
+    "attributes": {
+      "color": "Brown",
+      "fit": "Wide",
+      "material": "Suede"
+    },
+    "images": [],
+    "launchDate": "2025-11-30T15:16:57.327Z",
+    "status": "Export-ready",
+    "brand": "Ropi",
+    "name": "Ropi HighTop — Brown Suede",
+    "sku": "SKU-1003",
+    "websites": [
+      "shiekh.com"
+    ],
+    "category": "Boots",
+    "firstReceived": "2025-10-18T15:16:57.327Z"
+  }
+]

@@ -1,0 +1,5 @@
+cache-control: max-age=3600
+etag: "f578b9e449df87d00459d47eb81e177ff3fa7d196833dec955d01a47a2610c60"
+last-modified: Tue, 02 Dec 2025 15:50:26 GMT
+x-cache: HIT
+x-cache-hits: 1

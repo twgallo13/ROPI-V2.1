@@ -10,12 +10,11 @@ import '@testing-library/jest-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProductEditorPage from '../src/pages/ProductEditorPage';
 import * as observationsService from '../src/services/observations';
-import * as UserContext from '../src/contexts/UserContext';
+import { AuthProvider } from '../src/contexts/AuthProvider';
 import * as firebaseConfig from '../src/firebaseConfig';
 
 // Mock modules
 vi.mock('../src/services/observations');
-vi.mock('../src/contexts/UserContext');
 vi.mock('../src/firebaseConfig');
 vi.mock('../src/hooks/useProduct', () => ({
   useProduct: () => ({
@@ -67,15 +66,29 @@ vi.mock('../src/hooks/useProduct', () => ({
   }),
 }));
 
-const mockUser = { uid: 'test_user_123', name: 'Test User' };
+// Mock Firebase Auth
+vi.mock('firebase/auth', () => ({
+  GoogleAuthProvider: vi.fn(),
+  signInWithPopup: vi.fn(),
+  signInWithEmailAndPassword: vi.fn(),
+  createUserWithEmailAndPassword: vi.fn(),
+  sendEmailVerification: vi.fn(),
+  signOut: vi.fn(),
+  onAuthStateChanged: vi.fn((auth, callback) => {
+    callback({ uid: 'test_user_123', email: 'test@example.com', displayName: 'Test User' });
+    return vi.fn();
+  }),
+}));
+
+// Mock Firestore
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(),
+  getDoc: vi.fn(() => Promise.resolve({ exists: () => false, data: () => ({}) })),
+  Timestamp: { now: vi.fn(() => ({ seconds: Date.now() / 1000 })) },
+}));
 
 describe('Smoke Test: ProductEditorPage with Observations', () => {
   it('renders Product Editor with wired ObservationsPanel', () => {
-    vi.mocked(UserContext.useUser).mockReturnValue({
-      user: mockUser,
-      isAuthenticated: true,
-    });
-
     vi.mocked(firebaseConfig.isFirebaseAvailable).mockReturnValue(true);
 
     const mockListen = vi.fn().mockReturnValue(vi.fn());
@@ -83,9 +96,11 @@ describe('Smoke Test: ProductEditorPage with Observations', () => {
 
     render(
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<ProductEditorPage />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<ProductEditorPage />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     );
 

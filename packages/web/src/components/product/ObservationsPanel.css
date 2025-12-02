@@ -300,6 +300,55 @@
 }
 
 /* Offline Banner */
+/* Auth Banner (PROMPT_018B) */
+.auth-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: #dbeafe;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.auth-banner-icon {
+  font-size: 1.25rem;
+}
+
+.auth-banner-content {
+  flex: 1;
+}
+
+.auth-banner-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 0.125rem;
+}
+
+.auth-banner-subtitle {
+  font-size: var(--font-size-xs);
+  color: #1e40af;
+  opacity: 0.8;
+}
+
+.auth-banner-button {
+  padding: 0.375rem 0.875rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-banner-button:hover {
+  background: #2563eb;
+}
+
 .offline-banner {
   display: flex;
   align-items: center;

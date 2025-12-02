@@ -54,6 +54,44 @@ service cloud.firestore {
     }
     
     // ========================================
+    // LAUNCH SIGNUPS COLLECTION (PROMPT_018B)
+    // ========================================
+    // Related Notion docs:
+    // - Section 7 — Launch Calendar: https://www.notion.so/27e45ee1ec5a81ecac18fa5c2bf3842e
+    // - Launch Calendar DB Schema: https://www.notion.so/29745ee1ec5a80be8b83f113074a1837
+    // - PROMPT_018B Spec: See HOMER_PROMPT_018B_AUDIT.txt
+    //
+    // Document ID format: `${launchId}_${userUid}` (composite key, idempotent)
+    // Allows users to sign up for product launch notifications
+    match /launchSignups/{signupId} {
+      // Allow authenticated users to create their own signups
+      // Validate required fields and ensure userUid matches auth.uid
+      allow create: if request.auth != null
+                    && request.resource.data.userUid == request.auth.uid
+                    && request.resource.data.keys().hasAll(['launchId', 'userUid', 'email', 'createdAt', 'source']);
+      
+      // Allow users to read their own signups
+      allow read: if request.auth != null
+                  && resource.data.userUid == request.auth.uid;
+      
+      // No updates or deletes (signups are immutable)
+      allow update, delete: if false;
+    }
+    
+    // ========================================
+    // METADATA COLLECTION (PROMPT_018B)
+    // ========================================
+    // Contains admin allow-list and other system metadata
+    // Read-only for authenticated users (no writes via client)
+    match /metadata/{docId} {
+      // Allow authenticated users to read metadata (for admin detection)
+      allow read: if request.auth != null;
+      
+      // No client writes to metadata (only via server/scripts)
+      allow write: if false;
+    }
+    
+    // ========================================
     // DEFAULT DENY
     // ========================================
     // Deny access to all other collections by default
