@@ -1,0 +1,104 @@
+name: Deploy AOSS Staging
+# Per AOSS Section 10.3 — GitHub Actions Deploy Staging
+# Deploys aoss-main to Firebase Hosting preview channel (aoss-main-staging)
+
+on:
+  push:
+    branches:
+      - aoss-main
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: |
+          # TODO (AOSS): Implement web build per Section 7 when web package is ready
+          echo "⚠️  Web build not yet implemented (AOSS Section 7)"
+          echo "Currently exporting placeholder for hosting channel"
+          
+          # Create a minimal placeholder for hosting
+          mkdir -p public
+          cat > public/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Ropi AOSS - Staging</title>
+            <meta charset="utf-8">
+            <style>
+              body { 
+                font-family: system-ui, -apple-system, sans-serif; 
+                max-width: 800px; 
+                margin: 100px auto; 
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+              }
+              .card { 
+                background: rgba(255,255,255,0.1); 
+                backdrop-filter: blur(10px);
+                padding: 40px; 
+                border-radius: 16px; 
+                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+              }
+              h1 { margin-top: 0; }
+              code { 
+                background: rgba(0,0,0,0.2); 
+                padding: 2px 8px; 
+                border-radius: 4px; 
+                font-size: 14px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>🚀 Ropi AOSS Staging</h1>
+              <p>This is the <strong>aoss-main</strong> staging environment.</p>
+              <p>Deployed from branch: <code>aoss-main</code></p>
+              <p>Firebase Hosting preview channel: <code>aoss-main-staging</code></p>
+              <hr style="border: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
+              <p><small>⚠️ Web app implementation pending (AOSS Section 7)</small></p>
+              <p><small>Single source of truth: Ropi AOSS Notion (Sections 1-14)</small></p>
+            </div>
+          </body>
+          </html>
+          EOF
+          
+          echo "✅ Placeholder created in public/index.html"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@13
+
+      - name: Deploy to Firebase Hosting preview channel
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          # Deploy to preview channel (aoss-main-staging), not live site
+          # Per AOSS Section 10.3 and 10.6
+          firebase hosting:channel:deploy aoss-main-staging \
+            --project ropi-bccee \
+            --token "$FIREBASE_TOKEN" \
+            --json
+
+      - name: Comment preview URL
+        run: |
+          echo "🎉 Staging deployed successfully!"
+          echo "Preview URL: https://ropi-bccee--aoss-main-staging-<random>.web.app"
+          echo "(Exact URL available in Firebase Console or deploy output above)"
