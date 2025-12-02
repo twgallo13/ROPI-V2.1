@@ -26,6 +26,28 @@ NOTION_TOKEN=your_token NOTION_PAGE_IDS=page1,page2 pnpm seed
 ```
 Raw exports are saved to `data/notion_export/` with timestamps.
 
+### SDK (`packages/sdk`)
+TypeScript types and zod validators for AOSS product schemas (Section 2.x + Attribute Registry).
+
+**Usage:**
+```bash
+# Build
+pnpm --filter @ropi-aoss/sdk build
+
+# Run tests
+pnpm --filter @ropi-aoss/sdk test
+
+# Watch mode
+pnpm --filter @ropi-aoss/sdk test:watch
+```
+
+Import in TypeScript:
+```typescript
+import { ProductSchema, validateProduct } from '@ropi-aoss/sdk';
+
+const result = validateProduct(productData);
+```
+
 **Note:** The behavior and data shapes are NOT defined in this repository but in the Ropi AOSS Notion space (Sections 1–14). This repository only implements what the Notion spec describes.
 
 ## Staging Environment

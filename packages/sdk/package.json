@@ -1,14 +1,32 @@
 {
   "name": "@ropi-aoss/sdk",
   "version": "0.0.0",
+  "description": "TypeScript SDK for Ropi AOSS - Types and validators for product data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ../../tsconfig.base.json",
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "echo \"No SDK lint config yet\"",
-    "test": "echo \"No SDK tests yet\""
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ropi",
+    "aoss",
+    "sdk",
+    "product-schema",
+    "validation"
+  ],
+  "dependencies": {
+    "zod": "^3.22.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
