@@ -11,15 +11,20 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Firebase config (from your project)
+// Firebase config (read from environment variables)
 const firebaseConfig = {
-  apiKey: "AIzaSyBEk3l0J3YZYq2e8gF_p5LZ8Y3kP4XQ9Zw",
-  authDomain: "ropi-bccee.firebaseapp.com",
-  projectId: "ropi-bccee",
-  storageBucket: "ropi-bccee.firebasestorage.app",
-  messagingSenderId: "544928303856",
-  appId: "1:544928303856:web:b7c8e5d8a1e0f9a3c4d5e6"
+  apiKey: process.env.VITE_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY || 'REPLACE_ME',
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'ropi-bccee.firebaseapp.com',
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'ropi-bccee',
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'ropi-bccee.firebasestorage.app',
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: process.env.VITE_FIREBASE_APP_ID || ''
 };
+
+if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'REPLACE_ME') {
+  console.error('Missing Firebase API key. Set VITE_FIREBASE_API_KEY (for local dev) or FIREBASE_API_KEY (for Node) in the environment.');
+  process.exit(1);
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

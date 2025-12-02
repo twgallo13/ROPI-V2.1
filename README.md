@@ -88,3 +88,18 @@ This creates `/settings/attributes` with starter data for:
 Users can add/edit/delete these values through the Settings → Vocab/Dropdowns tab in the UI.
 
 You only need to run this once to initialize your Firestore database with default settings.
+
+### Running upload-prompts Script
+
+To upload AI prompt templates to Firestore manually:
+
+```bash
+# Export your Firebase API key first (using VITE_ prefix for consistency or FIREBASE_API_KEY)
+export VITE_FIREBASE_API_KEY=your_api_key_here
+# Or: export FIREBASE_API_KEY=your_api_key_here
+
+# Run the script
+node scripts/upload-prompts.mjs
+```
+
+**Note:** Never commit API keys to source control. The script reads from environment variables.
