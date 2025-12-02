@@ -1,6 +1,0 @@
-PR C - AttributeDetailDrawer Type Safety
-
-Changed: src/pages/settings/components/AttributeDetailDrawer.tsx - Replaced explicit `any` types with AttributeMetadata in props, state, and handlers. Added eslint-disable comments for minimal dynamic assignment casts.
-Tests: 213 passed (25 test files), no new failures introduced.
-Lint: ✅ PASS - No @typescript-eslint/no-explicit-any warnings for AttributeDetailDrawer.tsx (was previously flagged).
-Caveat: Runtime behavior unchanged. Small local `any` casts remain for dynamic field assignment but are commented and disabled from linting. Top-level types now explicit.

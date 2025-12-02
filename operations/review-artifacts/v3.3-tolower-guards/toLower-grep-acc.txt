@@ -1,7 +1,0 @@
-src/utils/attributeGrouping.ts:94:    col.toLowerCase().includes('rics') || 
-src/utils/attributeGrouping.ts:95:    col.toLowerCase().includes('vendor')
-src/utils/attributeGrouping.ts:217:  const term = searchTerm.toLowerCase().trim();
-src/utils/attributeGrouping.ts:221:    if (group.canonicalPath.toLowerCase().includes(term)) {
-src/utils/attributeGrouping.ts:226:    if (group.displayName.toLowerCase().includes(term)) {
-src/utils/attributeGrouping.ts:231:    if (group.variants.some(v => v.label.toLowerCase().includes(term))) {
-src/utils/attributeGrouping.ts:236:    if (group.primaryAttribute.description?.toLowerCase().includes(term)) {

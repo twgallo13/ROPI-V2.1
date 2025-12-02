@@ -1,6 +1,0 @@
-operations/review-artifacts/v3.3-registry-sort-guard/homer-summary.txt:3:Changed: src/utils/attributeRegistry.ts - Added defensive guards in sort comparator to handle undefined category/label values by converting to empty strings before calling localeCompare().
-scripts/parseAttributesFromCode.ts:297:    a.canonicalPath.localeCompare(b.canonicalPath)
-scripts/update-importer-aliases.ts:262:  attributes.sort((a, b) => a.canonicalPath.localeCompare(b.canonicalPath));
-src/pages/settings/AttributeKeyPage.tsx:45:      loaded.sort((a, b) => a.canonicalPath.localeCompare(b.canonicalPath));
-src/utils/attributeRegistry.ts:79:      if (aCat !== bCat) return aCat.localeCompare(bCat);
-src/utils/attributeRegistry.ts:82:      return aLabel.localeCompare(bLabel);
