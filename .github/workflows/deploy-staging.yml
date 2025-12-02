@@ -32,96 +32,20 @@ jobs:
             echo "No package.json found, skipping dependency installation"
           fi
 
-      - name: Build (if web exists)
-        run: |
-          if [ -f packages/web/package.json ]; then
-            pnpm --filter @ropi-aoss/web build || echo "Web build failed (not implemented)"
-          else
-            echo "No packages/web found, will create placeholder in prepare step"
-          fi
-
-      - name: Prepare public directory
+      - name: Build packages/web
         run: |
           set -euo pipefail
-          echo "Preparing public/ for hosting..."
-          # Ensure public exists
-          rm -rf public || true
-          mkdir -p public
-
-          # If packages/web exists and has a build output, try common locations and copy into public
-          if [ -f packages/web/package.json ]; then
-            echo "packages/web detected — attempting build output copy..."
-            # try to build (non-fatal fallback handled by earlier steps)
-            if pnpm --filter @ropi-aoss/web build; then
-              echo "packages/web build completed (attempting to find output)..."
-            else
-              echo "packages/web build command returned non-zero (proceeding to look for output)."
-            fi
-
-            # Common output directories
-            CANDIDATES=(
-              "packages/web/dist"
-              "packages/web/build"
-              "packages/web/out"
-              "packages/web/.next"
-            )
-
-            COPIED=false
-            for d in "${CANDIDATES[@]}"; do
-              if [ -d "$d" ]; then
-                echo "Copying build output from $d to public/"
-                rsync -a --delete "$d"/ public/
-                COPIED=true
-                break
-              fi
-            done
-
-            # Special handling for Next.js (.next)
-            if [ "$COPIED" = false ] && [ -d "packages/web/.next" ]; then
-              # If there is static export directory out/, use it
-              if [ -d "packages/web/out" ]; then
-                rsync -a --delete "packages/web/out"/ public/
-                COPIED=true
-              fi
-            fi
-          fi
-
-          # If nothing copied, create a placeholder index.html
-          if [ ! -f public/index.html ]; then
-            echo "No build output found — creating placeholder public/index.html"
-            cat > public/index.html <<'HTML'
-          <!doctype html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Ropi AOSS — Staging</title>
-            <style>
-              body { font-family: system-ui, -apple-system, sans-serif; color:#111; background:#f6f7fb; display:flex; align-items:center; justify-content:center; height:100vh; }
-              .card { background: white; border-radius:12px; padding:32px; box-shadow:0 6px 30px rgba(0,0,0,0.08); max-width:880px; text-align:center;}
-              h1 { margin-top:0; color:#2b2f6b;}
-              code { background:#f2f4ff; padding:4px 8px; border-radius:6px; display:inline-block; }
-            </style>
-          </head>
-          <body>
-            <div class="card">
-              <h1>🚀 Ropi AOSS — Staging</h1>
-              <p>This is the <strong>aoss-main</strong> staging environment.</p>
-              <p>Stable staging URL: <strong>https://ropi-aoss-staging.web.app</strong></p>
-              <hr>
-              <p><small>Note: The web app build did not create a public site yet. This placeholder exists so the deploy does not fail.</small></p>
-            </div>
-          </body>
-          </html>
-          HTML
-          fi
-
-          # Final sanity check
-          if [ ! -f public/index.html ]; then
-            echo "::error::public/index.html still missing after prepare step"
+          echo "Building packages/web with Vite..."
+          pnpm --filter @ropi-aoss/web build
+          
+          # Verify build output
+          if [ ! -f packages/web/dist/index.html ]; then
+            echo "::error::packages/web/dist/index.html not found after build"
             exit 1
           fi
-
-          echo "public/ is ready (contains index.html and possible build output)."
+          
+          echo "✅ Build complete: packages/web/dist ready for deployment"
+          ls -lh packages/web/dist/
 
       - name: Setup gcloud authentication
         env:
