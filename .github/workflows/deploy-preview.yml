@@ -46,9 +46,18 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
+          if [ -z "$FIREBASE_TOKEN" ]; then
+            echo "::error::FIREBASE_TOKEN secret is not set"
+            echo "Please configure FIREBASE_TOKEN in repository secrets"
+            exit 1
+          fi
           PR_NUM=${{ github.event.pull_request.number }}
           CHANNEL=pr-${PR_NUM}
-          firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --token "$FIREBASE_TOKEN" --json > deploy.json
+          firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --token "$FIREBASE_TOKEN" --json > deploy.json || {
+            echo "::error::Firebase deployment failed"
+            cat deploy.json
+            exit 1
+          }
           echo "Deploy output:"
           cat deploy.json
           # Try to extract a URL
