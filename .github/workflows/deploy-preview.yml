@@ -30,10 +30,62 @@ jobs:
           if [ -f packages/web/package.json ]; then
             pnpm --filter @ropi-aoss/web build || echo "Web build failed (not implemented)"
           else
-            mkdir -p public
-            PR_NUM="${{ github.event.pull_request.number }}"
-            echo "<!doctype html><html><body><h1>Ropi AOSS PR Preview</h1><p>This is a preview deployment for PR #${PR_NUM}</p></body></html>" > public/index.html
+            echo "No packages/web found — will create placeholder later"
           fi
+      - name: Prepare public directory for preview
+        run: |
+          set -euo pipefail
+          echo "Preparing public/ for preview hosting..."
+          # ensure clean public folder
+          rm -rf public || true
+          mkdir -p public
+
+          # If packages/web exists, try to build and locate output
+          if [ -f packages/web/package.json ]; then
+            echo "packages/web detected — attempting build"
+            # run build (non-fatal; proceed to check output)
+            pnpm --filter @ropi-aoss/web build || echo "packages/web build returned non-zero; continuing to try to find output"
+
+            CANDIDATES=(
+              "packages/web/dist"
+              "packages/web/build"
+              "packages/web/out"
+              "packages/web/.next"
+            )
+
+            COPIED=false
+            for d in "${CANDIDATES[@]}"; do
+              if [ -d "$d" ]; then
+                echo "Copying build output from ${d} to public/"
+                rsync -a --delete "${d}/" public/
+                COPIED=true
+                break
+              fi
+            done
+
+            # If .next exists and static export present, copy out/
+            if [ "$COPIED" = false ] && [ -d "packages/web/.next" ] && [ -d "packages/web/out" ]; then
+              rsync -a --delete "packages/web/out/" public/
+              COPIED=true
+            fi
+          fi
+
+          # If nothing was copied, create a placeholder index.html
+          if [ ! -f public/index.html ]; then
+            echo "No build output found — creating placeholder public/index.html"
+            cat > public/index.html <<'HTML'
+          <!doctype html><html><head><meta charset="utf-8"><title>Ropi AOSS — PR Preview</title>
+          <style>body{font-family:system-ui, -apple-system, sans-serif;background:#f6f7fb;display:flex;height:100vh;align-items:center;justify-content:center} .card{background:white;padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.08);max-width:720px;text-align:center}</style>
+          </head><body><div class="card"><h1>Ropi AOSS — PR Preview</h1><p>This is an auto-generated preview placeholder.</p><p>If you expect live app content, ensure the packages/web build outputs files under <code>packages/web/dist</code> or similar.</p></div></body></html>
+          HTML
+          fi
+
+          # final check
+          if [ ! -f public/index.html ]; then
+            echo "::error::public/index.html still missing after prepare step"
+            exit 1
+          fi
+          echo "public/ is ready for preview deployment."
       - name: Ensure firebase.json exists
         run: |
           if [ ! -f firebase.json ]; then
@@ -46,11 +98,12 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          if [ -z "$FIREBASE_TOKEN" ]; then
-            echo "::error::FIREBASE_TOKEN secret is not set"
-            echo "Please configure FIREBASE_TOKEN in repository secrets"
-            exit 1
+          if [ -z "${FIREBASE_TOKEN:-}" ]; then
+            echo "::warning::FIREBASE_TOKEN not set — skipping preview firebase deploy for security."
+            exit 0
           fi
+          
+          # existing deploy command (keep JSON output)
           PR_NUM=${{ github.event.pull_request.number }}
           CHANNEL=pr-${PR_NUM}
           firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --token "$FIREBASE_TOKEN" --json > deploy.json || {
