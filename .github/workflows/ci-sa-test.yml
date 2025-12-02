@@ -1,0 +1,44 @@
+name: CI - Test GCP Service Account
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-sa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lsb-release apt-transport-https ca-certificates gnupg curl
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+          sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+          npm install -g firebase-tools@13
+      - name: Decode service account key and authenticate
+        env:
+          GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GCP_SA_KEY_BASE64:-}" ]; then
+            echo "ERROR: secret GCP_SA_KEY_BASE64 not set"
+            exit 2
+          fi
+          echo "Decoding service account key..."
+          echo "$GCP_SA_KEY_BASE64" | base64 --decode > "$HOME/gcloud-key.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
+          # Authenticate with gcloud
+          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+          gcloud config set project ropi-bccee
+          # Show active account (no secrets)
+          echo "Active gcloud accounts:"
+          gcloud auth list --filter=status:ACTIVE --format="value(account)"
+      - name: Firestore/Hosting access test
+        run: |
+          echo "Listing hosting channels..."
+          firebase hosting:channel:list --project ropi-bccee --json || echo "firebase hosting:list returned non-zero status"
+      - name: Clean up
+        run: |
+          rm -f "$HOME/gcloud-key.json"
+          echo "Key file removed from runner"
