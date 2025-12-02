@@ -19,7 +19,12 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm@8
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          if [ -f package.json ]; then
+            pnpm install
+          else
+            echo "No package.json found, skipping dependency installation"
+          fi
       - name: Build (if web exists)
         run: |
           if [ -f packages/web/package.json ]; then
@@ -27,8 +32,21 @@ jobs:
           else
             mkdir -p public
             cat > public/index.html <<'HTML'
-            <!doctype html><html><body><h1>Ropi AOSS PR Preview</h1></body></html>
+            <!doctype html><html><body><h1>Ropi AOSS PR Preview</h1><p>This is a preview deployment for PR #${{ github.event.pull_request.number }}</p></body></html>
             HTML
+          fi
+      - name: Ensure firebase.json exists
+        run: |
+          if [ ! -f firebase.json ]; then
+            echo "Creating minimal firebase.json"
+            cat > firebase.json <<'JSON'
+            {
+              "hosting": {
+                "public": "public",
+                "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+              }
+            }
+            JSON
           fi
       - name: Install Firebase CLI
         run: npm install -g firebase-tools@13
