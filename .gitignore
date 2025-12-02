@@ -29,7 +29,7 @@ src/**/*.js
 *.njsproj
 *.sln
 *.sw?
-operations/review-artifacts/attribute-registry/
+operations/review-artifacts/
 /secrets/
 
 # Service account credentials (sensitive)

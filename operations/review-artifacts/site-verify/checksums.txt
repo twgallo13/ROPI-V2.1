@@ -1,2 +1,0 @@
-79beea5ba1bf119676e0370c08ee742962ec0447c1eba0526fc532bfb533e595  operations/review-artifacts/site-verify/prod-root.html
-79beea5ba1bf119676e0370c08ee742962ec0447c1eba0526fc532bfb533e595  operations/review-artifacts/site-verify/webapp-root.html

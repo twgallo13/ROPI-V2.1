@@ -1,5 +1,0 @@
-5eaa9cb docs: add v2.4.5 branch cleanup entry to HOMER_LOG and final summary
-3ad0fc5 chore: branch cleanup artifacts 20251122T121244Z
-89bbb32 Merge diagnostics/ui-import-capture-v2.4.4 into main - diagnostic tools for UI import analysis
-2d779d3 Merge fix/ui-import-key-mismatch-v2.4.5 into main - v2.4.5 UI import key mismatch fix
-0deb99e v2.4.5: update HOMER_LOG with UI import fix
