@@ -2,6 +2,9 @@ name: CI - Test GCP Service Account
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/ci-sa-test-trigger-v0-4-1
 
 jobs:
   test-sa:
