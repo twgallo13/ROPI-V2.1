@@ -1,0 +1,75 @@
+.github/workflows/deploy-preview.yml
+HOMER_vNEXT_FINAL_AUDIT.txt
+package.json
+packages/web/index.html
+packages/web/package.json
+packages/web/src/App.tsx
+packages/web/src/components/common/PageLayout.css
+packages/web/src/components/common/PageLayout.tsx
+packages/web/src/components/layout/AppLayout.css
+packages/web/src/components/layout/AppLayout.tsx
+packages/web/src/components/layout/Sidebar.css
+packages/web/src/components/layout/Sidebar.tsx
+packages/web/src/components/layout/TopBar.css
+packages/web/src/components/layout/TopBar.tsx
+packages/web/src/config/nav.ts
+packages/web/src/index.css
+packages/web/src/main.tsx
+packages/web/src/pages/AttributesPage.tsx
+packages/web/src/pages/ExportPage.tsx
+packages/web/src/pages/HomePage.tsx
+packages/web/src/pages/ImportPage.tsx
+packages/web/src/pages/LaunchCalendarPage.tsx
+packages/web/src/pages/ObservationsPage.tsx
+packages/web/src/pages/ProductEditorPage.css
+packages/web/src/pages/ProductEditorPage.tsx
+packages/web/src/pages/ProductsPage.tsx
+packages/web/src/pages/SettingsPage.css
+packages/web/src/pages/SettingsPage.tsx
+packages/web/src/pages/SmartRulesPage.tsx
+packages/web/src/pages/settings/SettingsSubPage.tsx
+packages/web/test/nav.test.ts
+packages/web/tsconfig.json
+packages/web/tsconfig.node.json
+packages/web/vite.config.ts
+packages/web/vitest.config.ts
+pnpm-lock.yaml
+scripts/notion-bootstrap.js
+---
+.github/workflows/deploy-preview.yml | +7 -5
+HOMER_vNEXT_FINAL_AUDIT.txt | +870 -0
+package.json | +5 -2
+packages/web/index.html | +13 -0
+packages/web/package.json | +27 -4
+packages/web/src/App.tsx | +49 -0
+packages/web/src/components/common/PageLayout.css | +27 -0
+packages/web/src/components/common/PageLayout.tsx | +25 -0
+packages/web/src/components/layout/AppLayout.css | +19 -0
+packages/web/src/components/layout/AppLayout.tsx | +24 -0
+packages/web/src/components/layout/Sidebar.css | +54 -0
+packages/web/src/components/layout/Sidebar.tsx | +30 -0
+packages/web/src/components/layout/TopBar.css | +90 -0
+packages/web/src/components/layout/TopBar.tsx | +35 -0
+packages/web/src/config/nav.ts | +135 -0
+packages/web/src/index.css | +96 -0
+packages/web/src/main.tsx | +13 -0
+packages/web/src/pages/AttributesPage.tsx | +30 -0
+packages/web/src/pages/ExportPage.tsx | +30 -0
+packages/web/src/pages/HomePage.tsx | +29 -0
+packages/web/src/pages/ImportPage.tsx | +36 -0
+packages/web/src/pages/LaunchCalendarPage.tsx | +30 -0
+packages/web/src/pages/ObservationsPage.tsx | +37 -0
+packages/web/src/pages/ProductEditorPage.css | +298 -0
+packages/web/src/pages/ProductEditorPage.tsx | +201 -0
+packages/web/src/pages/ProductsPage.tsx | +31 -0
+packages/web/src/pages/SettingsPage.css | +40 -0
+packages/web/src/pages/SettingsPage.tsx | +42 -0
+packages/web/src/pages/SmartRulesPage.tsx | +31 -0
+packages/web/src/pages/settings/SettingsSubPage.tsx | +66 -0
+packages/web/test/nav.test.ts | +51 -0
+packages/web/tsconfig.json | +32 -0
+packages/web/tsconfig.node.json | +10 -0
+packages/web/vite.config.ts | +17 -0
+packages/web/vitest.config.ts | +16 -0
+pnpm-lock.yaml | +1224 -4
+scripts/notion-bootstrap.js | +184 -0
