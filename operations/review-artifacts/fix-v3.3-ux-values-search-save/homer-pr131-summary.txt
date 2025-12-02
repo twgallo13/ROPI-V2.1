@@ -1,0 +1,85 @@
+HOMER — PR #131 CREATED & READY FOR LISA REVIEW
+===============================================
+
+PR URL: https://github.com/twgallo13/ROPI-V2.1/pull/131
+
+Branch: fix/v3.3-ux-values-search-save
+Base: main
+Status: Open, awaiting Lisa approval
+
+SUMMARY
+-------
+Targeted UX fixes for v3.3 ACC:
+- Enhanced search to include alias names (importerColumns)
+- Normalized product-value preview with vocabulary mapping
+- Client-side validation with AJV error details
+- Seed permission check & clear messaging
+
+CHANGES BREAKDOWN
+-----------------
+
+A — Server: Enhanced Search
+  File: functions/src/handlers/attributes.ts
+  - Search now includes importerColumns and ai.use fields
+  - Users can search by alias names (e.g., "dept" finds "department")
+
+B — Server: Normalized Value Preview
+  File: functions/src/handlers/attributes.ts
+  - Rewrote getValuePreview() with normalization
+  - Maps values to vocabulary terms via allowedValuesRef
+  - Returns structured counts: top 5, percentages, sample SKUs
+  - Explicit "Unknown" count tracking
+
+C — Client: AJV Validation Details
+  File: src/pages/settings/components/AttributeDetailDrawer.tsx
+  - Blocks save if required fields missing
+  - Shows AJV validation details on error
+  - Displays field path + specific message
+
+D — Client: Seed Permission Check
+  File: src/pages/settings/components/AttributeDetailDrawer.tsx
+  - Role check before seed operation
+  - Disables button for non-admin/editor/coordinator
+  - Clear tooltip explaining permission requirement
+
+E — Server: Validation Logging
+  File: functions/src/handlers/attributes.ts
+  - Logs AJV errors to Cloud Functions console
+  - Includes full error details for debugging
+
+BUILD STATUS
+------------
+✅ Functions build: CLEAN (no TypeScript errors)
+✅ UI build: CLEAN (1,174 KB bundle)
+✅ All changes committed and pushed
+
+TESTING CHECKLIST (Lisa to complete)
+-------------------------------------
+□ Search improvements working (aliases findable)
+□ Product-value preview shows normalized values
+□ "Unknown" count explicit in preview
+□ Save validation shows AJV details
+□ Non-admin users see disabled "Seed" button with tooltip
+□ Admin users can seed successfully
+
+NEXT STEPS
+----------
+1. Lisa reviews PR #131
+2. Lisa completes testing checklist
+3. Lisa approves PR (or requests changes)
+4. On approval → merge to main
+5. Deploy to staging for verification
+6. Deploy to production after staging verified
+
+ARTIFACTS
+---------
+- PR Description: operations/review-artifacts/fix-v3.3-ux-values-search-save/PR_DESCRIPTION.md
+- This Summary: operations/review-artifacts/fix-v3.3-ux-values-search-save/homer-pr131-summary.txt
+- Build Logs: /tmp/fix-functions-build.log, /tmp/fix-ui-build.log
+
+MERGE POLICY
+------------
+⚠️ DO NOT MERGE WITHOUT EXPLICIT LISA APPROVAL ⚠️
+
+Homer — 2025-11-24 09:45 UTC
+PR #131 created and ready for Lisa review

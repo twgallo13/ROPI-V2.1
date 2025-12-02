@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "mappingsCount": 3,
+  "mappings": [
+    {
+      "csvHeader": "MPN",
+      "canonicalPath": "mpn",
+      "confidence": 0.95,
+      "matchType": "synonym",
+      "matchedAlias": "mpn"
+    },
+    {
+      "csvHeader": "Brand",
+      "canonicalPath": "brand",
+      "confidence": 0.95,
+      "matchType": "synonym",
+      "matchedAlias": "brand"
+    },
+    {
+      "csvHeader": "RICS Color",
+      "canonicalPath": "color",
+      "confidence": 0.95,
+      "matchType": "synonym",
+      "matchedAlias": "RICS Color"
+    }
+  ],
+  "headers": [
+    "MPN",
+    "Brand",
+    "RICS Color"
+  ],
+  "summary": {
+    "exact": 0,
+    "synonym": 3,
+    "fuzzy": 0,
+    "unmapped": 0
+  },
+  "registrySize": 155
+}

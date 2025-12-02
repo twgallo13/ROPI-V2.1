@@ -1,0 +1,20 @@
+Screenshot Instructions for Lisa
+=================================
+
+Please capture a full-page screenshot of the preview at:
+https://ropi-bccee--pr-131-18cybf2p.web.app/settings/attributes
+
+Save as: staging-screenshot-pr131.png
+
+Place in: operations/review-artifacts/pr-131-preview/
+
+Key areas to capture:
+- ACC attribute list (showing search results)
+- Attribute detail drawer (with Validation tab open)
+- Current Product Values section (showing normalized counts)
+- Console (DevTools) if any errors present
+
+Tool recommendations:
+- Chrome: DevTools → Cmd+Shift+P → "Capture full size screenshot"
+- Firefox: Right-click → "Take a Screenshot" → "Save full page"
+- Extension: Full Page Screen Capture, Fireshot, etc.
