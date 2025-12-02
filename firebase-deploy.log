@@ -1,0 +1,8 @@
+
+=== Deploying to 'ropi-bccee'...
+
+i  deploying storage, firestore
+i  storage: ensuring required API firebasestorage.googleapis.com is enabled...
+✔  storage: required API firebasestorage.googleapis.com is enabled
+
+Error: Could not find rules for the following storage targets: rules

@@ -1,0 +1,59 @@
+
+> @ropi-aoss/web@1.0.0 test /workspaces/ROPI-V2.1/packages/web
+> vitest --run
+
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+ ✓ test/smoke.observations.test.tsx  (4 tests) 8ms
+stderr | src/services/observations.test.ts > Observations Service - localStorage fallback > should handle errors gracefully when localStorage is full
+Failed to save observations to localStorage: Error: QuotaExceededError
+    at Proxy.<anonymous> (/workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:248:13)
+    at Proxy.mockCall (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+spy@1.6.1/node_modules/@vitest/spy/dist/index.js:50:17)
+    at Proxy.spy (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/tinyspy@2.2.1/node_modules/tinyspy/dist/index.js:42:80)
+    at saveToLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:116:18)
+    at Module.addObservation (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:244:3)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:260:31
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+
+stderr | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+Failed to load observations from localStorage: SyntaxError: Unexpected token 'i', "invalid json {{{" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadFromLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:92:31)
+    at Module.listObservations (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:193:10)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:286:32
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+
+ ✓ src/services/observations.test.ts  (12 tests) 89ms
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 40ms
+ ✓ test/nav.test.ts  (4 tests) 8ms
+stdout | src/firebaseConfig.ts:40:11
+✅ Firebase initialized successfully
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > renders with basic structure
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 47ms
+stdout | src/firebaseConfig.ts:40:11
+✅ Firebase initialized successfully
+
+stderr | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/smoke.product-editor-observations.test.tsx  (1 test) 116ms
+
+ Test Files  6 passed (6)
+      Tests  32 passed (32)
+   Start at  14:07:34
+   Duration  3.14s (transform 498ms, setup 0ms, collect 1.82s, tests 308ms, environment 4.15s, prepare 991ms)
+

@@ -1,0 +1,165 @@
+================================================================================
+FIRESTORE & STORAGE RULES UNIT TESTS
+================================================================================
+
+📋 Loading rules files...
+   ✅ Loaded firestore.rules (2833 bytes)
+   ✅ Loaded storage.rules (1882 bytes)
+
+🚀 Initializing test environment...
+   ✅ Test environment initialized
+
+================================================================================
+FIRESTORE RULES TESTS
+================================================================================
+
+Test 1: Unauthenticated read observations
+✅ PASS: Unauthenticated read observations
+Test 2: Unauthenticated create observation
+[2025-12-02T14:16:39.382Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x17913532 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L22, false for 'create' @ L61, false for 'update' @ L29, false for 'update' @ L61
+✅ PASS: Unauthenticated create observation
+Test 3: Authenticated read observations
+✅ PASS: Authenticated read observations
+Test 4: Authenticated create observation (valid)
+✅ PASS: Authenticated create observation (valid)
+Test 5: Create observation with wrong uid
+[2025-12-02T14:16:39.701Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x17913536 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L22, false for 'create' @ L61, evaluation error at L29:24 for 'update' @ L29, false for 'update' @ L61, false for 'create' @ L22, false for 'create' @ L61
+✅ PASS: Create observation with wrong uid
+Test 6: Create observation missing required fields
+[2025-12-02T14:16:39.737Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x17913537 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L22, false for 'create' @ L61, evaluation error at L29:24 for 'update' @ L29, false for 'update' @ L61, false for 'create' @ L22, false for 'create' @ L61
+✅ PASS: Create observation missing required fields
+Test 7: Resolve observation by non-author
+✅ PASS: Resolve observation by non-author
+Test 8: Resolve observation by author
+✅ PASS: Resolve observation by author
+Test 9: Delete observation by non-creator
+[2025-12-02T14:16:39.922Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x1791353d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L43:24 for 'delete' @ L43, false for 'delete' @ L61, false for 'delete' @ L43, false for 'delete' @ L61
+✅ PASS: Delete observation by non-creator
+Test 10: Delete observation by creator
+✅ PASS: Delete observation by creator
+
+================================================================================
+STORAGE RULES TESTS
+================================================================================
+
+Test 11: Unauthenticated read storage
+✅ PASS: Unauthenticated read storage
+Test 12: Unauthenticated write storage
+✅ PASS: Unauthenticated write storage
+Test 13: Authenticated read storage
+✅ PASS: Authenticated read storage
+Test 14: Authenticated write storage (valid image)
+✅ PASS: Authenticated write storage (valid image)
+Test 15: Write storage with non-image content type
+✅ PASS: Write storage with non-image content type
+Test 16: Write storage file > 5MB
+✅ PASS: Write storage file > 5MB
+Test 17: Authenticated delete storage
+✅ PASS: Authenticated delete storage
+
+================================================================================
+TEST RESULTS SUMMARY
+================================================================================
+
+Total Tests: 17
+✅ Passed: 17
+❌ Failed: 0
+
+JSON Results:
+{
+  "passed": 17,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Unauthenticated read observations",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Unauthenticated create observation",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Authenticated read observations",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Authenticated create observation (valid)",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Create observation with wrong uid",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Create observation missing required fields",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Resolve observation by non-author",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Resolve observation by author",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Delete observation by non-creator",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Delete observation by creator",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Unauthenticated read storage",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Unauthenticated write storage",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Authenticated read storage",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Authenticated write storage (valid image)",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Write storage with non-image content type",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Write storage file > 5MB",
+      "passed": true,
+      "error": null
+    },
+    {
+      "name": "Authenticated delete storage",
+      "passed": true,
+      "error": null
+    }
+  ]
+}
+
+✅ ALL TESTS PASSED
