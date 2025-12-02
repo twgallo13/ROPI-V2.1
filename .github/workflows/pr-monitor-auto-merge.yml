@@ -1,0 +1,298 @@
+name: PR Monitor & Auto-Merge (AOSS_PR_MONITOR_v1.0)
+# Automatically monitors PRs targeting aoss-main, safely auto-merges when ready, then deploys to staging
+
+on:
+  # Run every 10 minutes to check PRs
+  schedule:
+    - cron: '*/10 * * * *'
+  
+  # Also trigger on PR events for faster response
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+    branches:
+      - aoss-main
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  pr-monitor-auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+      statuses: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Monitor and auto-merge PRs
+        uses: actions/github-script@v7
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const NOTION_TOKEN = process.env.NOTION_TOKEN;
+            const BUILD_LOG_PAGE_ID = '2bd45ee1ec5a800da672f7dac3000966'; // AOSS Build Progress Log
+            
+            // Helper: Post comment to PR
+            async function postComment(prNumber, body) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body
+              });
+            }
+            
+            // Helper: Update Notion Build Progress Log
+            async function updateNotionLog(entry) {
+              if (!NOTION_TOKEN) {
+                console.log('NOTION_TOKEN not set, skipping Notion update');
+                return;
+              }
+              
+              try {
+                const response = await fetch(`https://api.notion.com/v1/blocks/${BUILD_LOG_PAGE_ID}/children`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Authorization': `Bearer ${NOTION_TOKEN}`,
+                    'Notion-Version': '2022-06-28',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    children: [{
+                      object: 'block',
+                      type: 'paragraph',
+                      paragraph: {
+                        rich_text: [{
+                          type: 'text',
+                          text: { content: entry }
+                        }]
+                      }
+                    }]
+                  })
+                });
+                
+                if (!response.ok) {
+                  console.log(`Notion update failed: ${response.status}`);
+                }
+              } catch (error) {
+                console.log(`Notion update error: ${error.message}`);
+              }
+            }
+            
+            // Helper: Check if all required checks passed
+            async function areChecksPassing(prNumber, headSha) {
+              try {
+                // Get check runs for the head SHA
+                const { data: checkRuns } = await github.rest.checks.listForRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: headSha
+                });
+                
+                // Get commit statuses for the head SHA
+                const { data: statuses } = await github.rest.repos.getCombinedStatusForRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: headSha
+                });
+                
+                // Check if any check runs failed or are pending
+                const failedChecks = checkRuns.check_runs.filter(
+                  check => check.status !== 'completed' || check.conclusion === 'failure' || check.conclusion === 'cancelled'
+                );
+                
+                if (failedChecks.length > 0) {
+                  console.log(`PR #${prNumber}: ${failedChecks.length} checks failed or pending`);
+                  return false;
+                }
+                
+                // Check commit statuses
+                if (statuses.state === 'pending' || statuses.state === 'failure' || statuses.state === 'error') {
+                  console.log(`PR #${prNumber}: Combined status is ${statuses.state}`);
+                  return false;
+                }
+                
+                console.log(`PR #${prNumber}: All checks passing`);
+                return true;
+              } catch (error) {
+                console.log(`PR #${prNumber}: Error checking status: ${error.message}`);
+                return false;
+              }
+            }
+            
+            // Helper: Check if PR has required approvals
+            async function hasRequiredApprovals(prNumber, baseRef) {
+              try {
+                // Get branch protection rules
+                const { data: protection } = await github.rest.repos.getBranchProtection({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  branch: baseRef
+                }).catch(() => ({ data: null }));
+                
+                let requiredApprovals = 0;
+                if (protection?.required_pull_request_reviews?.required_approving_review_count) {
+                  requiredApprovals = protection.required_pull_request_reviews.required_approving_review_count;
+                }
+                
+                // Get reviews for the PR
+                const { data: reviews } = await github.rest.pulls.listReviews({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber
+                });
+                
+                // Count approvals (take latest review per user)
+                const latestReviews = {};
+                reviews.forEach(review => {
+                  const user = review.user.login;
+                  if (!latestReviews[user] || new Date(review.submitted_at) > new Date(latestReviews[user].submitted_at)) {
+                    latestReviews[user] = review;
+                  }
+                });
+                
+                const approvals = Object.values(latestReviews).filter(r => r.state === 'APPROVED').length;
+                const changesRequested = Object.values(latestReviews).some(r => r.state === 'CHANGES_REQUESTED');
+                
+                if (changesRequested) {
+                  console.log(`PR #${prNumber}: Changes requested by reviewer`);
+                  return false;
+                }
+                
+                if (approvals < requiredApprovals) {
+                  console.log(`PR #${prNumber}: Has ${approvals}/${requiredApprovals} required approvals`);
+                  return false;
+                }
+                
+                console.log(`PR #${prNumber}: Has ${approvals} approvals (${requiredApprovals} required)`);
+                return true;
+              } catch (error) {
+                console.log(`PR #${prNumber}: Error checking approvals: ${error.message}`);
+                return false;
+              }
+            }
+            
+            // Main logic: Get all open PRs targeting aoss-main
+            console.log('Fetching open PRs targeting aoss-main...');
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              base: 'aoss-main',
+              per_page: 100
+            });
+            
+            console.log(`Found ${prs.length} open PR(s) targeting aoss-main`);
+            
+            for (const pr of prs) {
+              console.log(`\n=== Evaluating PR #${pr.number}: ${pr.title} ===`);
+              
+              // Rule 1: Skip drafts
+              if (pr.draft) {
+                console.log(`PR #${pr.number}: SKIP - is draft`);
+                continue;
+              }
+              
+              // Rule 2: Skip if has manual-merge or no-automerge label
+              const labels = pr.labels.map(l => l.name);
+              if (labels.includes('manual-merge') || labels.includes('no-automerge')) {
+                console.log(`PR #${pr.number}: SKIP - has manual-merge or no-automerge label`);
+                continue;
+              }
+              
+              // Rule 3: Check mergeable state
+              if (!pr.mergeable || pr.mergeable_state !== 'clean') {
+                console.log(`PR #${pr.number}: NOT READY - mergeable=${pr.mergeable}, mergeable_state=${pr.mergeable_state}`);
+                
+                // Provide helpful feedback for common issues
+                if (pr.mergeable === false) {
+                  await postComment(pr.number, 
+                    `⚠️ **Auto-merge blocked**: This PR has merge conflicts.\n\n` +
+                    `Please update your branch with the latest changes from \`aoss-main\` and resolve conflicts.\n\n` +
+                    `_— Homer (AOSS_PR_MONITOR_v1.0)_`
+                  );
+                }
+                continue;
+              }
+              
+              // Rule 4: Check if all required status checks passed
+              const checksPassed = await areChecksPassing(pr.number, pr.head.sha);
+              if (!checksPassed) {
+                console.log(`PR #${pr.number}: NOT READY - checks not passing`);
+                continue;
+              }
+              
+              // Rule 5: Check required approvals
+              const approvalsOk = await hasRequiredApprovals(pr.number, pr.base.ref);
+              if (!approvalsOk) {
+                console.log(`PR #${pr.number}: NOT READY - missing required approvals or changes requested`);
+                continue;
+              }
+              
+              // All conditions met - proceed with merge!
+              console.log(`PR #${pr.number}: ✅ ALL CONDITIONS MET - MERGING`);
+              
+              try {
+                // Merge the PR using merge commit
+                const { data: mergeResult } = await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  merge_method: 'merge',
+                  commit_title: `Merge PR #${pr.number}: ${pr.title}`,
+                  commit_message: `Auto-merged by Homer (AOSS_PR_MONITOR_v1.0)\n\nOriginal PR: #${pr.number}`
+                });
+                
+                const mergeSha = mergeResult.sha;
+                console.log(`PR #${pr.number}: ✅ MERGED - commit ${mergeSha}`);
+                
+                // Post success comment to PR
+                await postComment(pr.number,
+                  `✅ **Merged by Homer (AOSS_PR_MONITOR_v1.0)**\n\n` +
+                  `Merge commit: \`${mergeSha}\`\n\n` +
+                  `The \`aoss-main\` branch will now be deployed to staging. ` +
+                  `Check the [Deploy AOSS Staging workflow](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/deploy-staging.yml) for deployment status.\n\n` +
+                  `Expected staging URL: https://ropi-aoss-staging.web.app\n\n` +
+                  `_— Homer (AOSS_PR_MONITOR_v1.0)_`
+                );
+                
+                // Update Notion Build Progress Log
+                const notionEntry = `[${new Date().toISOString()}] AOSS_PR_MONITOR_v1.0 auto-merged PR #${pr.number} ("${pr.title}") → commit ${mergeSha}. Deploying to https://ropi-aoss-staging.web.app`;
+                await updateNotionLog(notionEntry);
+                
+              } catch (error) {
+                console.error(`PR #${pr.number}: ❌ MERGE FAILED - ${error.message}`);
+                
+                // Post failure comment
+                await postComment(pr.number,
+                  `❌ **Auto-merge failed**\n\n` +
+                  `Error: ${error.message}\n\n` +
+                  `This PR met all merge criteria but the merge operation failed. ` +
+                  `Please check permissions or merge manually.\n\n` +
+                  `_— Homer (AOSS_PR_MONITOR_v1.0)_`
+                );
+                
+                // Update Notion with failure
+                const notionEntry = `[${new Date().toISOString()}] AOSS_PR_MONITOR_v1.0 FAILED to auto-merge PR #${pr.number}: ${error.message}`;
+                await updateNotionLog(notionEntry);
+              }
+            }
+            
+            console.log('\n=== PR Monitor run complete ===');
+
+      - name: Check for deployment workflow trigger
+        run: |
+          echo "PR monitor complete. If any PRs were merged to aoss-main, the Deploy AOSS Staging workflow will trigger automatically."
+          echo "Monitor deployment: https://github.com/${{ github.repository }}/actions/workflows/deploy-staging.yml"
