@@ -1,0 +1,47 @@
+Manual Browser Console Log Template
+=====================================
+
+URL: https://ropi-bccee--pr-131-18cybf2p.web.app/settings/attributes
+
+Lisa — capture console output here if errors found:
+
+[Paste DevTools Console output]
+
+---
+
+Search Test Results:
+- Search term: "department"
+- Expected: canonical attribute + aliases visible
+- Actual: [Lisa to fill]
+
+---
+
+Attribute Detail — Validation Tab:
+- Attribute tested: [e.g., department, color, brand]
+- Allowed Values visible: [yes/no]
+- Current Product Values:
+  - Top values shown: [list values]
+  - Unknown count: [number]
+  - Normalized correctly: [yes/no]
+
+---
+
+Save Flow Test:
+- Required field validation: [blocked/allowed]
+- AJV error details: [shown/not shown]
+- Error message clarity: [rating 1-5]
+
+---
+
+Save & Seed Permission Test:
+- User role tested: [viewer/editor/admin/coordinator]
+- Button state: [enabled/disabled]
+- Tooltip message: [visible/not visible]
+
+---
+
+Overall Assessment:
+□ All checks pass — approve merge
+□ Issues found — see details above
+
+Lisa signature: ________________  Date: ________________

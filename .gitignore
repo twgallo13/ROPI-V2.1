@@ -16,6 +16,9 @@ src/**/*.js
 !src/**/*.test.js
 !src/**/*.spec.js
 
+# Environment files with secrets
+.env.production
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
