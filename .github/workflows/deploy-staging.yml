@@ -32,10 +32,27 @@ jobs:
             echo "No package.json found, skipping dependency installation"
           fi
 
+      - name: Debug: ensure VITE_FIREBASE_API_KEY present
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+        run: |
+          if [ -z "$VITE_FIREBASE_API_KEY" ]; then
+            echo "::error::VITE_FIREBASE_API_KEY is empty"
+            exit 1
+          fi
+          echo "VITE_FIREBASE_API_KEY present (length: ${#VITE_FIREBASE_API_KEY})"
+
       - name: Build packages/web
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
         run: |
           set -euo pipefail
-          echo "Building packages/web with Vite..."
+          echo "Building packages/web with Vite (with Firebase config from secrets)..."
           pnpm --filter @ropi-aoss/web build
           
           # Verify build output
