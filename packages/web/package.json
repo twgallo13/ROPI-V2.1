@@ -1,0 +1,10 @@
+{
+  "name": "@ropi-aoss/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo \"Web build TBD (likely Vite/React per Section 7)\"",
+    "lint": "echo \"No Web lint config yet\"",
+    "test": "echo \"No Web tests yet\""
+  }
+}
