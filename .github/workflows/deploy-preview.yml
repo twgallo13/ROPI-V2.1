@@ -127,10 +127,10 @@ jobs:
           
           echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
           
-          # Deploy to preview channel
+          # Deploy to preview channel on aoss-staging site
           PR_NUM=${{ github.event.pull_request.number }}
           CHANNEL=pr-${PR_NUM}
-          firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --json > deploy.json || {
+          firebase hosting:channel:deploy "${CHANNEL}" --project ropi-bccee --site ropi-aoss-staging --json > deploy.json || {
             echo "::error::Firebase deployment failed"
             cat deploy.json
             exit 1
