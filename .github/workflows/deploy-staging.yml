@@ -53,17 +53,26 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
         run: |
           set -euo pipefail
-          echo "Building packages/web with Vite (with Firebase config from secrets)..."
+          echo "Building @ropi-aoss/web package..."
+          echo "Current working directory: $(pwd)"
           pnpm --filter @ropi-aoss/web build
 
-          # Verify build output
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+          echo "Current working directory: $(pwd)"
+          echo ""
+          echo "Listing packages/web:"
+          ls -lah packages/web
+          echo ""
+          echo "Listing packages/web/dist:"
+          ls -lah packages/web/dist
+          echo ""
           if [ ! -f packages/web/dist/index.html ]; then
-            echo "::error::packages/web/dist/index.html not found after build"
+            echo "::error::Build artifacts missing: packages/web/dist/index.html not found"
             exit 1
           fi
-
-          echo "✅ Build complete: packages/web/dist ready for deployment"
-          ls -lh packages/web/dist/
+          echo "✅ Build verification passed: packages/web/dist ready for deployment"
 
       - name: Setup gcloud authentication
         env:
