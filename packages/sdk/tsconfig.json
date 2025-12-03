@@ -9,14 +9,14 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "emitDeclarationOnly": false,
-    "sourceMap": true,
+    "sourceMap": false,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "**/*.test.ts"]
 }

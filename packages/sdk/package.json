@@ -3,9 +3,17 @@
   "version": "0.0.0",
   "description": "TypeScript SDK for Ropi AOSS - Types and validators for product data",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "echo \"No SDK lint config yet\"",
@@ -24,6 +32,7 @@
   "devDependencies": {
     "@types/node": "^18.0.0",
     "@types/uuid": "^9.0.8",
+    "tsup": "^8.3.5",
     "typescript": "^5.0.0",
     "uuid": "^9.0.1",
     "vitest": "^1.0.0"
