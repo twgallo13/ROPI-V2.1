@@ -28,6 +28,9 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   { sourceColumn: 'Color', targetField: 'color', transform: 'trim' },
   { sourceColumn: 'Size', targetField: 'size', transform: 'trim' },
   { sourceColumn: 'Material', targetField: 'material', transform: 'trim' },
+  { sourceColumn: 'MPN', targetField: 'mpn', transform: 'trim' },
+  { sourceColumn: 'mpn', targetField: 'mpn', transform: 'trim' },
+  { sourceColumn: 'Manufacturer Part Number', targetField: 'mpn', transform: 'trim' },
   
   // Pricing
   { sourceColumn: 'MSRP', targetField: 'msrp', transform: 'number' },
