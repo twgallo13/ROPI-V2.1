@@ -158,7 +158,7 @@ async function processRow(
       rowId: meta.rowId,
       productId: meta.productId || '',
       outcome: 'skipped_validation_error',
-      error: validation.errors.map(e => e.message).join('; '),
+      error: validation.errors.map((e: any) => e.message).join('; '),
     };
   }
 
