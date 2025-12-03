@@ -7,10 +7,18 @@
  */
 
 import * as functions from 'firebase-functions';
+import cors from 'cors';
 import Busboy from 'busboy';
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 import { processCSVImport } from '../services/importService';
+
+// CORS handler for staging and production origins
+const corsHandler = cors({
+  origin: ['https://ropi-aoss-staging.web.app', 'https://ropi-aoss.web.app'],
+  methods: ['POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+});
 
 /**
  * Parse multipart/form-data upload
@@ -122,11 +130,12 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
 }
 
 /**
- * Export Cloud Function with admin auth middleware
+ * Export Cloud Function with admin auth middleware and CORS
  */
-export const importCSV = functions.https.onRequest(async (req, res) => {
-  // Apply admin auth middleware
-  await requireAdmin(req, res, async () => {
-    await importHandler(req as unknown as AuthenticatedRequest, res);
+export const importCSV = functions.https.onRequest((req, res) => {
+  corsHandler(req as any, res as any, async () => {
+    await requireAdmin(req, res, async () => {
+      await importHandler(req as unknown as AuthenticatedRequest, res);
+    });
   });
 });
