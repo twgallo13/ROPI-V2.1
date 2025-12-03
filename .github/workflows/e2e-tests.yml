@@ -1,0 +1,131 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Base URL to test against'
+        required: false
+        default: ''
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Install Playwright browsers
+        run: cd packages/web && npx playwright install --with-deps chromium
+      
+      - name: Wait for preview deployment
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Waiting for preview deployment to complete..."
+          echo "PR number: ${{ github.event.pull_request.number }}"
+          # Wait up to 5 minutes for preview workflow to complete
+          sleep 60
+          # Check if preview workflow completed
+          gh run list --workflow="Deploy AOSS PR Preview" --branch="${{ github.head_ref }}" --limit=1 --json status,conclusion
+        env:
+          GH_TOKEN: ${{ github.token }}
+      
+      - name: Determine test URL
+        id: test-url
+        run: |
+          if [ -n "${{ inputs.base_url }}" ]; then
+            # Manual workflow dispatch with custom URL
+            TEST_URL="${{ inputs.base_url }}"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            # PR preview channel
+            PR_NUM=${{ github.event.pull_request.number }}
+            # Firebase preview URL format
+            TEST_URL="https://ropi-bccee--pr-${PR_NUM}-aoss-staging.web.app"
+          else
+            # Default to staging
+            TEST_URL="https://ropi-aoss-staging.web.app"
+          fi
+          
+          echo "TEST_URL=${TEST_URL}"
+          echo "base_url=${TEST_URL}" >> $GITHUB_OUTPUT
+      
+      - name: Wait for deployment to be ready
+        run: |
+          TEST_URL="${{ steps.test-url.outputs.base_url }}"
+          echo "Testing URL: ${TEST_URL}"
+          
+          # Wait up to 2 minutes for site to be ready
+          max_attempts=24
+          attempt=0
+          
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f -s -o /dev/null "${TEST_URL}"; then
+              echo "✅ Site is ready at ${TEST_URL}"
+              exit 0
+            fi
+            
+            echo "Waiting for site to be ready... (attempt $((attempt+1))/${max_attempts})"
+            sleep 5
+            attempt=$((attempt+1))
+          done
+          
+          echo "::error::Site not ready after 2 minutes at ${TEST_URL}"
+          exit 1
+      
+      - name: Run E2E tests
+        env:
+          BASE_URL: ${{ steps.test-url.outputs.base_url }}
+          CI: true
+        run: |
+          cd packages/web
+          echo "Running E2E tests against: ${BASE_URL}"
+          pnpm test:e2e
+      
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: packages/web/playwright-report/
+          retention-days: 7
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: packages/web/test-results/
+          retention-days: 7
+      
+      - name: Comment on PR with results
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## E2E Test Results
+            
+            **Test URL:** ${{ steps.test-url.outputs.base_url }}
+            **Status:** ${{ job.status }}
+            
+            View detailed results in the [Actions run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+            
+            Download artifacts:
+            - Playwright HTML report
+            - Test screenshots and videos (on failure)

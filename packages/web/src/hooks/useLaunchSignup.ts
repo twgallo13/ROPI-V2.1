@@ -46,6 +46,7 @@ import { useState } from 'react';
 import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useAuth } from './useAuth';
+import { captureLaunchSignupError, captureFirestoreError, addActionBreadcrumb } from '../monitoring/sentry';
 
 interface SignupOptions {
   launchId: string;
@@ -136,8 +137,32 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
       await setDoc(signupRef, signupData);
 
       console.log(`✅ Launch signup successful: ${launchId} (${mode} mode)`);
+      
+      // Add breadcrumb for successful signup
+      addActionBreadcrumb('launch_signup_submitted', {
+        launchId,
+        productId,
+        mode,
+      });
     } catch (err: any) {
       console.error('❌ Launch signup failed:', err);
+      
+      // Capture error in Sentry
+      if (err.code?.startsWith('permission-denied') || err.message?.includes('permission')) {
+        captureFirestoreError(err, {
+          operation: 'launch_signup',
+          launchId,
+          productId,
+          mode,
+        });
+      } else {
+        captureLaunchSignupError(err, {
+          launchId,
+          productId,
+          mode,
+        });
+      }
+      
       const errorMessage = err.message || 'Failed to sign up for launch. Please try again.';
       setError(errorMessage);
       throw new Error(errorMessage);

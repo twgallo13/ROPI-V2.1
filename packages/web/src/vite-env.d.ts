@@ -9,6 +9,8 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_APP_ID: string
   readonly VITE_ENV?: string
   readonly VITE_LAUNCH_SIGNUP_PUBLIC_ENABLED?: string
+  readonly VITE_SENTRY_DSN?: string
+  readonly VITE_APP_VERSION?: string
 }
 
 interface ImportMeta {
