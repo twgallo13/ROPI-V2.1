@@ -43,6 +43,12 @@ jobs:
           KEY_LEN="${#VITE_FIREBASE_API_KEY}"
           echo "VITE_FIREBASE_API_KEY present (length: $KEY_LEN)"
 
+      - name: Build SDK package
+        run: |
+          set -euo pipefail
+          echo "Building @ropi-aoss/sdk package..."
+          pnpm --filter @ropi-aoss/sdk build
+
       - name: Build packages/web
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
