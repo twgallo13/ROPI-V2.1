@@ -32,7 +32,7 @@ jobs:
             echo "No package.json found, skipping dependency installation"
           fi
 
-      - name: Debug: ensure VITE_FIREBASE_API_KEY present
+      - name: Debug ensure VITE_FIREBASE_API_KEY present
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
         run: |
@@ -40,7 +40,8 @@ jobs:
             echo "::error::VITE_FIREBASE_API_KEY is empty"
             exit 1
           fi
-          echo "VITE_FIREBASE_API_KEY present (length: ${#VITE_FIREBASE_API_KEY})"
+          KEY_LEN="${#VITE_FIREBASE_API_KEY}"
+          echo "VITE_FIREBASE_API_KEY present (length: $KEY_LEN)"
 
       - name: Build packages/web
         env:
