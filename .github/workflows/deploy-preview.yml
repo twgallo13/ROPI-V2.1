@@ -25,48 +25,26 @@ jobs:
         run: |
           set -euo pipefail
           echo "Building @ropi-aoss/web package..."
+          echo "Current working directory: $(pwd)"
           pnpm --filter @ropi-aoss/web build
-          echo "Build complete. Checking output directory..."
-          ls -lah packages/web/dist || echo "::error::packages/web/dist not found after build"
+          echo "Build complete."
       
       - name: Verify build output
         run: |
           set -euo pipefail
-          echo "Listing packages/web directory structure:"
-          ls -R packages/web
+          echo "Current working directory: $(pwd)"
           echo ""
-          echo "Checking for dist directory:"
-          if [ -d "packages/web/dist" ]; then
-            echo "✅ packages/web/dist exists"
-            echo "Contents:"
-            ls -lah packages/web/dist
-            if [ ! -f "packages/web/dist/index.html" ]; then
-              echo "::error::packages/web/dist/index.html missing"
-              exit 1
-            fi
-          else
-            echo "::error::packages/web/dist directory not found"
+          echo "Listing packages/web:"
+          ls -lah packages/web
+          echo ""
+          echo "Listing packages/web/dist:"
+          ls -lah packages/web/dist
+          echo ""
+          if [ ! -f "packages/web/dist/index.html" ]; then
+            echo "::error::Build artifacts missing: packages/web/dist/index.html not found"
             exit 1
           fi
-      
-      - name: Prepare public directory for preview
-        run: |
-          set -euo pipefail
-          echo "Preparing public/ directory from packages/web/dist..."
-          rm -rf public || true
-          mkdir -p public
-          if [ -d "packages/web/dist" ]; then
-            echo "Copying from packages/web/dist to public/"
-            cp -r packages/web/dist/* public/
-          else
-            echo "::error::packages/web/dist not found - cannot prepare public/"
-            exit 1
-          fi
-          if [ ! -f public/index.html ]; then
-            echo "::error::public/index.html missing after copy"
-            exit 1
-          fi
-          echo "public/ directory prepared successfully"
+          echo "✅ Build verification passed: packages/web/dist/index.html exists"
       - name: Setup gcloud authentication
         env:
           GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
@@ -102,30 +80,10 @@ jobs:
 
           echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
 
-          # Create a temporary firebase config that points hosting at the prepared public/ folder.
-          cat > firebase_preview.json <<'JSON'
-          {
-            "hosting": [
-              {
-                "target": "aoss-staging",
-                "public": "public",
-                "ignore": [
-                  "firebase.json",
-                  "**/.*",
-                  "**/node_modules/**"
-                ],
-                "rewrites": [
-                  { "source": "**", "destination": "/index.html" }
-                ]
-              }
-            ]
-          }
-          JSON
-
-          # Deploy to preview channel on aoss-staging target using the temporary config
+          # Deploy to preview channel on aoss-staging target using canonical firebase.json
           PR_NUM=${{ github.event.pull_request.number }}
           CHANNEL=pr-${PR_NUM}
-          firebase hosting:channel:deploy "${CHANNEL}" --only aoss-staging --project ropi-bccee --config firebase_preview.json --json > deploy.json || {
+          firebase hosting:channel:deploy "${CHANNEL}" --only aoss-staging --project ropi-bccee --json > deploy.json || {
             echo "::error::Firebase preview deployment failed"
             cat deploy.json || true
             exit 1
