@@ -95,9 +95,6 @@ importers:
 
   packages/sdk:
     dependencies:
-      uuid:
-        specifier: ^9.0.0
-        version: 9.0.1
       zod:
         specifier: ^3.22.0
         version: 3.25.76
@@ -106,11 +103,14 @@ importers:
         specifier: ^18.0.0
         version: 18.19.130
       '@types/uuid':
-        specifier: ^9.0.0
+        specifier: ^9.0.8
         version: 9.0.8
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
       vitest:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@18.19.130)(jsdom@27.2.0)

@@ -1,0 +1,47 @@
+
+> @ropi-aoss/sdk@0.0.0 test /workspaces/ROPI-V2.1/packages/sdk
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/sdk
+
+ ✓ test/importNormalizer.test.ts  (12 tests) 9ms
+ ✓ test/importValidator.test.ts  (11 tests) 10ms
+ ✓ test/productValidator.test.ts  (8 tests) 13ms
+ ❯ test/importRowBuilder.test.ts  (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/importRowBuilder.test.ts [ test/importRowBuilder.test.ts ]
+Error: Failed to load url uuid (resolved id: uuid) in /workspaces/ROPI-V2.1/packages/sdk/src/builders/importRowBuilder.ts. Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@5.4.21_@types+node@18.19.130/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51969:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  31 passed (31)
+   Start at  06:21:39
+   Duration  905ms (transform 187ms, setup 0ms, collect 272ms, tests 32ms, environment 1ms, prepare 595ms)
+
+/workspaces/ROPI-V2.1/packages/sdk:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/sdk@0.0.0 test: `vitest run`
+Exit status 1
+
+> @ropi-aoss/sdk@0.0.0 test /workspaces/ROPI-V2.1/packages/sdk
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/sdk
+
+ ✓ test/importNormalizer.test.ts  (12 tests) 12ms
+ ✓ test/importValidator.test.ts  (11 tests) 11ms
+ ✓ test/productValidator.test.ts  (8 tests) 12ms
+ ✓ test/importRowBuilder.test.ts  (6 tests) 8ms
+
+ Test Files  4 passed (4)
+      Tests  37 passed (37)
+   Start at  06:21:57
+   Duration  908ms (transform 218ms, setup 0ms, collect 336ms, tests 43ms, environment 1ms, prepare 600ms)
+
