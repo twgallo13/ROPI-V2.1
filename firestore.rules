@@ -3,45 +3,104 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // ========================================
+    // HELPER FUNCTIONS
+    // ========================================
+    
+    /**
+     * Check if user is admin via custom claims (production) or metadata fallback (staging)
+     * 
+     * PROMPT_018C_vB: IAM via Custom Claims
+     */
+    function isAdmin() {
+      // Priority 1: Custom claims (production)
+      return request.auth != null && request.auth.token.role == 'admin';
+    }
+    
+    /**
+     * Check if user is admin via metadata/admins fallback (staging only)
+     * 
+     * Note: This requires reading metadata/admins, which should only be used
+     * as a fallback when custom claims are not set.
+     */
+    function isAdminViaMetadata() {
+      return request.auth != null 
+             && exists(/databases/$(database)/documents/metadata/admins)
+             && request.auth.token.email in get(/databases/$(database)/documents/metadata/admins).data.emails;
+    }
+    
+    /**
+     * Check if user has a write-capable role that requires email verification
+     * 
+     * PROMPT_018C_vB: Email Verification Policy
+     * Roles: admin, merch, buyer, photographer
+     */
+    function requiresEmailVerification() {
+      return request.auth != null 
+             && (
+               request.auth.token.role == 'admin'
+               || request.auth.token.role == 'merch'
+               || request.auth.token.role == 'buyer'
+               || request.auth.token.role == 'photographer'
+             );
+    }
+    
+    /**
+     * Check if email is verified (production enforcement)
+     * 
+     * For staging: This check is advisory (client shows banner)
+     * For production: This check blocks writes for write-capable roles
+     */
+    function isEmailVerified() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    
+    // ========================================
     // OBSERVATIONS COLLECTION
     // ========================================
     // Related Notion docs:
     // - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
     // - Section 9 — Security & IAM: https://www.notion.so/2b845ee1ec5a81739de7fc1743de9a33
     //
-    // TODO: Refine rules based on product access control
-    // TODO: Add role-based permissions (admin, editor, viewer)
-    // TODO: Implement product-level access control
+    // PROMPT_018C_vB: Email verification enforcement for writes
     match /observations/{observationId} {
       // Allow authenticated users to read all observations
       // In production, restrict to observations for products the user has access to
       allow read: if request.auth != null;
       
       // Allow authenticated users to create observations
+      // Production: Require email verification for write-capable roles
       // Ensure createdBy.uid matches the authenticated user
       allow create: if request.auth != null 
                     && request.resource.data.createdBy.uid == request.auth.uid
                     && request.resource.data.status == 'open'
-                    && request.resource.data.keys().hasAll(['productId', 'title', 'body', 'severity', 'status', 'createdBy', 'createdAt']);
+                    && request.resource.data.keys().hasAll(['productId', 'title', 'body', 'severity', 'status', 'createdBy', 'createdAt'])
+                    && (!requiresEmailVerification() || isEmailVerified());
       
       // Allow users to update observations they created or if they're resolving
-      // Only allow updating specific fields (status, resolvedBy, resolvedAt)
+      // Admins can update any observation
+      // Production: Require email verification for write-capable roles
       allow update: if request.auth != null 
                     && (
+                      // Admin can update any observation
+                      (isAdmin() || isAdminViaMetadata())
                       // Creator can update their own observation
-                      resource.data.createdBy.uid == request.auth.uid
+                      || resource.data.createdBy.uid == request.auth.uid
                       // Anyone can resolve an observation
                       || (
                         request.resource.data.status == 'resolved'
                         && request.resource.data.resolvedBy.uid == request.auth.uid
                         && request.resource.data.keys().hasAll(['resolvedBy', 'resolvedAt'])
                       )
-                    );
+                    )
+                    && (!requiresEmailVerification() || isEmailVerified());
       
       // Only allow deletion by the creator or admins
-      // TODO: Add admin role check
       allow delete: if request.auth != null 
-                    && resource.data.createdBy.uid == request.auth.uid;
+                    && (
+                      (isAdmin() || isAdminViaMetadata())
+                      || resource.data.createdBy.uid == request.auth.uid
+                    )
+                    && (!requiresEmailVerification() || isEmailVerified());
     }
     
     // ========================================
@@ -54,28 +113,52 @@ service cloud.firestore {
     }
     
     // ========================================
-    // LAUNCH SIGNUPS COLLECTION (PROMPT_018B)
+    // LAUNCH SIGNUPS COLLECTION (PROMPT_018C_vB)
     // ========================================
     // Related Notion docs:
     // - Section 7 — Launch Calendar: https://www.notion.so/27e45ee1ec5a81ecac18fa5c2bf3842e
     // - Launch Calendar DB Schema: https://www.notion.so/29745ee1ec5a80be8b83f113074a1837
-    // - PROMPT_018B Spec: See HOMER_PROMPT_018B_AUDIT.txt
+    // - PROMPT_018C_vB Spec: Sprint B — Launch Calendar Signup Flow
     //
-    // Document ID format: `${launchId}_${userUid}` (composite key, idempotent)
-    // Allows users to sign up for product launch notifications
+    // Document ID format: `${launchId}_${sha256(email || uid)}` (idempotent)
+    // Supports both account-based and public email signups
     match /launchSignups/{signupId} {
-      // Allow authenticated users to create their own signups
-      // Validate required fields and ensure userUid matches auth.uid
-      allow create: if request.auth != null
-                    && request.resource.data.userUid == request.auth.uid
-                    && request.resource.data.keys().hasAll(['launchId', 'userUid', 'email', 'createdAt', 'source']);
+      // Allow authenticated users to create account-based signups
+      // Validate required fields and ensure userUid matches auth.uid (if present)
+      allow create: if (
+                      // Account-based signup (requires auth)
+                      (request.auth != null
+                       && request.resource.data.userUid == request.auth.uid
+                       && request.resource.data.source == 'aoss-web'
+                       && request.resource.data.keys().hasAll(['launchId', 'productId', 'userUid', 'createdAt', 'source', 'status'])
+                       && request.resource.data.status == 'active')
+                      // Public email signup (no auth required, if enabled)
+                      || (request.resource.data.userUid == null
+                          && request.resource.data.source == 'public-form'
+                          && request.resource.data.keys().hasAll(['launchId', 'productId', 'email', 'createdAt', 'source', 'status'])
+                          && request.resource.data.status == 'active')
+                    );
       
-      // Allow users to read their own signups
+      // Allow users to read their own signups (account-based only)
+      // Allow admins to read all signups
       allow read: if request.auth != null
-                  && resource.data.userUid == request.auth.uid;
+                  && (
+                    (isAdmin() || isAdminViaMetadata())
+                    || resource.data.userUid == request.auth.uid
+                  );
       
-      // No updates or deletes (signups are immutable)
-      allow update, delete: if false;
+      // Allow users to cancel their own signups (change status to 'cancelled')
+      // Allow admins to update any signup
+      allow update: if request.auth != null
+                    && (
+                      (isAdmin() || isAdminViaMetadata())
+                      || (resource.data.userUid == request.auth.uid
+                          && request.resource.data.status == 'cancelled'
+                          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']))
+                    );
+      
+      // No deletes (signups are immutable, use status='cancelled' instead)
+      allow delete: if false;
     }
     
     // ========================================
