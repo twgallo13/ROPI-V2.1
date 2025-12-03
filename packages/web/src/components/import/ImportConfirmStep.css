@@ -1,0 +1,186 @@
+.import-confirm-step {
+  background: var(--color-bg-elevated);
+  border-radius: var(--border-radius-md);
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.import-confirm-step h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+/* Confirm details */
+.confirm-details {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-base);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.detail-row span {
+  color: var(--color-text-secondary);
+}
+
+/* Import progress */
+.import-progress {
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.import-progress.uploading,
+.import-progress.processing {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg, #e3f2fd);
+}
+
+.import-progress.success {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.import-progress.error {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress-header strong {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+}
+
+/* Spinner animation */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.progress-icon {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.progress-icon.error {
+  color: var(--color-error);
+}
+
+/* Import result */
+.import-result {
+  text-align: left;
+  margin-top: 1.5rem;
+}
+
+.result-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item strong {
+  color: var(--color-text-primary);
+  margin-right: 0.5rem;
+}
+
+.result-item.error {
+  color: var(--color-error);
+}
+
+.result-item.warning {
+  color: var(--color-warning-dark, #856404);
+}
+
+.result-note {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+/* Confirm actions */
+.confirm-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+/* Confirm warning */
+.confirm-warning {
+  background: var(--color-warning-bg, #fff3cd);
+  border: 1px solid var(--color-warning, #ffc107);
+  border-radius: var(--border-radius-sm);
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.confirm-warning strong {
+  display: block;
+  color: var(--color-warning-dark, #856404);
+  margin-bottom: 0.75rem;
+}
+
+.confirm-warning ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.confirm-warning li {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0.25rem 0;
+}

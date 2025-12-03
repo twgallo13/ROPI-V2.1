@@ -175,6 +175,43 @@ service cloud.firestore {
     }
     
     // ========================================
+    // IMPORT BATCHES COLLECTION (PROMPT_019A_vA)
+    // ========================================
+    // Related Notion docs:
+    // - Section 3.1 — Import Engine Row Schema
+    // - Section 3.2 — Import Normalization Rules
+    // - ROPI API overview (/api/import)
+    //
+    // Import batches store metadata about CSV imports from RetailOps
+    // Only admins can write; admins and merch roles can read
+    match /import_batches/{batchId} {
+      // Allow admins and merch roles to read batch metadata
+      allow read: if request.auth != null
+                  && (
+                    (isAdmin() || isAdminViaMetadata())
+                    || request.auth.token.role == 'merch'
+                  );
+      
+      // Only admins can create/update batches (typically via Cloud Functions)
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+      
+      // Import rows subcollection
+      match /rows/{rowId} {
+        // Allow admins and merch roles to read import rows
+        allow read: if request.auth != null
+                    && (
+                      (isAdmin() || isAdminViaMetadata())
+                      || request.auth.token.role == 'merch'
+                    );
+        
+        // Only admins can write import rows (via Cloud Functions)
+        allow write: if request.auth != null
+                     && (isAdmin() || isAdminViaMetadata());
+      }
+    }
+    
+    // ========================================
     // DEFAULT DENY
     // ========================================
     // Deny access to all other collections by default
