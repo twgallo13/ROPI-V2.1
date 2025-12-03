@@ -19,6 +19,15 @@ jobs:
       pull-requests: write
       actions: read
     
+    env:
+      # E2E test user credentials
+      VITE_E2E_ADMIN_EMAIL: theo@shiekh.com
+      VITE_E2E_USER_EMAIL: user@shiekh.com
+      VITE_E2E_UNVERIFIED_EMAIL: unverified@shiekh.com
+      VITE_E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+      VITE_E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      VITE_E2E_UNVERIFIED_PASSWORD: ${{ secrets.E2E_UNVERIFIED_PASSWORD }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

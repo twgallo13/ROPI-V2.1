@@ -877,15 +877,20 @@ Manual Steps Required Before E2E Can Pass:
 -------------------------------------------
 
 1. Create Firebase Auth test users in staging project (ropi-bccee):
-   - admin@test.com (with custom claim role: admin)
-   - user@test.com (regular user, email verified)
-   - unverified@test.com (email not verified)
+   - theo@shiekh.com (with custom claim role: admin)
+   - user@shiekh.com (regular user, email verified)
+   - unverified@shiekh.com (email not verified)
 
 2. Set admin custom claim:
    ```bash
    cd scripts
-   node set-admin-custom-claim.js admin@test.com
+   node set-admin-custom-claim.js theo@shiekh.com
    ```
+
+3. Add GitHub secrets for E2E passwords:
+   - E2E_ADMIN_PASSWORD
+   - E2E_USER_PASSWORD
+   - E2E_UNVERIFIED_PASSWORD
 
 3. Re-run E2E workflow:
    - Push new commit or manually trigger workflow
@@ -908,6 +913,67 @@ Next Actions:
 3. Configure Sentry DSN in Firebase hosting config
 4. Tag Theo and Lisa for review on PR #171
 5. Update Notion Build Log with Sprint C completion
+
+═══════════════════════════════════════════════════════════════════════════════
+E2E IDENTITY CLEANUP (December 3, 2025)
+═══════════════════════════════════════════════════════════════════════════════
+
+E2E test user identities are now environment-configurable and aligned with
+the @shiekh.com domain for production-readiness.
+
+Changes:
+--------
+
+1. ✅ Created .env.e2e.example
+   - Template file for local E2E test runs
+   - Documents required environment variables
+   - Includes comment noting CI uses GitHub secrets
+
+2. ✅ Updated helpers.ts
+   - TEST_USERS now reads from environment variables
+   - Fails fast if required env vars are missing
+   - Clear error messages reference .env.e2e.example
+
+3. ✅ Updated E2E workflow (.github/workflows/e2e-tests.yml)
+   - Added env section with E2E user emails
+   - Passwords sourced from GitHub secrets:
+     * E2E_ADMIN_PASSWORD
+     * E2E_USER_PASSWORD
+     * E2E_UNVERIFIED_PASSWORD
+
+Test User Identities:
+---------------------
+
+- theo@shiekh.com (admin user, requires custom claim role: admin)
+- user@shiekh.com (regular verified user)
+- unverified@shiekh.com (unverified user, email verification NOT sent)
+
+Environment Variables:
+----------------------
+
+Local Testing:
+- Copy .env.e2e.example to .env.e2e
+- Set actual passwords for local test runs
+- File is gitignored
+
+CI/GitHub Actions:
+- Emails: Defined directly in workflow env section
+- Passwords: Stored as repository secrets
+- Must be configured in GitHub repo settings → Secrets
+
+Operational Tasks:
+------------------
+
+1. Create these three users in Firebase Auth (staging project: ropi-bccee)
+2. Set custom claim for theo@shiekh.com: { "role": "admin" }
+3. Configure GitHub secrets with actual passwords
+4. Run E2E tests to verify authentication flows
+
+Code-Complete Status:
+---------------------
+
+✅ All code changes complete for PROMPT_018C Sprint C
+⏳ Remaining tasks are operational (user creation, secrets, DSN)
 - Total: 758.41 kB (previously ~746 kB)
 - Still under 1 MB recommended limit
 - Consider code-splitting for future optimization

@@ -11,24 +11,51 @@ import { Page, expect } from '@playwright/test';
 
 /**
  * Test user credentials for E2E tests
- * These should be created in Firebase Auth for the staging project
+ * Configured via environment variables for flexibility across environments
+ * 
+ * Required env vars:
+ * - VITE_E2E_ADMIN_EMAIL / VITE_E2E_ADMIN_PASSWORD
+ * - VITE_E2E_USER_EMAIL / VITE_E2E_USER_PASSWORD
+ * - VITE_E2E_UNVERIFIED_EMAIL / VITE_E2E_UNVERIFIED_PASSWORD
+ * 
+ * These users should be created in Firebase Auth for the staging project
  */
+
+// Fail fast if required env vars are missing
+const requiredEnvVars = [
+  'VITE_E2E_ADMIN_EMAIL',
+  'VITE_E2E_ADMIN_PASSWORD',
+  'VITE_E2E_USER_EMAIL',
+  'VITE_E2E_USER_PASSWORD',
+  'VITE_E2E_UNVERIFIED_EMAIL',
+  'VITE_E2E_UNVERIFIED_PASSWORD',
+];
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(
+      `Missing required E2E environment variable: ${envVar}\n` +
+      `See packages/web/.env.e2e.example for configuration.`
+    );
+  }
+}
+
 export const TEST_USERS = {
   admin: {
-    email: 'test-admin@ropi-aoss-e2e.test',
-    password: 'TestAdmin123!',
+    email: process.env.VITE_E2E_ADMIN_EMAIL!,
+    password: process.env.VITE_E2E_ADMIN_PASSWORD!,
     displayName: 'Test Admin',
     role: 'admin',
   },
   regularUser: {
-    email: 'test-user@ropi-aoss-e2e.test',
-    password: 'TestUser123!',
+    email: process.env.VITE_E2E_USER_EMAIL!,
+    password: process.env.VITE_E2E_USER_PASSWORD!,
     displayName: 'Test User',
     role: undefined, // no role = regular user
   },
   unverifiedUser: {
-    email: 'test-unverified@ropi-aoss-e2e.test',
-    password: 'TestUnverified123!',
+    email: process.env.VITE_E2E_UNVERIFIED_EMAIL!,
+    password: process.env.VITE_E2E_UNVERIFIED_PASSWORD!,
     displayName: 'Test Unverified',
     emailVerified: false,
   },
