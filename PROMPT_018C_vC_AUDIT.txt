@@ -62,10 +62,14 @@ Configuration: packages/web/playwright.config.ts
    ─────────────────
    File: packages/web/e2e/helpers.ts
    
-   Test Users:
-   - admin: test-admin@ropi-aoss-e2e.test (with role: 'admin')
-   - regularUser: test-user@ropi-aoss-e2e.test (no special role)
-   - unverifiedUser: test-unverified@ropi-aoss-e2e.test (emailVerified: false)
+   Test Users (Environment-Driven):
+   - admin: theo@shiekh.com (with role: 'admin')
+   - regularUser: user@shiekh.com (no special role)
+   - unverifiedUser: unverified@shiekh.com (emailVerified: false)
+   
+   Note: E2E test identities are configured via environment variables.
+   Passwords are stored in GitHub secrets (E2E_ADMIN_PASSWORD, E2E_USER_PASSWORD, E2E_UNVERIFIED_PASSWORD).
+   For local testing, copy .env.e2e.example to .env.e2e and set actual passwords.
    
    Helper Functions:
    - signInWithEmail(page, email, password)
@@ -705,9 +709,9 @@ MANUAL QA CHECKLIST (POST-DEPLOY)
 
 A. E2E Tests:
    ☐ Create test users in Firebase Auth (staging project):
-     - test-admin@ropi-aoss-e2e.test (set custom claim: role=admin)
-     - test-user@ropi-aoss-e2e.test (regular user)
-     - test-unverified@ropi-aoss-e2e.test (emailVerified=false)
+     - theo@shiekh.com (set custom claim: role=admin)
+     - user@shiekh.com (regular user)
+     - unverified@shiekh.com (emailVerified=false)
    ☐ Run E2E against staging: BASE_URL=https://ropi-aoss-staging.web.app pnpm test:e2e
    ☐ Verify all tests pass
    ☐ Review HTML report: packages/web/playwright-report/index.html
@@ -805,10 +809,12 @@ NOTES
 ═══════════════════════════════════════════════════════════════════════════════
 
 E2E Test Users:
+- Identities: theo@shiekh.com, user@shiekh.com, unverified@shiekh.com
 - Must be created manually in Firebase Auth (staging project)
 - Admin user requires custom claim: { "role": "admin" }
 - Use scripts/set-admin-custom-claim.js to set claims
 - Unverified user: Create account, do NOT verify email
+- Passwords stored in GitHub secrets for CI, .env.e2e for local testing
 
 Sentry DSN:
 - Required for error monitoring to work
