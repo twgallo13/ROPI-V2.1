@@ -3,9 +3,17 @@ PROMPT_018C_vC — E2E Tests, Monitoring, Rollout Infrastructure
 ═══════════════════════════════════════════════════════════════════════════════
 
 Branch: ci/e2e-monitoring_PROMPT_018C_vC
-Date: December 3, 2025
+Date: December 3, 2025 (Updated with CI fixes)
 Sprint: C — Production readiness & Launch Calendar Completion
 Base: aoss-main (includes Sprint A & B)
+
+PR: #171 (https://github.com/twgallo13/ROPI-V2.1/pull/171)
+Latest Commits:
+- 85e7dd3: chore: trigger E2E workflow
+- 17bcf10: fix(ci): extract actual preview URL from deployment logs
+- 5287c3c: fix(ci): add actions:read permission to E2E workflow
+- 6214360: fix(ci): resolve E2E workflow issues for PROMPT_018C_vC
+- 4f619dd: feat: PROMPT_018C_vC - E2E tests, monitoring, rollout infrastructure
 
 Related Notion:
 - Section 10 — CI/CD, Testing, Release & Stability  
@@ -822,6 +830,84 @@ Rollback Time:
 
 Bundle Size:
 - Increased by ~12 kB due to Sentry SDK
+
+═══════════════════════════════════════════════════════════════════════════════
+CI FIXES (December 3, 2025)
+═══════════════════════════════════════════════════════════════════════════════
+
+Issues Resolved:
+-----------------
+
+1. ✅ Merge Conflicts
+   - No conflicts found with aoss-main
+   - Branch already up-to-date with base
+
+2. ✅ Preview Deployment Wait Logic (Commit 6214360)
+   - Added actions:read permission (Commit 5287c3c)
+   - Improved wait logic to poll for workflow by head SHA
+   - Wait up to 10 minutes with 15s intervals
+   - Clear error messages on timeout or failure
+   - Extract actual preview URL from deployment logs (Commit 17bcf10)
+
+3. ✅ PR Comment Permissions (Commit 6214360)
+   - Added pull-requests:write permission
+   - Made comment step non-blocking with continue-on-error: true
+   - Only preview wait and E2E tests gate the job
+
+4. ✅ Preview URL Extraction (Commit 17bcf10)
+   - Firebase generates random suffixes for preview URLs
+   - URL pattern: https://ropi-aoss-staging--pr-{PR_NUM}-{RANDOM}.web.app
+   - Extract actual URL from preview deployment logs using grep
+   - Store in GITHUB_ENV for use in subsequent steps
+
+Current Status:
+---------------
+
+E2E Workflow Run: #19880394532 (in progress as of audit update)
+Preview Deployment: Success (https://ropi-aoss-staging--pr-171-66hd3cwh.web.app)
+
+Expected Behavior:
+- ✅ Preview wait step: PASSES (workflow found and completed successfully)
+- ✅ URL extraction: PASSES (URL extracted from deployment logs)
+- ✅ Site readiness check: PASSES (site accessible via curl)
+- ⏳ E2E tests: Expected to FAIL (no Firebase Auth test users created yet)
+- ✅ PR comment: Non-blocking (will attempt but not fail job)
+
+Manual Steps Required Before E2E Can Pass:
+-------------------------------------------
+
+1. Create Firebase Auth test users in staging project (ropi-bccee):
+   - admin@test.com (with custom claim role: admin)
+   - user@test.com (regular user, email verified)
+   - unverified@test.com (email not verified)
+
+2. Set admin custom claim:
+   ```bash
+   cd scripts
+   node set-admin-custom-claim.js admin@test.com
+   ```
+
+3. Re-run E2E workflow:
+   - Push new commit or manually trigger workflow
+   - Should pass once test users exist
+
+Production Readiness:
+---------------------
+
+✅ CI workflow fixes complete
+✅ E2E infrastructure ready
+⏳ Awaiting test user creation
+⏳ Awaiting Sentry DSN configuration
+⏳ Awaiting Lisa's review and approval
+
+Next Actions:
+-------------
+
+1. Monitor current E2E run (#19880394532) to confirm expected behavior
+2. Create Firebase Auth test users (see manual steps above)
+3. Configure Sentry DSN in Firebase hosting config
+4. Tag Theo and Lisa for review on PR #171
+5. Update Notion Build Log with Sprint C completion
 - Total: 758.41 kB (previously ~746 kB)
 - Still under 1 MB recommended limit
 - Consider code-splitting for future optimization
