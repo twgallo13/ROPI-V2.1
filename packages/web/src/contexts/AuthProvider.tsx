@@ -34,6 +34,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db, isAuthAvailable } from '../firebaseConfig';
+import { captureAuthError, setSentryUser, clearSentryUser } from '../monitoring/sentry';
 
 interface AuthContextValue {
   currentUser: User | null;
@@ -116,9 +117,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAdmin(adminStatus);
         setEmailVerified(user.emailVerified);
         console.log(`📧 Email verified for ${user.email}:`, user.emailVerified ? '✅ Yes' : '❌ No');
+        
+        // Set Sentry user context
+        setSentryUser(user.uid, user.email || undefined);
       } else {
         setIsAdmin(false);
         setEmailVerified(false);
+        
+        // Clear Sentry user context
+        clearSentryUser();
       }
 
       setLoading(false);
@@ -144,6 +151,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error: any) {
       console.error('❌ Google sign-in failed:', error);
       
+      // Capture in Sentry
+      captureAuthError(error, { 
+        method: 'google', 
+        errorCode: error.code 
+      });
+      
       // Handle specific error cases
       if (error.code === 'auth/popup-closed-by-user') {
         throw new Error('Sign-in popup was closed. Please try again.');
@@ -168,6 +181,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log('✅ Email sign-in successful:', result.user.email);
     } catch (error: any) {
       console.error('❌ Email sign-in failed:', error);
+      
+      // Capture in Sentry
+      captureAuthError(error, { 
+        method: 'email', 
+        errorCode: error.code,
+        email 
+      });
       
       // Friendly error messages
       if (error.code === 'auth/user-not-found') {

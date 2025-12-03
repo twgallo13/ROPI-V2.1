@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthProvider.tsx'
+import { initSentry } from './monitoring/sentry.ts'
 import './index.css'
+
+// Initialize Sentry error monitoring
+initSentry();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
