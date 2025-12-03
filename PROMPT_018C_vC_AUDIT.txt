@@ -985,5 +985,139 @@ Code-Complete Status:
 - Consider code-splitting for future optimization
 
 ═══════════════════════════════════════════════════════════════════════════════
+HOTFIX PR #173 — FINAL CI VERIFICATION (December 3, 2025)
+═══════════════════════════════════════════════════════════════════════════════
+
+Branch: fix/018c_conflict_hotfix
+PR: #173 (https://github.com/twgallo13/ROPI-V2.1/pull/173)
+Base: ci/e2e-monitoring_PROMPT_018C_vC
+Target for aoss-main: PR #171 (https://github.com/twgallo13/ROPI-V2.1/pull/171)
+
+Hotfix Changes Applied:
+------------------------
+
+1. ✅ Conflict Resolution
+   - No conflicts found with origin/aoss-main
+   - Branch already up-to-date
+
+2. ✅ Audit E2E Test Domain Alignment (Commit 8ec087b)
+   - Updated test user identities to @shiekh.com domain
+   - theo@shiekh.com (admin with custom claim)
+   - user@shiekh.com (regular verified user)
+   - unverified@shiekh.com (unverified user)
+   - Added note about env-driven identities and GitHub secrets
+
+3. ✅ Auth Test Regex Escaping (Commit fbeb4fd)
+   - Added escapeRegex() helper function in auth.spec.ts
+   - Escapes special regex chars in user display names and emails
+   - Prevents regex pattern failures with special characters
+
+4. N/A ImportBatchDetailPage typing fix
+   - File not present in this branch (PROMPT_019A feature)
+
+5. N/A importValidator unused import removal
+   - File not present in this branch (PROMPT_019A feature)
+
+6. N/A API package lint strictness
+   - No ESLint config present yet
+
+Local Verification Results:
+---------------------------
+
+✅ pnpm install: Success
+✅ pnpm --filter @ropi-aoss/web build: Success (758.41 kB bundle)
+✅ pnpm --filter @ropi-aoss/web test: 57 tests passed
+✅ pnpm --filter @ropi-aoss/sdk test: 8 tests passed
+✅ pnpm --filter @ropi-aoss/api test: No tests yet (expected)
+
+CI Run Results (PR #173):
+--------------------------
+
+Preview Deploy Run: #19884042618
+Status: ✅ SUCCESS
+URL: https://github.com/twgallo13/ROPI-V2.1/actions/runs/19884042618
+Duration: 1m49s
+Result: Preview deployed successfully
+
+E2E Workflow Run: #19884042626
+Status: ❌ FAILURE (Expected)
+URL: https://github.com/twgallo13/ROPI-V2.1/actions/runs/19884042626
+Duration: 2m09s
+
+E2E Workflow Steps:
+1. ✅ Set up job (1s)
+2. ✅ Checkout code (1s)
+3. ✅ Setup Node.js 20 (1s)
+4. ✅ Install pnpm (1s)
+5. ✅ Install dependencies (17s)
+6. ✅ Install Playwright browsers (35s)
+7. ✅ Wait for preview deployment (1m06s) — SUCCESS
+8. ✅ Determine test URL (0s) — SUCCESS
+9. ✅ Wait for deployment to be ready (0s) — SUCCESS
+10. ❌ Run E2E tests (2s) — FAILED (Expected: no test users)
+11. ✅ Upload Playwright report (0s)
+12. ✅ Upload test results (1s)
+13. ✅ Comment on PR with results (0s) — continue-on-error
+
+Expected Behavior Confirmed:
+-----------------------------
+
+✅ Preview wait step: PASSES (workflow found and completed successfully)
+✅ URL extraction: PASSES (URL extracted from deployment logs)
+✅ Site readiness check: PASSES (site accessible via curl)
+✅ E2E tests: FAILED as expected (Firebase Auth test users not created yet)
+✅ PR comment: Non-blocking (succeeded with continue-on-error)
+
+CI Infrastructure Status:
+--------------------------
+
+✅ E2E workflow correctly waits for preview deployment
+✅ E2E workflow extracts preview URL from deployment logs
+✅ E2E workflow checks site readiness before running tests
+✅ E2E test failure does not block PR comment step
+✅ Preview deploy completes successfully with no errors
+✅ All cleanup fixes applied and committed
+
+Remaining Manual Steps:
+-----------------------
+
+Before PR #171 can be merged to aoss-main:
+
+1. Create Firebase Auth test users in staging project (ropi-bccee):
+   - theo@shiekh.com (with custom claim: { "role": "admin" })
+   - user@shiekh.com (regular verified user)
+   - unverified@shiekh.com (email not verified)
+
+2. Set admin custom claim:
+   ```bash
+   cd scripts
+   node set-admin-custom-claim.js theo@shiekh.com
+   ```
+
+3. Add GitHub secrets for E2E test passwords:
+   - E2E_ADMIN_PASSWORD
+   - E2E_USER_PASSWORD
+   - E2E_UNVERIFIED_PASSWORD
+
+4. Configure Sentry DSN:
+   - Add VITE_SENTRY_DSN to Firebase hosting config
+   - Set up Sentry project for AOSS
+
+5. Lisa's approval required before merge
+
+Next Actions:
+-------------
+
+1. ✅ Hotfix PR #173 created and verified
+2. ⏳ Tag @theo and @lisa on PR #171 for final review
+3. ⏳ Create Firebase Auth test users (ops task)
+4. ⏳ Add GitHub secrets for E2E passwords (ops task)
+5. ⏳ Configure Sentry DSN (ops task)
+6. ⏳ Await Lisa's explicit approval
+7. ⏳ Merge PR #173 into ci/e2e-monitoring_PROMPT_018C_vC
+8. ⏳ Merge PR #171 into aoss-main (after approval)
+9. ⏳ Update Notion Build Progress Log with Sprint C completion
+
+═══════════════════════════════════════════════════════════════════════════════
 END OF AUDIT
 ═══════════════════════════════════════════════════════════════════════════════
