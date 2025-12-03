@@ -21,6 +21,13 @@ import {
   waitForEmailVerificationBanner,
 } from './helpers';
 
+/**
+ * Escape special regex characters in a string for safe use in regex patterns
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 test.describe('Authentication Flows', () => {
   test.beforeEach(async ({ page }) => {
     // Start from home page
@@ -38,8 +45,10 @@ test.describe('Authentication Flows', () => {
     // Verify redirected to /app
     await expect(page).toHaveURL(/\/app/);
     
-    // Verify user display name or email is shown
-    await expect(page.locator(`text=/${user.displayName}|${user.email}/i`)).toBeVisible();
+    // Verify user display name or email is shown (escape regex special chars)
+    const escapedDisplayName = escapeRegex(user.displayName);
+    const escapedEmail = escapeRegex(user.email);
+    await expect(page.locator(`text=/${escapedDisplayName}|${escapedEmail}/i`)).toBeVisible();
   });
 
   test('should allow email/password sign-in for admin user', async ({ page }) => {
