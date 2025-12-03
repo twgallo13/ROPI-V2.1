@@ -20,6 +20,7 @@ export type {
   ProductPricing,
   ProductInventory,
   ProductMedia,
+  ProductStatusFlags,
 } from './schema/product';
 
 export type {

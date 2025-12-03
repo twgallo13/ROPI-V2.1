@@ -19,12 +19,15 @@ interface ImportConfirmStepProps {
 }
 
 interface ImportProgress {
-  status: 'idle' | 'uploading' | 'processing' | 'success' | 'error';
+  status: 'idle' | 'uploading' | 'processing' | 'committing' | 'polling' | 'success' | 'error';
   message: string;
   batchId?: string;
   rowCount?: number;
   errorCount?: number;
   warningCount?: number;
+  createdCount?: number;
+  updatedCount?: number;
+  blockedCount?: number;
 }
 
 export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: ImportConfirmStepProps) {
@@ -76,24 +79,53 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
 
       setProgress({
         status: 'processing',
-        message: 'Processing import...',
+        message: 'Processing import rows...',
       });
 
-      const result = await response.json();
+      const uploadResult = await response.json();
+
+      // Now call processImportBatch to convert rows to products
+      setProgress({
+        status: 'committing',
+        message: 'Converting rows to products...',
+        batchId: uploadResult.batchId,
+        rowCount: uploadResult.rowCount,
+        errorCount: uploadResult.errorCount || 0,
+        warningCount: uploadResult.warningCount || 0,
+      });
+
+      const processResponse = await fetch(`${apiUrl}/processImportBatch`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ batchId: uploadResult.batchId }),
+      });
+
+      if (!processResponse.ok) {
+        const errorData = await processResponse.json().catch(() => ({ message: 'Unknown error' }));
+        throw new Error(errorData.message || `HTTP ${processResponse.status}: ${processResponse.statusText}`);
+      }
+
+      const processResult = await processResponse.json();
 
       setProgress({
         status: 'success',
         message: 'Import completed successfully!',
-        batchId: result.batchId,
-        rowCount: result.rowCount,
-        errorCount: result.errorCount || 0,
-        warningCount: result.warningCount || 0,
+        batchId: uploadResult.batchId,
+        rowCount: uploadResult.rowCount,
+        errorCount: uploadResult.errorCount || 0,
+        warningCount: uploadResult.warningCount || 0,
+        createdCount: processResult.createdCount || 0,
+        updatedCount: processResult.updatedCount || 0,
+        blockedCount: processResult.blockedCount || 0,
       });
 
       // Auto-navigate after 2 seconds
       setTimeout(() => {
-        if (result.batchId) {
-          onImportComplete(result.batchId);
+        if (uploadResult.batchId) {
+          onImportComplete(uploadResult.batchId);
         }
       }, 2000);
     } catch (error) {
@@ -149,6 +181,21 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
               <div className="result-item">
                 <strong>Rows Processed:</strong> {progress.rowCount}
               </div>
+              {progress.createdCount !== undefined && progress.createdCount > 0 && (
+                <div className="result-item success">
+                  <strong>Products Created:</strong> {progress.createdCount}
+                </div>
+              )}
+              {progress.updatedCount !== undefined && progress.updatedCount > 0 && (
+                <div className="result-item success">
+                  <strong>Products Updated:</strong> {progress.updatedCount}
+                </div>
+              )}
+              {progress.blockedCount !== undefined && progress.blockedCount > 0 && (
+                <div className="result-item error">
+                  <strong>Rows Blocked:</strong> {progress.blockedCount}
+                </div>
+              )}
               {progress.errorCount !== undefined && progress.errorCount > 0 && (
                 <div className="result-item error">
                   <strong>Rows with Errors:</strong> {progress.errorCount}

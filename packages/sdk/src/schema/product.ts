@@ -70,6 +70,16 @@ export interface ProductMedia {
 }
 
 /**
+ * Product status flags for export and W2 tracking
+ * Per AOSS Section 9 — Firebase Implementation & Security
+ */
+export interface ProductStatusFlags {
+  ready_for_export: boolean; // Ready to export to external systems
+  validation_status: 'valid' | 'has_warnings' | 'has_errors'; // Validation state
+  uploaded_to_ro: boolean; // Uploaded to RetailOps
+}
+
+/**
  * Complete Product object
  * Per AOSS Section 2.1 — Product Schema (JSON)
  */
@@ -79,6 +89,11 @@ export interface Product {
   pricing?: ProductPricing;
   inventory?: ProductInventory;
   media?: ProductMedia;
+  
+  // Status flags for export and tracking (Section 9)
+  statusFlags?: ProductStatusFlags;
+  roUploadBatchId?: string | null; // RetailOps upload batch ID
+  roUploadDate?: string | null; // ISO timestamp of last RO upload
   
   // Metadata for import/normalization tracking
   _meta?: {

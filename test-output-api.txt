@@ -1,0 +1,192 @@
+i  emulators: Starting emulators: firestore
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: pnpm --filter @ropi-aoss/api test
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run
+
+sh: 1: vitest: not found
+/workspaces/ROPI-V2.1/packages/api:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/api@0.0.0 test: `vitest run`
+spawn ENOENT
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm --filter @ropi-aoss/api test" exited with code 1
+i  emulators: Starting emulators: firestore
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: pnpm --filter @ropi-aoss/api test
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+ ✓ test/importService.test.ts  (4 tests) 10ms
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+<empty line>
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Error processing row row-001: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "core.description"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateDocumentData (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+    at WriteBatch.set (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:345:41
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+<empty line>
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Error processing row row-003: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "core.description"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateDocumentData (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+    at WriteBatch.set (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:345:41
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+<empty line>
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Error processing row row-create: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "core.description"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateDocumentData (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+    at WriteBatch.set (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:345:41
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+<empty line>
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Error processing row row-update: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "core.description"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateUserInput (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+    at validateDocumentData (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+    at WriteBatch.set (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:345:41
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+
+stdout | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should throw error for non-existent batch
+Using Firestore emulator
+
+ ❯ test/productCommitService.test.ts  (6 tests | 3 failed) 2161ms
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+     → expected +0 to be 1 // Object.is equality
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+     → expected +0 to be 1 // Object.is equality
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+     → expected +0 to be 1 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/productCommitService.test.ts:111:35
+    109| 
+    110|       // Verify result
+    111|       expect(result.createdCount).toBe(1);
+       |                                   ^
+    112|       expect(result.updatedCount).toBe(0);
+    113|       expect(result.blockedCount).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/productCommitService.test.ts:269:35
+    267|       // Verify result
+    268|       expect(result.createdCount).toBe(0);
+    269|       expect(result.updatedCount).toBe(1);
+       |                                   ^
+    270|       expect(result.blockedCount).toBe(0);
+    271| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/productCommitService.test.ts:375:35
+    373| 
+    374|       // Verify counters
+    375|       expect(result.createdCount).toBe(1);
+       |                                   ^
+    376|       expect(result.updatedCount).toBe(1);
+    377|       expect(result.blockedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  3 failed | 7 passed (10)
+   Start at  06:24:00
+   Duration  2.71s (transform 170ms, setup 1ms, collect 408ms, tests 2.17s, environment 0ms, prepare 248ms)
+
+/workspaces/ROPI-V2.1/packages/api:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/api@0.0.0 test: `vitest run`
+Exit status 1
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm --filter @ropi-aoss/api test" exited with code 1

@@ -1,0 +1,635 @@
+
+> @ropi-aoss/web@1.0.0 test /workspaces/ROPI-V2.1/packages/web
+> vitest
+
+
+ DEV  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+stderr | src/services/observations.test.ts > Observations Service - localStorage fallback > should handle errors gracefully when localStorage is full
+Failed to save observations to localStorage: Error: QuotaExceededError
+    at Proxy.<anonymous> (/workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:248:13)
+    at Proxy.mockCall (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+spy@1.6.1/node_modules/@vitest/spy/dist/index.js:50:17)
+    at Proxy.spy (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/tinyspy@2.2.1/node_modules/tinyspy/dist/index.js:42:80)
+    at saveToLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:116:18)
+    at Module.addObservation (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:244:3)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:260:31
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+
+stderr | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+Failed to load observations from localStorage: SyntaxError: Unexpected token 'i', "invalid json {{{" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadFromLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:92:31)
+    at Module.listObservations (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:193:10)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:286:32
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+
+ ✓ src/services/observations.test.ts  (12 tests) 87ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:126.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:159.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:192.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:225.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:255.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+ ❯ test/ImportBatchDetailPage.test.tsx  (5 tests | 5 failed) 46ms
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should initialize with no user
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should expose resendVerificationEmail function
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should have correct interface shape
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 30ms
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 41ms
+ ✓ test/envPolicy.test.ts  (19 tests) 6ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+ ✓ test/smoke.observations.test.tsx  (4 tests) 6ms
+stderr | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/smoke.product-editor-observations.test.tsx  (1 test) 114ms
+ ✓ test/nav.test.ts  (4 tests) 8ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > renders with basic structure
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > calls listenToObservations on mount
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > shows offline banner when Firebase unavailable
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 51ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+ ❯ createFiberFromTypeAndProps ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17
+ ❯ createFiberFromElement ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15
+ ❯ reconcileSingleElement ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23
+ ❯ reconcileChildFibers ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35
+ ❯ reconcileChildren ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28
+ ❯ updateContextProvider ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14
+ ❯ beginWork$1 ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27465:14
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26599:12
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26505:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  5 failed | 57 passed (62)
+   Start at  06:29:13
+   Duration  5.49s (transform 621ms, setup 1ms, collect 2.48s, tests 389ms, environment 5.00s, prepare 1.01s)
+
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+[3Jc
+ RERUN  test/ImportBatchDetailPage.test.tsx x1
+
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:126.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:159.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:192.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:225.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+Warning: React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check your code at ImportBatchDetailPage.test.tsx:255.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at createFiberFromTypeAndProps (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17)
+    at createFiberFromElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15)
+    at reconcileSingleElement (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23)
+    at reconcileChildFibers (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35)
+    at reconcileChildren (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28)
+    at updateContextProvider (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3)
+    at beginWork (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14)
+    at HTMLUnknownElement.callCallback (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/workspaces/ROPI-V2.1/node_modules/.pnpm/jsdom@27.2.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:360:16)
+The above error occurred in the <Location.Provider> component:
+
+    at Router (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router@6.30.2_react@18.3.1/node_modules/react-router/dist/umd/react-router.development.js:1207:17)
+    at BrowserRouter (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-router-dom@6.30.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/umd/react-router-dom.development.js:695:7)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+ ❯ test/ImportBatchDetailPage.test.tsx  (5 tests | 5 failed) 35ms
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+     → Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+ ❯ createFiberFromTypeAndProps ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28478:17
+ ❯ createFiberFromElement ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:28504:15
+ ❯ reconcileSingleElement ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:13986:23
+ ❯ reconcileChildFibers ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:14044:35
+ ❯ reconcileChildren ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:19186:28
+ ❯ updateContextProvider ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21193:3
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:21688:14
+ ❯ beginWork$1 ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27465:14
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26599:12
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26505:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  06:29:22
+   Duration  379ms
+
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+       rerun x1
+[2K[1A[2K[G
+  Watch Usage
+  press a, return to rerun all tests
+  press r to rerun current pattern tests
+  press f to rerun only failed tests
+  press u to update snapshot
+  press p to filter by a filename
+  press t to filter by a test name regex pattern
+  press w to filter by a project name
+  press q to quit
+/workspaces/ROPI-V2.1/packages/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 test: `vitest`
+Exit status 1

@@ -105,6 +105,7 @@ export interface ImportRowMeta {
   importedBy: string; // User ID who initiated import
   status: 'pending' | 'processed' | 'failed';
   errorMessage?: string; // If status is 'failed'
+  importOutcome?: 'created' | 'updated' | 'skipped_validation_error'; // Result of commit process
 }
 
 /**
@@ -144,6 +145,11 @@ export interface ImportBatch {
   processedAt?: string; // ISO timestamp
   errorCount?: number;
   warningCount?: number;
+  // Commit process counters (set by processImportBatch)
+  createdCount?: number; // Products created
+  updatedCount?: number; // Products updated
+  blockedCount?: number; // Rows blocked by validation
+  processedBy?: string; // User ID who processed/committed the batch
 }
 
 /**

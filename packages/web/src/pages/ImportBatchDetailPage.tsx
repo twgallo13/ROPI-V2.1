@@ -201,6 +201,24 @@ export default function ImportBatchDetailPage() {
             <div className="count-value">{batch.rowCount}</div>
             <div className="count-label">Total Rows</div>
           </div>
+          {batch.createdCount !== undefined && (
+            <div className="count-card success">
+              <div className="count-value">{batch.createdCount}</div>
+              <div className="count-label">Products Created</div>
+            </div>
+          )}
+          {batch.updatedCount !== undefined && (
+            <div className="count-card success">
+              <div className="count-value">{batch.updatedCount}</div>
+              <div className="count-label">Products Updated</div>
+            </div>
+          )}
+          {batch.blockedCount !== undefined && (
+            <div className="count-card blocked">
+              <div className="count-value">{batch.blockedCount}</div>
+              <div className="count-label">Rows Blocked</div>
+            </div>
+          )}
           <div className="count-card processed">
             <div className="count-value">{processedCount}</div>
             <div className="count-label">Processed</div>
@@ -258,7 +276,25 @@ export default function ImportBatchDetailPage() {
                     )}
                   </td>
                   <td className="product-cell">
-                    {row.meta.productId ? (
+                    {row.meta.importOutcome === 'skipped_validation_error' ? (
+                      <span className="blocked-badge">Blocked by validation</span>
+                    ) : row.meta.importOutcome === 'created' ? (
+                      row.meta.productId ? (
+                        <Link to={`/products/${row.meta.productId}`} className="product-link created">
+                          View Product (Created) →
+                        </Link>
+                      ) : (
+                        <span className="no-product">—</span>
+                      )
+                    ) : row.meta.importOutcome === 'updated' ? (
+                      row.meta.productId ? (
+                        <Link to={`/products/${row.meta.productId}`} className="product-link updated">
+                          View Product (Updated) →
+                        </Link>
+                      ) : (
+                        <span className="no-product">—</span>
+                      )
+                    ) : row.meta.productId ? (
                       <Link to={`/products/${row.meta.productId}`} className="product-link">
                         View Product →
                       </Link>
