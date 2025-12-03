@@ -199,7 +199,11 @@
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  overflow: hidden;
+  /* Make panel a column flex container so header/content/footer can size correctly */
+  display: flex;
+  flex-direction: column;
+  /* Allow children to handle scrolling instead of clipping */
+  overflow: visible;
 }
 
 .product-panel-header {
@@ -232,6 +236,10 @@
 
 .product-panel-content {
   padding: var(--spacing-md);
+  /* Allow content to grow/shrink and scroll inside the panel */
+  flex: 1 1 auto;
+  min-height: 0; /* enables proper flexbox scrolling behavior */
+  overflow: auto;
 }
 
 .product-panel-item {
