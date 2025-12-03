@@ -11,7 +11,7 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     environment: staging
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,13 +54,13 @@ jobs:
           set -euo pipefail
           echo "Building packages/web with Vite (with Firebase config from secrets)..."
           pnpm --filter @ropi-aoss/web build
-          
+
           # Verify build output
           if [ ! -f packages/web/dist/index.html ]; then
             echo "::error::packages/web/dist/index.html not found after build"
             exit 1
           fi
-          
+
           echo "✅ Build complete: packages/web/dist ready for deployment"
           ls -lh packages/web/dist/
 
@@ -75,13 +75,10 @@ jobs:
           fi
           echo "Decoding service account key..."
           echo "$GCP_SA_KEY_BASE64" | base64 --decode > "$HOME/gcloud-key.json"
-          # Set ADC for this step
           export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
-          # Authenticate with gcloud
           sudo apt-get update && sudo apt-get install -y google-cloud-cli
           gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud config set project ropi-bccee
-          # Persist ADC env var for subsequent steps
           echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-key.json" >> $GITHUB_ENV
           echo "Active gcloud account:"
           gcloud auth list --filter=status:ACTIVE --format="value(account)"
@@ -93,7 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
-          
+
           # Deploy preview channel (keep existing behavior)
           firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json || true
 
