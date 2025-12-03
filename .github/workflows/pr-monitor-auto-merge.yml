@@ -2,9 +2,9 @@ name: PR Monitor & Auto-Merge (AOSS_PR_MONITOR_v1.0)
 # Automatically monitors PRs targeting aoss-main, safely auto-merges when ready, then deploys to staging
 
 on:
-  # Run every 10 minutes to check PRs
+  # Run every 120 minutes to check PRs
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/120 * * * *'
   
   # Also trigger on PR events for faster response
   pull_request:
