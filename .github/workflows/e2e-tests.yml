@@ -14,6 +14,9 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
     
     steps:
       - name: Checkout code
@@ -38,10 +41,52 @@ jobs:
         run: |
           echo "Waiting for preview deployment to complete..."
           echo "PR number: ${{ github.event.pull_request.number }}"
-          # Wait up to 5 minutes for preview workflow to complete
-          sleep 60
-          # Check if preview workflow completed
-          gh run list --workflow="Deploy AOSS PR Preview" --branch="${{ github.head_ref }}" --limit=1 --json status,conclusion
+          echo "Head SHA: ${{ github.event.pull_request.head.sha }}"
+          
+          # Wait up to 10 minutes for preview workflow to complete
+          max_wait=600
+          elapsed=0
+          interval=15
+          
+          while [ $elapsed -lt $max_wait ]; do
+            echo "Checking for preview deployment workflow... (${elapsed}s elapsed)"
+            
+            # Query for the "Deploy AOSS PR Preview" workflow matching this PR's head SHA
+            RUNS=$(gh run list \
+              --workflow="Deploy AOSS PR Preview" \
+              --json status,conclusion,headSha,databaseId \
+              --jq ".[] | select(.headSha == \"${{ github.event.pull_request.head.sha }}\")")
+            
+            if [ -n "$RUNS" ]; then
+              STATUS=$(echo "$RUNS" | jq -r '.status')
+              CONCLUSION=$(echo "$RUNS" | jq -r '.conclusion')
+              RUN_ID=$(echo "$RUNS" | jq -r '.databaseId')
+              
+              echo "Found preview workflow run #${RUN_ID}: status=${STATUS}, conclusion=${CONCLUSION}"
+              
+              if [ "$STATUS" = "completed" ]; then
+                if [ "$CONCLUSION" = "success" ]; then
+                  echo "✅ Preview deployment completed successfully"
+                  exit 0
+                else
+                  echo "::error::Preview deployment failed with conclusion: ${CONCLUSION}"
+                  echo "See: https://github.com/${{ github.repository }}/actions/runs/${RUN_ID}"
+                  exit 1
+                fi
+              fi
+              
+              echo "Preview deployment still in progress (status: ${STATUS})..."
+            else
+              echo "Preview deployment workflow not found yet for SHA ${{ github.event.pull_request.head.sha }}"
+            fi
+            
+            sleep $interval
+            elapsed=$((elapsed + interval))
+          done
+          
+          echo "::error::Timeout waiting for preview deployment after ${max_wait}s"
+          echo "Preview deployment workflow may not have started or is taking too long"
+          exit 1
         env:
           GH_TOKEN: ${{ github.token }}
       
@@ -114,6 +159,7 @@ jobs:
       
       - name: Comment on PR with results
         if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
         uses: peter-evans/create-or-update-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
