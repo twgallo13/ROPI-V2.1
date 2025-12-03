@@ -18,7 +18,7 @@ interface ColumnMappingConfig {
 }
 
 // Build available target fields from DEFAULT_COLUMN_MAPPINGS
-const AVAILABLE_FIELDS = DEFAULT_COLUMN_MAPPINGS.map(m => ({
+const AVAILABLE_FIELDS = DEFAULT_COLUMN_MAPPINGS.map((m: any) => ({
   value: m.targetField,
   label: m.targetField,
   required: m.required || false,
@@ -41,7 +41,7 @@ export function ImportMappingStep({ headers, onMappingComplete, onBack }: Import
     // Try to match CSV headers to default column mappings
     headers.forEach(header => {
       const match = DEFAULT_COLUMN_MAPPINGS.find(
-        m => m.sourceColumn.toLowerCase() === header.toLowerCase()
+        (m: any) => m.sourceColumn.toLowerCase() === header.toLowerCase()
       );
       
       if (match) {
@@ -56,10 +56,10 @@ export function ImportMappingStep({ headers, onMappingComplete, onBack }: Import
   useEffect(() => {
     const mappedFields = Object.values(mappings).filter(Boolean);
     const required = DEFAULT_COLUMN_MAPPINGS
-      .filter(m => m.required)
-      .map(m => m.targetField);
+      .filter((m: any) => m.required)
+      .map((m: any) => m.targetField);
     
-    const missing = required.filter(field => !mappedFields.includes(field));
+    const missing = required.filter((field: any) => !mappedFields.includes(field));
     setMissingRequired(missing);
   }, [mappings]);
 
@@ -85,7 +85,7 @@ export function ImportMappingStep({ headers, onMappingComplete, onBack }: Import
 
   const isRequired = (targetField: string): boolean => {
     return DEFAULT_COLUMN_MAPPINGS.some(
-      m => m.targetField === targetField && m.required
+      (m: any) => m.targetField === targetField && m.required
     );
   };
 
