@@ -117,6 +117,9 @@ importers:
 
   packages/web:
     dependencies:
+      '@ropi-aoss/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@sentry/react':
         specifier: ^10.28.0
         version: 10.28.0(react@18.3.1)
@@ -126,6 +129,9 @@ importers:
       firebase:
         specifier: ^12.6.0
         version: 12.6.0
+      papaparse:
+        specifier: ^5.5.3
+        version: 5.5.3
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -154,6 +160,9 @@ importers:
       '@types/node':
         specifier: ^18.19.130
         version: 18.19.130
+      '@types/papaparse':
+        specifier: ^5.5.1
+        version: 5.5.1
       '@types/react':
         specifier: ^18.2.43
         version: 18.3.27

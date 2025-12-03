@@ -4,7 +4,8 @@ import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductEditorPage from './pages/ProductEditorPage';
 import LaunchCalendarPage from './pages/LaunchCalendarPage';
-import ImportPage from './pages/ImportPage';
+import ImportManagerPage from './pages/ImportManagerPage';
+import ImportBatchDetailPage from './pages/ImportBatchDetailPage';
 import ExportPage from './pages/ExportPage';
 import ObservationsPage from './pages/ObservationsPage';
 import AttributesPage from './pages/AttributesPage';
@@ -24,7 +25,8 @@ function App() {
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/:id" element={<ProductEditorPage />} />
         <Route path="launch-calendar" element={<LaunchCalendarPage />} />
-        <Route path="import" element={<ImportPage />} />
+        <Route path="import" element={<ImportManagerPage />} />
+        <Route path="import/batches/:batchId" element={<ImportBatchDetailPage />} />
         <Route path="export" element={<ExportPage />} />
         <Route path="observations" element={<ObservationsPage />} />
         <Route path="attributes" element={<AttributesPage />} />
