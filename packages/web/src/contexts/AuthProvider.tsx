@@ -38,11 +38,13 @@ import { auth, db, isAuthAvailable } from '../firebaseConfig';
 interface AuthContextValue {
   currentUser: User | null;
   isAdmin: boolean;
+  emailVerified: boolean;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -54,15 +56,28 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Check if user email is in admin allow-list
-  async function checkAdminStatus(email: string | null): Promise<boolean> {
-    if (!email || !db) {
+  // Check if user is admin via custom claims (production) or metadata fallback (staging)
+  async function checkAdminStatus(user: User | null): Promise<boolean> {
+    if (!user) {
       return false;
     }
 
     try {
+      // PRIORITY 1: Check custom claims (production)
+      const tokenResult = await user.getIdTokenResult(true);
+      if (tokenResult.claims.role === 'admin') {
+        console.log(`🔐 Admin check for ${user.email}:`, '✅ Admin (via custom claims)');
+        return true;
+      }
+
+      // PRIORITY 2: Fallback to metadata/admins (staging)
+      if (!db) {
+        return false;
+      }
+
       const adminDocRef = doc(db, 'metadata', 'admins');
       const adminDoc = await getDoc(adminDocRef);
       
@@ -74,8 +89,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const adminData = adminDoc.data();
       const adminEmails: string[] = adminData?.emails || [];
       
-      const isUserAdmin = adminEmails.includes(email);
-      console.log(`🔐 Admin check for ${email}:`, isUserAdmin ? '✅ Admin' : '❌ Not admin');
+      const isUserAdmin = adminEmails.includes(user.email || '');
+      console.log(`🔐 Admin check for ${user.email}:`, isUserAdmin ? '✅ Admin (via metadata/admins fallback)' : '❌ Not admin');
       
       return isUserAdmin;
     } catch (error) {
@@ -96,11 +111,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log('🔐 Auth state changed:', user ? `User: ${user.email}` : 'No user');
       setCurrentUser(user);
 
-      if (user?.email) {
-        const adminStatus = await checkAdminStatus(user.email);
+      if (user) {
+        const adminStatus = await checkAdminStatus(user);
         setIsAdmin(adminStatus);
+        setEmailVerified(user.emailVerified);
+        console.log(`📧 Email verified for ${user.email}:`, user.emailVerified ? '✅ Yes' : '❌ No');
       } else {
         setIsAdmin(false);
+        setEmailVerified(false);
       }
 
       setLoading(false);
@@ -217,14 +235,40 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  // Resend email verification
+  const handleResendVerificationEmail = async () => {
+    if (!auth || !isAuthAvailable()) {
+      throw new Error('Firebase Auth not available');
+    }
+
+    if (!currentUser) {
+      throw new Error('No user signed in');
+    }
+
+    try {
+      await sendEmailVerification(currentUser);
+      console.log('📧 Verification email sent to:', currentUser.email);
+    } catch (error: any) {
+      console.error('❌ Failed to send verification email:', error);
+      
+      if (error.code === 'auth/too-many-requests') {
+        throw new Error('Too many requests. Please try again later.');
+      } else {
+        throw new Error(error.message || 'Failed to send verification email. Please try again.');
+      }
+    }
+  };
+
   const value: AuthContextValue = {
     currentUser,
     isAdmin,
+    emailVerified,
     loading,
     signInWithGoogle: handleSignInWithGoogle,
     signInWithEmail: handleSignInWithEmail,
     signUpWithEmail: handleSignUpWithEmail,
     signOut: handleSignOut,
+    resendVerificationEmail: handleResendVerificationEmail,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

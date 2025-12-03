@@ -29,6 +29,7 @@ import SignInModal from '@/components/Auth/SignInModal';
 const mockLaunches = [
   {
     id: 'launch_2025_q1_ropi_runner',
+    productId: 'prod_ropi_runner_2025',
     name: 'Ropi Runner 2025',
     description: 'Next generation running shoe with enhanced cushioning',
     launchDate: '2025-03-15',
@@ -37,6 +38,7 @@ const mockLaunches = [
   },
   {
     id: 'launch_2025_q2_ropi_classic_colorways',
+    productId: 'prod_ropi_classic_colorways_2025',
     name: 'Ropi Classic - New Colorways',
     description: 'Spring 2025 color palette for the Ropi Classic line',
     launchDate: '2025-04-01',
@@ -45,6 +47,7 @@ const mockLaunches = [
   },
   {
     id: 'launch_2025_q2_ropi_hightop_v2',
+    productId: 'prod_ropi_hightop_v2_2025',
     name: 'Ropi HighTop V2',
     description: 'Updated design with improved ankle support',
     launchDate: '2025-05-20',
@@ -58,21 +61,21 @@ function LaunchCalendarPage() {
   const { signupForLaunch, loading: signupLoading } = useLaunchSignup();
   
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const [pendingLaunchId, setPendingLaunchId] = useState<string | null>(null);
+  const [pendingLaunch, setPendingLaunch] = useState<{ launchId: string; productId: string } | null>(null);
   const [signedUpLaunches, setSignedUpLaunches] = useState<Set<string>>(new Set());
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
 
-  const handleNotifyMe = async (launchId: string) => {
+  const handleNotifyMe = async (launchId: string, productId: string) => {
     if (!currentUser) {
       // Unauthenticated: Show sign-in modal
-      setPendingLaunchId(launchId);
+      setPendingLaunch({ launchId, productId });
       setShowSignInModal(true);
       return;
     }
 
     // Authenticated: Sign up immediately
     try {
-      await signupForLaunch(launchId);
+      await signupForLaunch({ launchId, productId, mode: 'account' });
       setSignedUpLaunches(prev => new Set(prev).add(launchId));
       
       // Show confirmation
@@ -85,10 +88,14 @@ function LaunchCalendarPage() {
 
   const handleSignInSuccess = async () => {
     // After successful sign-in, complete pending signup if exists
-    if (pendingLaunchId) {
+    if (pendingLaunch) {
       try {
-        await signupForLaunch(pendingLaunchId);
-        setSignedUpLaunches(prev => new Set(prev).add(pendingLaunchId));
+        await signupForLaunch({ 
+          launchId: pendingLaunch.launchId, 
+          productId: pendingLaunch.productId, 
+          mode: 'account' 
+        });
+        setSignedUpLaunches(prev => new Set(prev).add(pendingLaunch.launchId));
         
         // Show confirmation
         setConfirmationMessage("You're in. We'll notify you about this launch.");
@@ -96,7 +103,7 @@ function LaunchCalendarPage() {
       } catch (error: any) {
         alert(error.message || 'Failed to sign up for launch. Please try again.');
       }
-      setPendingLaunchId(null);
+      setPendingLaunch(null);
     }
   };
 
@@ -167,7 +174,7 @@ function LaunchCalendarPage() {
                 </div>
                 
                 <button
-                  onClick={() => handleNotifyMe(launch.id)}
+                  onClick={() => handleNotifyMe(launch.id, launch.productId)}
                   disabled={authLoading || signupLoading || signedUpLaunches.has(launch.id)}
                   style={{
                     padding: '0.75rem 1.5rem',
@@ -210,7 +217,7 @@ function LaunchCalendarPage() {
         isOpen={showSignInModal}
         onClose={() => {
           setShowSignInModal(false);
-          setPendingLaunchId(null);
+          setPendingLaunch(null);
         }}
         onSuccess={handleSignInSuccess}
       />
