@@ -8,6 +8,8 @@
  * - 2.1: Product Schema (JSON)
  * - 2.2: Attribute Validation Schema (JSON)
  * - 2.3: Attribute Domain Rules (JSON)
+ * - 3.1: Import Engine Row Schema
+ * - 3.2: Import Normalization Rules
  */
 
 // Export schema types
@@ -36,6 +38,19 @@ export type {
   RuleAction,
 } from './schema/domainRules';
 
+export type {
+  ImportEngineRow,
+  ImportBatch,
+  ImportSourceColumns,
+  ImportNormalizedFields,
+  ImportValidation,
+  ImportRowMeta,
+  ValidationIssue,
+  ValidationCode,
+  ColumnMapping,
+  ImportConfig,
+} from './schema/importEngine';
+
 // Export validators
 export {
   validateProduct,
@@ -60,6 +75,27 @@ export {
   AttributeDataTypeSchema,
   AttributeConstraintSchema,
 } from './validators/attributeValidator';
+
+export {
+  validateImportRow,
+  canProcessRow,
+} from './validators/importValidator';
+
+// Export normalization utilities
+export {
+  normalizeImportRow,
+  deriveProductId,
+  isEmptyRow,
+  validateRequiredFields,
+  DEFAULT_COLUMN_MAPPINGS,
+} from './normalization/importNormalizer';
+
+// Export import row builder
+export {
+  buildImportRow,
+  buildImportRows,
+} from './builders/importRowBuilder';
+export type { BuildRowOptions } from './builders/importRowBuilder';
 
 // Version info
 export const SDK_VERSION = '0.3.0';

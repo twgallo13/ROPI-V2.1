@@ -1,4 +1,20 @@
 {
+  "functions": [
+    {
+      "source": "packages/api",
+      "codebase": "api",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "pnpm --filter @ropi-aoss/api build"
+      ]
+    }
+  ],
   "hosting": [
     {
       "target": "aoss-staging",
@@ -9,11 +25,18 @@
         "**/node_modules/**"
       ],
       "rewrites": [
+        {
+          "source": "/api/import",
+          "function": "importCSV"
+        },
         { "source": "**", "destination": "/index.html" }
       ]
     }
   ],
   "emulators": {
+    "functions": {
+      "port": 5001
+    },
     "firestore": {
       "port": 8080
     },

@@ -1,0 +1,133 @@
+/**
+ * Import Row Builder Tests
+ * Tests for building complete Import Engine Rows
+ */
+
+import { describe, it, expect } from 'vitest';
+import { buildImportRow, buildImportRows } from '../src/builders/importRowBuilder';
+import type { ImportSourceColumns } from '../src/schema/importEngine';
+
+describe('Import Row Builder', () => {
+  describe('buildImportRow', () => {
+    it('should build a valid import row', () => {
+      const sourceColumns: ImportSourceColumns = {
+        'SKU': 'TEST-SKU-001',
+        'Product Name': 'Test Product',
+        'Brand': 'Test Brand',
+        'MSRP': '99.99',
+      };
+
+      const row = buildImportRow(sourceColumns, {
+        batchId: 'batch-123',
+        lineNumber: 2,
+        userId: 'user-456',
+      });
+
+      expect(row).toBeDefined();
+      expect(row?.rowId).toBeDefined();
+      expect(row?.batchId).toBe('batch-123');
+      expect(row?.source.columns).toEqual(sourceColumns);
+      expect(row?.source.lineNumber).toBe(2);
+      expect(row?.normalized.sku).toBe('TEST-SKU-001');
+      expect(row?.normalized.title).toBe('Test Product');
+      expect(row?.normalized.brand).toBe('Test Brand');
+      expect(row?.meta.productId).toBe('test-sku-001');
+      expect(row?.meta.importedBy).toBe('user-456');
+      expect(row?.meta.status).toBe('pending');
+      expect(row?.validation.isValid).toBe(true);
+    });
+
+    it('should mark row as failed if validation fails', () => {
+      const sourceColumns: ImportSourceColumns = {
+        'SKU': '', // Missing required field
+        'Product Name': 'Test Product',
+        'Brand': 'Test Brand',
+      };
+
+      const row = buildImportRow(sourceColumns, {
+        batchId: 'batch-123',
+        lineNumber: 2,
+        userId: 'user-456',
+      });
+
+      expect(row).toBeDefined();
+      expect(row?.validation.isValid).toBe(false);
+      expect(row?.validation.errors.length).toBeGreaterThan(0);
+      expect(row?.meta.status).toBe('failed');
+      expect(row?.meta.errorMessage).toBeDefined();
+    });
+
+    it('should skip empty rows', () => {
+      const sourceColumns: ImportSourceColumns = {
+        'SKU': '',
+        'Product Name': null,
+        'Brand': undefined,
+      };
+
+      const row = buildImportRow(sourceColumns, {
+        batchId: 'batch-123',
+        lineNumber: 2,
+        userId: 'user-456',
+        skipEmpty: true,
+      });
+
+      expect(row).toBeNull();
+    });
+
+    it('should not skip empty rows if configured', () => {
+      const sourceColumns: ImportSourceColumns = {
+        'SKU': '',
+        'Product Name': null,
+        'Brand': undefined,
+      };
+
+      const row = buildImportRow(sourceColumns, {
+        batchId: 'batch-123',
+        lineNumber: 2,
+        userId: 'user-456',
+        skipEmpty: false,
+      });
+
+      expect(row).toBeDefined();
+      expect(row?.validation.isValid).toBe(false);
+    });
+  });
+
+  describe('buildImportRows', () => {
+    it('should build multiple rows', () => {
+      const csvData = [
+        {
+          'SKU': 'SKU-001',
+          'Product Name': 'Product 1',
+          'Brand': 'Brand A',
+        },
+        {
+          'SKU': 'SKU-002',
+          'Product Name': 'Product 2',
+          'Brand': 'Brand B',
+        },
+        {
+          'SKU': '', // Empty row - should be skipped
+          'Product Name': null,
+          'Brand': undefined,
+        },
+      ];
+
+      const rows = buildImportRows(csvData, 'batch-123', 'user-456');
+
+      expect(rows).toHaveLength(2); // Empty row skipped
+      expect(rows[0].normalized.sku).toBe('SKU-001');
+      expect(rows[1].normalized.sku).toBe('SKU-002');
+      expect(rows[0].source.lineNumber).toBe(2); // Line 1 is header
+      expect(rows[1].source.lineNumber).toBe(3);
+    });
+
+    it('should handle empty dataset', () => {
+      const csvData: ImportSourceColumns[] = [];
+
+      const rows = buildImportRows(csvData, 'batch-123', 'user-456');
+
+      expect(rows).toHaveLength(0);
+    });
+  });
+});
