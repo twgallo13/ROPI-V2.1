@@ -68,6 +68,19 @@ jobs:
               if [ "$STATUS" = "completed" ]; then
                 if [ "$CONCLUSION" = "success" ]; then
                   echo "✅ Preview deployment completed successfully"
+                  echo "Extracting preview URL from deployment logs..."
+                  
+                  # Get the preview URL from the deployment run logs
+                  PREVIEW_URL=$(gh run view "${RUN_ID}" --log 2>&1 | \
+                    grep -oP 'PREVIEW_URL=\Khttps://[^\s]+' | head -1 || true)
+                  
+                  if [ -n "$PREVIEW_URL" ]; then
+                    echo "Found preview URL: ${PREVIEW_URL}"
+                    echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
+                  else
+                    echo "::warning::Could not extract preview URL from logs"
+                  fi
+                  
                   exit 0
                 else
                   echo "::error::Preview deployment failed with conclusion: ${CONCLUSION}"
@@ -98,10 +111,16 @@ jobs:
             # Manual workflow dispatch with custom URL
             TEST_URL="${{ inputs.base_url }}"
           elif [ "${{ github.event_name }}" = "pull_request" ]; then
-            # PR preview channel
-            PR_NUM=${{ github.event.pull_request.number }}
-            # Firebase preview URL format
-            TEST_URL="https://ropi-bccee--pr-${PR_NUM}-aoss-staging.web.app"
+            # Use preview URL from environment (extracted in previous step)
+            if [ -n "${PREVIEW_URL:-}" ]; then
+              TEST_URL="${PREVIEW_URL}"
+            else
+              # Fallback: try to construct preview URL
+              # Note: Firebase generates random suffix, so this may not work
+              PR_NUM=${{ github.event.pull_request.number }}
+              TEST_URL="https://ropi-aoss-staging--pr-${PR_NUM}-aoss-staging.web.app"
+              echo "::warning::Using constructed preview URL (may be inaccurate): ${TEST_URL}"
+            fi
           else
             # Default to staging
             TEST_URL="https://ropi-aoss-staging.web.app"
