@@ -1,0 +1,332 @@
+================================================================================
+PROMPT_019A_v1.10_AUDIT.txt
+Ops — Set Admin Custom Claim Workflow (Very Robust Decode)
+================================================================================
+
+Date: 2025-12-04
+Executor: Homer
+Owner: Lisa (final approver)
+Relay: Theo
+Goal: Implement very robust decode for all secret formats and complete workflow
+
+================================================================================
+STEP 1 — IMPLEMENT VERY ROBUST DECODE PATCH
+================================================================================
+
+Branch: fix/set-admin-decode-final_PROMPT_019A_v1.10
+Commit: 95d900c
+PR: https://github.com/twgallo13/ROPI-V2.1/pull/177
+
+Changes Made:
+✅ Replaced robust decode with very robust decode logic
+✅ Added whitespace trimming (sed removes leading/trailing spaces)
+✅ Added quoted JSON string support (python3 JSON.loads unescape)
+✅ Added raw JSON detection (detects { or [ after trim)
+✅ Enhanced base64 decode (tr -d '\r\n' removes all line breaks)
+✅ Improved validation (python3 fallback to jq)
+✅ Better error diagnostics (160-char preview on decode fail)
+
+Key Features:
+1. Whitespace Trimming: sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+2. Quoted JSON: python3 -c "import sys,json; print(json.loads(sys.stdin.read()))"
+3. Raw JSON: Direct write if starts with { or [
+4. Base64 CRLF: tr -d '\r\n' before base64 --decode
+5. JSON Validation: python3 json.load() or jq fallback
+6. Error Preview: Shows first 160 chars + base64 error output
+
+Merge Result:
+✅ PR #177 squashed and merged to aoss-main
+✅ Merge commit: 123952c
+✅ Branch deleted
+✅ Message: "PROMPT_019A_v1.10 — merged by Homer (very robust decode for all secret formats)"
+
+================================================================================
+STEP 2 — MANUAL SECRET UPDATE REQUIRED (THEO/LISA)
+================================================================================
+
+⚠️ BLOCKING: The following must be done before workflow will succeed
+
+Task: Upload clean single-line base64 to GitHub staging environment secret
+
+Service Account File (Theo's machine):
+Path: C:\Users\twgal\Downloads\ropi-bccee-41414bc9f52c.json
+
+PowerShell Commands (Theo to run):
+```powershell
+# Re-encode without CRLF
+$path = 'C:\Users\twgal\Downloads\ropi-bccee-41414bc9f52c.json'
+$b64 = [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($path))
+$b64 = $b64 -replace "`r`n",""
+
+# Verify (should be single line)
+Write-Host "Length: $($b64.Length)"
+Write-Host "First 80 chars: $($b64.Substring(0,[Math]::Min(80,$b64.Length)))"
+
+# Copy to clipboard
+$b64 | Set-Clipboard
+Write-Host "`nBase64 copied to clipboard. Paste into GitHub Secrets."
+```
+
+GitHub Secret Update:
+1. Go to: https://github.com/twgallo13/ROPI-V2.1/settings/environments
+2. Click "staging" environment
+3. Under "Environment secrets", find GCP_SA_KEY_BASE64
+4. Click "Update" (or "Add secret" if missing)
+5. Paste the single-line base64 string (from clipboard)
+6. Click "Update secret"
+
+Verification:
+- Secret should be continuous base64 string (no newlines)
+- Should start with: ewogICJ0eXBlIjog... or similar
+- Length should be ~1700-2000 characters
+- NO surrounding quotes
+- NO line breaks or CRLF
+
+================================================================================
+STEP 3 — TRIGGER WORKFLOW (AFTER SECRET UPDATED)
+================================================================================
+
+Workflow: Ops — Set Admin Custom Claim
+URL: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+
+Manual Trigger Steps:
+1. Click "Run workflow" button (right side)
+2. Select branch: aoss-main
+3. Input email: theo@shiekhshoes.org
+4. Click "Run workflow"
+
+Environment Approval (if required):
+- Yellow banner: "Waiting for approval"
+- Click "Review deployments"
+- Select: staging
+- Click "Approve and deploy"
+- Note: "PROMPT_019A_v1.10 — approve staging run"
+
+================================================================================
+STEP 4 — DECODE STEP VERIFICATION (TO BE CAPTURED)
+================================================================================
+
+[PENDING RUN]
+
+Expected Success Indicators:
+✅ No "GCP_SA_KEY_BASE64 is empty" error
+✅ No "base64: invalid input" error
+✅ No "Decoded /tmp/sa.json is not valid JSON" error
+✅ "Decoded service account JSON present at /tmp/sa.json (validated)"
+
+Expected Log Flow:
+
+[Decode service account key (very robust)]
+- Trimming whitespace from secret
+- Detecting format: raw JSON / quoted JSON / base64
+- If base64: Stripping CRLF, decoding
+- Validating JSON with python3 (or jq fallback)
+- "Decoded service account JSON present at /tmp/sa.json (validated)"
+- chmod 600 /tmp/sa.json
+
+[Install Node (if needed) and deps]
+- corepack enable
+- npm ci (if scripts/package.json exists)
+
+[Run set-admin script]
+- node scripts/set-admin-custom-claim.js theo@shiekhshoes.org
+- Expected: "Custom claim 'admin' set to true for theo@shiekhshoes.org"
+
+[Verify claim (server-side)]
+- admin.auth().getUserByEmail('theo@shiekhshoes.org')
+- Expected: customClaims: { admin: true }
+
+[Job Status]
+✅ SUCCESS (green checkmark)
+
+================================================================================
+STEP 5 — ACTUAL RUN RESULTS
+================================================================================
+
+[TO BE FILLED AFTER WORKFLOW COMPLETES]
+
+Run URL: [PENDING]
+Run ID: [PENDING]
+Triggered By: [PENDING - Theo or Lisa]
+Triggered At: [PENDING]
+Environment: staging
+Approval: [PENDING - who approved]
+
+Decode Step Logs:
+[PASTE LOGS HERE - specifically the line:]
+"Decoded service account JSON present at /tmp/sa.json (validated)"
+
+Set Admin Script Output:
+[PASTE LOGS HERE - specifically:]
+"Custom claim 'admin' set to true for theo@shiekhshoes.org"
+
+Verify Claim Output:
+[PASTE LOGS HERE - specifically:]
+"customClaims: { admin: true }"
+
+Job Duration: [PENDING]
+Job Status: [PENDING]
+
+Success Checklist:
+[ ] No base64 decode errors
+[ ] No JSON validation errors
+[ ] Decode validation message present
+[ ] Set-admin script succeeded
+[ ] Claim verification shows admin: true
+[ ] Job status: SUCCESS
+
+================================================================================
+STEP 6 — TROUBLESHOOTING (IF DECODE STILL FAILS)
+================================================================================
+
+If "base64: invalid input" persists:
+1. Check secret contains ONLY base64 string (no quotes, no whitespace)
+2. Verify secret length (should be ~1700-2000 chars)
+3. Re-encode with PowerShell commands above
+4. Ensure no CRLF in secret (very robust decode should handle, but verify)
+
+If "not valid JSON" error:
+1. Check preview (first 400 chars) in logs
+2. Verify service account JSON has required fields:
+   - type: "service_account"
+   - project_id: "ropi-bccee"
+   - private_key_id, private_key, client_email, etc.
+3. Test decode locally:
+   ```bash
+   echo "BASE64_STRING" | base64 --decode | python3 -m json.tool
+   ```
+
+If python3 validation fails:
+- Check python3 is available (should be on ubuntu-latest)
+- Fallback to jq should occur automatically
+- Check jq install succeeds
+
+Diagnostic Commands (if needed):
+```bash
+# Check secret format (first 80 chars)
+echo "${GCP_SA_KEY_BASE64}" | head -c 80
+
+# Check for CRLF
+echo "${GCP_SA_KEY_BASE64}" | od -c | grep '\\r'
+
+# Test decode
+echo "${GCP_SA_KEY_BASE64}" | tr -d '\r\n' | base64 --decode | head -c 200
+```
+
+================================================================================
+STEP 7 — PR COMMENT / SLACK UPDATE
+================================================================================
+
+[TO BE POSTED AFTER SUCCESSFUL RUN]
+
+Template:
+```
+PROMPT_019A_v1.10 — Completed by Homer
+
+✅ Merged PR #177: fix/set-admin-decode-final_PROMPT_019A_v1.10 (commit 95d900c → 123952c)
+✅ Workflow: Ops — Set Admin Custom Claim
+✅ Run URL: [INSERT RUN URL]
+✅ Branch: aoss-main
+✅ Email: theo@shiekhshoes.org
+✅ Decode step: Decoded service account JSON present at /tmp/sa.json (validated)
+✅ gcloud active account: [service-account@ropi-bccee.iam.gserviceaccount.com]
+✅ Set-admin script: Custom claim 'admin' set to true for theo@shiekhshoes.org
+✅ Verify claim: customClaims: { admin: true }
+✅ Job status: SUCCESS
+✅ Approved by: [Theo/Lisa name]
+
+Audit: PROMPT_019A_v1.10_AUDIT.txt
+```
+
+================================================================================
+VERY ROBUST DECODE PATCH DETAILS
+================================================================================
+
+File: .github/workflows/set-admin-claim.yml
+Step: "Decode service account key (very robust)"
+Version: PROMPT_019A_v1.10
+
+Key Logic Flow:
+1. Check secret not empty: [ -z "$SA_RAW" ] && exit 1
+2. Trim whitespace: sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+3. Detect format:
+   a. If starts/ends with ": Quoted JSON → python3 unescape
+   b. Else if starts with { or [: Raw JSON → direct write
+   c. Else: Base64 → tr -d '\r\n' | base64 --decode
+4. Validate JSON:
+   a. Try python3 json.load()
+   b. Fallback to jq if python not present
+5. Set permissions: chmod 600 /tmp/sa.json
+6. Success message: "Decoded service account JSON present at /tmp/sa.json (validated)"
+
+Supported Secret Formats:
+✅ Clean base64 (single line)
+✅ Base64 with Windows CRLF
+✅ Raw JSON (multi-line or single-line)
+✅ Quoted JSON string (escaped quotes/newlines)
+✅ Whitespace-padded secrets
+✅ Mixed formats from different entry methods
+
+Error Handling:
+- Base64 decode failure: Shows first 160 chars + error output
+- JSON validation failure: Shows first 400 chars of decoded content
+- Empty secret: Clear error message
+- Python fallback: Automatic jq install if python unavailable
+
+Benefits Over Previous Versions:
+v1.8 (PR #176):
+- Only handled raw JSON or base64
+- No whitespace trimming
+- No quoted JSON support
+- Basic CRLF handling
+
+v1.10 (PR #177):
+- ✅ Whitespace trimming
+- ✅ Quoted JSON unescape
+- ✅ Enhanced CRLF handling
+- ✅ Better validation (python3 primary)
+- ✅ Comprehensive error diagnostics
+- ✅ All secret format support
+
+================================================================================
+NEXT STEPS FOR THEO/LISA
+================================================================================
+
+Immediate (Required):
+1. ⚠️ Update GCP_SA_KEY_BASE64 secret in staging environment (see Step 2)
+2. ⚠️ Trigger workflow at: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+3. ⚠️ Approve staging environment deployment (if yellow banner appears)
+4. ⚠️ Capture logs and paste into this audit (see Step 5)
+
+After Successful Run:
+5. ✅ Verify admin claim in Firebase Console
+6. ✅ Test admin features in staging app (e.g., resolve any observation)
+7. ✅ Post PR comment or Slack update with run results
+8. ✅ Close any related issues
+
+Optional Verification:
+- Check Firebase Console: Authentication → Users → theo@shiekhshoes.org
+- Verify custom claims show: { admin: true }
+- Test in staging app: Sign in as theo@shiekhshoes.org, verify admin badge in TopBar
+- Test resolve any observation (admin permission)
+
+================================================================================
+HOMER COMPLETION STATUS
+================================================================================
+
+✅ Branch created: fix/set-admin-decode-final_PROMPT_019A_v1.10
+✅ Very robust decode implemented
+✅ Commit created: 95d900c
+✅ PR opened: #177
+✅ PR merged to aoss-main: commit 123952c
+✅ Audit created: PROMPT_019A_v1.10_AUDIT.txt
+⏳ Manual secret update: PENDING (Theo/Lisa)
+⏳ Workflow trigger: PENDING (Theo/Lisa)
+⏳ Log capture: PENDING (Theo/Lisa)
+⏳ PR comment: PENDING (after successful run)
+
+Homer's work complete. Awaiting manual steps from Theo/Lisa.
+
+================================================================================
+END OF AUDIT (PENDING RUN COMPLETION)
+================================================================================
