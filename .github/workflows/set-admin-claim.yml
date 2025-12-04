@@ -18,40 +18,68 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Decode service account key (robust)
+      - name: Decode service account key (very robust)
         env:
           GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
         run: |
-          # Robust decode: accept either raw JSON or base64, strip CRLFs, validate JSON
-          SA_B64="${GCP_SA_KEY_BASE64:-}"
-          if [ -z "$SA_B64" ]; then
+          SA_RAW="${GCP_SA_KEY_BASE64:-}"
+          if [ -z "$SA_RAW" ]; then
             echo "::error::GCP_SA_KEY_BASE64 is empty"
             exit 1
           fi
 
-          # Detect if it looks like raw JSON (starts with { or [)
-          firstchar="$(printf '%s' "$SA_B64" | head -c 1)"
-          if [ "$firstchar" = "{" ] || [ "$firstchar" = "[" ]; then
-            printf '%s' "$SA_B64" > /tmp/sa.json
+          # Trim whitespace
+          SA_TRIM="$(printf '%s' "$SA_RAW" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+          # If quoted JSON string, unquote + unescape via python
+          if [ "$(printf '%s' "$SA_TRIM" | head -c 1)" = '"' ] && [ "$(printf '%s' "$SA_TRIM" | tail -c 1)" = '"' ]; then
+            printf '%s' "$SA_TRIM" | python3 -c "import sys,json; print(json.loads(sys.stdin.read()))" > /tmp/sa.json 2>/tmp/decode.err || {
+              echo "::warning::python unescape of quoted JSON failed; stripping quotes and continuing"
+              printf '%s' "${SA_TRIM:1:-1}" > /tmp/sa.json
+            }
           else
-            # Strip CR/LF then decode base64
-            printf '%s' "$SA_B64" | tr -d '\r\n' | base64 --decode > /tmp/sa.json
+            FIRSTCHAR="$(printf '%s' "$SA_TRIM" | sed -e 's/[[:space:]]//g' | head -c 1 || true)"
+            if [ "$FIRSTCHAR" = "{" ] || [ "$FIRSTCHAR" = "[" ]; then
+              # Looks like raw JSON
+              printf '%s' "$SA_TRIM" > /tmp/sa.json
+            else
+              # Assume base64; strip CRLFs and decode
+              printf '%s' "$SA_TRIM" | tr -d '\r\n' | base64 --decode > /tmp/sa.json 2>/tmp/base64.err || {
+                echo "::error::base64 decode failed (invalid input)"
+                echo "First 160 chars of trimmed secret:"
+                printf '%s' "$SA_TRIM" | head -c 160
+                echo
+                echo "base64 error output:"
+                cat /tmp/base64.err || true
+                exit 1
+              }
+            fi
           fi
 
-          # Ensure jq is available to validate JSON; install if missing
-          if ! command -v jq >/dev/null 2>&1; then
-            echo "Installing jq for JSON validation"
-            sudo apt-get update && sudo apt-get install -y jq
+          # Validate JSON using python3 or fallback to jq
+          if command -v python3 >/dev/null 2>&1; then
+            python3 - <<'PY' || {
+              echo "::error::python3 JSON validation failed"
+              head -c 400 /tmp/sa.json || true
+              exit 1
+            }
+import sys, json
+try:
+  json.load(open('/tmp/sa.json'))
+  sys.exit(0)
+except Exception as e:
+  print('::error::Decoded /tmp/sa.json is not valid JSON:', e)
+  print(open('/tmp/sa.json').read(400))
+  sys.exit(1)
+PY
+          else
+            if ! command -v jq >/dev/null 2>&1; then
+              sudo apt-get update && sudo apt-get install -y jq
+            fi
+            jq -e . /tmp/sa.json >/dev/null 2>&1 || { echo "::error::Decoded /tmp/sa.json is not valid JSON (jq)"; head -c 400 /tmp/sa.json; exit 1; }
           fi
 
-          # Validate decoded JSON
-          if ! jq -e . /tmp/sa.json >/dev/null 2>&1; then
-            echo "::error::Decoded /tmp/sa.json is not valid JSON"
-            echo "Preview of decoded contents:"
-            head -c 400 /tmp/sa.json || true
-            exit 1
-          fi
-          
+          echo "Decoded service account JSON present at /tmp/sa.json (validated)"
           chmod 600 /tmp/sa.json
 
       - name: Install Node (if needed) and deps
