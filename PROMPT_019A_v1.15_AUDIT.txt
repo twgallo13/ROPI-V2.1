@@ -1,0 +1,243 @@
+# PROMPT_019A_v1.15 AUDIT - Gcloud Diagnostics and Activation
+
+**Date**: December 5, 2025  
+**Task**: Add comprehensive diagnostics to troubleshoot gcloud activation issues  
+**Status**: PR MERGED - Ready for Workflow Execution
+
+## Summary
+This update adds extensive diagnostic logging and proper gcloud activation to identify and fix the "no active gcloud account" error that has been preventing the set-admin workflow from succeeding.
+
+## Changes Implemented
+
+### 1. Branch Created ✅
+- **Branch**: `fix/set-admin-gcloud-diagnostics_PROMPT_019A_v1.15`
+- **Base**: `aoss-main`
+- **Commit**: 2d897d2
+
+### 2. PR Created & Merged ✅
+- **PR #181**: https://github.com/twgallo13/ROPI-V2.1/pull/181
+- **Title**: "ci: add comprehensive gcloud diagnostics and activation (PROMPT_019A_v1.15)"
+- **Status**: Merged (commit: 88eb09b)
+
+### 3. Workflow Updates ✅
+
+#### Added: Diagnose gcloud & sa key (TEMP) step
+
+**Purpose**: Pre-activation diagnostics to identify issues
+
+**Checks performed**:
+1. ✅ gcloud version (verify installation)
+2. ✅ `/tmp/sa.json` presence and `client_email` extraction
+3. ✅ `GCP_SA_KEY_BASE64` secret length (value not leaked)
+4. ✅ Test `gcloud auth activate-service-account` (dry run with error capture)
+5. ✅ Verify active account after test activation
+6. ✅ Test `gcloud auth print-access-token` (report length only)
+
+**Implementation note**: Uses `python3 -c` instead of heredoc to avoid YAML indentation issues.
+
+#### Added: Setup gcloud & activate service account step
+
+**Purpose**: Properly activate and configure gcloud
+
+**Steps**:
+1. Install `google-cloud-cli` if missing
+2. Validate `/tmp/sa.json` exists
+3. Activate SA: `gcloud auth activate-service-account --key-file=/tmp/sa.json --project=ropi-bccee`
+4. Set active account: `gcloud config set account <client_email>`
+5. Set project: `gcloud config set project ropi-bccee`
+6. Verify: `gcloud auth list --filter=status:ACTIVE`
+7. Test: `gcloud auth print-access-token` (capture and measure length)
+8. Exit with error if token generation fails
+
+#### Updated: Run set-admin script step
+
+**Changes**:
+- Added `EMAIL` environment variable (from workflow input)
+- Pre-flight verification of gcloud account and project
+- Inline Node script using `admin.credential.applicationDefault()`
+- Sets custom claim: `{ admin: true }`
+- Uses `GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json`
+
+## Diagnostic Expectations
+
+### Diagnose Step - Expected Output
+
+```
+---- gcloud version ----
+Google Cloud SDK XXX.X.X
+
+---- show /tmp/sa.json presence and client_email (safe) ----
+client_email: ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+
+---- Check env var length for GCP_SA_KEY_BASE64 (no value printed) ----
+GCP_SA_KEY_BASE64 length: XXXX
+
+---- Test activation commands (dry run) ----
+Attempting to activate service account and print active account...
+gcloud activate returned 0
+Active account after activation:
+ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+Attempting to print access token (preview length)...
+access-token length: XXX
+```
+
+### Setup gcloud Step - Expected Output
+
+```
+Activating service account...
+Setting gcloud account to: ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+Updated property [core/account].
+Setting project to ropi-bccee
+Updated property [core/project].
+Verify active account:
+ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+Attempting to print access token...
+access-token length: XXX
+gcloud activation OK
+```
+
+### Run set-admin Script - Expected Output
+
+```
+Confirm GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+Active gcloud account:
+ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+Using project:
+ropi-bccee
+Set admin claim for theo@shiekhshoes.org
+```
+
+## Next Steps
+
+### Step 1: Trigger Workflow ⏳
+
+**Instructions**:
+1. Navigate to: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+2. Click "Run workflow"
+3. Branch: `aoss-main`
+4. Email: `theo@shiekhshoes.org`
+5. Click "Run workflow"
+
+### Step 2: Approve Staging ⏳
+- Watch for deployment approval prompt
+- Review and approve staging environment
+
+### Step 3: Capture Diagnostic Logs ⏳
+
+**Required log excerpts** (paste into this audit):
+
+#### From "Diagnose gcloud & sa key (TEMP)":
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### From "Setup gcloud & activate service account":
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### From "Run set-admin script":
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### Run URL:
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### Final Status:
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+### Step 4: Analysis ⏳
+
+**If SUCCESS**:
+- Verify admin claim in staging (browser console check)
+- Create follow-up PR to remove TEMP diagnostic step
+- Update this audit with successful run logs
+
+**If FAILURE**:
+- Analyze diagnostic output line-by-line
+- Identify where activation fails (diagnose vs setup vs run)
+- Check for:
+  - Missing gcloud installation
+  - Invalid service account JSON
+  - Missing/empty GCP_SA_KEY_BASE64 secret
+  - IAM permission issues
+  - Token generation failures
+
+### Step 5: Remove TEMP Diagnostic Step ⏳
+After successful run and log capture:
+- Create PR to remove "Diagnose gcloud & sa key (TEMP)" step
+- Keep "Setup gcloud & activate service account" step
+- Update workflow to production-ready state
+
+## Technical Notes
+
+### YAML Heredoc Issue Fixed
+The diagnostic step initially used a Python heredoc (`<<'PY'`), which caused YAML parse errors because unindented heredoc content is interpreted as root-level keys. Fixed by using `python3 -c` with inline script.
+
+### Why Separate Diagnose and Setup Steps
+1. **Diagnose**: Captures pre-activation state, tests activation without side effects
+2. **Setup**: Performs actual activation with error handling
+
+This separation helps identify whether the problem is:
+- **Before activation**: Missing files, invalid secrets, gcloud not installed
+- **During activation**: `gcloud auth activate-service-account` fails
+- **After activation**: Account not set as active, token generation fails
+
+### Credential Flow
+```
+Secret (base64) → Decode → /tmp/sa.json → gcloud activate → Active account
+                                        ↓
+                            GOOGLE_APPLICATION_CREDENTIALS → Node SDK
+```
+
+## Troubleshooting Guide
+
+### If "gcloud not installed" in diagnose step:
+- Setup step should install it automatically
+- Verify Ubuntu runner has apt access
+
+### If "/tmp/sa.json NOT FOUND":
+- Decode step failed to create file
+- Check GCP_SA_KEY_BASE64 secret exists and is valid base64
+
+### If "GCP_SA_KEY_BASE64 UNSET":
+- Secret not configured in staging environment
+- Go to: Settings → Environments → staging → Secrets
+
+### If "gcloud activate failed":
+- Check error output in diagnostic logs
+- Likely invalid service account JSON format
+- Verify JSON has required fields: `client_email`, `private_key`, etc.
+
+### If "print-access-token failed":
+- Service account activated but can't generate tokens
+- Check IAM permissions in GCP console
+- SA needs `iam.serviceAccountTokenCreator` or similar
+
+### If Node script fails:
+- Check GOOGLE_APPLICATION_CREDENTIALS is set
+- Verify applicationDefault() can read /tmp/sa.json
+- Check Firebase Admin SDK permissions (needs `firebaseauth.users.update`)
+
+## Workflow Execution Checklist
+
+- [ ] PR #181 merged ✅
+- [ ] Workflow triggered (aoss-main, theo@shiekhshoes.org)
+- [ ] Staging environment approved
+- [ ] Diagnostic logs captured
+- [ ] Setup gcloud logs captured
+- [ ] Run script logs captured
+- [ ] Run URL recorded
+- [ ] Final status: SUCCESS or FAILURE
+- [ ] If success: Admin claim verified in browser
+- [ ] If success: TEMP step removal PR created
+- [ ] Audit updated with results
+
+---
+
+**STATUS**: Merged and ready for execution. Awaiting workflow trigger and log capture.
