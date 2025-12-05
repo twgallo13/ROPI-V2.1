@@ -1,0 +1,19 @@
+
+> @ropi-aoss/web@1.0.0 build /workspaces/ROPI-V2.1/packages/web
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+[plugin:vite:resolve] [plugin vite:resolve] Module "crypto" has been externalized for browser compatibility, imported by "/workspaces/ROPI-V2.1/packages/sdk/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+✓ 414 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.46 kB │ gzip:   0.30 kB
+dist/assets/index-BDdx6WNy.css   61.75 kB │ gzip:   8.92 kB
+dist/assets/index-CoF_KWEb.js   868.38 kB │ gzip: 225.20 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.05s

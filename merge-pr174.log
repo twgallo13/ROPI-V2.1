@@ -1,0 +1,29 @@
+Merge made by the 'ort' strategy.
+ PROMPT_019A_vB_AUDIT.txt                           | 1027 ++++++++++++++++++++
+ PROMPT_019A_vC_AUDIT.txt                           |  653 +++++++++++++
+ firestore-debug.log                                |  195 ++--
+ packages/api/src/endpoints/processImportBatch.ts   |   93 ++
+ packages/api/src/index.ts                          |   43 +
+ packages/api/src/services/productCommitService.ts  |  319 ++++++
+ packages/api/test/productCommitService.test.ts     |  425 ++++++++
+ packages/sdk/package.json                          |    4 +-
+ packages/sdk/src/index.ts                          |    1 +
+ packages/sdk/src/schema/importEngine.ts            |    6 +
+ packages/sdk/src/schema/product.ts                 |   15 +
+ .../src/components/import/ImportConfirmStep.tsx    |   65 +-
+ packages/web/src/pages/ImportBatchDetailPage.tsx   |   38 +-
+ packages/web/test/ImportBatchDetailPage.test.tsx   |  271 ++++++
+ pnpm-lock.yaml                                     |    8 +-
+ test-output-api.txt                                |  192 ++++
+ test-output-sdk.txt                                |   47 +
+ test-output-web.txt                                |  635 ++++++++++++
+ 18 files changed, 3889 insertions(+), 148 deletions(-)
+ create mode 100644 PROMPT_019A_vB_AUDIT.txt
+ create mode 100644 PROMPT_019A_vC_AUDIT.txt
+ create mode 100644 packages/api/src/endpoints/processImportBatch.ts
+ create mode 100644 packages/api/src/services/productCommitService.ts
+ create mode 100644 packages/api/test/productCommitService.test.ts
+ create mode 100644 packages/web/test/ImportBatchDetailPage.test.tsx
+ create mode 100644 test-output-api.txt
+ create mode 100644 test-output-sdk.txt
+ create mode 100644 test-output-web.txt

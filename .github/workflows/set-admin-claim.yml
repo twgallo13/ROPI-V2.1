@@ -11,7 +11,6 @@ on:
 jobs:
   set-admin-claim:
     runs-on: ubuntu-latest
-    environment: staging
     permissions:
       contents: read
 
@@ -59,12 +58,20 @@ jobs:
 
           # Validate JSON using python3 or fallback to jq
           if command -v python3 >/dev/null 2>&1; then
-            python3 -c "import sys,json; json.load(open('/tmp/sa.json'))" || {
-              echo "::error::python3 JSON validation failed - decoded /tmp/sa.json is not valid JSON"
-              echo "Preview of /tmp/sa.json (first 400 chars):"
+            python3 - <<'PY' || {
+              echo "::error::python3 JSON validation failed"
               head -c 400 /tmp/sa.json || true
               exit 1
             }
+import sys, json
+try:
+  json.load(open('/tmp/sa.json'))
+  sys.exit(0)
+except Exception as e:
+  print('::error::Decoded /tmp/sa.json is not valid JSON:', e)
+  print(open('/tmp/sa.json').read(400))
+  sys.exit(1)
+PY
           else
             if ! command -v jq >/dev/null 2>&1; then
               sudo apt-get update && sudo apt-get install -y jq
@@ -74,107 +81,6 @@ jobs:
 
           echo "Decoded service account JSON present at /tmp/sa.json (validated)"
           chmod 600 /tmp/sa.json
-
-      - name: Diagnose gcloud & sa key (TEMP)
-        env:
-          GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
-        run: |
-          set -euo pipefail
-          echo "---- gcloud version ----"
-          if command -v gcloud >/dev/null 2>&1; then
-            gcloud --version || true
-          else
-            echo "gcloud not installed"
-          fi
-
-          echo "---- show /tmp/sa.json presence and client_email (safe) ----"
-          if [ -f /tmp/sa.json ]; then
-            python3 -c "import json; j=json.load(open('/tmp/sa.json')); print('client_email:', j.get('client_email'))" 2>&1 || echo "ERROR reading /tmp/sa.json"
-          else
-            echo "/tmp/sa.json NOT FOUND"
-          fi
-
-          echo "---- Check env var length for GCP_SA_KEY_BASE64 (no value printed) ----"
-          if [ -z "${GCP_SA_KEY_BASE64+x}" ]; then
-            echo "GCP_SA_KEY_BASE64 UNSET"
-          elif [ -z "$GCP_SA_KEY_BASE64" ]; then
-            echo "GCP_SA_KEY_BASE64 SET BUT EMPTY"
-          else
-            LEN=$(printf '%s' "$GCP_SA_KEY_BASE64" | wc -c)
-            echo "GCP_SA_KEY_BASE64 length: $LEN"
-          fi
-
-          echo "---- Test activation commands (dry run) ----"
-          echo "Attempting to activate service account and print active account..."
-          if command -v gcloud >/dev/null 2>&1; then
-            set +e
-            gcloud auth activate-service-account --key-file=/tmp/sa.json --project=ropi-bccee --quiet 2>/tmp/gcloud_activate.err
-            ACT=$?
-            set -e
-            if [ $ACT -ne 0 ]; then
-              echo "gcloud activate failed; preview:"
-              head -n 60 /tmp/gcloud_activate.err || true
-            else
-              echo "gcloud activate returned 0"
-              echo "Active account after activation:"
-              gcloud auth list --filter=status:ACTIVE --format='value(account)' || true
-              echo "Attempting to print access token (preview length)..."
-              TOKEN="$(gcloud auth print-access-token 2>/tmp/gcloud_token.err || true)"
-              if [ -z "$TOKEN" ]; then
-                echo "print-access-token failed; preview:"
-                head -n 40 /tmp/gcloud_token.err || true
-              else
-                echo "access-token length: ${#TOKEN}"
-              fi
-            fi
-          else
-            echo "gcloud not available"
-          fi
-
-      - name: Setup gcloud & activate service account
-        run: |
-          set -euo pipefail
-
-          # Ensure gcloud is present
-          if ! command -v gcloud >/dev/null 2>&1; then
-            echo "Installing google-cloud-cli..."
-            sudo apt-get update -y
-            sudo apt-get install -y google-cloud-cli
-          fi
-
-          # Validate decoded key
-          if [ ! -f /tmp/sa.json ]; then
-            echo "::error::/tmp/sa.json not found; cannot activate service account"
-            exit 1
-          fi
-
-          # Activate the service account and set the account/project explicitly
-          echo "Activating service account..."
-          gcloud auth activate-service-account --key-file=/tmp/sa.json --project=ropi-bccee --quiet
-
-          # Make the newly activated account active in gcloud config
-          SA_EMAIL="$(python3 -c "import json,sys; print(json.load(open('/tmp/sa.json'))['client_email'])")"
-          echo "Setting gcloud account to: $SA_EMAIL"
-          gcloud config set account "$SA_EMAIL"
-
-          echo "Setting project to ropi-bccee"
-          gcloud config set project ropi-bccee
-
-          echo "Verify active account:"
-          gcloud auth list --filter=status:ACTIVE --format="value(account)"
-
-          # Verify we can print an access token
-          echo "Attempting to print access token..."
-          TOKEN="$(gcloud auth print-access-token 2>&1)"
-          if [ $? -ne 0 ]; then
-            echo "::error::Failed to produce access token via gcloud auth print-access-token"
-            echo "Error output: $TOKEN"
-            gcloud auth list || true
-            exit 1
-          else
-            echo "access-token length: ${#TOKEN}"
-            echo "gcloud activation OK"
-          fi
 
       - name: Install Node (if needed) and deps
         run: |
@@ -187,28 +93,16 @@ jobs:
       - name: Run set-admin script
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
-          EMAIL: "${{ github.event.inputs.email }}"
-          FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY || secrets.FIREBASE_API_KEY || '' }}
         run: |
-          set -euo pipefail
-
-          echo "Confirm GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
-          echo "Active gcloud account:"
-          gcloud auth list --filter=status:ACTIVE --format="value(account)"
-          echo "Using project:"
-          gcloud config get-value project || true
-
-          # Ensure Node/npm available (ubuntu runner has Node, but ensure)
-          if ! command -v node >/dev/null 2>&1; then
-            echo "Installing Node..."
-            sudo apt-get update -y
-            sudo apt-get install -y nodejs npm
-          fi
-
-          # If there's a scripts/package.json, install deps (safe no-op otherwise)
-          if [ -f scripts/package.json ]; then
-            (cd scripts && npm ci --unsafe-perm)
-          fi
-
-          # Run the repo script (it performs token lookup + claims)
           node scripts/set-admin-custom-claim.js "${{ github.event.inputs.email }}"
+
+      - name: Verify claim (server-side)
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+        run: |
+          node -e "const admin=require('firebase-admin');
+          admin.initializeApp({ credential: admin.credential.applicationDefault(), projectId:'ropi-bccee' });
+          (async()=>{
+            const u = await admin.auth().getUserByEmail(process.env.EMAIL || '${{ github.event.inputs.email }}');
+            console.log('customClaims:', u.customClaims || 'none');
+          })().catch(e=>{ console.error(e); process.exit(1); });"

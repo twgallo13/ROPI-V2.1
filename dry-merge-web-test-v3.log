@@ -1,0 +1,941 @@
+
+> @ropi-aoss/web@1.0.0 test /workspaces/ROPI-V2.1/packages/web
+> vitest run
+
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+stderr | src/services/observations.test.ts > Observations Service - localStorage fallback > should handle errors gracefully when localStorage is full
+Failed to save observations to localStorage: Error: QuotaExceededError
+    at Proxy.<anonymous> (/workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:248:13)
+    at Proxy.mockCall (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+spy@1.6.1/node_modules/@vitest/spy/dist/index.js:50:17)
+    at Proxy.spy (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/tinyspy@2.2.1/node_modules/tinyspy/dist/index.js:42:80)
+    at saveToLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:116:18)
+    at Module.addObservation (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:244:3)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:260:31
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+
+stderr | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+Failed to load observations from localStorage: SyntaxError: Unexpected token 'i', "invalid json {{{" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadFromLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:92:31)
+    at Module.listObservations (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:193:10)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:286:32
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+
+ ✓ src/services/observations.test.ts  (12 tests) 83ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: ReferenceError: Cannot access 'mockGetFirestore' before initialization
+    at Proxy.getFirestore (/workspaces/ROPI-V2.1/packages/web/test/ImportBatchDetailPage.test.tsx:26:30)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/pages/ImportBatchDetailPage.tsx:7:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should initialize with no user
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should expose resendVerificationEmail function
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should have correct interface shape
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 42ms
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 28ms
+ ✓ test/envPolicy.test.ts  (19 tests) 8ms
+ ✓ test/smoke.observations.test.tsx  (4 tests) 6ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/smoke.product-editor-observations.test.tsx  (1 test) 126ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+ ✓ test/nav.test.ts  (4 tests) 6ms
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > renders with basic structure
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > calls listenToObservations on mount
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > shows offline banner when Firebase unavailable
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 65ms
+ ❯ test/ImportBatchDetailPage.test.tsx  (5 tests | 5 failed) 5102ms
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+     → Unable to find an element with the text: /1 Created/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+     → Unable to find an element with the text: /View Product \(Created\)/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+     → Unable to find an element with the text: /View Product \(Updated\)/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+     → Unable to find an element with the text: /Blocked by validation/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+     → Unable to find an element with the text: /View Product \(Created\)/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+TestingLibraryElementError: Unable to find an element with the text: /1 Created/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ test/ImportBatchDetailPage.test.tsx:168:11
+    166|     );
+    167| 
+    168|     await waitFor(() => {
+       |           ^
+    169|       expect(screen.getByText(/1 Created/i)).toBeInTheDocument();
+    170|       expect(screen.getByText(/1 Updated/i)).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+TestingLibraryElementError: Unable to find an element with the text: /View Product \(Created\)/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ test/ImportBatchDetailPage.test.tsx:191:11
+    189|     );
+    190| 
+    191|     await waitFor(() => {
+       |           ^
+    192|       const link = screen.getByText(/View Product \(Created\)/i);
+    193|       expect(link).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+TestingLibraryElementError: Unable to find an element with the text: /View Product \(Updated\)/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ test/ImportBatchDetailPage.test.tsx:214:11
+    212|     );
+    213| 
+    214|     await waitFor(() => {
+       |           ^
+    215|       const link = screen.getByText(/View Product \(Updated\)/i);
+    216|       expect(link).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+TestingLibraryElementError: Unable to find an element with the text: /Blocked by validation/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ test/ImportBatchDetailPage.test.tsx:237:11
+    235|     );
+    236| 
+    237|     await waitFor(() => {
+       |           ^
+    238|       expect(screen.getByText(/Blocked by validation/i)).toBeInTheDocu…
+    239|       expect(screen.queryByText(/View Product/i)).not.toBeInTheDocumen…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+TestingLibraryElementError: Unable to find an element with the text: /View Product \(Created\)/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mImport Batch Details[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-loading"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"spinner-large"[39m
+          [36m/>[39m
+          [36m<p>[39m
+            [0mLoading batch details...[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mImport Batch Details[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-loading"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"spinner-large"[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mLoading batch details...[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ test/ImportBatchDetailPage.test.tsx:257:11
+    255|     );
+    256| 
+    257|     await waitFor(() => {
+       |           ^
+    258|       // Check for all three outcomes
+    259|       expect(screen.getByText(/View Product \(Created\)/i)).toBeInTheD…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  5 failed | 57 passed (62)
+   Start at  08:27:59
+   Duration  6.77s (transform 708ms, setup 0ms, collect 2.83s, tests 5.47s, environment 5.66s, prepare 1.25s)
+
+/workspaces/ROPI-V2.1/packages/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 test: `vitest run`
+Exit status 1

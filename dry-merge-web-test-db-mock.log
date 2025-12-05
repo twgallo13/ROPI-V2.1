@@ -1,0 +1,4605 @@
+
+> @ropi-aoss/web@1.0.0 test /workspaces/ROPI-V2.1/packages/web
+> vitest run
+
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+stderr | src/services/observations.test.ts > Observations Service - localStorage fallback > should handle errors gracefully when localStorage is full
+Failed to save observations to localStorage: Error: QuotaExceededError
+    at Proxy.<anonymous> (/workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:248:13)
+    at Proxy.mockCall (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+spy@1.6.1/node_modules/@vitest/spy/dist/index.js:50:17)
+    at Proxy.spy (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/tinyspy@2.2.1/node_modules/tinyspy/dist/index.js:42:80)
+    at saveToLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:116:18)
+    at Module.addObservation (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:244:3)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:260:31
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+
+stderr | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+Failed to load observations from localStorage: SyntaxError: Unexpected token 'i', "invalid json {{{" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadFromLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:92:31)
+    at Module.listObservations (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:193:10)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:286:32
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+
+ ✓ src/services/observations.test.ts  (12 tests) 92ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should initialize with no user
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should expose resendVerificationEmail function
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should have correct interface shape
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 39ms
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 32ms
+ ✓ test/envPolicy.test.ts  (19 tests) 8ms
+ ✓ test/smoke.observations.test.tsx  (4 tests) 9ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/smoke.product-editor-observations.test.tsx  (1 test) 116ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > renders with basic structure
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > calls listenToObservations on mount
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > shows offline banner when Firebase unavailable
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 63ms
+ ✓ test/nav.test.ts  (4 tests) 6ms
+ ❯ test/ImportBatchDetailPage.test.tsx  (5 tests | 5 failed) 5144ms
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+     → Unable to find an element with the text: /1 Created/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mBatch: test.csv[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-detail-page"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-header"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"btn-back"[39m
+            [36m>[39m
+              [0m← Back to Import Manager[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-summary"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mBatch ID:[0m
+              [36m</strong>[39m
+              [36m<code>[39m
+                [0mtest-batch-001[0m
+              [36m</code>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mFile Name:[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mtest.csv[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mCreated:[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mJan 15, 2025, 12:00 PM[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mCreated By:[0m
+              [36m</strong>[39m
+              [36m<code>[39m
+                [0muser-123[0m
+              [36m</code>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mStatus:[0m
+              [36m</strong>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"status-badge processed"[39m
+              [36m>[39m
+                [0mProcessed[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"row-counts"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m3[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mTotal Rows[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card success"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mProducts Created[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card success"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mProducts Updated[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card blocked"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mRows Blocked[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card processed"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m0[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mProcessed[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card pending"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m0[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mPending[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card failed"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mFailed[0m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"filter-controls"[39m
+          [36m>[39m
+            [36m<label>[39m
+              [0mFilter by status:[0m
+            [36m</label>[39m
+            [36m<select>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"all"[39m
+              [36m>[39m
+                [0mAll Rows ([0m
+                [0m3[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"processed"[39m
+              [36m>[39m
+                [0mProcessed ([0m
+                [0m0[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"pending"[39m
+              [36m>[39m
+                [0mPending ([0m
+                [0m0[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"failed"[39m
+              [36m>[39m
+                [0mFailed ([0m
+                [0m1[0m
+                [0m)[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rows-table-wrapper"[39m
+          [36m>[39m
+            [36m<table[39m
+              [33mclass[39m=[32m"rows-table"[39m
+            [36m>[39m
+              [36m<thead>[39m
+                [36m<tr>[39m
+                  [36m<th>[39m
+                    [0mLine[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mSKU[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mTitle[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mStatus[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mErrors[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mProduct[0m
+                  [36m</th>[39m
+                [36m</tr>[39m
+              [36m</thead>[39m
+              [36m<tbody>[39m
+                [36m<tr[39m
+                  [33mclass[39m=[32m"row-completed"[39m
+                [36m>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"line-number"[39m
+                  [36m>[39m
+                    [0m1[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"sku"[39m
+                  [36m>[39m
+                    [36m<code>[39m
+                      [0mCREATED-001[0m
+                    [36m</code>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"title"[39m
+                  [36m>[39m
+                    [0mCreated Product[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"status-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"status-badge"[39m
+                    [36m>[39m
+                      [0mcompleted[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"errors-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"no-errors"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"product-cell"[39m
+                  [36m>[39m
+                    [36m<a[39m
+                      [33mclass[39m=[32m"product-link created"[39m
+                      [33mhref[39m=[32m"/products/created-001"[39m
+                    [36m>[39m
+                      [0mView Product (Created) →[0m
+                    [36m</a>[39m
+                  [36m</td>[39m
+                [36m</tr>[39m
+                [36m<tr[39m
+                  [33mclass[39m=[32m"row-completed"[39m
+                [36m>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"line-number"[39m
+                  [36m>[39m
+                    [0m2[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"sku"[39m
+                  [36m>[39m
+                    [36m<code>[39m
+                      [0mUPDATED-001[0m
+                    [36m</code>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"title"[39m
+                  [36m>[39m
+                    [0mUpdated Product[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"status-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"status-badge"[39m
+                    [36m>[39m
+                      [0mcompleted[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"errors-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"no-errors"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"product-cell"[39m
+                  [36m>[39m
+                    [36m<a[39m
+                      [33mclass[39m=[32m"product-link updated"[39m
+                      [33mhref[39m=[32m"/products/updated-001"[39m
+                    [36m>[39m
+                      [0mView Product (Updated) →[0m
+                    [36m</a>[39m
+                  [36m</td>[39m
+                [36m</tr>[39m
+                [36m<tr[39m
+                  [33mclass[39m=[32m"row-failed"[39m
+                [36m>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"line-number"[39m
+                  [36m>[39m
+                    [0m3[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"sku"[39m
+                  [36m>[39m
+                    [36m<code>[39m
+                      [0m—[0m
+                    [36m</code>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"title"[39m
+                  [36m>[39m
+                    [0m—[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"status-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"status-badge failed"[39m
+                    [36m>[39m
+                      [0mFailed[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"errors-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"error-count"[39m
+                    [36m>[39m
+                      [0m1[0m
+                      [0m error[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"product-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"blocked-badge"[39m
+                    [36m>[39m
+                      [0mBlocked by validation[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                [36m</tr>[39m
+              [36m</tbody>[39m
+            [36m</table>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m3[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mCREATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mCreated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link created"[39m
+                        [33mhref[39m=[32m"/products/created-001"[39m
+                      [36m>[39m
+                        [0mView Product (Created) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m2[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mUPDATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mUpdated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link updated"[39m
+                        [33mhref[39m=[32m"/products/updated-001"[39m
+                      [36m>[39m
+                        [0mView Product (Updated) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-failed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m3[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0m—[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge failed"[39m
+                      [36m>[39m
+                        [0mFailed[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"error-count"[39m
+                      [36m>[39m
+                        [0m1[0m
+                        [0m error[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"blocked-badge"[39m
+                      [36m>[39m
+                        [0mBlocked by validation[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+     → Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mCREATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mCreated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link created"[39m
+                        [33mhref[39m=[32m"/products/created-001"[39m
+                      [36m>[39m
+                        [0mView Product (Created) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+     → Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m2[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mUPDATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mUpdated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link updated"[39m
+                        [33mhref[39m=[32m"/products/updated-001"[39m
+                      [36m>[39m
+                        [0mView Product (Updated) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+     → Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-failed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m3[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0m—[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge failed"[39m
+                      [36m>[39m
+                        [0mFailed[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"error-count"[39m
+                      [36m>[39m
+                        [0m1[0m
+                        [0m error[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"blocked-badge"[39m
+                      [36m>[39m
+                        [0mBlocked by validation[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+     → Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m3[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mCREATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mCreated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link created"[39m
+                        [33mhref[39m=[32m"/products/created-001"[39m
+                      [36m>[39m
+                        [0mView Product (Created) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m2[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mUPDATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mUpdated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link updated"[39m
+                        [33mhref[39m=[32m"/products/updated-001"[39m
+                      [36m>[39m
+                        [0mView Product (Updated) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-failed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m3[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0m—[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge failed"[39m
+                      [36m>[39m
+                        [0mFailed[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"error-count"[39m
+                      [36m>[39m
+                        [0m1[0m
+                        [0m error[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"blocked-badge"[39m
+                      [36m>[39m
+                        [0mBlocked by validation[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+TestingLibraryElementError: Unable to find an element with the text: /1 Created/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"page-layout"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"page-header"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"page-title"[39m
+        [36m>[39m
+          [0mBatch: test.csv[0m
+        [36m</h1>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-content"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"batch-detail-page"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-header"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"btn-back"[39m
+            [36m>[39m
+              [0m← Back to Import Manager[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-summary"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mBatch ID:[0m
+              [36m</strong>[39m
+              [36m<code>[39m
+                [0mtest-batch-001[0m
+              [36m</code>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mFile Name:[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mtest.csv[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mCreated:[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mJan 15, 2025, 12:00 PM[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mCreated By:[0m
+              [36m</strong>[39m
+              [36m<code>[39m
+                [0muser-123[0m
+              [36m</code>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"summary-item"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mStatus:[0m
+              [36m</strong>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"status-badge processed"[39m
+              [36m>[39m
+                [0mProcessed[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"row-counts"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m3[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mTotal Rows[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card success"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mProducts Created[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card success"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mProducts Updated[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card blocked"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mRows Blocked[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card processed"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m0[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mProcessed[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card pending"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m0[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mPending[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"count-card failed"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-value"[39m
+              [36m>[39m
+                [0m1[0m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-label"[39m
+              [36m>[39m
+                [0mFailed[0m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"filter-controls"[39m
+          [36m>[39m
+            [36m<label>[39m
+              [0mFilter by status:[0m
+            [36m</label>[39m
+            [36m<select>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"all"[39m
+              [36m>[39m
+                [0mAll Rows ([0m
+                [0m3[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"processed"[39m
+              [36m>[39m
+                [0mProcessed ([0m
+                [0m0[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"pending"[39m
+              [36m>[39m
+                [0mPending ([0m
+                [0m0[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"failed"[39m
+              [36m>[39m
+                [0mFailed ([0m
+                [0m1[0m
+                [0m)[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rows-table-wrapper"[39m
+          [36m>[39m
+            [36m<table[39m
+              [33mclass[39m=[32m"rows-table"[39m
+            [36m>[39m
+              [36m<thead>[39m
+                [36m<tr>[39m
+                  [36m<th>[39m
+                    [0mLine[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mSKU[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mTitle[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mStatus[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mErrors[0m
+                  [36m</th>[39m
+                  [36m<th>[39m
+                    [0mProduct[0m
+                  [36m</th>[39m
+                [36m</tr>[39m
+              [36m</thead>[39m
+              [36m<tbody>[39m
+                [36m<tr[39m
+                  [33mclass[39m=[32m"row-completed"[39m
+                [36m>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"line-number"[39m
+                  [36m>[39m
+                    [0m1[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"sku"[39m
+                  [36m>[39m
+                    [36m<code>[39m
+                      [0mCREATED-001[0m
+                    [36m</code>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"title"[39m
+                  [36m>[39m
+                    [0mCreated Product[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"status-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"status-badge"[39m
+                    [36m>[39m
+                      [0mcompleted[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"errors-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"no-errors"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"product-cell"[39m
+                  [36m>[39m
+                    [36m<a[39m
+                      [33mclass[39m=[32m"product-link created"[39m
+                      [33mhref[39m=[32m"/products/created-001"[39m
+                    [36m>[39m
+                      [0mView Product (Created) →[0m
+                    [36m</a>[39m
+                  [36m</td>[39m
+                [36m</tr>[39m
+                [36m<tr[39m
+                  [33mclass[39m=[32m"row-completed"[39m
+                [36m>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"line-number"[39m
+                  [36m>[39m
+                    [0m2[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"sku"[39m
+                  [36m>[39m
+                    [36m<code>[39m
+                      [0mUPDATED-001[0m
+                    [36m</code>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"title"[39m
+                  [36m>[39m
+                    [0mUpdated Product[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"status-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"status-badge"[39m
+                    [36m>[39m
+                      [0mcompleted[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"errors-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"no-errors"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"product-cell"[39m
+                  [36m>[39m
+                    [36m<a[39m
+                      [33mclass[39m=[32m"product-link updated"[39m
+                      [33mhref[39m=[32m"/products/updated-001"[39m
+                    [36m>[39m
+                      [0mView Product (Updated) →[0m
+                    [36m</a>[39m
+                  [36m</td>[39m
+                [36m</tr>[39m
+                [36m<tr[39m
+                  [33mclass[39m=[32m"row-failed"[39m
+                [36m>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"line-number"[39m
+                  [36m>[39m
+                    [0m3[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"sku"[39m
+                  [36m>[39m
+                    [36m<code>[39m
+                      [0m—[0m
+                    [36m</code>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"title"[39m
+                  [36m>[39m
+                    [0m—[0m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"status-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"status-badge failed"[39m
+                    [36m>[39m
+                      [0mFailed[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"errors-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"error-count"[39m
+                    [36m>[39m
+                      [0m1[0m
+                      [0m error[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                  [36m<td[39m
+                    [33mclass[39m=[32m"product-cell"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"blocked-badge"[39m
+                    [36m>[39m
+                      [0mBlocked by validation[0m
+                    [36m</span>[39m
+                  [36m</td>[39m
+                [36m</tr>[39m
+              [36m</tbody>[39m
+            [36m</table>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m3[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mCREATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mCreated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link created"[39m
+                        [33mhref[39m=[32m"/products/created-001"[39m
+                      [36m>[39m
+                        [0mView Product (Created) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m2[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mUPDATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mUpdated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link updated"[39m
+                        [33mhref[39m=[32m"/products/updated-001"[39m
+                      [36m>[39m
+                        [0mView Product (Updated) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-failed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m3[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0m—[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge failed"[39m
+                      [36m>[39m
+                        [0mFailed[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"error-count"[39m
+                      [36m>[39m
+                        [0m1[0m
+                        [0m error[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"blocked-badge"[39m
+                      [36m>[39m
+                        [0mBlocked by validation[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ test/ImportBatchDetailPage.test.tsx:161:11
+    159|     );
+    160| 
+    161|     await waitFor(() => {
+       |           ^
+    162|       expect(screen.getByText(/1 Created/i)).toBeInTheDocument();
+    163|       expect(screen.getByText(/1 Updated/i)).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Created)" link for created rows
+Error: Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mCREATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mCreated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link created"[39m
+                        [33mhref[39m=[32m"/products/created-001"[39m
+                      [36m>[39m
+                        [0mView Product (Created) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ test/ImportBatchDetailPage.test.tsx:187:18
+    185|     await waitFor(() => {
+    186|       const link = screen.getByText(/View Product \(Created\)/i);
+    187|       expect(link).toBeInTheDocument();
+       |                  ^
+    188|       expect(link).toHaveAttribute('href', '/products/created-001');
+    189|     });
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "View Product (Updated)" link for updated rows
+Error: Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m2[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mUPDATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mUpdated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link updated"[39m
+                        [33mhref[39m=[32m"/products/updated-001"[39m
+                      [36m>[39m
+                        [0mView Product (Updated) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ test/ImportBatchDetailPage.test.tsx:211:18
+    209|     await waitFor(() => {
+    210|       const link = screen.getByText(/View Product \(Updated\)/i);
+    211|       expect(link).toBeInTheDocument();
+       |                  ^
+    212|       expect(link).toHaveAttribute('href', '/products/updated-001');
+    213|     });
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should show "Blocked by validation" for blocked rows
+Error: Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-failed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m3[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0m—[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge failed"[39m
+                      [36m>[39m
+                        [0mFailed[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"error-count"[39m
+                      [36m>[39m
+                        [0m1[0m
+                        [0m error[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"blocked-badge"[39m
+                      [36m>[39m
+                        [0mBlocked by validation[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ test/ImportBatchDetailPage.test.tsx:234:56
+    232| 
+    233|     await waitFor(() => {
+    234|       expect(screen.getByText(/Blocked by validation/i)).toBeInTheDocu…
+       |                                                        ^
+    235|       expect(screen.queryByText(/View Product/i)).not.toBeInTheDocumen…
+    236|     });
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should display all three outcome types correctly
+Error: Invalid Chai property: toBeInTheDocument
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"page-layout"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"page-header"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"page-title"[39m
+          [36m>[39m
+            [0mBatch: test.csv[0m
+          [36m</h1>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"page-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"batch-detail-page"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-header"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"btn-back"[39m
+              [36m>[39m
+                [0m← Back to Import Manager[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"batch-summary"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mBatch ID:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0mtest-batch-001[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mFile Name:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mtest.csv[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated:[0m
+                [36m</strong>[39m
+                [36m<span>[39m
+                  [0mJan 15, 2025, 12:00 PM[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mCreated By:[0m
+                [36m</strong>[39m
+                [36m<code>[39m
+                  [0muser-123[0m
+                [36m</code>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"summary-item"[39m
+              [36m>[39m
+                [36m<strong>[39m
+                  [0mStatus:[0m
+                [36m</strong>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge processed"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"row-counts"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m3[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mTotal Rows[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Created[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card success"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProducts Updated[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card blocked"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mRows Blocked[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card processed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mProcessed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card pending"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m0[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mPending[0m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"count-card failed"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-value"[39m
+                [36m>[39m
+                  [0m1[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"count-label"[39m
+                [36m>[39m
+                  [0mFailed[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"filter-controls"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0mFilter by status:[0m
+              [36m</label>[39m
+              [36m<select>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"all"[39m
+                [36m>[39m
+                  [0mAll Rows ([0m
+                  [0m3[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"processed"[39m
+                [36m>[39m
+                  [0mProcessed ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"pending"[39m
+                [36m>[39m
+                  [0mPending ([0m
+                  [0m0[0m
+                  [0m)[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"failed"[39m
+                [36m>[39m
+                  [0mFailed ([0m
+                  [0m1[0m
+                  [0m)[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rows-table-wrapper"[39m
+            [36m>[39m
+              [36m<table[39m
+                [33mclass[39m=[32m"rows-table"[39m
+              [36m>[39m
+                [36m<thead>[39m
+                  [36m<tr>[39m
+                    [36m<th>[39m
+                      [0mLine[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mSKU[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mTitle[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mStatus[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mErrors[0m
+                    [36m</th>[39m
+                    [36m<th>[39m
+                      [0mProduct[0m
+                    [36m</th>[39m
+                  [36m</tr>[39m
+                [36m</thead>[39m
+                [36m<tbody>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mCREATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mCreated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link created"[39m
+                        [33mhref[39m=[32m"/products/created-001"[39m
+                      [36m>[39m
+                        [0mView Product (Created) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-completed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m2[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0mUPDATED-001[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0mUpdated Product[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge"[39m
+                      [36m>[39m
+                        [0mcompleted[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"no-errors"[39m
+                      [36m>[39m
+                        [0m—[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<a[39m
+                        [33mclass[39m=[32m"product-link updated"[39m
+                        [33mhref[39m=[32m"/products/updated-001"[39m
+                      [36m>[39m
+                        [0mView Product (Updated) →[0m
+                      [36m</a>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                  [36m<tr[39m
+                    [33mclass[39m=[32m"row-failed"[39m
+                  [36m>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"line-number"[39m
+                    [36m>[39m
+                      [0m3[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"sku"[39m
+                    [36m>[39m
+                      [36m<code>[39m
+                        [0m—[0m
+                      [36m</code>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"title"[39m
+                    [36m>[39m
+                      [0m—[0m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"status-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"status-badge failed"[39m
+                      [36m>[39m
+                        [0mFailed[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"errors-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"error-count"[39m
+                      [36m>[39m
+                        [0m1[0m
+                        [0m error[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                    [36m<td[39m
+                      [33mclass[39m=[32m"product-cell"[39m
+                    [36m>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"blocked-badge"[39m
+                      [36m>[39m
+                        [0mBlocked by validation[0m
+                      [36m</span>[39m
+                    [36m</td>[39m
+                  [36m</tr>[39m
+                [36m</tbody>[39m
+              [36m</table>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ test/ImportBatchDetailPage.test.tsx:256:59
+    254|     await waitFor(() => {
+    255|       // Check for all three outcomes
+    256|       expect(screen.getByText(/View Product \(Created\)/i)).toBeInTheD…
+       |                                                           ^
+    257|       expect(screen.getByText(/View Product \(Updated\)/i)).toBeInTheD…
+    258|       expect(screen.getByText(/Blocked by validation/i)).toBeInTheDocu…
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  5 failed | 57 passed (62)
+   Start at  08:29:32
+   Duration  6.79s (transform 941ms, setup 1ms, collect 2.77s, tests 5.51s, environment 5.62s, prepare 1.43s)
+
+/workspaces/ROPI-V2.1/packages/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 test: `vitest run`
+Exit status 1

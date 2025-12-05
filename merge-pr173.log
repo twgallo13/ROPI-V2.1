@@ -1,0 +1,35 @@
+Merge made by the 'ort' strategy.
+ .github/workflows/e2e-tests.yml            |  206 +++++
+ PROMPT_018B_v1.2_AUDIT.txt                 |  640 ++++++++++++++++
+ PROMPT_018C_vB_AUDIT.txt                   |  767 +++++++++++++++++++
+ PROMPT_018C_vC_AUDIT.txt                   | 1123 ++++++++++++++++++++++++++++
+ docs/DEPLOYMENT.md                         |  503 +++++++++++++
+ packages/web/.env.e2e.example              |   19 +
+ packages/web/e2e/auth.spec.ts              |  162 ++++
+ packages/web/e2e/helpers.ts                |  247 ++++++
+ packages/web/e2e/launch-calendar.spec.ts   |  165 ++++
+ packages/web/e2e/observations.spec.ts      |  301 ++++++++
+ packages/web/package.json                  |   10 +-
+ packages/web/playwright.config.ts          |   80 ++
+ packages/web/src/contexts/AuthProvider.tsx |   20 +
+ packages/web/src/hooks/useLaunchSignup.ts  |   25 +
+ packages/web/src/main.tsx                  |    4 +
+ packages/web/src/monitoring/sentry.ts      |  202 +++++
+ packages/web/src/vite-env.d.ts             |    2 +
+ packages/web/vitest.config.ts              |    6 +
+ pnpm-lock.yaml                             |  427 +++++++++--
+ rollback/rollback.sh                       |  179 +++++
+ 20 files changed, 5020 insertions(+), 68 deletions(-)
+ create mode 100644 .github/workflows/e2e-tests.yml
+ create mode 100644 PROMPT_018B_v1.2_AUDIT.txt
+ create mode 100644 PROMPT_018C_vB_AUDIT.txt
+ create mode 100644 PROMPT_018C_vC_AUDIT.txt
+ create mode 100644 docs/DEPLOYMENT.md
+ create mode 100644 packages/web/.env.e2e.example
+ create mode 100644 packages/web/e2e/auth.spec.ts
+ create mode 100644 packages/web/e2e/helpers.ts
+ create mode 100644 packages/web/e2e/launch-calendar.spec.ts
+ create mode 100644 packages/web/e2e/observations.spec.ts
+ create mode 100644 packages/web/playwright.config.ts
+ create mode 100644 packages/web/src/monitoring/sentry.ts
+ create mode 100755 rollback/rollback.sh

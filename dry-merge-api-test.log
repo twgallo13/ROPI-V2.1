@@ -1,0 +1,43 @@
+i  emulators: Starting emulators: firestore
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: pnpm --filter @ropi-aoss/api test
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+ ✓ test/importService.test.ts  (4 tests) 15ms
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Using Firestore emulator
+
+stdout | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should throw error for non-existent batch
+Using Firestore emulator
+
+ ✓ test/productCommitService.test.ts  (6 tests) 1760ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  08:20:08
+   Duration  2.38s (transform 179ms, setup 1ms, collect 464ms, tests 1.77s, environment 0ms, prepare 328ms)
+
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

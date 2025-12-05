@@ -1,0 +1,18 @@
+
+> @ropi-aoss/sdk@0.0.0 test /workspaces/ROPI-V2.1/packages/sdk
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/sdk
+
+ ✓ test/importValidator.test.ts  (11 tests) 10ms
+ ✓ test/importNormalizer.test.ts  (12 tests) 12ms
+ ✓ test/productValidator.test.ts  (8 tests) 14ms
+ ✓ test/importRowBuilder.test.ts  (6 tests) 7ms
+
+ Test Files  4 passed (4)
+      Tests  37 passed (37)
+   Start at  08:17:33
+   Duration  918ms (transform 209ms, setup 2ms, collect 379ms, tests 43ms, environment 1ms, prepare 626ms)
+

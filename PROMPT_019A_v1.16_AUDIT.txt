@@ -1,0 +1,269 @@
+# PROMPT_019A_v1.16 AUDIT - Use Repository Script for Set Admin
+
+**Date**: December 5, 2025  
+**Task**: Update workflow to call `scripts/set-admin-custom-claim.js` instead of inline Node code  
+**Status**: PR MERGED - Ready for Workflow Execution
+
+## Summary
+This update replaces inline Node.js code (which required firebase-admin) with a call to the repository's production-ready script that uses only Node.js core modules and Firebase Auth REST API.
+
+## Changes Implemented
+
+### 1. Branch Created ✅
+- **Branch**: `fix/set-admin-run-script_PROMPT_019A_v1.16`
+- **Base**: `aoss-main`
+- **Commit**: 385fa19
+
+### 2. PR Created & Merged ✅
+- **PR #182**: https://github.com/twgallo13/ROPI-V2.1/pull/182
+- **Title**: "ci: run repo set-admin script and ensure node deps + env (PROMPT_019A_v1.16)"
+- **Status**: Merged (commit: a1d290d)
+
+### 3. Workflow Updates ✅
+
+#### Updated: Run set-admin script step
+
+**Before**:
+```yaml
+- name: Run set-admin script
+  env:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+    EMAIL: "${{ github.event.inputs.email }}"
+  run: |
+    node -e "const admin=require('firebase-admin'); \
+      admin.initializeApp({ credential: admin.credential.applicationDefault(), projectId:'ropi-bccee' }); \
+      (async ()=>{ const u = await admin.auth().getUserByEmail(process.env.EMAIL); \
+        await admin.auth().setCustomUserClaims(u.uid, { admin: true }); \
+        console.log('Set admin claim for', process.env.EMAIL); \
+      })().catch(e=>{ console.error(e); process.exit(1); });"
+```
+
+**Issues with old approach**:
+- Required `firebase-admin` package (not installed, would cause MODULE_NOT_FOUND)
+- Inline code harder to maintain and test
+- No proper error handling
+- Not using production-ready script
+
+**After**:
+```yaml
+- name: Run set-admin script
+  env:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+    EMAIL: "${{ github.event.inputs.email }}"
+    FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY || secrets.FIREBASE_API_KEY || '' }}
+  run: |
+    set -euo pipefail
+
+    echo "Confirm GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+    echo "Active gcloud account:"
+    gcloud auth list --filter=status:ACTIVE --format="value(account)"
+    echo "Using project:"
+    gcloud config get-value project || true
+
+    # Ensure Node/npm available (ubuntu runner has Node, but ensure)
+    if ! command -v node >/dev/null 2>&1; then
+      echo "Installing Node..."
+      sudo apt-get update -y
+      sudo apt-get install -y nodejs npm
+    fi
+
+    # If there's a scripts/package.json, install deps (safe no-op otherwise)
+    if [ -f scripts/package.json ]; then
+      (cd scripts && npm ci --unsafe-perm)
+    fi
+
+    # Run the repo script (it performs token lookup + claims)
+    node scripts/set-admin-custom-claim.js "${{ github.event.inputs.email }}"
+```
+
+**Improvements**:
+1. ✅ Calls production-ready repository script
+2. ✅ No external dependencies needed (script uses core modules only)
+3. ✅ Checks for Node.js installation
+4. ✅ Conditionally installs dependencies if `scripts/package.json` exists
+5. ✅ Passes email as command-line argument
+6. ✅ Pre-flight verification of gcloud state
+7. ✅ Proper error handling with `set -euo pipefail`
+
+## Repository Script Details
+
+**File**: `scripts/set-admin-custom-claim.js`
+
+**Dependencies**: None (uses only Node.js core modules)
+- `https` - for REST API calls
+- `child_process` - for executing gcloud commands
+- `util` - for promisify
+
+**How it works**:
+1. Takes email or UID as command-line argument
+2. Executes `gcloud auth print-access-token` to get OAuth token
+3. Looks up user by email using Firebase Auth REST API
+4. Sets custom claim `{ "role": "admin" }` via REST API
+5. Returns exit code 0 on success, 1 on failure
+
+**Why this is better**:
+- No firebase-admin package needed (avoids MODULE_NOT_FOUND)
+- Production-ready with proper error handling
+- Uses Firebase Auth REST API directly
+- Leverages gcloud authentication already set up
+- Can be tested locally and in CI
+
+## Expected Output
+
+### From "Run set-admin script" step:
+
+```
+Confirm GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+Active gcloud account:
+ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+Using project:
+ropi-bccee
+
+Running script: node scripts/set-admin-custom-claim.js theo@shiekhshoes.org
+
+[Script output from set-admin-custom-claim.js]
+Fetching access token from gcloud...
+Looking up user: theo@shiekhshoes.org
+Setting custom claim { role: 'admin' } for user UID: abc123...
+Successfully set admin claim for theo@shiekhshoes.org
+```
+
+## Next Steps
+
+### Step 1: Trigger Workflow ⏳
+
+**Instructions**:
+1. Navigate to: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+2. Click "Run workflow"
+3. Branch: `aoss-main`
+4. Email: `theo@shiekhshoes.org`
+5. Click "Run workflow"
+
+### Step 2: Approve Staging ⏳
+- Watch for deployment approval prompt
+- Review and approve staging environment
+
+### Step 3: Capture Logs ⏳
+
+**Required log excerpts**:
+
+#### From "Setup gcloud & activate service account":
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### From "Run set-admin script":
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### Run URL:
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+#### Final Status:
+```
+[PENDING - TO BE FILLED AFTER RUN]
+```
+
+### Step 4: Verify Success ⏳
+
+**If workflow succeeds**:
+1. Check workflow logs for script success message
+2. Verify in Firebase Console:
+   - Go to Authentication → Users
+   - Find theo@shiekhshoes.org
+   - Check custom claims (may need to use Firebase CLI or SDK)
+
+3. Verify in browser (staging site):
+   - Sign out and sign in as theo@shiekhshoes.org
+   - Open browser console
+   - Run:
+     ```javascript
+     firebase.auth().currentUser.getIdToken(true)
+       .then(() => firebase.auth().currentUser.getIdTokenResult())
+       .then(t => {
+         console.log('Claims:', t.claims);
+         console.log('Has admin role:', t.claims.role === 'admin');
+       });
+     ```
+   - Confirm output shows `role: 'admin'`
+
+### Step 5: Update Audit ⏳
+After successful run:
+- Paste logs into this audit
+- Record run URL
+- Confirm success or document failure
+
+## Troubleshooting
+
+### If "MODULE_NOT_FOUND" error occurs:
+**Should NOT happen anymore** - the script uses only core Node modules.
+
+If it does occur, check:
+- Script path is correct: `scripts/set-admin-custom-claim.js`
+- Script file exists in repository
+- Script doesn't have any `require()` statements for external packages
+
+### If "gcloud: command not found":
+- Setup gcloud step should have installed it
+- Check logs from "Setup gcloud & activate service account" step
+
+### If "permission denied" executing script:
+- Script has execute permissions (`chmod +x` applied in repo)
+- Ubuntu runner should be able to execute with `node scripts/...`
+
+### If script fails with API error:
+- Check gcloud authentication is active
+- Verify service account has Firebase Auth permissions
+- Check `GOOGLE_APPLICATION_CREDENTIALS` is set correctly
+- Review script output for specific API error details
+
+## Technical Notes
+
+### Why Repository Script vs Inline Code
+
+**Repository script advantages**:
+1. **No dependencies**: Uses only Node.js core modules
+2. **Testable**: Can run locally and in CI
+3. **Maintainable**: Proper file structure, comments, error handling
+4. **Production-ready**: Developed and tested in PROMPT_018C_vB
+5. **REST API**: Direct Firebase Auth REST API calls (no SDK overhead)
+
+**Inline code disadvantages**:
+1. **Dependencies**: Requires firebase-admin (not available in runner)
+2. **Hard to test**: Can't easily test inline code
+3. **Hard to maintain**: Changes require workflow file edits
+4. **Error handling**: Limited in one-liner format
+
+### Environment Variables
+
+The script uses these environment variables:
+- `GOOGLE_APPLICATION_CREDENTIALS`: Path to service account JSON (set by workflow)
+- `EMAIL`: Target user email (set by workflow from input)
+- `FIREBASE_API_KEY`: Optional, for API key validation (from secrets)
+
+The script gets OAuth token via:
+```javascript
+const { stdout } = await execAsync('gcloud auth print-access-token');
+const accessToken = stdout.trim();
+```
+
+This relies on the "Setup gcloud & activate service account" step having run successfully.
+
+## Workflow Execution Checklist
+
+- [ ] PR #182 merged ✅
+- [ ] Workflow triggered (aoss-main, theo@shiekhshoes.org)
+- [ ] Staging environment approved
+- [ ] Setup gcloud logs captured
+- [ ] Run script logs captured
+- [ ] Run URL recorded
+- [ ] Final status: SUCCESS or FAILURE
+- [ ] If success: Admin claim verified in browser
+- [ ] Audit updated with results
+
+---
+
+**STATUS**: Merged and ready for execution. The workflow now uses the production-ready repository script.

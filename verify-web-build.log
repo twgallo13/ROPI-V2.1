@@ -1,0 +1,31 @@
+
+> @ropi-aoss/web@1.0.0 build /workspaces/ROPI-V2.1/packages/web
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 403 modules transformed.
+x Build failed in 1.48s
+error during build:
+src/components/import/ImportMappingStep.tsx (7:9): "DEFAULT_COLUMN_MAPPINGS" is not exported by "../sdk/dist/index.js", imported by "src/components/import/ImportMappingStep.tsx".
+file: /workspaces/ROPI-V2.1/packages/web/src/components/import/ImportMappingStep.tsx:7:9
+
+5: 
+6: import { useState, useEffect } from 'react';
+7: import { DEFAULT_COLUMN_MAPPINGS } from '@ropi-aoss/sdk';
+            ^
+8: import './ImportMappingStep.css';
+
+    at getRollupError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16956:16)
+    at Module.traceVariable (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:17412:29)
+    at ModuleScope.findVariable (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:15076:39)
+    at MemberExpression.bind (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:7363:49)
+    at CallExpression.bind (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
+    at CallExpression.bind (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:12123:15)
+    at VariableDeclarator.bind (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
+    at VariableDeclaration.bind (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
+/workspaces/ROPI-V2.1/packages/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 build: `tsc && vite build`
+Exit status 1
