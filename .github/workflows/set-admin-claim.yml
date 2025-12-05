@@ -11,6 +11,7 @@ on:
 jobs:
   set-admin-claim:
     runs-on: ubuntu-latest
+    environment: staging
     permissions:
       contents: read
 
@@ -58,20 +59,12 @@ jobs:
 
           # Validate JSON using python3 or fallback to jq
           if command -v python3 >/dev/null 2>&1; then
-            python3 - <<'PY' || {
-              echo "::error::python3 JSON validation failed"
+            python3 -c "import sys,json; json.load(open('/tmp/sa.json'))" || {
+              echo "::error::python3 JSON validation failed - decoded /tmp/sa.json is not valid JSON"
+              echo "Preview of /tmp/sa.json (first 400 chars):"
               head -c 400 /tmp/sa.json || true
               exit 1
             }
-import sys, json
-try:
-  json.load(open('/tmp/sa.json'))
-  sys.exit(0)
-except Exception as e:
-  print('::error::Decoded /tmp/sa.json is not valid JSON:', e)
-  print(open('/tmp/sa.json').read(400))
-  sys.exit(1)
-PY
           else
             if ! command -v jq >/dev/null 2>&1; then
               sudo apt-get update && sudo apt-get install -y jq
@@ -81,6 +74,51 @@ PY
 
           echo "Decoded service account JSON present at /tmp/sa.json (validated)"
           chmod 600 /tmp/sa.json
+
+      - name: Setup gcloud & activate service account
+        run: |
+          set -euo pipefail
+
+          # Ensure gcloud is present
+          if ! command -v gcloud >/dev/null 2>&1; then
+            echo "Installing google-cloud-cli..."
+            sudo apt-get update -y
+            sudo apt-get install -y google-cloud-cli
+          fi
+
+          # Validate decoded key
+          if [ ! -f /tmp/sa.json ]; then
+            echo "::error::/tmp/sa.json not found; cannot activate service account"
+            exit 1
+          fi
+
+          # Activate the service account and set the account/project explicitly
+          echo "Activating service account..."
+          gcloud auth activate-service-account --key-file=/tmp/sa.json --project=ropi-bccee --quiet
+
+          # Make the newly activated account active in gcloud config
+          SA_EMAIL="$(python3 -c "import json,sys; print(json.load(open('/tmp/sa.json'))['client_email'])")"
+          echo "Setting gcloud account to: $SA_EMAIL"
+          gcloud config set account "$SA_EMAIL"
+
+          echo "Setting project to ropi-bccee"
+          gcloud config set project ropi-bccee
+
+          echo "Verify active account:"
+          gcloud auth list --filter=status:ACTIVE --format="value(account)"
+
+          # Verify we can print an access token
+          echo "Attempting to print access token..."
+          TOKEN="$(gcloud auth print-access-token 2>&1)"
+          if [ $? -ne 0 ]; then
+            echo "::error::Failed to produce access token via gcloud auth print-access-token"
+            echo "Error output: $TOKEN"
+            gcloud auth list || true
+            exit 1
+          else
+            echo "access-token length: ${#TOKEN}"
+            echo "gcloud activation OK"
+          fi
 
       - name: Install Node (if needed) and deps
         run: |
@@ -93,16 +131,28 @@ PY
       - name: Run set-admin script
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+          EMAIL: "${{ github.event.inputs.email }}"
+          FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY || secrets.FIREBASE_API_KEY || '' }}
         run: |
-          node scripts/set-admin-custom-claim.js "${{ github.event.inputs.email }}"
+          set -euo pipefail
 
-      - name: Verify claim (server-side)
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
-        run: |
-          node -e "const admin=require('firebase-admin');
-          admin.initializeApp({ credential: admin.credential.applicationDefault(), projectId:'ropi-bccee' });
-          (async()=>{
-            const u = await admin.auth().getUserByEmail(process.env.EMAIL || '${{ github.event.inputs.email }}');
-            console.log('customClaims:', u.customClaims || 'none');
-          })().catch(e=>{ console.error(e); process.exit(1); });"
+          echo "Confirm GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+          echo "Active gcloud account:"
+          gcloud auth list --filter=status:ACTIVE --format="value(account)"
+          echo "Using project:"
+          gcloud config get-value project || true
+
+          # Ensure Node/npm available (ubuntu runner has Node, but ensure)
+          if ! command -v node >/dev/null 2>&1; then
+            echo "Installing Node..."
+            sudo apt-get update -y
+            sudo apt-get install -y nodejs npm
+          fi
+
+          # If there's a scripts/package.json, install deps (safe no-op otherwise)
+          if [ -f scripts/package.json ]; then
+            (cd scripts && npm ci --unsafe-perm)
+          fi
+
+          # Run the repo script (it performs token lookup + claims)
+          node scripts/set-admin-custom-claim.js "${{ github.event.inputs.email }}"
