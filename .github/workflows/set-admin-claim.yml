@@ -58,22 +58,12 @@ jobs:
 
           # Validate JSON using python3 or fallback to jq
           if command -v python3 >/dev/null 2>&1; then
-            python3 - <<'PY'
-import sys, json
-try:
-  json.load(open('/tmp/sa.json'))
-  sys.exit(0)
-except Exception as e:
-  print('::error::Decoded /tmp/sa.json is not valid JSON:', e)
-  with open('/tmp/sa.json') as f:
-    print(f.read(400))
-  sys.exit(1)
-PY
-            if [ $? -ne 0 ]; then
-              echo "::error::python3 JSON validation failed"
+            python3 -c "import sys,json; json.load(open('/tmp/sa.json'))" || {
+              echo "::error::python3 JSON validation failed - decoded /tmp/sa.json is not valid JSON"
+              echo "Preview of /tmp/sa.json (first 400 chars):"
               head -c 400 /tmp/sa.json || true
               exit 1
-            fi
+            }
           else
             if ! command -v jq >/dev/null 2>&1; then
               sudo apt-get update && sudo apt-get install -y jq
