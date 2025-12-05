@@ -1,0 +1,235 @@
+# PROMPT_019A_v1.11 AUDIT - Set Admin Workflow Fix and Execution
+**Date**: December 5, 2025  
+**Task**: Fix YAML heredoc syntax and run set-admin-claim workflow  
+**Status**: IN PROGRESS - Workflow fixed, pending manual trigger
+
+## Summary
+Fixed critical YAML syntax error in `.github/workflows/set-admin-claim.yml` caused by bash heredoc syntax conflicting with YAML indentation requirements. Workflow is now valid and ready for triggering.
+
+## Actions Completed
+
+### 1. Branch Creation ✅
+- Branch: `fix/set-admin-decode-final_PROMPT_019A_v1.11`
+- Created from: `aoss-main`
+
+### 2. YAML Heredoc Fix ✅
+**Problem**: Python heredoc syntax in YAML `run: |` block caused parse errors
+- Heredoc content at column 0 was interpreted as YAML root-level keys
+- Error: "while scanning a simple key... could not find expected ':'"
+- Line 62-63 in workflow file
+
+**Solution**: Replaced heredoc with Python `-c` one-liner
+```yaml
+# Before (broken - heredoc):
+python3 - <<'PY'
+import sys, json
+...
+PY
+
+# After (fixed - inline):
+python3 -c "import sys,json; json.load(open('/tmp/sa.json'))" || { ... }
+```
+
+**Validation**: YAML syntax now passes `yaml.safe_load()` ✅
+
+### 3. PR and Merge ✅
+- **PR #178**: "ci: fix YAML heredoc and robust decode (PROMPT_019A_v1.11)"
+- Status: Merged to `aoss-main` (commit: 19cbda4, then b58a3ff)
+- URL: https://github.com/twgallo13/ROPI-V2.1/pull/178
+
+### 4. Additional Fix ✅
+- Second commit to aoss-main (b58a3ff): Simplified Python validation further
+- Removed complex error handling in favor of simple `-c` flag usage
+- YAML validated successfully
+
+## Workflow Status
+**Workflow**: `Ops — Set Admin Custom Claim` (ID: 212761403)
+**File**: `.github/workflows/set-admin-claim.yml`
+**Current State**: Active, YAML valid, ready to trigger
+
+**Recent Runs** (all failed due to YAML syntax errors):
+- Run 19950233444: Failed (YAML issue)
+- Run 19950223308: Failed (YAML issue)  
+- Run 19948825029: Failed (workflow deleted)
+- Run 19942179401: Failed (YAML issue)
+- Run 19942152116: Failed (YAML issue)
+
+## Next Steps (PENDING MANUAL ACTION)
+
+### Step 5: Trigger Workflow ⏳
+**Cannot trigger via CLI**: GitHub token lacks `workflow` scope (403 Forbidden)
+
+**THEO - Please trigger manually**:
+1. Visit: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+2. Click "Run workflow" (top right, green button)
+3. **Branch**: Select `aoss-main`
+4. **Email**: Enter `theo@shiekhshoes.org` (or use default)
+5. Click "Run workflow" to execute
+
+### Step 6: Monitor Execution ⏳
+Once triggered, run the monitoring script:
+```bash
+cd /workspaces/ROPI-V2.1
+./scripts/monitor-admin-workflow.sh
+```
+
+This will:
+- Watch the workflow run to completion
+- Extract logs from key steps (decode, validation, set-admin, verify)
+- Check for `customClaims: { role: 'admin' }` in output
+- Save full logs to `/tmp/set-admin-<RUN_ID>.log`
+- Provide final SUCCESS/FAIL verdict
+
+### Step 7: Expected Verification ⏳
+**Decode Step** should show:
+```
+Decoded service account JSON present at /tmp/sa.json (validated)
+```
+
+**Set Admin Script** should show:
+```
+Custom claim set for theo@shiekhshoes.org
+```
+
+**Verify Step** should show:
+```
+customClaims: { role: 'admin' }
+```
+
+### Step 8: Client-Side Verification ⏳
+After workflow succeeds, verify in browser:
+1. Sign out of staging
+2. Sign back in as theo@shiekhshoes.org
+3. Open browser console and run:
+```javascript
+firebase.auth().currentUser.getIdToken(true)
+  .then(() => firebase.auth().currentUser.getIdTokenResult())
+  .then(t => console.log('Claims:', t.claims));
+```
+4. Confirm output includes: `{ role: 'admin' }`
+
+## Technical Details
+
+### YAML Heredoc Issue Explained
+In YAML, a `run: |` block expects all content to be indented relative to the `run:` key. Bash heredocs (`<<'EOF'`) require their terminator to be at column 0, which conflicts with YAML's indentation rules.
+
+**Why it broke**:
+```yaml
+run: |
+  python3 - <<'PY'
+import sys, json  # ← Column 0! YAML thinks this is a new root key
+PY
+```
+
+**Why it works now**:
+```yaml
+run: |
+  python3 -c "import sys,json; json.load(open('/tmp/sa.json'))"  # ← All indented
+```
+
+### Secret Configuration
+**Secret Name**: `GCP_SA_KEY_BASE64`
+**Location**: GitHub repo secrets (twgallo13/ROPI-V2.1)
+**Format**: Base64-encoded GCP service account JSON
+**Environment**: `staging` (if using environment secrets)
+
+## Files Modified
+- `.github/workflows/set-admin-claim.yml` (restored and fixed)
+- `scripts/monitor-admin-workflow.sh` (created - monitoring helper)
+
+## Commits
+1. `c9f2949` - ci: fix YAML heredoc and robust JSON/base64 decode (PROMPT_019A_v1.11)
+2. `19cbda4` - Merge PR #178 (squash)
+3. `b58a3ff` - ci: fix YAML heredoc issue - use python -c instead (PROMPT_019A_v1.11)
+
+## Additional Updates (December 5, 2025)
+
+### PR #179: Add Staging Environment ✅
+- **Branch**: `fix/set-admin-decode-final_PROMPT_019A_v1.11` (recreated)
+- **Change**: Added `environment: staging` to job configuration
+- **Merged**: Commit 6345ab1 (squashed)
+- **URL**: https://github.com/twgallo13/ROPI-V2.1/pull/179
+
+**Why**: Scopes the `GCP_SA_KEY_BASE64` secret to the staging environment and enables environment approval workflows.
+
+## Current Status
+
+### Workflow Ready ✅
+- File: `.github/workflows/set-admin-claim.yml`
+- YAML: Valid
+- Environment: `staging`
+- Secret: Expects `GCP_SA_KEY_BASE64` in staging environment
+
+### Next Steps - MANUAL TRIGGER REQUIRED ⏳
+
+**Theo, please complete these steps**:
+
+#### 1. Ensure Secret is Configured
+- Go to: https://github.com/twgallo13/ROPI-V2.1/settings/environments
+- Select `staging` environment
+- Add secret `GCP_SA_KEY_BASE64` (if not already present)
+- Value: Single-line base64-encoded service account JSON
+  ```bash
+  cat service-account.json | base64 -w 0
+  ```
+
+#### 2. Trigger Workflow
+- Visit: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+- Click "Run workflow" (green button)
+- Branch: `aoss-main`
+- Email: `theo@shiekhshoes.org`
+- Click "Run workflow"
+
+#### 3. Approve Staging Environment (if prompted)
+- GitHub may require manual approval for staging deployment
+- Click "Review deployments" and approve
+
+#### 4. Monitor Execution
+Run the monitoring script:
+```bash
+cd /workspaces/ROPI-V2.1
+./scripts/monitor-admin-workflow.sh
+```
+
+Or manually check:
+```bash
+# Get latest run ID
+RUN_ID=$(gh run list --repo twgallo13/ROPI-V2.1 --workflow=set-admin-claim.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+
+# Watch run
+gh run watch $RUN_ID --repo twgallo13/ROPI-V2.1
+
+# View logs
+gh run view $RUN_ID --repo twgallo13/ROPI-V2.1 --log
+```
+
+## Expected Output
+
+### Decode Step:
+```
+Decoded service account JSON present at /tmp/sa.json (validated)
+```
+
+### Set Admin Script:
+```
+Custom claim set for theo@shiekhshoes.org
+```
+
+### Verify Step:
+```
+customClaims: { role: 'admin' }
+```
+
+## Outstanding Actions
+- [ ] Theo: Add/verify `GCP_SA_KEY_BASE64` secret in staging environment
+- [ ] Theo: Trigger workflow manually via GitHub Actions UI
+- [ ] Theo: Approve staging environment deployment (if prompted)
+- [ ] Homer: Capture run logs after execution
+- [ ] Homer: Update audit with run URL and log excerpts
+- [ ] Theo: Verify admin claim in staging browser console
+
+## Technical Notes
+- Cannot trigger workflow via CLI: GitHub token lacks `workflow` scope (403 Forbidden)
+- Environment-scoped secrets provide better security isolation
+- Staging environment may require approval before deployment
+- Python `-c` one-liner is YAML-friendly (no heredoc indentation issues)
