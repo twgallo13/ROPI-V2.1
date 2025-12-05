@@ -1,0 +1,237 @@
+# PROMPT_019A_v1.14 AUDIT - Set Admin Workflow with gcloud Activation
+
+**Date**: December 5, 2025  
+**Task**: Add gcloud activation and GOOGLE_APPLICATION_CREDENTIALS to set-admin workflow  
+**Status**: PR CREATED - Pending Review & Merge
+
+## Summary
+This update ensures the service account is properly activated in gcloud and both gcloud and Node Firebase Admin SDK use the same credentials, fixing the "no active account" error.
+
+## Changes Implemented
+
+### 1. Branch Created ✅
+- **Branch**: `fix/set-admin-activate-account_PROMPT_019A_v1.14`
+- **Base**: `aoss-main`
+- **Commit**: 563d839
+
+### 2. Workflow Updates ✅
+
+#### Added: Setup gcloud & activate service account step
+```yaml
+- name: Setup gcloud & activate service account
+  run: |
+    set -euo pipefail
+    
+    # Ensure gcloud is present
+    if ! command -v gcloud >/dev/null 2>&1; then
+      echo "Installing google-cloud-cli..."
+      sudo apt-get update -y
+      sudo apt-get install -y google-cloud-cli
+    fi
+    
+    # Validate decoded key
+    if [ ! -f /tmp/sa.json ]; then
+      echo "::error::/tmp/sa.json not found; cannot activate service account"
+      exit 1
+    fi
+    
+    # Activate the service account and set the account/project explicitly
+    echo "Activating service account..."
+    gcloud auth activate-service-account --key-file=/tmp/sa.json --project=ropi-bccee --quiet
+    
+    # Make the newly activated account active in gcloud config
+    SA_EMAIL="$(python3 -c "import json,sys; print(json.load(open('/tmp/sa.json'))['client_email'])")"
+    echo "Setting gcloud account to: $SA_EMAIL"
+    gcloud config set account "$SA_EMAIL"
+    
+    echo "Setting project to ropi-bccee"
+    gcloud config set project ropi-bccee
+    
+    echo "Verify active account:"
+    gcloud auth list --filter=status:ACTIVE --format="value(account)"
+    
+    # Verify we can print an access token
+    if ! gcloud auth print-access-token >/dev/null 2>&1; then
+      echo "::error::Failed to produce access token via gcloud auth print-access-token"
+      gcloud auth list || true
+      exit 1
+    fi
+    echo "gcloud activation OK"
+```
+
+**Key improvements**:
+- Installs gcloud if not present
+- Activates service account with explicit project
+- Sets active gcloud account using client_email from SA JSON
+- Validates activation with token generation
+- Fails fast if activation doesn't work
+
+#### Updated: Run set-admin script step
+```yaml
+- name: Run set-admin script
+  env:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+    EMAIL: "${{ github.event.inputs.email }}"
+  run: |
+    set -euo pipefail
+    echo "Confirm GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+    echo "Active gcloud account:"
+    gcloud auth list --filter=status:ACTIVE --format="value(account)"
+    echo "Using project:"
+    gcloud config get-value project
+    
+    # Ensure node exists and run the script
+    node -e "const admin=require('firebase-admin'); \
+      admin.initializeApp({ credential: admin.credential.applicationDefault(), projectId:'ropi-bccee' }); \
+      (async ()=>{ const u = await admin.auth().getUserByEmail(process.env.EMAIL); \
+        await admin.auth().setCustomUserClaims(u.uid, { admin: true }); \
+        console.log('Set admin claim for', process.env.EMAIL); \
+      })().catch(e=>{ console.error(e); process.exit(1); });"
+```
+
+**Key improvements**:
+- Exports `GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json`
+- Exports `EMAIL` environment variable
+- Pre-flight verification of gcloud account and project
+- Inline Node script for better reliability
+- Sets custom claim `{ admin: true }`
+
+### 3. PR Created ✅
+- **PR #180**: https://github.com/twgallo13/ROPI-V2.1/pull/180
+- **Title**: "ci: ensure gcloud active account + set GOOGLE_APPLICATION_CREDENTIALS for set-admin (PROMPT_019A_v1.14)"
+- **Status**: Open, pending review
+- **Reviewer**: Lisa (requested)
+
+## Problem Statement
+
+**Previous Error**:
+```
+ERROR: (gcloud.auth.print-access-token) There are no credentialed accounts.
+```
+
+**Root Cause**:
+1. Service account JSON was decoded but never registered with gcloud
+2. No active account set in gcloud configuration
+3. Node script may not have had proper credentials
+
+## Solution
+
+**Three-pronged approach**:
+1. **Activate SA in gcloud**: `gcloud auth activate-service-account --key-file=/tmp/sa.json`
+2. **Set active account**: `gcloud config set account <SA_EMAIL>`
+3. **Share credentials**: `GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json` for Node
+
+## Next Steps
+
+### Step 1: Review & Merge ⏳
+- **Lisa**: Review PR #180
+- **Action**: Merge to `aoss-main` (squash merge recommended)
+
+### Step 2: Trigger Workflow ⏳
+**After merge**:
+1. Navigate to: https://github.com/twgallo13/ROPI-V2.1/actions/workflows/set-admin-claim.yml
+2. Click "Run workflow"
+3. Branch: `aoss-main`
+4. Email: `theo@shiekhshoes.org`
+5. Click "Run workflow"
+
+### Step 3: Approve Staging ⏳
+- GitHub may prompt for staging environment approval
+- Review and approve deployment
+
+### Step 4: Capture Logs ⏳
+**Required log excerpts**:
+
+1. **gcloud auth list output**:
+   ```
+   Expected: ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com
+   ```
+
+2. **gcloud activation status**:
+   ```
+   Expected: "gcloud activation OK"
+   ```
+
+3. **Access token generation**:
+   ```
+   Expected: Success (no error)
+   ```
+
+4. **Active account verification** (from Run set-admin script):
+   ```
+   Expected: Shows active account
+   ```
+
+5. **Set admin confirmation**:
+   ```
+   Expected: "Set admin claim for theo@shiekhshoes.org"
+   ```
+
+6. **Final job status**:
+   ```
+   Expected: SUCCESS
+   ```
+
+### Step 5: Update Audit ⏳
+After successful run:
+- Add run URL
+- Paste key log excerpts
+- Verify admin claim in staging
+- Post PR comment with results
+
+## Prerequisites Checklist
+
+- [ ] Secret `GCP_SA_KEY_BASE64` configured in staging environment
+  - Location: Settings → Environments → staging → Secrets
+  - Format: Single-line base64 of service account JSON
+  
+- [ ] Service account has required IAM permissions
+  - Minimum role: `roles/firebase.admin` OR
+  - Specific permission: `firebaseauth.users.update`
+  
+- [ ] Workflow environment set to `staging`
+  - ✅ Confirmed in workflow file
+
+## Technical Notes
+
+### Why This Should Work
+
+1. **Explicit activation**: The workflow now explicitly calls `gcloud auth activate-service-account` with the decoded key
+2. **Active account selection**: Using `gcloud config set account` ensures the SA is the default account
+3. **Project binding**: Setting project ensures all gcloud commands run against `ropi-bccee`
+4. **Token validation**: Early check with `gcloud auth print-access-token` catches auth issues before Node runs
+5. **Credential consistency**: `GOOGLE_APPLICATION_CREDENTIALS` ensures Node uses the same SA
+
+### Debugging Commands
+
+If issues persist after this fix:
+
+```bash
+# Check gcloud configuration
+gcloud config list
+
+# List all auth accounts
+gcloud auth list
+
+# Test token generation
+gcloud auth print-access-token
+
+# Verify SA permissions in GCP
+gcloud projects get-iam-policy ropi-bccee \
+  --flatten="bindings[].members" \
+  --filter="bindings.members:serviceAccount:ropi-aoss-deployer@*"
+```
+
+## Workflow Execution Status
+
+- [ ] PR #180 merged
+- [ ] Workflow triggered
+- [ ] Staging environment approved
+- [ ] Workflow completed successfully
+- [ ] Logs captured
+- [ ] Admin claim verified
+- [ ] Audit updated with results
+
+---
+
+**PENDING**: Awaiting PR merge and workflow execution to complete audit.
