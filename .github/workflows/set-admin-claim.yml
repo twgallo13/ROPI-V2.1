@@ -63,15 +63,15 @@ jobs:
               head -c 400 /tmp/sa.json || true
               exit 1
             }
-import sys, json
-try:
-  json.load(open('/tmp/sa.json'))
-  sys.exit(0)
-except Exception as e:
-  print('::error::Decoded /tmp/sa.json is not valid JSON:', e)
-  print(open('/tmp/sa.json').read(400))
-  sys.exit(1)
-PY
+          import sys, json
+          try:
+            json.load(open('/tmp/sa.json'))
+            sys.exit(0)
+          except Exception as e:
+            print('::error::Decoded /tmp/sa.json is not valid JSON:', e)
+            print(open('/tmp/sa.json').read()[:400])
+            sys.exit(1)
+          PY
           else
             if ! command -v jq >/dev/null 2>&1; then
               sudo apt-get update && sudo apt-get install -y jq
