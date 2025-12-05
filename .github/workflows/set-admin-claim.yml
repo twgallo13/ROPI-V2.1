@@ -188,21 +188,30 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
           EMAIL: "${{ github.event.inputs.email }}"
+          FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY || secrets.FIREBASE_API_KEY || '' }}
         run: |
           set -euo pipefail
+
           echo "Confirm GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
           echo "Active gcloud account:"
-          gcloud auth list --filter=status:ACTIVE --format="value(account)" || echo "gcloud not available"
+          gcloud auth list --filter=status:ACTIVE --format="value(account)"
           echo "Using project:"
-          gcloud config get-value project || echo "gcloud not available"
+          gcloud config get-value project || true
 
-          # Run the script using applicationDefault()
-          node -e "const admin=require('firebase-admin'); \
-            admin.initializeApp({ credential: admin.credential.applicationDefault(), projectId:'ropi-bccee' }); \
-            (async ()=>{ const u = await admin.auth().getUserByEmail(process.env.EMAIL); \
-              await admin.auth().setCustomUserClaims(u.uid, { admin: true }); \
-              console.log('Set admin claim for', process.env.EMAIL); \
-            })().catch(e=>{ console.error(e); process.exit(1); });"
+          # Ensure Node/npm available (ubuntu runner has Node, but ensure)
+          if ! command -v node >/dev/null 2>&1; then
+            echo "Installing Node..."
+            sudo apt-get update -y
+            sudo apt-get install -y nodejs npm
+          fi
+
+          # If there's a scripts/package.json, install deps (safe no-op otherwise)
+          if [ -f scripts/package.json ]; then
+            (cd scripts && npm ci --unsafe-perm)
+          fi
+
+          # Run the repo script (it performs token lookup + claims)
+          node scripts/set-admin-custom-claim.js "${{ github.event.inputs.email }}"
 
       - name: Verify claim (server-side)
         env:
