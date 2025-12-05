@@ -1,0 +1,82 @@
+{
+  "$id": "https://ropi-aoss/schemas/import-row.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AOSS Import Row",
+  "description": "Normalized representation of a single CSV row from the Import Engine. This schema represents an already-parsed row (after raw CSV → structured row, before full Product mapping).",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": ["SUPPLIER", "RETAILOPS_EXPORT", "MANUAL"],
+      "description": "Origin of the import data"
+    },
+    "rowId": {
+      "type": "string",
+      "description": "Unique identifier for this row within the import batch",
+      "minLength": 1
+    },
+    "originalRowNumber": {
+      "type": "integer",
+      "description": "Line number in the original CSV file (1-indexed)",
+      "minimum": 1
+    },
+    "styleCode": {
+      "type": "string",
+      "description": "Product style code from supplier data",
+      "minLength": 1
+    },
+    "brand": {
+      "type": "string",
+      "description": "Brand name as provided by supplier",
+      "minLength": 1
+    },
+    "color": {
+      "type": "string",
+      "description": "Color description from supplier data",
+      "minLength": 1
+    },
+    "size": {
+      "type": "string",
+      "description": "Size value from supplier data",
+      "minLength": 1
+    },
+    "upc": {
+      "type": "string",
+      "description": "Universal Product Code (barcode)",
+      "minLength": 1
+    },
+    "raw": {
+      "type": "object",
+      "description": "Snapshot of the original supplier fields (column name → value)",
+      "additionalProperties": true
+    },
+    "normalizedGender": {
+      "type": "string",
+      "description": "Gender value normalized to AOSS standard (e.g., 'MEN', 'WOMEN', 'UNISEX')"
+    },
+    "normalizedCategory": {
+      "type": "string",
+      "description": "Category value normalized to AOSS standard (e.g., 'FOOTWEAR', 'APPAREL')"
+    },
+    "normalizedSizeScale": {
+      "type": "string",
+      "description": "Size scale normalized to AOSS standard (e.g., 'MENS_US', 'WOMENS_US')"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes or comments about this import row"
+    }
+  },
+  "required": [
+    "source",
+    "rowId",
+    "originalRowNumber",
+    "styleCode",
+    "brand",
+    "color",
+    "size",
+    "upc",
+    "raw"
+  ],
+  "additionalProperties": false
+}

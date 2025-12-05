@@ -98,5 +98,48 @@ export {
 } from './builders/importRowBuilder';
 export type { BuildRowOptions } from './builders/importRowBuilder';
 
+// ============================================================================
+// Core Schemas (aoss.v0.4.0)
+// JSON Schema-aligned types for canonical Product and Import Row
+// ============================================================================
+
+// Core Product Schema (per /schemas/product.schema.json)
+export {
+  productJsonSchema,
+  validateCoreProduct,
+  validateCoreProductOrThrow,
+  CoreProductSchema,
+  ProductImageSchema,
+  ProductFlagsSchema,
+  ProductMetaSchema,
+} from './schemas/coreProduct';
+
+export type {
+  CoreProduct,
+  ProductImage,
+  ProductFlags,
+  ProductMeta,
+  ProductBrand,
+  ProductGender,
+  ProductCategory,
+  ProductSizeScale,
+  ProductStatus,
+} from './schemas/coreProduct';
+
+// Import Row Schema (per /schemas/import-row.schema.json)
+export {
+  importRowJsonSchema,
+  validateImportRowSchema,
+  validateImportRowSchemaOrThrow,
+  ImportRowSchema,
+  ImportRowRawSchema,
+} from './schemas/importRow';
+
+export type {
+  ImportRow,
+  ImportRowRaw,
+  ImportSource,
+} from './schemas/importRow';
+
 // Version info
-export const SDK_VERSION = '0.3.0';
+export const SDK_VERSION = '0.4.0';
