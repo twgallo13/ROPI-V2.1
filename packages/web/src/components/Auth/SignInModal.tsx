@@ -138,7 +138,7 @@ function SignInModal({ isOpen, onClose, onSuccess }: SignInModalProps) {
   };
 
   return (
-    <div className="signin-modal-overlay" onClick={handleOverlayClick}>
+    <div className="signin-modal-overlay" onClick={handleOverlayClick} data-testid="signin-modal">
       <div className="signin-modal">
         <button
           className="signin-modal-close"
@@ -206,6 +206,7 @@ function SignInModal({ isOpen, onClose, onSuccess }: SignInModalProps) {
                 disabled={loading}
                 required
                 autoComplete={mode === 'signin' ? 'email' : 'email'}
+                data-testid="email-input"
               />
             </div>
 
@@ -220,6 +221,7 @@ function SignInModal({ isOpen, onClose, onSuccess }: SignInModalProps) {
                 disabled={loading}
                 required
                 autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                data-testid="password-input"
               />
             </div>
 
@@ -235,6 +237,7 @@ function SignInModal({ isOpen, onClose, onSuccess }: SignInModalProps) {
               type="submit"
               className="signin-btn-primary"
               disabled={loading}
+              data-testid="signin-submit"
             >
               {loading
                 ? (mode === 'signin' ? 'Signing in...' : 'Creating account...')
