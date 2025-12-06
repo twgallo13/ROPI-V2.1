@@ -21,6 +21,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       
+      - name: Build SDK
+        run: |
+          set -euo pipefail
+          echo "Building @ropi-aoss/sdk package..."
+          pnpm --filter @ropi-aoss/sdk build
+          echo "SDK build complete."
+      
       - name: Build web app
         run: |
           set -euo pipefail

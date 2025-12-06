@@ -4,7 +4,8 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationMap": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "composite": false
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "test", "**/*.test.ts"]

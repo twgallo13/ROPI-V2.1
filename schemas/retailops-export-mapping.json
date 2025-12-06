@@ -1,0 +1,170 @@
+{
+  "$id": "https://ropi-aoss/schemas/retailops-export-mapping.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RetailOps Export Mapping",
+  "description": "Mapping between CoreProduct fields and RetailOps CSV columns for Nike men's footwear. Column names and order are sourced from the RetailOps CSV Field Mapping Notion spec.",
+  "type": "object",
+  "properties": {
+    "columns": {
+      "type": "array",
+      "description": "Ordered array of column mappings. Order determines CSV column order.",
+      "items": {
+        "type": "object",
+        "required": ["name", "source", "required"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Exact RetailOps CSV column header"
+          },
+          "source": {
+            "type": "string",
+            "description": "Dot-path into CoreProduct (e.g., 'sku', 'styleCode', 'images.0.url'). Empty string if no direct mapping."
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether this column is required in the export"
+          },
+          "default": {
+            "type": ["string", "number", "boolean", "null"],
+            "description": "Default value when source is missing or empty"
+          },
+          "transform": {
+            "type": "string",
+            "description": "Name of transform function to apply (e.g., 'uppercase', 'formatDate', 'joinImages')"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of this mapping"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["columns"],
+  "additionalProperties": false,
+  "columns": [
+    {
+      "name": "SKU",
+      "source": "sku",
+      "required": true,
+      "description": "Internal SKU identifier"
+    },
+    {
+      "name": "Product Name",
+      "source": "",
+      "required": true,
+      "default": "",
+      "transform": "buildProductName",
+      "description": "TODO: CoreProduct doesn't have a title field. Build from brand + class + colorPrimary. See Notion row."
+    },
+    {
+      "name": "Brand",
+      "source": "brand",
+      "required": true,
+      "description": "Product brand (NIKE or JORDAN)"
+    },
+    {
+      "name": "Description",
+      "source": "",
+      "required": false,
+      "default": "",
+      "description": "TODO: CoreProduct doesn't have a description field. Leave empty or populate from meta.description if available."
+    },
+    {
+      "name": "Department",
+      "source": "gender",
+      "required": false,
+      "transform": "mapGenderToDepartment",
+      "description": "Maps gender to department (MEN -> Men's)"
+    },
+    {
+      "name": "Category",
+      "source": "category",
+      "required": false,
+      "description": "Product category (FOOTWEAR)"
+    },
+    {
+      "name": "Color",
+      "source": "colorPrimary",
+      "required": false,
+      "description": "Primary color name"
+    },
+    {
+      "name": "Size",
+      "source": "",
+      "required": false,
+      "default": "",
+      "description": "TODO: CoreProduct represents a style, not a size-specific SKU. Size not available at product level. See Notion row."
+    },
+    {
+      "name": "MSRP",
+      "source": "msrp",
+      "required": true,
+      "transform": "formatCurrency",
+      "description": "Manufacturer's suggested retail price"
+    },
+    {
+      "name": "Cost",
+      "source": "",
+      "required": false,
+      "default": "",
+      "description": "TODO: CoreProduct doesn't have a cost field. Requires inventory/procurement data."
+    },
+    {
+      "name": "Retail Price",
+      "source": "price",
+      "required": true,
+      "transform": "formatCurrency",
+      "description": "Selling price"
+    },
+    {
+      "name": "Currency",
+      "source": "",
+      "required": false,
+      "default": "USD",
+      "description": "Currency code. Defaults to USD for MVP."
+    },
+    {
+      "name": "Quantity",
+      "source": "",
+      "required": false,
+      "default": "",
+      "description": "TODO: CoreProduct doesn't have inventory quantity. Requires inventory data."
+    },
+    {
+      "name": "Warehouse",
+      "source": "",
+      "required": false,
+      "default": "",
+      "description": "TODO: CoreProduct doesn't have warehouse info. Requires inventory data."
+    },
+    {
+      "name": "First Received",
+      "source": "",
+      "required": false,
+      "default": "",
+      "description": "TODO: CoreProduct doesn't have first received date. Requires inventory data."
+    },
+    {
+      "name": "Launch Date",
+      "source": "launchDate",
+      "required": false,
+      "transform": "formatDate",
+      "description": "Product launch date in ISO 8601 format"
+    },
+    {
+      "name": "Images",
+      "source": "images",
+      "required": false,
+      "transform": "joinImages",
+      "description": "Pipe-separated list of image URLs"
+    },
+    {
+      "name": "Primary Image",
+      "source": "images.0.url",
+      "required": false,
+      "description": "Primary/hero image URL (first image or isPrimary=true)"
+    }
+  ]
+}
