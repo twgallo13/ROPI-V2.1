@@ -147,6 +147,7 @@ function LaunchCalendarPage() {
               <div
                 key={launch.id}
                 data-launch-id={launch.id}
+                data-product-id={launch.productId}
                 data-testid="launch-card"
                 className="launch-card"
                 style={{

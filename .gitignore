@@ -4,3 +4,4 @@ dist/
 .secrets/
 service-account.json
 operations/review-artifacts/
+artifacts/

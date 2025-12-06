@@ -191,9 +191,9 @@ export async function signUpForLaunch(page: Page, launchId: string) {
   const notifyButton = launchCard.locator('button:has-text("NOTIFY ME"), button:has-text("Notify")').first();
   await notifyButton.click();
   
-  // Wait for success message
+  // Wait for success message - matches "You're in. We'll notify you..." or similar
   await page.waitForSelector(
-    'text=/success|registered|signed up/i',
+    'text=/You\'re in|success|registered|signed up/i',
     { timeout: 5000 }
   );
 }
