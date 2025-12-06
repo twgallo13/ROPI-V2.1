@@ -134,25 +134,37 @@ export async function isSignedIn(page: Page): Promise<boolean> {
  * Wait for email verification banner to appear
  */
 export async function waitForEmailVerificationBanner(page: Page, timeout = 5000) {
-  await page.waitForSelector(
-    'text=/verify.*email|email.*verification/i',
-    { timeout, state: 'visible' }
-  );
+  // First try data-testid, then fall back to text content
+  const banner = page.locator('[data-testid="email-verification-banner"]');
+  try {
+    await banner.waitFor({ timeout, state: 'visible' });
+  } catch {
+    // Fallback to text-based selector
+    await page.waitForSelector(
+      'text=/verify.*email|email.*verification/i',
+      { timeout, state: 'visible' }
+    );
+  }
 }
 
 /**
  * Check if email verification banner is visible
  */
 export async function hasEmailVerificationBanner(page: Page): Promise<boolean> {
-  const banner = page.locator('text=/verify.*email|email.*verification/i');
-  return await banner.isVisible({ timeout: 2000 }).catch(() => false);
+  const banner = page.locator('[data-testid="email-verification-banner"]');
+  const hasByTestId = await banner.isVisible({ timeout: 2000 }).catch(() => false);
+  if (hasByTestId) return true;
+  
+  // Fallback to text-based selector
+  const textBanner = page.locator('text=/verify.*email|email.*verification/i');
+  return await textBanner.isVisible({ timeout: 2000 }).catch(() => false);
 }
 
 /**
  * Navigate to Launch Calendar page
  */
 export async function navigateToLaunchCalendar(page: Page) {
-  await page.goto('/app/launch-calendar');
+  await page.goto('/launch-calendar');
   await page.waitForLoadState('networkidle');
 }
 
@@ -160,7 +172,7 @@ export async function navigateToLaunchCalendar(page: Page) {
  * Navigate to Observations page
  */
 export async function navigateToObservations(page: Page) {
-  await page.goto('/app/observations');
+  await page.goto('/observations');
   await page.waitForLoadState('networkidle');
 }
 
