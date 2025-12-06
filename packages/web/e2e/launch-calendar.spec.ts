@@ -78,11 +78,11 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
     // Wait for Firestore write
     await waitForFirestoreWrite(page);
     
-    // Verify button changes state (e.g., "REGISTERED" or disabled)
-    await expect(notifyButton).toBeDisabled({ timeout: 3000 }).catch(() => {
-      // Or check if text changed
-      expect(notifyButton).toHaveText(/registered|signed up/i);
-    });
+    // Verify button changes state after signup
+    // The button text changes from "NOTIFY ME" to "✓ Signed Up" and becomes disabled
+    // Re-locate the button after state change using broader selector
+    const signedUpButton = firstLaunch.locator('button:disabled, button:has-text("Signed Up")');
+    await expect(signedUpButton.first()).toBeVisible({ timeout: 3000 });
   });
 
   test('should prevent duplicate signups (idempotency)', async ({ page }) => {
