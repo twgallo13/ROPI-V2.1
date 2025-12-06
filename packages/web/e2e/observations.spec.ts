@@ -60,15 +60,19 @@ test.describe('Observations - Admin User', () => {
     const submitButton = modal.locator('button[type="submit"], button:has-text("Create")');
     await submitButton.click();
     
-    // Wait for success
+    // Wait for success message
     await page.waitForSelector('text=/success|created/i', { timeout: 5000 });
     
     // Wait for Firestore write (extended timeout for network operations)
     await waitForFirestoreWrite(page);
     
-    // Verify observation appears in list
+    // Wait for the list to reload after successful creation
+    // The success message appears before loadObservations() completes, so we need extra wait
+    await page.waitForTimeout(2000);
+    
+    // Verify observation appears in list - use longer timeout to account for list reload
     const observationItem = page.locator(`text="${testTitle}"`);
-    await expect(observationItem).toBeVisible();
+    await expect(observationItem).toBeVisible({ timeout: 10000 });
   });
 
   test('should allow admin to resolve observation', async ({ page }) => {

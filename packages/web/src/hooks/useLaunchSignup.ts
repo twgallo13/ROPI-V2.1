@@ -119,6 +119,19 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
         throw new Error('Firebase Auth user not available');
       }
       
+      // Force token refresh to ensure auth state is fully propagated to Firestore
+      // This addresses potential race conditions where the client thinks the user is
+      // authenticated but Firestore hasn't received the valid token yet
+      if (mode === 'account') {
+        try {
+          await authUser!.getIdToken(true); // Force refresh
+          console.log('[DEBUG useLaunchSignup] Token refreshed successfully');
+        } catch (tokenErr) {
+          console.error('[DEBUG useLaunchSignup] Token refresh failed:', tokenErr);
+          throw new Error('Failed to verify authentication. Please try again.');
+        }
+      }
+      
       // Compute document ID: ${launchId}_${sha256(email || uid)}
       const identifier = mode === 'public' ? email! : authUser!.uid;
       const hashSuffix = await sha256(identifier);
@@ -172,6 +185,11 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
       });
     } catch (err: any) {
       console.error('❌ Launch signup failed:', err);
+      console.error('[DEBUG useLaunchSignup] Error details:', {
+        code: err.code,
+        message: err.message,
+        name: err.name,
+      });
       
       // Capture error in Sentry
       if (err.code?.startsWith('permission-denied') || err.message?.includes('permission')) {
