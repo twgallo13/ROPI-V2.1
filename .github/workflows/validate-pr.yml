@@ -10,6 +10,9 @@ jobs:
   validate-pr:
     name: Validate PR Compliance
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     
     steps:
       - name: Checkout repository
@@ -41,30 +44,35 @@ jobs:
         id: validate-branch
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
-          
           echo "Checking branch name: $BRANCH_NAME"
-          
-          # Check if branch starts with 'feature/'
-          if [[ ! "$BRANCH_NAME" =~ ^feature/ ]]; then
-            echo "❌ ERROR: Branch name must start with 'feature/'"
+
+          # Allow either feature/<slug> OR the special integration branch
+          if [[ "$BRANCH_NAME" =~ ^feature/ ]]; then
+            # basic feature branch name OK
+            :
+          elif [[ "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
+            # allow our special integration branch for staged merges
+            :
+          else
+            echo "❌ ERROR: Branch name must start with 'feature/' or be 'aoss-staging-integration'"
             echo "   Current branch: $BRANCH_NAME"
-            echo "   Expected pattern: feature/<slug>"
+            echo "   Expected pattern: feature/<slug> OR aoss-staging-integration"
             echo "   Examples: feature/auth-login, feature/infra/new-workflow"
             echo "branch_valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
-          
-          # Check for valid characters (lowercase letters, numbers, hyphens, forward slashes)
-          if [[ ! "$BRANCH_NAME" =~ ^feature/[a-z0-9/-]+$ ]]; then
+
+          # Validate characters for feature/ branches or exact integration name
+          if [[ "$BRANCH_NAME" =~ ^feature/[a-z0-9/-]+$ || "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
+            echo "✅ Branch name is valid: $BRANCH_NAME"
+            echo "branch_valid=true" >> $GITHUB_OUTPUT
+          else
             echo "❌ ERROR: Branch name contains invalid characters"
-            echo "   Allowed: lowercase letters, numbers, hyphens, forward slashes"
+            echo "   Allowed: lowercase letters, numbers, hyphens, forward slashes (or exact 'aoss-staging-integration')"
             echo "   Current branch: $BRANCH_NAME"
             echo "branch_valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
-          
-          echo "✅ Branch name is valid: $BRANCH_NAME"
-          echo "branch_valid=true" >> $GITHUB_OUTPUT
 
       - name: Validate Target Branch
         id: validate-target
