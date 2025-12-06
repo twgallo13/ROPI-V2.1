@@ -68,3 +68,16 @@ You can manually trigger the staging deployment:
 # Or via CLI:
 gh workflow run deploy-staging.yml --repo twgallo13/ROPI-V2.1
 ```
+
+## Developer Documentation
+
+| Document | Description |
+|----------|-------------|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Onboarding guide & contribution guidelines |
+| [docs/DEV-SETUP.md](docs/DEV-SETUP.md) | Detailed developer runbook & troubleshooting |
+| [docs/ENV.md](docs/ENV.md) | Environment variables & secrets setup |
+| [docs/WORKFLOW.md](docs/WORKFLOW.md) | Branch naming, PR rules & workflow policy |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment procedures |
+
+**New to the project?** Start with [CONTRIBUTING.md](CONTRIBUTING.md) for a step-by-step guide.
+
