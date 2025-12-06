@@ -58,15 +58,11 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
     await notifyButton.click();
     
     // Wait for either success message or check for alert error
-    const successSelector = 'text=/You\'re in|success|registered|signed up/i';
     const dataTestSelector = '[data-testid="launch-signup-success"]';
     
     try {
-      // Try to find either the text or the data-testid
-      await Promise.race([
-        page.waitForSelector(successSelector, { timeout: 10000 }),
-        page.waitForSelector(dataTestSelector, { timeout: 10000 }),
-      ]);
+      // Wait for the success message with specific data-testid
+      await page.waitForSelector(dataTestSelector, { timeout: 10000 });
     } catch (e) {
       // If we saw an alert, that's the error
       if (alertMessage) {
@@ -75,8 +71,8 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
       throw e;
     }
     
-    // Verify success message
-    const successMessage = page.locator('text=/You\'re in|success|registered|signed up/i');
+    // Verify success message using specific data-testid (avoids matching button text too)
+    const successMessage = page.locator('[data-testid="launch-signup-success"]');
     await expect(successMessage).toBeVisible();
     
     // Wait for Firestore write
