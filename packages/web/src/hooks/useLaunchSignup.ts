@@ -43,7 +43,7 @@
  */
 
 import { useState } from 'react';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useAuth } from './useAuth';
 import { getAuth } from 'firebase/auth';
@@ -138,11 +138,13 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
       const signupId = `${launchId}_${hashSuffix}`;
       const signupRef = doc(db, 'launchSignups', signupId);
 
-      // Prepare signup document with serverTimestamp for createdAt
+      // Prepare signup document with Timestamp.now() for createdAt
+      // Note: Using Timestamp.now() instead of serverTimestamp() to ensure 
+      // Firestore rules can validate the createdAt field exists
       const signupData: any = {
         launchId,
         productId,
-        createdAt: serverTimestamp(),
+        createdAt: Timestamp.now(),
         source: mode === 'public' ? 'public-form' : 'aoss-web',
         status: 'active',
       };
