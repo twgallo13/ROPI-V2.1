@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
 import { listObservations, resolveObservation, syncLocalToFirestore, addObservation } from '../services/observations';
-import { Observation, ObservationSeverity, ObservationStatus } from '../types/observation';
-import { useUser } from '../contexts/UserContext';
+import { Observation, ObservationSeverity, ObservationStatus, ObservationCreator } from '../types/observation';
+import { useAuth } from '../hooks/useAuth';
 import { isFirebaseAvailable } from '../firebaseConfig';
 
 /**
@@ -24,7 +24,17 @@ import { isFirebaseAvailable } from '../firebaseConfig';
  */
 function ObservationsPage() {
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { currentUser } = useAuth();
+  
+  // Create ObservationCreator from authenticated user
+  const user: ObservationCreator = currentUser ? {
+    uid: currentUser.uid,
+    name: currentUser.displayName || currentUser.email || 'Unknown User',
+  } : {
+    uid: 'anonymous',
+    name: 'Anonymous',
+  };
+  
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
