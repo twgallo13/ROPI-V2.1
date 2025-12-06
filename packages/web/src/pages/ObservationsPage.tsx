@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
-import { listObservations, resolveObservation, syncLocalToFirestore } from '../services/observations';
+import { listObservations, resolveObservation, syncLocalToFirestore, addObservation } from '../services/observations';
 import { Observation, ObservationSeverity, ObservationStatus } from '../types/observation';
 import { useUser } from '../contexts/UserContext';
 import { isFirebaseAvailable } from '../firebaseConfig';
@@ -32,6 +32,15 @@ function ObservationsPage() {
   const [severityFilter, setSeverityFilter] = useState<ObservationSeverity | 'all'>('all');
   const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
   const [syncing, setSyncing] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [newObservation, setNewObservation] = useState({
+    title: '',
+    description: '',
+    severity: 'medium' as ObservationSeverity,
+    productId: '123', // Default product ID for demo
+  });
 
   // Mock product IDs for demo - in production, this would aggregate across all products
   const demoProductIds = ['123', '456', '789'];
@@ -107,6 +116,45 @@ function ObservationsPage() {
     }
   }
 
+  async function handleAddObservation(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newObservation.title.trim()) {
+      alert('Title is required');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await addObservation({
+        productId: newObservation.productId,
+        title: newObservation.title,
+        body: newObservation.description,
+        severity: newObservation.severity,
+        createdBy: user,
+      });
+      
+      // Reset form and close modal
+      setNewObservation({
+        title: '',
+        description: '',
+        severity: 'medium',
+        productId: '123',
+      });
+      setShowAddModal(false);
+      
+      // Show success message
+      setSuccessMessage('Observation created successfully');
+      setTimeout(() => setSuccessMessage(null), 3000);
+      
+      // Reload observations
+      await loadObservations();
+    } catch (err) {
+      alert('Failed to add observation: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   const filteredObservations = observations.filter((obs) => {
     if (filter !== 'all' && obs.status !== filter) return false;
     if (severityFilter !== 'all' && obs.severity !== severityFilter) return false;
@@ -141,6 +189,24 @@ function ObservationsPage() {
 
   return (
     <PageLayout title="Observations">
+      {/* Success Message */}
+      {successMessage && (
+        <div
+          data-testid="success-message"
+          style={{
+            padding: '12px 16px',
+            backgroundColor: '#d1fae5',
+            border: '1px solid #6ee7b7',
+            borderRadius: '6px',
+            marginBottom: '16px',
+            color: '#065f46',
+            fontWeight: '500',
+          }}
+        >
+          ✅ {successMessage}
+        </div>
+      )}
+      
       {isOffline && (
         <div style={{
           padding: '12px 16px',
@@ -215,8 +281,25 @@ function ObservationsPage() {
           </select>
         </div>
 
-        <div style={{ marginLeft: 'auto', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-          {filteredObservations.length} observation{filteredObservations.length !== 1 ? 's' : ''}
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+            {filteredObservations.length} observation{filteredObservations.length !== 1 ? 's' : ''}
+          </span>
+          <button
+            onClick={() => setShowAddModal(true)}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+            }}
+          >
+            Add Observation
+          </button>
         </div>
       </div>
 
@@ -392,6 +475,139 @@ function ObservationsPage() {
           <li>Related Notion docs: Workflow W1, Observations Overview, Product Completion Workflows</li>
         </ul>
       </div>
+
+      {/* Add Observation Modal */}
+      {showAddModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowAddModal(false)}
+        >
+          <form
+            onSubmit={handleAddObservation}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              padding: '24px',
+              borderRadius: '12px',
+              width: '100%',
+              maxWidth: '500px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            <h3 style={{ margin: '0 0 16px', fontSize: '18px', fontWeight: '600' }}>
+              Add Observation
+            </h3>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
+                Title *
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={newObservation.title}
+                onChange={(e) => setNewObservation(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Enter observation title"
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                }}
+                required
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={newObservation.description}
+                onChange={(e) => setNewObservation(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Enter observation description"
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  resize: 'vertical',
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
+                Severity
+              </label>
+              <select
+                name="severity"
+                value={newObservation.severity}
+                onChange={(e) => setNewObservation(prev => ({ ...prev, severity: e.target.value as ObservationSeverity }))}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                }}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => setShowAddModal(false)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                {isSubmitting ? 'Adding...' : 'Create'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </PageLayout>
   );
 }
