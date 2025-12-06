@@ -62,55 +62,69 @@ export const TEST_USERS = {
 };
 
 /**
- * Sign in with email/password
+ * Sign in with email/password using the SignInModal
+ * 
+ * Flow:
+ * 1. Click the "Sign In" button in TopBar to open the modal
+ * 2. Wait for modal to appear
+ * 3. Fill email and password fields
+ * 4. Submit the form
+ * 5. Wait for modal to close and user menu to appear
  */
 export async function signInWithEmail(
   page: Page,
   email: string,
   password: string
 ) {
-  // Navigate to sign-in page
+  // Navigate to home page
   await page.goto('/');
+  await page.waitForLoadState('networkidle');
   
-  // Look for sign-in UI (adjust selectors based on actual UI)
-  const signInButton = page.locator('button:has-text("Sign In"), a:has-text("Sign In")').first();
-  if (await signInButton.isVisible()) {
-    await signInButton.click();
-  }
+  // Click the Sign In button in TopBar to open modal
+  const signInTrigger = page.locator('[data-testid="signin-trigger"]');
+  await signInTrigger.waitFor({ state: 'visible', timeout: 10000 });
+  await signInTrigger.click();
   
-  // Fill in email/password
-  await page.fill('input[type="email"], input[name="email"]', email);
-  await page.fill('input[type="password"], input[name="password"]', password);
+  // Wait for modal to appear
+  const modal = page.locator('[data-testid="signin-modal"]');
+  await modal.waitFor({ state: 'visible', timeout: 5000 });
+  
+  // Fill in email/password using data-testid selectors
+  await page.locator('[data-testid="email-input"]').fill(email);
+  await page.locator('[data-testid="password-input"]').fill(password);
   
   // Submit form
-  await page.locator('button[type="submit"]:has-text("Sign"), button:has-text("Log In")').click();
+  await page.locator('[data-testid="signin-submit"]').click();
   
-  // Wait for redirect to /app
-  await page.waitForURL(/\/app/, { timeout: 10000 });
+  // Wait for modal to close and user menu to appear (indicates successful sign-in)
+  await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 15000 });
 }
 
 /**
- * Sign out
+ * Sign out via the user dropdown menu
  */
 export async function signOut(page: Page) {
-  // Look for sign-out button (adjust selectors based on actual UI)
-  const signOutButton = page.locator('button:has-text("Sign Out"), button:has-text("Logout")');
-  
-  if (await signOutButton.isVisible()) {
+  // Click user menu to open dropdown
+  const userMenu = page.locator('[data-testid="user-menu-trigger"]');
+  if (await userMenu.isVisible()) {
+    await userMenu.click();
+    
+    // Wait for dropdown and click sign out
+    const signOutButton = page.locator('[data-testid="signout-button"]');
+    await signOutButton.waitFor({ state: 'visible', timeout: 3000 });
     await signOutButton.click();
     
-    // Wait for redirect to home
-    await page.waitForURL(/^\/$|\/(?!app)/, { timeout: 5000 });
+    // Wait for sign-in button to appear (indicates signed out)
+    await page.locator('[data-testid="signin-trigger"]').waitFor({ state: 'visible', timeout: 5000 });
   }
 }
 
 /**
- * Check if user is signed in
+ * Check if user is signed in by looking for user menu trigger
  */
 export async function isSignedIn(page: Page): Promise<boolean> {
-  // Check for presence of auth UI elements
-  const signOutButton = page.locator('button:has-text("Sign Out"), button:has-text("Logout")');
-  return await signOutButton.isVisible();
+  const userMenu = page.locator('[data-testid="user-menu-trigger"]');
+  return await userMenu.isVisible({ timeout: 2000 }).catch(() => false);
 }
 
 /**
