@@ -42,14 +42,30 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
     
     // Find first available launch
     const firstLaunch = page.locator('[data-launch-id]').first();
+    await firstLaunch.waitFor({ state: 'visible', timeout: 10000 });
     const launchId = await firstLaunch.getAttribute('data-launch-id');
     
     // Click "NOTIFY ME" button
     const notifyButton = firstLaunch.locator('button:has-text("NOTIFY ME"), button:has-text("Notify")');
     await notifyButton.click();
     
-    // Wait for success message - matches "You're in. We'll notify you..."
-    await page.waitForSelector('text=/You\'re in|success|registered|signed up/i', { timeout: 5000 });
+    // Wait for either success message or error alert
+    // Note: Firestore write may take a few seconds, extended timeout
+    const successSelector = 'text=/You\'re in|success|registered|signed up/i';
+    try {
+      await page.waitForSelector(successSelector, { timeout: 10000 });
+    } catch (e) {
+      // Check for error alert or console errors
+      const consoleErrors = await page.evaluate(() => {
+        const errors: string[] = [];
+        // Check for alert dialogs
+        const alerts = document.querySelectorAll('[role="alert"], .error, .alert');
+        alerts.forEach(a => errors.push(a.textContent || ''));
+        return errors;
+      });
+      console.log('Page state after timeout:', consoleErrors);
+      throw e;
+    }
     
     // Verify success message
     const successMessage = page.locator('text=/You\'re in|success|registered|signed up/i');

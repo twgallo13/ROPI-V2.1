@@ -112,7 +112,9 @@ function LaunchCalendarPage() {
       <PageLayout title="Launch Calendar">
         {/* Confirmation Message */}
         {confirmationMessage && (
-          <div style={{
+          <div 
+            data-testid="launch-signup-success"
+            style={{
             position: 'fixed',
             top: '80px',
             left: '50%',
