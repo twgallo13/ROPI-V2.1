@@ -96,8 +96,11 @@ export async function signInWithEmail(
   // Submit form
   await page.locator('[data-testid="signin-submit"]').click();
   
-  // Wait for modal to close and user menu to appear (indicates successful sign-in)
+  // Wait for user menu to appear (indicates successful sign-in)
   await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 15000 });
+  
+  // Wait for modal to close (it auto-closes after 500ms delay on success)
+  await modal.waitFor({ state: 'hidden', timeout: 5000 });
 }
 
 /**
