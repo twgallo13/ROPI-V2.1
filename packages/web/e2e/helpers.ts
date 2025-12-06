@@ -165,7 +165,9 @@ export async function hasEmailVerificationBanner(page: Page): Promise<boolean> {
  */
 export async function navigateToLaunchCalendar(page: Page) {
   await page.goto('/launch-calendar');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for the launch calendar heading to appear
+  await page.locator('h1:has-text("Launch Calendar")').waitFor({ state: 'visible', timeout: 10000 });
 }
 
 /**
@@ -173,7 +175,9 @@ export async function navigateToLaunchCalendar(page: Page) {
  */
 export async function navigateToObservations(page: Page) {
   await page.goto('/observations');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for the observations heading to appear
+  await page.locator('h1:has-text("Observations")').waitFor({ state: 'visible', timeout: 10000 });
 }
 
 /**
