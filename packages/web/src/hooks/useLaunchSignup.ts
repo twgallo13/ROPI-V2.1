@@ -43,9 +43,10 @@
  */
 
 import { useState } from 'react';
-import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useAuth } from './useAuth';
+import { getAuth } from 'firebase/auth';
 import { captureLaunchSignupError, captureFirestoreError, addActionBreadcrumb } from '../monitoring/sentry';
 
 interface SignupOptions {
@@ -110,28 +111,53 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
     setError(null);
 
     try {
+      // Get authoritative auth uid directly from Firebase Auth (not from cached context)
+      const auth = getAuth();
+      const authUser = auth.currentUser;
+      
+      if (mode === 'account' && !authUser) {
+        throw new Error('Firebase Auth user not available');
+      }
+      
       // Compute document ID: ${launchId}_${sha256(email || uid)}
-      const identifier = mode === 'public' ? email! : currentUser!.uid;
+      const identifier = mode === 'public' ? email! : authUser!.uid;
       const hashSuffix = await sha256(identifier);
       const signupId = `${launchId}_${hashSuffix}`;
       const signupRef = doc(db, 'launchSignups', signupId);
 
-      // Prepare signup document
+      // Prepare signup document with serverTimestamp for createdAt
       const signupData: any = {
         launchId,
         productId,
-        createdAt: Timestamp.now(),
+        createdAt: serverTimestamp(),
         source: mode === 'public' ? 'public-form' : 'aoss-web',
         status: 'active',
       };
 
       if (mode === 'account') {
-        signupData.userUid = currentUser!.uid;
-        signupData.email = currentUser!.email || undefined;
+        // Use authoritative auth uid directly
+        signupData.userUid = authUser!.uid;
+        // Only include email if it exists (don't set undefined)
+        if (authUser!.email) {
+          signupData.email = authUser!.email;
+        }
       } else {
         signupData.email = email;
         signupData.userUid = null; // Explicitly null for public signups
       }
+
+      // DEBUG: Log payload before write (one-time debug for E2E investigation)
+      console.log('[DEBUG useLaunchSignup] Payload before write:', {
+        signupId,
+        authUid: authUser?.uid,
+        payloadUserUid: signupData.userUid,
+        payloadSource: signupData.source,
+        payloadStatus: signupData.status,
+        payloadLaunchId: signupData.launchId,
+        payloadProductId: signupData.productId,
+        createdAtType: typeof signupData.createdAt,
+        mode,
+      });
 
       // Write signup document (idempotent via doc ID)
       await setDoc(signupRef, signupData);
