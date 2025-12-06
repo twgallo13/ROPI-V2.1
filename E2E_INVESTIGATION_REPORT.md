@@ -280,3 +280,4 @@ test.skip('should allow admin to create observation', async ({ page }) => {
 ---
 
 **Next Steps:** Lisa to decide which fix approach to take for each failing test.
+# E2E Verification - 2025-12-06T10:26:24Z
