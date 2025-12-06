@@ -38,6 +38,14 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
   });
 
   test('should allow signup for a launch', async ({ page }) => {
+    // Listen for dialog/alert events
+    let alertMessage = '';
+    page.on('dialog', async dialog => {
+      alertMessage = dialog.message();
+      console.log(`Alert dialog appeared: ${alertMessage}`);
+      await dialog.dismiss();
+    });
+    
     await navigateToLaunchCalendar(page);
     
     // Find first available launch
@@ -49,21 +57,21 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
     const notifyButton = firstLaunch.locator('button:has-text("NOTIFY ME"), button:has-text("Notify")');
     await notifyButton.click();
     
-    // Wait for either success message or error alert
-    // Note: Firestore write may take a few seconds, extended timeout
+    // Wait for either success message or check for alert error
     const successSelector = 'text=/You\'re in|success|registered|signed up/i';
+    const dataTestSelector = '[data-testid="launch-signup-success"]';
+    
     try {
-      await page.waitForSelector(successSelector, { timeout: 10000 });
+      // Try to find either the text or the data-testid
+      await Promise.race([
+        page.waitForSelector(successSelector, { timeout: 10000 }),
+        page.waitForSelector(dataTestSelector, { timeout: 10000 }),
+      ]);
     } catch (e) {
-      // Check for error alert or console errors
-      const consoleErrors = await page.evaluate(() => {
-        const errors: string[] = [];
-        // Check for alert dialogs
-        const alerts = document.querySelectorAll('[role="alert"], .error, .alert');
-        alerts.forEach(a => errors.push(a.textContent || ''));
-        return errors;
-      });
-      console.log('Page state after timeout:', consoleErrors);
+      // If we saw an alert, that's the error
+      if (alertMessage) {
+        throw new Error(`Signup failed with error: ${alertMessage}`);
+      }
       throw e;
     }
     

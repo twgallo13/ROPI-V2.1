@@ -62,6 +62,8 @@ test.describe('Observations - Admin User', () => {
     
     // Wait for success
     await page.waitForSelector('text=/success|created/i', { timeout: 5000 });
+    
+    // Wait for Firestore write (extended timeout for network operations)
     await waitForFirestoreWrite(page);
     
     // Verify observation appears in list

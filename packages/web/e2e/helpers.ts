@@ -271,10 +271,9 @@ export function generateTestId(prefix: string): string {
 
 /**
  * Wait for Firestore operation to complete
- * (Polls for network idle after Firestore writes)
+ * (Uses timeout instead of networkidle which may hang on persistent connections)
  */
 export async function waitForFirestoreWrite(page: Page, timeout = 3000) {
-  await page.waitForLoadState('networkidle', { timeout });
-  // Additional wait for Firestore real-time updates
-  await page.waitForTimeout(500);
+  // Use simple timeout instead of networkidle which can hang on WebSocket/Firestore connections
+  await page.waitForTimeout(timeout > 1000 ? 1500 : timeout);
 }
