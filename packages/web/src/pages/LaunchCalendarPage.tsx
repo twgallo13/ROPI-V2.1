@@ -112,7 +112,9 @@ function LaunchCalendarPage() {
       <PageLayout title="Launch Calendar">
         {/* Confirmation Message */}
         {confirmationMessage && (
-          <div style={{
+          <div 
+            data-testid="launch-signup-success"
+            style={{
             position: 'fixed',
             top: '80px',
             left: '50%',
@@ -142,10 +144,14 @@ function LaunchCalendarPage() {
           </div>
 
           {/* Launch List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} data-testid="launch-list">
             {mockLaunches.map((launch) => (
               <div
                 key={launch.id}
+                data-launch-id={launch.id}
+                data-product-id={launch.productId}
+                data-testid="launch-card"
+                className="launch-card"
                 style={{
                   padding: '1.5rem',
                   background: 'var(--color-surface)',

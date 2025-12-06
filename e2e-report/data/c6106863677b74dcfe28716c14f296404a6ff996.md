@@ -1,0 +1,106 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - heading "ROPI AOSS" [level=1] [ref=e6]
+      - generic [ref=e7]: Staging
+    - searchbox "Global search (non-functional stub)" [disabled] [ref=e9]
+    - button "T Test User ▼" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: T
+      - generic [ref=e14]: Test User
+      - generic [ref=e15]: ▼
+  - generic [ref=e16]:
+    - complementary [ref=e17]:
+      - navigation [ref=e18]:
+        - link "🏠 Home" [ref=e19] [cursor=pointer]:
+          - /url: /home
+          - generic [ref=e20]: 🏠
+          - generic [ref=e21]: Home
+        - link "📦 Products" [ref=e22] [cursor=pointer]:
+          - /url: /products
+          - generic [ref=e23]: 📦
+          - generic [ref=e24]: Products
+        - link "📅 Launch Calendar" [ref=e25] [cursor=pointer]:
+          - /url: /launch-calendar
+          - generic [ref=e26]: 📅
+          - generic [ref=e27]: Launch Calendar
+        - link "📥 Import" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - generic [ref=e29]: 📥
+          - generic [ref=e30]: Import
+        - link "📤 Export" [ref=e31] [cursor=pointer]:
+          - /url: /export
+          - generic [ref=e32]: 📤
+          - generic [ref=e33]: Export
+        - link "👁️ Observations" [ref=e34] [cursor=pointer]:
+          - /url: /observations
+          - generic [ref=e35]: 👁️
+          - generic [ref=e36]: Observations
+        - link "🏷️ Attributes" [ref=e37] [cursor=pointer]:
+          - /url: /attributes
+          - generic [ref=e38]: 🏷️
+          - generic [ref=e39]: Attributes
+        - link "⚡ Smart Rules" [ref=e40] [cursor=pointer]:
+          - /url: /smart-rules
+          - generic [ref=e41]: ⚡
+          - generic [ref=e42]: Smart Rules
+        - link "⚙️ Settings" [ref=e43] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e44]: ⚙️
+          - generic [ref=e45]: Settings
+    - main [ref=e46]:
+      - generic [ref=e47]:
+        - heading "Launch Calendar" [level=1] [ref=e49]
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - heading "Upcoming Launches" [level=2] [ref=e53]
+            - paragraph [ref=e54]: Get notified about product launches. Sign up to receive launch reminders.
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - heading "Ropi Runner 2025" [level=3] [ref=e58]
+                - paragraph [ref=e59]: Next generation running shoe with enhanced cushioning
+                - generic [ref=e60]:
+                  - generic [ref=e61]:
+                    - text: 📅
+                    - strong [ref=e62]: "Launch Date:"
+                    - text: March 15, 2025
+                  - generic [ref=e63]:
+                    - text: 🏷️
+                    - strong [ref=e64]: "Category:"
+                    - text: Footwear
+              - button "NOTIFY ME" [ref=e65] [cursor=pointer]
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - heading "Ropi Classic - New Colorways" [level=3] [ref=e68]
+                - paragraph [ref=e69]: Spring 2025 color palette for the Ropi Classic line
+                - generic [ref=e70]:
+                  - generic [ref=e71]:
+                    - text: 📅
+                    - strong [ref=e72]: "Launch Date:"
+                    - text: April 1, 2025
+                  - generic [ref=e73]:
+                    - text: 🏷️
+                    - strong [ref=e74]: "Category:"
+                    - text: Footwear
+              - button "NOTIFY ME" [ref=e75] [cursor=pointer]
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - heading "Ropi HighTop V2" [level=3] [ref=e78]
+                - paragraph [ref=e79]: Updated design with improved ankle support
+                - generic [ref=e80]:
+                  - generic [ref=e81]:
+                    - text: 📅
+                    - strong [ref=e82]: "Launch Date:"
+                    - text: May 20, 2025
+                  - generic [ref=e83]:
+                    - text: 🏷️
+                    - strong [ref=e84]: "Category:"
+                    - text: Footwear
+              - button "NOTIFY ME" [ref=e85] [cursor=pointer]
+          - generic [ref=e86]:
+            - strong [ref=e87]: "📋 Note:"
+            - text: "Full calendar view with month/week/day views coming soon. See Notion: Section 7 — Frontend & Launch Calendar"
+```
