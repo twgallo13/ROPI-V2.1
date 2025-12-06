@@ -174,7 +174,18 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
         mode,
       });
 
-      // Write signup document (idempotent via doc ID)
+      // Check if document already exists (idempotency check)
+      // We need to do this because:
+      // 1. Firestore create rules differ from update rules
+      // 2. Our update rules only allow status changes to 'cancelled'
+      // 3. setDoc on existing doc triggers update rules, not create rules
+      const existingDoc = await getDoc(signupRef);
+      if (existingDoc.exists()) {
+        console.log(`✅ Launch signup already exists for ${launchId} - skipping write (idempotent)`);
+        return; // Already signed up - idempotent success
+      }
+
+      // Write new signup document (create operation)
       await setDoc(signupRef, signupData);
 
       console.log(`✅ Launch signup successful: ${launchId} (${mode} mode)`);
