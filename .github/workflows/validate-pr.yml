@@ -10,6 +10,9 @@ jobs:
   validate-pr:
     name: Validate PR Compliance
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     
     steps:
       - name: Checkout repository
@@ -192,4 +195,3 @@ jobs:
           fi
           echo ""
           echo "=========================================="
-# Trigger validation Sat Dec  6 23:34:29 UTC 2025
