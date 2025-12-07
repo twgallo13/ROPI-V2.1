@@ -1,68 +1,23 @@
-/**
- * Attribute Schema Types
- * Per AOSS Section 2.2 — Attribute Validation Schema (JSON)
- * 
- * Defines metadata and validation rules for product attributes.
- */
+import { z } from 'zod';
 
-/**
- * Data type for attribute values
- */
-export type AttributeDataType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'date'
-  | 'array'
-  | 'object';
+export const AttributeSchema = z.object({
+  attribute_id: z.string().min(1).regex(/^[a-z0-9-_]+$/),
+  label: z.string().min(1),
+  external_header: z.string().optional(),
+  category: z.string().optional(),
+  data_type: z.enum(['string','number','boolean','enum','currency','json']),
+  allowed_values: z.array(z.string()).optional(),
+  synonyms: z.array(z.string()).optional(),
+  required_for_completion: z.boolean().optional().default(false),
+  required_for_export: z.boolean().optional().default(false),
+  import_required: z.boolean().optional().default(false),
+  ai_usage_notes: z.string().optional(),
+  status: z.enum(['active','deprecated','hidden']).optional().default('active'),
+  createdBy: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedBy: z.string().optional(),
+  updatedAt: z.string().optional()
+});
 
-/**
- * Validation constraint for attribute values
- */
-export interface AttributeConstraint {
-  type: 'required' | 'min' | 'max' | 'pattern' | 'enum' | 'range';
-  value?: any;
-  message?: string;
-  // TODO (AOSS): Add remaining constraint types from Section 2.2
-}
-
-/**
- * Attribute definition from registry
- * Per AOSS Section 2.2 — Attribute Validation Schema
- */
-export interface AttributeDefinition {
-  key: string; // Unique attribute identifier
-  label: string; // Human-readable name
-  dataType: AttributeDataType;
-  required?: boolean;
-  defaultValue?: any;
-  allowedValues?: string[]; // Enum values if applicable
-  constraints?: AttributeConstraint[];
-  description?: string;
-  category?: string; // Grouping, e.g., "classification", "physical", "pricing"
-  
-  // TODO (AOSS): Add remaining fields from Section 2.2 schema
-}
-
-/**
- * Attribute value with metadata
- * Represents an actual attribute value on a product
- */
-export interface AttributeValue {
-  key: string;
-  value: any;
-  source?: string; // Where this value came from
-  confidence?: number; // 0-1, for AI-suggested values
-  validatedAt?: string; // ISO timestamp
-  // TODO (AOSS): Add remaining value metadata from Section 2.2
-}
-
-/**
- * Attribute registry - collection of all attribute definitions
- */
-export interface AttributeRegistry {
-  attributes: AttributeDefinition[];
-  version?: string;
-  updatedAt?: string;
-  // TODO (AOSS): Add remaining registry metadata from Section 2.2
-}
+export type AttributeType = z.infer<typeof AttributeSchema>;
+export default AttributeSchema;
