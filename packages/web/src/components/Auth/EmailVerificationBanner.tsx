@@ -44,7 +44,7 @@ export function EmailVerificationBanner() {
   };
 
   return (
-    <div className="email-verification-banner">
+    <div className="email-verification-banner" data-testid="email-verification-banner">
       <div className="banner-content">
         <div className="banner-icon">📧</div>
         <div className="banner-text">
@@ -58,6 +58,7 @@ export function EmailVerificationBanner() {
           className="banner-button"
           onClick={handleResendClick}
           disabled={sending || sent}
+          data-testid="resend-verification-button"
         >
           {sent ? '✅ Sent!' : sending ? 'Sending...' : 'Resend Email'}
         </button>

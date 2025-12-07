@@ -62,6 +62,7 @@ function TopBar() {
                 className="topbar-user-menu"
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 title="User menu"
+                data-testid="user-menu-trigger"
               >
                 {currentUser.photoURL ? (
                   <img
@@ -72,9 +73,9 @@ function TopBar() {
                 ) : (
                   <span className="topbar-user-avatar">{userInitial}</span>
                 )}
-                <span className="topbar-user-name">
+                <span className="topbar-user-name" data-testid="user-display-name">
                   {userDisplayName}
-                  {isAdmin && <span className="topbar-admin-badge">Admin</span>}
+                  {isAdmin && <span className="topbar-admin-badge" data-testid="admin-badge">Admin</span>}
                 </span>
                 <span className="topbar-dropdown-arrow">▼</span>
               </button>
@@ -94,7 +95,7 @@ function TopBar() {
                   
                   <div className="topbar-dropdown-divider" />
                   
-                  <button className="topbar-dropdown-item" onClick={handleSignOut}>
+                  <button className="topbar-dropdown-item" onClick={handleSignOut} data-testid="signout-button">
                     🚪 Sign out
                   </button>
                 </div>
@@ -105,6 +106,7 @@ function TopBar() {
             <button
               className="topbar-signin-btn"
               onClick={() => setShowSignInModal(true)}
+              data-testid="signin-trigger"
             >
               Sign In
             </button>

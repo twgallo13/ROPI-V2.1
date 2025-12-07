@@ -62,89 +62,122 @@ export const TEST_USERS = {
 };
 
 /**
- * Sign in with email/password
+ * Sign in with email/password using the SignInModal
+ * 
+ * Flow:
+ * 1. Click the "Sign In" button in TopBar to open the modal
+ * 2. Wait for modal to appear
+ * 3. Fill email and password fields
+ * 4. Submit the form
+ * 5. Wait for modal to close and user menu to appear
  */
 export async function signInWithEmail(
   page: Page,
   email: string,
   password: string
 ) {
-  // Navigate to sign-in page
+  // Navigate to home page
   await page.goto('/');
+  await page.waitForLoadState('networkidle');
   
-  // Look for sign-in UI (adjust selectors based on actual UI)
-  const signInButton = page.locator('button:has-text("Sign In"), a:has-text("Sign In")').first();
-  if (await signInButton.isVisible()) {
-    await signInButton.click();
-  }
+  // Click the Sign In button in TopBar to open modal
+  const signInTrigger = page.locator('[data-testid="signin-trigger"]');
+  await signInTrigger.waitFor({ state: 'visible', timeout: 10000 });
+  await signInTrigger.click();
   
-  // Fill in email/password
-  await page.fill('input[type="email"], input[name="email"]', email);
-  await page.fill('input[type="password"], input[name="password"]', password);
+  // Wait for modal to appear
+  const modal = page.locator('[data-testid="signin-modal"]');
+  await modal.waitFor({ state: 'visible', timeout: 5000 });
+  
+  // Fill in email/password using data-testid selectors
+  await page.locator('[data-testid="email-input"]').fill(email);
+  await page.locator('[data-testid="password-input"]').fill(password);
   
   // Submit form
-  await page.locator('button[type="submit"]:has-text("Sign"), button:has-text("Log In")').click();
+  await page.locator('[data-testid="signin-submit"]').click();
   
-  // Wait for redirect to /app
-  await page.waitForURL(/\/app/, { timeout: 10000 });
+  // Wait for user menu to appear (indicates successful sign-in)
+  await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 15000 });
+  
+  // Wait for modal to close (it auto-closes after 500ms delay on success)
+  await modal.waitFor({ state: 'hidden', timeout: 5000 });
 }
 
 /**
- * Sign out
+ * Sign out via the user dropdown menu
  */
 export async function signOut(page: Page) {
-  // Look for sign-out button (adjust selectors based on actual UI)
-  const signOutButton = page.locator('button:has-text("Sign Out"), button:has-text("Logout")');
-  
-  if (await signOutButton.isVisible()) {
+  // Click user menu to open dropdown
+  const userMenu = page.locator('[data-testid="user-menu-trigger"]');
+  if (await userMenu.isVisible()) {
+    await userMenu.click();
+    
+    // Wait for dropdown and click sign out
+    const signOutButton = page.locator('[data-testid="signout-button"]');
+    await signOutButton.waitFor({ state: 'visible', timeout: 3000 });
     await signOutButton.click();
     
-    // Wait for redirect to home
-    await page.waitForURL(/^\/$|\/(?!app)/, { timeout: 5000 });
+    // Wait for sign-in button to appear (indicates signed out)
+    await page.locator('[data-testid="signin-trigger"]').waitFor({ state: 'visible', timeout: 5000 });
   }
 }
 
 /**
- * Check if user is signed in
+ * Check if user is signed in by looking for user menu trigger
  */
 export async function isSignedIn(page: Page): Promise<boolean> {
-  // Check for presence of auth UI elements
-  const signOutButton = page.locator('button:has-text("Sign Out"), button:has-text("Logout")');
-  return await signOutButton.isVisible();
+  const userMenu = page.locator('[data-testid="user-menu-trigger"]');
+  return await userMenu.isVisible({ timeout: 2000 }).catch(() => false);
 }
 
 /**
  * Wait for email verification banner to appear
  */
 export async function waitForEmailVerificationBanner(page: Page, timeout = 5000) {
-  await page.waitForSelector(
-    'text=/verify.*email|email.*verification/i',
-    { timeout, state: 'visible' }
-  );
+  // First try data-testid, then fall back to text content
+  const banner = page.locator('[data-testid="email-verification-banner"]');
+  try {
+    await banner.waitFor({ timeout, state: 'visible' });
+  } catch {
+    // Fallback to text-based selector
+    await page.waitForSelector(
+      'text=/verify.*email|email.*verification/i',
+      { timeout, state: 'visible' }
+    );
+  }
 }
 
 /**
  * Check if email verification banner is visible
  */
 export async function hasEmailVerificationBanner(page: Page): Promise<boolean> {
-  const banner = page.locator('text=/verify.*email|email.*verification/i');
-  return await banner.isVisible({ timeout: 2000 }).catch(() => false);
+  const banner = page.locator('[data-testid="email-verification-banner"]');
+  const hasByTestId = await banner.isVisible({ timeout: 2000 }).catch(() => false);
+  if (hasByTestId) return true;
+  
+  // Fallback to text-based selector
+  const textBanner = page.locator('text=/verify.*email|email.*verification/i');
+  return await textBanner.isVisible({ timeout: 2000 }).catch(() => false);
 }
 
 /**
  * Navigate to Launch Calendar page
  */
 export async function navigateToLaunchCalendar(page: Page) {
-  await page.goto('/app/launch-calendar');
-  await page.waitForLoadState('networkidle');
+  await page.goto('/launch-calendar');
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for the launch calendar heading to appear
+  await page.locator('h1:has-text("Launch Calendar")').waitFor({ state: 'visible', timeout: 10000 });
 }
 
 /**
  * Navigate to Observations page
  */
 export async function navigateToObservations(page: Page) {
-  await page.goto('/app/observations');
-  await page.waitForLoadState('networkidle');
+  await page.goto('/observations');
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for the observations heading to appear
+  await page.locator('h1:has-text("Observations")').waitFor({ state: 'visible', timeout: 10000 });
 }
 
 /**
@@ -158,9 +191,9 @@ export async function signUpForLaunch(page: Page, launchId: string) {
   const notifyButton = launchCard.locator('button:has-text("NOTIFY ME"), button:has-text("Notify")').first();
   await notifyButton.click();
   
-  // Wait for success message
+  // Wait for success message - matches "You're in. We'll notify you..." or similar
   await page.waitForSelector(
-    'text=/success|registered|signed up/i',
+    'text=/You\'re in|success|registered|signed up/i',
     { timeout: 5000 }
   );
 }
@@ -238,10 +271,9 @@ export function generateTestId(prefix: string): string {
 
 /**
  * Wait for Firestore operation to complete
- * (Polls for network idle after Firestore writes)
+ * (Uses timeout instead of networkidle which may hang on persistent connections)
  */
 export async function waitForFirestoreWrite(page: Page, timeout = 3000) {
-  await page.waitForLoadState('networkidle', { timeout });
-  // Additional wait for Firestore real-time updates
-  await page.waitForTimeout(500);
+  // Use simple timeout instead of networkidle which can hang on WebSocket/Firestore connections
+  await page.waitForTimeout(timeout > 1000 ? 1500 : timeout);
 }
