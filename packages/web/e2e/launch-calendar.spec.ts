@@ -38,31 +38,51 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
   });
 
   test('should allow signup for a launch', async ({ page }) => {
+    // Listen for dialog/alert events
+    let alertMessage = '';
+    page.on('dialog', async dialog => {
+      alertMessage = dialog.message();
+      console.log(`Alert dialog appeared: ${alertMessage}`);
+      await dialog.dismiss();
+    });
+    
     await navigateToLaunchCalendar(page);
     
     // Find first available launch
     const firstLaunch = page.locator('[data-launch-id]').first();
+    await firstLaunch.waitFor({ state: 'visible', timeout: 10000 });
     const launchId = await firstLaunch.getAttribute('data-launch-id');
     
     // Click "NOTIFY ME" button
     const notifyButton = firstLaunch.locator('button:has-text("NOTIFY ME"), button:has-text("Notify")');
     await notifyButton.click();
     
-    // Wait for success message
-    await page.waitForSelector('text=/success|registered|signed up/i', { timeout: 5000 });
+    // Wait for either success message or check for alert error
+    const dataTestSelector = '[data-testid="launch-signup-success"]';
     
-    // Verify success message
-    const successMessage = page.locator('text=/success|registered|signed up/i');
+    try {
+      // Wait for the success message with specific data-testid
+      await page.waitForSelector(dataTestSelector, { timeout: 10000 });
+    } catch (e) {
+      // If we saw an alert, that's the error
+      if (alertMessage) {
+        throw new Error(`Signup failed with error: ${alertMessage}`);
+      }
+      throw e;
+    }
+    
+    // Verify success message using specific data-testid (avoids matching button text too)
+    const successMessage = page.locator('[data-testid="launch-signup-success"]');
     await expect(successMessage).toBeVisible();
     
     // Wait for Firestore write
     await waitForFirestoreWrite(page);
     
-    // Verify button changes state (e.g., "REGISTERED" or disabled)
-    await expect(notifyButton).toBeDisabled({ timeout: 3000 }).catch(() => {
-      // Or check if text changed
-      expect(notifyButton).toHaveText(/registered|signed up/i);
-    });
+    // Verify button changes state after signup
+    // The button text changes from "NOTIFY ME" to "✓ Signed Up" and becomes disabled
+    // Re-locate the button after state change using broader selector
+    const signedUpButton = firstLaunch.locator('button:disabled, button:has-text("Signed Up")');
+    await expect(signedUpButton.first()).toBeVisible({ timeout: 3000 });
   });
 
   test('should prevent duplicate signups (idempotency)', async ({ page }) => {
@@ -75,7 +95,8 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
     // First signup
     if (await notifyButton.isEnabled()) {
       await notifyButton.click();
-      await page.waitForSelector('text=/success|registered/i', { timeout: 5000 });
+      // Matches "You're in. We'll notify you..." or similar
+      await page.waitForSelector('text=/You\'re in|success|registered/i', { timeout: 5000 });
       await waitForFirestoreWrite(page);
     }
     
@@ -103,7 +124,8 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
     const notifyButton = launch.locator('button:has-text("NOTIFY ME")');
     if (await notifyButton.isEnabled()) {
       await notifyButton.click();
-      await page.waitForSelector('text=/success|registered/i', { timeout: 5000 });
+      // Matches "You're in. We'll notify you..." or similar
+      await page.waitForSelector('text=/You\'re in|success|registered/i', { timeout: 5000 });
       await waitForFirestoreWrite(page);
     }
     
@@ -142,11 +164,11 @@ test.describe('Launch Calendar Signup - Public Mode', () => {
     const submitButton = page.locator('button[type="submit"]:has-text("Notify"), button:has-text("Sign Up")');
     await submitButton.click();
     
-    // Wait for success
-    await page.waitForSelector('text=/success|registered/i', { timeout: 5000 });
+    // Wait for success - matches "You're in. We'll notify you..." or similar
+    await page.waitForSelector('text=/You\'re in|success|registered/i', { timeout: 5000 });
     
     // Verify success message
-    const successMessage = page.locator('text=/success|registered/i');
+    const successMessage = page.locator('text=/You\'re in|success|registered/i');
     await expect(successMessage).toBeVisible();
   });
 });
@@ -154,12 +176,17 @@ test.describe('Launch Calendar Signup - Public Mode', () => {
 test.describe('Launch Calendar - Auth Gating', () => {
   test('should require sign-in for AOSS web signup', async ({ page }) => {
     // Navigate to Launch Calendar without signing in
-    await page.goto('/app/launch-calendar');
+    await page.goto('/launch-calendar');
     
-    // Should redirect to sign-in
-    await page.waitForURL(/^\/$|\/signin|\/login/, { timeout: 5000 });
+    // Try to click NOTIFY ME - should trigger sign-in modal
+    const firstLaunch = page.locator('[data-launch-id]').first();
+    await firstLaunch.waitFor({ state: 'visible', timeout: 10000 });
     
-    // Verify not on launch calendar
-    await expect(page).not.toHaveURL(/\/launch-calendar/);
+    const notifyButton = firstLaunch.locator('button:has-text("NOTIFY ME")');
+    await notifyButton.click();
+    
+    // Should show sign-in modal
+    const signInModal = page.locator('[data-testid="signin-modal"]');
+    await expect(signInModal).toBeVisible({ timeout: 5000 });
   });
 });
