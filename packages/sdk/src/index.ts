@@ -141,5 +141,46 @@ export type {
   ImportSource,
 } from './schemas/importRow';
 
+// ============================================================================
+// RetailOps Export (aoss.v0.5.0)
+// Transform CoreProduct to RetailOps CSV format
+// ============================================================================
+
+export {
+  buildRetailOpsRow,
+  buildRetailOpsCsv,
+  retailOpsExportMapping,
+  getRetailOpsHeaderRow,
+  RETAILOPS_COLUMN_NAMES,
+  RETAILOPS_HEADER_ROW,
+} from './export/retailOps';
+
+export type {
+  RetailOpsRow,
+  RetailOpsColumnMapping,
+  RetailOpsExportMappingConfig,
+} from './export/retailOps';
+
+// ============================================================================
+// RetailOps Import (aoss.v0.6.0)
+// Parse RetailOps CSV and transform to CoreProduct
+// ============================================================================
+
+export {
+  parseRetailOpsCsv,
+  retailOpsRowToImportRow,
+  importRowToCoreProduct,
+  retailOpsCsvToCoreProducts,
+  retailOpsCsvToCoreProductsWithDetails,
+  parsedRowsToImportRows,
+  importRowsToCoreProducts,
+} from './import/retailOps';
+
+export type {
+  RetailOpsCsvParseOptions,
+  ParsedRetailOpsRow,
+  RetailOpsImportResult,
+} from './import/retailOps';
+
 // Version info
-export const SDK_VERSION = '0.4.0';
+export const SDK_VERSION = '0.6.0';

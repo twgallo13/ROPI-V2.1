@@ -204,3 +204,4 @@ jobs:
             Download artifacts:
             - Playwright HTML report
             - Test screenshots and videos (on failure)
+# Trigger E2E re-run

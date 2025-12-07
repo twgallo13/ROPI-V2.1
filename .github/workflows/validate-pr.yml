@@ -1,0 +1,197 @@
+name: Validate PR
+
+on:
+  pull_request:
+    types: [opened, edited, labeled, unlabeled, synchronize]
+    branches:
+      - aoss-main
+
+jobs:
+  validate-pr:
+    name: Validate PR Compliance
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate PR Title
+        id: validate-title
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          
+          echo "Checking PR title..."
+          
+          if [ -z "$PR_TITLE" ]; then
+            echo "❌ ERROR: PR title is empty"
+            echo "title_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          if [ ${#PR_TITLE} -lt 10 ]; then
+            echo "❌ ERROR: PR title is too short (minimum 10 characters)"
+            echo "title_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ PR title is valid: $PR_TITLE"
+          echo "title_valid=true" >> $GITHUB_OUTPUT
+
+      - name: Validate Branch Name
+        id: validate-branch
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          echo "Checking branch name: $BRANCH_NAME"
+
+          # Allow either feature/<slug> OR the special integration branch
+          if [[ "$BRANCH_NAME" =~ ^feature/ ]]; then
+            # basic feature branch name OK
+            :
+          elif [[ "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
+            # allow our special integration branch for staged merges
+            :
+          else
+            echo "❌ ERROR: Branch name must start with 'feature/' or be 'aoss-staging-integration'"
+            echo "   Current branch: $BRANCH_NAME"
+            echo "   Expected pattern: feature/<slug> OR aoss-staging-integration"
+            echo "   Examples: feature/auth-login, feature/infra/new-workflow"
+            echo "branch_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Validate characters for feature/ branches or exact integration name
+          if [[ "$BRANCH_NAME" =~ ^feature/[a-z0-9/-]+$ || "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
+            echo "✅ Branch name is valid: $BRANCH_NAME"
+            echo "branch_valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ ERROR: Branch name contains invalid characters"
+            echo "   Allowed: lowercase letters, numbers, hyphens, forward slashes (or exact 'aoss-staging-integration')"
+            echo "   Current branch: $BRANCH_NAME"
+            echo "branch_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Validate Target Branch
+        id: validate-target
+        run: |
+          TARGET_BRANCH="${{ github.base_ref }}"
+          
+          echo "Checking target branch: $TARGET_BRANCH"
+          
+          if [ "$TARGET_BRANCH" != "aoss-main" ]; then
+            echo "❌ ERROR: PRs must target 'aoss-main' branch"
+            echo "   Current target: $TARGET_BRANCH"
+            echo "   Required target: aoss-main"
+            echo "target_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ Target branch is valid: $TARGET_BRANCH"
+          echo "target_valid=true" >> $GITHUB_OUTPUT
+
+      - name: Validate Required Labels
+        id: validate-labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Checking PR labels..."
+          
+          # Get PR labels using GitHub API
+          LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name' 2>/dev/null || echo "")
+          
+          echo "Current labels: $LABELS"
+          
+          # Define required label categories
+          TYPE_LABELS="feature bugfix hotfix chore docs"
+          AREA_LABELS="frontend backend infra api sdk"
+          PRIORITY_LABELS="p0-critical p1-high p2-medium p3-low"
+          
+          # Check for type label
+          HAS_TYPE=false
+          for label in $TYPE_LABELS; do
+            if echo "$LABELS" | grep -q "^${label}$"; then
+              HAS_TYPE=true
+              echo "✅ Found type label: $label"
+              break
+            fi
+          done
+          
+          # Check for area label
+          HAS_AREA=false
+          for label in $AREA_LABELS; do
+            if echo "$LABELS" | grep -q "^${label}$"; then
+              HAS_AREA=true
+              echo "✅ Found area label: $label"
+              break
+            fi
+          done
+          
+          # Check for priority label
+          HAS_PRIORITY=false
+          for label in $PRIORITY_LABELS; do
+            if echo "$LABELS" | grep -q "^${label}$"; then
+              HAS_PRIORITY=true
+              echo "✅ Found priority label: $label"
+              break
+            fi
+          done
+          
+          # Report missing labels
+          MISSING=""
+          if [ "$HAS_TYPE" = false ]; then
+            MISSING="$MISSING\n  - Type label (one of: $TYPE_LABELS)"
+          fi
+          if [ "$HAS_AREA" = false ]; then
+            MISSING="$MISSING\n  - Area label (one of: $AREA_LABELS)"
+          fi
+          if [ "$HAS_PRIORITY" = false ]; then
+            MISSING="$MISSING\n  - Priority label (one of: $PRIORITY_LABELS)"
+          fi
+          
+          if [ -n "$MISSING" ]; then
+            echo "❌ ERROR: Missing required labels:$MISSING"
+            echo ""
+            echo "Please add the required labels to this PR:"
+            echo "  Type: feature, bugfix, hotfix, chore, docs"
+            echo "  Area: frontend, backend, infra, api, sdk"  
+            echo "  Priority: p0-critical, p1-high, p2-medium, p3-low"
+            echo "labels_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ All required labels are present"
+          echo "labels_valid=true" >> $GITHUB_OUTPUT
+
+      - name: Validation Summary
+        if: always()
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "       PR Validation Summary"
+          echo "=========================================="
+          echo ""
+          echo "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          echo "Branch: ${{ github.head_ref }} → ${{ github.base_ref }}"
+          echo ""
+          echo "Checks:"
+          echo "  - PR Title: ${{ steps.validate-title.outcome }}"
+          echo "  - Branch Name: ${{ steps.validate-branch.outcome }}"
+          echo "  - Target Branch: ${{ steps.validate-target.outcome }}"
+          echo "  - Required Labels: ${{ steps.validate-labels.outcome }}"
+          echo ""
+          
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ All validations passed!"
+            echo ""
+            echo "This PR meets all workflow requirements and is ready for review."
+          else
+            echo "❌ Some validations failed!"
+            echo ""
+            echo "Please fix the issues above before this PR can be merged."
+            echo "See docs/WORKFLOW.md for detailed requirements."
+          fi
+          echo ""
+          echo "=========================================="
