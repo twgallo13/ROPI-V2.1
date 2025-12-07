@@ -1,0 +1,110 @@
+name: API Integration Tests (Emulator)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'packages/api/**'
+      - 'packages/sdk/**'
+      - 'firestore.rules'
+      - '.github/workflows/api-integration-emulator.yml'
+  workflow_dispatch:
+
+jobs:
+  api-integration-tests:
+    name: API Tests with Firebase Emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    env:
+      # Firestore emulator host for tests
+      FIRESTORE_EMULATOR_HOST: localhost:8080
+      # Use demo project for emulator (no real GCP project needed)
+      GCLOUD_PROJECT: demo-ropi-test
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@latest
+
+      - name: Install Java (required for Firestore emulator)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build SDK (dependency for API)
+        run: pnpm --filter @ropi-aoss/sdk build
+
+      - name: Run API tests with Firestore emulator
+        run: |
+          echo "Starting Firestore emulator and running tests..."
+          firebase emulators:exec \
+            --only firestore \
+            --project demo-ropi-test \
+            "pnpm --filter @ropi-aoss/api test"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results
+          path: |
+            packages/api/coverage/
+            packages/api/test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # SDK unit tests (don't require emulator)
+  sdk-unit-tests:
+    name: SDK Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build and test SDK
+        run: |
+          pnpm --filter @ropi-aoss/sdk build
+          pnpm --filter @ropi-aoss/sdk test
+
+      - name: Upload SDK test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk-test-results
+          path: |
+            packages/sdk/coverage/
+          retention-days: 7
+          if-no-files-found: ignore
