@@ -1,0 +1,159 @@
+/**
+ * Attribute CRUD E2E Tests
+ * Tests admin attribute management workflow
+ * 
+ * Lisa v0.2.0
+ */
+
+import { test, expect } from '@playwright/test';
+
+// TODO: Import helper functions once they're available
+// import { adminLogin, waitForApiResponse } from './helpers';
+
+test.describe('Admin Attribute Management', () => {
+  test.beforeEach(async ({ page }) => {
+    // TODO: Implement admin login
+    // await adminLogin(page);
+    
+    // Navigate to attributes page
+    await page.goto('/settings/attributes');
+  });
+
+  test('should display attribute manager page', async ({ page }) => {
+    await expect(page.locator('h1')).toContainText('Attribute Manager');
+    await expect(page.locator('button:has-text("New Attribute")')).toBeVisible();
+  });
+
+  test('should create a new attribute', async ({ page }) => {
+    // Click New Attribute button
+    await page.click('button:has-text("New Attribute")');
+    
+    // Fill in form
+    await page.fill('input[name="attribute_id"]', 'test-attr-001');
+    await page.fill('input[name="label"]', 'Test Attribute');
+    await page.selectOption('select[name="data_type"]', 'string');
+    await page.fill('input[name="category"]', 'Testing');
+    
+    // Save
+    // await page.click('button:has-text("Create")');
+    
+    // TODO: Wait for API response
+    // await waitForApiResponse(page, '/admin/settings/attributes');
+    
+    // Verify attribute appears in list
+    // await expect(page.locator('text=Test Attribute')).toBeVisible();
+  });
+
+  test('should edit an existing attribute', async ({ page }) => {
+    // TODO: Create a test attribute first
+    
+    // Click edit on first attribute
+    // await page.click('.attribute-item:first-child button:has-text("Edit")');
+    
+    // Modify label
+    // await page.fill('input[name="label"]', 'Updated Test Attribute');
+    
+    // Save
+    // await page.click('button:has-text("Update")');
+    
+    // Verify update
+    // await expect(page.locator('text=Updated Test Attribute')).toBeVisible();
+  });
+
+  test('should delete an attribute', async ({ page }) => {
+    // TODO: Create a test attribute first
+    
+    // Mock confirmation dialog
+    page.on('dialog', dialog => dialog.accept());
+    
+    // Click delete on first attribute
+    // await page.click('.attribute-item:first-child button:has-text("Delete")');
+    
+    // TODO: Wait for API response
+    // await waitForApiResponse(page, '/admin/settings/attributes/*');
+    
+    // Verify attribute removed from list
+    // await expect(page.locator('.attribute-item:first-child')).not.toBeVisible();
+  });
+
+  test('should validate required fields', async ({ page }) => {
+    // Click New Attribute button
+    await page.click('button:has-text("New Attribute")');
+    
+    // Try to save without filling required fields
+    // await page.click('button:has-text("Create")');
+    
+    // TODO: Verify validation errors appear
+    // await expect(page.locator('.error:has-text("required")')).toBeVisible();
+  });
+
+  test('should filter attributes by status', async ({ page }) => {
+    // TODO: Implement filter UI and test
+    // await page.selectOption('select[name="status-filter"]', 'active');
+    // await expect(page.locator('.attribute-item[data-status="active"]')).toBeVisible();
+    // await expect(page.locator('.attribute-item[data-status="deprecated"]')).not.toBeVisible();
+  });
+
+  test('should search attributes', async ({ page }) => {
+    // TODO: Implement search UI and test
+    // await page.fill('input[name="search"]', 'brand');
+    // await expect(page.locator('.attribute-item:has-text("brand")')).toBeVisible();
+  });
+
+  test('should handle API errors gracefully', async ({ page }) => {
+    // TODO: Mock API error response
+    // await page.route('**/admin/settings/attributes', route => {
+    //   route.fulfill({ status: 500, body: 'Internal Server Error' });
+    // });
+    
+    // await page.reload();
+    
+    // Verify error message displayed
+    // await expect(page.locator('.error')).toContainText('Failed to load attributes');
+  });
+
+  test('should paginate attribute list', async ({ page }) => {
+    // TODO: Create enough attributes to trigger pagination
+    // await expect(page.locator('.pagination')).toBeVisible();
+    // await page.click('button:has-text("Next")');
+    // await expect(page.locator('.attribute-item')).toHaveCount(10);
+  });
+
+  test('should cancel attribute creation', async ({ page }) => {
+    // Click New Attribute button
+    await page.click('button:has-text("New Attribute")');
+    
+    // Fill in partial data
+    await page.fill('input[name="attribute_id"]', 'cancelled-attr');
+    
+    // Cancel
+    await page.click('button:has-text("Cancel")');
+    
+    // Verify form is hidden
+    await expect(page.locator('.attribute-form')).not.toBeVisible();
+  });
+});
+
+test.describe('Attribute Form Validation', () => {
+  test.beforeEach(async ({ page }) => {
+    // TODO: Admin login
+    await page.goto('/settings/attributes');
+    await page.click('button:has-text("New Attribute")');
+  });
+
+  test('should validate attribute_id format', async ({ page }) => {
+    // Test invalid characters
+    await page.fill('input[name="attribute_id"]', 'Invalid ID With Spaces');
+    // TODO: Verify validation error
+  });
+
+  test('should validate data_type selection', async ({ page }) => {
+    // Ensure data_type is required
+    // TODO: Test enum values work correctly
+  });
+
+  test('should show allowed_values field for enum type', async ({ page }) => {
+    await page.selectOption('select[name="data_type"]', 'enum');
+    // TODO: Verify allowed_values input appears
+  });
+});
