@@ -9,7 +9,7 @@
 - PR #186: feat(sdk): Core Product & Import Schemas (aoss.v0.4.0) (`7648035`, merged 2025-12-07)
 - PR #187: feat(sdk): RetailOps Export Mapping (Nike Men's Footwear MVP) (aoss.v0.5.0) (`62ac0e7`, merged 2025-12-07)
 - PR #188: feat(sdk): RetailOps CSV Import to CoreProduct (aoss.v0.6.0) (`1555ed0`)
-- PR #190: fix(e2e): update auth tests to match SignInModal flow
+- PR #190: fix(e2e): update auth tests to match SignInModal flow (`c95cf54`, merged 2025-12-07)
 - PR #191: chore(integration): merge aoss-staging-integration to aoss-main (`7858014`)
 - PR #193: ci(validate): allow integration branch for staged merges (`b0d310c`)
 
