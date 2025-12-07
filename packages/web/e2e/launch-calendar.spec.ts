@@ -38,31 +38,51 @@ test.describe('Launch Calendar Signup - Account-Based', () => {
   });
 
   test('should allow signup for a launch', async ({ page }) => {
+    // Listen for dialog/alert events
+    let alertMessage = '';
+    page.on('dialog', async dialog => {
+      alertMessage = dialog.message();
+      console.log(`Alert dialog appeared: ${alertMessage}`);
+      await dialog.dismiss();
+    });
+    
     await navigateToLaunchCalendar(page);
     
     // Find first available launch
     const firstLaunch = page.locator('[data-launch-id]').first();
+    await firstLaunch.waitFor({ state: 'visible', timeout: 10000 });
     const launchId = await firstLaunch.getAttribute('data-launch-id');
     
     // Click "NOTIFY ME" button
     const notifyButton = firstLaunch.locator('button:has-text("NOTIFY ME"), button:has-text("Notify")');
     await notifyButton.click();
     
-    // Wait for success message - matches "You're in. We'll notify you..."
-    await page.waitForSelector('text=/You\'re in|success|registered|signed up/i', { timeout: 5000 });
+    // Wait for either success message or check for alert error
+    const dataTestSelector = '[data-testid="launch-signup-success"]';
     
-    // Verify success message
-    const successMessage = page.locator('text=/You\'re in|success|registered|signed up/i');
+    try {
+      // Wait for the success message with specific data-testid
+      await page.waitForSelector(dataTestSelector, { timeout: 10000 });
+    } catch (e) {
+      // If we saw an alert, that's the error
+      if (alertMessage) {
+        throw new Error(`Signup failed with error: ${alertMessage}`);
+      }
+      throw e;
+    }
+    
+    // Verify success message using specific data-testid (avoids matching button text too)
+    const successMessage = page.locator('[data-testid="launch-signup-success"]');
     await expect(successMessage).toBeVisible();
     
     // Wait for Firestore write
     await waitForFirestoreWrite(page);
     
-    // Verify button changes state (e.g., "REGISTERED" or disabled)
-    await expect(notifyButton).toBeDisabled({ timeout: 3000 }).catch(() => {
-      // Or check if text changed
-      expect(notifyButton).toHaveText(/registered|signed up/i);
-    });
+    // Verify button changes state after signup
+    // The button text changes from "NOTIFY ME" to "✓ Signed Up" and becomes disabled
+    // Re-locate the button after state change using broader selector
+    const signedUpButton = firstLaunch.locator('button:disabled, button:has-text("Signed Up")');
+    await expect(signedUpButton.first()).toBeVisible({ timeout: 3000 });
   });
 
   test('should prevent duplicate signups (idempotency)', async ({ page }) => {
