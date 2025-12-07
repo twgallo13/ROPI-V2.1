@@ -5,7 +5,7 @@
  * Lisa v0.2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './Settings.css';
 
 interface Attribute {
@@ -31,7 +31,8 @@ interface Attribute {
 function useAttributes() {
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [error] = useState<string | null>(null);
 
   useEffect(() => {
     // TODO: Fetch from /admin/settings/attributes

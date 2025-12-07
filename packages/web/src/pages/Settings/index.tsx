@@ -5,7 +5,6 @@
  * Lisa v0.2.0
  */
 
-import React from 'react';
 import { Link } from 'react-router-dom';
 import './Settings.css';
 
