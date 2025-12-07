@@ -4,6 +4,7 @@
 
 ### Merged PRs
 
+- PR #218: feat(admin): Attributes persistence & API (Lisa v0.2.0) (`6a89fc1`, merged 2025-12-07)
 - PR #184: feat(infra): Repo Workflow Guard - PR template, policy, and validation (`08e1cee`, merged 2025-12-07)
 - PR #185: docs: Repo README & Developer Onboarding (aoss.v0.3.1) (`878f83d`, merged 2025-12-07)
 - PR #186: feat(sdk): Core Product & Import Schemas (aoss.v0.4.0) (`7648035`, merged 2025-12-07)
