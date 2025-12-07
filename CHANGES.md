@@ -4,7 +4,7 @@
 
 ### Merged PRs
 
-- PR #184: feat(infra): Repo Workflow Guard - PR template, policy, and validation
+- PR #184: feat(infra): Repo Workflow Guard - PR template, policy, and validation (`08e1cee`, merged 2025-12-07)
 - PR #185: docs: Repo README & Developer Onboarding (aoss.v0.3.1)
 - PR #186: feat(sdk): Core Product & Import Schemas (aoss.v0.4.0)
 - PR #187: feat(sdk): RetailOps Export Mapping (Nike Men's Footwear MVP) (aoss.v0.5.0)
