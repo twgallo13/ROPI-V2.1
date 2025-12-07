@@ -46,24 +46,24 @@ jobs:
           BRANCH_NAME="${{ github.head_ref }}"
           echo "Checking branch name: $BRANCH_NAME"
 
-          # Allow either feature/<slug> OR the special integration branch
-          if [[ "$BRANCH_NAME" =~ ^feature/ ]]; then
-            # basic feature branch name OK
+          # Allow feature/, fix/, hotfix/, chore/, docs/, ci/ branches OR the special integration branch
+          if [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|chore|docs|ci)/ ]]; then
+            # valid branch prefix OK
             :
           elif [[ "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
             # allow our special integration branch for staged merges
             :
           else
-            echo "❌ ERROR: Branch name must start with 'feature/' or be 'aoss-staging-integration'"
+            echo "❌ ERROR: Branch name must start with 'feature/', 'fix/', 'hotfix/', 'chore/', 'docs/', 'ci/' or be 'aoss-staging-integration'"
             echo "   Current branch: $BRANCH_NAME"
-            echo "   Expected pattern: feature/<slug> OR aoss-staging-integration"
-            echo "   Examples: feature/auth-login, feature/infra/new-workflow"
+            echo "   Expected pattern: <type>/<slug> OR aoss-staging-integration"
+            echo "   Examples: feature/auth-login, fix/e2e-tests, hotfix/critical-bug"
             echo "branch_valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
 
-          # Validate characters for feature/ branches or exact integration name
-          if [[ "$BRANCH_NAME" =~ ^feature/[a-z0-9/-]+$ || "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
+          # Validate characters for typed branches or exact integration name
+          if [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|chore|docs|ci)/[a-z0-9/-]+$ || "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
             echo "✅ Branch name is valid: $BRANCH_NAME"
             echo "branch_valid=true" >> $GITHUB_OUTPUT
           else
