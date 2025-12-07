@@ -46,6 +46,7 @@ import { useState } from 'react';
 import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { useAuth } from './useAuth';
+import { getAuth } from 'firebase/auth';
 import { captureLaunchSignupError, captureFirestoreError, addActionBreadcrumb } from '../monitoring/sentry';
 
 interface SignupOptions {
@@ -110,13 +111,36 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
     setError(null);
 
     try {
+      // Get authoritative auth uid directly from Firebase Auth (not from cached context)
+      const auth = getAuth();
+      const authUser = auth.currentUser;
+      
+      if (mode === 'account' && !authUser) {
+        throw new Error('Firebase Auth user not available');
+      }
+      
+      // Force token refresh to ensure auth state is fully propagated to Firestore
+      // This addresses potential race conditions where the client thinks the user is
+      // authenticated but Firestore hasn't received the valid token yet
+      if (mode === 'account') {
+        try {
+          await authUser!.getIdToken(true); // Force refresh
+          console.log('[DEBUG useLaunchSignup] Token refreshed successfully');
+        } catch (tokenErr) {
+          console.error('[DEBUG useLaunchSignup] Token refresh failed:', tokenErr);
+          throw new Error('Failed to verify authentication. Please try again.');
+        }
+      }
+      
       // Compute document ID: ${launchId}_${sha256(email || uid)}
-      const identifier = mode === 'public' ? email! : currentUser!.uid;
+      const identifier = mode === 'public' ? email! : authUser!.uid;
       const hashSuffix = await sha256(identifier);
       const signupId = `${launchId}_${hashSuffix}`;
       const signupRef = doc(db, 'launchSignups', signupId);
 
-      // Prepare signup document
+      // Prepare signup document with Timestamp.now() for createdAt
+      // Note: Using Timestamp.now() instead of serverTimestamp() to ensure 
+      // Firestore rules can validate the createdAt field exists
       const signupData: any = {
         launchId,
         productId,
@@ -126,14 +150,42 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
       };
 
       if (mode === 'account') {
-        signupData.userUid = currentUser!.uid;
-        signupData.email = currentUser!.email || undefined;
+        // Use authoritative auth uid directly
+        signupData.userUid = authUser!.uid;
+        // Only include email if it exists (don't set undefined)
+        if (authUser!.email) {
+          signupData.email = authUser!.email;
+        }
       } else {
         signupData.email = email;
         signupData.userUid = null; // Explicitly null for public signups
       }
 
-      // Write signup document (idempotent via doc ID)
+      // DEBUG: Log payload before write (one-time debug for E2E investigation)
+      console.log('[DEBUG useLaunchSignup] Payload before write:', {
+        signupId,
+        authUid: authUser?.uid,
+        payloadUserUid: signupData.userUid,
+        payloadSource: signupData.source,
+        payloadStatus: signupData.status,
+        payloadLaunchId: signupData.launchId,
+        payloadProductId: signupData.productId,
+        createdAtType: typeof signupData.createdAt,
+        mode,
+      });
+
+      // Check if document already exists (idempotency check)
+      // We need to do this because:
+      // 1. Firestore create rules differ from update rules
+      // 2. Our update rules only allow status changes to 'cancelled'
+      // 3. setDoc on existing doc triggers update rules, not create rules
+      const existingDoc = await getDoc(signupRef);
+      if (existingDoc.exists()) {
+        console.log(`✅ Launch signup already exists for ${launchId} - skipping write (idempotent)`);
+        return; // Already signed up - idempotent success
+      }
+
+      // Write new signup document (create operation)
       await setDoc(signupRef, signupData);
 
       console.log(`✅ Launch signup successful: ${launchId} (${mode} mode)`);
@@ -146,6 +198,11 @@ export function useLaunchSignup(): UseLaunchSignupReturn {
       });
     } catch (err: any) {
       console.error('❌ Launch signup failed:', err);
+      console.error('[DEBUG useLaunchSignup] Error details:', {
+        code: err.code,
+        message: err.message,
+        name: err.name,
+      });
       
       // Capture error in Sentry
       if (err.code?.startsWith('permission-denied') || err.message?.includes('permission')) {
