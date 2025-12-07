@@ -7,7 +7,7 @@
 - PR #184: feat(infra): Repo Workflow Guard - PR template, policy, and validation (`08e1cee`, merged 2025-12-07)
 - PR #185: docs: Repo README & Developer Onboarding (aoss.v0.3.1) (`878f83d`, merged 2025-12-07)
 - PR #186: feat(sdk): Core Product & Import Schemas (aoss.v0.4.0) (`7648035`, merged 2025-12-07)
-- PR #187: feat(sdk): RetailOps Export Mapping (Nike Men's Footwear MVP) (aoss.v0.5.0)
+- PR #187: feat(sdk): RetailOps Export Mapping (Nike Men's Footwear MVP) (aoss.v0.5.0) (`62ac0e7`, merged 2025-12-07)
 - PR #188: feat(sdk): RetailOps CSV Import to CoreProduct (aoss.v0.6.0) (`1555ed0`)
 - PR #190: fix(e2e): update auth tests to match SignInModal flow
 - PR #191: chore(integration): merge aoss-staging-integration to aoss-main (`7858014`)
