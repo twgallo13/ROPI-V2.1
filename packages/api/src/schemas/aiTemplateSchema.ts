@@ -1,4 +1,4 @@
-import { AITemplateSchema } from '../../../sdk/src/schema/aiTemplate';
+import { AITemplateSchema } from '@ropi-aoss/sdk';
 import { z } from 'zod';
 export function validateAITemplate(data: unknown) {
   return AITemplateSchema.safeParse(data);

@@ -182,5 +182,14 @@ export type {
   RetailOpsImportResult,
 } from './import/retailOps';
 
+// ============================================================================
+// Settings Schema Validators (Lisa v0.2.0-rc)
+// Zod schemas for Attributes, SmartRules, and AITemplate
+// ============================================================================
+
+export { AttributeSchema, type AttributeType } from './schema/attribute';
+export { SmartRuleSchema, SmartRuleCondition, SmartRuleAction, type SmartRuleType } from './schema/smartRule';
+export { AITemplateSchema, type AITemplateType } from './schema/aiTemplate';
+
 // Version info
 export const SDK_VERSION = '0.6.0';
