@@ -17,16 +17,28 @@ test.describe('Admin Attribute Management', () => {
     
     // Navigate to attributes page
     await page.goto('/settings/attributes');
+    
+    // Wait for page to load
+    const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+    await pageHeading.waitFor({ state: 'visible', timeout: 60000 });
+    
+    // Wait for New Attribute button to be visible
+    const newBtn = page.getByTestId('new-attribute-button');
+    await newBtn.waitFor({ state: 'visible', timeout: 60000 });
   });
 
   test('should display attribute manager page', async ({ page }) => {
     await expect(page.locator('h1')).toContainText('Attribute Manager');
-    await expect(page.locator('button:has-text("New Attribute")')).toBeVisible();
+    await expect(page.getByTestId('new-attribute-button')).toBeVisible();
   });
 
   test('should create a new attribute', async ({ page }) => {
     // Click New Attribute button
-    await page.click('button:has-text("New Attribute")');
+    await page.getByTestId('new-attribute-button').click();
+    
+    // Wait for form to appear
+    const form = page.locator('.attribute-form');
+    await form.waitFor({ state: 'visible', timeout: 30000 });
     
     // Fill in form
     await page.fill('input[name="attribute_id"]', 'test-attr-001');
@@ -78,7 +90,11 @@ test.describe('Admin Attribute Management', () => {
 
   test('should validate required fields', async ({ page }) => {
     // Click New Attribute button
-    await page.click('button:has-text("New Attribute")');
+    await page.getByTestId('new-attribute-button').click();
+    
+    // Wait for form to appear
+    const form = page.locator('.attribute-form');
+    await form.waitFor({ state: 'visible', timeout: 30000 });
     
     // Try to save without filling required fields
     // await page.click('button:has-text("Create")');
@@ -121,7 +137,11 @@ test.describe('Admin Attribute Management', () => {
 
   test('should cancel attribute creation', async ({ page }) => {
     // Click New Attribute button
-    await page.click('button:has-text("New Attribute")');
+    await page.getByTestId('new-attribute-button').click();
+    
+    // Wait for form to appear
+    const form = page.locator('.attribute-form');
+    await form.waitFor({ state: 'visible', timeout: 30000 });
     
     // Fill in partial data
     await page.fill('input[name="attribute_id"]', 'cancelled-attr');
@@ -138,7 +158,15 @@ test.describe('Attribute Form Validation', () => {
   test.beforeEach(async ({ page }) => {
     // TODO: Admin login
     await page.goto('/settings/attributes');
-    await page.click('button:has-text("New Attribute")');
+    
+    // Wait for New Attribute button and click it
+    const newBtn = page.getByTestId('new-attribute-button');
+    await newBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newBtn.click();
+    
+    // Wait for form to appear
+    const form = page.locator('.attribute-form');
+    await form.waitFor({ state: 'visible', timeout: 30000 });
   });
 
   test('should validate attribute_id format', async ({ page }) => {

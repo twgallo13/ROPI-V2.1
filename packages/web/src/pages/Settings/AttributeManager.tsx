@@ -109,7 +109,7 @@ export default function AttributeManager() {
     <div className="attribute-manager">
       <div className="header">
         <h1>Attribute Manager</h1>
-        <button className="primary" onClick={handleCreate}>
+        <button className="primary" data-testid="new-attribute-button" onClick={handleCreate}>
           + New Attribute
         </button>
       </div>
