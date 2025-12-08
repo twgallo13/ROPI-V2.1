@@ -1,4 +1,32 @@
-# CHANGES - aoss.v0.6.0
+# CHANGES
+
+---
+
+## aoss.v0.6.1 — 2025-12-08
+
+### Admin Settings Frontend Release
+
+**Merged PRs:**
+- PR #221: feat(admin/ui): Settings UI + AttributeManager + E2E (Lisa v0.2.0) (`41ebdba`, merged 2025-12-08)
+- PR #227: fix(e2e): add data-testid to AttributeManager + harden E2E selectors (`b20bc30`, merged 2025-12-08)
+- PR #228: ci(e2e): seed firebase emulator users + run tests under emulators:exec (`040edd9`, merged 2025-12-08)
+
+**Key Features:**
+1. **Admin UI: Settings CRUD** — Implemented Settings page with Attributes, SmartRules, and AITemplates tabs
+2. **AttributeManager UI** — Full CRUD (list/create/edit/delete) with data validation
+3. **Playwright E2E Tests** — 13 comprehensive tests for AttributeManager with `data-testid` selectors
+4. **CI Emulator Seeder** — Firebase Auth emulator seeding for hermetic E2E tests
+5. **E2E Stability** — All 31 E2E tests passing (7 intentionally skipped)
+
+**Test Results:**
+- Admin Attribute CRUD: 13/13 ✅
+- Authentication Flows: 7/8 ✅ (1 skipped - OAuth)
+- Launch Calendar: 5/6 ✅ (1 skipped - feature disabled)
+- Observations: 6/11 ✅ (5 skipped - test data requirements)
+
+---
+
+## aoss.v0.6.0
 
 ## Integration Release: RetailOps Integration and Schema Work
 
