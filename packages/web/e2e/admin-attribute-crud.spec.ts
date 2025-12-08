@@ -28,26 +28,36 @@ test.describe('Admin Attribute Management', () => {
   });
 
   test('should display attribute manager page', async ({ page }) => {
-    await expect(page.locator('h1')).toContainText('Attribute Manager');
+    const pageHeading = page.getByRole('heading', { name: /Attribute Manager/i, level: 1 });
+    await expect(pageHeading).toBeVisible();
     await expect(page.getByTestId('new-attribute-button')).toBeVisible();
   });
 
   test('should create a new attribute', async ({ page }) => {
     // Click New Attribute button
-    await page.getByTestId('new-attribute-button').click();
+    const newAttrBtn = page.getByTestId('new-attribute-button');
+    await newAttrBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newAttrBtn.click();
     
     // Wait for form to appear
     const form = page.locator('.attribute-form');
     await form.waitFor({ state: 'visible', timeout: 30000 });
     
-    // Fill in form
-    await page.fill('input[name="attribute_id"]', 'test-attr-001');
-    await page.fill('input[name="label"]', 'Test Attribute');
-    await page.selectOption('select[name="data_type"]', 'string');
-    await page.fill('input[name="category"]', 'Testing');
+    // Fill in form using testids
+    const attrIdInput = page.getByTestId('attribute-id-input');
+    await attrIdInput.fill('test-attr-001');
+    
+    const labelInput = page.getByTestId('attribute-label-input');
+    await labelInput.fill('Test Attribute');
+    
+    const dataTypeSelect = page.getByTestId('data-type-select');
+    await dataTypeSelect.selectOption('string');
+    
+    const categoryInput = page.getByTestId('category-input');
+    await categoryInput.fill('Testing');
     
     // Save
-    // await page.click('button:has-text("Create")');
+    // await page.getByTestId('save-attribute-button').click();
     
     // TODO: Wait for API response
     // await waitForApiResponse(page, '/admin/settings/attributes');
@@ -137,20 +147,24 @@ test.describe('Admin Attribute Management', () => {
 
   test('should cancel attribute creation', async ({ page }) => {
     // Click New Attribute button
-    await page.getByTestId('new-attribute-button').click();
+    const newAttrBtn = page.getByTestId('new-attribute-button');
+    await newAttrBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newAttrBtn.click();
     
     // Wait for form to appear
     const form = page.locator('.attribute-form');
     await form.waitFor({ state: 'visible', timeout: 30000 });
     
-    // Fill in partial data
-    await page.fill('input[name="attribute_id"]', 'cancelled-attr');
+    // Fill in partial data using testid
+    const attrIdInput = page.getByTestId('attribute-id-input');
+    await attrIdInput.fill('cancelled-attr');
     
-    // Cancel
-    await page.click('button:has-text("Cancel")');
+    // Cancel using testid
+    const cancelBtn = page.getByTestId('cancel-attribute-button');
+    await cancelBtn.click();
     
     // Verify form is hidden
-    await expect(page.locator('.attribute-form')).not.toBeVisible();
+    await form.waitFor({ state: 'hidden', timeout: 60000 });
   });
 });
 
@@ -170,8 +184,9 @@ test.describe('Attribute Form Validation', () => {
   });
 
   test('should validate attribute_id format', async ({ page }) => {
-    // Test invalid characters
-    await page.fill('input[name="attribute_id"]', 'Invalid ID With Spaces');
+    // Test invalid characters using testid
+    const attrIdInput = page.getByTestId('attribute-id-input');
+    await attrIdInput.fill('Invalid ID With Spaces');
     // TODO: Verify validation error
   });
 
@@ -181,7 +196,10 @@ test.describe('Attribute Form Validation', () => {
   });
 
   test('should show allowed_values field for enum type', async ({ page }) => {
-    await page.selectOption('select[name="data_type"]', 'enum');
+    const dataTypeSelect = page.getByTestId('data-type-select');
+    await dataTypeSelect.selectOption('enum');
     // TODO: Verify allowed_values input appears
+    // const allowedValuesInput = page.getByTestId('allowed-values-input');
+    // await expect(allowedValuesInput).toBeVisible();
   });
 });
