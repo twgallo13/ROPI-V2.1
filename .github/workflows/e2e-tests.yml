@@ -20,13 +20,14 @@ jobs:
       actions: read
     
     env:
-      # E2E test user credentials
-      VITE_E2E_ADMIN_EMAIL: theo@shiekh.com
-      VITE_E2E_USER_EMAIL: user@shiekh.com
-      VITE_E2E_UNVERIFIED_EMAIL: unverified@shiekh.com
-      VITE_E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-      VITE_E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      VITE_E2E_UNVERIFIED_PASSWORD: ${{ secrets.E2E_UNVERIFIED_PASSWORD }}
+      # E2E test user credentials - these match the seeded emulator users
+      # For emulator testing, use test-admin@example.com / test-password-123
+      VITE_E2E_ADMIN_EMAIL: ${{ inputs.base_url == 'emulator' && 'test-admin@example.com' || 'theo@shiekh.com' }}
+      VITE_E2E_USER_EMAIL: ${{ inputs.base_url == 'emulator' && 'test-user@example.com' || 'user@shiekh.com' }}
+      VITE_E2E_UNVERIFIED_EMAIL: ${{ inputs.base_url == 'emulator' && 'test-unverified@example.com' || 'unverified@shiekh.com' }}
+      VITE_E2E_ADMIN_PASSWORD: ${{ inputs.base_url == 'emulator' && 'test-password-123' || secrets.E2E_ADMIN_PASSWORD }}
+      VITE_E2E_USER_PASSWORD: ${{ inputs.base_url == 'emulator' && 'test-password-123' || secrets.E2E_USER_PASSWORD }}
+      VITE_E2E_UNVERIFIED_PASSWORD: ${{ inputs.base_url == 'emulator' && 'test-password-123' || secrets.E2E_UNVERIFIED_PASSWORD }}
     
     steps:
       - name: Checkout code
@@ -45,6 +46,23 @@ jobs:
       
       - name: Install Playwright browsers
         run: cd packages/web && npx playwright install --with-deps chromium
+      
+      - name: Install firebase-tools
+        run: npm install -g firebase-tools@latest
+      
+      - name: Seed Firebase emulator users (for local/emulator testing)
+        if: inputs.base_url == 'emulator' || inputs.base_url == ''
+        run: |
+          echo "Setting up Firebase emulator environment..."
+          export FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"
+          export FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"
+          export FIREBASE_PROJECT_ID="demo-ropi-test"
+          
+          # Start emulators in background, seed users, and verify
+          firebase emulators:exec --only auth,firestore --project demo-ropi-test "node scripts/seed_emulator_users.js" || {
+            echo "::warning::Emulator seeding skipped or failed - continuing with preview URL tests"
+          }
+        continue-on-error: true
       
       - name: Wait for preview deployment
         if: github.event_name == 'pull_request'
