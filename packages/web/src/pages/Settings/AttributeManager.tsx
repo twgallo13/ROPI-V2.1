@@ -124,6 +124,8 @@ export default function AttributeManager() {
             <label>Attribute ID *</label>
             <input
               type="text"
+              data-testid="attribute-id-input"
+              aria-label="Attribute ID"
               value={formData.attribute_id || ''}
               onChange={(e) => setFormData({ ...formData, attribute_id: e.target.value })}
               disabled={!!editingId}
@@ -134,6 +136,8 @@ export default function AttributeManager() {
             <label>Label *</label>
             <input
               type="text"
+              data-testid="attribute-label-input"
+              aria-label="Label"
               value={formData.label || ''}
               onChange={(e) => setFormData({ ...formData, label: e.target.value })}
             />
@@ -142,6 +146,8 @@ export default function AttributeManager() {
           <div className="form-row">
             <label>Data Type *</label>
             <select
+              data-testid="data-type-select"
+              aria-label="Data Type"
               value={formData.data_type}
               onChange={(e) => setFormData({ ...formData, data_type: e.target.value as Attribute['data_type'] })}
             >
@@ -158,6 +164,8 @@ export default function AttributeManager() {
             <label>Category</label>
             <input
               type="text"
+              data-testid="category-input"
+              aria-label="Category"
               value={formData.category || ''}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             />
@@ -185,10 +193,10 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-actions">
-            <button className="primary" onClick={handleSave}>
+            <button className="primary" data-testid="save-attribute-button" onClick={handleSave}>
               {editingId ? 'Update' : 'Create'}
             </button>
-            <button className="secondary" onClick={handleCancel}>
+            <button className="secondary" data-testid="cancel-attribute-button" onClick={handleCancel}>
               Cancel
             </button>
           </div>
