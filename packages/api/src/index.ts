@@ -18,8 +18,15 @@ import {
 } from './endpoints/products';
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 
+// Import the unified API Express app
+import apiApp from './apiApp';
+
 // Initialize Firebase Admin SDK
 admin.initializeApp();
+
+// Export the unified API function for hosting rewrites
+// Routes: /admin/**, /products/**, /processImportBatch, /importBatchStatus, /syncAttributeRegistry
+export const api = functions.https.onRequest(apiApp);
 
 // Export API endpoints
 export { importCSV } from './endpoints/import';

@@ -38,6 +38,39 @@ type ListResult = {
   hasMore?: boolean;
 };
 
+// API base URL - can be overridden via env var for debugging
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
+/**
+ * Defensive JSON fetch helper
+ * Validates content-type and provides helpful error messages when HTML is returned
+ */
+async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(url, options);
+  const text = await res.text();
+  const contentType = res.headers.get('content-type') || '';
+
+  if (!res.ok) {
+    // Provide context for non-ok responses
+    throw new Error(`HTTP ${res.status}: ${text.substring(0, 400)}`);
+  }
+
+  if (!contentType.includes('application/json')) {
+    // This catches the HTML response issue
+    throw new Error(
+      `Expected JSON response but got ${contentType || 'unknown content-type'}. ` +
+      `Response starts with: ${text.substring(0, 200)}... ` +
+      `This usually means the API route is not configured correctly.`
+    );
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch (parseErr) {
+    throw new Error(`Failed to parse JSON: ${text.substring(0, 200)}`);
+  }
+}
+
 /**
  * Hook to manage product attributes via the admin API.
  * 
@@ -53,15 +86,12 @@ export function useAttributes() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/admin/settings/attributes', {
+      const url = `${API_BASE}/admin/settings/attributes`;
+      const body = await fetchJSON<ListResult>(url, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || 'Failed to load attributes');
-      }
-      const body: ListResult = await res.json();
       setAttributes(body.items || []);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
@@ -80,16 +110,13 @@ export function useAttributes() {
    * Create a new attribute
    */
   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
-    const res = await fetch('/admin/settings/attributes', {
+    const url = `${API_BASE}/admin/settings/attributes`;
+    const created = await fetchJSON<Attribute>(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(data),
     });
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to create attribute');
-    }
-    const created = await res.json();
     await fetchAttributes();
     return created;
   };
@@ -98,16 +125,13 @@ export function useAttributes() {
    * Update an existing attribute
    */
   const updateAttribute = async (id: string, patch: Partial<Attribute>): Promise<Attribute> => {
-    const res = await fetch(`/admin/settings/attributes/${encodeURIComponent(id)}`, {
+    const url = `${API_BASE}/admin/settings/attributes/${encodeURIComponent(id)}`;
+    const updated = await fetchJSON<Attribute>(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(patch),
     });
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to update attribute');
-    }
-    const updated = await res.json();
     await fetchAttributes();
     return updated;
   };
@@ -116,13 +140,11 @@ export function useAttributes() {
    * Delete an attribute
    */
   const deleteAttribute = async (id: string): Promise<boolean> => {
-    const res = await fetch(`/admin/settings/attributes/${encodeURIComponent(id)}`, {
+    const url = `${API_BASE}/admin/settings/attributes/${encodeURIComponent(id)}`;
+    await fetchJSON<{ success: boolean }>(url, {
       method: 'DELETE',
+      credentials: 'include',
     });
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to delete attribute');
-    }
     await fetchAttributes();
     return true;
   };
