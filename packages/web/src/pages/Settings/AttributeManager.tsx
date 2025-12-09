@@ -2,61 +2,16 @@
  * AttributeManager Component
  * CRUD interface for managing product attributes
  * 
- * Lisa v0.2.0
+ * Lisa v1.0.0
+ * 
+ * References:
+ * - Attribute Registry: https://www.notion.so/2b845ee1ec5a81228b07ca97964cd033
+ * - Attribute Validation Schema: https://www.notion.so/2b845ee1ec5a805fba0ef665dfb17396
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './Settings.css';
-
-interface Attribute {
-  attribute_id: string;
-  label: string;
-  external_header?: string;
-  category?: string;
-  data_type: 'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json';
-  allowed_values?: string[];
-  synonyms?: string[];
-  required_for_completion?: boolean;
-  required_for_export?: boolean;
-  import_required?: boolean;
-  ai_usage_notes?: string;
-  status?: 'active' | 'deprecated' | 'hidden';
-  createdBy?: string;
-  createdAt?: string;
-  updatedBy?: string;
-  updatedAt?: string;
-}
-
-// API hooks (TODO: implement with actual API calls)
-function useAttributes() {
-  const [attributes, setAttributes] = useState<Attribute[]>([]);
-  const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error] = useState<string | null>(null);
-
-  useEffect(() => {
-    // TODO: Fetch from /admin/settings/attributes
-    setLoading(false);
-    setAttributes([]);
-  }, []);
-
-  const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>) => {
-    // TODO: POST to /admin/settings/attributes
-    console.log('Creating attribute:', data);
-  };
-
-  const updateAttribute = async (id: string, data: Partial<Attribute>) => {
-    // TODO: PUT to /admin/settings/attributes/:id
-    console.log('Updating attribute:', id, data);
-  };
-
-  const deleteAttribute = async (id: string) => {
-    // TODO: DELETE /admin/settings/attributes/:id
-    console.log('Deleting attribute:', id);
-  };
-
-  return { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute };
-}
+import { useAttributes, type Attribute } from '../../hooks/useAttributes';
 
 export default function AttributeManager() {
   const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute } = useAttributes();
@@ -66,32 +21,51 @@ export default function AttributeManager() {
     data_type: 'string',
     status: 'active',
   });
+  const [formError, setFormError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const handleCreate = () => {
     setShowForm(true);
     setEditingId(null);
     setFormData({ data_type: 'string', status: 'active' });
+    setFormError(null);
   };
 
   const handleEdit = (attr: Attribute) => {
     setShowForm(true);
     setEditingId(attr.attribute_id);
     setFormData(attr);
+    setFormError(null);
   };
 
   const handleSave = async () => {
-    if (editingId) {
-      await updateAttribute(editingId, formData);
-    } else {
-      await createAttribute(formData as Omit<Attribute, 'createdAt' | 'updatedAt'>);
+    setFormError(null);
+    setSaving(true);
+    try {
+      if (editingId) {
+        await updateAttribute(editingId, formData);
+      } else {
+        await createAttribute(formData as Omit<Attribute, 'createdAt' | 'updatedAt'>);
+      }
+      setShowForm(false);
+      setFormData({ data_type: 'string', status: 'active' });
+      setEditingId(null);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to save attribute';
+      setFormError(message);
+    } finally {
+      setSaving(false);
     }
-    setShowForm(false);
-    setFormData({ data_type: 'string', status: 'active' });
   };
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this attribute?')) {
-      await deleteAttribute(id);
+      try {
+        await deleteAttribute(id);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to delete attribute';
+        alert(`Error deleting attribute: ${message}`);
+      }
     }
   };
 
@@ -99,6 +73,7 @@ export default function AttributeManager() {
     setShowForm(false);
     setEditingId(null);
     setFormData({ data_type: 'string', status: 'active' });
+    setFormError(null);
   };
 
   if (loading) {
@@ -119,6 +94,8 @@ export default function AttributeManager() {
       {showForm && (
         <div className="attribute-form">
           <h2>{editingId ? 'Edit Attribute' : 'New Attribute'}</h2>
+          
+          {formError && <div className="error" data-testid="form-error">{formError}</div>}
           
           <div className="form-row">
             <label>Attribute ID *</label>
@@ -155,7 +132,9 @@ export default function AttributeManager() {
               <option value="number">Number</option>
               <option value="boolean">Boolean</option>
               <option value="enum">Enum</option>
+              <option value="multiSelect">Multi-Select</option>
               <option value="currency">Currency</option>
+              <option value="date">Date</option>
               <option value="json">JSON</option>
             </select>
           </div>
@@ -193,10 +172,20 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-actions">
-            <button className="primary" data-testid="save-attribute-button" onClick={handleSave}>
-              {editingId ? 'Update' : 'Create'}
+            <button 
+              className="primary" 
+              data-testid="save-attribute-button" 
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : editingId ? 'Update' : 'Create'}
             </button>
-            <button className="secondary" data-testid="cancel-attribute-button" onClick={handleCancel}>
+            <button 
+              className="secondary" 
+              data-testid="cancel-attribute-button" 
+              onClick={handleCancel}
+              disabled={saving}
+            >
               Cancel
             </button>
           </div>
