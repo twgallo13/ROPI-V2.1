@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import type { Product, Observation, NewObservation } from '../types/product';
 import { isFirebaseAvailable, db } from '../firebaseConfig';
 import {
@@ -67,7 +67,6 @@ function mergeTopLevelAttributesToAttributesMap(docData: Record<string, unknown>
 export function useProduct(productId: string) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const registryKeysRef = useRef<string[]>(REGISTRY_ATTRIBUTE_KEYS);
 
   // Load product data from Firestore or localStorage fallback
   useEffect(() => {
