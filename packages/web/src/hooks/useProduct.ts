@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Product, Observation, NewObservation } from '../types/product';
 import { isFirebaseAvailable, db } from '../firebaseConfig';
 import {
@@ -9,6 +9,49 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import mockProductData from '../data/mock-product.json';
+
+/**
+ * Registry attribute keys for compatibility mapping.
+ * These are the canonical attribute keys from attributeRegistry.json.
+ * Used to merge top-level product fields into product.attributes.
+ */
+const REGISTRY_ATTRIBUTE_KEYS = [
+  'gender', 'age_group', 'ageGroup',
+  'primary_color', 'primaryColor', 'secondary_color', 'secondaryColor',
+  'material', 'materials',
+  'pattern', 'style', 'occasion', 'season',
+  'heel_height', 'heel_type', 'toe_style', 'closure_type',
+  'width', 'waterproof', 'sustainable',
+  'country_of_origin', 'care_instructions',
+  'features', 'gtin', 'mpn', 'weight',
+  'launch_date', 'end_of_life_date',
+  // Additional common top-level keys from imported products
+  'category', 'brand', 'department', 'class', 'fit',
+];
+
+/**
+ * Merge top-level registry attribute keys into product.attributes
+ * for backward compatibility with existing product schema.
+ * 
+ * Products imported from RetailOps store attributes at the top level,
+ * but ProductAttributesTab expects them in product.attributes.
+ */
+function mergeTopLevelAttributesToAttributesMap(docData: Record<string, unknown>): Record<string, unknown> {
+  const attributesMap: Record<string, unknown> = 
+    (docData.attributes && typeof docData.attributes === 'object')
+      ? { ...docData.attributes as Record<string, unknown> }
+      : {};
+
+  for (const key of REGISTRY_ATTRIBUTE_KEYS) {
+    // Skip if already in attributes map or top-level value is undefined/null
+    if (attributesMap[key] !== undefined || docData[key] === undefined || docData[key] === null) {
+      continue;
+    }
+    attributesMap[key] = docData[key];
+  }
+
+  return attributesMap;
+}
 
 /**
  * useProduct Hook
@@ -24,6 +67,7 @@ import mockProductData from '../data/mock-product.json';
 export function useProduct(productId: string) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const registryKeysRef = useRef<string[]>(REGISTRY_ATTRIBUTE_KEYS);
 
   // Load product data from Firestore or localStorage fallback
   useEffect(() => {
@@ -43,7 +87,15 @@ export function useProduct(productId: string) {
           // Use real-time listener for live updates
           unsub = onSnapshot(ref, (snap) => {
             if (snap.exists()) {
-              setProduct({ id: snap.id, ...snap.data() } as Product);
+              const docData = snap.data();
+              // Merge top-level attribute keys into attributes map for compatibility
+              const mergedAttributes = mergeTopLevelAttributesToAttributesMap(docData);
+              const productWithMergedAttrs = {
+                id: snap.id,
+                ...docData,
+                attributes: mergedAttributes,
+              } as Product;
+              setProduct(productWithMergedAttrs);
             } else {
               // Fall back to mock data if product not found
               console.warn(`Product ${productId} not found in Firestore, using mock data`);

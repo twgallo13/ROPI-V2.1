@@ -11,7 +11,9 @@
     "lint": "pnpm -r --filter ./... lint || eslint . --ext .ts,.tsx,.js,.jsx || true",
     "test": "pnpm -r --filter ./... test || echo \"No tests yet\"",
     "seed": "node scripts/seed.js",
-    "api:sync:attributes": "pnpm --filter @ropi-aoss/api build && pnpm --filter @ropi-aoss/api sync:attributes"
+    "api:sync:attributes": "pnpm --filter @ropi-aoss/api build && pnpm --filter @ropi-aoss/api sync:attributes",
+    "api:migrate:products-to-attributes": "pnpm --filter @ropi-aoss/api build && pnpm --filter @ropi-aoss/api migrate:products-to-attributes",
+    "api:normalize:attributes": "pnpm --filter @ropi-aoss/api build && pnpm --filter @ropi-aoss/api normalize:attributes"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.0",

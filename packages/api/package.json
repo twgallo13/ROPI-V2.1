@@ -12,7 +12,9 @@
     "clean": "rm -rf dist",
     "serve": "firebase emulators:start --only functions",
     "deploy": "firebase deploy --only functions",
-    "sync:attributes": "node dist/tasks/syncAttributeRegistry.js"
+    "sync:attributes": "node dist/tasks/syncAttributeRegistry.js",
+    "migrate:products-to-attributes": "node dist/tasks/migrateProductsToAttributes.js",
+    "normalize:attributes": "node dist/tasks/normalizeProductAttributeValues.js"
   },
   "dependencies": {
     "@ropi-aoss/sdk": "workspace:*",
