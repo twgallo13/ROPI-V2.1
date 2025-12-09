@@ -133,7 +133,7 @@ export function useAttributes() {
     setError(null);
     try {
       const headers = await getAuthHeaders();
-      const url = `${API_BASE}/admin/settings/attributes`;
+      const url = `${API_BASE}/api/admin/settings/attributes`;
       const body = await fetchJSON<ListResult>(url, {
         method: 'GET',
         headers,
@@ -197,7 +197,7 @@ export function useAttributes() {
    */
   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
     const headers = await getAuthHeaders();
-    const url = `${API_BASE}/admin/settings/attributes`;
+    const url = `${API_BASE}/api/admin/settings/attributes`;
 
     // POST to server: this returns the created attribute
     const created = await fetchJSON<Attribute>(url, {
@@ -227,7 +227,7 @@ export function useAttributes() {
    */
   const updateAttribute = async (id: string, patch: Partial<Attribute>): Promise<Attribute> => {
     const headers = await getAuthHeaders();
-    const url = `${API_BASE}/admin/settings/attributes/${encodeURIComponent(id)}`;
+    const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(id)}`;
     const updated = await fetchJSON<Attribute>(url, {
       method: 'PUT',
       headers,
@@ -259,7 +259,7 @@ export function useAttributes() {
    */
   const deleteAttribute = async (id: string): Promise<boolean> => {
     const headers = await getAuthHeaders();
-    const url = `${API_BASE}/admin/settings/attributes/${encodeURIComponent(id)}`;
+    const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(id)}`;
     await fetchJSON<{ success: boolean }>(url, {
       method: 'DELETE',
       headers,
