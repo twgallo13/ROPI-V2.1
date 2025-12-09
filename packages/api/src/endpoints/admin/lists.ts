@@ -70,26 +70,26 @@ export async function listListsHandler(req: Request, res: Response) {
 export async function getListHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
     try {
-      const key = req.params.key;
-      if (!key) {
+      const listId = req.params.listId;
+      if (!listId) {
         res.status(400).json({
           error: 'INVALID_REQUEST',
-          message: 'List key is required',
+          message: 'List ID is required',
         });
         return;
       }
       
-      const list = await getListByKey(key);
+      const list = await getListByKey(listId);
       if (!list) {
         res.status(404).json({
           error: 'NOT_FOUND',
-          message: `List with key '${key}' not found`,
+          message: `List with ID '${listId}' not found`,
         });
         return;
       }
       
       // Normalize response: return both items array and values array
-      const items = list.items || [];
+      const items = (list as any).items || [];
       const values = items.map((item: any) => 
         typeof item === 'string' ? item : item.value
       );
@@ -157,11 +157,11 @@ export async function createListHandler(req: Request, res: Response) {
 export async function updateListHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
     try {
-      const key = req.params.key;
-      if (!key) {
+      const listId = req.params.listId;
+      if (!listId) {
         res.status(400).json({
           error: 'INVALID_REQUEST',
-          message: 'List key is required',
+          message: 'List ID is required',
         });
         return;
       }
@@ -176,11 +176,11 @@ export async function updateListHandler(req: Request, res: Response) {
       }
       
       // Check if list exists
-      const existing = await getListByKey(key);
+      const existing = await getListByKey(listId);
       if (!existing) {
         res.status(404).json({
           error: 'NOT_FOUND',
-          message: `List with key '${key}' not found`,
+          message: `List with ID '${listId}' not found`,
         });
         return;
       }
@@ -190,9 +190,9 @@ export async function updateListHandler(req: Request, res: Response) {
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       };
       
-      await db().collection('settings').doc('lists').collection('keys').doc(key).update(updateDoc);
+      await db().collection('settings').doc('lists').collection('keys').doc(listId).update(updateDoc);
       
-      const updated = await getListByKey(key);
+      const updated = await getListByKey(listId);
       res.status(200).json(updated);
     } catch (error) {
       handleServiceError(error, res);
@@ -207,26 +207,26 @@ export async function updateListHandler(req: Request, res: Response) {
 export async function deleteListHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
     try {
-      const key = req.params.key;
-      if (!key) {
+      const listId = req.params.listId;
+      if (!listId) {
         res.status(400).json({
           error: 'INVALID_REQUEST',
-          message: 'List key is required',
+          message: 'List ID is required',
         });
         return;
       }
       
       // Check if list exists
-      const existing = await getListByKey(key);
+      const existing = await getListByKey(listId);
       if (!existing) {
         res.status(404).json({
           error: 'NOT_FOUND',
-          message: `List with key '${key}' not found`,
+          message: `List with ID '${listId}' not found`,
         });
         return;
       }
       
-      await db().collection('settings').doc('lists').collection('keys').doc(key).delete();
+      await db().collection('settings').doc('lists').collection('keys').doc(listId).delete();
       
       res.status(204).send();
     } catch (error) {
