@@ -11,7 +11,7 @@
  */
 
 import { requireAdmin, type AuthenticatedRequest } from '../../middleware/auth';
-import type { Request, Response } from 'express';
+import type { Request, Response, RequestHandler, NextFunction } from 'express';
 import * as admin from 'firebase-admin';
 
 function getDb() {
@@ -60,11 +60,13 @@ const DEFAULT_PERMISSIONS = {
  * GET /admin/permissions
  * Get the role permissions matrix
  */
-export async function getPermissionsHandler(
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> {
+export const getPermissionsHandler: RequestHandler = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+): Promise<void> => {
   try {
+    const authReq = req as AuthenticatedRequest;
     const db = getDb();
     const permissionsDoc = await db.doc('settings/permissions').get();
 
@@ -91,16 +93,17 @@ export async function getPermissionsHandler(
       message: 'Failed to fetch permissions',
     });
   }
-}
+};
 
 /**
  * PATCH /admin/permissions
  * Update the role permissions matrix
  */
-export async function updatePermissionsHandler(
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> {
+export const updatePermissionsHandler: RequestHandler = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+): Promise<void> => {
   try {
     const { permissions } = req.body;
 
@@ -112,6 +115,7 @@ export async function updatePermissionsHandler(
       return;
     }
 
+    const authReq = req as AuthenticatedRequest;
     const db = getDb();
     const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
@@ -120,7 +124,7 @@ export async function updatePermissionsHandler(
       {
         roleMatrix: permissions,
         updatedAt: timestamp,
-        updatedBy: req.auth.email || req.auth.uid,
+        updatedBy: authReq.auth.email || authReq.auth.uid,
       },
       { merge: true }
     );
@@ -129,8 +133,8 @@ export async function updatePermissionsHandler(
     await db.collection('audit').add({
       type: 'permissions_update',
       roleMatrix: permissions,
-      updatedBy: req.auth.email || req.auth.uid,
-      updatedByUid: req.auth.uid,
+      updatedBy: authReq.auth.email || authReq.auth.uid,
+      updatedByUid: authReq.auth.uid,
       timestamp,
     });
 
@@ -145,24 +149,26 @@ export async function updatePermissionsHandler(
       message: 'Failed to update permissions',
     });
   }
-}
+};
 
 /**
  * POST /admin/permissions/reset
  * Reset permissions to defaults
  */
-export async function resetPermissionsHandler(
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> {
+export const resetPermissionsHandler: RequestHandler = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+): Promise<void> => {
   try {
+    const authReq = req as AuthenticatedRequest;
     const db = getDb();
     const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
     await db.doc('settings/permissions').set({
       roleMatrix: DEFAULT_PERMISSIONS,
       updatedAt: timestamp,
-      updatedBy: req.auth.email || req.auth.uid,
+      updatedBy: authReq.auth.email || authReq.auth.uid,
       isDefault: true,
     });
 
@@ -170,8 +176,8 @@ export async function resetPermissionsHandler(
     await db.collection('audit').add({
       type: 'permissions_reset',
       roleMatrix: DEFAULT_PERMISSIONS,
-      updatedBy: req.auth.email || req.auth.uid,
-      updatedByUid: req.auth.uid,
+      updatedBy: authReq.auth.email || authReq.auth.uid,
+      updatedByUid: authReq.auth.uid,
       timestamp,
     });
 
@@ -186,7 +192,7 @@ export async function resetPermissionsHandler(
       message: 'Failed to reset permissions',
     });
   }
-}
+};
 
 // Export handlers with middleware
 export default {

@@ -9,6 +9,7 @@
 
 import express, { Application } from 'express';
 import cors from 'cors';
+import { requireAdmin } from './middleware/auth';
 
 // Admin handlers
 import {
@@ -24,7 +25,7 @@ import {
   createListHandler,
   updateListHandler,
   deleteListHandler,
-} from './endpoints/admin/lists';
+} from './endpoints/admin/lists.js';
 import {
   listUsersHandler,
   getUserHandler,
@@ -95,9 +96,9 @@ app.get('/admin/settings/roles', getRolesHandler);
 /**
  * Admin Permissions endpoints
  */
-app.get('/admin/permissions', getPermissionsHandler);
-app.patch('/admin/permissions', updatePermissionsHandler);
-app.post('/admin/permissions/reset', resetPermissionsHandler);
+app.get('/admin/permissions', requireAdmin, getPermissionsHandler);
+app.patch('/admin/permissions', requireAdmin, updatePermissionsHandler);
+app.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
 
 /**
  * User Self-Profile endpoints

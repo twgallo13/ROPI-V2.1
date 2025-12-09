@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthProvider';
+import { apiFetch } from '../lib/apiFetch';
 
 export interface User {
   uid: string;
@@ -85,53 +86,7 @@ export interface UpdateUserData {
   disabled?: boolean;
 }
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
-
-/**
- * Get auth token for API requests
- */
-async function getAuthToken(): Promise<string | null> {
-  const { auth } = await import('../firebaseConfig');
-  if (!auth || !auth.currentUser) {
-    return null;
-  }
-  return auth.currentUser.getIdToken();
-}
-
-/**
- * Make authenticated API request
- */
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = await getAuthToken();
-  
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-  
-  const url = `${API_BASE}${endpoint}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || `HTTP ${response.status}`);
-  }
-  
-  if (response.status === 204) {
-    return {} as T;
-  }
-  
-  return response.json();
-}
+import { apiFetch } from '../lib/apiFetch';
 
 /**
  * useUsers hook for user management
@@ -165,9 +120,9 @@ export function useUsers(): UseUsersReturn {
       }
       
       const queryString = params.toString();
-      const endpoint = `/admin/settings/users${queryString ? `?${queryString}` : ''}`;
+      const endpoint = `/api/admin/settings/users${queryString ? `?${queryString}` : ''}`;
       
-      const response = await apiRequest<UsersListResponse>(endpoint);
+      const response = await apiFetch<UsersListResponse>(endpoint);
       
       if (nextPageToken) {
         // Append to existing users for pagination
@@ -197,7 +152,7 @@ export function useUsers(): UseUsersReturn {
     }
     
     try {
-      const response = await apiRequest<User>(`/admin/settings/users/${uid}`);
+      const response = await apiFetch<User>(`/api/admin/settings/users/${uid}`);
       return response;
     } catch (err) {
       console.error('Failed to fetch user:', err);
@@ -217,7 +172,7 @@ export function useUsers(): UseUsersReturn {
       setLoading(true);
       setError(null);
       
-      const response = await apiRequest<User>('/admin/settings/users', {
+      const response = await apiFetch<User>('/api/admin/settings/users', {
         method: 'POST',
         body: JSON.stringify(data),
       });
@@ -247,7 +202,7 @@ export function useUsers(): UseUsersReturn {
       setLoading(true);
       setError(null);
       
-      const response = await apiRequest<User>(`/admin/settings/users/${uid}`, {
+      const response = await apiFetch<User>(`/api/admin/settings/users/${uid}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
       });
@@ -277,7 +232,7 @@ export function useUsers(): UseUsersReturn {
       setLoading(true);
       setError(null);
       
-      await apiRequest<void>(`/admin/settings/users/${uid}?soft=${soft}`, {
+      await apiFetch<void>(`/api/admin/settings/users/${uid}?soft=${soft}`, {
         method: 'DELETE',
       });
       
@@ -301,8 +256,8 @@ export function useUsers(): UseUsersReturn {
     }
     
     try {
-      const response = await apiRequest<{ message: string; resetLink?: string }>(
-        `/admin/settings/users/${uid}/reset-password`,
+      const response = await apiFetch<{ message: string; resetLink?: string }>(
+        `/api/admin/settings/users/${uid}/reset-password`,
         { method: 'POST' }
       );
       
@@ -321,7 +276,7 @@ export function useUsers(): UseUsersReturn {
     }
     
     try {
-      const response = await apiRequest<{ roles: Role[] }>('/admin/settings/roles');
+      const response = await apiFetch<{ roles: Role[] }>('/api/admin/settings/roles');
       setRoles(response.roles);
     } catch (err) {
       console.error('Failed to fetch roles:', err);
