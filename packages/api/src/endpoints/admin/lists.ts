@@ -89,7 +89,7 @@ export async function getListHandler(req: Request, res: Response) {
       }
       
       // Normalize response: return both items array and values array
-      const items = list.items || [];
+      const items = (list as any).items || [];
       const values = items.map((item: any) => 
         typeof item === 'string' ? item : item.value
       );

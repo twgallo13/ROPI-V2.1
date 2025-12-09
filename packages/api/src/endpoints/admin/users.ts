@@ -15,6 +15,7 @@
 import { requireAdmin, type AuthenticatedRequest } from '../../middleware/auth';
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
+import { isValidRole, isAdminRole, ROPI_ROLES } from '../../constants/roles';
 
 function getDb() {
   return admin.firestore();
@@ -126,7 +127,7 @@ function formatUserResponse(userRecord: admin.auth.UserRecord): UserResponse {
     metadata: {
       creationTime: userRecord.metadata.creationTime,
       lastSignInTime: userRecord.metadata.lastSignInTime,
-      lastRefreshTime: userRecord.metadata.lastRefreshTime,
+      lastRefreshTime: userRecord.metadata.lastRefreshTime || undefined,
     },
     disabled: userRecord.disabled,
     providerData: userRecord.providerData,
@@ -223,11 +224,10 @@ export async function createUserHandler(req: Request, res: Response) {
       }
       
       // Validate role
-      const validRoles = ['admin', 'district', 'store', 'user'];
-      if (!validRoles.includes(role)) {
+      if (!isValidRole(role)) {
         res.status(400).json({
           error: 'VALIDATION_ERROR',
-          message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+          message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')}`,
         });
         return;
       }
@@ -304,7 +304,7 @@ export async function updateUserHandler(req: Request, res: Response) {
       const actorUid = authReq.auth?.uid || 'system';
       
       // Prevent self-demotion from admin
-      if (uid === actorUid && role && role !== 'admin') {
+      if (uid === actorUid && role && !isAdminRole(role)) {
         res.status(403).json({
           error: 'FORBIDDEN',
           message: 'Cannot remove your own admin role',
@@ -314,11 +314,10 @@ export async function updateUserHandler(req: Request, res: Response) {
       
       // Validate role if provided
       if (role) {
-        const validRoles = ['admin', 'district', 'store', 'user'];
-        if (!validRoles.includes(role)) {
+        if (!isValidRole(role)) {
           res.status(400).json({
             error: 'VALIDATION_ERROR',
-            message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+            message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')}`,
           });
           return;
         }
@@ -474,13 +473,9 @@ export async function resetPasswordHandler(req: Request, res: Response) {
  */
 export async function getRolesHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
+    const { ROLE_LIST } = await import('../../constants/roles');
     res.status(200).json({
-      roles: [
-        { value: 'admin', label: 'Admin', description: 'Full system access' },
-        { value: 'district', label: 'District Manager', description: 'District-level access' },
-        { value: 'store', label: 'Store Manager', description: 'Store-level access' },
-        { value: 'user', label: 'User', description: 'Basic read-only access' },
-      ],
+      roles: ROLE_LIST,
     });
   });
 }

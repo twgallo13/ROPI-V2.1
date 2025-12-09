@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import SignInModal from '@/components/Auth/SignInModal';
 import './TopBar.css';
@@ -14,6 +15,7 @@ import './TopBar.css';
  */
 function TopBar() {
   const { currentUser, isAdmin, signOut, loading } = useAuth();
+  const navigate = useNavigate();
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
@@ -21,6 +23,7 @@ function TopBar() {
     try {
       await signOut();
       setShowUserMenu(false);
+      navigate('/launch-calendar'); // Redirect to Launch Calendar after sign-out
     } catch (error: any) {
       console.error('Sign-out failed:', error);
       alert(error.message || 'Sign-out failed. Please try again.');
@@ -89,9 +92,13 @@ function TopBar() {
                   
                   <div className="topbar-dropdown-divider" />
                   
-                  <button className="topbar-dropdown-item" disabled>
-                    👤 Profile (coming soon)
-                  </button>
+                  <Link 
+                    to="/settings/profile" 
+                    className="topbar-dropdown-item"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    👤 Profile
+                  </Link>
                   
                   <div className="topbar-dropdown-divider" />
                   

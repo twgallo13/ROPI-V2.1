@@ -22,7 +22,7 @@ import {
 // Mock requireAdmin middleware FIRST
 vi.mock('../../middleware/auth', () => ({
   requireAdmin: vi.fn(async (req: any, res: any, callback: () => Promise<void>) => {
-    // Mock auth context
+    // Mock auth context with Ropi role
     req.auth = {
       uid: 'test-admin-uid',
       email: 'admin@test.com',
@@ -238,7 +238,7 @@ describe('Users Endpoints', () => {
         email: 'newuser@test.com',
         password: 'password123',
         displayName: 'New User',
-        role: 'user',
+        role: 'viewer',
       };
 
       const mockUser = {
@@ -246,7 +246,7 @@ describe('Users Endpoints', () => {
         email: 'newuser@test.com',
         displayName: 'New User',
         emailVerified: false,
-        customClaims: { role: 'user' },
+        customClaims: { role: 'viewer' },
         metadata: {
           creationTime: '2024-01-01',
         },
@@ -283,7 +283,7 @@ describe('Users Endpoints', () => {
           displayName: 'New User',
         })
       );
-      expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('new-uid', { role: 'user' });
+      expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('new-uid', { role: 'viewer' });
       expect(mockStatus).toHaveBeenCalledWith(201);
     });
 
@@ -369,7 +369,7 @@ describe('Users Endpoints', () => {
 
     it('should prevent self-demotion from admin', async () => {
       mockReq.params = { uid: 'test-admin-uid' }; // Same as auth context
-      mockReq.body = { role: 'user' };
+      mockReq.body = { role: 'merch' }; // Non-admin role
 
       await updateUserHandler(mockReq as Request, mockRes as Response);
 
@@ -489,7 +489,7 @@ describe('Users Endpoints', () => {
   });
 
   describe('getRolesHandler', () => {
-    it('should return list of roles', async () => {
+    it('should return list of Ropi roles', async () => {
       await getRolesHandler(mockReq as Request, mockRes as Response);
 
       expect(mockStatus).toHaveBeenCalledWith(200);
@@ -497,9 +497,9 @@ describe('Users Endpoints', () => {
         expect.objectContaining({
           roles: expect.arrayContaining([
             expect.objectContaining({ value: 'admin' }),
-            expect.objectContaining({ value: 'district' }),
-            expect.objectContaining({ value: 'store' }),
-            expect.objectContaining({ value: 'user' }),
+            expect.objectContaining({ value: 'merch' }),
+            expect.objectContaining({ value: 'photographer' }),
+            expect.objectContaining({ value: 'viewer' }),
           ]),
         })
       );
