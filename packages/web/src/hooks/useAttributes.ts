@@ -129,23 +129,45 @@ export function useAttributes() {
   }, [fetchAttributes]);
 
   /**
-   * Create a new attribute
+   * Create a new attribute (optimistic insert so it shows immediately).
    */
   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
     const headers = await getAuthHeaders();
     const url = `${API_BASE}/admin/settings/attributes`;
+
+    // POST to server: this returns the created attribute
     const created = await fetchJSON<Attribute>(url, {
       method: 'POST',
       headers,
       credentials: 'include',
       body: JSON.stringify(data),
     });
-    await fetchAttributes();
+
+    // Optimistically merge into local state so it appears immediately
+    setAttributes((prev) => {
+      // If already present, replace
+      const existingIndex = prev.findIndex(a => a.attribute_id === created.attribute_id);
+      let next;
+      if (existingIndex >= 0) {
+        next = [...prev];
+        next[existingIndex] = created;
+      } else {
+        // Prepend so it's visible immediately
+        next = [created, ...prev];
+      }
+      return next;
+    });
+
+    // Also refresh from server to ensure we reflect server-side ordering/pagination
+    fetchAttributes().catch(err => {
+      console.warn('Background refresh failed after create:', err);
+    });
+
     return created;
   };
 
   /**
-   * Update an existing attribute
+   * Update an existing attribute (optimistic update, then refresh)
    */
   const updateAttribute = async (id: string, patch: Partial<Attribute>): Promise<Attribute> => {
     const headers = await getAuthHeaders();
@@ -156,12 +178,20 @@ export function useAttributes() {
       credentials: 'include',
       body: JSON.stringify(patch),
     });
-    await fetchAttributes();
+
+    // Optimistically update local state
+    setAttributes(prev => prev.map(a => (a.attribute_id === updated.attribute_id ? updated : a)));
+
+    // Refresh to keep pagination & counts in sync
+    fetchAttributes().catch(err => {
+      console.warn('Background refresh failed after update:', err);
+    });
+
     return updated;
   };
 
   /**
-   * Delete an attribute
+   * Delete an attribute (optimistic remove, then refresh)
    */
   const deleteAttribute = async (id: string): Promise<boolean> => {
     const headers = await getAuthHeaders();
@@ -171,7 +201,15 @@ export function useAttributes() {
       headers,
       credentials: 'include',
     });
-    await fetchAttributes();
+
+    // Optimistically remove from UI immediately
+    setAttributes(prev => prev.filter(a => a.attribute_id !== id));
+
+    // Refresh to keep server state reflected (and pageToken)
+    fetchAttributes().catch(err => {
+      console.warn('Background refresh failed after delete:', err);
+    });
+
     return true;
   };
 
