@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { getAuthHeaders } from '../lib/authHeaders';
 
 export type Attribute = {
   attribute_id: string;
@@ -86,16 +87,26 @@ export function useAttributes() {
     setLoading(true);
     setError(null);
     try {
+      const headers = await getAuthHeaders();
       const url = `${API_BASE}/admin/settings/attributes`;
       const body = await fetchJSON<ListResult>(url, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         credentials: 'include',
       });
       setAttributes(body.items || []);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
-      setError(message);
+      // Provide friendly error messages for auth issues
+      if (message.includes('NotAuthenticated')) {
+        setError('You must be signed in to view attributes. Please sign in and try again.');
+      } else if (message.includes('HTTP 401') || message.includes('Unauthorized')) {
+        setError('You are not authorized to view attributes. Please ensure you have admin access.');
+      } else if (message.includes('HTTP 403')) {
+        setError('Access denied. Admin privileges required.');
+      } else {
+        setError(message);
+      }
       console.error('Error fetching attributes:', message);
     } finally {
       setLoading(false);
@@ -110,10 +121,11 @@ export function useAttributes() {
    * Create a new attribute
    */
   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
+    const headers = await getAuthHeaders();
     const url = `${API_BASE}/admin/settings/attributes`;
     const created = await fetchJSON<Attribute>(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       credentials: 'include',
       body: JSON.stringify(data),
     });
@@ -125,10 +137,11 @@ export function useAttributes() {
    * Update an existing attribute
    */
   const updateAttribute = async (id: string, patch: Partial<Attribute>): Promise<Attribute> => {
+    const headers = await getAuthHeaders();
     const url = `${API_BASE}/admin/settings/attributes/${encodeURIComponent(id)}`;
     const updated = await fetchJSON<Attribute>(url, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       credentials: 'include',
       body: JSON.stringify(patch),
     });
@@ -140,9 +153,11 @@ export function useAttributes() {
    * Delete an attribute
    */
   const deleteAttribute = async (id: string): Promise<boolean> => {
+    const headers = await getAuthHeaders();
     const url = `${API_BASE}/admin/settings/attributes/${encodeURIComponent(id)}`;
     await fetchJSON<{ success: boolean }>(url, {
       method: 'DELETE',
+      headers,
       credentials: 'include',
     });
     await fetchAttributes();
