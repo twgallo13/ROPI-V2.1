@@ -12,7 +12,7 @@ import { db } from '@/firebaseConfig';
 import type { ImportBatch, ImportEngineRow } from '@ropi-aoss/sdk';
 import './ImportBatchDetailPage.css';
 
-export default function ImportBatchDetailPage() {
+export function ImportBatchDetailPage() {
   const { batchId } = useParams<{ batchId: string }>();
   const navigate = useNavigate();
   const { currentUser, isAdmin } = useAuth();
@@ -317,3 +317,5 @@ export default function ImportBatchDetailPage() {
     </PageLayout>
   );
 }
+
+export default ImportBatchDetailPage;

@@ -10,6 +10,34 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useAttributes } from '../src/hooks/useAttributes';
 
+// Mock Firebase Auth
+vi.mock('firebase/auth', () => ({
+  getAuth: vi.fn(() => ({
+    currentUser: null,
+  })),
+  onAuthStateChanged: vi.fn((auth, callback) => {
+    // Call callback with null user immediately
+    callback(null);
+    // Return unsubscribe function
+    return vi.fn();
+  }),
+}));
+
+// Mock Firebase Firestore
+vi.mock('firebase/firestore', () => ({
+  getFirestore: vi.fn(() => ({})),
+  collection: vi.fn(),
+  onSnapshot: vi.fn(() => vi.fn()),
+}));
+
+// Mock authHeaders to avoid Firebase auth calls
+vi.mock('../src/lib/authHeaders', () => ({
+  getAuthHeaders: vi.fn(async () => ({
+    'Authorization': 'Bearer mock-token',
+    'Content-Type': 'application/json',
+  })),
+}));
+
 // Mock fetch globally
 const mockFetch = vi.fn();
 global.fetch = mockFetch;

@@ -18,6 +18,22 @@ import {
   updateAttributeHandler,
   deleteAttributeHandler,
 } from './endpoints/admin/settings';
+import {
+  listListsHandler,
+  getListHandler,
+  createListHandler,
+  updateListHandler,
+  deleteListHandler,
+} from './endpoints/admin/lists';
+import {
+  listUsersHandler,
+  getUserHandler,
+  createUserHandler,
+  updateUserHandler,
+  deleteUserHandler,
+  resetPasswordHandler,
+  getRolesHandler,
+} from './endpoints/admin/users';
 
 // Product handlers
 import {
@@ -47,6 +63,23 @@ app.get('/admin/settings/attributes/:id', getAttributeHandler);
 app.post('/admin/settings/attributes', createAttributeHandler);
 app.put('/admin/settings/attributes/:id', updateAttributeHandler);
 app.delete('/admin/settings/attributes/:id', deleteAttributeHandler);
+
+app.get('/admin/settings/lists', listListsHandler);
+app.get('/admin/settings/lists/:listId', getListHandler);
+app.post('/admin/settings/lists', createListHandler);
+app.put('/admin/settings/lists/:listId', updateListHandler);
+app.delete('/admin/settings/lists/:listId', deleteListHandler);
+
+/**
+ * Admin Users endpoints
+ */
+app.get('/admin/settings/users', listUsersHandler);
+app.get('/admin/settings/users/:uid', getUserHandler);
+app.post('/admin/settings/users', createUserHandler);
+app.patch('/admin/settings/users/:uid', updateUserHandler);
+app.delete('/admin/settings/users/:uid', deleteUserHandler);
+app.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
+app.get('/admin/settings/roles', getRolesHandler);
 
 /**
  * Products endpoints
