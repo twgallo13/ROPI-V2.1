@@ -79,14 +79,22 @@ export function useProduct(productId: string) {
     let unsub: Unsubscribe | undefined;
 
     const loadProduct = async () => {
+      console.debug(`[useProduct] Loading product ${productId}, Firebase available:`, isFirebaseAvailable());
+      
       if (isFirebaseAvailable() && db) {
         try {
           const ref = doc(db, 'products', productId);
+          console.debug(`[useProduct] Setting up Firestore listener for product ${productId}...`);
           
           // Use real-time listener for live updates
           unsub = onSnapshot(ref, (snap) => {
+            // Debug: Log snapshot status
+            console.debug(`[useProduct] Firestore snapshot for product ${productId}: exists=${snap.exists()}`);
+            
             if (snap.exists()) {
               const docData = snap.data();
+              console.debug(`[useProduct] Product data received, keys:`, Object.keys(docData).slice(0, 10));
+              
               // Merge top-level attribute keys into attributes map for compatibility
               const mergedAttributes = mergeTopLevelAttributesToAttributesMap(docData);
               const productWithMergedAttrs = {
@@ -97,7 +105,7 @@ export function useProduct(productId: string) {
               setProduct(productWithMergedAttrs);
             } else {
               // Fall back to mock data if product not found
-              console.warn(`Product ${productId} not found in Firestore, using mock data`);
+              console.warn(`[useProduct] Product ${productId} not found in Firestore, using mock data`);
               setProduct(mockProductData as Product);
             }
             setLoading(false);
