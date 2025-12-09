@@ -8,7 +8,7 @@
  * Homer v1.0.0 - User Management
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './ProfilePage.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '';
