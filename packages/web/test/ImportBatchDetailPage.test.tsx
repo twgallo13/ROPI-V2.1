@@ -3,13 +3,13 @@
  * Tests View Product links and importOutcome display
  */
 
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ImportBatchDetailPage } from '../src/pages/ImportBatchDetailPage';
 import type { ImportBatch, ImportEngineRow } from '@ropi-aoss/sdk';
 
-// Mock Firestore
 const mockBatch: ImportBatch = {
   batchId: 'test-batch-001',
   fileName: 'test.csv',
@@ -79,20 +79,43 @@ const mockRows: ImportEngineRow[] = [
   },
 ];
 
-// Mock Firestore hooks
+let getDocMock: ReturnType<typeof vi.fn>;
+let getDocsMock: ReturnType<typeof vi.fn>;
+
 vi.mock('firebase/firestore', () => ({
   collection: vi.fn(),
   doc: vi.fn(),
-  getDoc: vi.fn(),
-  getDocs: vi.fn(),
+  getDoc: (...args: unknown[]) => getDocMock(...args),
+  getDocs: (...args: unknown[]) => getDocsMock(...args),
   query: vi.fn(),
   where: vi.fn(),
   orderBy: vi.fn(),
+  getFirestore: vi.fn(() => ({} as any)),
+}));
+
+vi.mock('@/contexts/AuthProvider', () => ({
+  useAuth: () => ({
+    currentUser: {
+      getIdTokenResult: vi.fn().mockResolvedValue({ claims: { role: 'admin' } }),
+    },
+    isAdmin: true,
+  }),
 }));
 
 describe('ImportBatchDetailPage', () => {
   beforeEach(() => {
-    // Mock useParams hook
+    getDocMock = vi.fn().mockResolvedValue({
+      exists: () => true,
+      data: () => mockBatch,
+    });
+
+    getDocsMock = vi.fn().mockResolvedValue({
+      docs: mockRows.map(row => ({
+        id: row.rowId,
+        data: () => row,
+      })),
+    });
+
     vi.mock('react-router-dom', async () => {
       const actual = await vi.importActual('react-router-dom');
       return {
@@ -103,44 +126,24 @@ describe('ImportBatchDetailPage', () => {
   });
 
   it('should render commit counters', async () => {
-    // Mock Firestore data
-    const mockGetDoc = vi.fn().mockResolvedValue({
-      exists: () => true,
-      data: () => mockBatch,
-    });
-    
-    const mockGetDocs = vi.fn().mockResolvedValue({
-      docs: mockRows.map(row => ({
-        id: row.rowId,
-        data: () => row,
-      })),
-    });
-
-    vi.doMock('firebase/firestore', () => ({
-      getDoc: mockGetDoc,
-      getDocs: mockGetDocs,
-    }));
-
     render(
       <BrowserRouter>
         <ImportBatchDetailPage />
       </BrowserRouter>
     );
 
-    await waitFor(() => {
-      expect(screen.getByText(/1 Created/i)).toBeInTheDocument();
-      expect(screen.getByText(/1 Updated/i)).toBeInTheDocument();
-      expect(screen.getByText(/1 Blocked/i)).toBeInTheDocument();
-    });
+    const createdLabel = await screen.findByText(/Products Created/i);
+    expect(createdLabel.previousElementSibling).toHaveTextContent('1');
+
+    const updatedLabel = await screen.findByText(/Products Updated/i);
+    expect(updatedLabel.previousElementSibling).toHaveTextContent('1');
+
+    const blockedLabel = await screen.findByText(/Rows Blocked/i);
+    expect(blockedLabel.previousElementSibling).toHaveTextContent('1');
   });
 
   it('should show "View Product (Created)" link for created rows', async () => {
-    const mockGetDoc = vi.fn().mockResolvedValue({
-      exists: () => true,
-      data: () => mockBatch,
-    });
-    
-    const mockGetDocs = vi.fn().mockResolvedValue({
+    getDocsMock = vi.fn().mockResolvedValue({
       docs: [
         {
           id: mockRows[0].rowId,
@@ -149,31 +152,19 @@ describe('ImportBatchDetailPage', () => {
       ],
     });
 
-    vi.doMock('firebase/firestore', () => ({
-      getDoc: mockGetDoc,
-      getDocs: mockGetDocs,
-    }));
-
     render(
       <BrowserRouter>
         <ImportBatchDetailPage />
       </BrowserRouter>
     );
 
-    await waitFor(() => {
-      const link = screen.getByText(/View Product \(Created\)/i);
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute('href', '/products/created-001');
-    });
+    const link = await screen.findByText(/View Product \(Created\)/i);
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', '/products/created-001');
   });
 
   it('should show "View Product (Updated)" link for updated rows', async () => {
-    const mockGetDoc = vi.fn().mockResolvedValue({
-      exists: () => true,
-      data: () => mockBatch,
-    });
-    
-    const mockGetDocs = vi.fn().mockResolvedValue({
+    getDocsMock = vi.fn().mockResolvedValue({
       docs: [
         {
           id: mockRows[1].rowId,
@@ -182,31 +173,19 @@ describe('ImportBatchDetailPage', () => {
       ],
     });
 
-    vi.doMock('firebase/firestore', () => ({
-      getDoc: mockGetDoc,
-      getDocs: mockGetDocs,
-    }));
-
     render(
       <BrowserRouter>
         <ImportBatchDetailPage />
       </BrowserRouter>
     );
 
-    await waitFor(() => {
-      const link = screen.getByText(/View Product \(Updated\)/i);
-      expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute('href', '/products/updated-001');
-    });
+    const link = await screen.findByText(/View Product \(Updated\)/i);
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', '/products/updated-001');
   });
 
   it('should show "Blocked by validation" for blocked rows', async () => {
-    const mockGetDoc = vi.fn().mockResolvedValue({
-      exists: () => true,
-      data: () => mockBatch,
-    });
-    
-    const mockGetDocs = vi.fn().mockResolvedValue({
+    getDocsMock = vi.fn().mockResolvedValue({
       docs: [
         {
           id: mockRows[2].rowId,
@@ -215,57 +194,26 @@ describe('ImportBatchDetailPage', () => {
       ],
     });
 
-    vi.doMock('firebase/firestore', () => ({
-      getDoc: mockGetDoc,
-      getDocs: mockGetDocs,
-    }));
-
     render(
       <BrowserRouter>
         <ImportBatchDetailPage />
       </BrowserRouter>
     );
 
-    await waitFor(() => {
-      expect(screen.getByText(/Blocked by validation/i)).toBeInTheDocument();
-      expect(screen.queryByText(/View Product/i)).not.toBeInTheDocument();
-    });
+    const blockedLabel = await screen.findByText(/Blocked by validation/i);
+    expect(blockedLabel).toBeInTheDocument();
+    expect(screen.queryByText(/View Product/i)).not.toBeInTheDocument();
   });
 
   it('should display all three outcome types correctly', async () => {
-    const mockGetDoc = vi.fn().mockResolvedValue({
-      exists: () => true,
-      data: () => mockBatch,
-    });
-    
-    const mockGetDocs = vi.fn().mockResolvedValue({
-      docs: mockRows.map(row => ({
-        id: row.rowId,
-        data: () => row,
-      })),
-    });
-
-    vi.doMock('firebase/firestore', () => ({
-      getDoc: mockGetDoc,
-      getDocs: mockGetDocs,
-    }));
-
     render(
       <BrowserRouter>
         <ImportBatchDetailPage />
       </BrowserRouter>
     );
 
-    await waitFor(() => {
-      // Check for all three outcomes
-      expect(screen.getByText(/View Product \(Created\)/i)).toBeInTheDocument();
-      expect(screen.getByText(/View Product \(Updated\)/i)).toBeInTheDocument();
-      expect(screen.getByText(/Blocked by validation/i)).toBeInTheDocument();
-
-      // Check counters
-      expect(screen.getByText(/1 Created/i)).toBeInTheDocument();
-      expect(screen.getByText(/1 Updated/i)).toBeInTheDocument();
-      expect(screen.getByText(/1 Blocked/i)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(/View Product \(Created\)/i)).toBeInTheDocument();
+    expect(await screen.findByText(/View Product \(Updated\)/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Blocked by validation/i)).toBeInTheDocument();
   });
 });
