@@ -10,7 +10,8 @@
     "build": "pnpm -r --filter ./... build",
     "lint": "pnpm -r --filter ./... lint || eslint . --ext .ts,.tsx,.js,.jsx || true",
     "test": "pnpm -r --filter ./... test || echo \"No tests yet\"",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "api:sync:attributes": "pnpm --filter @ropi-aoss/api build && pnpm --filter @ropi-aoss/api sync:attributes"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.0",

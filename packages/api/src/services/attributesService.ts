@@ -128,8 +128,8 @@ export async function listAttributes(
   if (options.q) {
     const searchTerm = options.q.toLowerCase();
     items = items.filter(attr =>
-      attr.label.toLowerCase().includes(searchTerm) ||
-      attr.attribute_id.toLowerCase().includes(searchTerm)
+      (attr.label || '').toLowerCase().includes(searchTerm) ||
+      (attr.attribute_id || '').toLowerCase().includes(searchTerm)
     );
   }
   
@@ -173,7 +173,11 @@ export async function createAttribute(
   actor: string
 ): Promise<AttributeType> {
   const db = getDb();
-  const docRef = db.collection(ATTRIBUTES_COLLECTION).doc(attribute.attribute_id);
+  const attributeId = attribute.attribute_id;
+  if (!attributeId) {
+    throw new ServiceError('attribute_id is required', 400, 'INVALID_REQUEST');
+  }
+  const docRef = db.collection(ATTRIBUTES_COLLECTION).doc(attributeId);
   
   const payload = toFirestorePayload(attribute, actor, true);
   

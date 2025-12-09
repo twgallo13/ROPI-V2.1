@@ -1,7 +1,21 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useProduct } from '../hooks/useProduct';
 import type { NewObservation } from '../types/product';
+
+// Mock firebaseConfig to return offline mode
+vi.mock('../firebaseConfig', () => ({
+  isFirebaseAvailable: () => false,
+  db: null,
+}));
+
+// Mock firebase/firestore to prevent import errors
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(),
+  updateDoc: vi.fn(),
+  setDoc: vi.fn(),
+  onSnapshot: vi.fn(),
+}));
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -22,17 +36,25 @@ describe('useProduct hook', () => {
     localStorageMock.clear();
   });
 
-  it('should load mock product data', () => {
+  it('should load mock product data', async () => {
     const { result } = renderHook(() => useProduct('123'));
     
-    expect(result.current.loading).toBe(false);
+    // Wait for async loading to complete
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+    
     expect(result.current.product).toBeDefined();
     expect(result.current.product?.id).toBe('123');
     expect(result.current.product?.sku).toBe('NK-AIR-MAX-270-BLK-10');
   });
 
-  it('should update a product field', () => {
+  it('should update a product field', async () => {
     const { result } = renderHook(() => useProduct('123'));
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
     
     act(() => {
       result.current.updateField('name', 'Updated Product Name');
@@ -41,8 +63,12 @@ describe('useProduct hook', () => {
     expect(result.current.product?.name).toBe('Updated Product Name');
   });
 
-  it('should add an observation', () => {
+  it('should add an observation', async () => {
     const { result } = renderHook(() => useProduct('123'));
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
     
     const initialCount = result.current.product?.observations.length || 0;
     
@@ -60,8 +86,12 @@ describe('useProduct hook', () => {
     expect(result.current.product?.observations[initialCount].title).toBe('Test Observation');
   });
 
-  it('should resolve an observation', () => {
+  it('should resolve an observation', async () => {
     const { result } = renderHook(() => useProduct('123'));
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
     
     const obsId = result.current.product?.observations[0].id;
     expect(obsId).toBeDefined();
@@ -74,56 +104,78 @@ describe('useProduct hook', () => {
     expect(resolvedObs?.status).toBe('resolved');
   });
 
-  it('should apply a suggestion', () => {
+  it('should apply a suggestion', async () => {
     const { result } = renderHook(() => useProduct('123'));
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
     
     const suggestion = result.current.product?.smartSuggestions[0];
     expect(suggestion).toBeDefined();
     
-    act(() => {
-      result.current.applySuggestion(suggestion!.id);
+    await act(async () => {
+      await result.current.applySuggestion(suggestion!.id);
     });
     
-    const appliedSuggestion = result.current.product?.smartSuggestions.find(s => s.id === suggestion!.id);
-    expect(appliedSuggestion?.status).toBe('applied');
+    // Wait for state to update
+    await waitFor(() => {
+      const appliedSuggestion = result.current.product?.smartSuggestions.find(s => s.id === suggestion!.id);
+      expect(appliedSuggestion?.status).toBe('applied');
+    });
   });
 
-  it('should ignore a suggestion', () => {
+  it('should ignore a suggestion', async () => {
     const { result } = renderHook(() => useProduct('123'));
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
     
     const suggestion = result.current.product?.smartSuggestions[0];
     expect(suggestion).toBeDefined();
     
-    act(() => {
-      result.current.ignoreSuggestion(suggestion!.id);
+    await act(async () => {
+      await result.current.ignoreSuggestion(suggestion!.id);
     });
     
-    const ignoredSuggestion = result.current.product?.smartSuggestions.find(s => s.id === suggestion!.id);
-    expect(ignoredSuggestion?.status).toBe('ignored');
+    // Wait for state to update
+    await waitFor(() => {
+      const ignoredSuggestion = result.current.product?.smartSuggestions.find(s => s.id === suggestion!.id);
+      expect(ignoredSuggestion?.status).toBe('ignored');
+    });
   });
 
-  it('should recalculate export readiness when fields are updated', () => {
+  it('should recalculate export readiness when fields are updated', async () => {
     const { result } = renderHook(() => useProduct('123'));
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
     
     const initialScore = result.current.product?.exportReadiness.overall || 0;
     
     // Update required fields
-    act(() => {
-      result.current.updateField('descriptions.shiekh.com.main', 'A'.repeat(100));
+    await act(async () => {
+      await result.current.updateField('descriptions.shiekh.com.main', 'A'.repeat(100));
     });
     
     const newScore = result.current.product?.exportReadiness.overall || 0;
     expect(newScore).toBeGreaterThanOrEqual(initialScore);
   });
 
-  it('should persist to localStorage', () => {
-    const { result } = renderHook(() => useProduct('test-id'));
+  it('should persist to localStorage', async () => {
+    const { result } = renderHook(() => useProduct('123'));
     
-    act(() => {
-      result.current.updateField('name', 'Persisted Product');
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
     });
     
-    const stored = localStorageMock.getItem('aoss:product:test-id');
+    await act(async () => {
+      await result.current.updateField('name', 'Persisted Product');
+    });
+    
+    const stored = localStorageMock.getItem('aoss:product:123');
     expect(stored).toBeDefined();
     
     const parsed = JSON.parse(stored!);

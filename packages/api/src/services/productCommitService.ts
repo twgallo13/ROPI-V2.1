@@ -99,7 +99,7 @@ function convertRowToProduct(row: ImportEngineRow): Product {
   if (normalized.primaryImage || normalized.images) {
     media = {};
     if (normalized.primaryImage) media.primaryImage = normalized.primaryImage;
-    if (normalized.images) media.images = [normalized.images];
+    if (normalized.images) media.images = Array.isArray(normalized.images) ? normalized.images : [normalized.images];
   }
 
   // Initialize status flags per Section 9
