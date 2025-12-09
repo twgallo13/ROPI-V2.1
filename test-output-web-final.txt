@@ -1,0 +1,742 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.17.0","pnpm":"10.13.1"})
+
+> @ropi-aoss/web@1.0.0 test /workspaces/ROPI-V2.1/packages/web
+> vitest --run
+
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+stdout | src/services/observations.test.ts > Observations Service - localStorage fallback > should return empty array when no observations exist
+[DEBUG listObservations] Querying for productId: test-product-123
+
+stdout | src/services/observations.test.ts > Observations Service - localStorage fallback > should list observations from localStorage
+[DEBUG listObservations] Querying for productId: test-product-123
+
+stdout | src/services/observations.test.ts > Observations Service - localStorage fallback > should resolve observation in localStorage
+[DEBUG listObservations] Querying for productId: test-product-123
+
+stdout | src/services/observations.test.ts > Observations Service - localStorage fallback > should sort observations by creation date (newest first)
+[DEBUG listObservations] Querying for productId: test-product-123
+
+stdout | src/services/observations.test.ts > Observations Service - localStorage fallback > should isolate observations by productId
+[DEBUG listObservations] Querying for productId: product-1
+[DEBUG listObservations] Querying for productId: product-2
+
+stderr | src/services/observations.test.ts > Observations Service - localStorage fallback > should handle errors gracefully when localStorage is full
+Failed to save observations to localStorage: Error: QuotaExceededError
+    at Proxy.<anonymous> (/workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:248:13)
+    at Proxy.mockCall (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+spy@1.6.1/node_modules/@vitest/spy/dist/index.js:50:17)
+    at Proxy.spy (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/tinyspy@2.2.1/node_modules/tinyspy/dist/index.js:42:80)
+    at saveToLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:116:18)
+    at Module.addObservation (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:258:3)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:260:31
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+
+stdout | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+[DEBUG listObservations] Querying for productId: test-product
+
+stderr | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+Failed to load observations from localStorage: SyntaxError: Unexpected token 'i', "invalid json {{{" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadFromLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:92:31)
+    at Module.listObservations (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:197:10)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:286:32
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+
+ ✓ src/services/observations.test.ts  (12 tests) 86ms
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+Error fetching attributes: Cannot read properties of undefined (reading 'get')
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should handle fetch errors
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:191:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+Error fetching attributes: res.text is not a function
+
+stdout | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should handle fetch errors
+✅ Firebase initialized successfully
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should handle fetch errors
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:191:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:191:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:191:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+Error fetching attributes: res.text is not a function
+
+ ❯ test/useAttributes.test.tsx  (6 tests | 6 failed) 398ms
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+     → expected [] to deeply equal [ …(2) ]
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+     → expected 'Cannot read properties of undefined (…' to be 'Server error' // Object.is equality
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+     → unsubscribe is not a function
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:191:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stdout | src/firebaseConfig.ts:40:11
+✅ Firebase initialized successfully
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > createUser > should handle creation errors
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+ ✓ test/ImportBatchDetailPage.test.tsx  (5 tests) 234ms
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stderr | src/hooks/useProduct.test.ts > useProduct hook > should update a product field
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 65ms
+ ✓ test/envPolicy.test.ts  (19 tests) 7ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should initialize with no user
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should expose resendVerificationEmail function
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should have correct interface shape
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 39ms
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+Failed to fetch users: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:170:24
+Failed to fetch roles: Error: Authentication required
+    at apiRequest (/workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:111:11)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:324:24
+
+stdout | test/smoke.observations.test.tsx > Observations Service - Smoke Test > should create and retrieve an observation
+[DEBUG listObservations] Querying for productId: smoke-test-product
+
+stdout | test/smoke.observations.test.tsx > Observations Service - Smoke Test > should handle observation resolution
+[DEBUG listObservations] Querying for productId: smoke-test-product-2
+
+stdout | test/smoke.observations.test.tsx > Observations Service - Smoke Test > should handle multiple products independently
+[DEBUG listObservations] Querying for productId: product-a
+[DEBUG listObservations] Querying for productId: product-b
+
+ ✓ test/smoke.observations.test.tsx  (4 tests) 10ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/smoke.product-editor-observations.test.tsx  (1 test) 150ms
+ ❯ src/hooks/useUsers.test.ts  (9 tests | 6 failed) 4438ms
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+     → expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+     → Authentication required
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+     → expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+     → expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+     → Authentication required
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+     → expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > renders with basic structure
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > calls listenToObservations on mount
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > shows offline banner when Firebase unavailable
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 64ms
+ ✓ test/nav.test.ts  (4 tests) 8ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+AssertionError: expected [] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+- Array [
+-   Object {
+-     "attribute_id": "color",
+-     "data_type": "enum",
+-     "label": "Color",
+-   },
+-   Object {
+-     "attribute_id": "size",
+-     "data_type": "string",
+-     "label": "Size",
+-   },
+- ]
++ Array []
+
+ ❯ test/useAttributes.test.tsx:74:39
+     72|     });
+     73| 
+     74|     expect(result.current.attributes).toEqual(mockAttributes);
+       |                                       ^
+     75|     expect(result.current.error).toBeNull();
+     76|     expect(mockFetch).toHaveBeenCalledWith('/admin/settings/attributes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+AssertionError: expected 'Cannot read properties of undefined (…' to be 'Server error' // Object.is equality
+
+- Expected
++ Received
+
+- Server error
++ Cannot read properties of undefined (reading 'get')
+
+ ❯ test/useAttributes.test.tsx:94:34
+     92|     });
+     93| 
+     94|     expect(result.current.error).toBe('Server error');
+       |                                  ^
+     95|     expect(result.current.attributes).toEqual([]);
+     96|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+TypeError: unsubscribe is not a function
+ ❯ src/hooks/useAttributes.ts:191:18
+    189|       }
+    190|     });
+    191|     return () => unsubscribe();
+       |                  ^
+    192|   }, [fetchAttributes]);
+    193| 
+ ❯ safelyCallDestroy ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5
+ ❯ commitHookEffectListUnmount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11
+ ❯ commitPassiveUnmountInsideDeletedTreeOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11
+ ❯ commitPassiveUnmountEffectsInsideOfDeletedTree_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5
+ ❯ commitPassiveUnmountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11
+ ❯ commitPassiveUnmountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ commitRootImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+TypeError: res.text is not a function
+ ❯ fetchJSON src/hooks/useAttributes.ts:80:26
+     78| async function fetchJSON<T>(url: string, options?: RequestInit): Promi…
+     79|   const res = await fetch(url, options);
+     80|   const text = await res.text();
+       |                          ^
+     81|   const contentType = res.headers.get('content-type') || '';
+     82| 
+ ❯ Object.createAttribute src/hooks/useAttributes.ts:203:21
+ ❯ test/useAttributes.test.tsx:130:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+TypeError: res.text is not a function
+ ❯ fetchJSON src/hooks/useAttributes.ts:80:26
+     78| async function fetchJSON<T>(url: string, options?: RequestInit): Promi…
+     79|   const res = await fetch(url, options);
+     80|   const text = await res.text();
+       |                          ^
+     81|   const contentType = res.headers.get('content-type') || '';
+     82| 
+ ❯ Object.updateAttribute src/hooks/useAttributes.ts:231:21
+ ❯ test/useAttributes.test.tsx:172:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+TypeError: res.text is not a function
+ ❯ fetchJSON src/hooks/useAttributes.ts:80:26
+     78| async function fetchJSON<T>(url: string, options?: RequestInit): Promi…
+     79|   const res = await fetch(url, options);
+     80|   const text = await res.text();
+       |                          ^
+     81|   const contentType = res.headers.get('content-type') || '';
+     82| 
+ ❯ Object.deleteAttribute src/hooks/useAttributes.ts:263:5
+ ❯ test/useAttributes.test.tsx:211:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+AssertionError: expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:111:38
+    109| 
+    110|       await waitFor(() => {
+    111|         expect(result.current.users).toHaveLength(1);
+       |                                      ^
+    112|       });
+    113| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+Error: Authentication required
+ ❯ apiRequest src/hooks/useUsers.ts:111:11
+    109|   
+    110|   if (!token) {
+    111|     throw new Error('Authentication required');
+       |           ^
+    112|   }
+    113|   
+ ❯ Object.createUser src/hooks/useUsers.ts:220:24
+ ❯ src/hooks/useUsers.test.ts:173:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+AssertionError: expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:249:38
+    247| 
+    248|       await waitFor(() => {
+    249|         expect(result.current.users).toHaveLength(1);
+       |                                      ^
+    250|       });
+    251| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+AssertionError: expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:286:38
+    284| 
+    285|       await waitFor(() => {
+    286|         expect(result.current.users).toHaveLength(2);
+       |                                      ^
+    287|       });
+    288| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+Error: Authentication required
+ ❯ apiRequest src/hooks/useUsers.ts:111:11
+    109|   
+    110|   if (!token) {
+    111|     throw new Error('Authentication required');
+       |           ^
+    112|   }
+    113|   
+ ❯ Object.resetPassword src/hooks/useUsers.ts:304:24
+ ❯ src/hooks/useUsers.test.ts:324:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+AssertionError: expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:357:38
+    355| 
+    356|       await waitFor(() => {
+    357|         expect(result.current.roles).toHaveLength(2);
+       |                                      ^
+    358|       });
+    359| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+AssertionError: expected [Function] to throw error including 'Attribute already exists' but got 'Cannot read properties of undefined (…'
+
+- Expected
++ Received
+
+- Attribute already exists
++ Cannot read properties of undefined (reading 'get')
+
+ ❯ Assertion.<anonymous> ../../node_modules/.pnpm/@vitest+expect@1.6.1/node_modules/@vitest/expect/dist/index.js:1324:19
+ ❯ Assertion.<anonymous> ../../node_modules/.pnpm/@vitest+expect@1.6.1/node_modules/@vitest/expect/dist/index.js:800:17
+ ❯ Assertion.methodWrapper ../../node_modules/.pnpm/chai@4.5.0/node_modules/chai/lib/chai/utils/addMethod.js:57:25
+ ❯ ../../node_modules/.pnpm/@vitest+expect@1.6.1/node_modules/@vitest/expect/dist/index.js:1525:29
+ ❯ ../../node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/act-compat.js:63:15
+ ❯ ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:2552:13
+
+This error originated in "test/useAttributes.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ Test Files  2 failed | 9 passed (11)
+      Tests  12 failed | 65 passed (77)
+     Errors  1 error
+   Start at  11:37:59
+   Duration  6.78s (transform 900ms, setup 1ms, collect 3.32s, tests 5.50s, environment 6.87s, prepare 1.38s)
+
+/workspaces/ROPI-V2.1/packages/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 test: `vitest --run`
+Exit status 1

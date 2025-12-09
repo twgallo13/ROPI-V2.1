@@ -35,6 +35,20 @@ function ProductEditorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>('core');
 
+  // Debug: Log product ID from URL
+  console.debug('[ProductEditorPage] Product ID from URL:', id);
+
+  // Defensive: Require product ID in URL
+  if (!id) {
+    return (
+      <div className="product-editor-error">
+        <h2>No product ID in URL</h2>
+        <p>Please use /app/products/:id</p>
+        <button onClick={() => navigate('/app/products')}>Back to Products</button>
+      </div>
+    );
+  }
+
   const {
     product,
     loading,
@@ -42,7 +56,7 @@ function ProductEditorPage() {
     updateField,
     applySuggestion,
     ignoreSuggestion,
-  } = useProduct(id || '123');
+  } = useProduct(id);
 
   // Sync tab with URL query param
   useEffect(() => {

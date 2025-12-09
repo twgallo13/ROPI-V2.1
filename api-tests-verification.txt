@@ -1,0 +1,222 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.17.0","pnpm":"10.13.1"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run --run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+ ❯ src/endpoints/admin/users.test.ts  (0 test)
+ ↓ test/integration/attributes.emu.spec.ts  (9 tests | 9 skipped)
+ ↓ test/integration/syncAttributeRegistry.emu.spec.ts  (8 tests | 8 skipped)
+ ✓ test/importService.test.ts  (4 tests) 10ms
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should validate a correct attribute
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should reject invalid attribute_id format
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should reject missing required fields
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should reject invalid data_type
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/attributes.service.spec.ts > Attributes Service > createAttribute > should create a new attribute
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
+stderr | test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+Cleanup error: Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at GoogleAuth._GoogleAuth_determineClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at GoogleAuth.getClient (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at GrpcClient._getCredentials (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:209:20)
+    at GrpcClient.createStub (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/grpc.ts:426:19)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)
+
