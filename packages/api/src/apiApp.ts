@@ -61,6 +61,9 @@ import {
 } from './endpoints/processImportBatch';
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 
+// Reconciliation (Homer v1.0.0)
+import reconcileAttributesRouter from './admin/reconcileAttributes';
+
 const app: Application = express();
 const api: Router = Router();
 
@@ -130,12 +133,20 @@ api.post('/syncAttributeRegistry', async (req, res) => {
   }
 });
 
-// Mount API under /api to align with hosting rewrites
-app.use('/api', api);
+/**
+ * Attribute Reconciliation endpoints (Homer v1.0.0)
+ * /admin/reconcile-attributes/analyze - POST - Start reconciliation job
+ * /admin/reconcile-attributes/:jobId - GET - Get job status
+ * /admin/reconcile-attributes/apply - POST - Apply mappings
+ */
+api.use('/admin/reconcile-attributes', requireAdmin, reconcileAttributesRouter);
 
 // Lightweight health check
-app.get('/healthz', (_req, res) => {
+api.get('/healthz', (_req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+
+// Mount API under /api to align with hosting rewrites
+app.use('/api', api);
 
 export default app;

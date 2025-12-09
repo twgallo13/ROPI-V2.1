@@ -1,0 +1,88 @@
+==================================================
+ROPI AOSS Staging Endpoint Verification
+==================================================
+Timestamp: 2025-12-09T15:44:38+00:00
+Branch: aoss-main
+Commit: b22ad6e
+
+========== TEST 1: Health Check (Public) ==========
+[0;34mGET https://ropi-aoss-staging.web.app/api/healthz[0m
+
+HTTP/2 200 
+cache-control: private
+content-type: application/json; charset=utf-8
+etag: W/"f-VaSQ4oDUiZblZNAEkkN+sX+q3Sg"
+server: Google Frontend
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+traceparent: 00-7741c01291f0b25a3cbae94945e15e47-c28464a52353bce1-01
+x-cloud-trace-context: 7741c01291f0b25a3cbae94945e15e47/14016438600708898017;o=1
+x-country-code: US
+x-powered-by: Express
+accept-ranges: bytes
+date: Tue, 09 Dec 2025 15:44:39 GMT
+x-served-by: cache-bur-kbur8200121-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1765295079.490322,VS0,VE114
+vary: Origin,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 15
+
+{"status":"ok"}
+
+[0;32m✅ PASS: Health check returned 200 OK[0m
+
+
+========== Authenticated Endpoint Tests ==========
+
+[1;33m⚠️  The following endpoints require authentication:[0m
+  - GET /api/users/me
+  - GET /api/admin/settings/users
+  - GET /api/admin/settings/roles
+
+[0;34mTo test authenticated endpoints:[0m
+
+1. Get an ID token using ONE of these methods:
+
+   METHOD A: From Browser Console (Recommended)
+   -----------------------------------------
+   a. Open: https://ropi-aoss-staging.web.app
+   b. Sign in as: theo@shiekhshoes.org
+   c. Press F12 to open DevTools Console
+   d. Run this JavaScript:
+
+      firebase.auth().currentUser.getIdToken(true).then(t => {
+        console.log('TOKEN=' + t);
+        copy(t);
+      });
+
+   e. Token is now in clipboard
+
+   METHOD B: Email/Password (if you have credentials)
+   -----------------------------------------
+   EMAIL=theo@shiekhshoes.org PASSWORD=xxx bash /tmp/get-id-token.sh
+
+2. Run the full verification script with the token:
+
+   TOKEN='<your_token_here>' bash scripts/verify-staging-endpoints.sh
+
+
+[1;33mPreview of Authenticated Tests:[0m
+
+TEST 2: User Profile
+  curl -H 'Authorization: Bearer $TOKEN' https://ropi-aoss-staging.web.app/api/users/me
+
+TEST 3: Admin Users List
+  curl -H 'Authorization: Bearer $TOKEN' https://ropi-aoss-staging.web.app/api/admin/settings/users
+
+TEST 4: Admin Roles List
+  curl -H 'Authorization: Bearer $TOKEN' https://ropi-aoss-staging.web.app/api/admin/settings/roles
+
+==================================================
+Summary
+==================================================
+[0;32m✅ Public endpoints tested: 1/4[0m
+[1;33m⏳ Authenticated endpoints pending: 3/4[0m
+
+Next step: Obtain ID token and run full verification
+
