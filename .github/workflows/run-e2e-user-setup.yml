@@ -1,0 +1,205 @@
+name: Setup E2E Test Users
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for running this workflow'
+        required: false
+        default: 'Manual E2E user setup'
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'scripts/create-or-update-e2e-users.js'
+      - '.github/workflows/run-e2e-user-setup.yml'
+      - 'packages/web/.env.e2e.example'
+
+jobs:
+  setup-e2e-users:
+    name: Create/Update E2E Test Users
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    # Only run on specific branches or manual dispatch
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && 
+       contains(github.event.pull_request.labels.*.name, 'e2e-setup'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate required secrets
+        env:
+          HAS_SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT_JSON != '' }}
+          HAS_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD != '' }}
+          HAS_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD != '' }}
+          HAS_UNVERIFIED_PASSWORD: ${{ secrets.E2E_UNVERIFIED_PASSWORD != '' }}
+        run: |
+          echo "Validating required secrets..."
+          
+          MISSING_SECRETS=()
+          
+          if [ "$HAS_SERVICE_ACCOUNT" != "true" ]; then
+            MISSING_SECRETS+=("SERVICE_ACCOUNT_JSON")
+          fi
+          
+          if [ "$HAS_ADMIN_PASSWORD" != "true" ]; then
+            MISSING_SECRETS+=("E2E_ADMIN_PASSWORD")
+          fi
+          
+          if [ "$HAS_USER_PASSWORD" != "true" ]; then
+            MISSING_SECRETS+=("E2E_USER_PASSWORD")
+          fi
+          
+          if [ "$HAS_UNVERIFIED_PASSWORD" != "true" ]; then
+            MISSING_SECRETS+=("E2E_UNVERIFIED_PASSWORD")
+          fi
+          
+          if [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
+            echo "❌ Missing required secrets:"
+            for secret in "${MISSING_SECRETS[@]}"; do
+              echo "  - $secret"
+            done
+            exit 1
+          fi
+          
+          echo "✅ All required secrets are present"
+
+      - name: Write service account credentials
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          echo "Writing service account to temporary file..."
+          echo "$SERVICE_ACCOUNT_JSON" > service-account.json
+          chmod 600 service-account.json
+          
+          # Validate JSON structure (without printing content)
+          if ! jq -e '.project_id' service-account.json > /dev/null 2>&1; then
+            echo "❌ Invalid service account JSON structure"
+            rm -f service-account.json
+            exit 1
+          fi
+          
+          PROJECT_ID=$(jq -r '.project_id' service-account.json)
+          echo "✅ Service account configured for project: $PROJECT_ID"
+
+      - name: Install dependencies
+        run: |
+          echo "Installing firebase-admin..."
+          npm install firebase-admin
+          
+          echo "✅ Dependencies installed"
+
+      - name: Run E2E user setup script
+        env:
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_UNVERIFIED_PASSWORD: ${{ secrets.E2E_UNVERIFIED_PASSWORD }}
+        run: |
+          echo "🚀 Running E2E user setup script..."
+          echo ""
+          
+          # Run the script and capture output
+          node scripts/create-or-update-e2e-users.js
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo ""
+            echo "✅ E2E user setup completed successfully"
+          else
+            echo ""
+            echo "❌ E2E user setup failed with exit code: $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+
+      - name: Clean up credentials
+        if: always()
+        run: |
+          echo "🧹 Cleaning up sensitive files..."
+          rm -f service-account.json
+          echo "✅ Cleanup complete"
+
+      - name: Create workflow summary
+        if: always()
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          # 🔧 E2E Test Users Setup (aoss.v0.6.9)
+          
+          ## Workflow Information
+          
+          - **Trigger**: ${{ github.event_name }}
+          - **Branch**: ${{ github.ref_name }}
+          - **Commit**: ${{ github.sha }}
+          - **Run ID**: ${{ github.run_id }}
+          
+          ## User Accounts Configured
+          
+          The following E2E test accounts were created or updated in Firebase Auth:
+          
+          | Email | Type | Email Verified | Admin Claim |
+          |-------|------|----------------|-------------|
+          | theo@shiekh.com | Admin | ✅ Yes | ✅ Yes |
+          | theo@shiekhshoes.org | Admin | ✅ Yes | ✅ Yes |
+          | user@shiekh.com | User | ✅ Yes | ❌ No |
+          | unverified@shiekh.com | Unverified | ❌ No | ❌ No |
+          
+          ## Security Notes
+          
+          - Passwords are sourced from GitHub Secrets (not logged)
+          - Service account credentials written to temporary file only
+          - All sensitive files cleaned up after execution
+          - Custom claims `{ role: 'admin' }` set for both Theo addresses
+          
+          ## Next Steps
+          
+          1. Verify users can sign in to staging environment
+          2. Confirm admin users see admin UI features
+          3. Test E2E scenarios with these accounts
+          
+          ---
+          
+          ✅ **Status**: ${{ job.status }}
+          EOF
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `## 🔧 E2E Test Users Setup Complete
+            
+            ✅ Successfully configured E2E test accounts in Firebase Auth (staging).
+            
+            ### Accounts Updated
+            
+            - ✅ \`theo@shiekh.com\` - Admin (email verified, admin claim set)
+            - ✅ \`theo@shiekhshoes.org\` - Admin (email verified, admin claim set)
+            - ✅ \`user@shiekh.com\` - Verified user
+            - ✅ \`unverified@shiekh.com\` - Unverified user
+            
+            ### Verification
+            
+            Both Theo addresses now have custom claim: \`{ role: 'admin' }\`
+            
+            **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            ---
+            
+            _Version: aoss.v0.6.9_`;
+            
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
