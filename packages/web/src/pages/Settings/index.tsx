@@ -15,6 +15,11 @@ export default function SettingsHub() {
       <p className="subtitle">Manage system configuration and data</p>
       
       <div className="settings-sections">
+        <Link to="/settings/permissions" className="settings-card">
+          <h2>Permissions</h2>
+          <p>Configure role-based permissions matrix</p>
+        </Link>
+
         <Link to="/settings/attributes" className="settings-card">
           <h2>Attributes</h2>
           <p>Manage product attributes and validation rules</p>

@@ -34,6 +34,11 @@ import {
   resetPasswordHandler,
   getRolesHandler,
 } from './endpoints/admin/users';
+import {
+  getPermissionsHandler,
+  updatePermissionsHandler,
+  resetPermissionsHandler,
+} from './endpoints/admin/permissions';
 
 // User self-profile handlers
 import {
@@ -86,6 +91,13 @@ app.patch('/admin/settings/users/:uid', updateUserHandler);
 app.delete('/admin/settings/users/:uid', deleteUserHandler);
 app.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
 app.get('/admin/settings/roles', getRolesHandler);
+
+/**
+ * Admin Permissions endpoints
+ */
+app.get('/admin/permissions', getPermissionsHandler);
+app.patch('/admin/permissions', updatePermissionsHandler);
+app.post('/admin/permissions/reset', resetPermissionsHandler);
 
 /**
  * User Self-Profile endpoints
