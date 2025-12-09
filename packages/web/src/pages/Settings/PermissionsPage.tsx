@@ -8,7 +8,7 @@
  * Homer v2.0.0 - Ropi Roles & Permissions
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './PermissionsPage.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '';
