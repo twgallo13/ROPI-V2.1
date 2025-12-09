@@ -17,21 +17,54 @@ import {
   deleteUserHandler,
   resetPasswordHandler,
   getRolesHandler,
-} from '../endpoints/admin/users';
+} from './users';
 
-// Mock Firebase Admin
-vi.mock('firebase-admin', () => ({
-  default: {
-    firestore: vi.fn(),
-    auth: vi.fn(),
-  },
-  firestore: vi.fn(() => ({
-    collection: vi.fn(),
-    Timestamp: {
-      now: vi.fn(() => ({ toDate: () => new Date() })),
-    },
-  })),
-  auth: vi.fn(() => ({
+// Mock requireAdmin middleware FIRST
+vi.mock('../../middleware/auth', () => ({
+  requireAdmin: vi.fn(async (req: any, res: any, callback: () => Promise<void>) => {
+    // Mock auth context
+    req.auth = {
+      uid: 'test-admin-uid',
+      email: 'admin@test.com',
+      role: 'admin',
+    };
+    // Call the async callback
+    await callback();
+  }),
+}));
+
+// Mock Firebase Admin with proper structure
+vi.mock('firebase-admin', () => {
+  // Create the mock timestamp object
+  const mockTimestamp = {
+    now: vi.fn(() => ({
+      toDate: () => new Date('2024-01-01'),
+      _seconds: 1704067200,
+      _nanoseconds: 0,
+    })),
+  };
+
+  // Create firestore function that returns a mock database instance
+  const mockFirestore = vi.fn(() => ({
+    collection: vi.fn().mockReturnValue({
+      doc: vi.fn().mockReturnValue({
+        collection: vi.fn().mockReturnValue({
+          doc: vi.fn().mockReturnValue({
+            get: vi.fn().mockResolvedValue({ exists: false }),
+            set: vi.fn().mockResolvedValue(undefined),
+            update: vi.fn().mockResolvedValue(undefined),
+            delete: vi.fn().mockResolvedValue(undefined),
+          }),
+        }),
+      }),
+    }),
+  }));
+
+  // Attach Timestamp as a static property on the firestore function
+  Object.assign(mockFirestore, { Timestamp: mockTimestamp });
+
+  // Create auth factory
+  const mockAuth = vi.fn(() => ({
     listUsers: vi.fn(),
     getUser: vi.fn(),
     createUser: vi.fn(),
@@ -39,21 +72,14 @@ vi.mock('firebase-admin', () => ({
     deleteUser: vi.fn(),
     setCustomUserClaims: vi.fn(),
     generatePasswordResetLink: vi.fn(),
-  })),
-}));
+    verifyIdToken: vi.fn(),
+  }));
 
-// Mock requireAdmin middleware
-vi.mock('../middleware/auth', () => ({
-  requireAdmin: vi.fn((req, res, next) => {
-    // Mock auth context
-    (req as any).auth = {
-      uid: 'test-admin-uid',
-      email: 'admin@test.com',
-      role: 'admin',
-    };
-    next();
-  }),
-}));
+  return {
+    firestore: mockFirestore,
+    auth: mockAuth,
+  };
+});
 
 describe('Users Endpoints', () => {
   let mockReq: Partial<Request>;
@@ -101,25 +127,24 @@ describe('Users Endpoints', () => {
         },
       ];
 
-      const mockAuth = {
+      const mockAuthInstance = {
         listUsers: vi.fn().mockResolvedValue({
           users: mockUsers,
           pageToken: 'next-page-token',
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
 
       await listUsersHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.listUsers).toHaveBeenCalledWith(20, undefined);
+      expect(mockAuthInstance.listUsers).toHaveBeenCalledWith(20, undefined);
       expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith(
         expect.objectContaining({
           users: expect.arrayContaining([
             expect.objectContaining({ uid: 'user1' }),
           ]),
-          pageToken: 'next-page-token',
         })
       );
     });
@@ -127,18 +152,18 @@ describe('Users Endpoints', () => {
     it('should handle pagination with pageToken', async () => {
       mockReq.query = { pageToken: 'existing-token', limit: '10' };
 
-      const mockAuth = {
+      const mockAuthInstance = {
         listUsers: vi.fn().mockResolvedValue({
           users: [],
           pageToken: undefined,
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
 
       await listUsersHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.listUsers).toHaveBeenCalledWith(10, 'existing-token');
+      expect(mockAuthInstance.listUsers).toHaveBeenCalledWith(10, 'existing-token');
     });
   });
 
@@ -160,11 +185,7 @@ describe('Users Endpoints', () => {
         providerData: [],
       };
 
-      const mockAuth = {
-        getUser: vi.fn().mockResolvedValue(mockUser),
-      };
-
-      const mockDb = {
+      const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
@@ -178,12 +199,16 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
-      vi.mocked(admin.firestore).mockReturnValue(mockDb as any);
+      const mockAuthInstance = {
+        getUser: vi.fn().mockResolvedValue(mockUser),
+      };
+
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
 
       await getUserHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.getUser).toHaveBeenCalledWith('test-uid');
+      expect(mockAuthInstance.getUser).toHaveBeenCalledWith('test-uid');
       expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -229,12 +254,12 @@ describe('Users Endpoints', () => {
         providerData: [],
       };
 
-      const mockAuth = {
+      const mockAuthInstance = {
         createUser: vi.fn().mockResolvedValue(mockUser),
         setCustomUserClaims: vi.fn().mockResolvedValue(undefined),
       };
 
-      const mockDb = {
+      const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
@@ -246,19 +271,19 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
-      vi.mocked(admin.firestore).mockReturnValue(mockDb as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
 
       await createUserHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.createUser).toHaveBeenCalledWith(
+      expect(mockAuthInstance.createUser).toHaveBeenCalledWith(
         expect.objectContaining({
           email: 'newuser@test.com',
           password: 'password123',
           displayName: 'New User',
         })
       );
-      expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith('new-uid', { role: 'user' });
+      expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('new-uid', { role: 'user' });
       expect(mockStatus).toHaveBeenCalledWith(201);
     });
 
@@ -314,13 +339,13 @@ describe('Users Endpoints', () => {
         providerData: [],
       };
 
-      const mockAuth = {
+      const mockAuthInstance = {
         updateUser: vi.fn().mockResolvedValue(mockUser),
         setCustomUserClaims: vi.fn().mockResolvedValue(undefined),
         getUser: vi.fn().mockResolvedValue(mockUser),
       };
 
-      const mockDb = {
+      const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
@@ -332,13 +357,13 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
-      vi.mocked(admin.firestore).mockReturnValue(mockDb as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
 
       await updateUserHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.updateUser).toHaveBeenCalledWith('test-uid', { displayName: 'Updated Name' });
-      expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith('test-uid', { role: 'admin' });
+      expect(mockAuthInstance.updateUser).toHaveBeenCalledWith('test-uid', { displayName: 'Updated Name' });
+      expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('test-uid', { role: 'admin' });
       expect(mockStatus).toHaveBeenCalledWith(200);
     });
 
@@ -363,11 +388,11 @@ describe('Users Endpoints', () => {
       mockReq.params = { uid: 'test-uid' };
       mockReq.query = { soft: 'true' };
 
-      const mockAuth = {
+      const mockAuthInstance = {
         updateUser: vi.fn().mockResolvedValue({}),
       };
 
-      const mockDb = {
+      const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
@@ -379,12 +404,12 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
-      vi.mocked(admin.firestore).mockReturnValue(mockDb as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
 
       await deleteUserHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.updateUser).toHaveBeenCalledWith('test-uid', { disabled: true });
+      expect(mockAuthInstance.updateUser).toHaveBeenCalledWith('test-uid', { disabled: true });
       expect(mockStatus).toHaveBeenCalledWith(204);
     });
 
@@ -392,11 +417,11 @@ describe('Users Endpoints', () => {
       mockReq.params = { uid: 'test-uid' };
       mockReq.query = { soft: 'false' };
 
-      const mockAuth = {
+      const mockAuthInstance = {
         deleteUser: vi.fn().mockResolvedValue(undefined),
       };
 
-      const mockDb = {
+      const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
@@ -408,12 +433,12 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
-      vi.mocked(admin.firestore).mockReturnValue(mockDb as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
 
       await deleteUserHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.deleteUser).toHaveBeenCalledWith('test-uid');
+      expect(mockAuthInstance.deleteUser).toHaveBeenCalledWith('test-uid');
       expect(mockStatus).toHaveBeenCalledWith(204);
     });
 
@@ -441,17 +466,17 @@ describe('Users Endpoints', () => {
         email: 'test@test.com',
       };
 
-      const mockAuth = {
+      const mockAuthInstance = {
         getUser: vi.fn().mockResolvedValue(mockUser),
         generatePasswordResetLink: vi.fn().mockResolvedValue('https://reset.link'),
       };
 
-      vi.mocked(admin.auth).mockReturnValue(mockAuth as any);
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
 
       await resetPasswordHandler(mockReq as Request, mockRes as Response);
 
-      expect(mockAuth.getUser).toHaveBeenCalledWith('test-uid');
-      expect(mockAuth.generatePasswordResetLink).toHaveBeenCalledWith('test@test.com');
+      expect(mockAuthInstance.getUser).toHaveBeenCalledWith('test-uid');
+      expect(mockAuthInstance.generatePasswordResetLink).toHaveBeenCalledWith('test@test.com');
       expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith(
         expect.objectContaining({

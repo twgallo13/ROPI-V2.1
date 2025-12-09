@@ -1,0 +1,1606 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.17.0","pnpm":"10.13.1"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run --run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+ ❯ src/endpoints/admin/users.test.ts  (0 test)
+ ↓ test/integration/attributes.emu.spec.ts  (9 tests | 9 skipped)
+ ↓ test/integration/syncAttributeRegistry.emu.spec.ts  (8 tests | 8 skipped)
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    containerInfo: 'demo-test-project',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should validate a correct attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should reject invalid attribute_id format
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should reject missing required fields
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > validateAttributeData > should reject invalid data_type
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+stderr | test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should throw error for non-existent batch
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+ ❯ test/productCommitService.test.ts  (6 tests | 6 failed) 1039ms
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should throw error for non-existent batch
+     → expected [Function] to throw error including 'not found' but got '7 PERMISSION_DENIED: Permission denie…'
+stderr | test/attributes.service.spec.ts > Attributes Service > createAttribute > should create a new attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    containerInfo: 'demo-test-project',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > getAttribute > should throw 404 for non-existent attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+ ✓ test/importService.test.ts  (4 tests) 10ms
+stderr | test/attributes.service.spec.ts > Attributes Service > updateAttribute > should throw 404 for non-existent attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    containerInfo: 'demo-test-project',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should throw 404 for non-existent attribute
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    containerInfo: 'demo-test-project',
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+stderr | test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    containerInfo: 'demo-test-project',
+    consumer: 'projects/demo-test-project',
+    service: 'firestore.googleapis.com'
+  }
+}
+
+ ❯ test/attributes.service.spec.ts  (16 tests | 12 failed) 1283ms
+   ❯ test/attributes.service.spec.ts > Attributes Service > createAttribute > should create a new attribute
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > getAttribute > should throw 404 for non-existent attribute
+     → expected error to be instance of ServiceError
+   ❯ test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > updateAttribute > should throw 404 for non-existent attribute
+     → expected error to be instance of ServiceError
+   ❯ test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should throw 404 for non-existent attribute
+     → expected error to be instance of ServiceError
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+     → 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+stderr | test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+Cleanup error: Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+    at callErrorFromStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:612:51)
+    at Object.onReceiveStatus (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:595:42)
+    at ServiceClientImpl.<anonymous> (/workspaces/ROPI-V2.1/node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:59:19
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+    at Object.request (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:331:28)
+    at makeRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:159:28)
+    at retryRequest (/workspaces/ROPI-V2.1/node_modules/.pnpm/retry-request@7.0.2/node_modules/retry-request/index.js:119:5)
+    at StreamProxy.setStream (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streaming.ts:322:29)
+    at StreamingApiCaller.call (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/streamingCalls/streamingApiCaller.ts:89:12)
+Caused by: Error: 
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at CollectionReference._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at CollectionReference._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28) {
+  code: 7,
+  details: 'Permission denied on resource project demo-test-project.',
+  metadata: Metadata {
+    internalRepr: Map(5) {
+      'google.rpc.errorinfo-bin' => [Array],
+      'google.rpc.help-bin' => [Array],
+      'google.rpc.localizedmessage-bin' => [Array],
+      'grpc-status-details-bin' => [Array],
+      'x-debug-tracking-id' => [Array]
+    },
+    opaqueData: Map(0) {},
+    options: {}
+  },
+  statusDetails: [
+    ErrorInfo {
+      metadata: [Object],
+      reason: 'CONSUMER_INVALID',
+      domain: 'googleapis.com'
+    },
+    LocalizedMessage {
+      locale: 'en-US',
+      message: 'Permission denied on resource project demo-test-project.'
+    },
+    Help { links: [Array] }
+  ],
+  reason: 'CONSUMER_INVALID',
+  domain: 'googleapis.com',
+  errorInfoMetadata: {
+    service: 'firestore.googleapis.com',
+    consumer: 'projects/demo-test-project',
+    containerInfo: 'demo-test-project'
+  }
+}
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/endpoints/admin/users.test.ts [ src/endpoints/admin/users.test.ts ]
+Error: Failed to load url ../endpoints/admin/users (resolved id: ../endpoints/admin/users) in /workspaces/ROPI-V2.1/packages/api/src/endpoints/admin/users.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@5.4.21_@types+node@18.19.130/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51969:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > createAttribute > should create a new attribute
+ FAIL  test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+ FAIL  test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+ FAIL  test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+ ❯ callErrorFromStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17
+ ❯ Object.onReceiveStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:360:55
+ ❯ Object.onReceiveStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:466:34
+ ❯ Object.onReceiveStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48
+ ❯ ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+ ❯ ServiceClientImpl.makeUnaryRequest ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:325:42
+ ❯ ServiceClientImpl.<anonymous> ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+ ❯ ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+ ❯ repeat ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/retries.ts:110:19
+ ❯ ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/retries.ts:157:7
+ ❯ OngoingCallPromise.call ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/call.ts:81:23
+ ❯ NormalApiCaller.call ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/normalApiCaller.ts:43:15
+ ❯ ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/createApiCall.ts:157:26
+ ❯ _firestore._traceUtil.startActiveSpan ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:438:27
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+ ❯ NoopContextManager.with ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15
+ ❯ ContextAPI.with ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42
+ ❯ NoopTracer.startActiveSpan ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27
+ ❯ ProxyTracer.startActiveSpan ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20
+ ❯ EnabledTraceUtil.startActiveSpan ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28
+ ❯ WriteBatch.commit ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:436:43
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:273:18
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 7, details: 'Permission denied on resource project demo-test-project.', metadata: { 'google.rpc.errorinfo-bin': [ Uint8Array[ 10, 16, 67, 79, 78, 83, 85, 77, 69, 82, 95, 73, 78, 86, 65, 76, 73, 68, 18, 14, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 38, 10, 8, 99, 111, 110, 115, 117, 109, 101, 114, 18, 26, 112, 114, 111, 106, 101, 99, 116, 115, 47, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 26, 35, 10, 7, 115, 101, 114, 118, 105, 99, 101, 18, 24, 102, 105, 114, 101, 115, 116, 111, 114, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 34, 10, 13, 99, 111, 110, 116, 97, 105, 110, 101, 114, 73, 110, 102, 111, 18, 17, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116 ] ], 'google.rpc.help-bin': [ Uint8Array[ 10, 66, 10, 25, 71, 111, 111, 103, 108, 101, 32, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 32, 99, 111, 110, 115, 111, 108, 101, 18, 37, 104, 116, 116, 112, 115, 58, 47, 47, 99, 111, 110, 115, 111, 108, 101, 46, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 46, 103, 111, 111, 103, 108, 101, 46, 99, 111, 109 ] ], 'google.rpc.localizedmessage-bin': [ Uint8Array[ 10, 5, 101, 110, 45, 85, 83, 18, 56, 80, 101, 114, 109, 105, 115, 115, 105, 111, 110, 32, 100, 101, 110, 105, 101, 100, 32, 111, 110, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32, 112, 114, 111, 106, 101, 99, 116, 32, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 46 ] ], 'grpc-status-details-bin': [ Uint8Array[ 8, 7, 18, 56, 80, 101, 114, 109, 105, 115, 115, 105, 111, 110, 32, 100, 101, 110, 105, 101, 100, 32, 111, 110, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32, 112, 114, 111, 106, 101, 99, 116, 32, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 46, 26, 192, 1, 10, 40, 116, 121, 112, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 47, 103, 111, 111, 103, 108, 101, 46, 114, 112, 99, 46, 69, 114, 114, 111, 114, 73, 110, 102, 111, 18, 147, 1, 10, 16, 67, 79, 78, 83, 85, 77, 69, 82, 95, 73, 78, 86, 65, 76, 73, 68, 18, 14, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 38, 10, 8, 99, 111, 110, 115, 117, 109, 101, 114, 18, 26, 112, 114, 111, 106, 101, 99, 116, 115, 47, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 26, 35, 10, 7, 115, 101, 114, 118, 105, 99, 101, 18, 24, 102, 105, 114, 101, 115, 116, 111, 114, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 34, 10, 13, 99, 111, 110, 116, 97, 105, 110, 101, 114, 73, 110, 102, 111, 18, 17, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 26, 116, 10, 47, 116, 121, 112, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 47, 103, 111, 111, 103, 108, 101, 46, 114, 112, 99, 46, 76, 111, 99, 97, 108, 105, 122, 101, 100, 77, 101, 115, 115, 97, 103, 101, 18, 65, 10, 5, 101, 110, 45, 85, 83, 18, 56, 80, 101, 114, 109, 105, 115, 115, 105, 111, 110, 32, 100, 101, 110, 105, 101, 100, 32, 111, 110, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32, 112, 114, 111, 106, 101, 99, 116, 32, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 46, 26, 107, 10, 35, 116, 121, 112, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 47, 103, 111, 111, 103, 108, 101, 46, 114, 112, 99, 46, 72, 101, 108, 112, 18, 68, 10, 66, 10, 25, 71, 111, 111, 103, 108, 101, 32, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 32, 99, 111, 110, 115, 111, 108, 101, 18, 37, 104, 116, 116, 112, 115, 58, 47, 47, 99, 111, 110, 115, 111, 108, 101, 46, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 46, 103, 111, 111, 103, 108, 101, 46, 99, 111, 109 ] ], 'x-debug-tracking-id': [ '16622478017763003059;o=1' ] }, note: 'Exception occurred in retry method that was not classified as transient', statusDetails: [ { reason: 'CONSUMER_INVALID', domain: 'googleapis.com', metadata: { consumer: 'projects/demo-test-project', service: 'firestore.googleapis.com', containerInfo: 'demo-test-project' } }, { locale: 'en-US', message: 'Permission denied on resource project demo-test-project.' }, { links: [ { description: 'Google developers console', url: 'https://console.developers.google.com' } ] } ], reason: 'CONSUMER_INVALID', domain: 'googleapis.com', errorInfoMetadata: { consumer: 'projects/demo-test-project', service: 'firestore.googleapis.com', containerInfo: 'demo-test-project' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getAttribute > should throw 404 for non-existent attribute
+AssertionError: expected error to be instance of ServiceError
+
+- Expected: 
+[Function ServiceError]
+
++ Received: 
+[Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.]
+
+ ❯ test/attributes.service.spec.ts:166:7
+    164| 
+    165|     it('should throw 404 for non-existent attribute', async () => {
+    166|       await expect(getAttribute('non-existent-id'))
+       |       ^
+    167|         .rejects
+    168|         .toThrow(ServiceError);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > updateAttribute > should throw 404 for non-existent attribute
+AssertionError: expected error to be instance of ServiceError
+
+- Expected: 
+[Function ServiceError]
+
++ Received: 
+[Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.]
+
+ ❯ test/attributes.service.spec.ts:199:7
+    197| 
+    198|     it('should throw 404 for non-existent attribute', async () => {
+    199|       await expect(updateAttribute('non-existent-id', { label: 'Test' …
+       |       ^
+    200|         .rejects
+    201|         .toThrow(ServiceError);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should throw 404 for non-existent attribute
+AssertionError: expected error to be instance of ServiceError
+
+- Expected: 
+[Function ServiceError]
+
++ Received: 
+[Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.]
+
+ ❯ test/attributes.service.spec.ts:232:7
+    230| 
+    231|     it('should throw 404 for non-existent attribute', async () => {
+    232|       await expect(deleteAttribute('non-existent-id'))
+       |       ^
+    233|         .rejects
+    234|         .toThrow(ServiceError);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+ FAIL  test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Error: 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+ ❯ callErrorFromStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/call.ts:84:17
+ ❯ Object.onReceiveStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:360:55
+ ❯ Object.onReceiveStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:466:34
+ ❯ Object.onReceiveStatus ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48
+ ❯ ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/resolving-call.ts:170:24
+ ❯ ServiceClientImpl.makeUnaryRequest ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/client.ts:325:42
+ ❯ ServiceClientImpl.<anonymous> ../../node_modules/.pnpm/@grpc+grpc-js@1.14.2/node_modules/@grpc/grpc-js/src/make-client.ts:189:15
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/v1/firestore_client.js:242:33
+ ❯ ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/timeout.ts:54:13
+ ❯ repeat ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/retries.ts:110:19
+ ❯ ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/retries.ts:157:7
+ ❯ OngoingCallPromise.call ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/call.ts:81:23
+ ❯ NormalApiCaller.call ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/normalCalls/normalApiCaller.ts:43:15
+ ❯ ../../node_modules/.pnpm/google-gax@4.6.1/node_modules/google-gax/src/createApiCall.ts:157:26
+ ❯ _firestore._traceUtil.startActiveSpan ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:438:27
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+ ❯ NoopContextManager.with ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/context/NoopContextManager.ts:31:15
+ ❯ ContextAPI.with ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/api/context.ts:77:42
+ ❯ NoopTracer.startActiveSpan ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/NoopTracer.ts:98:27
+ ❯ ProxyTracer.startActiveSpan ../../node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/src/trace/ProxyTracer.ts:51:20
+ ❯ EnabledTraceUtil.startActiveSpan ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28
+ ❯ WriteBatch.commit ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/write-batch.js:436:43
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:350:31
+ ❯ ../../node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 7, details: 'Permission denied on resource project demo-test-project.', metadata: { 'google.rpc.errorinfo-bin': [ Uint8Array[ 10, 16, 67, 79, 78, 83, 85, 77, 69, 82, 95, 73, 78, 86, 65, 76, 73, 68, 18, 14, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 35, 10, 7, 115, 101, 114, 118, 105, 99, 101, 18, 24, 102, 105, 114, 101, 115, 116, 111, 114, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 34, 10, 13, 99, 111, 110, 116, 97, 105, 110, 101, 114, 73, 110, 102, 111, 18, 17, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 26, 38, 10, 8, 99, 111, 110, 115, 117, 109, 101, 114, 18, 26, 112, 114, 111, 106, 101, 99, 116, 115, 47, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116 ] ], 'google.rpc.help-bin': [ Uint8Array[ 10, 66, 10, 25, 71, 111, 111, 103, 108, 101, 32, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 32, 99, 111, 110, 115, 111, 108, 101, 18, 37, 104, 116, 116, 112, 115, 58, 47, 47, 99, 111, 110, 115, 111, 108, 101, 46, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 46, 103, 111, 111, 103, 108, 101, 46, 99, 111, 109 ] ], 'google.rpc.localizedmessage-bin': [ Uint8Array[ 10, 5, 101, 110, 45, 85, 83, 18, 56, 80, 101, 114, 109, 105, 115, 115, 105, 111, 110, 32, 100, 101, 110, 105, 101, 100, 32, 111, 110, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32, 112, 114, 111, 106, 101, 99, 116, 32, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 46 ] ], 'grpc-status-details-bin': [ Uint8Array[ 8, 7, 18, 56, 80, 101, 114, 109, 105, 115, 115, 105, 111, 110, 32, 100, 101, 110, 105, 101, 100, 32, 111, 110, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32, 112, 114, 111, 106, 101, 99, 116, 32, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 46, 26, 192, 1, 10, 40, 116, 121, 112, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 47, 103, 111, 111, 103, 108, 101, 46, 114, 112, 99, 46, 69, 114, 114, 111, 114, 73, 110, 102, 111, 18, 147, 1, 10, 16, 67, 79, 78, 83, 85, 77, 69, 82, 95, 73, 78, 86, 65, 76, 73, 68, 18, 14, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 35, 10, 7, 115, 101, 114, 118, 105, 99, 101, 18, 24, 102, 105, 114, 101, 115, 116, 111, 114, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 26, 34, 10, 13, 99, 111, 110, 116, 97, 105, 110, 101, 114, 73, 110, 102, 111, 18, 17, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 26, 38, 10, 8, 99, 111, 110, 115, 117, 109, 101, 114, 18, 26, 112, 114, 111, 106, 101, 99, 116, 115, 47, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 26, 116, 10, 47, 116, 121, 112, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 47, 103, 111, 111, 103, 108, 101, 46, 114, 112, 99, 46, 76, 111, 99, 97, 108, 105, 122, 101, 100, 77, 101, 115, 115, 97, 103, 101, 18, 65, 10, 5, 101, 110, 45, 85, 83, 18, 56, 80, 101, 114, 109, 105, 115, 115, 105, 111, 110, 32, 100, 101, 110, 105, 101, 100, 32, 111, 110, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32, 112, 114, 111, 106, 101, 99, 116, 32, 100, 101, 109, 111, 45, 116, 101, 115, 116, 45, 112, 114, 111, 106, 101, 99, 116, 46, 26, 107, 10, 35, 116, 121, 112, 101, 46, 103, 111, 111, 103, 108, 101, 97, 112, 105, 115, 46, 99, 111, 109, 47, 103, 111, 111, 103, 108, 101, 46, 114, 112, 99, 46, 72, 101, 108, 112, 18, 68, 10, 66, 10, 25, 71, 111, 111, 103, 108, 101, 32, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 32, 99, 111, 110, 115, 111, 108, 101, 18, 37, 104, 116, 116, 112, 115, 58, 47, 47, 99, 111, 110, 115, 111, 108, 101, 46, 100, 101, 118, 101, 108, 111, 112, 101, 114, 115, 46, 103, 111, 111, 103, 108, 101, 46, 99, 111, 109 ] ], 'x-debug-tracking-id': [ '16043886057805102885;o=1' ] }, note: 'Exception occurred in retry method that was not classified as transient', statusDetails: [ { reason: 'CONSUMER_INVALID', domain: 'googleapis.com', metadata: { service: 'firestore.googleapis.com', containerInfo: 'demo-test-project', consumer: 'projects/demo-test-project' } }, { locale: 'en-US', message: 'Permission denied on resource project demo-test-project.' }, { links: [ { description: 'Google developers console', url: 'https://console.developers.google.com' } ] } ], reason: 'CONSUMER_INVALID', domain: 'googleapis.com', errorInfoMetadata: { service: 'firestore.googleapis.com', containerInfo: 'demo-test-project', consumer: 'projects/demo-test-project' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should throw error for non-existent batch
+AssertionError: expected [Function] to throw error including 'not found' but got '7 PERMISSION_DENIED: Permission denie…'
+
+- Expected
++ Received
+
+- not found
++ 7 PERMISSION_DENIED: Permission denied on resource project demo-test-project.
+
+ ❯ test/productCommitService.test.ts:422:7
+    420| 
+    421|     it('should throw error for non-existent batch', async () => {
+    422|       await expect(getBatchStatus('non-existent')).rejects.toThrow('no…
+       |       ^
+    423|     });
+    424|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯
+
+ Test Files  3 failed | 1 passed | 2 skipped (6)
+      Tests  18 failed | 8 passed | 17 skipped (43)
+   Start at  11:38:12
+   Duration  2.41s (transform 488ms, setup 0ms, collect 1.15s, tests 2.33s, environment 1ms, prepare 1.14s)
+
+/workspaces/ROPI-V2.1/packages/api:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/api@0.0.0 test: `vitest run --run`
+Exit status 1
