@@ -127,7 +127,7 @@ function formatUserResponse(userRecord: admin.auth.UserRecord): UserResponse {
     metadata: {
       creationTime: userRecord.metadata.creationTime,
       lastSignInTime: userRecord.metadata.lastSignInTime,
-      lastRefreshTime: userRecord.metadata.lastRefreshTime,
+      lastRefreshTime: userRecord.metadata.lastRefreshTime || undefined,
     },
     disabled: userRecord.disabled,
     providerData: userRecord.providerData,
