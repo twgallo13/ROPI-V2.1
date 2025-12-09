@@ -58,7 +58,7 @@ jobs:
           firebase emulators:exec \
             --only firestore \
             --project demo-ropi-test \
-            "pnpm --filter @ropi-aoss/api test -- --runInBand"
+            "pnpm --filter @ropi-aoss/api test -- --poolOptions.threads.singleThread"
 
       - name: Upload test results
         if: always()
