@@ -3,35 +3,60 @@
  * 
  * Provides Firebase ID token for admin API calls.
  * All admin endpoints require Authorization: Bearer <idToken>.
+ * Waits for auth state to settle if currentUser not immediately available.
  * 
  * Lisa v1.0.0
  */
 
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 
 /**
- * Get authorization headers for admin API calls.
- * Retrieves the current user's Firebase ID token and returns
- * headers object with Authorization and Content-Type.
+ * Return headers with Authorization: Bearer <idToken>.
+ * Waits up to `timeoutMs` for auth state if currentUser not yet set.
+ * Throws `NotAuthenticated` if user not signed in within timeout.
  * 
- * @throws Error if user is not signed in
+ * @param timeoutMs - Maximum time to wait for auth state (default 8000ms)
+ * @throws Error if user is not signed in within timeout
  * @returns Promise<Record<string, string>> Headers object
  */
-export async function getAuthHeaders(): Promise<Record<string, string>> {
+export async function getAuthHeaders(timeoutMs = 8000): Promise<Record<string, string>> {
   const auth = getAuth();
-  const user = auth.currentUser;
-  
-  if (!user) {
-    throw new Error('NotAuthenticated: User not signed in. Please sign in to access admin features.');
+  let user = auth.currentUser as User | null;
+
+  // If user present, refresh token and return headers
+  if (user) {
+    const idToken = await user.getIdToken(true);
+    return {
+      Authorization: `Bearer ${idToken}`,
+      'Content-Type': 'application/json',
+    };
   }
-  
-  // Force-refresh token to ensure valid claims
-  const idToken = await user.getIdToken(true);
-  
-  return {
-    'Authorization': `Bearer ${idToken}`,
-    'Content-Type': 'application/json',
-  };
+
+  // Otherwise, wait for auth state to settle
+  return await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      unsubscribe();
+      reject(new Error('NotAuthenticated: User not signed in. Please sign in to access admin features.'));
+    }, timeoutMs);
+
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        try {
+          const token = await u.getIdToken(true);
+          clearTimeout(timer);
+          unsubscribe();
+          resolve({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          });
+        } catch (err) {
+          clearTimeout(timer);
+          unsubscribe();
+          reject(err);
+        }
+      }
+    });
+  });
 }
 
 /**

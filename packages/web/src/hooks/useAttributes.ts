@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getAuthHeaders } from '../lib/authHeaders';
 
 export type Attribute = {
@@ -113,8 +114,18 @@ export function useAttributes() {
     }
   }, []);
 
+  // Call once, and also retry on auth state change (so fetch runs after the user signs in)
   useEffect(() => {
-    fetchAttributes();
+    fetchAttributes(); // attempt immediately
+
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // If user becomes signed in, re-run to pick up token
+      if (user) {
+        fetchAttributes().catch(() => { /* swallow; state handled above */ });
+      }
+    });
+    return () => unsubscribe();
   }, [fetchAttributes]);
 
   /**
