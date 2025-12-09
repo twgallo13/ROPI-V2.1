@@ -16,6 +16,7 @@ export interface AuthContext {
   uid: string;
   email: string | undefined;
   role: string | undefined;
+  roles?: string[];
   emailVerified: boolean;
 }
 
@@ -31,7 +32,10 @@ export interface AuthenticatedRequest extends ExpressRequest {
  * Per PROMPT_018C_vB: IAM via Custom Claims
  */
 export function isAdmin(auth: AuthContext): boolean {
-  return isAdminRole(auth.role);
+  if (isAdminRole(auth.role)) {
+    return true;
+  }
+  return Array.isArray(auth.roles) && auth.roles.includes(ROPI_ROLES.ADMIN);
 }
 
 /**
@@ -57,6 +61,7 @@ export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext 
       uid: decodedToken.uid,
       email: decodedToken.email,
       role: decodedToken.role as string | undefined,
+      roles: Array.isArray((decodedToken as any).roles) ? (decodedToken as any).roles as string[] : undefined,
       emailVerified: decodedToken.email_verified || false,
     };
   } catch (error) {
@@ -90,6 +95,23 @@ export async function requireAuth(
 }
 
 /**
+ * Check Firestore allow-list (metadata/admins) for admin email fallback
+ */
+async function isAdminAllowlisted(email: string | undefined): Promise<boolean> {
+  if (!email) return false;
+  try {
+    const doc = await admin.firestore().doc('metadata/admins').get();
+    if (!doc.exists) return false;
+    const data = doc.data() || {};
+    const emails: string[] = Array.isArray(data.emails) ? data.emails : [];
+    return emails.includes(email);
+  } catch (err) {
+    console.warn('⚠️ Admin allow-list lookup failed:', err);
+    return false;
+  }
+}
+
+/**
  * Middleware to require admin role
  */
 export async function requireAdmin(
@@ -107,7 +129,17 @@ export async function requireAdmin(
     return;
   }
   
-  if (!isAdmin(auth)) {
+  const hasAdminClaim = isAdmin(auth);
+  const hasAdminAllowlist = hasAdminClaim ? false : await isAdminAllowlisted(auth.email);
+
+  if (!hasAdminClaim && !hasAdminAllowlist) {
+    console.warn('🛑 Admin check failed', {
+      uid: auth.uid,
+      email: auth.email,
+      role: auth.role,
+      roles: auth.roles,
+      path: req.path,
+    });
     res.status(403).json({
       error: 'Forbidden',
       message: 'Admin role required for this operation',
