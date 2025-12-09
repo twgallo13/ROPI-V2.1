@@ -8,7 +8,7 @@
  */
 
 import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import { requireAdmin } from './middleware/auth';
 import { processImportBatchHandler, getBatchStatusHandler } from './endpoints/processImportBatch';
 import { 

@@ -39,15 +39,15 @@ importers:
 
   packages/api:
     dependencies:
-      '@ropi-aoss/sdk':
-        specifier: workspace:*
-        version: link:../sdk
       busboy:
         specifier: ^1.6.0
         version: 1.6.0
       cors:
         specifier: ^2.8.5
         version: 2.8.5
+      express:
+        specifier: ^4.21.1
+        version: 4.22.1
       firebase-admin:
         specifier: ^13.6.0
         version: 13.6.0
@@ -64,6 +64,9 @@ importers:
         specifier: ^3.22.0
         version: 3.25.76
     devDependencies:
+      '@ropi-aoss/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@types/busboy':
         specifier: ^1.5.0
         version: 1.5.4
@@ -82,6 +85,9 @@ importers:
       '@types/uuid':
         specifier: ^9.0.0
         version: 9.0.8
+      esbuild:
+        specifier: ^0.27.1
+        version: 0.27.1
       typescript:
         specifier: ^5.0.0
         version: 5.9.3

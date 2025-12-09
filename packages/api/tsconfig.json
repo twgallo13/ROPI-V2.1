@@ -13,7 +13,12 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "@ropi-aoss/sdk": ["../sdk/src/index.ts"],
+      "@ropi-aoss/sdk/*": ["../sdk/src/*"]
+    },
+    "baseUrl": "."
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
