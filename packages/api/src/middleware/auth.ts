@@ -7,6 +7,7 @@
 
 import * as admin from 'firebase-admin';
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
+import { CANONICAL_ROLES, isAdminRole } from '../constants/roles';
 
 /**
  * Auth context attached to authenticated requests
@@ -30,7 +31,7 @@ export interface AuthenticatedRequest extends ExpressRequest {
  * Per PROMPT_018C_vB: IAM via Custom Claims
  */
 export function isAdmin(auth: AuthContext): boolean {
-  return auth.role === 'admin';
+  return isAdminRole(auth.role);
 }
 
 /**

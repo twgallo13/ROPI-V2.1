@@ -35,6 +35,12 @@ import {
   getRolesHandler,
 } from './endpoints/admin/users';
 
+// User self-profile handlers
+import {
+  getMeHandler,
+  updateMeHandler,
+} from './endpoints/users/me';
+
 // Product handlers
 import {
   patchProductAttributesHandler,
@@ -80,6 +86,12 @@ app.patch('/admin/settings/users/:uid', updateUserHandler);
 app.delete('/admin/settings/users/:uid', deleteUserHandler);
 app.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
 app.get('/admin/settings/roles', getRolesHandler);
+
+/**
+ * User Self-Profile endpoints
+ */
+app.get('/users/me', getMeHandler);
+app.patch('/users/me', updateMeHandler);
 
 /**
  * Products endpoints
