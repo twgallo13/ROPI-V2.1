@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
+import { getAuthHeaders } from '@/lib/authHeaders';
 import './ImportConfirmStep.css';
 
 interface ColumnMappingConfig {
@@ -52,8 +53,8 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
     });
 
     try {
-      // Get auth token
-      const token = await currentUser.getIdToken();
+      // Get auth headers
+      const authHeaders = await getAuthHeaders();
 
       // Prepare form data
       const formData = new FormData();
@@ -63,12 +64,10 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
       // In future, backend should accept custom mappings in the request
 
       // Call import API
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://us-central1-ropi-bccee.cloudfunctions.net';
-      const response = await fetch(`${apiUrl}/importCSV`, {
+      const apiUrl = (import.meta.env.VITE_API_BASE || '').replace('/api', '') || 'https://us-central1-ropi-bccee.cloudfunctions.net';
+      const response = await fetch(`${apiUrl}/api/importCSV`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: authHeaders,
         body: formData,
       });
 
@@ -94,10 +93,10 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
         warningCount: uploadResult.warningCount || 0,
       });
 
-      const processResponse = await fetch(`${apiUrl}/processImportBatch`, {
+      const processResponse = await fetch(`${apiUrl}/api/processImportBatch`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          ...authHeaders,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ batchId: uploadResult.batchId }),

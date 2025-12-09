@@ -9,55 +9,8 @@
  */
 
 import { useState, useEffect } from 'react';
+import { apiFetch } from '../../lib/apiFetch';
 import './ProfilePage.css';
-
-const API_BASE = import.meta.env.VITE_API_BASE || '';
-
-/**
- * Get auth token for API requests
- */
-async function getAuthToken(): Promise<string | null> {
-  const { auth } = await import('../../firebaseConfig');
-  if (!auth || !auth.currentUser) {
-    return null;
-  }
-  return auth.currentUser.getIdToken();
-}
-
-/**
- * Make authenticated API request
- */
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = await getAuthToken();
-  
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-  
-  const url = `${API_BASE}${endpoint}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || `HTTP ${response.status}`);
-  }
-  
-  if (response.status === 204) {
-    return {} as T;
-  }
-  
-  return response.json();
-}
 
 interface UserProfile {
   uid: string;
@@ -84,7 +37,7 @@ export function ProfilePage() {
     const loadProfile = async () => {
       try {
         setLoading(true);
-        const response = await apiRequest<UserProfile>('/users/me', {
+        const response = await apiFetch<UserProfile>('/api/users/me', {
           method: 'GET',
         });
         setProfile(response);
@@ -111,7 +64,7 @@ export function ProfilePage() {
       setSaving(true);
       setMessage(null);
 
-      const response = await apiRequest<UserProfile>('/users/me', {
+      const response = await apiFetch<UserProfile>('/api/users/me', {
         method: 'PATCH',
         body: JSON.stringify({
           displayName: displayName || undefined,

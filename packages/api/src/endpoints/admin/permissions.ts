@@ -196,7 +196,7 @@ export const resetPermissionsHandler: RequestHandler = async (
 
 // Export handlers with middleware
 export default {
-  getPermissions: [requireAdmin, getPermissionsHandler],
-  updatePermissions: [requireAdmin, updatePermissionsHandler],
-  resetPermissions: [requireAdmin, resetPermissionsHandler],
+  getPermissions: [requireAdmin, getPermissionsHandler] as RequestHandler[],
+  updatePermissions: [requireAdmin, updatePermissionsHandler] as RequestHandler[],
+  resetPermissions: [requireAdmin, resetPermissionsHandler] as RequestHandler[],
 };

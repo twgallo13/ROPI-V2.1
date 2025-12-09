@@ -7,7 +7,7 @@
  * Lisa v1.0.0
  */
 
-import express, { Application } from 'express';
+import express, { Application, Router } from 'express';
 import cors from 'cors';
 import { requireAdmin } from './middleware/auth';
 
@@ -62,6 +62,7 @@ import {
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 
 const app: Application = express();
+const api: Router = Router();
 
 // Allow CORS from any origin (handlers themselves perform requireAdmin where needed)
 app.use(cors({ origin: true }));
@@ -70,55 +71,55 @@ app.use(express.json({ limit: '2mb' }));
 /**
  * Admin Settings endpoints
  */
-app.get('/admin/settings/attributes', listAttributesHandler);
-app.get('/admin/settings/attributes/:id', getAttributeHandler);
-app.post('/admin/settings/attributes', createAttributeHandler);
-app.put('/admin/settings/attributes/:id', updateAttributeHandler);
-app.delete('/admin/settings/attributes/:id', deleteAttributeHandler);
+api.get('/admin/settings/attributes', listAttributesHandler);
+api.get('/admin/settings/attributes/:id', getAttributeHandler);
+api.post('/admin/settings/attributes', createAttributeHandler);
+api.put('/admin/settings/attributes/:id', updateAttributeHandler);
+api.delete('/admin/settings/attributes/:id', deleteAttributeHandler);
 
-app.get('/admin/settings/lists', listListsHandler);
-app.get('/admin/settings/lists/:listId', getListHandler);
-app.post('/admin/settings/lists', createListHandler);
-app.put('/admin/settings/lists/:listId', updateListHandler);
-app.delete('/admin/settings/lists/:listId', deleteListHandler);
+api.get('/admin/settings/lists', listListsHandler);
+api.get('/admin/settings/lists/:listId', getListHandler);
+api.post('/admin/settings/lists', createListHandler);
+api.put('/admin/settings/lists/:listId', updateListHandler);
+api.delete('/admin/settings/lists/:listId', deleteListHandler);
 
 /**
  * Admin Users endpoints
  */
-app.get('/admin/settings/users', listUsersHandler);
-app.get('/admin/settings/users/:uid', getUserHandler);
-app.post('/admin/settings/users', createUserHandler);
-app.patch('/admin/settings/users/:uid', updateUserHandler);
-app.delete('/admin/settings/users/:uid', deleteUserHandler);
-app.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
-app.get('/admin/settings/roles', getRolesHandler);
+api.get('/admin/settings/users', listUsersHandler);
+api.get('/admin/settings/users/:uid', getUserHandler);
+api.post('/admin/settings/users', createUserHandler);
+api.patch('/admin/settings/users/:uid', updateUserHandler);
+api.delete('/admin/settings/users/:uid', deleteUserHandler);
+api.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
+api.get('/admin/settings/roles', getRolesHandler);
 
 /**
  * Admin Permissions endpoints
  */
-app.get('/admin/permissions', requireAdmin, getPermissionsHandler);
-app.patch('/admin/permissions', requireAdmin, updatePermissionsHandler);
-app.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
+api.get('/admin/permissions', requireAdmin, getPermissionsHandler);
+api.patch('/admin/permissions', requireAdmin, updatePermissionsHandler);
+api.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
 
 /**
  * User Self-Profile endpoints
  */
-app.get('/users/me', getMeHandler);
-app.patch('/users/me', updateMeHandler);
+api.get('/users/me', getMeHandler);
+api.patch('/users/me', updateMeHandler);
 
 /**
  * Products endpoints
  */
-app.get('/products', listProductsHandler);
-app.get('/products/:productId', getProductHandler);
-app.patch('/products/:productId/attributes', patchProductAttributesHandler);
+api.get('/products', listProductsHandler);
+api.get('/products/:productId', getProductHandler);
+api.patch('/products/:productId/attributes', patchProductAttributesHandler);
 
 /**
  * Import, batch and sync endpoints
  */
-app.post('/processImportBatch', processImportBatchHandler);
-app.get('/importBatchStatus', getBatchStatusHandler);
-app.post('/syncAttributeRegistry', async (req, res) => {
+api.post('/processImportBatch', processImportBatchHandler);
+api.get('/importBatchStatus', getBatchStatusHandler);
+api.post('/syncAttributeRegistry', async (req, res) => {
   try {
     const result = await runSyncAttributeRegistry();
     res.status(200).json(result);
@@ -127,6 +128,14 @@ app.post('/syncAttributeRegistry', async (req, res) => {
     const message = err instanceof Error ? err.message : String(err);
     res.status(500).json({ error: 'SYNC_FAILED', message });
   }
+});
+
+// Mount API under /api to align with hosting rewrites
+app.use('/api', api);
+
+// Lightweight health check
+app.get('/healthz', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
 });
 
 export default app;

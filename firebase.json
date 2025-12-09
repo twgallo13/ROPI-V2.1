@@ -26,27 +26,7 @@
       ],
       "rewrites": [
         {
-          "source": "/api/import",
-          "function": "importCSV"
-        },
-        {
-          "source": "/admin/**",
-          "function": "api"
-        },
-        {
-          "source": "/products/**",
-          "function": "api"
-        },
-        {
-          "source": "/processImportBatch",
-          "function": "api"
-        },
-        {
-          "source": "/importBatchStatus",
-          "function": "api"
-        },
-        {
-          "source": "/syncAttributeRegistry",
+          "source": "/api/**",
           "function": "api"
         },
         { "source": "**", "destination": "/index.html" }

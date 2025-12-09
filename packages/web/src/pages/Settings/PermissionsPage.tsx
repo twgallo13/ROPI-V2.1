@@ -9,55 +9,8 @@
  */
 
 import { useState, useEffect } from 'react';
+import { apiFetch } from '../../lib/apiFetch';
 import './PermissionsPage.css';
-
-const API_BASE = import.meta.env.VITE_API_BASE || '';
-
-/**
- * Get auth token for API requests
- */
-async function getAuthToken(): Promise<string | null> {
-  const { auth } = await import('../../firebaseConfig');
-  if (!auth || !auth.currentUser) {
-    return null;
-  }
-  return auth.currentUser.getIdToken();
-}
-
-/**
- * Make authenticated API request
- */
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = await getAuthToken();
-  
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-  
-  const url = `${API_BASE}${endpoint}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || `HTTP ${response.status}`);
-  }
-  
-  if (response.status === 204) {
-    return {} as T;
-  }
-  
-  return response.json();
-}
 
 interface PermissionsMatrix {
   [role: string]: {
@@ -109,7 +62,7 @@ export function PermissionsPage() {
     try {
       setLoading(true);
       setMessage(null);
-      const data = await apiRequest<PermissionsResponse>('/admin/permissions');
+      const data = await apiFetch<PermissionsResponse>('/api/admin/permissions');
       setPermissions(data.permissions);
       setOriginalPermissions(data.permissions);
       setIsDefault(data.isDefault);
@@ -129,7 +82,7 @@ export function PermissionsPage() {
     try {
       setSaving(true);
       setMessage(null);
-      await apiRequest('/admin/permissions', {
+      await apiFetch('/api/admin/permissions', {
         method: 'PATCH',
         body: JSON.stringify({ permissions }),
       });
@@ -157,7 +110,7 @@ export function PermissionsPage() {
     try {
       setSaving(true);
       setMessage(null);
-      const data = await apiRequest<PermissionsResponse>('/admin/permissions/reset', {
+      const data = await apiFetch<PermissionsResponse>('/api/admin/permissions/reset', {
         method: 'POST',
       });
       setPermissions(data.permissions);
