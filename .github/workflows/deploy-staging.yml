@@ -63,6 +63,13 @@ jobs:
           echo "Current working directory: $(pwd)"
           pnpm --filter @ropi-aoss/web build
 
+      - name: Build packages/api
+        run: |
+          set -euo pipefail
+          echo "Building @ropi-aoss/api package for Cloud Functions..."
+          pnpm --filter @ropi-aoss/api build
+          echo "✅ API package built successfully"
+
       - name: Verify build output
         run: |
           set -euo pipefail
@@ -110,7 +117,13 @@ jobs:
           # Deploy preview channel (keep existing behavior)
           firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json || true
 
-          # Deploy to stable aoss-staging target
+          # Deploy functions and hosting to stable staging
+          echo "Deploying Cloud Functions..."
+          firebase deploy --only functions --project ropi-bccee --json || {
+            echo "::warning::Functions deployment had issues, continuing with hosting..."
+          }
+
+          echo "Deploying hosting..."
           firebase deploy --only hosting:aoss-staging --project ropi-bccee --json
           echo "Stable staging URL: https://ropi-aoss-staging.web.app"
 
