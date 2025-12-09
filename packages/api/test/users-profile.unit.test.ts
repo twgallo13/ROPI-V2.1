@@ -19,7 +19,7 @@ vi.mock('../src/middleware/auth.js', () => ({
       req.auth = {
         uid: 'test-user-123',
         email: 'user@test.com',
-        role: 'catalog_editor',
+        role: 'merch',
         emailVerified: true,
       };
       await callback();
@@ -89,7 +89,7 @@ describe('GET /users/me', () => {
         photoURL: 'https://example.com/photo.jpg',
         emailVerified: true,
         disabled: false,
-        customClaims: { role: 'catalog_editor' },
+        customClaims: { role: 'merch' },
         providerData: [{ providerId: 'password' }],
         metadata: {
           creationTime: '2024-01-01T00:00:00Z',
@@ -110,7 +110,7 @@ describe('GET /users/me', () => {
         email: 'user@test.com',
         displayName: 'Test User',
         photoURL: 'https://example.com/photo.jpg',
-        customClaims: { role: 'catalog_editor' },
+        customClaims: { role: 'merch' },
         providerData: [{ providerId: 'password' }],
         disabled: false,
         metadata: expect.any(Object),
@@ -211,7 +211,7 @@ describe('PATCH /users/me', () => {
         photoURL: null,
         emailVerified: true,
         disabled: false,
-        customClaims: { role: 'catalog_editor' },
+        customClaims: { role: 'merch' },
         providerData: [],
         metadata: {},
       }),
@@ -387,7 +387,7 @@ describe('PATCH /users/me', () => {
     // Role updates should be ignored (admin-only operation)
     mockReq.body = {
       displayName: 'New Name',
-      role: 'platform_admin', // This should be ignored
+      role: 'admin', // This should be ignored
     };
 
     const authMock = admin.auth();
@@ -400,7 +400,7 @@ describe('PATCH /users/me', () => {
         photoURL: null,
         emailVerified: true,
         disabled: false,
-        customClaims: { role: 'catalog_editor' }, // Role unchanged
+        customClaims: { role: 'merch' }, // Role unchanged
         providerData: [],
         metadata: {},
       }),

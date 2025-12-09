@@ -1,67 +1,53 @@
 /**
- * Canonical Role Definitions
+ * Ropi Canonical Role Definitions
  * 
- * These are the authoritative role identifiers used throughout AOSS.
+ * These are the authoritative role identifiers used throughout ROPI.
  * All custom claims and permissions are based on these role values.
  * 
  * Role Hierarchy (from highest to lowest privilege):
- * 1. platform_admin - Full system access
- * 2. district_manager - District-level access and management
- * 3. store_manager - Store-level access and operations
- * 4. catalog_editor - Product catalog editing rights
- * 5. viewer - Read-only access
- * 6. automation_service - Service account for integrations
+ * 1. admin - Full system access
+ * 2. merch - Import/export and Launch Calendar management
+ * 3. photographer - Observations and media management
+ * 4. viewer - Launch calendar read-only access
  */
 
-export const CANONICAL_ROLES = {
-  PLATFORM_ADMIN: 'platform_admin',
-  DISTRICT_MANAGER: 'district_manager',
-  STORE_MANAGER: 'store_manager',
-  CATALOG_EDITOR: 'catalog_editor',
+export const ROPI_ROLES = {
+  ADMIN: 'admin',
+  MERCH: 'merch',
+  PHOTOGRAPHER: 'photographer',
   VIEWER: 'viewer',
-  AUTOMATION_SERVICE: 'automation_service',
 } as const;
 
 export const ROLE_LIST = [
   {
-    value: CANONICAL_ROLES.PLATFORM_ADMIN,
-    label: 'Platform Admin',
+    value: ROPI_ROLES.ADMIN,
+    label: 'Administrator',
     description: 'Full system access and user management',
   },
   {
-    value: CANONICAL_ROLES.DISTRICT_MANAGER,
-    label: 'District Manager',
-    description: 'Manage district operations and stores',
+    value: ROPI_ROLES.MERCH,
+    label: 'Merchandise Manager',
+    description: 'Import/export and Launch Calendar management',
   },
   {
-    value: CANONICAL_ROLES.STORE_MANAGER,
-    label: 'Store Manager',
-    description: 'Manage store operations and inventory',
+    value: ROPI_ROLES.PHOTOGRAPHER,
+    label: 'Photographer',
+    description: 'Observations and media management',
   },
   {
-    value: CANONICAL_ROLES.CATALOG_EDITOR,
-    label: 'Catalog Editor',
-    description: 'Edit product catalog and attributes',
-  },
-  {
-    value: CANONICAL_ROLES.VIEWER,
+    value: ROPI_ROLES.VIEWER,
     label: 'Viewer',
-    description: 'Read-only access to catalog',
-  },
-  {
-    value: CANONICAL_ROLES.AUTOMATION_SERVICE,
-    label: 'Automation Service',
-    description: 'Service account for integrations',
+    description: 'Launch calendar read-only access',
   },
 ] as const;
 
-export type CanonicalRole = typeof CANONICAL_ROLES[keyof typeof CANONICAL_ROLES];
+export type RopiRole = typeof ROPI_ROLES[keyof typeof ROPI_ROLES];
 
 /**
  * Check if a role is valid
  */
-export function isValidRole(role: string): role is CanonicalRole {
-  return Object.values(CANONICAL_ROLES).includes(role as CanonicalRole);
+export function isValidRole(role: string): role is RopiRole {
+  return Object.values(ROPI_ROLES).includes(role as RopiRole);
 }
 
 /**
@@ -73,8 +59,8 @@ export function getRoleLabel(roleValue: string): string {
 }
 
 /**
- * Check if user has admin privilege (platform_admin or equivalent)
+ * Check if user has admin privilege
  */
 export function isAdminRole(role: string | undefined): boolean {
-  return role === CANONICAL_ROLES.PLATFORM_ADMIN;
+  return role === ROPI_ROLES.ADMIN;
 }

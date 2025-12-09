@@ -7,7 +7,7 @@
 
 import * as admin from 'firebase-admin';
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
-import { CANONICAL_ROLES, isAdminRole } from '../constants/roles';
+import { ROPI_ROLES, isAdminRole } from '../constants/roles';
 
 /**
  * Auth context attached to authenticated requests

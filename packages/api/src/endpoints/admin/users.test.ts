@@ -22,11 +22,11 @@ import {
 // Mock requireAdmin middleware FIRST
 vi.mock('../../middleware/auth', () => ({
   requireAdmin: vi.fn(async (req: any, res: any, callback: () => Promise<void>) => {
-    // Mock auth context with canonical role
+    // Mock auth context with Ropi role
     req.auth = {
       uid: 'test-admin-uid',
       email: 'admin@test.com',
-      role: 'platform_admin',
+      role: 'admin',
     };
     // Call the async callback
     await callback();
@@ -176,7 +176,7 @@ describe('Users Endpoints', () => {
         email: 'test@test.com',
         displayName: 'Test User',
         emailVerified: true,
-        customClaims: { role: 'platform_admin' },
+        customClaims: { role: 'admin' },
         metadata: {
           creationTime: '2024-01-01',
           lastSignInTime: '2024-01-10',
@@ -325,7 +325,7 @@ describe('Users Endpoints', () => {
       mockReq.params = { uid: 'test-uid' };
       mockReq.body = {
         displayName: 'Updated Name',
-        role: 'platform_admin',
+        role: 'admin',
       };
 
       const mockUser = {
@@ -333,7 +333,7 @@ describe('Users Endpoints', () => {
         email: 'test@test.com',
         displayName: 'Updated Name',
         emailVerified: true,
-        customClaims: { role: 'platform_admin' },
+        customClaims: { role: 'admin' },
         metadata: {},
         disabled: false,
         providerData: [],
@@ -363,13 +363,13 @@ describe('Users Endpoints', () => {
       await updateUserHandler(mockReq as Request, mockRes as Response);
 
       expect(mockAuthInstance.updateUser).toHaveBeenCalledWith('test-uid', { displayName: 'Updated Name' });
-      expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('test-uid', { role: 'platform_admin' });
+      expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('test-uid', { role: 'admin' });
       expect(mockStatus).toHaveBeenCalledWith(200);
     });
 
     it('should prevent self-demotion from admin', async () => {
       mockReq.params = { uid: 'test-admin-uid' }; // Same as auth context
-      mockReq.body = { role: 'catalog_editor' }; // Non-admin role
+      mockReq.body = { role: 'merch' }; // Non-admin role
 
       await updateUserHandler(mockReq as Request, mockRes as Response);
 
@@ -489,19 +489,17 @@ describe('Users Endpoints', () => {
   });
 
   describe('getRolesHandler', () => {
-    it('should return list of canonical roles', async () => {
+    it('should return list of Ropi roles', async () => {
       await getRolesHandler(mockReq as Request, mockRes as Response);
 
       expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith(
         expect.objectContaining({
           roles: expect.arrayContaining([
-            expect.objectContaining({ value: 'platform_admin' }),
-            expect.objectContaining({ value: 'district_manager' }),
-            expect.objectContaining({ value: 'store_manager' }),
-            expect.objectContaining({ value: 'catalog_editor' }),
+            expect.objectContaining({ value: 'admin' }),
+            expect.objectContaining({ value: 'merch' }),
+            expect.objectContaining({ value: 'photographer' }),
             expect.objectContaining({ value: 'viewer' }),
-            expect.objectContaining({ value: 'automation_service' }),
           ]),
         })
       );

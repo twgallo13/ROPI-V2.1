@@ -15,7 +15,7 @@
 import { requireAdmin, type AuthenticatedRequest } from '../../middleware/auth';
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
-import { isValidRole, isAdminRole, CANONICAL_ROLES } from '../../constants/roles';
+import { isValidRole, isAdminRole, ROPI_ROLES } from '../../constants/roles';
 
 function getDb() {
   return admin.firestore();
@@ -227,7 +227,7 @@ export async function createUserHandler(req: Request, res: Response) {
       if (!isValidRole(role)) {
         res.status(400).json({
           error: 'VALIDATION_ERROR',
-          message: `Invalid role. Must be one of: ${Object.values(CANONICAL_ROLES).join(', ')}`,
+          message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')}`,
         });
         return;
       }
@@ -317,7 +317,7 @@ export async function updateUserHandler(req: Request, res: Response) {
         if (!isValidRole(role)) {
           res.status(400).json({
             error: 'VALIDATION_ERROR',
-            message: `Invalid role. Must be one of: ${Object.values(CANONICAL_ROLES).join(', ')}`,
+            message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')}`,
           });
           return;
         }
