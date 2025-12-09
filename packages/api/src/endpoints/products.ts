@@ -190,13 +190,19 @@ export async function getProductHandler(req: Request, res: Response) {
 /**
  * GET /products
  * 
- * List products with optional pagination.
+ * List products with optional pagination and search.
+ * 
+ * Query params:
+ * - limit: Max items per page (default 50, max 100)
+ * - pageToken: Pagination cursor (document ID)
+ * - q: Search query (searches SKU, MPN, name, brand, category)
  */
 export async function listProductsHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
     const db = admin.firestore();
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
     const pageToken = req.query.pageToken as string | undefined;
+    const searchQuery = (req.query.q as string || '').toLowerCase().trim();
 
     try {
       let query = db.collection('products')
@@ -211,7 +217,27 @@ export async function listProductsHandler(req: Request, res: Response) {
       }
 
       const snapshot = await query.get();
-      const docs = snapshot.docs;
+      let docs = snapshot.docs;
+
+      // Client-side filtering for search (Firestore limitations)
+      // For production, consider Algolia or Elasticsearch for full-text search
+      if (searchQuery) {
+        docs = docs.filter(doc => {
+          const data = doc.data();
+          const searchFields = [
+            data.sku,
+            data.mpn,
+            data.name,
+            data.brand,
+            data.category,
+            data.department,
+            data.class,
+          ].filter(Boolean).map(v => String(v).toLowerCase());
+
+          return searchFields.some(field => field.includes(searchQuery));
+        });
+      }
+
       const hasMore = docs.length > limit;
       const resultDocs = hasMore ? docs.slice(0, limit) : docs;
 
