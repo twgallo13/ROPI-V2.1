@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import SignInModal from '@/components/Auth/SignInModal';
 import './TopBar.css';
@@ -89,9 +90,13 @@ function TopBar() {
                   
                   <div className="topbar-dropdown-divider" />
                   
-                  <button className="topbar-dropdown-item" disabled>
-                    👤 Profile (coming soon)
-                  </button>
+                  <Link 
+                    to="/settings/profile" 
+                    className="topbar-dropdown-item"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    👤 Profile
+                  </Link>
                   
                   <div className="topbar-dropdown-divider" />
                   

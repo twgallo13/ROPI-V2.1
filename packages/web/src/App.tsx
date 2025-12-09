@@ -14,6 +14,7 @@ import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';
 import AttributeManager from './pages/Settings/AttributeManager';
 import UsersManager from './pages/Settings/UsersManager';
+import ProfilePage from './pages/Settings/ProfilePage';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="settings/attributes" element={<AttributeManager />} />
         <Route path="settings/users" element={<UsersManager />} />
+        <Route path="settings/profile" element={<ProfilePage />} />
         <Route path="settings/ai-templates" element={<SettingsSubPage section="ai-templates" />} />
         <Route path="settings/search" element={<SettingsSubPage section="search" />} />
         <Route path="settings/import-settings" element={<SettingsSubPage section="import-settings" />} />
