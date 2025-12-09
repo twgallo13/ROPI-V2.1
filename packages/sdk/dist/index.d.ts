@@ -1,56 +1,35 @@
-// Minimal type declarations for @ropi-aoss/sdk
-// Provides basic TypeScript support for CI builds
-
-export const DEFAULT_COLUMN_MAPPINGS: any;
-export const SDK_VERSION: string;
-
-// Schema types
-export type ImportBatch = any;
-export type ImportEngineRow = any;
-export type ImportNormalizedFields = any;
-export type ImportSourceColumns = any;
-export type ValidationIssue = any;
-export type ColumnMapping = any;
-export type BuildRowOptions = any;
-export type Product = any;
-export type ProductCore = any;
-export type ProductAttributes = any;
-export type ProductPricing = any;
-export type ProductInventory = any;
-export type ProductMedia = any;
-export type ProductStatusFlags = any;
-export type ProductSchema = any;
-export type ProductCoreSchema = any;
-export type ProductAttributesSchema = any;
-export type ProductPricingSchema = any;
-export type ProductInventorySchema = any;
-export type ProductMediaSchema = any;
-export type AttributeDefinition = any;
-export type AttributeDataTypeSchema = any;
-export type AttributeValueSchema = any;
-export type AttributeConstraintSchema = any;
-export type AttributeDefinitionSchema = any;
-export type AttributeRegistrySchema = any;
-
-// Validation functions
-export function normalizeImportRow(sourceColumns: any, mappings?: any): any;
-export function validateImportRow(normalized: any): any;
-export function deriveProductId(sku: any): string;
-export function isEmptyRow(sourceColumns: any): boolean;
-export function validateRequiredFields(normalized: any, mappings?: any): string[];
-export function canProcessRow(row: any): boolean;
-
-// Builder functions
-export function buildImportRow(sourceColumns: any, options: any): any;
-export function buildImportRows(csvData: any, batchId: string, userId: string, mappings?: any): any[];
-
-// Product validation
-export function validateProduct(product: any): any;
-export function safeValidateProduct(product: any): any;
-export function validateAttributes(attributes: any): any;
-
-// Attribute validation
-export function validateAttributeDefinition(input: any): any;
-export function validateAttributeRegistry(input: any): any;
-export function validateAttributeValue(value: any, definition: any): any;
-export function safeValidateAttributeDefinition(input: any): any;
+/**
+ * @ropi-aoss/sdk
+ *
+ * TypeScript SDK for Ropi AOSS
+ * Provides types and validators for product data and attributes.
+ *
+ * Per AOSS Sections:
+ * - 2.1: Product Schema (JSON)
+ * - 2.2: Attribute Validation Schema (JSON)
+ * - 2.3: Attribute Domain Rules (JSON)
+ * - 3.1: Import Engine Row Schema
+ * - 3.2: Import Normalization Rules
+ */
+export type { Product, ProductCore, ProductAttributes, ProductPricing, ProductInventory, ProductMedia, ProductStatusFlags, } from './schema/product';
+export type { AttributeDefinition, AttributeValue, AttributeRegistry, AttributeDataType, AttributeConstraint, } from './schema/attribute';
+export type { AttributeDomainRule, DomainRulesRegistry, DomainRuleType, RuleCondition, RuleAction, } from './schema/domainRules';
+export type { ImportEngineRow, ImportBatch, ImportSourceColumns, ImportNormalizedFields, ImportValidation, ImportRowMeta, ValidationIssue, ValidationCode, ColumnMapping, ImportConfig, } from './schema/importEngine';
+export { validateProduct, safeValidateProduct, ProductSchema, ProductCoreSchema, ProductAttributesSchema, ProductPricingSchema, ProductInventorySchema, ProductMediaSchema, } from './validators/productValidator';
+export { validateAttributeDefinition, validateAttributeValue, validateAttributeRegistry, validateAttributes, safeValidateAttributeDefinition, AttributeDefinitionSchema, AttributeValueSchema, AttributeRegistrySchema, AttributeDataTypeSchema, AttributeConstraintSchema, } from './validators/attributeValidator';
+export { validateImportRow, canProcessRow, } from './validators/importValidator';
+export { normalizeImportRow, deriveProductId, isEmptyRow, validateRequiredFields, DEFAULT_COLUMN_MAPPINGS, } from './normalization/importNormalizer';
+export { buildImportRow, buildImportRows, } from './builders/importRowBuilder';
+export type { BuildRowOptions } from './builders/importRowBuilder';
+export { productJsonSchema, validateCoreProduct, validateCoreProductOrThrow, CoreProductSchema, ProductImageSchema, ProductFlagsSchema, ProductMetaSchema, } from './schemas/coreProduct';
+export type { CoreProduct, ProductImage, ProductFlags, ProductMeta, ProductBrand, ProductGender, ProductCategory, ProductSizeScale, ProductStatus, } from './schemas/coreProduct';
+export { importRowJsonSchema, validateImportRowSchema, validateImportRowSchemaOrThrow, ImportRowSchema, ImportRowRawSchema, } from './schemas/importRow';
+export type { ImportRow, ImportRowRaw, ImportSource, } from './schemas/importRow';
+export { buildRetailOpsRow, buildRetailOpsCsv, retailOpsExportMapping, getRetailOpsHeaderRow, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, } from './export/retailOps';
+export type { RetailOpsRow, RetailOpsColumnMapping, RetailOpsExportMappingConfig, } from './export/retailOps';
+export { parseRetailOpsCsv, retailOpsRowToImportRow, importRowToCoreProduct, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, parsedRowsToImportRows, importRowsToCoreProducts, } from './import/retailOps';
+export type { RetailOpsCsvParseOptions, ParsedRetailOpsRow, RetailOpsImportResult, } from './import/retailOps';
+export { AttributeSchema, type AttributeType } from './schema/attribute';
+export { SmartRuleSchema, SmartRuleCondition, SmartRuleAction, type SmartRuleType } from './schema/smartRule';
+export { AITemplateSchema, type AITemplateType } from './schema/aiTemplate';
+export declare const SDK_VERSION = "0.6.0";
