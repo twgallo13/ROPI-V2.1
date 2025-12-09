@@ -86,8 +86,6 @@ export interface UpdateUserData {
   disabled?: boolean;
 }
 
-import { apiFetch } from '../lib/apiFetch';
-
 /**
  * useUsers hook for user management
  */
