@@ -64,3 +64,24 @@ export function getRoleLabel(roleValue: string): string {
 export function isAdminRole(role: string | undefined): boolean {
   return role === ROPI_ROLES.ADMIN;
 }
+
+/**
+ * Normalize role input - accepts canonical keys or human labels
+ * Returns canonical role key or undefined if not found
+ */
+export function normalizeRole(input: string | undefined): string | undefined {
+  if (!input) return undefined;
+  
+  const trimmed = input.trim();
+  
+  // Check if already a canonical key
+  if (isValidRole(trimmed)) {
+    return trimmed;
+  }
+  
+  // Try to match by label (case-insensitive)
+  const lowerInput = trimmed.toLowerCase();
+  const match = ROLE_LIST.find(r => r.label.toLowerCase() === lowerInput);
+  
+  return match?.value;
+}

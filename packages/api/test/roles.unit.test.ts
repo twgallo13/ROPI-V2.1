@@ -13,6 +13,7 @@ import {
   isValidRole,
   getRoleLabel,
   isAdminRole,
+  normalizeRole,
   type RopiRole,
 } from '../src/constants/roles.js';
 
@@ -119,6 +120,57 @@ describe('isAdminRole()', () => {
     expect(isAdminRole('Admin')).toBe(false);
     expect(isAdminRole('ADMIN')).toBe(false);
     expect(isAdminRole('administrator')).toBe(false);
+  });
+});
+
+describe('normalizeRole()', () => {
+  it('should accept canonical role keys', () => {
+    expect(normalizeRole('admin')).toBe('admin');
+    expect(normalizeRole('merch')).toBe('merch');
+    expect(normalizeRole('photographer')).toBe('photographer');
+    expect(normalizeRole('viewer')).toBe('viewer');
+  });
+
+  it('should accept human-readable labels (case-insensitive)', () => {
+    expect(normalizeRole('Administrator')).toBe('admin');
+    expect(normalizeRole('administrator')).toBe('admin');
+    expect(normalizeRole('ADMINISTRATOR')).toBe('admin');
+    
+    expect(normalizeRole('Merchandise Manager')).toBe('merch');
+    expect(normalizeRole('merchandise manager')).toBe('merch');
+    expect(normalizeRole('MERCHANDISE MANAGER')).toBe('merch');
+    
+    expect(normalizeRole('Photographer')).toBe('photographer');
+    expect(normalizeRole('photographer')).toBe('photographer');
+    expect(normalizeRole('PHOTOGRAPHER')).toBe('photographer');
+    
+    expect(normalizeRole('Viewer')).toBe('viewer');
+    expect(normalizeRole('viewer')).toBe('viewer');
+    expect(normalizeRole('VIEWER')).toBe('viewer');
+  });
+
+  it('should trim whitespace', () => {
+    expect(normalizeRole('  admin  ')).toBe('admin');
+    expect(normalizeRole(' Administrator ')).toBe('admin');
+    expect(normalizeRole('  Merchandise Manager  ')).toBe('merch');
+  });
+
+  it('should return undefined for invalid roles', () => {
+    expect(normalizeRole('invalid')).toBeUndefined();
+    expect(normalizeRole('user')).toBeUndefined();
+    expect(normalizeRole('platform_admin')).toBeUndefined();
+    expect(normalizeRole('')).toBeUndefined();
+    expect(normalizeRole('district_manager')).toBeUndefined();
+  });
+
+  it('should handle undefined input', () => {
+    expect(normalizeRole(undefined)).toBeUndefined();
+  });
+
+  it('should handle edge cases', () => {
+    expect(normalizeRole('   ')).toBeUndefined();
+    // Partial matches don't work - must be exact label or canonical key
+    expect(normalizeRole('Admin')).toBeUndefined();
   });
 });
 

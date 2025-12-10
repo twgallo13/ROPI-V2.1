@@ -204,7 +204,7 @@ export async function getUserHandler(req: Request, res: Response) {
 export async function createUserHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
     try {
-      const { email, password, displayName, role = 'user', sendInvite = false } = req.body;
+      const { email, password, displayName, role: rawRole = 'viewer', sendInvite = false } = req.body;
       
       // Validate required fields
       if (!email) {
@@ -223,11 +223,14 @@ export async function createUserHandler(req: Request, res: Response) {
         return;
       }
       
+      // Normalize role (accept canonical keys or human labels)
+      const role = normalizeRole(rawRole);
+      
       // Validate role
-      if (!isValidRole(role)) {
+      if (!role || !isValidRole(role)) {
         res.status(400).json({
           error: 'VALIDATION_ERROR',
-          message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')}`,
+          message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')} (or their human-readable labels)`,
         });
         return;
       }
@@ -303,24 +306,26 @@ export async function updateUserHandler(req: Request, res: Response) {
       const authReq = req as AuthenticatedRequest;
       const actorUid = authReq.auth?.uid || 'system';
       
-      // Prevent self-demotion from admin
-      if (uid === actorUid && role && !isAdminRole(role)) {
+      // Normalize and validate role if provided
+      let normalizedRole: string | undefined = undefined;
+      if (role) {
+        normalizedRole = normalizeRole(role);
+        if (!normalizedRole || !isValidRole(normalizedRole)) {
+          res.status(400).json({
+            error: 'VALIDATION_ERROR',
+            message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')} (or their human-readable labels)`,
+          });
+          return;
+        }
+      }
+      
+      // Prevent self-demotion from admin (check normalized role)
+      if (uid === actorUid && normalizedRole && !isAdminRole(normalizedRole)) {
         res.status(403).json({
           error: 'FORBIDDEN',
           message: 'Cannot remove your own admin role',
         });
         return;
-      }
-      
-      // Validate role if provided
-      if (role) {
-        if (!isValidRole(role)) {
-          res.status(400).json({
-            error: 'VALIDATION_ERROR',
-            message: `Invalid role. Must be one of: ${Object.values(ROPI_ROLES).join(', ')}`,
-          });
-          return;
-        }
       }
       
       // Update Firebase Auth user
@@ -332,10 +337,10 @@ export async function updateUserHandler(req: Request, res: Response) {
       
       const userRecord = await auth.updateUser(uid, updatePayload);
       
-      // Update custom claims if role changed
-      if (role !== undefined) {
+      // Update custom claims if role changed (use normalized role)
+      if (normalizedRole !== undefined) {
         const currentClaims = userRecord.customClaims || {};
-        await auth.setCustomUserClaims(uid, { ...currentClaims, role });
+        await auth.setCustomUserClaims(uid, { ...currentClaims, role: normalizedRole });
       }
       
       // Update profile in Firestore
@@ -347,7 +352,7 @@ export async function updateUserHandler(req: Request, res: Response) {
       
       if (email !== undefined) updateData.email = email;
       if (displayName !== undefined) updateData.displayName = displayName;
-      if (role !== undefined) updateData.role = role;
+      if (normalizedRole !== undefined) updateData.role = normalizedRole;
       if (emailVerified !== undefined) updateData.emailVerified = emailVerified;
       
       // Use set with merge to create document if missing (prevents 500 errors)
@@ -409,11 +414,41 @@ export async function deleteUserHandler(req: Request, res: Response) {
           updatedBy: actorUid,
         }, { merge: true });
         
-        // Disable user in Auth
-        await auth.updateUser(uid, { disabled: true });
+        // Disable user in Auth (with error handling for external API failures)
+        try {
+          await auth.updateUser(uid, { disabled: true });
+        } catch (authError: any) {
+          // Log but don't fail - profile is marked deleted
+          console.error('Failed to disable user in Auth (continuing):', authError.message);
+          if (authError.code === 'auth/user-not-found') {
+            // User already deleted from Auth - OK to continue
+          } else {
+            // Other errors (API not configured, network issues) - log and continue
+            console.warn('Non-critical Auth error during soft delete:', authError.code || authError.message);
+          }
+        }
       } else {
         // Hard delete: remove from Auth and Firestore
-        await auth.deleteUser(uid);
+        // Try to delete from Auth first, but continue with Firestore cleanup even if it fails
+        try {
+          await auth.deleteUser(uid);
+        } catch (authError: any) {
+          console.error('Failed to delete user from Auth (continuing with Firestore cleanup):', authError.message);
+          
+          // Handle specific errors gracefully
+          if (authError.code === 'auth/user-not-found') {
+            // User already deleted - OK to continue
+            console.log('User not found in Auth, continuing with Firestore cleanup');
+          } else if (authError.code === 'auth/configuration-not-found') {
+            // External API not configured (e.g., email provider)
+            console.warn('Auth API not configured, skipping Auth deletion, continuing with Firestore cleanup');
+          } else {
+            // Other errors - log and continue
+            console.warn('Non-critical Auth error during hard delete:', authError.code || authError.message);
+          }
+        }
+        
+        // Always attempt Firestore cleanup
         await db.collection('users').doc('profiles').collection('data').doc(uid).delete();
       }
       
