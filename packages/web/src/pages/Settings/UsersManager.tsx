@@ -9,6 +9,7 @@
 
 import { useState } from 'react';
 import PageLayout from '@/components/common/PageLayout';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import { useUsers, type User, type CreateUserData, type UpdateUserData } from '@/hooks/useUsers';
 import { useAuth } from '@/contexts/AuthProvider';
 import './UsersManager.css';
@@ -48,6 +49,12 @@ function UsersManager() {
   });
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  
+  // ConfirmModal state for delete operations
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [pendingDeleteUid, setPendingDeleteUid] = useState<string | null>(null);
+  const [pendingDeleteIsSoft, setPendingDeleteIsSoft] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   // Filter users by search query
   const filteredUsers = users.filter(user => {
@@ -122,24 +129,36 @@ function UsersManager() {
     }
   };
   
-  // Handle delete user
-  const handleDeleteUser = async (uid: string, soft: boolean) => {
-    const confirmMessage = soft
-      ? 'Are you sure you want to disable this user?'
-      : 'Are you sure you want to permanently delete this user? This cannot be undone.';
-    
-    if (!confirm(confirmMessage)) {
-      return;
-    }
-    
+  // Handle delete user - show confirmation first
+  const handleDeleteUser = (uid: string, soft: boolean) => {
+    setPendingDeleteUid(uid);
+    setPendingDeleteIsSoft(soft);
+    setShowConfirmDelete(true);
+  };
+
+  // Handle confirmed delete user - perform the actual deletion
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteUid) return;
+
     setFormError(null);
     setSuccessMessage(null);
-    
+    setIsDeleting(true);
+
     try {
-      await deleteUser(uid, soft);
-      setSuccessMessage(soft ? 'User disabled successfully' : 'User deleted successfully');
+      await deleteUser(pendingDeleteUid, pendingDeleteIsSoft);
+      setSuccessMessage(
+        pendingDeleteIsSoft ? 'User disabled successfully' : 'User deleted successfully'
+      );
+      setShowConfirmDelete(false);
+      setPendingDeleteUid(null);
+      setPendingDeleteIsSoft(false);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Failed to delete user');
+      setShowConfirmDelete(false);
+      setPendingDeleteUid(null);
+      setPendingDeleteIsSoft(false);
+    } finally {
+      setIsDeleting(false);
     }
   };
   
@@ -500,6 +519,26 @@ function UsersManager() {
             </div>
           </div>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={showConfirmDelete}
+          title={pendingDeleteIsSoft ? 'Disable User?' : 'Delete User Permanently?'}
+          message={
+            pendingDeleteIsSoft
+              ? 'This user will be disabled and cannot log in. They can be re-enabled later.'
+              : 'This action cannot be undone. The user account and all associated data will be permanently deleted.'
+          }
+          confirmLabel={pendingDeleteIsSoft ? 'Disable' : 'Delete'}
+          isDangerous={!pendingDeleteIsSoft}
+          isLoading={isDeleting}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => {
+            setShowConfirmDelete(false);
+            setPendingDeleteUid(null);
+            setPendingDeleteIsSoft(false);
+          }}
+        />
       </div>
     </PageLayout>
   );
