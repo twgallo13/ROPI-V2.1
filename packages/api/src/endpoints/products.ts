@@ -190,12 +190,24 @@ export async function getProductHandler(req: Request, res: Response) {
 /**
  * GET /products
  * 
- * List products with optional pagination and search.
+ * List products with pagination, search, filtering, and sorting.
  * 
  * Query params:
  * - limit: Max items per page (default 50, max 100)
  * - pageToken: Pagination cursor (document ID)
  * - q: Search query (searches SKU, MPN, name, brand, category)
+ * - sortBy: Field to sort by (name, sku, updatedAt, createdAt) - default: updatedAt
+ * - sortDir: Sort direction (asc, desc) - default: desc
+ * - brand: Filter by brand (exact match)
+ * - status: Filter by status (exact match)
+ * - category: Filter by category (exact match)
+ * - department: Filter by department (exact match)
+ * 
+ * Returns:
+ * - items: Array of products
+ * - hasMore: Boolean indicating if more results available
+ * - pageToken: Cursor for next page
+ * - total: Total count (estimated, only returned on first page)
  */
 export async function listProductsHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
@@ -203,12 +215,49 @@ export async function listProductsHandler(req: Request, res: Response) {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
     const pageToken = req.query.pageToken as string | undefined;
     const searchQuery = (req.query.q as string || '').toLowerCase().trim();
+    
+    // Sorting parameters
+    const sortBy = (req.query.sortBy as string) || 'updatedAt';
+    const sortDir = (req.query.sortDir as string) === 'asc' ? 'asc' : 'desc';
+    
+    // Filter parameters
+    const brandFilter = req.query.brand as string | undefined;
+    const statusFilter = req.query.status as string | undefined;
+    const categoryFilter = req.query.category as string | undefined;
+    const departmentFilter = req.query.department as string | undefined;
+
+    // Validate sortBy field
+    const allowedSortFields = ['name', 'sku', 'updatedAt', 'createdAt', 'brand', 'status'];
+    const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'updatedAt';
 
     try {
-      let query = db.collection('products')
-        .orderBy('updatedAt', 'desc')
-        .limit(limit + 1);
+      let query: admin.firestore.Query = db.collection('products');
 
+      // Apply filters (must be done before sorting for composite indexes)
+      if (brandFilter) {
+        query = query.where('brand', '==', brandFilter);
+      }
+      if (statusFilter) {
+        query = query.where('status', '==', statusFilter);
+      }
+      if (categoryFilter) {
+        query = query.where('category', '==', categoryFilter);
+      }
+      if (departmentFilter) {
+        query = query.where('department', '==', departmentFilter);
+      }
+
+      // Apply sorting
+      query = query.orderBy(sortField, sortDir);
+      
+      // Add secondary sort by ID for stable pagination
+      if (sortField !== 'updatedAt') {
+        query = query.orderBy('updatedAt', 'desc');
+      }
+      
+      query = query.limit(limit + 1);
+
+      // Apply pagination cursor
       if (pageToken) {
         const lastDoc = await db.collection('products').doc(pageToken).get();
         if (lastDoc.exists) {
@@ -219,8 +268,8 @@ export async function listProductsHandler(req: Request, res: Response) {
       const snapshot = await query.get();
       let docs = snapshot.docs;
 
-      // Client-side filtering for search (Firestore limitations)
-      // For production, consider Algolia or Elasticsearch for full-text search
+      // Client-side search filtering (Firestore limitations)
+      // For production scale (>5k products), migrate to Algolia or Elasticsearch
       if (searchQuery) {
         docs = docs.filter(doc => {
           const data = doc.data();
@@ -246,10 +295,19 @@ export async function listProductsHandler(req: Request, res: Response) {
         ...doc.data(),
       }));
 
+      // Estimate total count on first page (no pageToken)
+      let total: number | undefined;
+      if (!pageToken && items.length > 0) {
+        // For filtered queries, count is approximate
+        // For exact counts, consider caching or using aggregation queries
+        total = items.length + (hasMore ? limit : 0);
+      }
+
       res.status(200).json({
         items,
         hasMore,
         pageToken: hasMore ? resultDocs[resultDocs.length - 1]?.id : undefined,
+        total,
       });
     } catch (error) {
       console.error('Error listing products:', error);

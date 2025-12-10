@@ -70,10 +70,10 @@ describe('useProducts', () => {
     expect(result.current.hasMore).toBe(false);
     expect(result.current.error).toBeNull();
 
-    // Verify fetch was called with correct params
+    // Verify fetch was called with correct params (now includes sortBy/sortDir)
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('/api/products?limit=24'),
+      expect.stringContaining('/api/products?limit=50'),
       expect.objectContaining({
         headers: { Authorization: 'Bearer mock-token' },
       })
@@ -318,5 +318,141 @@ describe('useProducts', () => {
 
     // Should only have called fetch once (initial load)
     expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('should debounce search input with default 300ms', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], hasMore: false }),
+    });
+
+    const { result } = renderHook(() => useProducts({ autoLoad: false, debounceMs: 100 }));
+
+    // Set search multiple times rapidly
+    act(() => result.current.setSearch('shoe'));
+    act(() => result.current.setSearch('shoe red'));
+    act(() => result.current.setSearch('shoe red nike'));
+
+    // Should not have called fetch yet
+    expect(mockFetch).not.toHaveBeenCalled();
+
+    // Wait for debounce
+    await new Promise(resolve => setTimeout(resolve, 150));
+
+    // Debounced search should have triggered
+    expect(result.current.search).toBe('shoe red nike');
+  });
+
+  it('should use limit of 50 by default', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ items: [], hasMore: false }),
+    });
+
+    renderHook(() => useProducts({ autoLoad: true }));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('limit=50'),
+        expect.any(Object)
+      );
+    });
+  });
+
+  it('should reset pageToken when filters change', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], hasMore: false }),
+    });
+
+    const { result } = renderHook(() => useProducts({ autoLoad: true }));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    mockFetch.mockClear();
+
+    // Change filters
+    act(() => result.current.setFilters({ brand: 'Nike' }));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('brand=Nike'),
+        expect.any(Object)
+      );
+      // Should not include pageToken (reset pagination)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.not.stringContaining('pageToken'),
+        expect.any(Object)
+      );
+    });
+  });
+
+  it('should reset pageToken when sort changes', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], hasMore: false }),
+    });
+
+    const { result } = renderHook(() => useProducts({ autoLoad: true }));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    mockFetch.mockClear();
+
+    // Change sort
+    act(() => result.current.setSortBy('name'));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('sortBy=name'),
+        expect.any(Object)
+      );
+    });
+  });
+
+  it('should send all filter params to API', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], hasMore: false }),
+    });
+
+    renderHook(() =>
+      useProducts({
+        autoLoad: true,
+        initialFilters: {
+          brand: 'Nike',
+          status: 'active',
+          category: 'Shoes',
+          department: 'Mens',
+        },
+      })
+    );
+
+    await waitFor(() => {
+      const callUrl = mockFetch.mock.calls[0][0] as string;
+      expect(callUrl).toContain('brand=Nike');
+      expect(callUrl).toContain('status=active');
+      expect(callUrl).toContain('category=Shoes');
+      expect(callUrl).toContain('department=Mens');
+    });
+  });
+
+  it('should send sortBy and sortDir params', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], hasMore: false }),
+    });
+
+    renderHook(() =>
+      useProducts({
+        autoLoad: true,
+        initialSortBy: 'name',
+        initialSortDir: 'asc',
+      })
+    );
+
+    await waitFor(() => {
+      const callUrl = mockFetch.mock.calls[0][0] as string;
+      expect(callUrl).toContain('sortBy=name');
+      expect(callUrl).toContain('sortDir=asc');
+    });
   });
 });

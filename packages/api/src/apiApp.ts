@@ -149,4 +149,6 @@ api.get('/healthz', (_req, res) => {
 // Mount API under /api to align with hosting rewrites
 app.use('/api', api);
 
+// Export both default and named for test compatibility
+export const apiApp = app;
 export default app;

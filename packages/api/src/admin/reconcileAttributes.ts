@@ -9,14 +9,29 @@
  * Homer v1.0.0 - Attribute Reconciliation
  */
 
-import { Router } from 'express';
+import { Router, type Request, type Response } from 'express';
 import admin from 'firebase-admin';
+
+// Extend Express Request type to include user from auth middleware
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        uid: string;
+        email?: string;
+      };
+    }
+  }
+}
 
 // Temporary local stubs until @ropi/sdk/normalizers/attributes is available
 interface MappingSuggestion {
   sourceValue: string;
   suggestedValue: string | null;
   confidence: number;
+  rawValue: string;
+  suggestedCanonical: string | null;
+  autoApply: boolean;
 }
 
 function bestMatchAgainstAllowedValues(value: string, allowed: string[]): { match: string | null; score: number } {
@@ -29,18 +44,25 @@ function bestMatchAgainstAllowedValues(value: string, allowed: string[]): { matc
   return { match: null, score: 0 };
 }
 
-function generateMappingSuggestions(values: string[], allowed: string[]): MappingSuggestion[] {
-  return values.map((v) => {
-    const { match, score } = bestMatchAgainstAllowedValues(v, allowed);
+function generateMappingSuggestions(
+  values: Array<{ value: string; count: number }>,
+  allowed: string[],
+  autoApplyThreshold: number = 0.9
+): MappingSuggestion[] {
+  return values.map((item) => {
+    const { match, score } = bestMatchAgainstAllowedValues(item.value, allowed);
     return {
-      sourceValue: v,
+      sourceValue: item.value,
       suggestedValue: match,
       confidence: score,
+      rawValue: item.value,
+      suggestedCanonical: match,
+      autoApply: score >= autoApplyThreshold,
     };
   });
 }
 
-const router = Router();
+const router: Router = Router();
 const db = admin.firestore();
 
 // ============================================================================
