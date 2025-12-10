@@ -1,0 +1,3 @@
+{
+  "_DEPRECATION_NOTICE": "This file is DEPRECATED as of 2025-12-09. The canonical attribute registry is now located at BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json and packages/sdk/config/attributeRegistry.json. This file is kept for reference only and should not be used."
+}
