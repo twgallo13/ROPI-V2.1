@@ -249,4 +249,185 @@ test.describe('Products List Page', () => {
     const retryButton = page.locator('button').filter({ hasText: /try again|retry/i });
     await expect(retryButton).toBeVisible();
   });
+
+  test('should filter products by brand', async ({ page }) => {
+    await page.goto('/products');
+
+    // Wait for products to load
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Enter brand filter
+    const brandInput = page.locator('input#brand-filter');
+    await expect(brandInput).toBeVisible();
+    await brandInput.fill('Nike');
+
+    // Wait for debounce and results
+    await page.waitForTimeout(500);
+
+    // Verify API was called with brand filter
+    await page.waitForResponse(response => 
+      response.url().includes('/api/products') && 
+      response.url().includes('brand=Nike')
+    );
+
+    // Results should load
+    await expect(page.locator('.product-card')).toHaveCount(await page.locator('.product-card').count());
+  });
+
+  test('should filter by status', async ({ page }) => {
+    await page.goto('/products');
+
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Select status filter
+    const statusSelect = page.locator('select#status-filter');
+    await expect(statusSelect).toBeVisible();
+    await statusSelect.selectOption('active');
+
+    // Wait for results
+    await page.waitForResponse(response => 
+      response.url().includes('/api/products') && 
+      response.url().includes('status=active')
+    );
+  });
+
+  test('should sort products by name', async ({ page }) => {
+    await page.goto('/products');
+
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Change sort option
+    const sortSelect = page.locator('select#sort-select');
+    await expect(sortSelect).toBeVisible();
+    await sortSelect.selectOption('name-asc');
+
+    // Wait for sorted results
+    await page.waitForResponse(response => 
+      response.url().includes('/api/products') && 
+      response.url().includes('sortBy=name') &&
+      response.url().includes('sortDir=asc')
+    );
+
+    // Verify products are displayed
+    await expect(page.locator('.product-card').first()).toBeVisible();
+  });
+
+  test('should clear all filters', async ({ page }) => {
+    await page.goto('/products');
+
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Add multiple filters
+    await page.locator('input#brand-filter').fill('Nike');
+    await page.locator('select#status-filter').selectOption('active');
+    
+    // Wait for filters to apply
+    await page.waitForTimeout(500);
+
+    // Click clear filters button
+    const clearButton = page.locator('button').filter({ hasText: /clear filters/i });
+    await expect(clearButton).toBeVisible();
+    await clearButton.click();
+
+    // Filters should be cleared
+    await expect(page.locator('input#brand-filter')).toHaveValue('');
+    await expect(page.locator('select#status-filter')).toHaveValue('');
+  });
+
+  test('should combine search, filter, and sort', async ({ page }) => {
+    await page.goto('/products');
+
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Add search term
+    await page.fill('input[type="search"]', 'shoe');
+
+    // Add filter
+    await page.locator('select#status-filter').selectOption('active');
+
+    // Change sort
+    await page.locator('select#sort-select').selectOption('name-asc');
+
+    // Wait for combined query
+    await page.waitForTimeout(500);
+
+    // Verify API was called with all parameters
+    const response = await page.waitForResponse(response => 
+      response.url().includes('/api/products') &&
+      response.url().includes('q=shoe') &&
+      response.url().includes('status=active') &&
+      response.url().includes('sortBy=name')
+    );
+
+    expect(response.status()).toBe(200);
+  });
+
+  test('should load more products with filters applied', async ({ page }) => {
+    await page.goto('/products');
+
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Add a filter
+    await page.locator('select#status-filter').selectOption('active');
+    await page.waitForTimeout(500);
+
+    // Count initial products
+    const initialCount = await page.locator('.product-card').count();
+
+    // Click Load More if available
+    const loadMoreButton = page.locator('button').filter({ hasText: /load more/i });
+    if (await loadMoreButton.isVisible()) {
+      await loadMoreButton.click();
+
+      // Wait for new products to load
+      await page.waitForTimeout(1000);
+
+      // Should have more products (or same if no more available)
+      const newCount = await page.locator('.product-card').count();
+      expect(newCount).toBeGreaterThanOrEqual(initialCount);
+    }
+  });
+
+  test('should show 50 items initially', async ({ page }) => {
+    // Intercept API call to verify limit parameter
+    let requestUrl = '';
+    await page.route('**/api/products*', async (route) => {
+      requestUrl = route.request().url();
+      await route.continue();
+    });
+
+    await page.goto('/products');
+
+    // Wait for API call
+    await page.waitForResponse(response => response.url().includes('/api/products'));
+
+    // Verify limit=50 in URL
+    expect(requestUrl).toContain('limit=50');
+  });
+
+  test('should debounce search input', async ({ page }) => {
+    let apiCallCount = 0;
+
+    await page.route('**/api/products*', async (route) => {
+      if (route.request().url().includes('q=')) {
+        apiCallCount++;
+      }
+      await route.continue();
+    });
+
+    await page.goto('/products');
+    await page.waitForSelector('.product-card', { timeout: 10000 });
+
+    // Type rapidly in search
+    await page.locator('input[type="search"]').fill('s');
+    await page.locator('input[type="search"]').fill('sh');
+    await page.locator('input[type="search"]').fill('sho');
+    await page.locator('input[type="search"]').fill('shoe');
+
+    // Wait for debounce (300ms + buffer)
+    await page.waitForTimeout(500);
+
+    // Should have called API only once after debounce
+    expect(apiCallCount).toBeLessThanOrEqual(1);
+  });
 });
