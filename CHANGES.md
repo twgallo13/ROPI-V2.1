@@ -2,6 +2,24 @@
 
 ---
 
+## aoss.v0.6.2 — 2025-12-09
+
+### Attribute Registry Normalization (Notion snake_case)
+
+**Changes:**
+- Normalized attribute registry to Notion canonical source (snake_case IDs, full 64-attribute registry)
+- Renamed footwear width field to `shoe_width`, standardized `made_in` (replaced `country_of_origin`)
+- Removed mock/test attributes (pattern, occasion, season, features, waterproof, sustainable, care_instructions)
+- Added `tax_class` and other export-required attributes with `required_for_export: true` flag
+- Relocated canonical registry to `BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json`
+- Updated SDK config at `packages/sdk/config/attributeRegistry.json`
+- Deprecated old `schemas/attribute-registry.json` → `schemas/attribute-registry.legacy.json`
+
+**Version:** 1.0.1  
+**Attributes:** 64 total, 24 marked required_for_export
+
+---
+
 ## aoss.v0.6.1 — 2025-12-08
 
 ### Admin Settings Frontend Release

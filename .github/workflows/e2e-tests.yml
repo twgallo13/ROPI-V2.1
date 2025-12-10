@@ -208,12 +208,10 @@ jobs:
             if [ -n "${PREVIEW_URL:-}" ]; then
               TEST_URL="${PREVIEW_URL}"
             else
-              # Fallback: try to construct preview URL
-              # Note: Firebase generates random suffix, so this may not work
-              PR_NUM=${{ github.event.pull_request.number }}
-              TEST_URL="https://ropi-aoss-staging--pr-${PR_NUM}-aoss-staging.web.app"
-              echo "::warning::Could not extract preview URL — will attempt constructed preview URL (likely to fail): ${TEST_URL}"
-              echo "::warning::If E2E tests timeout, check deployment status at https://github.com/${{ github.repository }}/actions"
+              # Fallback: use staging URL instead of non-existent preview URL
+              # Firebase preview deployment may fail due to quota or other issues
+              TEST_URL="https://ropi-aoss-staging.web.app"
+              echo "::warning::Preview URL not available — using staging URL for E2E tests"
             fi
           else
             # Default to staging
