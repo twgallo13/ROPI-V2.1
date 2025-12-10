@@ -40,9 +40,11 @@ export function ProfilePage() {
         const response = await apiFetch<UserProfile>('/api/users/me', {
           method: 'GET',
         });
-        setProfile(response);
-        setDisplayName(response.displayName || '');
-        setPhotoURL(response.photoURL || '');
+        if (response) {
+          setProfile(response);
+          setDisplayName(response.displayName || '');
+          setPhotoURL(response.photoURL || '');
+        }
       } catch (error) {
         console.error('Failed to load profile:', error);
         setMessage({
@@ -72,7 +74,9 @@ export function ProfilePage() {
         }),
       });
 
-      setProfile(response);
+      if (response) {
+        setProfile(response);
+      }
       setMessage({
         type: 'success',
         text: 'Profile updated successfully',

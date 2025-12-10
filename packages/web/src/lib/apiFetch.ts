@@ -3,9 +3,9 @@
  * 
  * Centralized helper for all API calls that require Firebase authentication.
  * Automatically adds Authorization header with Firebase ID token.
- * Validates JSON responses and provides helpful error messages.
+ * Handles both JSON and no-content responses gracefully.
  * 
- * Homer v2.0.0
+ * Homer v2.1.0
  */
 
 import { getAuthHeaders } from './authHeaders';
@@ -19,17 +19,17 @@ interface ApiFetchOptions extends Omit<RequestInit, 'headers'> {
 
 /**
  * Fetch wrapper that automatically adds Firebase Auth headers
- * and validates JSON responses.
+ * and validates JSON responses. Accepts 204 No Content and empty responses.
  * 
  * @param url - API endpoint (relative /api/* or absolute URL)
  * @param options - Fetch options (method, body, etc.)
- * @returns Promise<T> Parsed JSON response
- * @throws Error if response is not JSON or HTTP error occurs
+ * @returns Promise<T> Parsed JSON response, or undefined for 204/empty responses
+ * @throws Error if response is HTTP error, or has non-empty non-JSON body
  */
 export async function apiFetch<T = unknown>(
   url: string,
   options: ApiFetchOptions = {}
-): Promise<T> {
+): Promise<T | undefined> {
   const { skipAuth = false, headers: customHeaders = {}, ...fetchOptions } = options;
 
   // Build full URL if relative
@@ -67,7 +67,12 @@ export async function apiFetch<T = unknown>(
     throw new Error(`HTTP ${response.status}: ${errorPreview}`);
   }
 
-  // Validate JSON response
+  // Handle 204 No Content or empty responses
+  if (response.status === 204 || !text.trim()) {
+    return undefined;
+  }
+
+  // Validate JSON response for non-empty bodies
   if (!contentType.includes('application/json')) {
     throw new Error(
       `Expected JSON response but got ${contentType || 'unknown content-type'}. ` +
@@ -90,7 +95,7 @@ export async function apiFetch<T = unknown>(
 export async function apiFetchGet<T = unknown>(
   url: string,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, { ...options, method: 'GET' });
 }
 
@@ -101,7 +106,7 @@ export async function apiFetchPost<T = unknown>(
   url: string,
   body?: unknown,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, {
     ...options,
     method: 'POST',
@@ -116,7 +121,7 @@ export async function apiFetchPut<T = unknown>(
   url: string,
   body?: unknown,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, {
     ...options,
     method: 'PUT',
@@ -131,7 +136,7 @@ export async function apiFetchPatch<T = unknown>(
   url: string,
   body?: unknown,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, {
     ...options,
     method: 'PATCH',
@@ -145,7 +150,7 @@ export async function apiFetchPatch<T = unknown>(
 export async function apiFetchDelete<T = unknown>(
   url: string,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, { ...options, method: 'DELETE' });
 }
 

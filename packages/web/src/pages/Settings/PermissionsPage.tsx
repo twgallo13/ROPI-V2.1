@@ -63,9 +63,11 @@ export function PermissionsPage() {
       setLoading(true);
       setMessage(null);
       const data = await apiFetch<PermissionsResponse>('/api/admin/permissions');
-      setPermissions(data.permissions);
-      setOriginalPermissions(data.permissions);
-      setIsDefault(data.isDefault);
+      if (data) {
+        setPermissions(data.permissions);
+        setOriginalPermissions(data.permissions);
+        setIsDefault(data.isDefault);
+      }
     } catch (error: any) {
       setMessage({
         type: 'error',
@@ -113,9 +115,11 @@ export function PermissionsPage() {
       const data = await apiFetch<PermissionsResponse>('/api/admin/permissions/reset', {
         method: 'POST',
       });
-      setPermissions(data.permissions);
-      setOriginalPermissions(data.permissions);
-      setIsDefault(true);
+      if (data) {
+        setPermissions(data.permissions);
+        setOriginalPermissions(data.permissions);
+        setIsDefault(true);
+      }
       setMessage({
         type: 'success',
         text: 'Permissions reset to defaults',
