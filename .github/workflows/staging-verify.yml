@@ -1,0 +1,125 @@
+name: Staging Verify (Normalization / Import / Export / E2E)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: 'The branch/ref to test (PR branch)'
+        required: true
+        default: 'chore/normalize-attribute-registry-notion-2025-12-09'
+
+jobs:
+  staging-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
+    steps:
+      - name: Checkout target ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.target_ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@8
+
+      - name: Install dependencies
+        run: pnpm install -w
+
+      - name: Build API & Web
+        run: |
+          pnpm --filter @ropi-aoss/api build
+          pnpm --filter @ropi-aoss/web build
+
+      - name: Create service account JSON from secret
+        if: env.GCP_SA_KEY_BASE64 != ''
+        run: |
+          mkdir -p /tmp/ropi_secrets
+          echo "$GCP_SA_KEY_BASE64" | base64 --decode > /tmp/ropi_secrets/gcp_sa.json
+          echo "Wrote GCP SA to /tmp/ropi_secrets/gcp_sa.json"
+        shell: bash
+
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS
+        if: env.GCP_SA_KEY_BASE64 != ''
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/ropi_secrets/gcp_sa.json" >> $GITHUB_ENV
+
+      - name: Run attribute normalization (idempotent)
+        run: |
+          pnpm --filter @ropi-aoss/api normalize:attributes > /tmp/normalize.log 2>&1 || { cat /tmp/normalize.log; exit 10; }
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/ropi_secrets/gcp_sa.json
+
+      - name: Upload normalize log
+        uses: actions/upload-artifact@v4
+        with:
+          name: normalize-log
+          path: /tmp/normalize.log
+
+      - name: Run import validation (if script exists)
+        run: |
+          if [ -f ./scripts/validate_import.sh ]; then
+            ./scripts/validate_import.sh ./BUILD_ROPI_AOSS_v1/02-schema/sample_import_required.csv > /tmp/import_validate.log 2>&1 || { cat /tmp/import_validate.log; exit 11; }
+          else
+            echo "NO_IMPORT_VALIDATOR" > /tmp/import_validate.log
+            echo "No import validator script found — manual check recommended" >> /tmp/import_validate.log
+          fi
+
+      - name: Upload import validation log
+        uses: actions/upload-artifact@v4
+        with:
+          name: import-validate-log
+          path: /tmp/import_validate.log
+
+      - name: Run export to RO staging (if script exists)
+        run: |
+          if [ -f ./scripts/run_export_staging.sh ]; then
+            ./scripts/run_export_staging.sh > /tmp/export.log 2>&1 || { cat /tmp/export.log; exit 12; }
+          else
+            echo "NO_EXPORT_SCRIPT" > /tmp/export.log
+            echo "No export script found — manual RO export recommended" >> /tmp/export.log
+          fi
+
+      - name: Upload export log
+        uses: actions/upload-artifact@v4
+        with:
+          name: export-log
+          path: /tmp/export.log
+
+      - name: Install Firebase CLI
+        run: |
+          npm i -g firebase-tools
+
+      - name: Deploy to staging (functions + hosting)
+        run: |
+          echo "Deploying to Firebase project $FIREBASE_PROJECT"
+          firebase deploy --only functions,hosting --token "$FIREBASE_TOKEN" --project "$FIREBASE_PROJECT" > /tmp/firebase_deploy.log 2>&1 || { cat /tmp/firebase_deploy.log; exit 13; }
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
+
+      - name: Upload firebase deploy log
+        uses: actions/upload-artifact@v4
+        with:
+          name: firebase-deploy-log
+          path: /tmp/firebase_deploy.log
+
+      - name: Run Playwright E2E
+        run: |
+          pnpm --filter @ropi-aoss/web test:e2e --reporter=list > /tmp/e2e.log 2>&1 || { cat /tmp/e2e.log; exit 14; }
+
+      - name: Upload e2e log
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-log
+          path: /tmp/e2e.log
+
+      - name: Staging verify summary
+        run: |
+          echo "Workflow finished. Artifacts: normalize-log, import-validate-log, export-log, firebase-deploy-log, e2e-log"
