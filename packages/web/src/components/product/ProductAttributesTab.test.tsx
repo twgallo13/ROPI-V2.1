@@ -32,7 +32,7 @@ vi.mock('../../hooks/useAttributeRegistry', () => ({
 describe('ProductAttributesTab - Attribute Format Compatibility', () => {
   const mockOnUpdate = vi.fn();
 
-  const createMockProduct = (overrides: Partial<Product> = {}): Product => ({
+  const createMockProduct = (overrides: Record<string, any> = {}): Product => ({
     id: 'test-product-1',
     name: 'Test Product',
     sku: 'TEST-001',
@@ -48,13 +48,13 @@ describe('ProductAttributesTab - Attribute Format Compatibility', () => {
     launchStatus: 'available',
     attributes: {},
     descriptions: {},
-    media: {},
-    exportReadiness: { overall: 'incomplete', byWebsite: {} },
+    media: { heroImage: '', gallery: [] },
+    exportReadiness: { overall: 0, byWebsite: {} },
     observations: [],
     smartSuggestions: [],
     aiHistory: [],
     ...overrides,
-  });
+  } as Product);
 
   it('should read attributes from new format (attributes.*)', () => {
     const productNewFormat = createMockProduct({
