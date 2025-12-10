@@ -94,7 +94,7 @@ AD-001,Adidas Running Shoe,ADIDAS,Running shoe,Mens,Running,White,10,129.99,,99.
           launchDate: '2024-12-15T00:00:00.000Z',
           status: 'READY_FOR_EXPORT',
           images: [{ url: 'https://example.com/nike1.jpg', isPrimary: true }],
-          flags: { isApproved: true, isActive: true },
+          flags: { isLimited: true, isOnlineExclusive: false },
         },
       ];
 
