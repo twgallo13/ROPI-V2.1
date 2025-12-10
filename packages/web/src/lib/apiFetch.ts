@@ -95,7 +95,7 @@ export async function apiFetch<T = unknown>(
 export async function apiFetchGet<T = unknown>(
   url: string,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, { ...options, method: 'GET' });
 }
 
@@ -106,7 +106,7 @@ export async function apiFetchPost<T = unknown>(
   url: string,
   body?: unknown,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, {
     ...options,
     method: 'POST',
@@ -121,7 +121,7 @@ export async function apiFetchPut<T = unknown>(
   url: string,
   body?: unknown,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, {
     ...options,
     method: 'PUT',
@@ -136,7 +136,7 @@ export async function apiFetchPatch<T = unknown>(
   url: string,
   body?: unknown,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, {
     ...options,
     method: 'PATCH',
@@ -150,7 +150,7 @@ export async function apiFetchPatch<T = unknown>(
 export async function apiFetchDelete<T = unknown>(
   url: string,
   options?: Omit<ApiFetchOptions, 'method' | 'body'>
-): Promise<T> {
+): Promise<T | undefined> {
   return apiFetch<T>(url, { ...options, method: 'DELETE' });
 }
 

@@ -122,12 +122,15 @@ export function useUsers(): UseUsersReturn {
       
       const response = await apiFetch<UsersListResponse>(endpoint);
       
+      if (!response) {
+        throw new Error('Failed to fetch users: empty response');
+      }
       if (nextPageToken) {
         // Append to existing users for pagination
-        setUsers(prev => [...prev, ...response.users]);
+        setUsers(prev => [...prev, ...(response.users ?? [])]);
       } else {
         // Replace users for initial load
-        setUsers(response.users);
+        setUsers(response.users ?? []);
       }
       
       setPageToken(response.pageToken);
@@ -151,7 +154,7 @@ export function useUsers(): UseUsersReturn {
     
     try {
       const response = await apiFetch<User>(`/api/admin/settings/users/${uid}`);
-      return response;
+      return response ?? null;
     } catch (err) {
       console.error('Failed to fetch user:', err);
       throw err;
@@ -175,6 +178,9 @@ export function useUsers(): UseUsersReturn {
         body: JSON.stringify(data),
       });
       
+      if (!response) {
+        throw new Error('Failed to create user: empty response');
+      }
       // Optimistically add to list
       setUsers(prev => [response, ...prev]);
       
@@ -205,6 +211,9 @@ export function useUsers(): UseUsersReturn {
         body: JSON.stringify(data),
       });
       
+      if (!response) {
+        throw new Error('Failed to update user: empty response');
+      }
       // Optimistically update in list
       setUsers(prev => prev.map(u => u.uid === uid ? response : u));
       
@@ -259,6 +268,9 @@ export function useUsers(): UseUsersReturn {
         { method: 'POST' }
       );
       
+      if (!response) {
+        throw new Error('Failed to send password reset: empty response');
+      }
       return response;
     } catch (err) {
       throw err;
@@ -275,7 +287,9 @@ export function useUsers(): UseUsersReturn {
     
     try {
       const response = await apiFetch<{ roles: Role[] }>('/api/admin/settings/roles');
-      setRoles(response.roles);
+      if (response) {
+        setRoles(response.roles);
+      }
     } catch (err) {
       console.error('Failed to fetch roles:', err);
     }
