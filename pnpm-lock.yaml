@@ -39,6 +39,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@ropi-aoss/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       busboy:
         specifier: ^1.6.0
         version: 1.6.0
@@ -103,6 +106,9 @@ importers:
       '@notionhq/client':
         specifier: ^3.0.0
         version: 3.1.3
+      '@ropi-aoss/sdk':
+        specifier: workspace:*
+        version: link:../sdk
     devDependencies:
       '@types/node':
         specifier: ^18.0.0
@@ -110,6 +116,9 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@18.19.130)(jsdom@27.2.0)
 
   packages/sdk:
     dependencies:

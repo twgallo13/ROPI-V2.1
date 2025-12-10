@@ -42,7 +42,7 @@ export function useUserProfile(): UseUserProfileReturn {
       const response = await apiFetch<UserProfile>('/api/users/me', {
         method: 'GET',
       });
-      setProfile(response ?? null);
+      setProfile(response || null);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       setError(error);
@@ -68,12 +68,11 @@ export function useUserProfile(): UseUserProfileReturn {
           body: JSON.stringify(body),
         });
         
-        const profile = response ?? null;
-        if (!profile) {
+        if (!response) {
           throw new Error('Failed to update profile: empty response');
         }
-        setProfile(profile);
-        return profile;
+        setProfile(response);
+        return response;
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
         setError(error);

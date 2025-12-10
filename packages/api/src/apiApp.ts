@@ -59,6 +59,7 @@ import {
   processImportBatchHandler,
   getBatchStatusHandler,
 } from './endpoints/processImportBatch';
+import { retailopsImportPreviewApiHandler } from './endpoints/retailopsImportPreview';
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 
 // Reconciliation (Homer v1.0.0)
@@ -132,6 +133,11 @@ api.post('/syncAttributeRegistry', async (req, res) => {
     res.status(500).json({ error: 'SYNC_FAILED', message });
   }
 });
+
+/**
+ * RetailOps endpoints
+ */
+api.post('/retailops/import-preview', requireAdmin, retailopsImportPreviewApiHandler);
 
 /**
  * Attribute Reconciliation endpoints (Homer v1.0.0)

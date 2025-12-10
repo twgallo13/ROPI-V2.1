@@ -127,10 +127,10 @@ export function useUsers(): UseUsersReturn {
       }
       if (nextPageToken) {
         // Append to existing users for pagination
-        setUsers(prev => [...prev, ...(response.users ?? [])]);
+        setUsers(prev => [...prev, ...response.users]);
       } else {
         // Replace users for initial load
-        setUsers(response.users ?? []);
+        setUsers(response.users);
       }
       
       setPageToken(response.pageToken);
@@ -154,7 +154,7 @@ export function useUsers(): UseUsersReturn {
     
     try {
       const response = await apiFetch<User>(`/api/admin/settings/users/${uid}`);
-      return response ?? null;
+      return response || null;
     } catch (err) {
       console.error('Failed to fetch user:', err);
       throw err;
