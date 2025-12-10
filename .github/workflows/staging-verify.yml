@@ -36,6 +36,7 @@ jobs:
       - name: Build API & Web
         run: |
           pnpm --filter @ropi-aoss/api build
+          cd packages/api && npx tsc
           pnpm --filter @ropi-aoss/web build
 
       - name: Create service account JSON from secret
