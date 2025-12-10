@@ -36,7 +36,7 @@ function getAttributeValue(product: Product, attributeKey: string): unknown {
     return product.attributes[attributeKey];
   }
   // Fallback to legacy format: top-level key
-  return (product as Record<string, unknown>)[attributeKey];
+  return (product as unknown as Record<string, unknown>)[attributeKey];
 }
 
 /**

@@ -32,18 +32,37 @@ vi.mock('../../hooks/useAttributeRegistry', () => ({
 describe('ProductAttributesTab - Attribute Format Compatibility', () => {
   const mockOnUpdate = vi.fn();
 
+  const createMockProduct = (overrides: Partial<Product> = {}): Product => ({
+    id: 'test-product-1',
+    name: 'Test Product',
+    sku: 'TEST-001',
+    styleId: 'STYLE-001',
+    status: 'active',
+    websites: [],
+    brand: 'Test Brand',
+    category: 'Shoes',
+    department: 'Women',
+    subcategory: 'Athletic',
+    firstReceived: new Date().toISOString(),
+    launchDate: new Date().toISOString(),
+    launchStatus: 'available',
+    attributes: {},
+    descriptions: {},
+    media: { images: [] },
+    exportReadiness: {},
+    observations: [],
+    smartSuggestions: [],
+    aiHistory: [],
+    ...overrides,
+  });
+
   it('should read attributes from new format (attributes.*)', () => {
-    const productNewFormat: Product = {
-      id: 'test-product-1',
-      name: 'Test Product',
-      sku: 'TEST-001',
+    const productNewFormat = createMockProduct({
       attributes: {
         department: 'Women',
         category: 'Shoes',
       },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    });
 
     render(<ProductAttributesTab product={productNewFormat} onUpdate={mockOnUpdate} />);
 
@@ -64,16 +83,10 @@ describe('ProductAttributesTab - Attribute Format Compatibility', () => {
   });
 
   it('should read attributes from legacy format (top-level keys)', () => {
-    const productLegacyFormat: Product = {
-      id: 'test-product-2',
-      name: 'Legacy Product',
-      sku: 'LEGACY-001',
+    const productLegacyFormat = createMockProduct({
       department: 'Men',
       category: 'Apparel',
-      attributes: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    } as Product;
+    });
 
     render(<ProductAttributesTab product={productLegacyFormat} onUpdate={mockOnUpdate} />);
 
@@ -94,18 +107,13 @@ describe('ProductAttributesTab - Attribute Format Compatibility', () => {
   });
 
   it('should prefer new format when both formats exist', () => {
-    const productBothFormats: Product = {
-      id: 'test-product-3',
-      name: 'Dual Format Product',
-      sku: 'DUAL-001',
+    const productBothFormats = createMockProduct({
       department: 'Kids', // legacy format
       attributes: {
         department: 'Women', // new format - should take precedence
         category: 'Accessories',
       },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    } as Product;
+    });
 
     render(<ProductAttributesTab product={productBothFormats} onUpdate={mockOnUpdate} />);
 
@@ -118,14 +126,9 @@ describe('ProductAttributesTab - Attribute Format Compatibility', () => {
   });
 
   it('should handle missing attributes gracefully', () => {
-    const productNoAttributes: Product = {
-      id: 'test-product-4',
-      name: 'Empty Product',
-      sku: 'EMPTY-001',
+    const productNoAttributes = createMockProduct({
       attributes: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    });
 
     render(<ProductAttributesTab product={productNoAttributes} onUpdate={mockOnUpdate} />);
 
