@@ -345,13 +345,16 @@ describe('Users Endpoints', () => {
         getUser: vi.fn().mockResolvedValue(mockUser),
       };
 
+      const mockProfileDoc = {
+        get: vi.fn().mockResolvedValue({ exists: true }),
+        set: vi.fn().mockResolvedValue(undefined),
+      };
+
       const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
-              doc: vi.fn().mockReturnValue({
-                update: vi.fn().mockResolvedValue(undefined),
-              }),
+              doc: vi.fn().mockReturnValue(mockProfileDoc),
             }),
           }),
         }),
@@ -364,6 +367,10 @@ describe('Users Endpoints', () => {
 
       expect(mockAuthInstance.updateUser).toHaveBeenCalledWith('test-uid', { displayName: 'Updated Name' });
       expect(mockAuthInstance.setCustomUserClaims).toHaveBeenCalledWith('test-uid', { role: 'admin' });
+      expect(mockProfileDoc.set).toHaveBeenCalledWith(
+        expect.objectContaining({ displayName: 'Updated Name', role: 'admin' }),
+        { merge: true }
+      );
       expect(mockStatus).toHaveBeenCalledWith(200);
     });
 
@@ -381,6 +388,61 @@ describe('Users Endpoints', () => {
         })
       );
     });
+
+    it('should create profile doc if missing (create-or-merge behavior)', async () => {
+      mockReq.params = { uid: 'test-uid-no-profile' };
+      mockReq.body = {
+        displayName: 'New Name',
+        role: 'merch',
+      };
+
+      const mockUser = {
+        uid: 'test-uid-no-profile',
+        email: 'test@test.com',
+        displayName: 'New Name',
+        emailVerified: true,
+        customClaims: { role: 'merch' },
+        metadata: {},
+        disabled: false,
+        providerData: [],
+      };
+
+      const mockAuthInstance = {
+        updateUser: vi.fn().mockResolvedValue(mockUser),
+        setCustomUserClaims: vi.fn().mockResolvedValue(undefined),
+        getUser: vi.fn().mockResolvedValue(mockUser),
+      };
+
+      const mockProfileDoc = {
+        get: vi.fn().mockResolvedValue({ exists: false }), // Profile doc missing
+        set: vi.fn().mockResolvedValue(undefined),
+      };
+
+      const mockDbInstance = {
+        collection: vi.fn().mockReturnValue({
+          doc: vi.fn().mockReturnValue({
+            collection: vi.fn().mockReturnValue({
+              doc: vi.fn().mockReturnValue(mockProfileDoc),
+            }),
+          }),
+        }),
+      };
+
+      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
+
+      await updateUserHandler(mockReq as Request, mockRes as Response);
+
+      // Verify set was called with merge: true (not update which would fail)
+      expect(mockProfileDoc.set).toHaveBeenCalledWith(
+        expect.objectContaining({
+          displayName: 'New Name',
+          role: 'merch',
+        }),
+        { merge: true }
+      );
+      expect(mockStatus).toHaveBeenCalledWith(200);
+    });
   });
 
   describe('deleteUserHandler', () => {
@@ -392,13 +454,15 @@ describe('Users Endpoints', () => {
         updateUser: vi.fn().mockResolvedValue({}),
       };
 
+      const mockProfileDoc = {
+        set: vi.fn().mockResolvedValue(undefined),
+      };
+
       const mockDbInstance = {
         collection: vi.fn().mockReturnValue({
           doc: vi.fn().mockReturnValue({
             collection: vi.fn().mockReturnValue({
-              doc: vi.fn().mockReturnValue({
-                update: vi.fn().mockResolvedValue(undefined),
-              }),
+              doc: vi.fn().mockReturnValue(mockProfileDoc),
             }),
           }),
         }),
@@ -410,6 +474,10 @@ describe('Users Endpoints', () => {
       await deleteUserHandler(mockReq as Request, mockRes as Response);
 
       expect(mockAuthInstance.updateUser).toHaveBeenCalledWith('test-uid', { disabled: true });
+      expect(mockProfileDoc.set).toHaveBeenCalledWith(
+        expect.objectContaining({ deletedAt: expect.anything() }),
+        { merge: true }
+      );
       expect(mockStatus).toHaveBeenCalledWith(204);
     });
 

@@ -165,7 +165,7 @@ test.describe('Observations - Non-Admin User', () => {
 
   test('should allow non-admin to create observation on own products', async ({ page }) => {
     // Navigate to a product they own or have access to
-    await page.goto('/app/products');
+    await page.goto('/products');
     
     // Wait for page to load
     await page.waitForLoadState('domcontentloaded');

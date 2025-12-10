@@ -3,7 +3,7 @@
  * 
  * Tests complete user flow:
  * - Sign in as admin
- * - Navigate to /app/products
+ * - Navigate to /products
  * - Verify products load
  * - Test search functionality
  * - Click product card
@@ -30,7 +30,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should load products list page', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for page to load
     await expect(page.locator('h1')).toContainText('Products');
@@ -43,7 +43,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should display product cards with correct information', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for products to load
     await page.waitForSelector('.product-card', { timeout: 10000 });
@@ -63,7 +63,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should handle search functionality', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for initial load
     await page.waitForSelector('.product-card', { timeout: 10000 });
@@ -93,7 +93,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should clear search when clicking clear button', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Enter search query
     await page.fill('input[type="search"]', 'TEST');
@@ -107,7 +107,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should navigate to product editor when clicking product card', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for products to load
     await page.waitForSelector('.product-card', { timeout: 10000 });
@@ -129,7 +129,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should handle pagination with "Load More" button', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for initial load
     await page.waitForSelector('.product-card', { timeout: 10000 });
@@ -153,7 +153,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should show loading state while fetching', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Should show loading spinner initially
     const loadingSpinner = page.locator('.loading-spinner, .spinner');
@@ -170,7 +170,7 @@ test.describe('Products List Page', () => {
 
   test('should show empty state when no products exist', async ({ page }) => {
     // This test may need mocking or a test environment with no products
-    await page.goto('/app/products?q=NONEXISTENT-QUERY-XYZ123');
+    await page.goto('/products?q=NONEXISTENT-QUERY-XYZ123');
 
     // Wait for search to complete
     await page.waitForTimeout(2000);
@@ -187,7 +187,7 @@ test.describe('Products List Page', () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
 
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for products to load
     await page.waitForSelector('.product-card', { timeout: 10000 });
@@ -206,7 +206,7 @@ test.describe('Products List Page', () => {
   });
 
   test('should handle keyboard navigation', async ({ page }) => {
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for products to load
     await page.waitForSelector('.product-card', { timeout: 10000 });
@@ -236,7 +236,7 @@ test.describe('Products List Page', () => {
       });
     });
 
-    await page.goto('/app/products');
+    await page.goto('/products');
 
     // Wait for error state
     await page.waitForTimeout(2000);

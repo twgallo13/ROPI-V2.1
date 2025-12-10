@@ -350,7 +350,12 @@ export async function updateUserHandler(req: Request, res: Response) {
       if (role !== undefined) updateData.role = role;
       if (emailVerified !== undefined) updateData.emailVerified = emailVerified;
       
-      await profileRef.update(updateData);
+      // Use set with merge to create document if missing (prevents 500 errors)
+      const profileSnapshot = await profileRef.get();
+      if (!profileSnapshot.exists) {
+        console.log(`📝 Creating missing profile doc for user ${uid}`);
+      }
+      await profileRef.set(updateData, { merge: true });
       
       // Get updated user
       const updatedUserRecord = await auth.getUser(uid);
@@ -398,10 +403,11 @@ export async function deleteUserHandler(req: Request, res: Response) {
       if (soft) {
         // Soft delete: mark deletedAt in profile
         const profileRef = db.collection('users').doc('profiles').collection('data').doc(uid);
-        await profileRef.update({
+        // Use set with merge to handle case where profile doc is missing
+        await profileRef.set({
           deletedAt: admin.firestore.Timestamp.now(),
           updatedBy: actorUid,
-        });
+        }, { merge: true });
         
         // Disable user in Auth
         await auth.updateUser(uid, { disabled: true });

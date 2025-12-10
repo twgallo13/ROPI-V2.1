@@ -43,8 +43,8 @@ function ProductEditorPage() {
     return (
       <div className="product-editor-error">
         <h2>No product ID in URL</h2>
-        <p>Please use /app/products/:id</p>
-        <button onClick={() => navigate('/app/products')}>Back to Products</button>
+        <p>Please use /products/:id</p>
+        <button onClick={() => navigate('/products')}>Back to Products</button>
       </div>
     );
   }
