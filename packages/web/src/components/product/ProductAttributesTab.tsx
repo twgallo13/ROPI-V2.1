@@ -23,6 +23,23 @@ interface ProductAttributesTabProps {
 }
 
 /**
+ * Compatibility helper to read attribute values from both new and legacy formats.
+ * Tries new format (attributes.*) first, then falls back to top-level key.
+ * 
+ * @param product - Product object
+ * @param attributeKey - Attribute key to read (e.g., 'department', 'category')
+ * @returns Attribute value from either location, or undefined if not found
+ */
+function getAttributeValue(product: Product, attributeKey: string): unknown {
+  // Try new format: attributes.*
+  if (product.attributes?.[attributeKey] !== undefined) {
+    return product.attributes[attributeKey];
+  }
+  // Fallback to legacy format: top-level key
+  return (product as unknown as Record<string, unknown>)[attributeKey];
+}
+
+/**
  * Renders the appropriate input control based on attribute data_type
  */
 function AttributeInput({
@@ -147,7 +164,20 @@ function ProductAttributesTab({ product, onUpdate }: ProductAttributesTabProps) 
   const [newAttrKey, setNewAttrKey] = useState('');
   const [newAttrValue, setNewAttrValue] = useState('');
 
-  const productAttrs = product.attributes || {};
+  // Use compatibility helper to gather attributes from both new (attributes.*) and legacy (top-level) formats
+  const productAttrs: Record<string, unknown> = {};
+  activeAttributes.forEach((attr) => {
+    const value = getAttributeValue(product, attr.attribute_id);
+    if (value !== undefined) {
+      productAttrs[attr.attribute_id] = value;
+    }
+  });
+  // Also include any attributes in the attributes object not in registry
+  Object.entries(product.attributes || {}).forEach(([key, value]) => {
+    if (!(key in productAttrs)) {
+      productAttrs[key] = value;
+    }
+  });
 
   // Get attribute IDs that are in registry
   const registryIds = new Set(activeAttributes.map((a) => a.attribute_id));

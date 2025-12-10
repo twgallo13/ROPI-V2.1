@@ -53,7 +53,7 @@ function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link
-      to={`/app/products/${id}`}
+      to={`/products/${id}`}
       className="product-card"
       aria-label={`View product ${name || sku || id}`}
     >
