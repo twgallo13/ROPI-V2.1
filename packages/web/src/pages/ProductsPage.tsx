@@ -143,9 +143,27 @@ function ProductCard({ product }: ProductCardProps) {
  */
 function ProductsPage() {
   const [searchInput, setSearchInput] = useState('');
-  const { items, loading, error, hasMore, search, setSearch, loadMore, refresh } = useProducts({
-    limit: 24,
+  
+  // Enhanced hook with filters and sorting
+  const {
+    items,
+    loading,
+    error,
+    hasMore,
+    search,
+    setSearch,
+    filters,
+    setFilters,
+    sortBy,
+    setSortBy,
+    sortDir,
+    setSortDir,
+    loadMore,
+    refresh,
+  } = useProducts({
+    limit: 50,
     autoLoad: true,
+    debounceMs: 300,
   });
 
   /**
@@ -247,6 +265,119 @@ function ProductsPage() {
               </button>
             </div>
           )}
+        </div>
+
+        {/* Filters and Sort Controls */}
+        <div className="products-page__controls">
+          {/* Sort Dropdown */}
+          <div className="products-page__sort">
+            <label htmlFor="sort-select" className="products-page__sort-label">
+              Sort by:
+            </label>
+            <select
+              id="sort-select"
+              className="products-page__sort-select"
+              value={`${sortBy}-${sortDir}`}
+              onChange={(e) => {
+                const [field, direction] = e.target.value.split('-');
+                setSortBy(field);
+                setSortDir(direction as 'asc' | 'desc');
+              }}
+              aria-label="Sort products"
+            >
+              <option value="updatedAt-desc">Recently Updated</option>
+              <option value="updatedAt-asc">Oldest First</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+              <option value="sku-asc">SKU (A-Z)</option>
+              <option value="sku-desc">SKU (Z-A)</option>
+              <option value="createdAt-desc">Recently Created</option>
+              <option value="createdAt-asc">Oldest Created</option>
+            </select>
+          </div>
+
+          {/* Filter Controls */}
+          <div className="products-page__filters">
+            {/* Brand Filter */}
+            <div className="products-page__filter">
+              <label htmlFor="brand-filter" className="products-page__filter-label">
+                Brand:
+              </label>
+              <input
+                id="brand-filter"
+                type="text"
+                className="products-page__filter-input"
+                placeholder="Filter by brand..."
+                value={filters.brand || ''}
+                onChange={(e) => setFilters({ ...filters, brand: e.target.value || undefined })}
+                aria-label="Filter by brand"
+              />
+            </div>
+
+            {/* Status Filter */}
+            <div className="products-page__filter">
+              <label htmlFor="status-filter" className="products-page__filter-label">
+                Status:
+              </label>
+              <select
+                id="status-filter"
+                className="products-page__filter-select"
+                value={filters.status || ''}
+                onChange={(e) => setFilters({ ...filters, status: e.target.value || undefined })}
+                aria-label="Filter by status"
+              >
+                <option value="">All Statuses</option>
+                <option value="draft">Draft</option>
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="discontinued">Discontinued</option>
+              </select>
+            </div>
+
+            {/* Category Filter */}
+            <div className="products-page__filter">
+              <label htmlFor="category-filter" className="products-page__filter-label">
+                Category:
+              </label>
+              <input
+                id="category-filter"
+                type="text"
+                className="products-page__filter-input"
+                placeholder="Filter by category..."
+                value={filters.category || ''}
+                onChange={(e) => setFilters({ ...filters, category: e.target.value || undefined })}
+                aria-label="Filter by category"
+              />
+            </div>
+
+            {/* Department Filter */}
+            <div className="products-page__filter">
+              <label htmlFor="department-filter" className="products-page__filter-label">
+                Department:
+              </label>
+              <input
+                id="department-filter"
+                type="text"
+                className="products-page__filter-input"
+                placeholder="Filter by department..."
+                value={filters.department || ''}
+                onChange={(e) => setFilters({ ...filters, department: e.target.value || undefined })}
+                aria-label="Filter by department"
+              />
+            </div>
+
+            {/* Clear Filters Button */}
+            {(filters.brand || filters.status || filters.category || filters.department) && (
+              <button
+                type="button"
+                className="products-page__clear-filters"
+                onClick={() => setFilters({})}
+                title="Clear all filters"
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Results Count */}

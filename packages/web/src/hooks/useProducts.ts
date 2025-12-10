@@ -51,10 +51,21 @@ export interface ProductsListResponse {
   total?: number;
 }
 
+export interface ProductFilters {
+  brand?: string;
+  status?: string;
+  category?: string;
+  department?: string;
+}
+
 export interface UseProductsOptions {
   limit?: number;
   initialSearch?: string;
+  initialFilters?: ProductFilters;
+  initialSortBy?: string;
+  initialSortDir?: 'asc' | 'desc';
   autoLoad?: boolean;
+  debounceMs?: number;
 }
 
 export interface UseProductsResult {
@@ -65,7 +76,13 @@ export interface UseProductsResult {
   pageToken: string | null;
   total: number | null;
   search: string;
+  filters: ProductFilters;
+  sortBy: string;
+  sortDir: 'asc' | 'desc';
   setSearch: (search: string) => void;
+  setFilters: (filters: ProductFilters) => void;
+  setSortBy: (sortBy: string) => void;
+  setSortDir: (sortDir: 'asc' | 'desc') => void;
   refresh: () => Promise<void>;
   loadMore: () => Promise<void>;
 }
@@ -94,9 +111,13 @@ export interface UseProductsResult {
  */
 export function useProducts(options: UseProductsOptions = {}): UseProductsResult {
   const {
-    limit = 24,
+    limit = 50,
     initialSearch = '',
+    initialFilters = {},
+    initialSortBy = 'updatedAt',
+    initialSortDir = 'desc',
     autoLoad = true,
+    debounceMs = 300,
   } = options;
 
   const [items, setItems] = useState<ProductSummary[]>([]);
@@ -106,13 +127,20 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
   const [pageToken, setPageToken] = useState<string | null>(null);
   const [total, setTotal] = useState<number | null>(null);
   const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  const [filters, setFilters] = useState<ProductFilters>(initialFilters);
+  const [sortBy, setSortBy] = useState(initialSortBy);
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>(initialSortDir);
 
   /**
    * Fetch products from API with auth headers
    */
   const fetchProducts = useCallback(async (
     reset: boolean = false,
-    searchQuery: string = search,
+    searchQuery: string = debouncedSearch,
+    currentFilters: ProductFilters = filters,
+    currentSortBy: string = sortBy,
+    currentSortDir: 'asc' | 'desc' = sortDir,
   ): Promise<void> => {
     try {
       setLoading(true);
@@ -124,6 +152,8 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
       // Build query params
       const params = new URLSearchParams({
         limit: limit.toString(),
+        sortBy: currentSortBy,
+        sortDir: currentSortDir,
       });
 
       if (!reset && pageToken) {
@@ -132,6 +162,20 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
 
       if (searchQuery) {
         params.append('q', searchQuery);
+      }
+
+      // Add filter params
+      if (currentFilters.brand) {
+        params.append('brand', currentFilters.brand);
+      }
+      if (currentFilters.status) {
+        params.append('status', currentFilters.status);
+      }
+      if (currentFilters.category) {
+        params.append('category', currentFilters.category);
+      }
+      if (currentFilters.department) {
+        params.append('department', currentFilters.department);
       }
 
       // Fetch from API
@@ -167,24 +211,24 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
     } finally {
       setLoading(false);
     }
-  }, [limit, pageToken, search]);
+  }, [limit, pageToken, debouncedSearch, filters, sortBy, sortDir]);
 
   /**
    * Refresh products list (reset pagination)
    */
   const refresh = useCallback(async (): Promise<void> => {
     setPageToken(null);
-    await fetchProducts(true, search);
-  }, [fetchProducts, search]);
+    await fetchProducts(true);
+  }, [fetchProducts]);
 
   /**
    * Load more products (next page)
    */
   const loadMore = useCallback(async (): Promise<void> => {
     if (!loading && hasMore) {
-      await fetchProducts(false, search);
+      await fetchProducts(false);
     }
-  }, [fetchProducts, loading, hasMore, search]);
+  }, [loading, hasMore, fetchProducts]);
 
   /**
    * Update search query and refresh
@@ -196,13 +240,45 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
   }, []);
 
   /**
-   * Auto-load products on mount or when search changes
+   * Debounce search input
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, debounceMs);
+
+    return () => clearTimeout(timer);
+  }, [search, debounceMs]);
+
+  /**
+   * Auto-load products when debounced search, filters, or sorting changes
    */
   useEffect(() => {
     if (autoLoad) {
-      fetchProducts(true, search);
+      fetchProducts(true);
     }
-  }, [search]); // Only depend on search, not fetchProducts to avoid infinite loop
+  }, [debouncedSearch, filters, sortBy, sortDir, autoLoad]); // Trigger on filter/sort changes
+
+  /**
+   * Custom filter setter that resets pagination
+   */
+  const handleSetFilters = useCallback((newFilters: ProductFilters) => {
+    setFilters(newFilters);
+    setPageToken(null);
+  }, []);
+
+  /**
+   * Custom sort setters that reset pagination
+   */
+  const handleSetSortBy = useCallback((newSortBy: string) => {
+    setSortBy(newSortBy);
+    setPageToken(null);
+  }, []);
+
+  const handleSetSortDir = useCallback((newSortDir: 'asc' | 'desc') => {
+    setSortDir(newSortDir);
+    setPageToken(null);
+  }, []);
 
   return {
     items,
@@ -213,6 +289,12 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
     total,
     search,
     setSearch: handleSetSearch,
+    filters,
+    setFilters: handleSetFilters,
+    sortBy,
+    setSortBy: handleSetSortBy,
+    sortDir,
+    setSortDir: handleSetSortDir,
     refresh,
     loadMore,
   };
