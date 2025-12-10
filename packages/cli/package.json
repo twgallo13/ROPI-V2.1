@@ -4,20 +4,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "ropi-aoss": "./dist/index.js"
+    "ropi": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node dist/index.js",
     "lint": "echo \"No CLI lint config yet\"",
-    "test": "echo \"No CLI tests yet\""
+    "test": "vitest --run"
   },
   "dependencies": {
+    "@ropi-aoss/sdk": "workspace:*",
     "@notionhq/client": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.6.0"
   },
   "engines": {
     "node": ">=18.0.0"
