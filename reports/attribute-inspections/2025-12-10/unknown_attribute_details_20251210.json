@@ -1,0 +1,449 @@
+{
+  "generated_at": "2025-12-11T01:16:21.723762Z",
+  "project": "ropi-bccee",
+  "total_products_scanned": 87,
+  "total_unknown_keys": 11,
+  "unknown_attributes": {
+    "pattern": {
+      "product_count": 1,
+      "distinct_values_count": 1,
+      "distinct_values": [
+        {
+          "value": "Solid",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "NK-AIR-MAX-270-BLK-10",
+          "docId": "123",
+          "value": "Solid"
+        }
+      ],
+      "candidate_mappings": []
+    },
+    "silhouette": {
+      "product_count": 1,
+      "distinct_values_count": 1,
+      "distinct_values": [
+        {
+          "value": "Low Top",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "NK-AIR-MAX-270-BLK-10",
+          "docId": "123",
+          "value": "Low Top"
+        }
+      ],
+      "candidate_mappings": []
+    },
+    "descriptive.gender": {
+      "product_count": 34,
+      "distinct_values_count": 9,
+      "distinct_values": [
+        {
+          "value": "",
+          "count": 18
+        },
+        {
+          "value": "Mens",
+          "count": 5
+        },
+        {
+          "value": "Men's",
+          "count": 4
+        },
+        {
+          "value": "Women's",
+          "count": 2
+        },
+        {
+          "value": "Kids",
+          "count": 1
+        },
+        {
+          "value": "Girls",
+          "count": 1
+        },
+        {
+          "value": "Men",
+          "count": 1
+        },
+        {
+          "value": "Women",
+          "count": 1
+        },
+        {
+          "value": "Unisex",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "14943667",
+          "docId": "14943667",
+          "value": "Mens"
+        },
+        {
+          "sku": "211116-001",
+          "docId": "211116-001",
+          "value": "Men's"
+        },
+        {
+          "sku": "7J236",
+          "docId": "7J236",
+          "value": "Kids"
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "gender",
+          "score": 60,
+          "method": "prefix_strip"
+        },
+        {
+          "canonical": "gender",
+          "score": 55,
+          "method": "prefix_strip_snake"
+        },
+        {
+          "canonical": "gender",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    },
+    "style": {
+      "product_count": 64,
+      "distinct_values_count": 11,
+      "distinct_values": [
+        {
+          "value": "",
+          "count": 54
+        },
+        {
+          "value": "{'id': '14943667'}",
+          "count": 1
+        },
+        {
+          "value": "{'id': 'Classic Unfurgettable Clog'}",
+          "count": 1
+        },
+        {
+          "value": "{'id': 'FD ZAHARA-S-BLK'}",
+          "count": 1
+        },
+        {
+          "value": "{'id': 'FD ZAHARA-S-CHO'}",
+          "count": 1
+        },
+        {
+          "value": "{'id': 'FD ZAHARA-S-WHT'}",
+          "count": 1
+        },
+        {
+          "value": "{'id': 'HTG250221BLU'}",
+          "count": 1
+        },
+        {
+          "value": "{'id': 'AMBRA-23'}",
+          "count": 1
+        },
+        {
+          "value": "Athletic",
+          "count": 1
+        },
+        {
+          "value": "Casual",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "14943667",
+          "docId": "14943667",
+          "value": "{'id': '14943667'}"
+        },
+        {
+          "sku": "14943678",
+          "docId": "14943678",
+          "value": ""
+        },
+        {
+          "sku": "207012-001",
+          "docId": "207012-001",
+          "value": ""
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "styleId",
+          "score": 40,
+          "method": "substring"
+        },
+        {
+          "canonical": "styleid",
+          "score": 40,
+          "method": "substring"
+        },
+        {
+          "canonical": "style-id",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    },
+    "materials": {
+      "product_count": 8,
+      "distinct_values_count": 3,
+      "distinct_values": [
+        {
+          "value": "",
+          "count": 5
+        },
+        {
+          "value": "['Synthetic']",
+          "count": 2
+        },
+        {
+          "value": "['Man-Made']",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "14943667",
+          "docId": "14943667",
+          "value": ""
+        },
+        {
+          "sku": "AMBRA-23",
+          "docId": "AMBRA-23",
+          "value": "['Synthetic']"
+        },
+        {
+          "sku": "FD ZAHARA-S-BLK",
+          "docId": "FD ZAHARA-S-BLK",
+          "value": ""
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "material",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    },
+    "descriptive.material": {
+      "product_count": 6,
+      "distinct_values_count": 4,
+      "distinct_values": [
+        {
+          "value": "Leather",
+          "count": 3
+        },
+        {
+          "value": "Canvas",
+          "count": 1
+        },
+        {
+          "value": "Suede",
+          "count": 1
+        },
+        {
+          "value": "Mesh",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "SKU-1001",
+          "docId": "sku-1001",
+          "value": "Leather"
+        },
+        {
+          "sku": "SKU-1002",
+          "docId": "sku-1002",
+          "value": "Canvas"
+        },
+        {
+          "sku": "SKU-1003",
+          "docId": "sku-1003",
+          "value": "Suede"
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "material",
+          "score": 60,
+          "method": "prefix_strip"
+        },
+        {
+          "canonical": "material",
+          "score": 55,
+          "method": "prefix_strip_snake"
+        },
+        {
+          "canonical": "material",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    },
+    "secondaryColor": {
+      "product_count": 1,
+      "distinct_values_count": 1,
+      "distinct_values": [
+        {
+          "value": "White",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "TEST-RUN-001",
+          "docId": "test-product-001",
+          "value": "White"
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "Color",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    },
+    "sustainable": {
+      "product_count": 2,
+      "distinct_values_count": 2,
+      "distinct_values": [
+        {
+          "value": "True",
+          "count": 1
+        },
+        {
+          "value": "",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "TEST-RUN-001",
+          "docId": "test-product-001",
+          "value": "True"
+        },
+        {
+          "sku": "TEST-BOOT-003",
+          "docId": "test-product-003",
+          "value": ""
+        }
+      ],
+      "candidate_mappings": []
+    },
+    "waterproof": {
+      "product_count": 3,
+      "distinct_values_count": 2,
+      "distinct_values": [
+        {
+          "value": "",
+          "count": 2
+        },
+        {
+          "value": "True",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "TEST-RUN-001",
+          "docId": "test-product-001",
+          "value": ""
+        },
+        {
+          "sku": "TEST-SNK-002",
+          "docId": "test-product-002",
+          "value": ""
+        },
+        {
+          "sku": "TEST-BOOT-003",
+          "docId": "test-product-003",
+          "value": "True"
+        }
+      ],
+      "candidate_mappings": []
+    },
+    "descriptive.heelType": {
+      "product_count": 1,
+      "distinct_values_count": 1,
+      "distinct_values": [
+        {
+          "value": "Block",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "TEST-BOOT-003",
+          "docId": "test-product-003",
+          "value": "Block"
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "heelType",
+          "score": 60,
+          "method": "prefix_strip"
+        },
+        {
+          "canonical": "heel_type",
+          "score": 55,
+          "method": "prefix_strip_snake"
+        },
+        {
+          "canonical": "heelType",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    },
+    "descriptive.heelHeight": {
+      "product_count": 1,
+      "distinct_values_count": 1,
+      "distinct_values": [
+        {
+          "value": "2 inches",
+          "count": 1
+        }
+      ],
+      "sample_products": [
+        {
+          "sku": "TEST-BOOT-003",
+          "docId": "test-product-003",
+          "value": "2 inches"
+        }
+      ],
+      "candidate_mappings": [
+        {
+          "canonical": "heelHeight",
+          "score": 60,
+          "method": "prefix_strip"
+        },
+        {
+          "canonical": "heel_height",
+          "score": 55,
+          "method": "prefix_strip_snake"
+        },
+        {
+          "canonical": "Height",
+          "score": 40,
+          "method": "substring"
+        }
+      ]
+    }
+  }
+}
