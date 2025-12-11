@@ -1,0 +1,274 @@
+{
+  "pattern": {
+    "product_count": 1,
+    "top_values": [
+      "Solid"
+    ],
+    "sample_skus": [
+      "NK-AIR-MAX-270-BLK-10"
+    ],
+    "normalized_key": "pattern",
+    "suggested": null,
+    "candidates": []
+  },
+  "silhouette": {
+    "product_count": 1,
+    "top_values": [
+      "Low Top"
+    ],
+    "sample_skus": [
+      "NK-AIR-MAX-270-BLK-10"
+    ],
+    "normalized_key": "silhouette",
+    "suggested": {
+      "canonical": "shoe_height_map",
+      "confidence": 70,
+      "rationale": "Value resembles shoe height descriptors (e.g., Low Top)"
+    },
+    "candidates": [
+      {
+        "canonical": "shoe_height_map",
+        "confidence": 70,
+        "rationale": "Value resembles shoe height descriptors (e.g., Low Top)"
+      }
+    ]
+  },
+  "descriptive.gender": {
+    "product_count": 34,
+    "top_values": [
+      "",
+      "Mens",
+      "Men's",
+      "Women's",
+      "Kids",
+      "Girls",
+      "Men",
+      "Women",
+      "Unisex"
+    ],
+    "sample_skus": [
+      "14943667",
+      "211116-001",
+      "7J236"
+    ],
+    "normalized_key": "descriptive_gender",
+    "suggested": {
+      "canonical": "gender",
+      "confidence": 70,
+      "rationale": "Value overlap with allowed_values of gender: ['girls', 'kids', \"men's\", 'unisex', \"women's\"]"
+    },
+    "candidates": [
+      {
+        "canonical": "gender",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of gender: ['girls', 'kids', \"men's\", 'unisex', \"women's\"]"
+      },
+      {
+        "canonical": "department",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of department: ['girls', 'kids', 'mens', 'unisex']"
+      }
+    ]
+  },
+  "style": {
+    "product_count": 64,
+    "top_values": [
+      "",
+      "{'id': '14943667'}",
+      "{'id': 'Classic Unfurgettable Clog'}",
+      "{'id': 'FD ZAHARA-S-BLK'}",
+      "{'id': 'FD ZAHARA-S-CHO'}",
+      "{'id': 'FD ZAHARA-S-WHT'}",
+      "{'id': 'HTG250221BLU'}",
+      "{'id': 'AMBRA-23'}",
+      "Athletic",
+      "Casual"
+    ],
+    "sample_skus": [
+      "14943667",
+      "14943678",
+      "207012-001"
+    ],
+    "normalized_key": "style",
+    "suggested": {
+      "canonical": "style_id",
+      "confidence": 90,
+      "rationale": "Known mapping: style → style_id"
+    },
+    "candidates": [
+      {
+        "canonical": "style_id",
+        "confidence": 90,
+        "rationale": "Known mapping: style → style_id"
+      },
+      {
+        "canonical": "category",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of category: ['athletic', 'casual']"
+      },
+      {
+        "canonical": "class",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of class: ['athletic', 'casual']"
+      }
+    ]
+  },
+  "materials": {
+    "product_count": 8,
+    "top_values": [
+      "",
+      "['Synthetic']",
+      "['Man-Made']"
+    ],
+    "sample_skus": [
+      "14943667",
+      "AMBRA-23",
+      "FD ZAHARA-S-BLK"
+    ],
+    "normalized_key": "materials",
+    "suggested": {
+      "canonical": "material",
+      "confidence": 60,
+      "rationale": "Substring match between 'materials' and 'material'"
+    },
+    "candidates": [
+      {
+        "canonical": "material",
+        "confidence": 60,
+        "rationale": "Substring match between 'materials' and 'material'"
+      }
+    ]
+  },
+  "descriptive.material": {
+    "product_count": 6,
+    "top_values": [
+      "Leather",
+      "Canvas",
+      "Suede",
+      "Mesh"
+    ],
+    "sample_skus": [
+      "SKU-1001",
+      "SKU-1002",
+      "SKU-1003"
+    ],
+    "normalized_key": "descriptive_material",
+    "suggested": {
+      "canonical": "material",
+      "confidence": 70,
+      "rationale": "Value overlap with allowed_values of material: ['canvas', 'leather', 'mesh', 'suede']"
+    },
+    "candidates": [
+      {
+        "canonical": "material",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of material: ['canvas', 'leather', 'mesh', 'suede']"
+      },
+      {
+        "canonical": "outsole_material",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of outsole_material: ['leather', 'suede']"
+      }
+    ]
+  },
+  "secondaryColor": {
+    "product_count": 1,
+    "top_values": [
+      "White"
+    ],
+    "sample_skus": [
+      "TEST-RUN-001"
+    ],
+    "normalized_key": "secondary_color",
+    "suggested": {
+      "canonical": "primary_color",
+      "confidence": 70,
+      "rationale": "Value overlap with allowed_values of primary_color: ['white']"
+    },
+    "candidates": [
+      {
+        "canonical": "primary_color",
+        "confidence": 70,
+        "rationale": "Value overlap with allowed_values of primary_color: ['white']"
+      }
+    ]
+  },
+  "sustainable": {
+    "product_count": 2,
+    "top_values": [
+      "True",
+      ""
+    ],
+    "sample_skus": [
+      "TEST-RUN-001",
+      "TEST-BOOT-003"
+    ],
+    "normalized_key": "sustainable",
+    "suggested": null,
+    "candidates": []
+  },
+  "waterproof": {
+    "product_count": 3,
+    "top_values": [
+      "",
+      "True"
+    ],
+    "sample_skus": [
+      "TEST-RUN-001",
+      "TEST-SNK-002",
+      "TEST-BOOT-003"
+    ],
+    "normalized_key": "waterproof",
+    "suggested": null,
+    "candidates": []
+  },
+  "descriptive.heelType": {
+    "product_count": 1,
+    "top_values": [
+      "Block"
+    ],
+    "sample_skus": [
+      "TEST-BOOT-003"
+    ],
+    "normalized_key": "descriptive_heel_type",
+    "suggested": {
+      "canonical": "heel_type",
+      "confidence": 70,
+      "rationale": "Heel type descriptor aligns with heel_type attribute"
+    },
+    "candidates": [
+      {
+        "canonical": "heel_type",
+        "confidence": 70,
+        "rationale": "Heel type descriptor aligns with heel_type attribute"
+      }
+    ]
+  },
+  "descriptive.heelHeight": {
+    "product_count": 1,
+    "top_values": [
+      "2 inches"
+    ],
+    "sample_skus": [
+      "TEST-BOOT-003"
+    ],
+    "normalized_key": "descriptive_heel_height",
+    "suggested": {
+      "canonical": "heel_height",
+      "confidence": 70,
+      "rationale": "Height descriptor aligns with heel_height attribute"
+    },
+    "candidates": [
+      {
+        "canonical": "heel_height",
+        "confidence": 70,
+        "rationale": "Height descriptor aligns with heel_height attribute"
+      },
+      {
+        "canonical": "height",
+        "confidence": 60,
+        "rationale": "Substring match between 'descriptive_heel_height' and 'height'"
+      }
+    ]
+  }
+}
