@@ -1,0 +1,120 @@
+.attribute-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.attribute-modal {
+  background: #fff;
+  width: min(900px, 100%);
+  max-height: 90vh;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.attribute-modal .modal-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #ececec;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attribute-modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.attribute-modal .modal-body {
+  padding: 1rem 1.25rem;
+  overflow: auto;
+  max-height: 70vh;
+  display: grid;
+  gap: 1rem;
+}
+
+.attribute-modal .form-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 0.75rem 1.25rem 1rem;
+  border-top: 1px solid #ececec;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.attribute-modal .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.attribute-item.highlight {
+  animation: flashHighlight 1.2s ease;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+@keyframes flashHighlight {
+  0% { background: #e8f0fe; }
+  100% { background: #fff; }
+}
+
+/* Toasts */
+.toast-root {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1300;
+}
+
+.toast {
+  min-width: 240px;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-success {
+  background: #198754;
+}
+
+.toast-error {
+  background: #dc3545;
+}
+
+@media (max-width: 640px) {
+  .attribute-modal {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .attribute-modal .modal-body {
+    max-height: calc(100vh - 140px);
+  }
+}

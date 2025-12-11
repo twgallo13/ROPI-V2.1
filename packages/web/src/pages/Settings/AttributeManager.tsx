@@ -9,34 +9,73 @@
  * - Attribute Validation Schema: https://www.notion.so/2b845ee1ec5a805fba0ef665dfb17396
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Settings.css';
+import '../../styles/attributes.css';
 import { useAttributes, type Attribute } from '../../hooks/useAttributes';
 import { toSnakeCase } from '../../lib/stringUtils';
+import { toastError, toastSuccess } from '../../lib/notifications';
 
 export default function AttributeManager() {
   const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute, getUsage } = useAttributes();
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<Attribute>>({
     data_type: 'string',
     status: 'active',
   });
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [recentlyCreatedId, setRecentlyCreatedId] = useState<string | null>(null);
 
-  const handleCreate = () => {
-    setShowForm(true);
-    setEditingId(null);
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleCancel();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (!recentlyCreatedId) return;
+    const el = document.querySelector(`[data-attribute-id="${recentlyCreatedId}"]`) as HTMLElement | null;
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('highlight');
+    const remove = setTimeout(() => el.classList.remove('highlight'), 1500);
+    const clear = setTimeout(() => setRecentlyCreatedId(null), 1700);
+    return () => {
+      clearTimeout(remove);
+      clearTimeout(clear);
+      el.classList.remove('highlight');
+    };
+  }, [recentlyCreatedId, attributes.length]);
+
+  const resetForm = () => {
     setFormData({ data_type: 'string', status: 'active' });
     setFormError(null);
   };
 
-  const handleEdit = (attr: Attribute) => {
-    setShowForm(true);
+  const openCreate = () => {
+    setIsModalOpen(true);
+    setEditingId(null);
+    resetForm();
+  };
+
+  const openEdit = (attr: Attribute) => {
+    setIsModalOpen(true);
     setEditingId(attr.attribute_id);
     setFormData(attr);
     setFormError(null);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setEditingId(null);
+    resetForm();
   };
 
   const handleSave = async () => {
@@ -50,19 +89,12 @@ export default function AttributeManager() {
         return;
       }
       const normalizedId = toSnakeCase(rawId);
-      // Update the formData id if normalization changed it (preview)
-      if (normalizedId !== rawId) {
-        setFormData(prev => ({ ...prev, attribute_id: normalizedId }));
-      }
-
-      // Validate minimum fields
       if (!formData.label) {
         setFormError('Label is required.');
         setSaving(false);
         return;
       }
 
-      // For enum / multiSelect ensure allowed_values provided
       if ((formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
           (!formData.allowed_values || formData.allowed_values.length === 0)) {
         setFormError('Allowed values are required for enum/multi-select.');
@@ -72,44 +104,45 @@ export default function AttributeManager() {
 
       if (editingId) {
         await updateAttribute(editingId, formData);
+        toastSuccess(`Updated attribute '${editingId}'`);
       } else {
-        // ensure attribute_id is normalized before creating
         const toCreate = { ...formData, attribute_id: normalizedId } as Omit<Attribute, 'createdAt' | 'updatedAt'>;
-        await createAttribute(toCreate);
+        const created = await createAttribute(toCreate);
+        setRecentlyCreatedId(created.attribute_id);
+        toastSuccess(`Created attribute '${created.attribute_id}'`);
       }
-      setShowForm(false);
-      setFormData({ data_type: 'string', status: 'active' });
-      setEditingId(null);
+
+      handleCancel();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to save attribute';
       setFormError(message);
+      toastError(message);
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this attribute?')) {
-      try {
-        await deleteAttribute(id);
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Failed to delete attribute';
-        alert(`Error deleting attribute: ${message}`);
+    if (!window.confirm('Are you sure you want to delete this attribute?')) return;
+    try {
+      const deleted = await deleteAttribute(id);
+      if (deleted) {
+        toastSuccess(`Deleted attribute '${id}'`);
+      } else {
+        toastSuccess('Attribute not found on server — removed locally.');
       }
+      if (editingId === id) {
+        handleCancel();
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to delete attribute';
+      toastError(message);
     }
-  };
-
-  const handleCancel = () => {
-    setShowForm(false);
-    setEditingId(null);
-    setFormData({ data_type: 'string', status: 'active' });
-    setFormError(null);
   };
 
   const showUsage = async (attrId: string) => {
     try {
       const res = await getUsage(attrId);
-      // show usage in a simple modal/alert - small UX but effective
       const lines = [
         `Attribute: ${attrId}`,
         `Product count: ${res.count}`,
@@ -121,27 +154,17 @@ export default function AttributeManager() {
     }
   };
 
-  if (loading) {
-    return <div className="loading">Loading attributes...</div>;
-  }
-
-  return (
-    <div className="attribute-manager">
-      <div className="header">
-        <h1>Attribute Manager</h1>
-        <button className="primary" data-testid="new-attribute-button" onClick={handleCreate}>
-          + New Attribute
-        </button>
-      </div>
-
-      {error && <div className="error">{error}</div>}
-
-      {showForm && (
-        <div className="attribute-form">
+  const renderForm = () => (
+    <div className="attribute-modal-overlay" role="dialog" aria-modal="true" onClick={handleCancel}>
+      <div className="attribute-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
           <h2>{editingId ? 'Edit Attribute' : 'New Attribute'}</h2>
-          
-          {formError && <div className="error" data-testid="form-error">{formError}</div>}
-          
+          <button className="close-btn" aria-label="Close" onClick={handleCancel}>×</button>
+        </div>
+
+        {formError && <div className="error" data-testid="form-error">{formError}</div>}
+
+        <div className="modal-body">
           <div className="form-row">
             <label>Attribute ID *</label>
             <input
@@ -240,34 +263,65 @@ export default function AttributeManager() {
               rows={3}
             />
           </div>
-
-          <div className="form-actions">
-            <button 
-              className="primary" 
-              data-testid="save-attribute-button" 
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : editingId ? 'Update' : 'Create'}
-            </button>
-            <button 
-              className="secondary" 
-              data-testid="cancel-attribute-button" 
-              onClick={handleCancel}
-              disabled={saving}
-            >
-              Cancel
-            </button>
-          </div>
         </div>
-      )}
+
+        <div className="form-actions actions">
+          {editingId && (
+            <button
+              className="danger"
+              onClick={() => handleDelete(editingId)}
+              disabled={saving}
+            >
+              Delete
+            </button>
+          )}
+          <button
+            className="primary"
+            data-testid="save-attribute-button"
+            onClick={handleSave}
+            disabled={saving}
+          >
+            {saving ? 'Saving...' : editingId ? 'Update' : 'Create'}
+          </button>
+          <button
+            className="secondary"
+            data-testid="cancel-attribute-button"
+            onClick={handleCancel}
+            disabled={saving}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return <div className="loading">Loading attributes...</div>;
+  }
+
+  return (
+    <div className="attribute-manager">
+      <div className="header">
+        <h1>Attribute Manager</h1>
+        <button className="primary" data-testid="new-attribute-button" onClick={openCreate}>
+          + New Attribute
+        </button>
+      </div>
+
+      {error && <div className="error">{error}</div>}
+      {isModalOpen && renderForm()}
 
       <div className="attribute-list">
         {attributes.length === 0 ? (
           <p>No attributes found. Click "New Attribute" to create one.</p>
         ) : (
           attributes.map((attr) => (
-            <div key={attr.attribute_id} className="attribute-item">
+            <div
+              key={attr.attribute_id}
+              className="attribute-item"
+              data-attribute-id={attr.attribute_id}
+            >
               <div className="attribute-item-info">
                 <strong>{attr.label}</strong>
                 <span> ({attr.attribute_id})</span>
@@ -278,7 +332,7 @@ export default function AttributeManager() {
                 </div>
               </div>
               <div className="attribute-item-actions">
-                <button className="secondary" onClick={() => handleEdit(attr)}>
+                <button className="secondary" onClick={() => openEdit(attr)}>
                   Edit
                 </button>
                 <button className="secondary" onClick={() => showUsage(attr.attribute_id)}>
