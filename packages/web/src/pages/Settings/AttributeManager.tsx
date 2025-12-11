@@ -12,9 +12,10 @@
 import { useState } from 'react';
 import './Settings.css';
 import { useAttributes, type Attribute } from '../../hooks/useAttributes';
+import { toSnakeCase } from '../../lib/stringUtils';
 
 export default function AttributeManager() {
-  const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute } = useAttributes();
+  const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute, getUsage } = useAttributes();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Partial<Attribute>>({
@@ -42,10 +43,39 @@ export default function AttributeManager() {
     setFormError(null);
     setSaving(true);
     try {
+      const rawId = (formData.attribute_id || '').trim();
+      if (!rawId) {
+        setFormError('Attribute ID is required.');
+        setSaving(false);
+        return;
+      }
+      const normalizedId = toSnakeCase(rawId);
+      // Update the formData id if normalization changed it (preview)
+      if (normalizedId !== rawId) {
+        setFormData(prev => ({ ...prev, attribute_id: normalizedId }));
+      }
+
+      // Validate minimum fields
+      if (!formData.label) {
+        setFormError('Label is required.');
+        setSaving(false);
+        return;
+      }
+
+      // For enum / multiSelect ensure allowed_values provided
+      if ((formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
+          (!formData.allowed_values || formData.allowed_values.length === 0)) {
+        setFormError('Allowed values are required for enum/multi-select.');
+        setSaving(false);
+        return;
+      }
+
       if (editingId) {
         await updateAttribute(editingId, formData);
       } else {
-        await createAttribute(formData as Omit<Attribute, 'createdAt' | 'updatedAt'>);
+        // ensure attribute_id is normalized before creating
+        const toCreate = { ...formData, attribute_id: normalizedId } as Omit<Attribute, 'createdAt' | 'updatedAt'>;
+        await createAttribute(toCreate);
       }
       setShowForm(false);
       setFormData({ data_type: 'string', status: 'active' });
@@ -74,6 +104,21 @@ export default function AttributeManager() {
     setEditingId(null);
     setFormData({ data_type: 'string', status: 'active' });
     setFormError(null);
+  };
+
+  const showUsage = async (attrId: string) => {
+    try {
+      const res = await getUsage(attrId);
+      // show usage in a simple modal/alert - small UX but effective
+      const lines = [
+        `Attribute: ${attrId}`,
+        `Product count: ${res.count}`,
+        `Sample SKUs: ${res.samples.map(s => s.sku || s.id).join(', ')}`,
+      ];
+      alert(lines.join('\n'));
+    } catch (e) {
+      alert('Failed to fetch usage: ' + (e instanceof Error ? e.message : String(e)));
+    }
   };
 
   if (loading) {
@@ -107,6 +152,7 @@ export default function AttributeManager() {
               onChange={(e) => setFormData({ ...formData, attribute_id: e.target.value })}
               disabled={!!editingId}
             />
+            <small>IDs are normalized to snake_case on save</small>
           </div>
 
           <div className="form-row">
@@ -137,6 +183,30 @@ export default function AttributeManager() {
               <option value="date">Date</option>
               <option value="json">JSON</option>
             </select>
+          </div>
+
+          {(formData.data_type === 'enum' || formData.data_type === 'multiSelect') && (
+            <div className="form-row">
+              <label>Allowed values (comma-separated)</label>
+              <input
+                type="text"
+                value={(formData.allowed_values || []).join(', ')}
+                onChange={(e) => setFormData({ ...formData, allowed_values: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                placeholder="e.g. Men, Women, Unisex"
+                data-testid="allowed-values-input"
+              />
+            </div>
+          )}
+
+          <div className="form-row">
+            <label>Synonyms (comma-separated)</label>
+            <input
+              type="text"
+              value={(formData.synonyms || []).join(', ')}
+              onChange={(e) => setFormData({ ...formData, synonyms: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+              placeholder="e.g. color, main_color"
+              data-testid="synonyms-input"
+            />
           </div>
 
           <div className="form-row">
@@ -210,6 +280,9 @@ export default function AttributeManager() {
               <div className="attribute-item-actions">
                 <button className="secondary" onClick={() => handleEdit(attr)}>
                   Edit
+                </button>
+                <button className="secondary" onClick={() => showUsage(attr.attribute_id)}>
+                  Usage
                 </button>
                 <button className="danger" onClick={() => handleDelete(attr.attribute_id)}>
                   Delete

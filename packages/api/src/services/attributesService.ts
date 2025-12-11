@@ -270,6 +270,36 @@ export async function deleteAttribute(attributeId: string): Promise<void> {
 }
 
 /**
+ * Get usage information for an attribute
+ * Returns count of products using the attribute and sample products
+ */
+export async function getAttributeUsage(attributeId: string, sampleLimit = 10) {
+  const db = getDb();
+  
+  // Sample products where attributes.<attributeId> exists and is not null
+  const sampleQuery = db.collection('products').where(`attributes.${attributeId}`, '!=', null).limit(sampleLimit);
+  const sampleSnap = await sampleQuery.get();
+  const samples = sampleSnap.docs.map(d => ({
+    id: d.id,
+    sku: (d.data() as any).sku || null,
+    value: (d.data() as any).attributes ? ((d.data() as any).attributes[attributeId]) : null,
+  }));
+  
+  // Get count (use aggregation/count if available)
+  let count = 0;
+  try {
+    const countSnap = await db.collection('products').where(`attributes.${attributeId}`, '!=', null).count().get();
+    count = countSnap.data().count;
+  } catch (e) {
+    // Fallback: retrieve size (for small staging volumes)
+    const fullSnap = await db.collection('products').where(`attributes.${attributeId}`, '!=', null).get();
+    count = fullSnap.size;
+  }
+  
+  return { count, samples };
+}
+
+/**
  * Validate attribute data using Zod schema
  * Returns validation result with parsed data or error details
  */

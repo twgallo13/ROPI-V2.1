@@ -286,6 +286,19 @@ export function useAttributes() {
     return true;
   };
 
+  /**
+   * Get usage information for an attribute
+   */
+  const getUsage = async (attributeId: string, limit = 10) => {
+    const headers = await getAuthHeaders();
+    const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(attributeId)}/usage?limit=${limit}`;
+    return await fetchJSON<{count:number; samples: Array<{id:string; sku?:string; value?:any}>}>(url, {
+      method: 'GET',
+      headers,
+      credentials: 'include',
+    });
+  };
+
   return {
     attributes,
     loading,
@@ -294,6 +307,7 @@ export function useAttributes() {
     updateAttribute,
     deleteAttribute,
     refresh: fetchAttributes,
+    getUsage,
   };
 }
 
