@@ -260,11 +260,38 @@ export function useAttributes() {
   const deleteAttribute = async (id: string): Promise<boolean> => {
     const headers = await getAuthHeaders();
     const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(id)}`;
-    await fetchJSON<{ success: boolean }>(url, {
-      method: 'DELETE',
-      headers,
-      credentials: 'include',
-    });
+
+    try {
+      await fetchJSON<{ success: boolean }>(url, {
+        method: 'DELETE',
+        headers,
+        credentials: 'include',
+      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      const isNotFound = message.includes('ATTRIBUTE_NOT_FOUND') || message.includes('HTTP 404');
+      if (!isNotFound) {
+        throw err;
+      }
+
+      // If the server no longer has the attribute, clean it up locally and continue.
+      if (pinnedMap[id]) {
+        setPinnedMap((prev) => {
+          const next = { ...prev };
+          delete next[id];
+          savePinned(next);
+          return next;
+        });
+      } else {
+        setServerAttributes(prev => prev.filter(a => a.attribute_id !== id));
+      }
+
+      fetchAttributes().catch(error => {
+        console.warn('Background refresh failed after delete (404):', error);
+      });
+
+      return false;
+    }
 
     // Optimistically remove from pinned or server list
     if (pinnedMap[id]) {
