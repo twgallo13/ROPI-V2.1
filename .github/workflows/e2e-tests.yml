@@ -1,3 +1,6 @@
+# E2E Tests
+# NOTE: concurrency was added to cancel previous in-progress runs for the same PR/branch.
+# This prevents duplicate long-running runs if a new run is triggered (for example by retries or errors).
 name: E2E Tests
 
 on:
@@ -12,8 +15,13 @@ on:
 
 jobs:
   e2e:
+    # Cancel any in-progress E2E run for the same PR/branch to prevent duplicates
+    concurrency:
+      group: e2e-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
@@ -112,7 +120,7 @@ jobs:
         with:
           name: export-log
           path: /tmp/export.log
-      
+        
       - name: Seed Firebase emulator users (for local/emulator testing)
         if: inputs.base_url == 'emulator' || inputs.base_url == ''
         run: |
