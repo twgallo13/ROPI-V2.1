@@ -14,6 +14,7 @@ import {
   createAttribute,
   updateAttribute,
   deleteAttribute,
+  getAttributeUsage,
   validateAttributeData,
   ServiceError,
 } from '../../services/attributesService';
@@ -167,6 +168,31 @@ export async function deleteAttributeHandler(req: Request, res: Response) {
       
       await deleteAttribute(attributeId);
       res.status(204).send();
+    } catch (error) {
+      handleServiceError(error, res);
+    }
+  });
+}
+
+/**
+ * GET /admin/settings/attributes/:id/usage
+ * Get usage information for an attribute
+ */
+export async function getAttributeUsageHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    try {
+      const attributeId = req.params.id;
+      if (!attributeId) {
+        res.status(400).json({
+          error: 'INVALID_REQUEST',
+          message: 'Attribute ID is required',
+        });
+        return;
+      }
+      
+      const limit = parseInt((req.query.limit as string) || '10', 10);
+      const usage = await getAttributeUsage(attributeId, limit);
+      res.status(200).json(usage);
     } catch (error) {
       handleServiceError(error, res);
     }

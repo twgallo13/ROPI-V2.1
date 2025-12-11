@@ -18,6 +18,7 @@ import {
   createAttributeHandler,
   updateAttributeHandler,
   deleteAttributeHandler,
+  getAttributeUsageHandler,
 } from './endpoints/admin/settings';
 import {
   listListsHandler,
@@ -80,6 +81,7 @@ api.get('/admin/settings/attributes/:id', getAttributeHandler);
 api.post('/admin/settings/attributes', createAttributeHandler);
 api.put('/admin/settings/attributes/:id', updateAttributeHandler);
 api.delete('/admin/settings/attributes/:id', deleteAttributeHandler);
+api.get('/admin/settings/attributes/:id/usage', getAttributeUsageHandler);
 
 api.get('/admin/settings/lists', listListsHandler);
 api.get('/admin/settings/lists/:listId', getListHandler);
