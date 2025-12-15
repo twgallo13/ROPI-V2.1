@@ -55,14 +55,30 @@ const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
  */
 async function loadRegistryFromFile(): Promise<AttributeDefinition[] | null> {
   try {
-    if (fs.existsSync(REGISTRY_JSON_PATH)) {
-      const raw = fs.readFileSync(REGISTRY_JSON_PATH, 'utf-8');
-      const data = JSON.parse(raw) as AttributeDefinition[];
-      console.log(`✅ Loaded ${data.length} attributes from ${REGISTRY_JSON_PATH}`);
-      return data.map(attr => ({ ...attr, source: 'json' as const }));
+    if (!fs.existsSync(REGISTRY_JSON_PATH)) {
+      console.warn(`⚠️ Registry file not found at ${REGISTRY_JSON_PATH}`);
+      return null;
     }
-    console.warn(`⚠️ Registry file not found at ${REGISTRY_JSON_PATH}`);
-    return null;
+
+    const raw = fs.readFileSync(REGISTRY_JSON_PATH, 'utf-8');
+    const parsed = JSON.parse(raw) as
+      | AttributeDefinition[]
+      | { attributes?: AttributeDefinition[] };
+
+    // Handle both array and {attributes: []} shapes
+    const attributes = Array.isArray(parsed)
+      ? parsed
+      : (parsed.attributes && Array.isArray(parsed.attributes))
+        ? parsed.attributes
+        : null;
+
+    if (!attributes || attributes.length === 0) {
+      console.warn(`⚠️ Registry file has no attributes at ${REGISTRY_JSON_PATH}`);
+      return null;
+    }
+
+    console.log(`✅ Loaded ${attributes.length} attributes from ${REGISTRY_JSON_PATH}`);
+    return attributes.map(attr => ({ ...attr, source: 'json' as const }));
   } catch (error) {
     console.error('❌ Error loading registry from file:', error);
     return null;
@@ -191,7 +207,8 @@ export async function runSyncAttributeRegistry(): Promise<SyncResult> {
 
   // Process each attribute
   for (const attr of registry) {
-    const docRef = db.collection(ATTRIBUTES_COLLECTION).doc(attr.attribute_id);
+    // Ensure we write to settings/attributes/keys/{attribute_id}
+    const docRef = db.doc(`settings/attributes/keys/${attr.attribute_id}`);
     
     try {
       const existingDoc = await docRef.get();
