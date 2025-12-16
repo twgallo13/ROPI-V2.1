@@ -6,7 +6,7 @@
  * Homer v1.0.0 - User Management
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import {
@@ -17,7 +17,10 @@ import {
   deleteUserHandler,
   resetPasswordHandler,
   getRolesHandler,
+  setAdminServiceOverrides,
+  resetAdminServiceOverrides,
 } from './users';
+
 
 // Mock requireAdmin middleware FIRST
 vi.mock('../../middleware/auth', () => ({
@@ -105,7 +108,10 @@ describe('Users Endpoints', () => {
       json: mockJson,
       send: mockSend,
     };
-    
+  });
+
+  afterEach(() => {
+    resetAdminServiceOverrides();
     vi.clearAllMocks();
   });
 
@@ -134,7 +140,9 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+      });
 
       await listUsersHandler(mockReq as Request, mockRes as Response);
 
@@ -159,7 +167,9 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+      });
 
       await listUsersHandler(mockReq as Request, mockRes as Response);
 
@@ -271,8 +281,10 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
-      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+        getDb: () => mockDbInstance,
+      });
 
       await createUserHandler(mockReq as Request, mockRes as Response);
 
@@ -428,8 +440,10 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
-      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+        getDb: () => mockDbInstance,
+      });
 
       await updateUserHandler(mockReq as Request, mockRes as Response);
 
@@ -468,8 +482,10 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
-      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+        getDb: () => mockDbInstance,
+      });
 
       await deleteUserHandler(mockReq as Request, mockRes as Response);
 
@@ -501,8 +517,10 @@ describe('Users Endpoints', () => {
         }),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
-      vi.mocked(admin.firestore as any).mockReturnValue(mockDbInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+        getDb: () => mockDbInstance,
+      });
 
       await deleteUserHandler(mockReq as Request, mockRes as Response);
 
@@ -512,6 +530,13 @@ describe('Users Endpoints', () => {
 
     it('should prevent self-deletion', async () => {
       mockReq.params = { uid: 'test-admin-uid' }; // Same as auth context
+
+      // Mock admin service even though the test doesn't reach it
+      // (prevented by auth check first)
+      setAdminServiceOverrides({
+        getAuth: () => ({} as any),
+        getDb: () => ({} as any),
+      });
 
       await deleteUserHandler(mockReq as Request, mockRes as Response);
 
@@ -539,7 +564,9 @@ describe('Users Endpoints', () => {
         generatePasswordResetLink: vi.fn().mockResolvedValue('https://reset.link'),
       };
 
-      vi.mocked(admin.auth as any).mockReturnValue(mockAuthInstance as any);
+      setAdminServiceOverrides({
+        getAuth: () => mockAuthInstance,
+      });
 
       await resetPasswordHandler(mockReq as Request, mockRes as Response);
 

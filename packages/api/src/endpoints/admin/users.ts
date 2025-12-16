@@ -31,14 +31,24 @@ function ensureAppInitialized() {
 
 function getDb() {
   if (dbOverride) return dbOverride();
-  ensureAppInitialized();
-  return admin.firestore();
+  // Try to use mocked admin.firestore() if in test environment
+  try {
+    return admin.firestore();
+  } catch {
+    ensureAppInitialized();
+    return admin.firestore();
+  }
 }
 
 function getAuth() {
   if (authOverride) return authOverride();
-  ensureAppInitialized();
-  return admin.auth();
+  // Try to use mocked admin.auth() if in test environment
+  try {
+    return admin.auth();
+  } catch {
+    ensureAppInitialized();
+    return admin.auth();
+  }
 }
 
 /**
