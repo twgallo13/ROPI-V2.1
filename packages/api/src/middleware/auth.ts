@@ -9,6 +9,27 @@ import * as admin from 'firebase-admin';
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { ROPI_ROLES, isAdminRole } from '../constants/roles';
 
+const IS_EMULATOR = Boolean(
+  process.env.FIRESTORE_EMULATOR_HOST || 
+  process.env.FIREBASE_AUTH_EMULATOR_HOST || 
+  process.env.NODE_ENV === 'test_emulator'
+);
+
+function buildEmulatorAuth(req: ExpressRequest): AuthContext {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ')
+    ? authHeader.substring(7)
+    : 'emulator-admin';
+
+  return {
+    uid: token || 'emulator-admin',
+    email: 'emulator@local',
+    role: ROPI_ROLES.ADMIN,
+    roles: [ROPI_ROLES.ADMIN],
+    emailVerified: true,
+  };
+}
+
 /**
  * Auth context attached to authenticated requests
  */
@@ -48,10 +69,18 @@ export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext 
   // Extract token from Authorization header
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (IS_EMULATOR) {
+      return buildEmulatorAuth(req);
+    }
     return null;
   }
   
   const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+  if (IS_EMULATOR) {
+    // In emulator/test flows we accept any bearer token and treat it as admin
+    return buildEmulatorAuth(req);
+  }
   
   try {
     // Verify token with Firebase Admin
@@ -65,7 +94,7 @@ export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext 
       emailVerified: decodedToken.email_verified || false,
     };
   } catch (error) {
-    console.error('Token verification failed:', error);
+    console.error('⚠️ Token verification failed:', error);
     return null;
   }
 }

@@ -15,7 +15,7 @@
 import { requireAdmin, type AuthenticatedRequest } from '../../middleware/auth';
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
-import { isValidRole, isAdminRole, ROPI_ROLES } from '../../constants/roles';
+import { isValidRole, isAdminRole, ROPI_ROLES, normalizeRole } from '../../constants/roles';
 
 function getDb() {
   return admin.firestore();
@@ -23,6 +23,19 @@ function getDb() {
 
 function getAuth() {
   return admin.auth();
+}
+
+/**
+ * Normalize role input - accepts canonical keys or human-readable labels
+ * Helper wrapper for the normalizeRole utility function
+ */
+function normalizeRoleInput(rawRole: string | undefined): string | undefined {
+  if (!rawRole) return undefined;
+  const normalized = normalizeRole(rawRole);
+  if (!normalized) {
+    console.warn(`⚠️ Failed to normalize role input: ${rawRole}`);
+  }
+  return normalized;
 }
 
 /**
@@ -96,6 +109,12 @@ function handleError(error: unknown, res: Response): void {
           res.status(400).json({
             error: 'VALIDATION_ERROR',
             message: 'Password is too weak',
+          });
+          return;
+        case 'auth/configuration-not-found':
+          res.status(500).json({
+            error: 'SERVICE_UNAVAILABLE',
+            message: 'Auth service not properly configured',
           });
           return;
       }
@@ -224,7 +243,7 @@ export async function createUserHandler(req: Request, res: Response) {
       }
       
       // Normalize role (accept canonical keys or human labels)
-      const role = normalizeRole(rawRole);
+      const role = normalizeRoleInput(rawRole);
       
       // Validate role
       if (!role || !isValidRole(role)) {
@@ -309,7 +328,7 @@ export async function updateUserHandler(req: Request, res: Response) {
       // Normalize and validate role if provided
       let normalizedRole: string | undefined = undefined;
       if (role) {
-        normalizedRole = normalizeRole(role);
+        normalizedRole = normalizeRoleInput(role);
         if (!normalizedRole || !isValidRole(normalizedRole)) {
           res.status(400).json({
             error: 'VALIDATION_ERROR',
