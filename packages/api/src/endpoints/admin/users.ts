@@ -17,11 +17,22 @@ import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import { isValidRole, isAdminRole, ROPI_ROLES, normalizeRole } from '../../constants/roles';
 
+function ensureAppInitialized() {
+  if (!admin.apps.length) {
+    // Ensure we have an app for emulator/integration tests where the app is not bootstrapped elsewhere
+    admin.initializeApp({
+      projectId: process.env.GCLOUD_PROJECT || 'demo-ropi-test',
+    });
+  }
+}
+
 function getDb() {
+  ensureAppInitialized();
   return admin.firestore();
 }
 
 function getAuth() {
+  ensureAppInitialized();
   return admin.auth();
 }
 
