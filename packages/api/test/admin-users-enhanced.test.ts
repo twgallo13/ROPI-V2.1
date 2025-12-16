@@ -14,16 +14,37 @@ import express, { type Express } from 'express';
 import { createUserHandler, updateUserHandler, deleteUserHandler } from '../src/endpoints/admin/users';
 import { normalizeRole } from '../src/constants/roles';
 
-// Mock Firebase Admin
-vi.mock('firebase-admin', () => ({
-  default: {
-    firestore: {
-      Timestamp: {
-        now: () => ({ seconds: 1234567890, nanoseconds: 0 }),
-      },
-    },
-  },
-}));
+const isEmulator = !!process.env.FIREBASE_AUTH_EMULATOR_HOST || process.env.NODE_ENV === 'test_emulator';
+
+// Mock Firebase Admin only for unit runs (skip when emulator is present)
+if (!isEmulator) {
+  vi.mock('firebase-admin', async (importOriginal) => {
+    const actual = await importOriginal();
+
+    const authMock = () => ({
+      createUser: vi.fn().mockImplementation(async ({ email }) => ({ uid: `uid-${Math.random().toString(36).slice(2,9)}`, email })),
+      updateUser: vi.fn().mockImplementation(async (uid, props) => ({ uid, ...props })),
+      deleteUser: vi.fn().mockResolvedValue(undefined),
+      getUser: vi.fn().mockImplementation(async (uid) => ({ uid, email: `${uid}@example.com`, customClaims: {} })),
+      setCustomUserClaims: vi.fn().mockResolvedValue(undefined),
+      generatePasswordResetLink: vi.fn().mockResolvedValue('https://reset.example/'),
+      verifyIdToken: vi.fn().mockImplementation(async (token) => {
+        if (token && token.startsWith('emulator-')) {
+          return { uid: 'emulator-admin', email: 'emulator@local', admin: true };
+        }
+        return { uid: 'test-uid', email: 'test@example.com', admin: true };
+      }),
+    });
+
+    return {
+      ...actual,
+      auth: authMock,
+      firestore: actual.firestore,
+      initializeApp: actual.initializeApp,
+      credential: actual.credential,
+    };
+  });
+}
 
 // Mock middleware
 vi.mock('../src/middleware/auth', () => ({
