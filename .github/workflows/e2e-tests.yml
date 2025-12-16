@@ -1,4 +1,4 @@
-# E2E Tests - Optimized v2
+# E2E Tests - Optimized v2.1 (Fixed)
 name: E2E Tests
 
 on:
@@ -20,10 +20,9 @@ on:
           - smoke
 
 jobs:
-  # JOB 1: Backend Integrity Checks (Runs in parallel with E2E setup)
-  # This moves the heavy backend scripts out of the critical path for UI tests
+  # JOB 1: Backend Integrity Checks
+  # Removed job-level 'if' to prevent context errors on PRs
   integrity-check:
-    if: inputs.base_url != 'emulator'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -32,26 +31,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Optimization: Skip this entire job if we are using the emulator
+      - name: Check if should skip
+        id: check
+        run: |
+          if [ "${{ github.event.inputs.base_url }}" == "emulator" ]; then
+            echo "Skipping integrity checks for emulator run"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup Node.js 20
+        if: steps.check.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
       - name: Install pnpm
+        if: steps.check.outputs.skip != 'true'
         run: npm install -g pnpm@8
 
       - name: Install dependencies
+        if: steps.check.outputs.skip != 'true'
         run: pnpm install
 
       - name: Create service account JSON
-        if: env.GCP_SA_KEY_BASE64 != ''
+        if: steps.check.outputs.skip != 'true' && env.GCP_SA_KEY_BASE64 != ''
         run: |
           mkdir -p /tmp/ropi_secrets
           echo "$GCP_SA_KEY_BASE64" | base64 --decode > /tmp/ropi_secrets/gcp_sa.json
         shell: bash
 
       - name: Run attribute normalization
+        if: steps.check.outputs.skip != 'true'
         run: |
           pnpm --filter @ropi-aoss/api build
           cd packages/api && node build-tasks.js
@@ -60,6 +74,7 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/ropi_secrets/gcp_sa.json
 
       - name: Run import validation
+        if: steps.check.outputs.skip != 'true'
         run: |
           if [ -f ./scripts/validate_import.sh ]; then
             ./scripts/validate_import.sh ./BUILD_ROPI_AOSS_v1/02-schema/sample_import_required.csv
@@ -74,13 +89,18 @@ jobs:
       cancel-in-progress: true
 
     runs-on: ubuntu-latest
-    timeout-minutes: 20 # Reduced from 30 to fail hanging jobs faster
+    timeout-minutes: 25
     permissions:
       contents: read
       pull-requests: write
       actions: read
     
     env:
+      # Safe fallback for inputs which might be empty on PRs
+      INPUT_BASE_URL: ${{ inputs.base_url }}
+      INPUT_TEST_SCOPE: ${{ inputs.test_scope }}
+      
+      # Credentials
       VITE_E2E_ADMIN_EMAIL: ${{ inputs.base_url == 'emulator' && 'test-admin@example.com' || 'theo@shiekh.com' }}
       VITE_E2E_USER_EMAIL: ${{ inputs.base_url == 'emulator' && 'test-user@example.com' || 'user@shiekh.com' }}
       VITE_E2E_UNVERIFIED_EMAIL: ${{ inputs.base_url == 'emulator' && 'test-unverified@example.com' || 'unverified@shiekh.com' }}
@@ -97,7 +117,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm' # Enabled caching
+          cache: 'pnpm'
       
       - name: Install pnpm
         run: npm install -g pnpm@8
@@ -111,8 +131,8 @@ jobs:
       - name: Install firebase-tools
         run: npm install -g firebase-tools@latest
         
-      - name: Seed Firebase emulator users (for local/emulator testing)
-        if: inputs.base_url == 'emulator' || inputs.base_url == ''
+      - name: Seed Firebase emulator users
+        if: env.INPUT_BASE_URL == 'emulator' || env.INPUT_BASE_URL == ''
         run: |
           echo "Setting up Firebase emulator environment..."
           export FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"
@@ -122,17 +142,19 @@ jobs:
         continue-on-error: true
       
       - name: Wait for preview deployment
+        # Only run on PRs and if we have the GCP key
         if: github.event_name == 'pull_request' && env.GCP_SA_KEY_BASE64 != ''
         continue-on-error: true
         run: |
           echo "Waiting for preview deployment..."
-          # OPTIMIZATION: Reduced max wait from 10m (600s) to 5m (300s)
           max_wait=300
           elapsed=0
           interval=15
           
           while [ $elapsed -lt $max_wait ]; do
+            # Safe checking of PR head SHA
             RUNS=$(gh run list --workflow="Deploy AOSS PR Preview" --json status,conclusion,headSha,databaseId --jq ".[] | select(.headSha == \"${{ github.event.pull_request.head.sha }}\")")
+            
             if [ -n "$RUNS" ]; then
               STATUS=$(echo "$RUNS" | jq -r '.status')
               CONCLUSION=$(echo "$RUNS" | jq -r '.conclusion')
@@ -143,11 +165,12 @@ jobs:
                   echo "✅ Deployment complete."
                   PREVIEW_URL=$(gh run view "${RUN_ID}" --log 2>&1 | grep -oP 'PREVIEW_URL=\Khttps://[^\s]+' | head -1 || true)
                   if [ -n "$PREVIEW_URL" ]; then
+                    echo "Found URL: $PREVIEW_URL"
                     echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
                   fi
                   exit 0
                 else
-                  echo "::warning::Preview deployment failed. Continuing with fallback."
+                  echo "::warning::Preview deployment failed."
                   exit 0
                 fi
               fi
@@ -163,8 +186,8 @@ jobs:
       - name: Determine test URL
         id: test-url
         run: |
-          if [ -n "${{ inputs.base_url }}" ]; then
-            TEST_URL="${{ inputs.base_url }}"
+          if [ -n "$INPUT_BASE_URL" ]; then
+            TEST_URL="$INPUT_BASE_URL"
           elif [ -n "${PREVIEW_URL:-}" ]; then
             TEST_URL="${PREVIEW_URL}"
           else
@@ -177,7 +200,6 @@ jobs:
         run: |
           TEST_URL="${{ steps.test-url.outputs.base_url }}"
           echo "Checking availability of: ${TEST_URL}"
-          # OPTIMIZATION: Wait max 90 seconds instead of 2 minutes
           max_attempts=18
           attempt=0
           while [ $attempt -lt $max_attempts ]; do
@@ -198,18 +220,26 @@ jobs:
         run: |
           cd packages/web
           
-          # OPTIMIZATION: Logic to choose between SMOKE tests and ALL tests
-          # If it is a PR and NO specific input override is provided, run smoke tests only.
+          # Default command: Run all tests
+          CMD="npx playwright test"
+          FAIL_LIMIT="--max-failures=10"
           
-          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ inputs.test_scope }}" != "all" ]; then
-            echo "🚀 PR Mode: Running SMOKE tests only."
-            # Stops after 3 failures to save time
-            npx playwright test --grep "@smoke" --max-failures=3
-          else
-            echo "🐢 Full Mode: Running ALL tests."
-            # Stops after 10 failures
-            npx playwright test --max-failures=10
+          # Check if we should run only smoke tests
+          # Condition: It is a PR AND the user didn't explicitly ask for 'all'
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "$INPUT_TEST_SCOPE" != "all" ]; then
+             echo "🚀 PR Mode detected. Attempting to run SMOKE tests."
+             
+             # Fallback: Check if any smoke tests actually exist to avoid "No tests found" error
+             if grep -r "@smoke" e2e > /dev/null; then
+               CMD="npx playwright test --grep @smoke"
+               FAIL_LIMIT="--max-failures=3"
+             else
+               echo "::warning::No tests tagged with @smoke found. Falling back to ALL tests."
+             fi
           fi
+          
+          echo "Running: $CMD $FAIL_LIMIT"
+          $CMD $FAIL_LIMIT
       
       - name: Upload artifacts
         if: always()
