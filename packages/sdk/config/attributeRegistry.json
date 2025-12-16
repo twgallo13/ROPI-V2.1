@@ -285,8 +285,8 @@
       "label": "Gender",
       "external_header": "Gender",
       "category": "identity_demographic",
-      "data_type": "select",
-      "allowed_values": ["Men's", "Women's", "Unisex", "Boys", "Girls", "Kids"],
+      "data_type": "enum",
+      "allowed_values": ["Men", "Women", "Unisex"],
       "synonyms": ["sex", "target_gender"],
       "required_for_completion": true,
       "required_for_export": true,
@@ -337,7 +337,7 @@
     },
     {
       "attribute_id": "material",
-      "label": "Material(s)",
+      "label": "Material",
       "external_header": "Material",
       "category": "materials_construction",
       "data_type": "multiSelect",
@@ -358,6 +358,20 @@
       "required_for_export": true,
       "import_required": true,
       "ai_usage_notes": "Primary material for the product. Important for product descriptions and care instructions.",
+      "status": "active"
+    },
+    {
+      "attribute_id": "occasion",
+      "label": "Occasion",
+      "external_header": "Occasion",
+      "category": "classification",
+      "data_type": "enum",
+      "allowed_values": ["Casual", "Formal", "Sport", "Outdoor", "Work"],
+      "synonyms": [],
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Occasion or use case for the product.",
       "status": "active"
     },
     {
