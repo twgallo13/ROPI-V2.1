@@ -7,6 +7,9 @@ if (!isEmulator) {
   vi.mock('firebase-admin', async (importOriginal) => {
     const actual = await importOriginal();
 
+    // Track initialized apps so tests that check admin.apps work
+    const apps: any[] = [];
+
     const authMock = () => ({
       createUser: vi.fn().mockImplementation(async ({ email }) => ({ uid: `uid-${Math.random().toString(36).slice(2,9)}`, email })),
       updateUser: vi.fn().mockImplementation(async (uid, props) => ({ uid, ...props })),
@@ -22,12 +25,36 @@ if (!isEmulator) {
       }),
     });
 
+    const firestoreMock = vi.fn(() => ({
+      collection: vi.fn().mockReturnThis(),
+      doc: vi.fn().mockReturnThis(),
+      set: vi.fn().mockResolvedValue(undefined),
+      get: vi.fn().mockResolvedValue({ exists: false }),
+      update: vi.fn().mockResolvedValue(undefined),
+      delete: vi.fn().mockResolvedValue(undefined),
+      where: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
+      orderBy: vi.fn().mockReturnThis(),
+      startAfter: vi.fn().mockReturnThis(),
+      startAt: vi.fn().mockReturnThis(),
+      endBefore: vi.fn().mockReturnThis(),
+      endAt: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+    }));
+
+    const initializeApp = vi.fn((options?: any) => {
+      const app = { name: 'mockApp', options: options || {} };
+      apps.push(app);
+      return app;
+    });
+
     return {
       ...actual,
       auth: authMock,
-      firestore: actual.firestore,
-      initializeApp: actual.initializeApp,
+      firestore: firestoreMock,
+      initializeApp,
       credential: actual.credential,
+      apps,
     };
   });
 } else {
