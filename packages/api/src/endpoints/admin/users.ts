@@ -17,12 +17,38 @@ import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import { isValidRole, isAdminRole, ROPI_ROLES, normalizeRole } from '../../constants/roles';
 
+let authOverride: (() => any) | null = null;
+let dbOverride: (() => any) | null = null;
+
+function ensureAppInitialized() {
+  if (!admin.apps.length) {
+    // Ensure we have an app for emulator/integration tests where the app is not bootstrapped elsewhere
+    admin.initializeApp({
+      projectId: process.env.GCLOUD_PROJECT || 'demo-ropi-test',
+    });
+  }
+}
+
 function getDb() {
-  return admin.firestore();
+  if (dbOverride) return dbOverride();
+  // Try to use mocked admin.firestore() if in test environment
+  try {
+    return admin.firestore();
+  } catch {
+    ensureAppInitialized();
+    return admin.firestore();
+  }
 }
 
 function getAuth() {
-  return admin.auth();
+  if (authOverride) return authOverride();
+  // Try to use mocked admin.auth() if in test environment
+  try {
+    return admin.auth();
+  } catch {
+    ensureAppInitialized();
+    return admin.auth();
+  }
 }
 
 /**
@@ -36,6 +62,16 @@ function normalizeRoleInput(rawRole: string | undefined): string | undefined {
     console.warn(`⚠️ Failed to normalize role input: ${rawRole}`);
   }
   return normalized;
+}
+
+export function setAdminServiceOverrides(overrides: { getAuth?: () => any; getDb?: () => any }) {
+  authOverride = overrides.getAuth || null;
+  dbOverride = overrides.getDb || null;
+}
+
+export function resetAdminServiceOverrides() {
+  authOverride = null;
+  dbOverride = null;
 }
 
 /**
@@ -136,20 +172,23 @@ function handleError(error: unknown, res: Response): void {
  * Convert Firebase UserRecord to UserResponse
  */
 function formatUserResponse(userRecord: admin.auth.UserRecord): UserResponse {
+  const metadata = (userRecord as any).metadata || {};
+  const providerData = (userRecord as any).providerData || [];
+
   return {
     uid: userRecord.uid,
     email: userRecord.email,
     displayName: userRecord.displayName,
-    emailVerified: userRecord.emailVerified,
+    emailVerified: !!userRecord.emailVerified,
     role: userRecord.customClaims?.role,
     customClaims: userRecord.customClaims,
     metadata: {
-      creationTime: userRecord.metadata.creationTime,
-      lastSignInTime: userRecord.metadata.lastSignInTime,
-      lastRefreshTime: userRecord.metadata.lastRefreshTime || undefined,
+      creationTime: metadata.creationTime,
+      lastSignInTime: metadata.lastSignInTime,
+      lastRefreshTime: metadata.lastRefreshTime || undefined,
     },
-    disabled: userRecord.disabled,
-    providerData: userRecord.providerData,
+    disabled: !!userRecord.disabled,
+    providerData,
   };
 }
 
