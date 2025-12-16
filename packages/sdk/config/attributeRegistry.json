@@ -774,6 +774,42 @@
       "import_required": false,
       "usage": "display_only",
       "status": "active"
+    },
+    {
+      "attribute_id": "pattern",
+      "label": "Pattern",
+      "external_header": "Pattern",
+      "category": "material_design",
+      "data_type": "text",
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Pattern type (solid, striped, floral, geometric, etc.)",
+      "status": "active"
+    },
+    {
+      "attribute_id": "sustainable",
+      "label": "Sustainable",
+      "external_header": "Sustainable",
+      "category": "attributes",
+      "data_type": "boolean",
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Indicates if product meets sustainability standards",
+      "status": "active"
+    },
+    {
+      "attribute_id": "waterproof",
+      "label": "Waterproof",
+      "external_header": "Waterproof",
+      "category": "material_performance",
+      "data_type": "boolean",
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Indicates if product is waterproof",
+      "status": "active"
     }
   ]
 }
