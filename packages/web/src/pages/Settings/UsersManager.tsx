@@ -44,7 +44,7 @@ function UsersManager() {
     email: '',
     password: '',
     displayName: '',
-    role: 'viewer',
+    role: 'user',
     sendInvite: false,
   });
   const [formError, setFormError] = useState<string | null>(null);
@@ -107,7 +107,7 @@ function UsersManager() {
         email: '',
         password: '',
         displayName: '',
-        role: 'viewer',
+        role: 'user',
         sendInvite: false,
       });
     } catch (err) {
