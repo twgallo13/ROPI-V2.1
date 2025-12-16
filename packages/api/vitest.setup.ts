@@ -52,7 +52,7 @@ if (!isEmulator) {
       get: vi.fn().mockResolvedValue({ docs: [] }),
     });
 
-    const firestoreMock = vi.fn(() => {
+    const firestoreMock: any = vi.fn(() => {
       const batchOps: any[] = [];
       return {
         collection: vi.fn().mockImplementation(() => mockCollection()),
@@ -65,6 +65,10 @@ if (!isEmulator) {
         })),
       };
     });
+
+    // Preserve Timestamp helpers used by handlers
+    firestoreMock.Timestamp = actual.firestore.Timestamp;
+    firestoreMock.FieldValue = actual.firestore.FieldValue;
 
     const initializeApp = vi.fn((options?: any) => {
       const app = { name: 'mockApp', options: options || {} };
