@@ -14,7 +14,10 @@ import express, { type Express } from 'express';
 import { createUserHandler, updateUserHandler, deleteUserHandler } from '../src/endpoints/admin/users';
 import { normalizeRole } from '../src/constants/roles';
 
-const isEmulator = !!process.env.FIREBASE_AUTH_EMULATOR_HOST || process.env.NODE_ENV === 'test_emulator';
+const isEmulator =
+  !!process.env.FIREBASE_AUTH_EMULATOR_HOST ||
+  !!process.env.FIRESTORE_EMULATOR_HOST ||
+  process.env.NODE_ENV === 'test_emulator';
 
 // Mock Firebase Admin only for unit runs (skip when emulator is present)
 if (!isEmulator) {

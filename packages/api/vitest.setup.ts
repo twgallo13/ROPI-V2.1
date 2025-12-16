@@ -1,7 +1,10 @@
 // packages/api/vitest.setup.ts
 import { vi } from 'vitest';
 
-const isEmulator = !!process.env.FIREBASE_AUTH_EMULATOR_HOST || process.env.NODE_ENV === 'test_emulator';
+const isEmulator =
+  !!process.env.FIREBASE_AUTH_EMULATOR_HOST ||
+  !!process.env.FIRESTORE_EMULATOR_HOST ||
+  process.env.NODE_ENV === 'test_emulator';
 
 if (!isEmulator) {
   vi.mock('firebase-admin', async (importOriginal) => {
