@@ -27,6 +27,7 @@ export type Attribute = {
   import_required?: boolean;
   ai_usage_notes?: string;
   status?: 'active' | 'deprecated' | 'hidden';
+  source?: 'notion' | 'derived' | 'json';
   createdBy?: string;
   createdAt?: string;
   updatedBy?: string;
@@ -326,6 +327,19 @@ export function useAttributes() {
     });
   };
 
+  /**
+   * Get a single attribute by ID
+   */
+  const getAttributeById = async (id: string): Promise<Attribute> => {
+    const headers = await getAuthHeaders();
+    const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(id)}`;
+    return await fetchJSON<Attribute>(url, {
+      method: 'GET',
+      headers,
+      credentials: 'include',
+    });
+  };
+
   return {
     attributes,
     loading,
@@ -335,6 +349,7 @@ export function useAttributes() {
     deleteAttribute,
     refresh: fetchAttributes,
     getUsage,
+    getAttributeById,
   };
 }
 

@@ -3,6 +3,8 @@
     {
       "source": "packages/api",
       "codebase": "api",
+      "runtime": "nodejs20",
+      "packageManager": "pnpm",
       "ignore": [
         "node_modules",
         ".git",

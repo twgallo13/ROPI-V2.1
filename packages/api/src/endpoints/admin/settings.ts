@@ -126,9 +126,7 @@ export async function updateAttributeHandler(req: Request, res: Response) {
         });
         return;
       }
-      
-      // Partial validation - allow subset of fields
-      // For updates, we don't require all fields
+
       const patch = req.body;
       if (!patch || typeof patch !== 'object') {
         res.status(400).json({
@@ -137,12 +135,33 @@ export async function updateAttributeHandler(req: Request, res: Response) {
         });
         return;
       }
-      
-      // Get actor from auth context
+
       const authReq = req as AuthenticatedRequest;
       const actor = authReq.auth?.uid || 'system';
-      
-      const updated = await updateAttribute(attributeId, patch, actor);
+
+      // Fetch the existing attribute
+      const existing = await getAttribute(attributeId);
+
+      // Merge existing + patch. Give precedence to patch.
+      const merged = {
+        ...existing,
+        ...patch,
+        attribute_id: attributeId, // ensure ID unchanged
+      };
+
+      // Validate merged object using AttributeSchema (via validateAttributeData)
+      const validation = validateAttributeData(merged);
+      if (!validation.success) {
+        res.status(400).json({
+          error: 'VALIDATION_ERROR',
+          message: 'Invalid attribute data',
+          errors: validation.errors,
+        });
+        return;
+      }
+
+      // Update attribute with validated data so defaults are applied
+      const updated = await updateAttribute(attributeId, validation.data as any, actor);
       res.status(200).json(updated);
     } catch (error) {
       handleServiceError(error, res);

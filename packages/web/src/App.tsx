@@ -8,7 +8,7 @@ import ImportManagerPage from './pages/ImportManagerPage';
 import ImportBatchDetailPage from './pages/ImportBatchDetailPage';
 import ExportPage from './pages/ExportPage';
 import ObservationsPage from './pages/ObservationsPage';
-import AttributesPage from './pages/AttributesPage';
+// AttributesPage moved to Settings/AttributeManager
 import SmartRulesPage from './pages/SmartRulesPage';
 import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';
@@ -33,7 +33,7 @@ function App() {
         <Route path="import/batches/:batchId" element={<ImportBatchDetailPage />} />
         <Route path="export" element={<ExportPage />} />
         <Route path="observations" element={<ObservationsPage />} />
-        <Route path="attributes" element={<AttributesPage />} />
+        <Route path="attributes" element={<Navigate to="/settings/attributes" replace />} />
         <Route path="smart-rules" element={<SmartRulesPage />} />
         
         {/* Settings routes */}

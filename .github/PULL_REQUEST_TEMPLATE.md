@@ -1,53 +1,46 @@
-## Summary of Changes
+<!-- PR Template: Lisa-controlled PR -->
 
-<!-- Provide a clear, concise description of what this PR does -->
+### PVS Tag
+PVS-<MAJOR.MINOR.PATCH>
 
+### Task Goal
+(One sentence)
 
+### Exact actions performed
+- File A changed
+- File B added
+- Script X run (local dry-run)
 
-## Files Changed
+### Files changed / diff summary
+(Short bullets or list)
 
-<!-- List the key files modified in this PR -->
+### References
+- Issues: #xxx
+- Docs: docs/lisa/xxx.md
+- Prior PRs: #123
 
-| File | Change Type | Description |
-|------|-------------|-------------|
-|      |             |             |
+### Expected Outputs / Artifacts
+(What should exist after merge: e.g., routes fixed, UI changes)
 
-## Acceptance Criteria
+### Acceptance Criteria
+- [ ] PR title begins with `PVS-<MAJOR.MINOR.PATCH>`
+- [ ] Branch name: `lisa/PVS-.../<short>`
+- [ ] Commit messages include PVS tag
+- [ ] CI checks green
+- [ ] Manual test steps performed & pass
 
-<!-- Check all that apply -->
+### Testing Instructions
+1. Step 1
+2. Step 2
 
-- [ ] Code compiles without errors
-- [ ] All existing tests pass
-- [ ] New tests added for new functionality
-- [ ] Code follows project conventions and style guidelines
-- [ ] No console errors or warnings introduced
-- [ ] Changes reviewed locally before submitting PR
+### Merge Strategy
+Squash / Rebase / Merge Commit — (chosen by Lisa)
 
-## Tests Added or Updated
-
-<!-- Describe any tests you added or modified -->
-
-- [ ] Unit tests
-- [ ] Integration tests
-- [ ] E2E tests
-- [ ] No tests required (explain why)
-
-**Test details:**
-
-
-
-## Documentation Updated
-
-<!-- Check if documentation was updated -->
-
-- [ ] README updated (if applicable)
-- [ ] Code comments added for complex logic
-- [ ] API documentation updated (if applicable)
-- [ ] No documentation changes required
-
-## Labels Checklist
-
-<!-- Ensure your PR has the required labels before requesting review -->
+### Reviewer checklist (for Lisa)
+- [ ] Meets PR template
+- [ ] Tests pass
+- [ ] Code style / lint
+- [ ] Schema validated
 
 - [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs`
 - [ ] **Area label**: `frontend` | `backend` | `infra` | `api` | `sdk`

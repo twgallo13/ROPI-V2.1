@@ -1,0 +1,31 @@
+name: Validate PR Metadata
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title includes PVS tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title || "";
+            const re = /\bPVS-\d+\.\d+\.\d+\b/;
+            if (!re.test(title)) {
+              core.setFailed('PR title must include a PVS tag (example: [PVS-0.1.0])');
+            } else {
+              console.log('PVS tag present in title.');
+            }
+
+      - name: Validate PR body has Acceptance Criteria
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || "";
+            if (!body.toLowerCase().includes('acceptance criteria')) {
+              core.setFailed('PR body must contain an "Acceptance Criteria" section.');
+            } else {
+              console.log('Acceptance Criteria found.');
+            }

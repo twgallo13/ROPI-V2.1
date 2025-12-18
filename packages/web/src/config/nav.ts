@@ -53,12 +53,6 @@ export const navigationConfig: NavItem[] = [
     icon: '👁️',
   },
   {
-    id: 'attributes',
-    label: 'Attributes',
-    route: '/attributes',
-    icon: '🏷️',
-  },
-  {
     id: 'smart-rules',
     label: 'Smart Rules',
     route: '/smart-rules',
@@ -119,6 +113,12 @@ export const settingsNavConfig: NavItem[] = [
     label: 'AI Performance',
     route: '/settings/ai-performance',
     icon: '📊',
+  },
+  {
+    id: 'attributes',
+    label: 'Attributes',
+    route: '/settings/attributes',
+    icon: '🏷️',
   },
   {
     id: 'users',
