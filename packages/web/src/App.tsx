@@ -33,7 +33,7 @@ function App() {
         <Route path="import/batches/:batchId" element={<ImportBatchDetailPage />} />
         <Route path="export" element={<ExportPage />} />
         <Route path="observations" element={<ObservationsPage />} />
-        <Route path="attributes" element={<AttributesPage />} />
+        <Route path="attributes" element={<Navigate to="/settings/attributes" replace />} />
         <Route path="smart-rules" element={<SmartRulesPage />} />
         
         {/* Settings routes */}

@@ -17,7 +17,7 @@ import { toSnakeCase } from '../../lib/stringUtils';
 import { toastError, toastSuccess } from '../../lib/notifications';
 
 export default function AttributeManager() {
-  const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute, getUsage } = useAttributes();
+  const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute, getUsage, refresh, getAttributeById } = useAttributes();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<Attribute>>({
@@ -27,6 +27,16 @@ export default function AttributeManager() {
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [recentlyCreatedId, setRecentlyCreatedId] = useState<string | null>(null);
+
+  const DEFAULT_ATTR = {
+    data_type: 'string' as const,
+    status: 'active' as const,
+    required_for_export: false,
+    import_required: false,
+    required_for_completion: false,
+    external_header: '',
+    source: 'json' as const,
+  };
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -55,7 +65,7 @@ export default function AttributeManager() {
   }, [recentlyCreatedId, attributes.length]);
 
   const resetForm = () => {
-    setFormData({ data_type: 'string', status: 'active' });
+    setFormData({ ...DEFAULT_ATTR });
     setFormError(null);
   };
 
@@ -68,7 +78,7 @@ export default function AttributeManager() {
   const openEdit = (attr: Attribute) => {
     setIsModalOpen(true);
     setEditingId(attr.attribute_id);
-    setFormData(attr);
+    setFormData({ ...DEFAULT_ATTR, ...attr });
     setFormError(null);
   };
 
@@ -151,6 +161,15 @@ export default function AttributeManager() {
       alert(lines.join('\n'));
     } catch (e) {
       alert('Failed to fetch usage: ' + (e instanceof Error ? e.message : String(e)));
+    }
+  };
+
+  const handleSync = async (id: string) => {
+    try {
+      await refresh();
+      toastSuccess(`Synced attributes from server.`);
+    } catch (err) {
+      toastError('Failed to sync attribute: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
@@ -263,6 +282,51 @@ export default function AttributeManager() {
               rows={3}
             />
           </div>
+
+          <div className="form-row">
+            <label>External Header</label>
+            <input
+              type="text"
+              value={formData.external_header || ''}
+              onChange={(e) => setFormData({ ...formData, external_header: e.target.value })}
+              placeholder="CSV header for import mapping"
+            />
+            <small>Header name used to match during import preview</small>
+          </div>
+
+          <div className="form-row checkbox-row">
+            <label>Required for Import</label>
+            <input
+              type="checkbox"
+              checked={!!formData.import_required}
+              onChange={(e) => setFormData({ ...formData, import_required: e.target.checked })}
+            />
+            <small>If set, import preview will mark missing values.</small>
+          </div>
+
+          <div className="form-row checkbox-row">
+            <label>Required for Export</label>
+            <input
+              type="checkbox"
+              checked={!!formData.required_for_export}
+              onChange={(e) => setFormData({ ...formData, required_for_export: e.target.checked })}
+            />
+          </div>
+
+          <div className="form-row checkbox-row">
+            <label>Required for Completion</label>
+            <input
+              type="checkbox"
+              checked={!!formData.required_for_completion}
+              onChange={(e) => setFormData({ ...formData, required_for_completion: e.target.checked })}
+            />
+          </div>
+
+          <div className="form-row">
+            <label>Source</label>
+            <input type="text" value={formData.source || ''} readOnly />
+            <small>Source of attribute (notion|derived|json)</small>
+          </div>
         </div>
 
         <div className="form-actions actions">
@@ -327,13 +391,16 @@ export default function AttributeManager() {
                 <span> ({attr.attribute_id})</span>
                 <div>
                   <small>
-                    Type: {attr.data_type} | Status: {attr.status}
+                    Type: {attr.data_type || 'string'} | Status: {attr.status || 'active'}
                   </small>
                 </div>
               </div>
               <div className="attribute-item-actions">
                 <button className="secondary" onClick={() => openEdit(attr)}>
                   Edit
+                </button>
+                <button className="secondary" onClick={() => handleSync(attr.attribute_id)}>
+                  Sync
                 </button>
                 <button className="secondary" onClick={() => showUsage(attr.attribute_id)}>
                   Usage
