@@ -1,0 +1,12 @@
+Loaded AttributeSchema from packages/sdk/dist
+Scanning collection: settings/attributes/keys
+Found 422 documents
+Wrote JSON report to /workspaces/ROPI-V2.1/docs/lisa/normalize-dryrun-staging.json
+Wrote Markdown report to /workspaces/ROPI-V2.1/docs/lisa/normalize-dryrun-staging.md
+
+=== SUMMARY ===
+Total docs: 422
+Deprecated stubs: 251
+Valid docs: 171
+Docs with diffs: 0
+Validation errors: 0

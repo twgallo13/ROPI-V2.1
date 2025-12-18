@@ -1,0 +1,116 @@
+Loaded AttributeSchema from packages/sdk/dist
+Scanning settings/attributes/keys...
+Mode: DRY RUN (no writes)
+Found 422 attribute docs.
+Validation failed for AgeGroup: [
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Invalid",
+    "path": [
+      "attribute_id"
+    ]
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "label"
+    ],
+    "message": "Required"
+  },
+  {
+    "expected": "'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date'",
+    "received": "undefined",
+    "code": "invalid_type",
+    "path": [
+      "data_type"
+    ],
+    "message": "Required"
+  }
+]
+Validation failed for Brand: [
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Invalid",
+    "path": [
+      "attribute_id"
+    ]
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "label"
+    ],
+    "message": "Required"
+  },
+  {
+    "expected": "'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date'",
+    "received": "undefined",
+    "code": "invalid_type",
+    "path": [
+      "data_type"
+    ],
+    "message": "Required"
+  }
+]
+Validation failed for Category: [
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Invalid",
+    "path": [
+      "attribute_id"
+    ]
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "label"
+    ],
+    "message": "Required"
+  },
+  {
+    "expected": "'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date'",
+    "received": "undefined",
+    "code": "invalid_type",
+    "path": [
+      "data_type"
+    ],
+    "message": "Required"
+  }
+]
+Validation failed for Class: [
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Invalid",
+    "path": [
+      "attribute_id"
+    ]
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "label"
+    ],
+    "message": "Required"
+  },
+  {
+    "expected": "'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date'",
+    "received": "undefined",
+    "code": "invalid_type",
+    "path": [
+      "data_type"
+    ],
+    "message": "Required"
+  }
+]
