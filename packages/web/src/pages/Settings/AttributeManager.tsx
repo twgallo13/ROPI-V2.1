@@ -17,7 +17,7 @@ import { toSnakeCase } from '../../lib/stringUtils';
 import { toastError, toastSuccess } from '../../lib/notifications';
 
 export default function AttributeManager() {
-  const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute, getUsage, refresh, getAttributeById } = useAttributes();
+  const { attributes, loading, error, createAttribute, updateAttribute, deleteAttribute, getUsage, refresh } = useAttributes();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<Attribute>>({
@@ -164,7 +164,7 @@ export default function AttributeManager() {
     }
   };
 
-  const handleSync = async (id: string) => {
+  const handleSync = async (_id: string) => {
     try {
       await refresh();
       toastSuccess(`Synced attributes from server.`);

@@ -8,7 +8,7 @@ import ImportManagerPage from './pages/ImportManagerPage';
 import ImportBatchDetailPage from './pages/ImportBatchDetailPage';
 import ExportPage from './pages/ExportPage';
 import ObservationsPage from './pages/ObservationsPage';
-import AttributesPage from './pages/AttributesPage';
+// AttributesPage moved to Settings/AttributeManager
 import SmartRulesPage from './pages/SmartRulesPage';
 import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';

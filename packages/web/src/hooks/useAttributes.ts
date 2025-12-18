@@ -27,6 +27,7 @@ export type Attribute = {
   import_required?: boolean;
   ai_usage_notes?: string;
   status?: 'active' | 'deprecated' | 'hidden';
+  source?: 'notion' | 'derived' | 'json';
   createdBy?: string;
   createdAt?: string;
   updatedBy?: string;
