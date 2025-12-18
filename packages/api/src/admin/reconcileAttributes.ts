@@ -63,7 +63,14 @@ function generateMappingSuggestions(
 }
 
 const router: Router = Router();
-const db = admin.firestore();
+
+// Lazy Firestore getter to ensure admin app is initialized when this module loads
+function getDb() {
+  if (!admin.apps.length) {
+    admin.initializeApp();
+  }
+  return admin.firestore();
+}
 
 // ============================================================================
 // Types
@@ -143,13 +150,13 @@ router.post('/analyze', async (req, res) => {
       autoApplyThreshold,
     };
     
-    await db.collection('reconciliation').doc(jobId).set(job);
+    await getDb().collection('reconciliation').doc(jobId).set(job);
     
     // Start analysis in background
     analyzeAttribute(jobId, attributeId, minConfidence, autoApply, autoApplyThreshold)
       .catch(err => {
         console.error(`[reconcileAttributes] Analysis failed for job ${jobId}:`, err);
-        db.collection('reconciliation').doc(jobId).update({
+        getDb().collection('reconciliation').doc(jobId).update({
           status: 'failed',
           error: err.message,
           updatedAt: new Date(),
@@ -176,7 +183,7 @@ router.get('/:jobId', async (req, res) => {
   try {
     const { jobId } = req.params;
     
-    const jobDoc = await db.collection('reconciliation').doc(jobId).get();
+    const jobDoc = await getDb().collection('reconciliation').doc(jobId).get();
     
     if (!jobDoc.exists) {
       return res.status(404).json({ error: 'Job not found' });
@@ -223,7 +230,7 @@ router.post('/apply', async (req, res) => {
     mappings.forEach(m => mappingMap.set(m.from, m.to));
     
     // Query products that need updating
-    let query: FirebaseFirestore.Query = db.collection('products');
+    let query: FirebaseFirestore.Query = getDb().collection('products');
     
     // First, scan products to find those with matching values
     const snapshot = await query.get();
@@ -269,11 +276,11 @@ router.post('/apply', async (req, res) => {
     let updated = 0;
     
     for (let i = 0; i < productsToUpdate.length; i += batchSize) {
-      const batch = db.batch();
+      const batch = getDb().batch();
       const chunk = productsToUpdate.slice(i, i + batchSize);
       
       for (const { id, newValue } of chunk) {
-        const ref = db.collection('products').doc(id);
+        const ref = getDb().collection('products').doc(id);
         batch.update(ref, {
           [attributeId]: newValue,
           [`attributes.${attributeId}`]: newValue,
@@ -315,13 +322,13 @@ async function analyzeAttribute(
   console.log(`[analyzeAttribute] Starting analysis for ${attributeId} (job: ${jobId})`);
   
   // Update status
-  await db.collection('reconciliation').doc(jobId).update({
+  await getDb().collection('reconciliation').doc(jobId).update({
     status: 'analyzing',
     updatedAt: new Date(),
   });
   
   // 1. Get allowed values from attribute registry
-  const attrDoc = await db.collection('settings').doc('attributes').collection('keys').doc(attributeId).get();
+  const attrDoc = await getDb().collection('settings').doc('attributes').collection('keys').doc(attributeId).get();
   
   if (!attrDoc.exists) {
     throw new Error(`Attribute ${attributeId} not found in registry`);
@@ -338,7 +345,7 @@ async function analyzeAttribute(
   
   // 2. Scan products to collect distinct values
   const valueCounts = new Map<string, number>();
-  const productsSnapshot = await db.collection('products').get();
+  const productsSnapshot = await getDb().collection('products').get();
   
   for (const doc of productsSnapshot.docs) {
     const product = doc.data();
@@ -415,11 +422,11 @@ async function analyzeAttribute(
     // Update in batches
     const batchSize = 500;
     for (let i = 0; i < productsToUpdate.length; i += batchSize) {
-      const batch = db.batch();
+      const batch = getDb().batch();
       const chunk = productsToUpdate.slice(i, i + batchSize);
       
       for (const { id, newValue } of chunk) {
-        const ref = db.collection('products').doc(id);
+        const ref = getDb().collection('products').doc(id);
         batch.update(ref, {
           [attributeId]: newValue,
           [`attributes.${attributeId}`]: newValue,
@@ -435,7 +442,7 @@ async function analyzeAttribute(
   }
   
   // 5. Save results
-  await db.collection('reconciliation').doc(jobId).update({
+  await getDb().collection('reconciliation').doc(jobId).update({
     status: 'completed',
     updatedAt: new Date(),
     totalProducts: productsSnapshot.size,

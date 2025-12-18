@@ -70,7 +70,7 @@ async function signInWithPassword(email, password) {
 
   const options = {
     hostname: 'identitytoolkit.googleapis.com',
-    path: '/v1/accounts:signInWithPassword?key=AIzaSyAHhm_1fOxVGJCKH6xqmUIVXnvr6Z3OXx8',
+    path: '/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

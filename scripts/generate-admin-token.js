@@ -60,17 +60,15 @@ function exchangeCustomTokenForIdToken(customToken) {
       returnSecureToken: true,
     });
 
-    const options = {
-      hostname: 'identitytoolkit.googleapis.com',
-      path: '/v1/accounts:signInWithCustomToken?key=AIzaSyAHhm_1fOxVGJCKH6xqmUIVXnvr6Z3OXx8', // Public API key for ropi-bccee
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': data.length,
-      },
-    };
-
-    const req = https.request(options, (res) => {
+  const options = {
+    hostname: 'identitytoolkit.googleapis.com',
+    path: '/v1/accounts:signInWithCustomToken?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': data.length,
+    },
+  };    const req = https.request(options, (res) => {
       let body = '';
       res.on('data', (chunk) => {
         body += chunk;
