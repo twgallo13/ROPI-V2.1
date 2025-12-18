@@ -1,0 +1,255 @@
+/**
+ * AttributeFieldRenderer Styles
+ * PVS-0.1.9
+ */
+
+.attribute-field-renderer {
+  margin-bottom: 16px;
+}
+
+.attr-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.attr-label {
+  font-weight: 500;
+  color: var(--color-text-primary, #1f2937);
+  font-size: 14px;
+}
+
+.required-marker {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+.attr-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.attr-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.attr-badge.import {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.attr-badge.export {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.attr-field-wrapper {
+  width: 100%;
+}
+
+.attr-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background-color: var(--color-bg, #fff);
+  color: var(--color-text-primary, #1f2937);
+}
+
+.attr-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.attr-input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.attr-input.has-error {
+  border-color: #ef4444;
+}
+
+.attr-input.has-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.attr-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+.attr-json {
+  font-family: monospace;
+  font-size: 12px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Currency input */
+.currency-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.attr-currency {
+  padding-left: 28px;
+}
+
+/* Toggle switch */
+.attr-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.attr-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  background-color: #d1d5db;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.attr-toggle input:checked + .toggle-slider {
+  background-color: #3b82f6;
+}
+
+.attr-toggle input:checked + .toggle-slider::after {
+  transform: translateX(20px);
+}
+
+.attr-toggle input:disabled + .toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+/* Multi-select field */
+.multi-select-field {
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 6px;
+  padding: 8px;
+  background-color: var(--color-bg, #fff);
+}
+
+.multi-select-field.has-error {
+  border-color: #ef4444;
+}
+
+.multi-select-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  background-color: #f9fafb;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.chip.selected {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chip-check {
+  font-size: 11px;
+}
+
+.selected-summary {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Error message */
+.attr-error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* Hint text */
+.attr-hint {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* Notes */
+.attr-notes {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #6b7280;
+  font-style: italic;
+}
