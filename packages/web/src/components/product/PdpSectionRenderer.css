@@ -1,0 +1,182 @@
+/**
+ * PDP Section Renderer Styles
+ * PVS-0.1.9
+ */
+
+.pdp-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pdp-section {
+  background: var(--color-bg-card, #fff);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.pdp-section-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #1f2937);
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border-light, #f3f4f6);
+}
+
+/* Hero layout - for main product info */
+.hero-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hero-layout .attr-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary, #111827);
+  margin-bottom: 4px;
+}
+
+.hero-layout .attr-brand {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-layout .attr-msrp,
+.hero-layout .attr-retail_price {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-primary, #2563eb);
+}
+
+.hero-layout .attr-primary_color {
+  font-size: 14px;
+}
+
+/* Grid layout - for attribute lists */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.attribute-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.attr-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-tertiary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.attr-value {
+  font-size: 14px;
+  color: var(--color-text-primary, #374151);
+}
+
+/* Color display */
+.color-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-chip {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.color-name {
+  font-size: 14px;
+}
+
+/* Feature list */
+.feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feature-list li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--color-text-secondary, #4b5563);
+}
+
+.feature-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary, #3b82f6);
+  font-weight: bold;
+}
+
+/* Tag list (for materials, etc.) */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background-color: #f3f4f6;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #374151;
+}
+
+/* Section-specific styles */
+.pdp-section-Visuals .grid-layout {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.pdp-section-Materials .attr-value {
+  font-size: 13px;
+}
+
+.pdp-section-Measurements .grid-layout {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+  .grid-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .pdp-section-Measurements .grid-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-layout .attr-name {
+    font-size: 20px;
+  }
+}
