@@ -8,29 +8,22 @@
  * Homer v2.1.0 - User Management Enhancements
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import request from 'supertest';
 import express, { type Express } from 'express';
-import { createUserHandler, updateUserHandler, deleteUserHandler } from '../src/endpoints/admin/users';
+import { createUserHandler, updateUserHandler, deleteUserHandler, setAdminServiceOverrides, resetAdminServiceOverrides } from '../src/endpoints/admin/users';
 import { normalizeRole } from '../src/constants/roles';
 
-// Mock Firebase Admin
+// Always mock firebase-admin in this suite so unit handlers never call real Admin SDK
 vi.mock('firebase-admin', async (importOriginal) => {
   const actual = await importOriginal();
+  const apps: any[] = [];
 
   const authMock = () => ({
-    createUser: vi.fn().mockImplementation(async ({ email, password }) => {
-      return { uid: `uid-${Math.random().toString(36).slice(2,9)}`, email };
-    }),
-    updateUser: vi.fn().mockImplementation(async (uid, props) => {
-      return { uid, ...props };
-    }),
+    createUser: vi.fn().mockImplementation(async ({ email }) => ({ uid: `uid-${Math.random().toString(36).slice(2,9)}`, email })),
+    updateUser: vi.fn().mockImplementation(async (uid, props) => ({ uid, ...props })),
     deleteUser: vi.fn().mockResolvedValue(undefined),
-    getUser: vi.fn().mockImplementation(async (uid) => ({
-      uid,
-      email: `${uid}@example.com`,
-      customClaims: {},
-    })),
+    getUser: vi.fn().mockImplementation(async (uid) => ({ uid, email: `${uid}@example.com`, customClaims: {} })),
     setCustomUserClaims: vi.fn().mockResolvedValue(undefined),
     generatePasswordResetLink: vi.fn().mockResolvedValue('https://reset.example/'),
     verifyIdToken: vi.fn().mockImplementation(async (token) => {
@@ -39,12 +32,62 @@ vi.mock('firebase-admin', async (importOriginal) => {
       }
       return { uid: 'test-uid', email: 'test@example.com', admin: true };
     }),
+    listUsers: vi.fn().mockResolvedValue({ users: [], pageToken: undefined }),
+  });
+
+  const mockDoc = () => ({
+    set: vi.fn().mockResolvedValue(undefined),
+    get: vi.fn().mockResolvedValue({ exists: false, data: () => ({}) }),
+    update: vi.fn().mockResolvedValue(undefined),
+    delete: vi.fn().mockResolvedValue(undefined),
+    create: vi.fn().mockResolvedValue(undefined),
+    collection: vi.fn().mockImplementation(() => mockCollection()),
+  });
+
+  const mockCollection = () => ({
+    doc: vi.fn().mockImplementation(() => mockDoc()),
+    add: vi.fn().mockResolvedValue({ id: 'mock-id' }),
+    where: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    orderBy: vi.fn().mockReturnThis(),
+    startAfter: vi.fn().mockReturnThis(),
+    startAt: vi.fn().mockReturnThis(),
+    endBefore: vi.fn().mockReturnThis(),
+    endAt: vi.fn().mockReturnThis(),
+    select: vi.fn().mockReturnThis(),
+    get: vi.fn().mockResolvedValue({ docs: [] }),
+  });
+
+  const firestoreMock: any = vi.fn(() => {
+    const batchOps: any[] = [];
+    return {
+      collection: vi.fn().mockImplementation(() => mockCollection()),
+      doc: vi.fn().mockImplementation(() => mockDoc()),
+      batch: vi.fn().mockImplementation(() => ({
+        set: vi.fn((ref, data) => batchOps.push({ op: 'set', ref, data })),
+        update: vi.fn((ref, data) => batchOps.push({ op: 'update', ref, data })),
+        delete: vi.fn((ref) => batchOps.push({ op: 'delete', ref })),
+        commit: vi.fn().mockResolvedValue(batchOps),
+      })),
+    };
+  });
+
+  firestoreMock.Timestamp = actual.firestore.Timestamp;
+  firestoreMock.FieldValue = actual.firestore.FieldValue;
+
+  const initializeApp = vi.fn((options?: any) => {
+    const app = { name: 'mockApp', options: options || {} };
+    apps.push(app);
+    return app;
   });
 
   return {
     ...actual,
     auth: authMock,
-    firestore: actual.firestore,
+    firestore: firestoreMock,
+    initializeApp,
+    credential: actual.credential,
+    apps,
   };
 });
 
@@ -55,6 +98,10 @@ vi.mock('../src/middleware/auth', () => ({
     return next();
   },
 }));
+
+afterEach(() => {
+  resetAdminServiceOverrides();
+});
 
 describe('Role Normalization', () => {
   describe('normalizeRole()', () => {
@@ -133,14 +180,10 @@ describe('Role Normalization', () => {
         set: vi.fn().mockResolvedValue(undefined),
       };
 
-      // Mock getAuth and getDb
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      // Inject admin service mocks for this suite
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
     });
 
@@ -244,13 +287,9 @@ describe('Role Normalization', () => {
         set: vi.fn().mockResolvedValue(undefined),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
     });
 
@@ -322,13 +361,9 @@ describe('Hardened Delete Handler', () => {
         }),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
 
       const response = await request(app)
@@ -349,13 +384,9 @@ describe('Hardened Delete Handler', () => {
         }),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
 
       const response = await request(app)
@@ -377,13 +408,9 @@ describe('Hardened Delete Handler', () => {
         }),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
 
       const response = await request(app)
@@ -407,13 +434,9 @@ describe('Hardened Delete Handler', () => {
         }),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
 
       const response = await request(app)
@@ -435,13 +458,9 @@ describe('Hardened Delete Handler', () => {
         }),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
 
       const response = await request(app)
@@ -458,13 +477,9 @@ describe('Hardened Delete Handler', () => {
         deleteUser: vi.fn().mockResolvedValue(undefined),
       };
 
-      vi.doMock('../src/endpoints/admin/users', async () => {
-        const actual = await vi.importActual('../src/endpoints/admin/users');
-        return {
-          ...actual,
-          getAuth: () => mockAuth,
-          getDb: () => mockDb,
-        };
+      setAdminServiceOverrides({
+        getAuth: () => mockAuth,
+        getDb: () => mockDb,
       });
 
       const response = await request(app)
