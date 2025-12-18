@@ -5,24 +5,23 @@ import { createAttribute, updateAttribute, getAttribute } from '../../src/servic
 import { AttributeType } from '@ropi-aoss/sdk';
 import { randomUUID } from 'crypto';
 
-// Ensure test environment is configured for emulator or service account.
-beforeAll(() => {
-  if (!admin.apps.length) {
-    // If FIRESTORE_EMULATOR_HOST present, initialize default app; otherwise rely on ADC.
-    admin.initializeApp({
-      projectId: process.env.GCLOUD_PROJECT || 'test-project',
+// Skip integration tests if emulator is not running
+const EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
+const describeIfEmulator = EMULATOR_HOST ? describe : describe.skip;
+
+describeIfEmulator('Attribute update merge & validation', () => {
+    beforeAll(() => {
+      if (!admin.apps.length) {
+        admin.initializeApp({
+          projectId: 'demo-integration-test',
+        });
+      }
     });
-  }
-});
 
-afterAll(async () => {
-  // Optional: cleanup created docs (best-effort)
-  const db = admin.firestore();
-  // Note: tests will clean up specific docs below as needed.
-  await new Promise(resolve => setTimeout(resolve, 100)); // small delay
-});
+    afterAll(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
 
-describe('Attribute update merge & validation', () => {
   it('merges partial patch and applies schema defaults', async () => {
     const id = `test_attr_merge_${randomUUID().slice(0,8)}`;
     const actor = 'test-user';
