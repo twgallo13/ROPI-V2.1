@@ -1,0 +1,93 @@
+=== LP-0.3.6 Preview Verification ===
+Timestamp: 2025-12-19T21:40:42Z
+Preview URL: https://ropi-aoss-staging--pr-291-4wf3bj6d.web.app
+
+Homepage:
+HTTP 200, 456 bytes
+Settings/Attributes:
+HTTP 200, 456 bytes
+
+=== JavaScript Bundle Check ===
+src="/assets/index-DpR7klEN.js"
+JS Bundle: assets/index-DpR7klEN.js
+Bundle sample saved (first 100KB)
+0
+MappingTab not in first 100KB
+
+=== JS Bundle Analysis ===
+- Bundle file: assets/index-DpR7klEN.js
+- Bundle size: 1028159 bytes (~1MB)
+- Contains:
+  - 'mappingTab' class references: 3
+  - 'mapping-tab' class references: 2
+  - 'synonyms' references: 31
+  - 'importPreview' references: 3
+
+=== Component Wiring Verified ===
+File: packages/web/src/components/AttributeDetailPanel.tsx
+Line 538: case 'mapping': return <MappingTab attribute={attribute} attributes={attributes} />;
+Status: REAL COMPONENT (not placeholder)
+
+=== MappingTab Component Structure ===
+Location: packages/web/src/components/MappingTab.tsx
+Features verified in source:
+1. AliasTable - Header alias management
+2. SynonymsEditor - Value synonym mapping
+3. PerSourceOverrides - Vendor-specific overrides
+4. ImportPreviewEditor - CSV preview
+5. BulkAliasImportModal - Bulk import dialog
+
+=== Unit Tests (31 tests passed) ===
+- src/hooks/__tests__/useMappings.spec.ts: PASS
+- src/components/__tests__/SynonymsEditor.spec.tsx: PASS (13 tests, 1004ms)
+- src/components/__tests__/BulkAliasImportModal.spec.tsx: PASS (11 tests, 1506ms)
+
+=== API Routes Verified ===
+Mapping endpoints registered in apiApp.ts:
+- GET /admin/settings/mappings (global)
+- PUT /admin/settings/mappings (global)
+- GET /admin/settings/attributes/:id/mapping
+- PUT /admin/settings/attributes/:id/mapping
+- DELETE /admin/settings/attributes/:id/mapping
+- GET /admin/settings/attributes/:id/mapping/sources
+- GET /admin/settings/attributes/:id/mapping/sources/:sourceId
+- PUT /admin/settings/attributes/:id/mapping/sources/:sourceId
+- DELETE /admin/settings/attributes/:id/mapping/sources/:sourceId
+
+=== API Endpoint Check (unauthenticated) ===
+HTTP 401 - GET /api/admin/settings/mappings (expected 401)
+HTTP 401 - GET /api/admin/settings/attributes/primary_color/mapping (expected 401)
+
+=== Related PR Status ===
+PR #291 (Mapping UI): OPEN - Preview deployed at https://ropi-aoss-staging--pr-291-4wf3bj6d.web.app
+PR #292 (Audit UI): OPEN
+PR #294 (Mapping API fix): MERGED (b2194ba, 2025-12-19T21:35:58Z)
+
+=== API Auth Check ===
+GET /api/admin/settings/mappings (no auth): HTTP 401 - "Valid authentication token required"
+GET /api/admin/settings/attributes/primary_color/mapping (no auth): HTTP 401 - "Valid authentication token required"
+Conclusion: API endpoints are live and properly protected
+
+=== FINAL STATUS ===
+MappingTab: FULLY IMPLEMENTED (not placeholder)
+Preview URL: https://ropi-aoss-staging--pr-291-4wf3bj6d.web.app
+Build: SUCCESS
+Unit Tests: 31/31 PASSED
+API Routes: All registered
+Code Review (CodeRabbit): SUCCESS
+
+RECOMMENDATION: Merge PR #291 to deploy Mapping UI to staging
+
+=== STAGING DEPLOYMENT VERIFIED ===
+Timestamp: 2025-12-19T21:50:37Z
+Merge Commit: 7223b9628cb3d99389a2ad51ad8111d9ff5e94b2
+Deploy Workflow: 20383363143
+
+Staging URL: https://ropi-aoss-staging.web.app
+Homepage: HTTP 200
+Settings/Attributes: HTTP 200
+
+Deployed bundle: assets/index-C3gkA2Pe.js
+      3 importPreview
+      3 mappingTab
+     31 synonyms
