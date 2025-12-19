@@ -318,3 +318,61 @@ export async function listProductsHandler(req: Request, res: Response) {
     }
   });
 }
+
+/**
+ * GET /products/by-mpn/:mpn
+ * 
+ * LP-1.1.1: Retrieve a product by MPN for mobile observations capture.
+ * Returns minimal product view: { product_mpn, title, thumbnail, id }
+ */
+export async function getProductByMpnHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    const mpn = req.params.mpn;
+    
+    if (!mpn) {
+      res.status(400).json({ 
+        error: 'MISSING_MPN', 
+        message: 'MPN is required' 
+      });
+      return;
+    }
+
+    const db = admin.firestore();
+
+    try {
+      // Query products by MPN
+      const snapshot = await db
+        .collection('products')
+        .where('mpn', '==', mpn)
+        .limit(1)
+        .get();
+
+      if (snapshot.empty) {
+        res.status(404).json({ 
+          error: 'PRODUCT_NOT_FOUND', 
+          message: `Product with MPN '${mpn}' not found` 
+        });
+        return;
+      }
+
+      const doc = snapshot.docs[0];
+      const data = doc.data();
+
+      // Return minimal product view for mobile capture
+      res.status(200).json({
+        id: doc.id,
+        product_mpn: data.mpn || mpn,
+        title: data.name || data.title || 'Untitled Product',
+        thumbnail: data.images?.[0]?.thumb || data.images?.[0]?.url || data.thumbnail || null,
+        brand: data.brand || null,
+        sku: data.sku || null,
+      });
+    } catch (error) {
+      console.error('Error fetching product by MPN:', error);
+      res.status(500).json({ 
+        error: 'INTERNAL_ERROR', 
+        message: 'Failed to fetch product' 
+      });
+    }
+  });
+}

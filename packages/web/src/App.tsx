@@ -8,6 +8,7 @@ import ImportManagerPage from './pages/ImportManagerPage';
 import ImportBatchDetailPage from './pages/ImportBatchDetailPage';
 import ExportPage from './pages/ExportPage';
 import ObservationsPage from './pages/ObservationsPage';
+import ObservationsCapturePage from './pages/ObservationsCapturePage';
 // AttributesPage now uses new master-detail console (PVS-0.2.3)
 import SmartRulesPage from './pages/SmartRulesPage';
 import SettingsPage from './pages/SettingsPage';
@@ -33,6 +34,7 @@ function App() {
         <Route path="import/batches/:batchId" element={<ImportBatchDetailPage />} />
         <Route path="export" element={<ExportPage />} />
         <Route path="observations" element={<ObservationsPage />} />
+        <Route path="observations/capture" element={<ObservationsCapturePage />} />
         <Route path="attributes" element={<Navigate to="/settings/attributes" replace />} />
         <Route path="smart-rules" element={<SmartRulesPage />} />
         
