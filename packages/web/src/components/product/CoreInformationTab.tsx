@@ -32,6 +32,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.sku}
               onChange={(e) => onUpdate('sku', e.target.value)}
+              data-field="product.sku"
+              name="product.sku"
             />
           </div>
           
@@ -44,6 +46,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.styleId}
               onChange={(e) => onUpdate('styleId', e.target.value)}
+              data-field="product.styleId"
+              name="product.styleId"
             />
           </div>
           
@@ -56,6 +60,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.name}
               onChange={(e) => onUpdate('name', e.target.value)}
+              data-field="product.name"
+              name="product.name"
             />
           </div>
         </div>
@@ -73,6 +79,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.brand}
               onChange={(e) => onUpdate('brand', e.target.value)}
+              data-field="product.brand"
+              name="product.brand"
             />
           </div>
           
@@ -85,6 +93,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.category}
               onChange={(e) => onUpdate('category', e.target.value)}
+              data-field="product.category"
+              name="product.category"
             />
           </div>
           
@@ -96,6 +106,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.department}
               onChange={(e) => onUpdate('department', e.target.value)}
+              data-field="product.department"
+              name="product.department"
             >
               <option value="">Select...</option>
               <option value="Men">Men</option>
@@ -112,6 +124,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.subcategory}
               onChange={(e) => onUpdate('subcategory', e.target.value)}
+              data-field="product.subcategory"
+              name="product.subcategory"
             />
           </div>
         </div>
@@ -127,6 +141,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.firstReceived}
               onChange={(e) => onUpdate('firstReceived', e.target.value)}
+              data-field="product.firstReceived"
+              name="product.firstReceived"
             />
           </div>
           
@@ -139,6 +155,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.launchDate}
               onChange={(e) => onUpdate('launchDate', e.target.value)}
+              data-field="product.launchDate"
+              name="product.launchDate"
             />
           </div>
           
@@ -148,6 +166,8 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
               className="form-input"
               value={product.launchStatus}
               onChange={(e) => onUpdate('launchStatus', e.target.value)}
+              data-field="product.launchStatus"
+              name="product.launchStatus"
             >
               <option value="scheduled">Scheduled</option>
               <option value="soft_launch">Soft Launch</option>
@@ -164,7 +184,7 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
           <label className="form-label">
             Active Websites <span className="required">*</span>
           </label>
-          <div className="checkbox-group">
+          <div className="checkbox-group" data-field="product.websites" data-testid="product-websites">
             {['shiekh.com', 'shiekhshoes.com', 'example.com'].map(website => (
               <label key={website} className="checkbox-label">
                 <input
@@ -176,6 +196,7 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
                       : product.websites.filter(w => w !== website);
                     onUpdate('websites', updated);
                   }}
+                  name={`product.websites.${website}`}
                 />
                 {website}
               </label>

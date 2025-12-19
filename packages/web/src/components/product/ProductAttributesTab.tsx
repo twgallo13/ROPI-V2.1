@@ -53,6 +53,8 @@ function AttributeInput({
 }) {
   const stringValue = typeof value === 'string' ? value : '';
   const arrayValue = Array.isArray(value) ? value : [];
+  // Canonical field key for scroll-to-field targeting (LP-1.0.2)
+  const fieldKey = `attributes.${attr.attribute_id}`;
 
   switch (attr.data_type) {
     case 'enum':
@@ -62,6 +64,8 @@ function AttributeInput({
           value={stringValue}
           onChange={(e) => onChange(e.target.value)}
           data-testid={`attr-input-${attr.attribute_id}`}
+          data-field={fieldKey}
+          name={fieldKey}
         >
           <option value="">— Select —</option>
           {(attr.allowed_values || []).map((opt) => (
@@ -88,6 +92,8 @@ function AttributeInput({
           }
           placeholder="Enter values separated by commas"
           data-testid={`attr-input-${attr.attribute_id}`}
+          data-field={fieldKey}
+          name={fieldKey}
         />
       );
 
@@ -99,6 +105,8 @@ function AttributeInput({
             checked={Boolean(value)}
             onChange={(e) => onChange(e.target.checked)}
             data-testid={`attr-input-${attr.attribute_id}`}
+            data-field={fieldKey}
+            name={fieldKey}
           />
           <span>{value ? 'Yes' : 'No'}</span>
         </label>
@@ -114,6 +122,8 @@ function AttributeInput({
           onChange={(e) => onChange(e.target.value ? Number(e.target.value) : '')}
           step={attr.data_type === 'currency' ? '0.01' : 'any'}
           data-testid={`attr-input-${attr.attribute_id}`}
+          data-field={fieldKey}
+          name={fieldKey}
         />
       );
 
@@ -125,6 +135,8 @@ function AttributeInput({
           value={stringValue}
           onChange={(e) => onChange(e.target.value)}
           data-testid={`attr-input-${attr.attribute_id}`}
+          data-field={fieldKey}
+          name={fieldKey}
         />
       );
 
@@ -142,6 +154,8 @@ function AttributeInput({
           }}
           rows={3}
           data-testid={`attr-input-${attr.attribute_id}`}
+          data-field={fieldKey}
+          name={fieldKey}
         />
       );
 
@@ -154,6 +168,8 @@ function AttributeInput({
           value={stringValue}
           onChange={(e) => onChange(e.target.value)}
           data-testid={`attr-input-${attr.attribute_id}`}
+          data-field={fieldKey}
+          name={fieldKey}
         />
       );
   }
