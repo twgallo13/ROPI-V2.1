@@ -674,6 +674,7 @@ export default function AttributesConsole() {
       />
       <AttributeDetailPanel
         attribute={detailAttribute}
+        attributes={attributes}
         formData={formData}
         isDirty={isDirty}
         saving={saving}

@@ -4,10 +4,24 @@
  * 
  * Implements CRUD operations for product attributes in Firestore.
  * Path: settings/attributes/keys/{attributeId}
+ * 
+ * PVS-0.3.0: All mutations write audit events
  */
 
 import * as admin from 'firebase-admin';
 import { AttributeSchema, type AttributeType } from '@ropi-aoss/sdk';
+import { 
+  createAuditEvent, 
+  createAuditEventInBatch,
+  getAuditEvent,
+  listAuditEvents,
+  type AuditEvent,
+  type AuditAction,
+  type CreateAuditEventInput,
+  type ListAuditEventsOptions,
+  type PaginatedAuditEvents,
+  AuditServiceError,
+} from './auditService';
 
 // Firestore collection paths
 const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
@@ -203,6 +217,7 @@ export async function getAttribute(attributeId: string): Promise<AttributeType> 
 /**
  * Create a new attribute
  * Uses Firestore create() to ensure uniqueness (fails if doc exists)
+ * PVS-0.3.0: Writes audit event with after snapshot (before = null for create)
  */
 export async function createAttribute(
   attribute: AttributeType,
@@ -217,9 +232,30 @@ export async function createAttribute(
   
   const payload = toFirestorePayload(attribute, actor, true);
   
+  // Construct the created attribute for return and audit
+  const createdAttribute: AttributeType = {
+    ...attribute,
+    createdBy: payload.createdBy as string,
+    createdAt: payload.createdAt as string,
+    updatedBy: payload.updatedBy as string,
+    updatedAt: payload.updatedAt as string,
+  };
+  
   try {
     // Use create() which fails if document already exists
     await docRef.create(payload);
+    
+    // Create audit event (fire-and-forget, don't block on it)
+    createAuditEvent({
+      attribute_id: attributeId,
+      actor,
+      action: 'create',
+      before: null,
+      after: createdAttribute as Record<string, unknown>,
+      context: { source: 'api' },
+    }).catch(err => {
+      console.error(`Failed to create audit event for attribute ${attributeId}:`, err);
+    });
   } catch (error: unknown) {
     // Check if it's a duplicate error
     if (error instanceof Error && error.message.includes('already exists')) {
@@ -232,28 +268,23 @@ export async function createAttribute(
     throw error;
   }
   
-  // Return the created attribute
-  return {
-    ...attribute,
-    createdBy: payload.createdBy as string,
-    createdAt: payload.createdAt as string,
-    updatedBy: payload.updatedBy as string,
-    updatedAt: payload.updatedAt as string,
-  };
+  return createdAttribute;
 }
 
 /**
  * Update an existing attribute
+ * PVS-0.3.0: Now writes audit event with before/after snapshots
  */
 export async function updateAttribute(
   attributeId: string,
   patch: Partial<AttributeType>,
-  actor: string
+  actor: string,
+  reason?: string
 ): Promise<AttributeType> {
   const db = getDb();
   const docRef = db.collection(ATTRIBUTES_COLLECTION).doc(attributeId);
   
-  // Check if document exists
+  // Fetch existing document (for audit before state)
   const existing = await docRef.get();
   if (!existing.exists) {
     throw new ServiceError(
@@ -261,6 +292,12 @@ export async function updateAttribute(
       404,
       'ATTRIBUTE_NOT_FOUND'
     );
+  }
+  
+  // Capture "before" state for audit
+  const beforeState = fromFirestore(existing);
+  if (!beforeState) {
+    throw new ServiceError('Failed to read existing attribute', 500, 'INTERNAL_ERROR');
   }
   
   // Prevent changing attribute_id
@@ -273,26 +310,48 @@ export async function updateAttribute(
     updatedAt: now,
   };
   
+  // Update the attribute
   await docRef.update(updatePayload);
   
-  // Fetch and return updated document
-  const updatedDoc = await docRef.get();
-  const result = fromFirestore(updatedDoc);
-  if (!result) {
-    throw new ServiceError('Failed to retrieve updated attribute', 500, 'INTERNAL_ERROR');
-  }
+  // Calculate "after" state by merging
+  const afterState: AttributeType = {
+    ...beforeState,
+    ...patchWithoutId,
+    updatedBy: actor,
+    updatedAt: now,
+  };
   
-  return result;
+  // Create audit event (fire-and-forget, don't block on it)
+  createAuditEvent({
+    attribute_id: attributeId,
+    actor,
+    action: 'update',
+    before: beforeState as Record<string, unknown>,
+    after: afterState as Record<string, unknown>,
+    reason,
+    context: { 
+      patchFields: Object.keys(patchWithoutId),
+    },
+  }).catch(err => {
+    console.error(`Failed to create audit event for attribute ${attributeId} update:`, err);
+  });
+  
+  return afterState;
 }
 
 /**
  * Delete an attribute
+ * PVS-0.3.0: Writes audit event with before snapshot (after = null for delete)
  */
-export async function deleteAttribute(attributeId: string): Promise<void> {
+export async function deleteAttribute(
+  attributeId: string,
+  actor: string,
+  reason?: string
+): Promise<void> {
   const db = getDb();
   const docRef = db.collection(ATTRIBUTES_COLLECTION).doc(attributeId);
   
-  // Check if document exists
+  // Fetch existing document (for audit before state)
   const existing = await docRef.get();
   if (!existing.exists) {
     throw new ServiceError(
@@ -302,7 +361,27 @@ export async function deleteAttribute(attributeId: string): Promise<void> {
     );
   }
   
+  // Capture "before" state for audit
+  const beforeState = fromFirestore(existing);
+  if (!beforeState) {
+    throw new ServiceError('Failed to read existing attribute', 500, 'INTERNAL_ERROR');
+  }
+  
+  // Delete the document
   await docRef.delete();
+  
+  // Create audit event (fire-and-forget, don't block on it)
+  createAuditEvent({
+    attribute_id: attributeId,
+    actor,
+    action: 'delete',
+    before: beforeState as Record<string, unknown>,
+    after: null,
+    reason,
+    context: { source: 'api' },
+  }).catch(err => {
+    console.error(`Failed to create audit event for attribute ${attributeId} delete:`, err);
+  });
 }
 
 /**

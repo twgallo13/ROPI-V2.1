@@ -20,6 +20,10 @@ import {
   deleteAttributeHandler,
   getAttributeUsageHandler,
   getTopValuesHandler,
+  // PVS-0.3.0 Audit handlers
+  listAuditEventsHandler,
+  getAuditEventHandler,
+  revertAttributeHandler,
 } from './endpoints/admin/settings';
 import {
   listListsHandler,
@@ -109,6 +113,10 @@ api.put('/admin/settings/attributes/:id', updateAttributeHandler);
 api.delete('/admin/settings/attributes/:id', deleteAttributeHandler);
 api.get('/admin/settings/attributes/:id/usage', getAttributeUsageHandler);
 api.get('/admin/settings/attributes/:id/top-values', getTopValuesHandler);
+// PVS-0.3.0 Audit endpoints
+api.get('/admin/settings/attributes/:id/audit', listAuditEventsHandler);
+api.get('/admin/settings/attributes/:id/audit/:eventId', getAuditEventHandler);
+api.post('/admin/settings/attributes/:id/revert', revertAttributeHandler);
 // PVS-0.3.1 Attribute-level mapping endpoints
 api.get('/admin/settings/attributes/:id/mapping', getAttributeMappingHandler);
 api.put('/admin/settings/attributes/:id/mapping', updateAttributeMappingHandler);

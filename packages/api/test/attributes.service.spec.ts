@@ -221,7 +221,7 @@ describe('Attributes Service', () => {
       await createAttribute(attribute, testActor);
       
       // Delete
-      await deleteAttribute(testAttributeId);
+      await deleteAttribute(testAttributeId, testActor);
       
       // Verify deleted
       await expect(getAttribute(testAttributeId))
@@ -230,12 +230,12 @@ describe('Attributes Service', () => {
     });
 
     it('should throw 404 for non-existent attribute', async () => {
-      await expect(deleteAttribute('non-existent-id'))
+      await expect(deleteAttribute('non-existent-id', testActor))
         .rejects
         .toThrow(ServiceError);
       
       try {
-        await deleteAttribute('non-existent-id');
+        await deleteAttribute('non-existent-id', testActor);
       } catch (error) {
         expect(error).toBeInstanceOf(ServiceError);
         expect((error as ServiceError).statusCode).toBe(404);
