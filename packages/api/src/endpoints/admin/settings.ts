@@ -4,6 +4,8 @@
  * 
  * Implements CRUD handlers for Attributes, Smart Rules, and AI Templates.
  * All endpoints require admin authentication.
+ * 
+ * PVS-0.3.0: Added audit endpoints and revert functionality
  */
 
 import { requireAdmin, type AuthenticatedRequest } from '../../middleware/auth';
@@ -19,12 +21,19 @@ import {
   validateAttributeData,
   ServiceError,
 } from '../../services/attributesService';
+import {
+  listAuditEvents,
+  getAuditEvent,
+  revertAttribute,
+  AuditServiceError,
+  type AuditAction,
+} from '../../services/auditService';
 
 /**
  * Format service error for HTTP response
  */
 function handleServiceError(error: unknown, res: Response): void {
-  if (error instanceof ServiceError) {
+  if (error instanceof ServiceError || error instanceof AuditServiceError) {
     res.status(error.statusCode).json({
       error: error.code,
       message: error.message,
@@ -173,6 +182,7 @@ export async function updateAttributeHandler(req: Request, res: Response) {
 /**
  * DELETE /admin/settings/attributes/:id
  * Delete an attribute
+ * PVS-0.3.0: Now requires actor for audit trail
  */
 export async function deleteAttributeHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
@@ -186,7 +196,11 @@ export async function deleteAttributeHandler(req: Request, res: Response) {
         return;
       }
       
-      await deleteAttribute(attributeId);
+      const authReq = req as AuthenticatedRequest;
+      const actor = authReq.auth?.uid || 'system';
+      const reason = req.body?.reason as string | undefined;
+      
+      await deleteAttribute(attributeId, actor, reason);
       res.status(204).send();
     } catch (error) {
       handleServiceError(error, res);
@@ -248,3 +262,107 @@ export async function getTopValuesHandler(req: Request, res: Response) {
   });
 }
 
+
+// =============================================
+// Audit Endpoints (PVS-0.3.0)
+// =============================================
+
+/**
+ * GET /admin/settings/attributes/:id/audit
+ * List audit events for an attribute with pagination
+ * 
+ * Query params:
+ * - limit: number (default 50, max 100)
+ * - after: event_id for cursor pagination
+ * - actions: comma-separated list of action types to filter
+ */
+export async function listAuditEventsHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    try {
+      const attributeId = req.params.id;
+      if (!attributeId) {
+        res.status(400).json({
+          error: 'INVALID_REQUEST',
+          message: 'Attribute ID is required',
+        });
+        return;
+      }
+      
+      const limit = parseInt((req.query.limit as string) || '50', 10);
+      const after = req.query.after as string | undefined;
+      const actionsParam = req.query.actions as string | undefined;
+      const actions = actionsParam 
+        ? actionsParam.split(',').map(a => a.trim()) as AuditAction[]
+        : undefined;
+      
+      const result = await listAuditEvents(attributeId, { limit, after, actions });
+      res.status(200).json(result);
+    } catch (error) {
+      handleServiceError(error, res);
+    }
+  });
+}
+
+/**
+ * GET /admin/settings/attributes/:id/audit/:eventId
+ * Get a single audit event
+ */
+export async function getAuditEventHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    try {
+      const { id: attributeId, eventId } = req.params;
+      if (!attributeId || !eventId) {
+        res.status(400).json({
+          error: 'INVALID_REQUEST',
+          message: 'Attribute ID and Event ID are required',
+        });
+        return;
+      }
+      
+      const event = await getAuditEvent(attributeId, eventId);
+      res.status(200).json(event);
+    } catch (error) {
+      handleServiceError(error, res);
+    }
+  });
+}
+
+/**
+ * POST /admin/settings/attributes/:id/revert
+ * Revert an attribute to a previous state (from audit event)
+ * 
+ * Body:
+ * - eventId: string (required) - The audit event ID to revert to
+ * - reason: string (optional) - Reason for the revert
+ */
+export async function revertAttributeHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    try {
+      const attributeId = req.params.id;
+      if (!attributeId) {
+        res.status(400).json({
+          error: 'INVALID_REQUEST',
+          message: 'Attribute ID is required',
+        });
+        return;
+      }
+      
+      const { eventId, reason } = req.body || {};
+      if (!eventId) {
+        res.status(400).json({
+          error: 'INVALID_REQUEST',
+          message: 'eventId is required in request body',
+        });
+        return;
+      }
+      
+      const authReq = req as AuthenticatedRequest;
+      const actor = authReq.auth?.uid || 'system';
+      
+      const reverted = await revertAttribute(attributeId, eventId, actor, reason);
+      res.status(200).json(reverted);
+    } catch (error) {
+      handleServiceError(error, res);
+    }
+  });
+}
