@@ -45,14 +45,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Enable corepack (for pnpm cache support)
+        run: corepack enable
+
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm@8
+      - name: Prepare pnpm via corepack
+        run: corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: pnpm install
