@@ -3,7 +3,7 @@
  * 
  * Tests the master-detail layout renders correctly
  * 
- * Lisa PVS-0.2.3
+ * Lisa PVS-0.2.3, updated PVS-0.2.7
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -33,6 +33,16 @@ const mockAttributes = [
   },
 ];
 
+const mockTopValuesResponse = {
+  values: [
+    { value: 'Small', count: 150 },
+    { value: 'Medium', count: 120 },
+    { value: 'Large', count: 80 },
+  ],
+  total: 3,
+  sampledProducts: 350,
+};
+
 const mockUseAttributes = {
   attributes: mockAttributes,
   loading: false,
@@ -42,6 +52,7 @@ const mockUseAttributes = {
   deleteAttribute: vi.fn(),
   refresh: vi.fn(),
   getUsage: vi.fn(),
+  getTopValues: vi.fn().mockResolvedValue(mockTopValuesResponse),
 };
 
 vi.mock('../../src/hooks/useAttributes', () => ({
@@ -372,6 +383,167 @@ describe('AttributesConsole Shell', () => {
       // Type correct attribute ID - should enable
       fireEvent.change(screen.getByTestId('confirm-input'), { target: { value: 'color' } });
       expect(screen.getByTestId('modal-confirm')).not.toBeDisabled();
+    });
+  });
+
+  // PVS-0.2.7: Conversion Modal Tests
+  describe('Data Type Conversion (PVS-0.2.7)', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('shows conversion modal when changing string to enum and saving', async () => {
+      render(<AttributesConsole />);
+
+      // Select a string attribute (size)
+      fireEvent.click(screen.getByTestId('list-item-size'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('form-data-type')).toBeInTheDocument();
+      });
+
+      // Change data type to enum
+      fireEvent.change(screen.getByTestId('form-data-type'), { target: { value: 'enum' } });
+
+      // Click save
+      fireEvent.click(screen.getByTestId('btn-save'));
+
+      // Conversion modal should appear (not a toast error)
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-modal')).toBeInTheDocument();
+      });
+
+      expect(screen.getByText('Convert to Enum')).toBeInTheDocument();
+      expect(screen.getByTestId('propose-values-btn')).toBeInTheDocument();
+      expect(screen.getByTestId('manual-entry-btn')).toBeInTheDocument();
+    });
+
+    it('shows conversion modal when changing string to multiSelect', async () => {
+      render(<AttributesConsole />);
+
+      // Select a string attribute (size)
+      fireEvent.click(screen.getByTestId('list-item-size'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('form-data-type')).toBeInTheDocument();
+      });
+
+      // Change data type to multiSelect
+      fireEvent.change(screen.getByTestId('form-data-type'), { target: { value: 'multiSelect' } });
+
+      // Click save
+      fireEvent.click(screen.getByTestId('btn-save'));
+
+      // Conversion modal should appear
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-modal')).toBeInTheDocument();
+      });
+
+      expect(screen.getByText('Convert to Multi-Select')).toBeInTheDocument();
+    });
+
+    it('propose values button triggers API call', async () => {
+      render(<AttributesConsole />);
+
+      // Select size and change to enum
+      fireEvent.click(screen.getByTestId('list-item-size'));
+      await waitFor(() => expect(screen.getByTestId('form-data-type')).toBeInTheDocument());
+      fireEvent.change(screen.getByTestId('form-data-type'), { target: { value: 'enum' } });
+      fireEvent.click(screen.getByTestId('btn-save'));
+
+      await waitFor(() => expect(screen.getByTestId('conversion-modal')).toBeInTheDocument());
+
+      // Click propose values
+      fireEvent.click(screen.getByTestId('propose-values-btn'));
+
+      // API should be called with correct parameters
+      await waitFor(() => {
+        expect(mockUseAttributes.getTopValues).toHaveBeenCalledWith('size', 500, 2);
+      });
+    });
+
+    it('manual entry mode allows entering values', async () => {
+      render(<AttributesConsole />);
+
+      // Select size and change to enum
+      fireEvent.click(screen.getByTestId('list-item-size'));
+      await waitFor(() => expect(screen.getByTestId('form-data-type')).toBeInTheDocument());
+      fireEvent.change(screen.getByTestId('form-data-type'), { target: { value: 'enum' } });
+      fireEvent.click(screen.getByTestId('btn-save'));
+
+      await waitFor(() => expect(screen.getByTestId('conversion-modal')).toBeInTheDocument());
+
+      // Click manual entry
+      fireEvent.click(screen.getByTestId('manual-entry-btn'));
+
+      // Textarea should appear
+      await waitFor(() => {
+        expect(screen.getByTestId('manual-values-input')).toBeInTheDocument();
+      });
+
+      // Enter values
+      fireEvent.change(screen.getByTestId('manual-values-input'), {
+        target: { value: 'XS\nS\nM\nL\nXL' },
+      });
+
+      // Confirm button should appear
+      expect(screen.getByTestId('confirm-manual')).toBeInTheDocument();
+    });
+
+    it('cancel conversion reverts data type', async () => {
+      render(<AttributesConsole />);
+
+      // Select size and change to enum
+      fireEvent.click(screen.getByTestId('list-item-size'));
+      await waitFor(() => expect(screen.getByTestId('form-data-type')).toBeInTheDocument());
+      
+      // Verify initial data type is string
+      expect(screen.getByTestId('form-data-type')).toHaveValue('string');
+      
+      fireEvent.change(screen.getByTestId('form-data-type'), { target: { value: 'enum' } });
+      fireEvent.click(screen.getByTestId('btn-save'));
+
+      await waitFor(() => expect(screen.getByTestId('conversion-modal')).toBeInTheDocument());
+
+      // Cancel
+      fireEvent.click(screen.getByTestId('conversion-cancel'));
+
+      // Modal should close
+      await waitFor(() => {
+        expect(screen.queryByTestId('conversion-modal')).not.toBeInTheDocument();
+      });
+
+      // Data type should revert to string
+      expect(screen.getByTestId('form-data-type')).toHaveValue('string');
+    });
+
+    it('does not show conversion modal for existing enum attributes', async () => {
+      render(<AttributesConsole />);
+
+      // Select color (already enum)
+      fireEvent.click(screen.getByTestId('list-item-color'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('form-data-type')).toBeInTheDocument();
+      });
+
+      // Verify it's already enum
+      expect(screen.getByTestId('form-data-type')).toHaveValue('enum');
+
+      // Make some other change
+      fireEvent.change(screen.getByTestId('form-label'), { target: { value: 'Updated Color' } });
+
+      // Click save - should NOT show conversion modal
+      fireEvent.click(screen.getByTestId('btn-save'));
+
+      // Wait a bit to ensure modal doesn't appear
+      await new Promise(resolve => setTimeout(resolve, 100));
+      expect(screen.queryByTestId('conversion-modal')).not.toBeInTheDocument();
+
+      // Should call updateAttribute directly
+      await waitFor(() => {
+        expect(mockUseAttributes.updateAttribute).toHaveBeenCalled();
+      });
     });
   });
 });

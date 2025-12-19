@@ -300,6 +300,79 @@ export async function getAttributeUsage(attributeId: string, sampleLimit = 10) {
 }
 
 /**
+ * Get top distinct values for an attribute across products
+ * Used for proposing allowed_values when converting string → enum
+ * 
+ * @param attributeId - The attribute ID to scan
+ * @param limit - Maximum number of distinct values to return (default 200)
+ * @param minCount - Minimum occurrence count to include (default 1)
+ * @param sampleSize - Maximum products to scan (default 50000)
+ */
+export async function getTopValues(
+  attributeId: string,
+  limit = 200,
+  minCount = 1,
+  sampleSize = 50000
+): Promise<{
+  values: Array<{ value: string; count: number }>;
+  total: number;
+  sampledProducts: number;
+}> {
+  const db = getDb();
+  
+  // Verify attribute exists
+  const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attributeId).get();
+  if (!attrDoc.exists) {
+    throw new ServiceError(
+      `Attribute '${attributeId}' not found`,
+      404,
+      'ATTRIBUTE_NOT_FOUND'
+    );
+  }
+  
+  // Query products where attribute exists, limit to sampleSize
+  const query = db.collection('products')
+    .where(`attributes.${attributeId}`, '!=', null)
+    .limit(sampleSize);
+  
+  const snapshot = await query.get();
+  const sampledProducts = snapshot.size;
+  
+  // Aggregate values with counts
+  const valueCounts = new Map<string, number>();
+  
+  for (const doc of snapshot.docs) {
+    const data = doc.data() as { attributes?: Record<string, unknown> };
+    const rawValue = data.attributes?.[attributeId];
+    
+    if (rawValue === null || rawValue === undefined) continue;
+    
+    // Handle array values (for multi-select already)
+    const values = Array.isArray(rawValue) ? rawValue : [rawValue];
+    
+    for (const v of values) {
+      const strValue = String(v).trim();
+      if (!strValue) continue;
+      
+      valueCounts.set(strValue, (valueCounts.get(strValue) || 0) + 1);
+    }
+  }
+  
+  // Filter by minCount and sort by count descending
+  const sortedValues = Array.from(valueCounts.entries())
+    .filter(([, count]) => count >= minCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([value, count]) => ({ value, count }));
+  
+  return {
+    values: sortedValues,
+    total: sortedValues.length,
+    sampledProducts,
+  };
+}
+
+/**
  * Validate attribute data using Zod schema
  * Returns validation result with parsed data or error details
  */

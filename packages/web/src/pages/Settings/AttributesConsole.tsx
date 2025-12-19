@@ -2,10 +2,11 @@
  * AttributesConsole Component
  * Master-detail layout for managing product attributes
  * 
- * Lisa PVS-0.2.3, updated PVS-0.2.6
+ * Lisa PVS-0.2.3, updated PVS-0.2.6, PVS-0.2.7
  * 
  * This is a UI shell refactor - no changes to attribute semantics or data.
  * Replaces the old modal-based AttributeManager with a modern master-detail layout.
+ * PVS-0.2.7: Added ConversionModal for data_type string → enum/multiSelect conversion.
  */
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
@@ -100,6 +101,261 @@ function ConfirmationModal({
   );
 }
 
+// Proposed value item for conversion
+type ProposedValue = { value: string; count: number; selected: boolean };
+
+/**
+ * ConversionModal - Modal for converting string attribute to enum/multiSelect
+ * Allows proposing values from product data or manual entry
+ */
+function ConversionModal({
+  attributeId,
+  targetType,
+  onConfirm,
+  onCancel,
+  getTopValues,
+}: {
+  attributeId: string;
+  targetType: 'enum' | 'multiSelect';
+  onConfirm: (values: string[]) => void;
+  onCancel: () => void;
+  getTopValues: (attributeId: string, limit?: number, minCount?: number) => Promise<{
+    values: Array<{ value: string; count: number }>;
+    total: number;
+    sampledProducts: number;
+  }>;
+}) {
+  const [mode, setMode] = useState<'choose' | 'propose' | 'manual'>('choose');
+  const [loading, setLoading] = useState(false);
+  const [proposedValues, setProposedValues] = useState<ProposedValue[]>([]);
+  const [manualInput, setManualInput] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [sampledProducts, setSampledProducts] = useState(0);
+
+  // Load proposed values when entering propose mode
+  const handleProposeValues = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await getTopValues(attributeId, 500, 2);
+      setProposedValues(result.values.map(v => ({ ...v, selected: true })));
+      setSampledProducts(result.sampledProducts);
+      setMode('propose');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load proposed values');
+    } finally {
+      setLoading(false);
+    }
+  }, [attributeId, getTopValues]);
+
+  // Toggle value selection
+  const toggleValue = useCallback((index: number) => {
+    setProposedValues(prev => prev.map((v, i) => 
+      i === index ? { ...v, selected: !v.selected } : v
+    ));
+  }, []);
+
+  // Select/deselect all
+  const toggleAll = useCallback((selected: boolean) => {
+    setProposedValues(prev => prev.map(v => ({ ...v, selected })));
+  }, []);
+
+  // Confirm proposed values
+  const handleConfirmProposed = useCallback(() => {
+    const selectedValues = proposedValues.filter(v => v.selected).map(v => v.value);
+    if (selectedValues.length === 0) {
+      setError('Please select at least one value');
+      return;
+    }
+    onConfirm(selectedValues);
+  }, [proposedValues, onConfirm]);
+
+  // Parse manual input
+  const handleConfirmManual = useCallback(() => {
+    const values = manualInput
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .filter((v, i, arr) => arr.indexOf(v) === i); // dedupe
+    
+    if (values.length === 0) {
+      setError('Please enter at least one value');
+      return;
+    }
+    onConfirm(values);
+  }, [manualInput, onConfirm]);
+
+  const selectedCount = proposedValues.filter(v => v.selected).length;
+  const typeName = targetType === 'multiSelect' ? 'Multi-Select' : 'Enum';
+
+  return (
+    <div className={styles.modalOverlay} data-testid="conversion-modal">
+      <div className={`${styles.modal} ${styles.modalLarge}`}>
+        <div className={styles.modalHeader}>
+          <h3 className={styles.modalTitle}>Convert to {typeName}</h3>
+        </div>
+        <div className={styles.modalBody}>
+          {mode === 'choose' && (
+            <>
+              <p className={styles.modalText}>
+                To convert <strong>{attributeId}</strong> to a {typeName.toLowerCase()}, you must supply allowed values.
+                Choose how you'd like to define them:
+              </p>
+              <div className={styles.conversionOptions}>
+                <button
+                  type="button"
+                  className={styles.conversionOption}
+                  onClick={handleProposeValues}
+                  disabled={loading}
+                  data-testid="propose-values-btn"
+                >
+                  <span className={styles.conversionOptionIcon}>🔍</span>
+                  <span className={styles.conversionOptionTitle}>Propose Values</span>
+                  <span className={styles.conversionOptionDesc}>
+                    Scan product data and suggest common values
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.conversionOption}
+                  onClick={() => setMode('manual')}
+                  disabled={loading}
+                  data-testid="manual-entry-btn"
+                >
+                  <span className={styles.conversionOptionIcon}>✏️</span>
+                  <span className={styles.conversionOptionTitle}>Enter Manually</span>
+                  <span className={styles.conversionOptionDesc}>
+                    Type or paste your own list of values
+                  </span>
+                </button>
+              </div>
+              {loading && (
+                <div className={styles.loadingInline}>
+                  <div className={styles.spinner} /> Loading values from products...
+                </div>
+              )}
+            </>
+          )}
+
+          {mode === 'propose' && (
+            <>
+              <div className={styles.proposeHeader}>
+                <p className={styles.modalText}>
+                  Found <strong>{proposedValues.length}</strong> distinct values from{' '}
+                  <strong>{sampledProducts.toLocaleString()}</strong> products.
+                  Select the values to include:
+                </p>
+                <div className={styles.proposeActions}>
+                  <button
+                    type="button"
+                    className={styles.btnLink}
+                    onClick={() => toggleAll(true)}
+                  >
+                    Select All
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.btnLink}
+                    onClick={() => toggleAll(false)}
+                  >
+                    Deselect All
+                  </button>
+                  <span className={styles.proposeCount}>{selectedCount} selected</span>
+                </div>
+              </div>
+              <div className={styles.proposeList} data-testid="proposed-values-list">
+                {proposedValues.map((item, idx) => (
+                  <label key={idx} className={styles.proposeItem}>
+                    <input
+                      type="checkbox"
+                      checked={item.selected}
+                      onChange={() => toggleValue(idx)}
+                    />
+                    <span className={styles.proposeValue}>{item.value}</span>
+                    <span className={styles.proposeItemCount}>({item.count})</span>
+                  </label>
+                ))}
+              </div>
+            </>
+          )}
+
+          {mode === 'manual' && (
+            <>
+              <p className={styles.modalText}>
+                Enter allowed values, one per line. Duplicates will be removed.
+              </p>
+              <textarea
+                className={styles.manualInput}
+                value={manualInput}
+                onChange={(e) => setManualInput(e.target.value)}
+                placeholder="Red&#10;Blue&#10;Green&#10;Yellow"
+                rows={10}
+                data-testid="manual-values-input"
+              />
+              <p className={styles.formHelp}>
+                {manualInput.split('\n').filter(l => l.trim()).length} values entered
+              </p>
+            </>
+          )}
+
+          {error && <div className={styles.modalError}>{error}</div>}
+        </div>
+        <div className={styles.modalFooter}>
+          {mode === 'choose' && (
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={onCancel}
+              data-testid="conversion-cancel"
+            >
+              Cancel
+            </button>
+          )}
+          {mode === 'propose' && (
+            <>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setMode('choose')}
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={handleConfirmProposed}
+                disabled={selectedCount === 0}
+                data-testid="confirm-proposed"
+              >
+                Convert with {selectedCount} Values
+              </button>
+            </>
+          )}
+          {mode === 'manual' && (
+            <>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setMode('choose')}
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={handleConfirmManual}
+                data-testid="confirm-manual"
+              >
+                Convert
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Normalize legacy attribute fields (camelCase → snake_case)
  * Safety net in case backend normalization doesn't cover all cases
@@ -146,6 +402,7 @@ export default function AttributesConsole() {
     updateAttribute,
     deleteAttribute,
     refresh,
+    getTopValues,
   } = useAttributes();
 
   // Selected attribute
@@ -161,6 +418,11 @@ export default function AttributesConsole() {
   // Modal state
   const [showDeprecateModal, setShowDeprecateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  // Conversion modal state (for string → enum/multiSelect)
+  const [showConversionModal, setShowConversionModal] = useState(false);
+  const [conversionTargetType, setConversionTargetType] = useState<'enum' | 'multiSelect'>('enum');
+  // Track original data_type to detect conversions
+  const [originalDataType, setOriginalDataType] = useState<Attribute['data_type'] | null>(null);
 
   // Get selected attribute from list
   const selectedAttribute = useMemo(() => {
@@ -173,6 +435,7 @@ export default function AttributesConsole() {
     if (selectedAttribute) {
       const normalized = normalizeLegacyAttribute(selectedAttribute);
       setFormData({ ...DEFAULT_ATTR, ...normalized });
+      setOriginalDataType(normalized.data_type);
       setIsDirty(false);
       setIsCreating(false);
     }
@@ -244,7 +507,21 @@ export default function AttributesConsole() {
         return;
       }
 
-      // Check for enum/multiSelect without values
+      // Check for conversion to enum/multiSelect without values
+      const isConvertingToSelect = 
+        (formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
+        originalDataType !== 'enum' && originalDataType !== 'multiSelect' &&
+        (!formData.allowed_values || formData.allowed_values.length === 0);
+      
+      if (isConvertingToSelect) {
+        // Open conversion modal instead of blocking
+        setConversionTargetType(formData.data_type as 'enum' | 'multiSelect');
+        setShowConversionModal(true);
+        setSaving(false);
+        return;
+      }
+
+      // Check for existing enum/multiSelect without values (not a conversion)
       if (
         (formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
         (!formData.allowed_values || formData.allowed_values.length === 0)
@@ -275,7 +552,47 @@ export default function AttributesConsole() {
     } finally {
       setSaving(false);
     }
-  }, [formData, isCreating, selectedId, createAttribute, updateAttribute]);
+  }, [formData, isCreating, selectedId, createAttribute, updateAttribute, originalDataType]);
+
+  // Handle conversion confirmed (from ConversionModal)
+  const handleConversionConfirm = useCallback(async (values: string[]) => {
+    if (!selectedId) return;
+    setSaving(true);
+    setShowConversionModal(false);
+    try {
+      const convertedData = {
+        ...formData,
+        data_type: conversionTargetType,
+        allowed_values: values,
+      };
+      
+      await updateAttribute(selectedId, convertedData);
+      
+      // Update form state with new values
+      setFormData(convertedData);
+      setOriginalDataType(conversionTargetType);
+      setIsDirty(false);
+      
+      const typeName = conversionTargetType === 'multiSelect' ? 'Multi-Select' : 'Enum';
+      toastSuccess(
+        `Converted '${selectedId}' to ${typeName} with ${values.length} values. Check the Values tab to review.`
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to convert attribute';
+      toastError(message);
+      // Revert form data_type on failure
+      setFormData(prev => ({ ...prev, data_type: originalDataType || 'string' }));
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedId, formData, conversionTargetType, updateAttribute, originalDataType]);
+
+  // Handle conversion cancelled
+  const handleConversionCancel = useCallback(() => {
+    setShowConversionModal(false);
+    // Revert data_type to original
+    setFormData(prev => ({ ...prev, data_type: originalDataType || 'string' }));
+  }, [originalDataType]);
 
   // Handle deprecate action
   const handleDeprecate = useCallback(async () => {
@@ -390,6 +707,17 @@ export default function AttributesConsole() {
           requireConfirmText={selectedId}
           onConfirm={handleDelete}
           onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+
+      {/* Conversion modal (string → enum/multiSelect) */}
+      {showConversionModal && selectedId && (
+        <ConversionModal
+          attributeId={selectedId}
+          targetType={conversionTargetType}
+          onConfirm={handleConversionConfirm}
+          onCancel={handleConversionCancel}
+          getTopValues={getTopValues}
         />
       )}
     </div>

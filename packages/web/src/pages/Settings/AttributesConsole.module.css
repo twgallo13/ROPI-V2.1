@@ -971,3 +971,161 @@
   height: 16px;
   accent-color: #3b82f6;
 }
+
+/* ===== Conversion Modal (PVS-0.2.7) ===== */
+.modalLarge {
+  max-width: 640px;
+}
+
+.conversionOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.conversionOption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.conversionOption:hover:not(:disabled) {
+  border-color: #3b82f6;
+  background: #f8fafc;
+}
+
+.conversionOption:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.conversionOptionIcon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.conversionOptionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.conversionOptionDesc {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.loadingInline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f0f9ff;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #0369a1;
+}
+
+.proposeHeader {
+  margin-bottom: 1rem;
+}
+
+.proposeActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.proposeCount {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-left: auto;
+}
+
+.proposeList {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.proposeItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.proposeItem:hover {
+  background: #f3f4f6;
+}
+
+.proposeItem input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #3b82f6;
+}
+
+.proposeValue {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+.proposeItemCount {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.manualInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  resize: vertical;
+}
+
+.manualInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modalError {
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #991b1b;
+}
+
+.btnLink {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btnLink:hover {
+  text-decoration: underline;
+}

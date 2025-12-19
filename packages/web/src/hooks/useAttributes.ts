@@ -328,6 +328,28 @@ export function useAttributes() {
   };
 
   /**
+   * Get top distinct values for an attribute across products
+   * Used for proposing allowed_values when converting string → enum
+   */
+  const getTopValues = async (
+    attributeId: string, 
+    limit = 200, 
+    minCount = 1
+  ): Promise<{
+    values: Array<{ value: string; count: number }>;
+    total: number;
+    sampledProducts: number;
+  }> => {
+    const headers = await getAuthHeaders();
+    const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(attributeId)}/top-values?limit=${limit}&min_count=${minCount}`;
+    return await fetchJSON(url, {
+      method: 'GET',
+      headers,
+      credentials: 'include',
+    });
+  };
+
+  /**
    * Get a single attribute by ID
    */
   const getAttributeById = async (id: string): Promise<Attribute> => {
@@ -349,6 +371,7 @@ export function useAttributes() {
     deleteAttribute,
     refresh: fetchAttributes,
     getUsage,
+    getTopValues,
     getAttributeById,
   };
 }
