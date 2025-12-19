@@ -3,28 +3,36 @@
  * Tests admin attribute management workflow
  * 
  * Lisa v0.2.0
+ * LP-1.1.7: Added lean admin login helper with retries
  */
 
 import { test, expect } from '@playwright/test';
+import { loginAsAdminWithRetries } from './helpers/adminAuth';
 
-// TODO: Import helper functions once they're available
-// import { adminLogin, waitForApiResponse } from './helpers';
+// Set reasonable timeout for the entire test suite
+test.setTimeout(3 * 60 * 1000); // 3 minutes max per test
 
 test.describe('Admin Attribute Management', () => {
   test.beforeEach(async ({ page }) => {
-    // TODO: Implement admin login
-    // await adminLogin(page);
+    // Login as admin with retries and diagnostics
+    await loginAsAdminWithRetries(page, {
+      maxAttempts: 3,
+      selectorTimeout: 30000,
+      authResponseTimeout: 15000,
+      spinnerTimeout: 5000,
+      backoffMs: 1000
+    });
     
     // Navigate to attributes page
     await page.goto('/settings/attributes');
     
     // Wait for page to load
     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
-    await pageHeading.waitFor({ state: 'visible', timeout: 60000 });
+    await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
     
     // Wait for New Attribute button to be visible
     const newBtn = page.getByTestId('new-attribute-button');
-    await newBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newBtn.waitFor({ state: 'visible', timeout: 30000 });
   });
 
   test('should display attribute manager page', async ({ page }) => {
@@ -36,7 +44,7 @@ test.describe('Admin Attribute Management', () => {
   test('should create a new attribute', async ({ page }) => {
     // Click New Attribute button
     const newAttrBtn = page.getByTestId('new-attribute-button');
-    await newAttrBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newAttrBtn.waitFor({ state: 'visible', timeout: 30000 });
     await newAttrBtn.click();
     
     // Wait for form to appear
@@ -148,7 +156,7 @@ test.describe('Admin Attribute Management', () => {
   test('should cancel attribute creation', async ({ page }) => {
     // Click New Attribute button
     const newAttrBtn = page.getByTestId('new-attribute-button');
-    await newAttrBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newAttrBtn.waitFor({ state: 'visible', timeout: 30000 });
     await newAttrBtn.click();
     
     // Wait for form to appear
@@ -164,18 +172,26 @@ test.describe('Admin Attribute Management', () => {
     await cancelBtn.click();
     
     // Verify form is hidden
-    await form.waitFor({ state: 'hidden', timeout: 60000 });
+    await form.waitFor({ state: 'hidden', timeout: 30000 });
   });
 });
 
 test.describe('Attribute Form Validation', () => {
   test.beforeEach(async ({ page }) => {
-    // TODO: Admin login
+    // Login as admin with retries
+    await loginAsAdminWithRetries(page, {
+      maxAttempts: 3,
+      selectorTimeout: 30000,
+      authResponseTimeout: 15000,
+      spinnerTimeout: 5000,
+      backoffMs: 1000
+    });
+    
     await page.goto('/settings/attributes');
     
     // Wait for New Attribute button and click it
     const newBtn = page.getByTestId('new-attribute-button');
-    await newBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newBtn.waitFor({ state: 'visible', timeout: 30000 });
     await newBtn.click();
     
     // Wait for form to appear
