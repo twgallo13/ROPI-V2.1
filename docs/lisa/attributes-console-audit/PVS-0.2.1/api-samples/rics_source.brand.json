@@ -1,0 +1,21 @@
+{
+  "attribute_id": "rics_source.brand",
+  "dataType": "string",
+  "usage": [],
+  "description": "RICS brand",
+  "rules": [],
+  "label": "Brand",
+  "legacyPaths": [],
+  "required": false,
+  "systemFlag": false,
+  "importerColumns": [],
+  "examples": {
+    "sampleValues": []
+  },
+  "canonicalPath": "rics_source.brand",
+  "category": "Source",
+  "export": true,
+  "key": "brand",
+  "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+  "updatedAt": "2025-12-16T08:24:14.155Z"
+}

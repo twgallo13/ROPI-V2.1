@@ -1,0 +1,32 @@
+{
+  "attribute_id": "age_group",
+  "label": "Age Group",
+  "external_header": "Age Group",
+  "category": "Demographics",
+  "data_type": "enum",
+  "allowed_values": [
+    "Adult",
+    "Kids",
+    "Infant",
+    "Toddler",
+    "Teen"
+  ],
+  "required_for_completion": true,
+  "required_for_export": true,
+  "import_required": false,
+  "ai_usage_notes": "Used for Google Shopping feed and age-appropriate product descriptions.",
+  "status": "active",
+  "source": "json",
+  "createdBy": "system",
+  "createdAt": "2025-12-09T00:56:17.705Z",
+  "updatedBy": "system",
+  "updatedAt": "2025-12-09T00:56:31.132Z",
+  "synonyms": [
+    "ageGroup",
+    "age-group",
+    "AgeGroup",
+    "age.group",
+    "agegroup",
+    "Age-group"
+  ]
+}
