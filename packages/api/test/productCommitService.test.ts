@@ -19,17 +19,11 @@ describe('Product Commit Service', () => {
   beforeEach(async () => {
     // Initialize Firebase Admin if not already done
     if (!admin.apps.length) {
-      admin.initializeApp({
-        projectId: 'demo-test-project',
-      });
+      const projectId = process.env.GCLOUD_PROJECT || 'demo-ropi-test';
+      admin.initializeApp({ projectId });
     }
     
     db = admin.firestore();
-    
-    // Use emulator for tests
-    if (process.env.FIRESTORE_EMULATOR_HOST) {
-      console.log('Using Firestore emulator');
-    }
   });
 
   afterEach(async () => {

@@ -206,6 +206,11 @@ export async function processImportBatch(
   batchId: string,
   userId: string
 ): Promise<BatchProcessResult> {
+  // Ensure Firebase is initialized before getting Firestore instance
+  if (!admin.apps.length) {
+    const projectId = process.env.GCLOUD_PROJECT || process.env.FIREBASE_PROJECT_ID;
+    admin.initializeApp(projectId ? { projectId } : undefined);
+  }
   const db = admin.firestore();
   
   // Read batch document
@@ -299,6 +304,11 @@ export async function getBatchStatus(batchId: string): Promise<{
   blockedCount?: number;
   processedAt?: string;
 }> {
+  // Ensure Firebase is initialized before getting Firestore instance
+  if (!admin.apps.length) {
+    const projectId = process.env.GCLOUD_PROJECT || process.env.FIREBASE_PROJECT_ID;
+    admin.initializeApp(projectId ? { projectId } : undefined);
+  }
   const db = admin.firestore();
   const batchRef = db.collection('import_batches').doc(batchId);
   const batchDoc = await batchRef.get();

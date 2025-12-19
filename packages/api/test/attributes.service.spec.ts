@@ -31,7 +31,7 @@ describe('Attributes Service', () => {
     // Initialize Firebase Admin if not already done
     if (!admin.apps.length) {
       admin.initializeApp({
-        projectId: 'demo-test-project',
+        projectId: process.env.GCLOUD_PROJECT || 'demo-ropi-test',
       });
     }
     
