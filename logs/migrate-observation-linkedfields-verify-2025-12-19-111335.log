@@ -1,0 +1,17 @@
+Starting dry-run migration for observations linkedField -> fieldLink
+DRY RUN MODE: No writes will be made to Firestore
+
+Found observations with linkedField: 0
+
+=== DRY RUN COMPLETE ===
+
+Summary:
+  Total observations scanned: 0
+  Proposed mappings: 0
+  Manual review required: 0
+
+Artifacts:
+  JSON: /workspaces/ROPI-V2.1/docs/lisa/migrate-observation-linkedfields-dryrun-1766142816088.json
+  Markdown: /workspaces/ROPI-V2.1/docs/lisa/migrate-observation-linkedfields-dryrun-1766142816088.md
+
+Dry-run complete.
