@@ -518,15 +518,16 @@ export async function updateAttributeMapping(
         beforeState.value_synonyms || {},
         mapping.value_synonyms || {}
       ),
-      sources: beforeState.sources, // Sources not merged here, use separate endpoint
+      sources: beforeState.sources || {}, // Sources not merged here, use separate endpoint
       updatedAt: now,
       updatedBy: actor,
     };
   } else {
+    // FIX: Ensure no undefined values are written to Firestore
     afterState = {
-      aliases: mapping.aliases,
-      value_synonyms: mapping.value_synonyms,
-      sources: beforeState?.sources, // Preserve sources unless explicitly updated
+      aliases: mapping.aliases ?? beforeState?.aliases ?? {},
+      value_synonyms: mapping.value_synonyms ?? beforeState?.value_synonyms ?? {},
+      sources: beforeState?.sources ?? {}, // Preserve sources unless explicitly updated
       updatedAt: now,
       updatedBy: actor,
     };
