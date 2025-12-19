@@ -1,0 +1,12 @@
+{
+  "diagnostic_query": "[!!document.querySelector('[data-testid=\"attribute-console\"]'), !!document.querySelector('[data-testid=\"attribute-header\"]'), !!document.querySelector('[data-testid=\"attribute-tabs\"]'), !!document.querySelector('.attribute-list-panel'), !!document.querySelector('.attribute-detail-panel')]",
+  "expected_result": "[true, true, true, true, true]",
+  "notes": "Run this in browser DevTools console after loading https://ropi-aoss-staging.web.app/settings/attributes",
+  "components_to_verify": {
+    "attribute-console": "Main container with data-testid='attributes-console'",
+    "attribute-header": "Header component with data-testid='attribute-header' or 'attribute-header-empty'",
+    "attribute-tabs": "Tabs component with data-testid='attribute-tabs'",
+    "attribute-list-panel": "Left panel with class 'listPanel' in CSS module",
+    "attribute-detail-panel": "Right panel with class 'detailPanel' in CSS module"
+  }
+}

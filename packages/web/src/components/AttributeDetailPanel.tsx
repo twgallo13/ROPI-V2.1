@@ -2,7 +2,7 @@
  * AttributeDetailPanel Component
  * Right panel with attribute header, tabs, and tab content
  * 
- * Lisa PVS-0.2.3
+ * Lisa PVS-0.2.3, updated PVS-0.2.6
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -20,6 +20,8 @@ export interface AttributeDetailPanelProps {
   onCancel: () => void;
   onSync: () => void;
   onSave: () => void;
+  onDeprecate?: () => void;
+  onDelete?: () => void;
 }
 
 // Overview tab - renders real form fields
@@ -146,15 +148,20 @@ function OverviewTab({
 }
 
 // Values tab - shows values manager for enum/multiSelect, constraints for others
-function ValuesTab({ formData }: { formData: Partial<Attribute> }) {
+function ValuesTab({ 
+  formData, 
+}: { 
+  formData: Partial<Attribute>; 
+}) {
   const isSelectType = formData.data_type === 'enum' || formData.data_type === 'multiSelect';
   const allowedValues = formData.allowed_values || [];
+  const synonyms = formData.synonyms || [];
 
   if (isSelectType) {
     return (
       <div className={styles.tabPanel} data-testid="tab-panel-values">
         <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Allowed Values</h3>
+          <h3 className={styles.cardTitle}>Allowed Values ({allowedValues.length})</h3>
           <div className={styles.valuesSearch}>
             <input
               type="text"
@@ -179,6 +186,22 @@ function ValuesTab({ formData }: { formData: Partial<Attribute> }) {
             </div>
           )}
         </div>
+        
+        {/* Synonyms section */}
+        <div className={styles.card} style={{ marginTop: '1rem' }}>
+          <h3 className={styles.cardTitle}>Synonyms ({synonyms.length})</h3>
+          {synonyms.length > 0 ? (
+            <div className={styles.valuesList}>
+              {synonyms.map((syn, idx) => (
+                <div key={idx} className={styles.valuesItem}>
+                  <span className={styles.valuesItemLabel}>{syn}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.formHelp}>No synonyms defined for import mapping</p>
+          )}
+        </div>
       </div>
     );
   }
@@ -186,13 +209,237 @@ function ValuesTab({ formData }: { formData: Partial<Attribute> }) {
   return (
     <div className={styles.tabPanel} data-testid="tab-panel-values">
       <div className={styles.card}>
-        <h3 className={styles.cardTitle}>Constraints</h3>
+        <h3 className={styles.cardTitle}>Value Constraints</h3>
         <div className={styles.placeholder}>
           <div className={styles.placeholderIcon}>🔧</div>
-          <p className={styles.placeholderTitle}>Value constraints</p>
+          <p className={styles.placeholderTitle}>String/Number constraints</p>
           <p className={styles.placeholderText}>
-            Configure validation rules for {formData.data_type || 'string'} type attributes
+            Configure validation rules for {formData.data_type || 'string'} type attributes.
+            {formData.data_type === 'string' && ' (e.g., min/max length, pattern)'}
+            {formData.data_type === 'number' && ' (e.g., min/max value, precision)'}
           </p>
+        </div>
+      </div>
+      
+      {/* Synonyms section for non-enum types */}
+      <div className={styles.card} style={{ marginTop: '1rem' }}>
+        <h3 className={styles.cardTitle}>Synonyms ({synonyms.length})</h3>
+        {synonyms.length > 0 ? (
+          <div className={styles.valuesList}>
+            {synonyms.map((syn, idx) => (
+              <div key={idx} className={styles.valuesItem}>
+                <span className={styles.valuesItemLabel}>{syn}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.formHelp}>No synonyms defined for import mapping</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Toggle component for settings
+function Toggle({
+  checked,
+  onChange,
+  disabled = false,
+  id,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  id: string;
+}) {
+  return (
+    <label className={styles.toggle}>
+      <input
+        type="checkbox"
+        className={styles.toggleInput}
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        disabled={disabled}
+        id={id}
+        data-testid={id}
+      />
+      <span className={styles.toggleSlider} />
+    </label>
+  );
+}
+
+// Behavior tab - actual settings controls
+function BehaviorTab({
+  formData,
+  onChange,
+}: {
+  formData: Partial<Attribute>;
+  onChange: (data: Partial<Attribute>) => void;
+}) {
+  return (
+    <div className={styles.tabPanel} data-testid="tab-panel-behavior">
+      <div className={styles.card}>
+        <h3 className={styles.cardTitle}>Behavior Settings</h3>
+        
+        {/* Completion Settings */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>Completion Requirements</h4>
+          
+          <div className={styles.settingRow}>
+            <div>
+              <div className={styles.settingLabel}>Required for Completion</div>
+              <div className={styles.settingDescription}>
+                Product must have this attribute to be considered complete
+              </div>
+            </div>
+            <Toggle
+              id="toggle-required-completion"
+              checked={formData.required_for_completion || false}
+              onChange={(checked) => onChange({ ...formData, required_for_completion: checked })}
+            />
+          </div>
+        </div>
+        
+        {/* Export Settings */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>Export Settings</h4>
+          
+          <div className={styles.settingRow}>
+            <div>
+              <div className={styles.settingLabel}>Required for Export</div>
+              <div className={styles.settingDescription}>
+                Must be filled before product can be exported to feeds
+              </div>
+            </div>
+            <Toggle
+              id="toggle-required-export"
+              checked={formData.required_for_export || false}
+              onChange={(checked) => onChange({ ...formData, required_for_export: checked })}
+            />
+          </div>
+          
+          <div className={styles.formRow} style={{ marginTop: '0.75rem' }}>
+            <label className={styles.formLabel} htmlFor="external-header">
+              External Header
+            </label>
+            <input
+              id="external-header"
+              type="text"
+              className={styles.formInput}
+              value={formData.external_header || ''}
+              onChange={(e) => onChange({ ...formData, external_header: e.target.value })}
+              placeholder="CSV column header for export"
+              data-testid="input-external-header"
+            />
+            <p className={styles.formHelp}>Column name used in CSV/feed exports</p>
+          </div>
+        </div>
+        
+        {/* Import Settings */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>Import Settings</h4>
+          
+          <div className={styles.settingRow}>
+            <div>
+              <div className={styles.settingLabel}>Required for Import</div>
+              <div className={styles.settingDescription}>
+                Import will fail if this attribute is missing from source data
+              </div>
+            </div>
+            <Toggle
+              id="toggle-import-required"
+              checked={formData.import_required || false}
+              onChange={(checked) => onChange({ ...formData, import_required: checked })}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// AI & SEO tab - actual settings controls
+function AiSeoTab({
+  formData,
+  onChange,
+}: {
+  formData: Partial<Attribute>;
+  onChange: (data: Partial<Attribute>) => void;
+}) {
+  return (
+    <div className={styles.tabPanel} data-testid="tab-panel-ai-seo">
+      <div className={styles.card}>
+        <h3 className={styles.cardTitle}>AI & SEO Configuration</h3>
+        
+        {/* AI Usage Notes */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>AI Usage Notes</h4>
+          <div className={styles.formRow}>
+            <textarea
+              id="ai-usage-notes"
+              className={styles.formTextarea}
+              value={formData.ai_usage_notes || ''}
+              onChange={(e) => onChange({ ...formData, ai_usage_notes: e.target.value })}
+              placeholder="Instructions for AI on how to use this attribute in content generation..."
+              rows={4}
+              data-testid="textarea-ai-notes"
+            />
+            <p className={styles.formHelp}>
+              Guidance for AI models on how to interpret and use this attribute
+            </p>
+          </div>
+        </div>
+        
+        {/* Category Assignment */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>Category</h4>
+          <div className={styles.formRow}>
+            <input
+              id="category"
+              type="text"
+              className={styles.formInput}
+              value={formData.category || ''}
+              onChange={(e) => onChange({ ...formData, category: e.target.value })}
+              placeholder="e.g., Appearance, Pricing, SEO, Source"
+              data-testid="input-category"
+            />
+            <p className={styles.formHelp}>
+              Logical grouping for organizing attributes in the console
+            </p>
+          </div>
+        </div>
+        
+        {/* Source information (read-only) */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>Source Information</h4>
+          <div className={styles.settingRow}>
+            <div>
+              <div className={styles.settingLabel}>Data Source</div>
+              <div className={styles.settingDescription}>
+                {formData.source || 'Not specified'}
+              </div>
+            </div>
+          </div>
+          {formData.createdBy && (
+            <div className={styles.settingRow}>
+              <div>
+                <div className={styles.settingLabel}>Created By</div>
+                <div className={styles.settingDescription}>
+                  {formData.createdBy} {formData.createdAt ? `on ${new Date(formData.createdAt).toLocaleDateString()}` : ''}
+                </div>
+              </div>
+            </div>
+          )}
+          {formData.updatedBy && (
+            <div className={styles.settingRow}>
+              <div>
+                <div className={styles.settingLabel}>Last Updated</div>
+                <div className={styles.settingDescription}>
+                  {formData.updatedBy} {formData.updatedAt ? `on ${new Date(formData.updatedAt).toLocaleDateString()}` : ''}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -234,6 +481,8 @@ export default function AttributeDetailPanel({
   onCancel,
   onSync,
   onSave,
+  onDeprecate,
+  onDelete,
 }: AttributeDetailPanelProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
 
@@ -269,23 +518,9 @@ export default function AttributeDetailPanel({
       case 'values':
         return <ValuesTab formData={formData} />;
       case 'behavior':
-        return (
-          <PlaceholderTab
-            tabId="behavior"
-            title="Behavior Settings"
-            description="Configure import/export requirements, completion rules, and validation behavior"
-            icon="⚙️"
-          />
-        );
+        return <BehaviorTab formData={formData} onChange={onFormChange} />;
       case 'ai-seo':
-        return (
-          <PlaceholderTab
-            tabId="ai-seo"
-            title="AI & SEO Configuration"
-            description="AI usage notes, SEO metadata, and content generation settings"
-            icon="🤖"
-          />
-        );
+        return <AiSeoTab formData={formData} onChange={onFormChange} />;
       case 'customer':
         return (
           <PlaceholderTab
@@ -327,6 +562,8 @@ export default function AttributeDetailPanel({
         onCancel={onCancel}
         onSync={onSync}
         onSave={onSave}
+        onDeprecate={onDeprecate}
+        onDelete={onDelete}
       />
       <AttributeTabs activeTab={activeTab} onChange={handleTabChange} />
       <div

@@ -1,0 +1,23 @@
+{
+  "attribute_id": "descriptive.gender",
+  "dataType": "string",
+  "usage": [],
+  "description": "Gender (Men's, Women's, Unisex)",
+  "rules": [
+    "SD-005"
+  ],
+  "label": "Gender",
+  "legacyPaths": [],
+  "required": true,
+  "systemFlag": false,
+  "importerColumns": [
+    "gender"
+  ],
+  "examples": {
+    "sampleValues": []
+  },
+  "canonicalPath": "descriptive.gender",
+  "category": "Descriptive",
+  "export": true,
+  "key": "gender"
+}

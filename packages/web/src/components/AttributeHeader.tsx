@@ -1,9 +1,10 @@
 /**
  * AttributeHeader Component
- * Sticky header for the attribute detail panel
+ * Sticky header for the attribute detail panel with kebab menu
  * 
- * Lisa PVS-0.2.3
+ * Lisa PVS-0.2.3, updated PVS-0.2.6
  */
+import { useState, useRef, useEffect } from 'react';
 import type { Attribute } from '../hooks/useAttributes';
 import styles from '../pages/Settings/AttributesConsole.module.css';
 
@@ -14,6 +15,96 @@ export interface AttributeHeaderProps {
   onCancel?: () => void;
   onSync?: () => void;
   onSave?: () => void;
+  onDeprecate?: () => void;
+  onDelete?: () => void;
+}
+
+// Kebab menu component
+function KebabMenu({
+  onDeprecate,
+  onDelete,
+  isDeprecated,
+}: {
+  onDeprecate?: () => void;
+  onDelete?: () => void;
+  isDeprecated: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className={styles.kebabContainer} ref={menuRef}>
+      <button
+        type="button"
+        className={styles.kebabButton}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="More actions"
+        aria-expanded={isOpen}
+        data-testid="kebab-button"
+      >
+        <span className={styles.kebabDots}>
+          <span className={styles.kebabDot} />
+          <span className={styles.kebabDot} />
+          <span className={styles.kebabDot} />
+        </span>
+      </button>
+      
+      {isOpen && (
+        <div className={styles.kebabMenu} role="menu" data-testid="kebab-menu">
+          {!isDeprecated && onDeprecate && (
+            <button
+              type="button"
+              className={styles.kebabMenuItem}
+              onClick={() => {
+                setIsOpen(false);
+                onDeprecate();
+              }}
+              role="menuitem"
+              data-testid="menu-deprecate"
+            >
+              Deprecate Attribute
+            </button>
+          )}
+          {isDeprecated && (
+            <button
+              type="button"
+              className={styles.kebabMenuItem}
+              disabled
+              role="menuitem"
+            >
+              ✓ Already Deprecated
+            </button>
+          )}
+          <div className={styles.kebabMenuDivider} />
+          {onDelete && (
+            <button
+              type="button"
+              className={`${styles.kebabMenuItem} ${styles.kebabMenuItemDanger}`}
+              onClick={() => {
+                setIsOpen(false);
+                onDelete();
+              }}
+              role="menuitem"
+              data-testid="menu-delete"
+            >
+              Delete Attribute
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function AttributeHeader({
@@ -23,6 +114,8 @@ export default function AttributeHeader({
   onCancel,
   onSync,
   onSave,
+  onDeprecate,
+  onDelete,
 }: AttributeHeaderProps) {
   if (!attribute) {
     return (
@@ -34,6 +127,8 @@ export default function AttributeHeader({
       </div>
     );
   }
+
+  const isDeprecated = attribute.status === 'deprecated';
 
   const statusClass = attribute.status === 'active'
     ? styles.statusPillActive
@@ -90,6 +185,11 @@ export default function AttributeHeader({
         >
           {saving ? 'Saving...' : 'Save'}
         </button>
+        <KebabMenu
+          onDeprecate={onDeprecate}
+          onDelete={onDelete}
+          isDeprecated={isDeprecated}
+        />
       </div>
     </div>
   );
