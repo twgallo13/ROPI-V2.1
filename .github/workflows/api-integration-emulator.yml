@@ -29,13 +29,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable corepack
+        run: corepack enable
+
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install pnpm
-        run: npm install -g pnpm@8
+      - name: Prepare pnpm via corepack
+        run: corepack prepare pnpm@8 --activate
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools@latest
@@ -83,13 +86,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable corepack
+        run: corepack enable
+
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install pnpm
-        run: npm install -g pnpm@8
+      - name: Prepare pnpm via corepack
+        run: corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
