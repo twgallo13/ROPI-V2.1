@@ -79,14 +79,63 @@ function toFirestorePayload(
 
 /**
  * Convert Firestore document to AttributeType
+ * Normalizes legacy field names (camelCase) to canonical (snake_case)
+ * and applies schema defaults via Zod validation.
+ * 
+ * PVS-0.2.2: Fix blank-on-load by normalizing on GET
  */
 function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | null {
   if (!doc.exists) return null;
   const data = doc.data();
   if (!data) return null;
   
+  // Normalize legacy field names to canonical schema
+  const normalized: Record<string, unknown> = {
+    attribute_id: doc.id,
+    // Core fields - normalize camelCase to snake_case
+    label: data.label,
+    data_type: data.data_type || data.dataType || 'string',
+    status: data.status || 'active',
+    category: data.category,
+    // Array fields
+    allowed_values: data.allowed_values || data.allowedValues,
+    synonyms: data.synonyms,
+    // Boolean flags with defaults
+    required_for_completion: data.required_for_completion ?? false,
+    required_for_export: data.required_for_export ?? data.export ?? false,
+    import_required: data.import_required ?? data.required ?? false,
+    // String fields
+    external_header: data.external_header || (Array.isArray(data.importerColumns) && data.importerColumns[0]) || undefined,
+    ai_usage_notes: data.ai_usage_notes || data.description,
+    source: data.source,
+    // Timestamps
+    createdBy: data.createdBy,
+    createdAt: data.createdAt,
+    updatedBy: data.updatedBy,
+    updatedAt: data.updatedAt,
+  };
+  
+  // Remove undefined values
+  Object.keys(normalized).forEach(key => {
+    if (normalized[key] === undefined) {
+      delete normalized[key];
+    }
+  });
+  
+  // Validate and apply defaults via Zod schema
+  const result = AttributeSchema.safeParse(normalized);
+  if (result.success) {
+    return result.data;
+  }
+  
+  // If validation fails, return with minimal normalization
+  // (keeps backward compatibility for edge cases)
+  console.warn(`Attribute ${doc.id} failed schema validation:`, result.error.errors);
   return {
     attribute_id: doc.id,
+    label: data.label || doc.id,
+    data_type: (data.data_type || data.dataType || 'string') as AttributeType['data_type'],
+    status: (data.status || 'active') as AttributeType['status'],
     ...data,
   } as AttributeType;
 }

@@ -1,0 +1,8 @@
+Starting backup...
+Collections to backup: [ 'settings/attributes/keys' ]
+Output file: backups/attributes-backup-2025-12-18-084642.json
+Backing up collection: settings/attributes/keys
+  Found 422 documents
+
+Backup complete! Written to: backups/attributes-backup-2025-12-18-084642.json
+Total documents backed up: 422

@@ -78,7 +78,17 @@ export default function AttributeManager() {
   const openEdit = (attr: Attribute) => {
     setIsModalOpen(true);
     setEditingId(attr.attribute_id);
-    setFormData({ ...DEFAULT_ATTR, ...attr });
+    // PVS-0.2.2: Frontend safety net - normalize legacy camelCase to snake_case
+    // in case backend normalization hasn't been applied yet
+    const normalized = {
+      ...DEFAULT_ATTR,
+      ...attr,
+      // Normalize legacy field names as fallback
+      data_type: attr.data_type || (attr as any).dataType || DEFAULT_ATTR.data_type,
+      allowed_values: attr.allowed_values || (attr as any).allowedValues,
+      status: attr.status || DEFAULT_ATTR.status,
+    };
+    setFormData(normalized);
     setFormError(null);
   };
 
