@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import type { Observation, ObservationSeverity } from '../../types/observation';
+import type { FieldLink } from '../../types/fieldLink';
 import { listenToObservations, addObservation, resolveObservation, syncLocalToFirestore } from '../../services/observations';
 import { useAuth } from '@/hooks/useAuth';
 import { isFirebaseAvailable } from '../../firebaseConfig';
 import SignInModal from '@/components/Auth/SignInModal';
+import FieldPicker from './FieldPicker';
+import { fieldLinkToDisplayString, legacyLinkedFieldToFieldLink } from '../../utils/normalizeFieldLink';
 import './ObservationsPanel.css';
 
 /**
@@ -51,7 +54,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   const [newObsTitle, setNewObsTitle] = useState('');
   const [newObsBody, setNewObsBody] = useState('');
   const [newObsSeverity, setNewObsSeverity] = useState<ObservationSeverity>('medium');
-  const [newObsLinkedField, setNewObsLinkedField] = useState('');
+  const [newObsFieldLink, setNewObsFieldLink] = useState<FieldLink | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -105,7 +108,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
         title: newObsTitle,
         body: newObsBody,
         severity: newObsSeverity,
-        linkedField: newObsLinkedField || null,
+        fieldLink: newObsFieldLink,
         createdBy: {
           uid: currentUser.uid,
           name: currentUser.displayName || currentUser.email || 'Anonymous',
@@ -116,7 +119,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
       setNewObsTitle('');
       setNewObsBody('');
       setNewObsSeverity('medium');
-      setNewObsLinkedField('');
+      setNewObsFieldLink(null);
       setImageFiles([]);
       setImagePreviews([]);
       setShowModal(false);
@@ -171,17 +174,28 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     }
   };
 
-  const handleScrollToField = (linkedField: string | null | undefined) => {
-    if (!linkedField) return;
+  const handleScrollToField = (observation: Observation) => {
+    // Get the field key from either fieldLink (preferred) or legacy linkedField
+    let fieldKey: string | null = null;
+    
+    if (observation.fieldLink) {
+      fieldKey = observation.fieldLink.key;
+    } else if (observation.linkedField) {
+      // Convert legacy linkedField to fieldLink for consistency
+      const converted = legacyLinkedFieldToFieldLink(observation.linkedField);
+      fieldKey = converted?.key || observation.linkedField;
+    }
+    
+    if (!fieldKey) return;
 
     // Remove highlight from any previously highlighted elements
     document.querySelectorAll('.field-highlight').forEach((el) => {
       el.classList.remove('field-highlight');
     });
 
-    // Find field by name attribute or label text
-    const field = document.querySelector(`[name="${linkedField}"]`) ||
-                  document.querySelector(`[data-field="${linkedField}"]`);
+    // Find field by data-field attribute (preferred) or name attribute
+    const field = document.querySelector(`[data-field="${fieldKey}"]`) ||
+                  document.querySelector(`[name="${fieldKey}"]`);
 
     if (field) {
       field.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -277,13 +291,13 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
               <h5 className="observation-title">{obs.title}</h5>
               <p className="observation-description">{obs.body}</p>
               
-              {obs.linkedField && (
+              {(obs.fieldLink || obs.linkedField) && (
                 <button 
                   className="observation-link"
-                  onClick={() => handleScrollToField(obs.linkedField)}
+                  onClick={() => handleScrollToField(obs)}
                   title="Scroll to linked field"
                 >
-                  → {obs.linkedField}
+                  → {obs.fieldLink ? fieldLinkToDisplayString(obs.fieldLink) : obs.linkedField}
                 </button>
               )}
               
@@ -360,13 +374,11 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
               
               <div className="modal-field">
                 <label className="modal-label">Linked Field (optional)</label>
-                <input
-                  type="text"
-                  className="modal-input"
-                  value={newObsLinkedField}
-                  onChange={(e) => setNewObsLinkedField(e.target.value)}
-                  placeholder="e.g., attributes.color"
+                <FieldPicker
+                  value={newObsFieldLink}
+                  onChange={setNewObsFieldLink}
                   disabled={isSubmitting}
+                  placeholder="Select or type a field..."
                 />
               </div>
               
