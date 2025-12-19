@@ -1,0 +1,31 @@
+BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json:28:      "attribute_id": "mpn",
+BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json:29:      "label": "MPN",
+BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json:30:      "external_header": "MPN",
+packages/api/src/endpoints/products.ts:278:            data.mpn,
+packages/api/src/tasks/migrateProductsToAttributes.ts:56:  'features', 'gtin', 'mpn', 'weight',
+packages/sdk/config/attributeRegistry.json:28:      "attribute_id": "mpn",
+packages/sdk/config/attributeRegistry.json:29:      "label": "MPN",
+packages/sdk/config/attributeRegistry.json:30:      "external_header": "MPN",
+packages/sdk/config/canonicalAttributeMap.approved.json:10:  "mpn": "mpn",
+packages/sdk/config/canonicalAttributeMap.approved.json:11:  "Mpn": "mpn",
+packages/sdk/dist/index.js:454:  { sourceColumn: "MPN", targetField: "mpn", transform: "trim" },
+packages/sdk/dist/index.js:455:  { sourceColumn: "mpn", targetField: "mpn", transform: "trim" },
+packages/sdk/dist/index.js:456:  { sourceColumn: "Manufacturer Part Number", targetField: "mpn", transform: "trim" },
+packages/sdk/dist/index.js:1165:  mpn: ["MPN", "Mpn", "mpn", "Manufacturer Part Number"],
+packages/sdk/dist/index.js:1200:  const mpn = findColumnValue(raw, "mpn");
+packages/sdk/dist/index.mjs:452:  { sourceColumn: "MPN", targetField: "mpn", transform: "trim" },
+packages/sdk/dist/index.mjs:453:  { sourceColumn: "mpn", targetField: "mpn", transform: "trim" },
+packages/sdk/dist/index.mjs:454:  { sourceColumn: "Manufacturer Part Number", targetField: "mpn", transform: "trim" },
+packages/sdk/dist/index.mjs:1163:  mpn: ["MPN", "Mpn", "mpn", "Manufacturer Part Number"],
+packages/sdk/dist/index.mjs:1198:  const mpn = findColumnValue(raw, "mpn");
+packages/sdk/src/import/retailOps.ts:210:  mpn: ['MPN', 'Mpn', 'mpn', 'Manufacturer Part Number'],
+packages/sdk/src/import/retailOps.ts:270:  const mpn = findColumnValue(raw, 'mpn');
+packages/sdk/src/normalization/importNormalizer.ts:31:  { sourceColumn: 'MPN', targetField: 'mpn', transform: 'trim' },
+packages/sdk/src/normalization/importNormalizer.ts:32:  { sourceColumn: 'mpn', targetField: 'mpn', transform: 'trim' },
+packages/sdk/src/normalization/importNormalizer.ts:33:  { sourceColumn: 'Manufacturer Part Number', targetField: 'mpn', transform: 'trim' },
+packages/web/src/hooks/useProduct.ts:26:  'features', 'gtin', 'mpn', 'weight',
+reports/attribute_registry_export.csv:86:"mpn","MPN","string","[]",,,"json",,,"2025-12-09T00:56:34.082Z","system","active","no","settings/attributes/keys/mpn"
+reports/attribute_registry_export.csv:123:"sku_core.mpn","Mpn","string","[]",,,"unknown",,,,,"active","no","settings/attributes/keys/sku_core.mpn"
+reports/duplicate_candidates.csv:10:"mpn","2","mpn | sku_core.mpn","mpn","sku_core.mpn","string","no"
+reports/duplicate_map.csv:80:"sku_core.mpn","mpn","duplicate_label"
+reports/product_attribute_usage.csv:6:"mpn","82","14943667 | 14943678 | 207012-001 | 209473-1001 | 209516-1001 | 209516-6916 | 209710-6916 | 211116-001 | 212350-90H | 4254T1035"

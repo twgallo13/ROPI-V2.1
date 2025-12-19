@@ -1,0 +1,27 @@
+{
+  "_audit_note": "Product attribute usage extracted from existing reports (product_attribute_usage.csv)",
+  "_audit_date": "2025-12-19",
+  "_source": "reports/product_attribute_usage.csv - LP-0.1.0 read-only audit",
+  "mpn_usage": {
+    "key": "mpn",
+    "product_count": 82,
+    "sample_product_ids": [
+      "14943667", "14943678", "207012-001", "209473-1001", "209516-1001",
+      "209516-6916", "209710-6916", "211116-001", "212350-90H", "4254T1035"
+    ]
+  },
+  "mpon_usage": {
+    "key": "mpon",
+    "product_count": 0,
+    "note": "No products found with 'mpon' key - all products use canonical 'mpn'"
+  },
+  "product_mpn_top_level": {
+    "note": "No evidence of top-level product.mpn field - all MPN data stored in attributes.mpn"
+  },
+  "summary": {
+    "total_products_with_mpn": 82,
+    "total_products_with_mpon": 0,
+    "canonical_key_used": "attributes.mpn",
+    "data_consistent": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "attribute_id": "department",
+  "importerColumns": [
+    "department"
+  ],
+  "canonicalPath": "sku_core.department",
+  "description": "Department (e.g., \"Footwear\", \"Apparel\")",
+  "bulkEditable": false,
+  "export": true,
+  "allowed_values": [],
+  "synonyms": [
+    "Department"
+  ],
+  "ai_usage_notes": ""
+}

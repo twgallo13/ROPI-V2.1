@@ -79,16 +79,44 @@ function toFirestorePayload(
 
 /**
  * Convert Firestore document to AttributeType
+ * Maps legacy field names to schema field names for compatibility
  */
 function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | null {
   if (!doc.exists) return null;
   const data = doc.data();
   if (!data) return null;
   
-  return {
+  // Map legacy field names to AttributeSchema field names
+  // Legacy: dataType, id, etc. → Schema: data_type, attribute_id, etc.
+  const mapped: Record<string, unknown> = {
     attribute_id: doc.id,
-    ...data,
-  } as AttributeType;
+    label: data.label,
+    external_header: data.external_header ?? data.externalHeader,
+    category: data.category,
+    data_type: data.data_type ?? data.dataType ?? 'string',
+    allowed_values: data.allowed_values ?? data.allowedValues ?? data.validation?.allowedValues,
+    synonyms: data.synonyms,
+    required_for_completion: data.required_for_completion ?? data.requiredForCompletion ?? data.required ?? false,
+    required_for_export: data.required_for_export ?? data.requiredForExport ?? data.export ?? false,
+    import_required: data.import_required ?? data.importRequired ?? false,
+    ai_usage_notes: data.ai_usage_notes ?? data.aiUsageNotes ?? data.description,
+    status: data.status ?? 'active',
+    source: data.source,
+    createdBy: data.createdBy ?? data.audit?.createdBy,
+    createdAt: data.createdAt ?? data.audit?.createdAt,
+    updatedBy: data.updatedBy ?? data.audit?.updatedBy,
+    updatedAt: data.updatedAt ?? data.audit?.updatedAt,
+  };
+  
+  // Remove undefined values
+  const result: Record<string, unknown> = { attribute_id: mapped.attribute_id };
+  for (const [key, value] of Object.entries(mapped)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  
+  return result as AttributeType;
 }
 
 /**

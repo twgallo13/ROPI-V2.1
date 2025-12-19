@@ -13,7 +13,7 @@ import { z } from 'zod';
  */
 
 export const AttributeSchema = z.object({
-  attribute_id: z.string().min(1).regex(/^[a-z0-9-_]+$/),
+  attribute_id: z.string().min(1).regex(/^[a-z0-9-_.]+$/),
   label: z.string().min(1),
   external_header: z.string().optional(),
   category: z.string().optional(),

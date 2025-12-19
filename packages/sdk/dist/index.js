@@ -1454,7 +1454,7 @@ function importRowsToCoreProducts(rows) {
   return products;
 }
 var AttributeSchema = zod.z.object({
-  attribute_id: zod.z.string().min(1).regex(/^[a-z0-9-_]+$/),
+  attribute_id: zod.z.string().min(1).regex(/^[a-z0-9-_.]+$/),
   label: zod.z.string().min(1),
   external_header: zod.z.string().optional(),
   category: zod.z.string().optional(),

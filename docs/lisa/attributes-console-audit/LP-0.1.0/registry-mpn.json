@@ -1,0 +1,37 @@
+{
+  "audit_date": "2025-12-19",
+  "audit_version": "LP-0.1.0",
+  "search_terms": ["mpn", "mpon", "MPN", "MPON", "product.mpn"],
+  "findings": {
+    "attributeRegistry.json": {
+      "canonical_id": "mpn",
+      "label": "MPN",
+      "external_header": "MPN",
+      "category": "sku_core",
+      "data_type": "text",
+      "allowed_values": null,
+      "synonyms": null,
+      "ai_usage_notes": "Manufacturer part number",
+      "ai_usable": null,
+      "required_for_completion": true,
+      "required_for_export": true,
+      "import_required": false,
+      "status": "active"
+    },
+    "canonicalAttributeMap.approved.json": {
+      "mappings": {
+        "mpn": "mpn",
+        "Mpn": "mpn"
+      },
+      "note": "Only case variations mapped; no 'mpon' or 'product.mpn' aliases exist"
+    },
+    "mpon_found": false,
+    "product_mpn_alias_found": false
+  },
+  "summary": {
+    "canonical_id": "mpn",
+    "aliases_present": ["mpn", "Mpn"],
+    "missing_aliases": ["mpon", "MPON", "product.mpn", "MPN"],
+    "recommendation": "Add 'MPN' alias to canonicalAttributeMap for import header normalization"
+  }
+}
