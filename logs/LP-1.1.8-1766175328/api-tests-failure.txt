@@ -1,0 +1,100 @@
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0337717Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0340218Z ##[error]AssertionError: expected 67 to be +0 // Object.is equality
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	- Expected
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	+ Received
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	- 0
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	+ 67
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ test/integration/syncAttributeRegistry.emu.spec.ts:111:36
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0341979Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0345793Z ##[error]ServiceError: Attribute 'gender' not found
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ Module.getAttribute src/services/attributesService.ts:193:11
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ test/integration/syncAttributeRegistry.emu.spec.ts:122:20
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0348320Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0352478Z ##[error]ServiceError: Attribute 'material' not found
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ Module.getAttribute src/services/attributesService.ts:193:11
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ test/integration/syncAttributeRegistry.emu.spec.ts:132:28
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0354886Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0358903Z ##[error]ServiceError: Attribute 'waterproof' not found
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ Module.getAttribute src/services/attributesService.ts:193:11
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ test/integration/syncAttributeRegistry.emu.spec.ts:147:30
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0361308Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0363529Z ##[error]TypeError: actual value must be number or bigint, received "undefined"
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ test/integration/syncAttributeRegistry.emu.spec.ts:172:21
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0365161Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0367511Z ##[error]AssertionError: expected 0 to be greater than or equal to 1
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	 ❯ test/integration/syncAttributeRegistry.emu.spec.ts:187:33
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0370190Z [2m Test Files [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m8 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (14)[39m
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0371924Z [2m      Tests [22m [1m[31m42 failed[39m[22m[2m | [22m[1m[32m136 passed[39m[22m[2m | [22m[33m14 skipped[39m[90m (192)[39m
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0372928Z [2m   Start at [22m 19:55:30
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0374151Z [2m   Duration [22m 3.36s[2m (transform 585ms, setup 99ms, collect 1.13s, tests 1.73s, environment 0ms, prepare 104ms)[22m
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0374911Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0375268Z /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/api:
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0376584Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/api@0.0.0 test: `vitest run "--poolOptions.threads.singleThread"`
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0377631Z Exit status 1
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.0507636Z [33m[1m⚠ [22m[39m Script exited unsuccessfully (code 1)
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.5509939Z [36m[1mi  emulators:[22m[39m Shutting down emulators.
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.5514804Z [36m[1mi  firestore:[22m[39m Stopping Firestore Emulator
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.8796857Z [36m[1mi  hub:[22m[39m Stopping emulator hub
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.8806360Z [36m[1mi  logging:[22m[39m Stopping Logging Emulator
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.8831032Z 
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:34.8832560Z [1m[31mError:[39m[22m Script "[1mpnpm --filter @ropi-aoss/api test -- --poolOptions.threads.singleThread[22m" exited with code 1
+API Tests with Firebase Emulator	Run API tests with Firestore emulator	2025-12-19T19:55:35.2395700Z ##[error]Process completed with exit code 1.
+API Tests with Firebase Emulator	Upload test results	﻿2025-12-19T19:55:35.2457800Z ##[group]Run actions/upload-artifact@v4
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2458088Z with:
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2458261Z   name: api-test-results
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2458534Z   path: packages/api/coverage/
+API Tests with Firebase Emulator	Upload test results	packages/api/test-results/
+API Tests with Firebase Emulator	Upload test results	
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2458846Z   retention-days: 7
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2459030Z   if-no-files-found: ignore
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2459240Z   compression-level: 6
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2459427Z   overwrite: false
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2459604Z   include-hidden-files: false
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2459821Z env:
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2459992Z   FIRESTORE_EMULATOR_HOST: localhost:8080
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2460249Z   GCLOUD_PROJECT: demo-ropi-test
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2460577Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.9-10/x64
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2461042Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.9-10/x64
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.2461385Z ##[endgroup]
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.4709823Z Multiple search paths detected. Calculating the least common ancestor of all paths
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.4726110Z The least common ancestor is /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/api. This will be the root directory of the artifact
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.4727567Z No files were found with the provided path: packages/api/coverage/
+API Tests with Firebase Emulator	Upload test results	2025-12-19T19:55:35.4728403Z packages/api/test-results/. No artifacts will be uploaded.
+API Tests with Firebase Emulator	Post Install Java (required for Firestore emulator)	﻿2025-12-19T19:55:35.4877615Z Post job cleanup.
+API Tests with Firebase Emulator	Post Checkout repository	﻿2025-12-19T19:55:35.6868716Z Post job cleanup.
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.7890010Z [command]/usr/bin/git version
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.7945332Z git version 2.52.0
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.7993961Z Temporarily overriding HOME='/home/runner/work/_temp/5db4beda-3bae-4b23-8164-3864f730afc4' before making global git config changes
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.7996102Z Adding repository directory to the temporary git global config as a safe directory
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8001653Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8059663Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8100801Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8358846Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8384399Z http.https://github.com/.extraheader
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8399114Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8439346Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8678491Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+API Tests with Firebase Emulator	Post Checkout repository	2025-12-19T19:55:35.8717660Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+API Tests with Firebase Emulator	Complete job	﻿2025-12-19T19:55:35.9257891Z Cleaning up orphan processes
