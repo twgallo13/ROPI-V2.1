@@ -2,7 +2,7 @@
  * AttributesConsole Component
  * Master-detail layout for managing product attributes
  * 
- * Lisa PVS-0.2.3
+ * Lisa PVS-0.2.3, updated PVS-0.2.6
  * 
  * This is a UI shell refactor - no changes to attribute semantics or data.
  * Replaces the old modal-based AttributeManager with a modern master-detail layout.
@@ -25,6 +25,80 @@ const DEFAULT_ATTR: Partial<Attribute> = {
   external_header: '',
   source: 'json',
 };
+
+// Confirmation modal component
+function ConfirmationModal({
+  title,
+  message,
+  confirmLabel,
+  isDanger,
+  requireConfirmText,
+  onConfirm,
+  onCancel,
+}: {
+  title: string;
+  message: string;
+  confirmLabel: string;
+  isDanger?: boolean;
+  requireConfirmText?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  const [inputValue, setInputValue] = useState('');
+  const canConfirm = requireConfirmText ? inputValue === requireConfirmText : true;
+
+  return (
+    <div className={styles.modalOverlay} data-testid="confirmation-modal">
+      <div className={styles.modal}>
+        <div className={styles.modalHeader}>
+          <h3 className={styles.modalTitle}>{title}</h3>
+        </div>
+        <div className={styles.modalBody}>
+          <p className={styles.modalText}>{message}</p>
+          {isDanger && (
+            <div className={styles.modalWarning}>
+              ⚠️ This action cannot be undone. Please proceed with caution.
+            </div>
+          )}
+          {requireConfirmText && (
+            <div>
+              <p className={styles.modalText}>
+                To confirm, type <strong>{requireConfirmText}</strong> below:
+              </p>
+              <input
+                type="text"
+                className={styles.modalConfirmInput}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder={requireConfirmText}
+                data-testid="confirm-input"
+              />
+            </div>
+          )}
+        </div>
+        <div className={styles.modalFooter}>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={onCancel}
+            data-testid="modal-cancel"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={isDanger ? styles.btnDanger : styles.btnPrimary}
+            onClick={onConfirm}
+            disabled={!canConfirm}
+            data-testid="modal-confirm"
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Normalize legacy attribute fields (camelCase → snake_case)
@@ -70,7 +144,7 @@ export default function AttributesConsole() {
     error,
     createAttribute,
     updateAttribute,
-    // deleteAttribute - available but not used in shell milestone
+    deleteAttribute,
     refresh,
   } = useAttributes();
 
@@ -84,6 +158,9 @@ export default function AttributesConsole() {
   const [saving, setSaving] = useState(false);
   // Creating new attribute mode
   const [isCreating, setIsCreating] = useState(false);
+  // Modal state
+  const [showDeprecateModal, setShowDeprecateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Get selected attribute from list
   const selectedAttribute = useMemo(() => {
@@ -200,6 +277,44 @@ export default function AttributesConsole() {
     }
   }, [formData, isCreating, selectedId, createAttribute, updateAttribute]);
 
+  // Handle deprecate action
+  const handleDeprecate = useCallback(async () => {
+    if (!selectedId) return;
+    setSaving(true);
+    try {
+      await updateAttribute(selectedId, { 
+        status: 'deprecated',
+      });
+      toastSuccess(`Attribute '${selectedId}' has been deprecated.`);
+      setShowDeprecateModal(false);
+      setIsDirty(false);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to deprecate attribute';
+      toastError(message);
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedId, updateAttribute]);
+
+  // Handle delete action (hard delete)
+  const handleDelete = useCallback(async () => {
+    if (!selectedId || !deleteAttribute) return;
+    setSaving(true);
+    try {
+      await deleteAttribute(selectedId);
+      toastSuccess(`Attribute '${selectedId}' has been deleted.`);
+      setShowDeleteModal(false);
+      setSelectedId(null);
+      setFormData({ ...DEFAULT_ATTR });
+      setIsDirty(false);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to delete attribute';
+      toastError(message);
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedId, deleteAttribute]);
+
   // Show loading state
   if (loading && attributes.length === 0) {
     return (
@@ -249,7 +364,34 @@ export default function AttributesConsole() {
         onCancel={handleCancel}
         onSync={handleSync}
         onSave={handleSave}
+        onDeprecate={() => setShowDeprecateModal(true)}
+        onDelete={() => setShowDeleteModal(true)}
       />
+      
+      {/* Deprecate confirmation modal */}
+      {showDeprecateModal && selectedId && (
+        <ConfirmationModal
+          title="Deprecate Attribute"
+          message={`Are you sure you want to deprecate "${selectedId}"? Deprecated attributes remain in the system but are hidden from most views and cannot be used for new products.`}
+          confirmLabel="Deprecate"
+          isDanger={false}
+          onConfirm={handleDeprecate}
+          onCancel={() => setShowDeprecateModal(false)}
+        />
+      )}
+      
+      {/* Delete confirmation modal */}
+      {showDeleteModal && selectedId && (
+        <ConfirmationModal
+          title="Delete Attribute"
+          message={`Are you sure you want to permanently delete "${selectedId}"? This action cannot be undone and may affect products that use this attribute.`}
+          confirmLabel="Delete Permanently"
+          isDanger={true}
+          requireConfirmText={selectedId}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 }

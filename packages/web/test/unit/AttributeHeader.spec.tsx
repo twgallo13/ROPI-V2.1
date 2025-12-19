@@ -113,4 +113,93 @@ describe('AttributeHeader', () => {
 
     expect(screen.getByTestId('header-label')).toHaveTextContent('test_attr');
   });
+
+  // Kebab menu tests (PVS-0.2.6)
+  describe('Kebab Menu', () => {
+    it('renders kebab button', () => {
+      render(<AttributeHeader attribute={mockAttribute} />);
+      
+      expect(screen.getByTestId('kebab-button')).toBeInTheDocument();
+    });
+
+    it('opens kebab menu when clicked', () => {
+      render(
+        <AttributeHeader 
+          attribute={mockAttribute} 
+          onDeprecate={vi.fn()} 
+          onDelete={vi.fn()} 
+        />
+      );
+      
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      expect(screen.getByTestId('kebab-menu')).toBeInTheDocument();
+    });
+
+    it('shows Deprecate option for active attributes', () => {
+      const onDeprecate = vi.fn();
+      render(
+        <AttributeHeader 
+          attribute={mockAttribute} 
+          onDeprecate={onDeprecate}
+        />
+      );
+      
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      expect(screen.getByTestId('menu-deprecate')).toBeInTheDocument();
+    });
+
+    it('calls onDeprecate when Deprecate clicked', () => {
+      const onDeprecate = vi.fn();
+      render(
+        <AttributeHeader 
+          attribute={mockAttribute} 
+          onDeprecate={onDeprecate}
+        />
+      );
+      
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      fireEvent.click(screen.getByTestId('menu-deprecate'));
+      expect(onDeprecate).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows Already Deprecated for deprecated attributes', () => {
+      const deprecatedAttr = { ...mockAttribute, status: 'deprecated' as const };
+      render(
+        <AttributeHeader 
+          attribute={deprecatedAttr} 
+          onDeprecate={vi.fn()}
+        />
+      );
+      
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      expect(screen.getByText('✓ Already Deprecated')).toBeInTheDocument();
+    });
+
+    it('shows Delete option when onDelete provided', () => {
+      const onDelete = vi.fn();
+      render(
+        <AttributeHeader 
+          attribute={mockAttribute} 
+          onDelete={onDelete}
+        />
+      );
+      
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      expect(screen.getByTestId('menu-delete')).toBeInTheDocument();
+    });
+
+    it('calls onDelete when Delete clicked', () => {
+      const onDelete = vi.fn();
+      render(
+        <AttributeHeader 
+          attribute={mockAttribute} 
+          onDelete={onDelete}
+        />
+      );
+      
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      fireEvent.click(screen.getByTestId('menu-delete'));
+      expect(onDelete).toHaveBeenCalledTimes(1);
+    });
+  });
 });

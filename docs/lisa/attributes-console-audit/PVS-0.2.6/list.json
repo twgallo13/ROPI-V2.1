@@ -1,0 +1,523 @@
+{
+  "items": [
+    {
+      "attribute_id": "age_group",
+      "label": "Age Group",
+      "external_header": "Age Group",
+      "category": "Demographics",
+      "data_type": "enum",
+      "allowed_values": [
+        "Adult",
+        "Kids",
+        "Infant",
+        "Toddler",
+        "Teen"
+      ],
+      "required_for_completion": true,
+      "required_for_export": true,
+      "import_required": false,
+      "ai_usage_notes": "Used for Google Shopping feed and age-appropriate product descriptions.",
+      "status": "active",
+      "source": "json",
+      "createdBy": "system",
+      "createdAt": "2025-12-09T00:56:17.705Z",
+      "updatedBy": "system",
+      "updatedAt": "2025-12-09T00:56:31.132Z",
+      "synonyms": [
+        "ageGroup",
+        "age-group",
+        "AgeGroup",
+        "age.group",
+        "agegroup",
+        "Age-group"
+      ]
+    },
+    {
+      "attribute_id": "rics_source.brand",
+      "dataType": "string",
+      "usage": [],
+      "description": "RICS brand",
+      "rules": [],
+      "label": "Brand",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "rics_source.brand",
+      "category": "Source",
+      "export": true,
+      "key": "brand",
+      "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+      "updatedAt": "2025-12-16T08:24:14.155Z"
+    },
+    {
+      "attribute_id": "care_instructions",
+      "label": "Care Instructions",
+      "external_header": "Care",
+      "category": "Product Info",
+      "data_type": "string",
+      "synonyms": [
+        "care",
+        "cleaning_instructions"
+      ],
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Cleaning and care instructions for the product.",
+      "status": "active",
+      "source": "json",
+      "createdBy": "system",
+      "createdAt": "2025-12-09T00:56:21.023Z",
+      "updatedBy": "system",
+      "updatedAt": "2025-12-09T00:56:33.620Z"
+    },
+    {
+      "attribute_id": "rics_source.category",
+      "dataType": "string",
+      "usage": [],
+      "description": "RICS category",
+      "rules": [],
+      "label": "Category",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "rics_source.category",
+      "category": "Source",
+      "export": true,
+      "key": "category",
+      "importerColumns": [
+        "rics_category",
+        "RICS Category",
+        "category"
+      ]
+    },
+    {
+      "attribute_id": "sku_core.category",
+      "dataType": "string",
+      "usage": [],
+      "description": "Category (e.g., \"Running Shoes\", \"T-Shirts\")",
+      "rules": [
+        "SD-003",
+        "SD-004"
+      ],
+      "label": "Category",
+      "legacyPaths": [],
+      "required": true,
+      "systemFlag": false,
+      "importerColumns": [
+        "category"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "sku_core.category",
+      "category": "Core",
+      "export": true,
+      "key": "category",
+      "deprecationReason": "Consolidated as duplicate (same label)",
+      "replacedBy": "rics_source.category",
+      "deprecated": true,
+      "deprecatedAt": "2025-12-09T08:43:46.401Z",
+      "status": "deprecated"
+    },
+    {
+      "attribute_id": "sku_core.class",
+      "dataType": "string",
+      "usage": [],
+      "description": "Class (e.g., \"Athletic\", \"Casual\")",
+      "rules": [
+        "SD-002"
+      ],
+      "label": "Class",
+      "legacyPaths": [],
+      "required": true,
+      "systemFlag": false,
+      "importerColumns": [
+        "class"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "sku_core.class",
+      "category": "Core",
+      "export": true,
+      "key": "class"
+    },
+    {
+      "attribute_id": "closure_type",
+      "label": "Closure Type",
+      "external_header": "Closure",
+      "category": "Construction",
+      "data_type": "enum",
+      "allowed_values": [
+        "Lace-Up",
+        "Slip-On",
+        "Buckle",
+        "Zipper",
+        "Velcro",
+        "Elastic",
+        "Button",
+        "Hook & Loop",
+        "Toggle"
+      ],
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "How the product fastens or closes.",
+      "status": "active",
+      "source": "json",
+      "createdBy": "system",
+      "createdAt": "2025-12-09T00:56:20.220Z",
+      "updatedBy": "system",
+      "updatedAt": "2025-12-09T00:56:32.888Z",
+      "synonyms": [
+        "closure",
+        "fastening",
+        "closureType",
+        "closure-type",
+        "ClosureType",
+        "closure.type",
+        "closuretype",
+        "Closure",
+        "Fastening"
+      ]
+    },
+    {
+      "attribute_id": "descriptive.closureType",
+      "dataType": "string",
+      "usage": [],
+      "description": "Closure Type (Lace-up, Slip-on, Velcro)",
+      "rules": [
+        "SD-009"
+      ],
+      "label": "Closure Type",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [
+        "closure_type"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "descriptive.closureType",
+      "category": "Descriptive",
+      "export": true,
+      "key": "closureType",
+      "deprecationReason": "Consolidated as duplicate (same label)",
+      "replacedBy": "closure_type",
+      "deprecated": true,
+      "deprecatedAt": "2025-12-09T08:43:44.108Z",
+      "status": "deprecated"
+    },
+    {
+      "attribute_id": "rics_source.color",
+      "dataType": "string",
+      "usage": [],
+      "description": "RICS color",
+      "rules": [],
+      "label": "Color",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "rics_source.color",
+      "category": "Source",
+      "export": true,
+      "key": "color",
+      "importerColumns": [
+        "RICS Color",
+        "rics_color",
+        "RICS_COLOR",
+        "RICS Source.Color",
+        "Color"
+      ]
+    },
+    {
+      "attribute_id": "sku_core.coreProduct",
+      "dataType": "boolean",
+      "usage": [],
+      "description": "Marks main styles that persist across seasons",
+      "rules": [],
+      "label": "Core Product",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "sku_core.coreProduct",
+      "category": "Core",
+      "export": true,
+      "key": "coreProduct"
+    },
+    {
+      "attribute_id": "technical.custom2",
+      "dataType": "string",
+      "usage": [],
+      "description": "Custom field 2",
+      "rules": [],
+      "label": "Custom2",
+      "legacyPaths": [
+        "custom2"
+      ],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [
+        "custom2"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "technical.custom2",
+      "category": "Technical",
+      "export": true,
+      "key": "custom2",
+      "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+      "updatedAt": "2025-12-11T10:43:17.904Z"
+    },
+    {
+      "attribute_id": "technical.custom3",
+      "dataType": "string",
+      "usage": [],
+      "description": "Custom field 3",
+      "rules": [],
+      "label": "Custom3",
+      "legacyPaths": [
+        "custom3"
+      ],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [
+        "custom3"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "technical.custom3",
+      "category": "Technical",
+      "export": true,
+      "key": "custom3"
+    },
+    {
+      "attribute_id": "descriptive.cutType",
+      "dataType": "string",
+      "usage": [],
+      "description": "Cut Type (Low, Mid, High)",
+      "rules": [
+        "SD-008"
+      ],
+      "label": "Cut Type",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [
+        "cut_type"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "descriptive.cutType",
+      "category": "Descriptive",
+      "export": true,
+      "key": "cutType"
+    },
+    {
+      "attribute_id": "sku_core.department",
+      "dataType": "string",
+      "usage": [],
+      "description": "Department (e.g., \"Footwear\", \"Apparel\")",
+      "rules": [
+        "SD-001"
+      ],
+      "label": "Department",
+      "legacyPaths": [],
+      "required": true,
+      "systemFlag": false,
+      "importerColumns": [
+        "department"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "sku_core.department",
+      "category": "Core",
+      "export": true,
+      "key": "department",
+      "foundation": true,
+      "id": "sku_core.department",
+      "validation": {
+        "allowedValuesRef": "settings/lists/departments"
+      },
+      "audit": {
+        "updatedBy": "system",
+        "version": "1.3",
+        "updatedAt": "2025-11-23T02:26:42.793Z"
+      }
+    },
+    {
+      "attribute_id": "descriptive.description",
+      "dataType": "string",
+      "usage": [],
+      "rules": [],
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "descriptive.description",
+      "category": "Descriptive",
+      "export": true,
+      "key": "description",
+      "foundation": true,
+      "id": "description",
+      "bulkEditable": false,
+      "ai": {
+        "can_write": true,
+        "confidenceThreshold": 0.4,
+        "use": [
+          "enrichment",
+          "template_selection"
+        ]
+      },
+      "audit": {
+        "updatedBy": "system",
+        "version": "1.10",
+        "updatedAt": "2025-11-22T19:46:12.761Z"
+      },
+      "validation": {
+        "required": false
+      },
+      "description": "Long description (ROPI HTML output)",
+      "label": "Description"
+    },
+    {
+      "attribute_id": "a_i_generated.descriptionBlocks",
+      "dataType": "object",
+      "usage": [],
+      "description": "HTML blocks per section",
+      "rules": [],
+      "label": "Description Blocks",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "a_i_generated.descriptionBlocks",
+      "category": "AI",
+      "export": true,
+      "key": "descriptionBlocks",
+      "audit": {
+        "updatedBy": "system",
+        "version": "1.1",
+        "updatedAt": "2025-11-22T22:21:16.371Z"
+      },
+      "ai": {
+        "can_write": true
+      },
+      "id": "a_i_generated.descriptionBlocks"
+    },
+    {
+      "attribute_id": "a_i_generated.descriptionHtml",
+      "dataType": "string",
+      "usage": [],
+      "description": "AI-generated HTML description",
+      "rules": [],
+      "label": "Description Html",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "a_i_generated.descriptionHtml",
+      "category": "AI",
+      "export": true,
+      "key": "descriptionHtml"
+    },
+    {
+      "attribute_id": "descriptive.descriptiveColor",
+      "dataType": "string",
+      "usage": [],
+      "description": "Descriptive Color (free-text manufacturer color)",
+      "rules": [],
+      "label": "Descriptive Color",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [
+        "descriptive_color"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "descriptive.descriptiveColor",
+      "category": "Descriptive",
+      "export": true,
+      "key": "descriptiveColor"
+    },
+    {
+      "attribute_id": "sku_core.dropshipName",
+      "dataType": "string",
+      "usage": [],
+      "description": "Dropship supplier name",
+      "rules": [],
+      "label": "Dropship Name",
+      "legacyPaths": [],
+      "required": false,
+      "systemFlag": false,
+      "importerColumns": [
+        "product_is_dropship_name",
+        "Product Is Dropship.Name",
+        "Product Is Dropship Name",
+        "dropship_name",
+        "dropship name"
+      ],
+      "examples": {
+        "sampleValues": []
+      },
+      "canonicalPath": "sku_core.dropshipName",
+      "category": "Core",
+      "export": true,
+      "key": "dropshipName"
+    },
+    {
+      "attribute_id": "end_of_life_date",
+      "label": "End of Life Date",
+      "external_header": "EOL Date",
+      "category": "Lifecycle",
+      "data_type": "date",
+      "synonyms": [
+        "eol_date",
+        "discontinue_date"
+      ],
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Date when the product will be discontinued.",
+      "status": "active",
+      "source": "json",
+      "createdBy": "system",
+      "createdAt": "2025-12-09T00:56:21.925Z",
+      "updatedBy": "system",
+      "updatedAt": "2025-12-09T00:56:34.528Z"
+    }
+  ],
+  "total": 342,
+  "pageToken": "end_of_life_date",
+  "hasMore": true
+}
