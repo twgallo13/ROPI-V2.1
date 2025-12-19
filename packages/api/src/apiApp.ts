@@ -71,6 +71,20 @@ import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 // Reconciliation (Homer v1.0.0)
 import reconcileAttributesRouter from './admin/reconcileAttributes';
 
+// PVS-0.3.1 Mapping handlers
+import {
+  getGlobalMappingHandler,
+  updateGlobalMappingHandler,
+  getAttributeMappingHandler,
+  updateAttributeMappingHandler,
+  deleteAttributeMappingHandler,
+  listSourceOverridesHandler,
+  getSourceOverrideHandler,
+  upsertSourceOverrideHandler,
+  deleteSourceOverrideHandler,
+  importPreviewHandler,
+} from './endpoints/admin/mappings';
+
 const app: Application = express();
 const api: Router = Router();
 
@@ -92,6 +106,18 @@ api.get('/admin/settings/attributes/:id/top-values', getTopValuesHandler);
 api.get('/admin/settings/attributes/:id/audit', listAuditEventsHandler);
 api.get('/admin/settings/attributes/:id/audit/:eventId', getAuditEventHandler);
 api.post('/admin/settings/attributes/:id/revert', revertAttributeHandler);
+// PVS-0.3.1 Attribute-level mapping endpoints
+api.get('/admin/settings/attributes/:id/mapping', getAttributeMappingHandler);
+api.put('/admin/settings/attributes/:id/mapping', updateAttributeMappingHandler);
+api.delete('/admin/settings/attributes/:id/mapping', deleteAttributeMappingHandler);
+api.get('/admin/settings/attributes/:id/mapping/sources', listSourceOverridesHandler);
+api.get('/admin/settings/attributes/:id/mapping/sources/:sourceId', getSourceOverrideHandler);
+api.put('/admin/settings/attributes/:id/mapping/sources/:sourceId', upsertSourceOverrideHandler);
+api.delete('/admin/settings/attributes/:id/mapping/sources/:sourceId', deleteSourceOverrideHandler);
+
+// PVS-0.3.1 Global mapping endpoints
+api.get('/admin/settings/mappings', getGlobalMappingHandler);
+api.put('/admin/settings/mappings', updateGlobalMappingHandler);
 
 api.get('/admin/settings/lists', listListsHandler);
 api.get('/admin/settings/lists/:listId', getListHandler);
@@ -135,6 +161,8 @@ api.patch('/products/:productId/attributes', patchProductAttributesHandler);
  */
 api.post('/processImportBatch', processImportBatchHandler);
 api.get('/importBatchStatus', getBatchStatusHandler);
+// PVS-0.3.1 Import preview with mapping support
+api.post('/admin/imports/preview', importPreviewHandler);
 api.post('/syncAttributeRegistry', async (req, res) => {
   try {
     const result = await runSyncAttributeRegistry();
