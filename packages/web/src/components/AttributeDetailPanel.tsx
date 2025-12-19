@@ -2,13 +2,17 @@
  * AttributeDetailPanel Component
  * Right panel with attribute header, tabs, and tab content
  * 
- * Lisa PVS-0.2.3, updated PVS-0.2.6
+ * Lisa PVS-0.2.3, updated PVS-0.2.6, PVS-0.2.9
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import type { Attribute } from '../hooks/useAttributes';
 import AttributeHeader from './AttributeHeader';
 import AttributeTabs, { type TabId } from './AttributeTabs';
+import ValuesManager, {
+  type AllowedValue,
+  valuesToPayload,
+} from './ValuesManager';
 import styles from '../pages/Settings/AttributesConsole.module.css';
 
 export interface AttributeDetailPanelProps {
@@ -149,63 +153,55 @@ function OverviewTab({
 
 // Values tab - shows values manager for enum/multiSelect, constraints for others
 function ValuesTab({ 
-  formData, 
+  formData,
+  onChange,
 }: { 
-  formData: Partial<Attribute>; 
+  formData: Partial<Attribute>;
+  onChange: (data: Partial<Attribute>) => void;
 }) {
   const isSelectType = formData.data_type === 'enum' || formData.data_type === 'multiSelect';
-  const allowedValues = formData.allowed_values || [];
-  const synonyms = formData.synonyms || [];
+
+  // Convert from API format to ValuesManager format
+  const initialValues = useMemo<AllowedValue[]>(() => {
+    const allowedValues = formData.allowed_values || [];
+    // synonyms can be either string[] (legacy) or Record<string, string[]> (new per-value format)
+    const synonymsData = formData.synonyms as Record<string, string[]> | string[] | undefined;
+    
+    // Convert to per-value synonyms map if it's the new format
+    const synonymsMap: Record<string, string[]> = 
+      synonymsData && !Array.isArray(synonymsData) ? synonymsData : {};
+    
+    return allowedValues.map((val, idx) => ({
+      id: `val-${idx}-${Date.now()}`,
+      value: val,
+      enabled: true,
+      synonyms: synonymsMap[val] || [],
+    }));
+  }, [formData.allowed_values, formData.synonyms]);
+
+  // Handle changes from ValuesManager
+  const handleValuesChange = useCallback((values: AllowedValue[]) => {
+    const payload = valuesToPayload(values);
+    onChange({
+      ...formData,
+      allowed_values: payload.allowed_values,
+      synonyms: payload.synonyms,
+    });
+  }, [formData, onChange]);
 
   if (isSelectType) {
     return (
       <div className={styles.tabPanel} data-testid="tab-panel-values">
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Allowed Values ({allowedValues.length})</h3>
-          <div className={styles.valuesSearch}>
-            <input
-              type="text"
-              className={styles.formInput}
-              placeholder="Search values..."
-              data-testid="values-search"
-            />
-          </div>
-          {allowedValues.length > 0 ? (
-            <div className={styles.valuesList}>
-              {allowedValues.map((value, idx) => (
-                <div key={idx} className={styles.valuesItem}>
-                  <span className={styles.valuesItemLabel}>{value}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.placeholder}>
-              <div className={styles.placeholderIcon}>📝</div>
-              <p className={styles.placeholderTitle}>No values defined</p>
-              <p className={styles.placeholderText}>Add allowed values for this enum/multi-select attribute</p>
-            </div>
-          )}
-        </div>
-        
-        {/* Synonyms section */}
-        <div className={styles.card} style={{ marginTop: '1rem' }}>
-          <h3 className={styles.cardTitle}>Synonyms ({synonyms.length})</h3>
-          {synonyms.length > 0 ? (
-            <div className={styles.valuesList}>
-              {synonyms.map((syn, idx) => (
-                <div key={idx} className={styles.valuesItem}>
-                  <span className={styles.valuesItemLabel}>{syn}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.formHelp}>No synonyms defined for import mapping</p>
-          )}
-        </div>
+        <ValuesManager
+          values={initialValues}
+          onChange={handleValuesChange}
+          readOnly={false}
+        />
       </div>
     );
   }
 
+  // Non-enum types: show constraints placeholder
   return (
     <div className={styles.tabPanel} data-testid="tab-panel-values">
       <div className={styles.card}>
@@ -219,22 +215,6 @@ function ValuesTab({
             {formData.data_type === 'number' && ' (e.g., min/max value, precision)'}
           </p>
         </div>
-      </div>
-      
-      {/* Synonyms section for non-enum types */}
-      <div className={styles.card} style={{ marginTop: '1rem' }}>
-        <h3 className={styles.cardTitle}>Synonyms ({synonyms.length})</h3>
-        {synonyms.length > 0 ? (
-          <div className={styles.valuesList}>
-            {synonyms.map((syn, idx) => (
-              <div key={idx} className={styles.valuesItem}>
-                <span className={styles.valuesItemLabel}>{syn}</span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className={styles.formHelp}>No synonyms defined for import mapping</p>
-        )}
       </div>
     </div>
   );
@@ -516,7 +496,7 @@ export default function AttributeDetailPanel({
       case 'overview':
         return <OverviewTab formData={formData} onChange={onFormChange} />;
       case 'values':
-        return <ValuesTab formData={formData} />;
+        return <ValuesTab formData={formData} onChange={onFormChange} />;
       case 'behavior':
         return <BehaviorTab formData={formData} onChange={onFormChange} />;
       case 'ai-seo':
