@@ -12,8 +12,11 @@
 import * as admin from 'firebase-admin';
 import { createAuditEvent, type CreateAuditEventInput } from './auditService';
 
-// Firestore paths
-const GLOBAL_MAPPING_PATH = 'settings/attribute_mappings/global';
+// Firestore paths - FIXED PVS-0.3.4: Use even number of path components
+// Global mapping: collection 'attributeMappings', document 'global'
+const GLOBAL_MAPPING_COLLECTION = 'attributeMappings';
+const GLOBAL_MAPPING_DOC_ID = 'global';
+// Attribute collection where we'll add mapping subcollection
 const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
 
 /**
@@ -197,7 +200,8 @@ export async function validateAttributeValueSynonyms(
  */
 export async function getGlobalMapping(): Promise<GlobalMapping> {
   const db = getDb();
-  const doc = await db.doc(GLOBAL_MAPPING_PATH).get();
+  // PVS-0.3.4: Fixed path to use even number of components
+  const doc = await db.collection(GLOBAL_MAPPING_COLLECTION).doc(GLOBAL_MAPPING_DOC_ID).get();
   
   if (!doc.exists) {
     // Return empty mapping if not exists
@@ -223,7 +227,8 @@ export async function updateGlobalMapping(
   options: { merge?: boolean; reason?: string } = {}
 ): Promise<GlobalMapping> {
   const db = getDb();
-  const docRef = db.doc(GLOBAL_MAPPING_PATH);
+  // PVS-0.3.4: Fixed path to use even number of components
+  const docRef = db.collection(GLOBAL_MAPPING_COLLECTION).doc(GLOBAL_MAPPING_DOC_ID);
   const { merge = true, reason } = options;
   
   // Validate aliases if provided
@@ -330,10 +335,12 @@ function deepMergeValueSynonyms(
 // =============================================
 
 /**
- * Get the mapping subdoc path for an attribute
+ * Get the mapping document ref for an attribute
+ * PVS-0.3.4: Fixed to use even number of path components
+ * Uses subcollection 'mapping' with doc 'config' under the attribute doc
  */
-function getAttributeMappingPath(attributeId: string): string {
-  return `${ATTRIBUTES_COLLECTION}/${attributeId}/mapping`;
+function getAttributeMappingRef(db: admin.firestore.Firestore, attributeId: string): admin.firestore.DocumentReference {
+  return db.collection(ATTRIBUTES_COLLECTION).doc(attributeId).collection('mapping').doc('config');
 }
 
 /**
@@ -343,7 +350,8 @@ export async function getAttributeMapping(
   attributeId: string
 ): Promise<AttributeMapping | null> {
   const db = getDb();
-  const doc = await db.doc(getAttributeMappingPath(attributeId)).get();
+  // PVS-0.3.4: Use ref function instead of path
+  const doc = await getAttributeMappingRef(db, attributeId).get();
   
   if (!doc.exists) {
     return null;
@@ -495,7 +503,8 @@ export async function updateAttributeMapping(
     }
   }
   
-  const docRef = db.doc(getAttributeMappingPath(attributeId));
+  // PVS-0.3.4: Use ref function instead of path
+  const docRef = getAttributeMappingRef(db, attributeId);
   const currentDoc = await docRef.get();
   const beforeState = currentDoc.exists ? currentDoc.data() as AttributeMapping : null;
   
@@ -509,15 +518,16 @@ export async function updateAttributeMapping(
         beforeState.value_synonyms || {},
         mapping.value_synonyms || {}
       ),
-      sources: beforeState.sources, // Sources not merged here, use separate endpoint
+      sources: beforeState.sources || {}, // Sources not merged here, use separate endpoint
       updatedAt: now,
       updatedBy: actor,
     };
   } else {
+    // FIX: Ensure no undefined values are written to Firestore
     afterState = {
-      aliases: mapping.aliases,
-      value_synonyms: mapping.value_synonyms,
-      sources: beforeState?.sources, // Preserve sources unless explicitly updated
+      aliases: mapping.aliases ?? beforeState?.aliases ?? {},
+      value_synonyms: mapping.value_synonyms ?? beforeState?.value_synonyms ?? {},
+      sources: beforeState?.sources ?? {}, // Preserve sources unless explicitly updated
       updatedAt: now,
       updatedBy: actor,
     };
@@ -548,7 +558,8 @@ export async function deleteAttributeMapping(
   reason?: string
 ): Promise<void> {
   const db = getDb();
-  const docRef = db.doc(getAttributeMappingPath(attributeId));
+  // PVS-0.3.4: Use ref function instead of path
+  const docRef = getAttributeMappingRef(db, attributeId);
   
   const currentDoc = await docRef.get();
   if (!currentDoc.exists) {
@@ -655,7 +666,8 @@ export async function upsertSourceOverride(
     }
   }
   
-  const docRef = db.doc(getAttributeMappingPath(attributeId));
+  // PVS-0.3.4: Use ref function instead of path
+  const docRef = getAttributeMappingRef(db, attributeId);
   const currentDoc = await docRef.get();
   const currentMapping = currentDoc.exists ? currentDoc.data() as AttributeMapping : {};
   
@@ -701,7 +713,8 @@ export async function deleteSourceOverride(
   reason?: string
 ): Promise<void> {
   const db = getDb();
-  const docRef = db.doc(getAttributeMappingPath(attributeId));
+  // PVS-0.3.4: Use ref function instead of path
+  const docRef = getAttributeMappingRef(db, attributeId);
   
   const currentDoc = await docRef.get();
   if (!currentDoc.exists) {

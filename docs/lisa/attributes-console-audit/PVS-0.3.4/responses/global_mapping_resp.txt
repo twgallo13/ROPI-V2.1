@@ -1,0 +1,23 @@
+HTTP/2 404 
+x-powered-by: Express
+vary: Origin
+content-security-policy: default-src 'none'
+x-content-type-options: nosniff
+content-type: text/html; charset=utf-8
+function-execution-id: qwfwjx5q5blk
+x-cloud-trace-context: 3cff3ecac73800c6647f483e1883ed8c;o=1
+date: Fri, 19 Dec 2025 20:19:01 GMT
+server: Google Frontend
+content-length: 162
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /admin/settings/mappings</pre>
+</body>
+</html>

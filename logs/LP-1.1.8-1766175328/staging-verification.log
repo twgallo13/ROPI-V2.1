@@ -1,0 +1,14 @@
+=== LP-1.1.8 Staging Verification ===
+Timestamp: 2025-12-19T20:33:23Z
+
+Testing homepage:
+Status: 200, Size: 456 bytes
+
+Testing observations route:
+Status: 200, Size: 456 bytes
+
+Testing observations/capture route:
+Status: 200, Size: 456 bytes
+
+Checking if bundle includes 'observations' in content:
+0

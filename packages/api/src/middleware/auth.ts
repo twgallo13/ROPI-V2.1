@@ -36,6 +36,7 @@ function buildEmulatorAuth(req: ExpressRequest): AuthContext {
 export interface AuthContext {
   uid: string;
   email: string | undefined;
+  name?: string;
   role: string | undefined;
   roles?: string[];
   emailVerified: boolean;
@@ -89,6 +90,7 @@ export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext 
     return {
       uid: decodedToken.uid,
       email: decodedToken.email,
+      name: decodedToken.name as string | undefined,
       role: decodedToken.role as string | undefined,
       roles: Array.isArray((decodedToken as any).roles) ? (decodedToken as any).roles as string[] : undefined,
       emailVerified: decodedToken.email_verified || false,

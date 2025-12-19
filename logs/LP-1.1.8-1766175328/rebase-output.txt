@@ -1,0 +1,7 @@
+Branch lisa/LP-1.1.1/mobile-observation-capture is already based on aoss-main (7d850db)
+No rebase needed - branch is up-to-date
+59f02c9 fix(api): use relative path for attributeRegistry import in observations
+981f378 feat(LP-1.1.1): Mobile-first Observations capture workflow
+7d850db LP-1.1.4: CI: Ensure pnpm available via corepack/prepare in GitHub Actions (#287)
+41c1265 LP-1.1.3: Add emulator fallback for Firestore count() — try count() then fallback to get().size (#286)
+8c24dc9 fix(api): map legacy attribute fields and allow dots in attribute_id

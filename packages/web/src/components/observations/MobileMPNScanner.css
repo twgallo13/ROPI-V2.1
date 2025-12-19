@@ -1,0 +1,246 @@
+/**
+ * MobileMPNScanner Styles
+ * 
+ * LP-1.1.1: Styles for barcode scanner component.
+ */
+
+.mobile-mpn-scanner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1a1a1a;
+}
+
+/* Tab navigation */
+.scanner-tabs {
+  display: flex;
+  background: #2a2a2a;
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #999;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: white;
+  background: #007bff;
+}
+
+.tab-btn:not(.active):hover {
+  background: #3a3a3a;
+}
+
+/* Error message */
+.scanner-error {
+  padding: 0.75rem 1rem;
+  margin: 0.5rem;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  font-size: 0.875rem;
+  border-radius: 6px;
+}
+
+/* Scan container */
+.scan-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanner-canvas {
+  display: none;
+}
+
+/* Scan overlay */
+.scan-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.scan-frame {
+  width: 280px;
+  height: 180px;
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+}
+
+.scan-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: #007bff;
+  border-style: solid;
+  border-width: 0;
+}
+
+.scan-corner.top-left {
+  top: -2px;
+  left: -2px;
+  border-top-width: 4px;
+  border-left-width: 4px;
+  border-top-left-radius: 12px;
+}
+
+.scan-corner.top-right {
+  top: -2px;
+  right: -2px;
+  border-top-width: 4px;
+  border-right-width: 4px;
+  border-top-right-radius: 12px;
+}
+
+.scan-corner.bottom-left {
+  bottom: -2px;
+  left: -2px;
+  border-bottom-width: 4px;
+  border-left-width: 4px;
+  border-bottom-left-radius: 12px;
+}
+
+.scan-corner.bottom-right {
+  bottom: -2px;
+  right: -2px;
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Scan status */
+.scan-status {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: white;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.scan-status .loading {
+  color: #007bff;
+}
+
+/* Manual form */
+.manual-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.mpn-input {
+  padding: 1rem;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #2a2a2a;
+  color: white;
+  border: 2px solid #3a3a3a;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.mpn-input:focus {
+  border-color: #007bff;
+}
+
+.mpn-input::placeholder {
+  color: #666;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.lookup-btn {
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lookup-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.lookup-btn:disabled {
+  background: #3a3a3a;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Close button */
+.close-scanner-btn {
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #999;
+  background: #2a2a2a;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-scanner-btn:hover {
+  background: #3a3a3a;
+  color: white;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .scan-frame {
+    width: 240px;
+    height: 160px;
+  }
+  
+  .mpn-input {
+    font-size: 1.125rem;
+  }
+}

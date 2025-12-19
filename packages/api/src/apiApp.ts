@@ -58,7 +58,18 @@ import {
   patchProductAttributesHandler,
   getProductHandler,
   listProductsHandler,
+  getProductByMpnHandler,
 } from './endpoints/products';
+
+// Observations handlers (LP-1.1.1)
+import {
+  createObservationHandler,
+  listObservationsHandler,
+  getObservationHandler,
+  updateObservationHandler,
+  analyzeImageHandler,
+  analyzeImageStandaloneHandler,
+} from './endpoints/observations';
 
 // Import / batch / sync
 import {
@@ -153,8 +164,19 @@ api.patch('/users/me', updateMeHandler);
  * Products endpoints
  */
 api.get('/products', listProductsHandler);
+api.get('/products/by-mpn/:mpn', getProductByMpnHandler);
 api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);
+
+/**
+ * Observations endpoints (LP-1.1.1)
+ */
+api.get('/observations', listObservationsHandler);
+api.post('/observations', createObservationHandler);
+api.post('/observations/analyze-image', analyzeImageStandaloneHandler);
+api.get('/observations/:id', getObservationHandler);
+api.patch('/observations/:id', updateObservationHandler);
+api.post('/observations/:id/analyze-image', analyzeImageHandler);
 
 /**
  * Import, batch and sync endpoints
