@@ -15,6 +15,7 @@ import {
   updateAttribute,
   deleteAttribute,
   getAttributeUsage,
+  getTopValues,
   validateAttributeData,
   ServiceError,
 } from '../../services/attributesService';
@@ -212,6 +213,35 @@ export async function getAttributeUsageHandler(req: Request, res: Response) {
       const limit = parseInt((req.query.limit as string) || '10', 10);
       const usage = await getAttributeUsage(attributeId, limit);
       res.status(200).json(usage);
+    } catch (error) {
+      handleServiceError(error, res);
+    }
+  });
+}
+
+/**
+ * GET /admin/settings/attributes/:id/top-values
+ * Get top distinct values for an attribute across products
+ * Used for proposing allowed_values when converting string → enum
+ */
+export async function getTopValuesHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    try {
+      const attributeId = req.params.id;
+      if (!attributeId) {
+        res.status(400).json({
+          error: 'INVALID_REQUEST',
+          message: 'Attribute ID is required',
+        });
+        return;
+      }
+      
+      const limit = parseInt((req.query.limit as string) || '200', 10);
+      const minCount = parseInt((req.query.min_count as string) || '1', 10);
+      const sampleSize = parseInt((req.query.sample_size as string) || '50000', 10);
+      
+      const result = await getTopValues(attributeId, limit, minCount, sampleSize);
+      res.status(200).json(result);
     } catch (error) {
       handleServiceError(error, res);
     }

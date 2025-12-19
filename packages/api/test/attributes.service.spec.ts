@@ -14,6 +14,7 @@ import {
   createAttribute,
   updateAttribute,
   deleteAttribute,
+  getTopValues,
   validateAttributeData,
   ServiceError,
 } from '../src/services/attributesService';
@@ -287,6 +288,85 @@ describe('Attributes Service', () => {
       const page2 = await listAttributes({ limit: 2, pageToken: page1.pageToken });
       expect(page2.items.length).toBe(1);
       expect(page2.hasMore).toBe(false);
+    });
+  });
+
+  // PVS-0.2.7: getTopValues tests
+  describe('getTopValues', () => {
+    beforeEach(async () => {
+      // Create a test attribute
+      await createAttribute(
+        { attribute_id: 'department', label: 'Department', data_type: 'string' as const },
+        testActor
+      );
+      
+      // Create test products with varying department values
+      const productsRef = db.collection('products');
+      const testProducts = [
+        { sku: 'SKU001', attributes: { department: 'Electronics' } },
+        { sku: 'SKU002', attributes: { department: 'Electronics' } },
+        { sku: 'SKU003', attributes: { department: 'Electronics' } },
+        { sku: 'SKU004', attributes: { department: 'Clothing' } },
+        { sku: 'SKU005', attributes: { department: 'Clothing' } },
+        { sku: 'SKU006', attributes: { department: 'Home' } },
+        { sku: 'SKU007', attributes: { department: null } }, // null value
+        { sku: 'SKU008', attributes: {} }, // missing attribute
+      ];
+      
+      const batch = db.batch();
+      testProducts.forEach((product, i) => {
+        batch.set(productsRef.doc(`test-product-${i}`), product);
+      });
+      await batch.commit();
+    });
+
+    afterEach(async () => {
+      // Clean up products
+      const productsSnapshot = await db.collection('products').get();
+      const batch = db.batch();
+      productsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    });
+
+    it('should return top values sorted by count', async () => {
+      const result = await getTopValues('department');
+      
+      expect(result.sampledProducts).toBeGreaterThan(0);
+      expect(result.values.length).toBe(3);
+      
+      // Electronics should be first (3 occurrences)
+      expect(result.values[0].value).toBe('Electronics');
+      expect(result.values[0].count).toBe(3);
+      
+      // Clothing should be second (2 occurrences)
+      expect(result.values[1].value).toBe('Clothing');
+      expect(result.values[1].count).toBe(2);
+      
+      // Home should be third (1 occurrence)
+      expect(result.values[2].value).toBe('Home');
+      expect(result.values[2].count).toBe(1);
+    });
+
+    it('should respect limit parameter', async () => {
+      const result = await getTopValues('department', 2);
+      
+      expect(result.values.length).toBe(2);
+      expect(result.values[0].value).toBe('Electronics');
+      expect(result.values[1].value).toBe('Clothing');
+    });
+
+    it('should respect minCount parameter', async () => {
+      const result = await getTopValues('department', 200, 2);
+      
+      // Only Electronics and Clothing have count >= 2
+      expect(result.values.length).toBe(2);
+      expect(result.values.every(v => v.count >= 2)).toBe(true);
+    });
+
+    it('should throw error for non-existent attribute', async () => {
+      await expect(getTopValues('non-existent-attr'))
+        .rejects
+        .toThrow(ServiceError);
     });
   });
 });
