@@ -1,0 +1,23 @@
+HTTP/2 404 
+x-powered-by: Express
+vary: Origin
+content-security-policy: default-src 'none'
+x-content-type-options: nosniff
+content-type: text/html; charset=utf-8
+function-execution-id: qwfw3h68aesc
+x-cloud-trace-context: 84c059da45b9cf7ed00f7e7aadbbbe8c
+date: Fri, 19 Dec 2025 20:19:06 GMT
+server: Google Frontend
+content-length: 186
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /admin/settings/attributes/primary_color/mapping</pre>
+</body>
+</html>

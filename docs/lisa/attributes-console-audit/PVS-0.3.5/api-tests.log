@@ -1,0 +1,56 @@
+==========================================
+PVS-0.3.5 API Verification Tests
+Date: 2025-12-19 20:56:30 UTC
+==========================================
+
+=== Test 2.1: GET Global Mapping ===
+
+HTTP Status: 200
+Response saved to: get-global-mapping.json
+{"aliases":{},"value_synonyms":{}}
+
+✅ Test 2.1 PASS: GET global mapping returned 200
+
+=== Test 2.2: GET Attribute Mapping (primary_color) ===
+
+HTTP Status: 200
+Response saved to: get-attr-mapping-primary_color.json
+{"aliases":{},"value_synonyms":{},"precedence":"global"}
+
+✅ Test 2.2 PASS: GET attribute mapping returned 200
+
+=== Test 2.3: GET Attribute Mapping (rics_source.brand) ===
+
+HTTP Status: 200
+Response saved to: get-attr-mapping-brand.json
+{"aliases":{},"value_synonyms":{},"precedence":"global"}
+
+✅ Test 2.3 PASS: GET rics_source.brand mapping returned 200
+
+=== Test 2.4: PUT Global Mapping (merge=true) ===
+
+HTTP Status: 200
+Response saved to: put-global-mapping.json
+{"aliases":{"TestVerification":"primary_color"},"value_synonyms":{},"updatedAt":"2025-12-19T20:56:32.232Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2"}
+
+✅ Test 2.4 PASS: PUT global mapping returned 200
+
+=== Test 2.5: PUT with Invalid Canonical ID (expect 400) ===
+
+HTTP Status: 400
+Response saved to: put-invalid-canonical.json
+{"error":"INVALID_ALIASES","message":"Invalid aliases: Canonical attribute 'nonexistent_attribute_xyz' not found (aliases: BadAlias)"}
+
+✅ Test 2.5 PASS: Invalid canonical ID returned 400 as expected
+
+=== Test 2.6: GET after PUT to verify changes ===
+
+HTTP Status: 200
+Response saved to: get-global-mapping-after-put.json
+{"aliases":{"TestVerification":"primary_color"},"value_synonyms":{},"updatedAt":"2025-12-19T20:56:32.232Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2"}
+
+✅ Test 2.6 PASS: TestVerification alias persisted
+
+==========================================
+API Tests Complete
+==========================================

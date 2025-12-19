@@ -1,0 +1,201 @@
+LEVEL  NAME  EXECUTION_ID  TIME_UTC                 LOG
+D      api   qwfw3h68aesc  2025-12-19 20:19:06.698  Function execution took 3 ms, finished with status code: 404
+D      api   qwfw3h68aesc  2025-12-19 20:19:06.694  Function execution started
+D      api   qwfwjx5q5blk  2025-12-19 20:19:01.609  Function execution took 5 ms, finished with status code: 404
+D      api   qwfwjx5q5blk  2025-12-19 20:19:01.604  Function execution started
+       api                 2025-12-19 20:11:07.165      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:11:07.165      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:07.165      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:07.165      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:11:07.165      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:07.165      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:07.164  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:07.154      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:11:07.154      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:07.154      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:07.154      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:11:07.154      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:11:07.154      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:07.154      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:07.154  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:07.049      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:11:07.049      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:07.049      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:07.049      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:11:07.049      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:07.049      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:07.049  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:07.046      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:11:07.046      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:07.046      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:07.046      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:11:07.046      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:11:07.046      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:07.046      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:07.046  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:03.024      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:11:03.024      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:03.024      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:03.024      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:11:03.024      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:11:03.024      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:03.024      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:03.024  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:02.984      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:11:02.984      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:02.984      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:02.984      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:11:02.984      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:02.984      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:02.984  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:02.868      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:11:02.868      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:02.868      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:02.868      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:11:02.868      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:11:02.868      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:02.868      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:02.868  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:02.866      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:11:02.866      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:02.866      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:02.866      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:11:02.866      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:02.866      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:02.866  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:02.098      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:11:02.098      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:02.098      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:02.098      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:11:02.098      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:02.098      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:02.098  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:01.689      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:11:01.689      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:01.689      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:01.689      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:11:01.689      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:11:01.689      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:01.689      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:01.689  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:01.645      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:11:01.645      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:01.645      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:01.645      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:11:01.645      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:01.645      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:01.645  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:11:01.578      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:11:01.578      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:11:01.578      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:11:01.578      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:11:01.578      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:11:01.578      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:11:01.578      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:11:01.578  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:09:01.828      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:09:01.828      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:09:01.828      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:09:01.828      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:09:01.828      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:09:01.828      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:09:01.828      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:09:01.828  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:09:01.657      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:09:01.657      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:09:01.657      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:09:01.657      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:09:01.657      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:09:01.657      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:09:01.657      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:09:01.657  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:09:01.379      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:09:01.379      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:09:01.379      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:09:01.379      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:09:01.379      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:09:01.379      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:09:01.379  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:09:01.230      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:09:01.230      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:09:01.230      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:09:01.230      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:09:01.230      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:09:01.230      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:09:01.230  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:08:56.415      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:08:56.415      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:08:56.415      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:08:56.415      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:08:56.415      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:08:56.415      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:08:56.415      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:08:56.415  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:08:56.317      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:08:56.317      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:08:56.317      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:08:56.317      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:08:56.317      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:08:56.317      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:08:56.317  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:08:56.306      at async getAttributeMappingHandler (/workspace/dist/index.js:8232:3)
+       api                 2025-12-19 20:08:56.306      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:08:56.306      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:08:56.306      at /workspace/dist/index.js:8248:30
+       api                 2025-12-19 20:08:56.306      at getMergedMapping (/workspace/dist/index.js:7823:5)
+       api                 2025-12-19 20:08:56.306      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:08:56.306      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:08:56.306  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:08:56.192      at async getGlobalMappingHandler (/workspace/dist/index.js:8197:3)
+       api                 2025-12-19 20:08:56.192      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+       api                 2025-12-19 20:08:56.192      at requireAdmin (/workspace/dist/index.js:214:3)
+       api                 2025-12-19 20:08:56.192      at /workspace/dist/index.js:8199:29
+       api                 2025-12-19 20:08:56.192      at getGlobalMapping (/workspace/dist/index.js:7722:25)
+       api                 2025-12-19 20:08:56.192      at Firestore.doc (/workspace/node_modules/@google-cloud/firestore/build/src/index.js:702:19)
+       api                 2025-12-19 20:08:56.192  Unexpected mapping error: Error: Value for argument "documentPath" must point to a document, but was "settings/attribute_mappings/global". Your path does not contain an even number of components.
+       api                 2025-12-19 20:00:48.735      at ProxyTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+       api                 2025-12-19 20:00:48.735      at NoopTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+       api                 2025-12-19 20:00:48.735      at ContextAPI.with (/workspace/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+       api                 2025-12-19 20:00:48.735      at NoopContextManager.with (/workspace/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+       api                 2025-12-19 20:00:48.735      at /workspace/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+       api                 2025-12-19 20:00:48.735      at /workspace/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:348:41
+       api                 2025-12-19 20:00:48.735      at WriteBatch.set (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+       api                 2025-12-19 20:00:48.735      at validateDocumentData (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+       api                 2025-12-19 20:00:48.735      at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+       api                 2025-12-19 20:00:48.735      at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+       api                 2025-12-19 20:00:48.735  Failed to create audit event for attribute descriptive.material update: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "reason"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+       api                 2025-12-19 19:58:04.045      at ProxyTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+       api                 2025-12-19 19:58:04.045      at NoopTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+       api                 2025-12-19 19:58:04.045      at ContextAPI.with (/workspace/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+       api                 2025-12-19 19:58:04.045      at NoopContextManager.with (/workspace/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+       api                 2025-12-19 19:58:04.045      at /workspace/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+       api                 2025-12-19 19:58:04.045      at /workspace/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:348:41
+       api                 2025-12-19 19:58:04.045      at WriteBatch.set (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+       api                 2025-12-19 19:58:04.045      at validateDocumentData (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+       api                 2025-12-19 19:58:04.045      at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+       api                 2025-12-19 19:58:04.045      at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+       api                 2025-12-19 19:58:04.044  Failed to create audit event for attribute rics_source.color update: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "reason"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+       api                 2025-12-19 19:57:09.239      at ProxyTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+       api                 2025-12-19 19:57:09.239      at NoopTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+       api                 2025-12-19 19:57:09.239      at ContextAPI.with (/workspace/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+       api                 2025-12-19 19:57:09.239      at NoopContextManager.with (/workspace/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+       api                 2025-12-19 19:57:09.239      at /workspace/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+       api                 2025-12-19 19:57:09.239      at /workspace/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:348:41
+       api                 2025-12-19 19:57:09.239      at WriteBatch.set (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
+       api                 2025-12-19 19:57:09.239      at validateDocumentData (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)
+       api                 2025-12-19 19:57:09.239      at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)
+       api                 2025-12-19 19:57:09.239      at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)
+       api                 2025-12-19 19:57:09.239  Failed to create audit event for attribute sku_core.class update: Error: Value for argument "data" is not a valid Firestore document. Cannot use "undefined" as a Firestore value (found in field "reason"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+D      api   cx8ywjgyqeux  2025-12-19 19:31:55.329  Function execution took 42 ms, finished with status code: 401
+D      api   cx8ywjgyqeux  2025-12-19 19:31:55.286  Function execution started
+D      api   cx8yqxfplq9n  2025-12-19 19:31:50.676  Function execution took 7 ms, finished with status code: 401
+D      api   cx8yqxfplq9n  2025-12-19 19:31:50.669  Function execution started
+D      api   cx8ysdfm40ku  2025-12-19 19:31:33.232  Function execution took 6 ms, finished with status code: 404
+D      api   cx8ysdfm40ku  2025-12-19 19:31:33.226  Function execution started
+       api                 2025-12-19 19:31:24.764      at ProxyTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+       api                 2025-12-19 19:31:24.764      at NoopTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+       api                 2025-12-19 19:31:24.764      at ContextAPI.with (/workspace/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+       api                 2025-12-19 19:31:24.764      at NoopContextManager.with (/workspace/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+       api                 2025-12-19 19:31:24.764      at /workspace/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+       api                 2025-12-19 19:31:24.764      at /workspace/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:348:41
+       api                 2025-12-19 19:31:24.764      at WriteBatch.set (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)
