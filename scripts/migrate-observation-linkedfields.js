@@ -314,6 +314,51 @@ async function applyMigration(jsonPath) {
     }
     
     try {
+      // Handle business decisions for manual_review items
+      if (r.businessDecision) {
+        if (r.businessDecision === 'DELETE') {
+          // Delete the observation document
+          await coll.doc(r.id).delete();
+          results.applied.push({ id: r.id, action: 'deleted' });
+          console.log(`  DELETED: ${r.id}`);
+          continue;
+        } else if (r.businessDecision === 'NO_LINK') {
+          // Remove linkedField, set fieldLink to null
+          await coll.doc(r.id).update({
+            fieldLink: null,
+            legacy_linkedField: r.linkedField,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            'audit.migration': { 
+              migratedAt: new Date().toISOString(), 
+              by: 'migrate-observation-linkedfields.js',
+              originalLinkedField: r.linkedField,
+              businessDecision: 'NO_LINK'
+            }
+          });
+          results.applied.push({ id: r.id, action: 'no_link' });
+          console.log(`  NO_LINK: ${r.id}`);
+          continue;
+        } else if (r.businessDecision.startsWith('MAP:')) {
+          // Manual mapping: MAP:product.name or MAP:attributes.color
+          const manualKey = r.businessDecision.substring(4).trim();
+          const type = manualKey.startsWith('attributes.') ? 'attribute' : 'product';
+          await coll.doc(r.id).update({
+            fieldLink: { type, key: manualKey },
+            legacy_linkedField: r.linkedField,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            'audit.migration': { 
+              migratedAt: new Date().toISOString(), 
+              by: 'migrate-observation-linkedfields.js',
+              originalLinkedField: r.linkedField,
+              businessDecision: r.businessDecision
+            }
+          });
+          results.applied.push({ id: r.id, action: 'manual_map', key: manualKey });
+          console.log(`  MAPPED: ${r.id} -> ${manualKey}`);
+          continue;
+        }
+      }
+      
       if (r.proposal.action === 'map') {
         const fieldLink = r.proposal.fieldLink;
         // Update doc: set fieldLink and preserve linkedField as legacy_linkedField

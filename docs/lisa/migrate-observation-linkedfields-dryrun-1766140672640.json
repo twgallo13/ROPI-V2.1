@@ -17,7 +17,8 @@
         "sample": "sdf"
       },
       "productId": "123",
-      "status": "resolved"
+      "status": "resolved",
+      "businessDecision": "DELETE"
     }
   ]
 }
