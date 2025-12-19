@@ -1,0 +1,20 @@
+Starting dry-run migration for observations linkedField -> fieldLink
+DRY RUN MODE: No writes will be made to Firestore
+
+Migration script failed: Error: Unable to detect a Project Id in the current environment. 
+To learn more about authentication and Google APIs, visit: 
+https://cloud.google.com/docs/authentication/getting-started
+    at GoogleAuth.findAndCacheProjectId (/workspaces/ROPI-V2.1/node_modules/.pnpm/google-auth-library@9.15.1/node_modules/google-auth-library/build/src/auth/googleauth.js:170:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Firestore.initializeIfNeeded (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/index.js:1201:35)
+Caused by: Error
+    at QueryUtil._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query-util.js:44:23)
+    at Query._getResponse (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:784:32)
+    at Query._get (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:777:35)
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/reference/query.js:745:43
+    at /workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30
+    at NoopContextManager.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@opentelemetry+api@1.9.0/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)
+    at EnabledTraceUtil.startActiveSpan (/workspaces/ROPI-V2.1/node_modules/.pnpm/@google-cloud+firestore@7.11.6/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:102:28)

@@ -1,0 +1,27 @@
+{
+  "_docId": "GtizAUMihJvpLyScdJnK",
+  "_fetchedAt": "2025-12-19T10:58:55.554Z",
+  "productId": "123",
+  "title": "theo",
+  "body": "this is a test",
+  "severity": "medium",
+  "linkedField": "sdf",
+  "createdBy": {
+    "uid": "sPgXgUARnVRmGzZOIS9hGCneX0G2",
+    "name": "Theo Gallo"
+  },
+  "images": [],
+  "createdAt": {
+    "_seconds": 1765096536,
+    "_nanoseconds": 25000000
+  },
+  "resolvedAt": {
+    "_seconds": 1765096549,
+    "_nanoseconds": 795000000
+  },
+  "resolvedBy": {
+    "uid": "sPgXgUARnVRmGzZOIS9hGCneX0G2",
+    "name": "Theo Gallo"
+  },
+  "status": "resolved"
+}
