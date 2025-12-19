@@ -8,11 +8,11 @@ import ImportManagerPage from './pages/ImportManagerPage';
 import ImportBatchDetailPage from './pages/ImportBatchDetailPage';
 import ExportPage from './pages/ExportPage';
 import ObservationsPage from './pages/ObservationsPage';
-// AttributesPage moved to Settings/AttributeManager
+// AttributesPage now uses new master-detail console (PVS-0.2.3)
 import SmartRulesPage from './pages/SmartRulesPage';
 import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';
-import AttributeManager from './pages/Settings/AttributeManager';
+import AttributesConsole from './pages/Settings/AttributesConsole';
 import UsersManager from './pages/Settings/UsersManager';
 import ProfilePage from './pages/Settings/ProfilePage';
 import PermissionsPage from './pages/Settings/PermissionsPage';
@@ -39,7 +39,7 @@ function App() {
         {/* Settings routes */}
         <Route path="settings" element={<SettingsPage />} />
         <Route path="settings/permissions" element={<PermissionsPage />} />
-        <Route path="settings/attributes" element={<AttributeManager />} />
+        <Route path="settings/attributes" element={<AttributesConsole />} />
         <Route path="settings/users" element={<UsersManager />} />
         <Route path="settings/profile" element={<ProfilePage />} />
         <Route path="settings/ai-templates" element={<SettingsSubPage section="ai-templates" />} />
