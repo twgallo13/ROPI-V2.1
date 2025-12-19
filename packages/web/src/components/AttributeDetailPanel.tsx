@@ -2,17 +2,19 @@
  * AttributeDetailPanel Component
  * Right panel with attribute header, tabs, and tab content
  * 
- * Lisa PVS-0.2.3, updated PVS-0.2.6
+ * Lisa PVS-0.2.3, updated PVS-0.2.6, PVS-0.3.2
  */
 
 import { useState, useCallback, useEffect } from 'react';
 import type { Attribute } from '../hooks/useAttributes';
 import AttributeHeader from './AttributeHeader';
 import AttributeTabs, { type TabId } from './AttributeTabs';
+import MappingTab from './MappingTab';
 import styles from '../pages/Settings/AttributesConsole.module.css';
 
 export interface AttributeDetailPanelProps {
   attribute: Attribute | null;
+  attributes: Attribute[];  // PVS-0.3.2: All attributes for MappingTab typeahead
   formData: Partial<Attribute>;
   isDirty: boolean;
   saving: boolean;
@@ -474,6 +476,7 @@ function PlaceholderTab({
 
 export default function AttributeDetailPanel({
   attribute,
+  attributes,
   formData,
   isDirty,
   saving,
@@ -531,14 +534,7 @@ export default function AttributeDetailPanel({
           />
         );
       case 'mapping':
-        return (
-          <PlaceholderTab
-            tabId="mapping"
-            title="External Mapping"
-            description="Map to external systems, CSV headers, and sync rules"
-            icon="🔗"
-          />
-        );
+        return <MappingTab attribute={attribute} attributes={attributes} />;
       case 'audit':
         return (
           <PlaceholderTab
