@@ -4,6 +4,9 @@
  * Handles CRUD operations for observations with Firestore backend
  * and localStorage fallback when Firebase is unavailable.
  * 
+ * LP-1.0.1: Added support for structured fieldLink objects.
+ * Server-side validation via validateFieldLink() ensures canonical keys.
+ * 
  * Related Notion docs:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
@@ -29,9 +32,75 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage, isFirebaseAvailable, isStorageAvailable } from '../firebaseConfig';
 import { Observation, CreateObservationInput, ObservationCreator } from '../types/observation';
+import type { FieldLink } from '../types/fieldLink';
+import attributeRegistry from '@/../../sdk/config/attributeRegistry.json';
 
 const COLLECTION_NAME = 'observations';
 const STORAGE_KEY_PREFIX = 'aoss:observations:';
+
+// Valid top-level product fields
+const VALID_PRODUCT_FIELDS = ['mpn', 'sku', 'title', 'name', 'brand', 'category', 'department', 'status', 'style_id'];
+
+// Get valid attribute IDs from registry
+const validAttributeIds = new Set(
+  (attributeRegistry as { attributes: Array<{ attribute_id: string }> }).attributes.map(
+    (attr) => attr.attribute_id
+  )
+);
+
+/**
+ * Validates a fieldLink object against the attribute registry and product fields.
+ * 
+ * LP-1.0.1: Server-side validation for canonical field links.
+ * Returns an error object if invalid, null if valid.
+ */
+export function validateFieldLink(
+  fieldLink: FieldLink | null | undefined,
+  productMpn?: string
+): { valid: boolean; error?: string } {
+  // Null/undefined fieldLink is allowed (optional field)
+  if (!fieldLink) {
+    return { valid: true };
+  }
+
+  // Validate type
+  if (!['product', 'attribute'].includes(fieldLink.type)) {
+    return {
+      valid: false,
+      error: `Invalid fieldLink type: ${fieldLink.type}. Must be 'product' or 'attribute'.`,
+    };
+  }
+
+  // Validate key format
+  if (!fieldLink.key || typeof fieldLink.key !== 'string') {
+    return {
+      valid: false,
+      error: 'fieldLink.key is required and must be a string.',
+    };
+  }
+
+  if (fieldLink.type === 'product') {
+    // Validate product field
+    const key = fieldLink.key.replace(/^product\./, '').toLowerCase();
+    if (!VALID_PRODUCT_FIELDS.includes(key)) {
+      return {
+        valid: false,
+        error: `Invalid product field: ${key}. Valid fields: ${VALID_PRODUCT_FIELDS.join(', ')}.`,
+      };
+    }
+  } else if (fieldLink.type === 'attribute') {
+    // Validate attribute field against registry
+    const key = fieldLink.key.replace(/^attributes\./, '').toLowerCase();
+    if (!validAttributeIds.has(key)) {
+      return {
+        valid: false,
+        error: `Invalid attribute: ${key}. Not found in attribute registry.`,
+      };
+    }
+  }
+
+  return { valid: true };
+}
 
 /**
  * Convert Firestore document to Observation object
@@ -45,6 +114,7 @@ function firestoreToObservation(id: string, data: any): Observation {
     severity: data.severity,
     status: data.status,
     linkedField: data.linkedField || null,
+    fieldLink: data.fieldLink || null,
     images: data.images || [],
     createdBy: data.createdBy,
     createdAt: data.createdAt?.toDate() || new Date(),
@@ -201,11 +271,22 @@ export async function listObservations(productId: string): Promise<Observation[]
  * Add a new observation
  * Uploads images if provided, then creates Firestore document
  * Falls back to localStorage if Firestore unavailable
+ * 
+ * LP-1.0.1: Validates fieldLink before persisting. Returns 400-equivalent
+ * error if fieldLink is invalid.
  */
 export async function addObservation(
   input: CreateObservationInput,
   imageFiles?: File[]
 ): Promise<Observation> {
+  // LP-1.0.1: Validate fieldLink if provided
+  if (input.fieldLink) {
+    const validation = validateFieldLink(input.fieldLink);
+    if (!validation.valid) {
+      throw new Error(`Invalid fieldLink: ${validation.error}`);
+    }
+  }
+  
   // Upload images if provided
   let imagePaths: string[] = [];
   if (imageFiles && imageFiles.length > 0) {
