@@ -12,7 +12,7 @@
  * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
  */
 
-import { FieldLink, FieldLinkType, isValidProductField } from '../types/fieldLink';
+import { FieldLink, isValidProductField } from '../types/fieldLink';
 
 /**
  * Common aliases/synonyms for product fields

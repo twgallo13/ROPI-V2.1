@@ -56,7 +56,7 @@ const validAttributeIds = new Set(
  */
 export function validateFieldLink(
   fieldLink: FieldLink | null | undefined,
-  productMpn?: string
+  _productMpn?: string
 ): { valid: boolean; error?: string } {
   // Null/undefined fieldLink is allowed (optional field)
   if (!fieldLink) {
