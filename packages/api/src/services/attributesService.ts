@@ -162,8 +162,16 @@ export async function listAttributes(
   }
   
   // Get total count (for small collections; optimize for large ones)
-  const totalSnapshot = await db.collection(ATTRIBUTES_COLLECTION).count().get();
-  const total = totalSnapshot.data().count;
+  // Use try/catch to handle Firestore emulator which doesn't support aggregation count()
+  let total = 0;
+  try {
+    const totalSnapshot = await db.collection(ATTRIBUTES_COLLECTION).count().get();
+    total = totalSnapshot?.data()?.count ?? 0;
+  } catch (err) {
+    // Fallback for Firestore emulator which doesn't support aggregation count()
+    const allDocs = await db.collection(ATTRIBUTES_COLLECTION).get();
+    total = allDocs.size;
+  }
   
   return {
     items,
