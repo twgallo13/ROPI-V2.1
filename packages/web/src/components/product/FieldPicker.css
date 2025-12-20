@@ -3,6 +3,9 @@
  * 
  * LP-1.0.1: Styles for the FieldPicker component.
  * Provides a clean, accessible typeahead dropdown UI.
+ * 
+ * LP-1.1.14: Enhanced visual distinction between product fields and attributes,
+ * with sub-grouping of attributes by category.
  */
 
 .field-picker {
@@ -89,13 +92,39 @@
   z-index: 1000;
 }
 
+/* LP-1.1.14: Enhanced group styling */
 .field-picker-group {
   list-style: none;
 }
 
+/* Product Fields group - blue accent */
+.field-picker-group--product {
+  border-left: 3px solid var(--product-field-color, #2563eb);
+}
+
+/* Attributes group - purple accent */
+.field-picker-group--attribute {
+  border-left: 3px solid var(--attribute-color, #7c3aed);
+}
+
+/* Parent attribute group (contains subcategories) */
+.field-picker-group--parent {
+  border-left: none;
+}
+
+/* Sub-group for attribute categories */
+.field-picker-group--sub {
+  border-left: 2px solid var(--attribute-color-light, #c4b5fd);
+  margin-left: 8px;
+  margin-bottom: 4px;
+}
+
 .field-picker-group-title {
-  padding: 8px 12px 4px;
-  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px 6px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -104,10 +133,55 @@
   border-bottom: 1px solid var(--border-color, #eee);
 }
 
+/* Sub-group title - smaller and indented */
+.field-picker-group-title--sub {
+  padding: 6px 8px 4px;
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--subgroup-bg, #fafafa);
+  border-bottom: 1px solid var(--border-color-light, #f0f0f0);
+}
+
+.field-picker-group-title-text {
+  flex: 1;
+}
+
+.field-picker-group-count {
+  background: var(--count-bg, #e5e7eb);
+  color: var(--text-muted, #6b7280);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Type icons in group headers */
+.field-picker-type-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.field-picker-type-icon--product {
+  color: var(--product-field-color, #2563eb);
+}
+
+.field-picker-type-icon--attribute {
+  color: var(--attribute-color, #7c3aed);
+}
+
 .field-picker-group-list {
   padding: 0;
   margin: 0;
   list-style: none;
+}
+
+.field-picker-subcategories {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background: var(--subcategories-bg, #fefefe);
 }
 
 .field-picker-option {
@@ -132,9 +206,46 @@
   font-weight: 600;
 }
 
+/* LP-1.1.14: Type-specific option styling */
+.field-picker-option--product:hover,
+.field-picker-option--product.highlighted {
+  background-color: var(--product-hover-bg, #eff6ff);
+}
+
+.field-picker-option--attribute:hover,
+.field-picker-option--attribute.highlighted {
+  background-color: var(--attribute-hover-bg, #f5f3ff);
+}
+
 .field-picker-option-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   color: var(--text-color, #333);
+}
+
+/* LP-1.1.14: Type badge (P for Product, A for Attribute) */
+.field-picker-option-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.field-picker-option-badge--product {
+  background-color: var(--product-badge-bg, #dbeafe);
+  color: var(--product-field-color, #2563eb);
+}
+
+.field-picker-option-badge--attribute {
+  background-color: var(--attribute-badge-bg, #ede9fe);
+  color: var(--attribute-color, #7c3aed);
 }
 
 .field-picker-option-key {
@@ -184,4 +295,49 @@
 
 .field-picker-dropdown {
   animation: fadeIn 0.15s ease-out;
+}
+
+/* LP-1.1.11: Compact mode for inline display */
+.field-picker.compact .field-picker-input {
+  padding: 4px 48px 4px 8px;
+  font-size: 13px;
+}
+
+.field-picker.compact .field-picker-clear {
+  right: 24px;
+  padding: 2px 6px;
+  font-size: 14px;
+}
+
+.field-picker.compact .field-picker-arrow {
+  right: 6px;
+  font-size: 8px;
+}
+
+.field-picker.compact .field-picker-dropdown {
+  max-height: 240px;
+}
+
+.field-picker.compact .field-picker-option {
+  padding: 6px 10px;
+}
+
+.field-picker.compact .field-picker-option-label {
+  font-size: 13px;
+}
+
+.field-picker.compact .field-picker-group-title {
+  padding: 6px 10px 4px;
+  font-size: 10px;
+}
+
+.field-picker.compact .field-picker-group-title--sub {
+  padding: 4px 6px 3px;
+  font-size: 9px;
+}
+
+.field-picker.compact .field-picker-option-badge {
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
 }

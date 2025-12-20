@@ -7,6 +7,7 @@
  * Features:
  * - Typeahead search with fuzzy matching
  * - Groups options by type (Product fields, Attributes)
+ * - LP-1.1.14: Sub-groups attributes by category with visual distinction
  * - Supports manual entry with client-side normalization
  * - Keyboard navigation (arrow keys, enter, escape)
  * 
@@ -21,12 +22,43 @@ import { normalizeFieldLink } from '../../utils/normalizeFieldLink';
 import attributeRegistry from '@/../../sdk/config/attributeRegistry.json';
 import './FieldPicker.css';
 
+/**
+ * LP-1.1.14: Category display names for attribute sub-groups
+ */
+const CATEGORY_LABELS: Record<string, string> = {
+  sku_core: 'Core',
+  identifiers: 'Identifiers',
+  classification: 'Classification',
+  color: 'Color',
+  dimensions: 'Dimensions',
+  measurements: 'Measurements',
+  materials_construction: 'Materials',
+  material_design: 'Design',
+  material_performance: 'Performance',
+  identity_demographic: 'Demographics',
+  descriptions_sites: 'Descriptions',
+  seo: 'SEO',
+  lifecycle: 'Lifecycle',
+  compliance: 'Compliance',
+  product_flags: 'Flags',
+  launch_media: 'Launch Media',
+  launch_media_message: 'Launch Messages',
+  launch_media_pricing: 'Launch Pricing',
+  launch_media_shipping: 'Launch Shipping',
+  sport_league: 'Sports & Leagues',
+  rics_reference: 'Reference',
+  core_header_meta: 'Header Meta',
+  attributes: 'Other',
+};
+
 interface FieldPickerProps {
   value: FieldLink | null;
   onChange: (fieldLink: FieldLink | null) => void;
   disabled?: boolean;
   placeholder?: string;
   className?: string;
+  /** LP-1.1.11: Compact mode for inline display */
+  compact?: boolean;
 }
 
 interface AttributeFromRegistry {
@@ -46,6 +78,7 @@ export function FieldPicker({
   disabled = false,
   placeholder = 'Select or type a field...',
   className = '',
+  compact = false,
 }: FieldPickerProps) {
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -91,15 +124,42 @@ export function FieldPicker({
   }, [allOptions, inputValue]);
 
   // Group filtered options by type
+  // LP-1.1.14: Sub-group attributes by category for better UX
   const groupedOptions = useMemo(() => {
     const productFields = filteredOptions.filter((opt) => opt.type === 'product');
     const attributes = filteredOptions.filter((opt) => opt.type === 'attribute');
-    return { productFields, attributes };
+    
+    // Group attributes by category
+    const attributesByCategory = attributes.reduce((acc, attr) => {
+      const category = attr.category || 'attributes';
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(attr);
+      return acc;
+    }, {} as Record<string, FieldPickerOption[]>);
+    
+    // Sort categories by label
+    const sortedCategories = Object.keys(attributesByCategory).sort((a, b) => {
+      const labelA = CATEGORY_LABELS[a] || a;
+      const labelB = CATEGORY_LABELS[b] || b;
+      return labelA.localeCompare(labelB);
+    });
+    
+    return { productFields, attributes, attributesByCategory, sortedCategories };
   }, [filteredOptions]);
 
   // Flat list for keyboard navigation
+  // LP-1.1.14: Updated to preserve order with sub-grouped attributes
   const flatOptions = useMemo(() => {
-    return [...groupedOptions.productFields, ...groupedOptions.attributes];
+    const result = [...groupedOptions.productFields];
+    
+    // Add attributes in category order
+    for (const category of groupedOptions.sortedCategories) {
+      result.push(...groupedOptions.attributesByCategory[category]);
+    }
+    
+    return result;
   }, [groupedOptions]);
 
   // Sync input value with external value
@@ -133,7 +193,7 @@ export function FieldPicker({
     if (highlightedIndex >= 0 && listRef.current) {
       const items = listRef.current.querySelectorAll('.field-picker-option');
       const item = items[highlightedIndex];
-      if (item) {
+      if (item && typeof item.scrollIntoView === 'function') {
         item.scrollIntoView({ block: 'nearest' });
       }
     }
@@ -234,13 +294,20 @@ export function FieldPicker({
   const renderOptionGroup = (
     title: string,
     options: FieldPickerOption[],
-    startIndex: number
+    startIndex: number,
+    groupType: 'product' | 'attribute' = 'product',
+    isSubGroup: boolean = false
   ) => {
     if (options.length === 0) return null;
 
     return (
-      <li key={title} className="field-picker-group">
-        <div className="field-picker-group-title">{title}</div>
+      <li key={title} className={`field-picker-group ${groupType === 'attribute' ? 'field-picker-group--attribute' : 'field-picker-group--product'} ${isSubGroup ? 'field-picker-group--sub' : ''}`}>
+        <div className={`field-picker-group-title ${isSubGroup ? 'field-picker-group-title--sub' : ''}`}>
+          {groupType === 'product' && <span className="field-picker-type-icon field-picker-type-icon--product">📋</span>}
+          {groupType === 'attribute' && !isSubGroup && <span className="field-picker-type-icon field-picker-type-icon--attribute">🏷️</span>}
+          <span className="field-picker-group-title-text">{title}</span>
+          <span className="field-picker-group-count">{options.length}</span>
+        </div>
         <ul className="field-picker-group-list">
           {options.map((option, idx) => {
             const globalIndex = startIndex + idx;
@@ -250,13 +317,18 @@ export function FieldPicker({
             return (
               <li
                 key={option.key}
-                className={`field-picker-option ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`}
+                className={`field-picker-option field-picker-option--${option.type} ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`}
                 onClick={() => handleOptionSelect(option)}
                 onMouseEnter={() => setHighlightedIndex(globalIndex)}
                 role="option"
                 aria-selected={isSelected}
               >
-                <span className="field-picker-option-label">{option.label}</span>
+                <span className="field-picker-option-label">
+                  <span className={`field-picker-option-badge field-picker-option-badge--${option.type}`}>
+                    {option.type === 'product' ? 'P' : 'A'}
+                  </span>
+                  {option.label}
+                </span>
                 <span className="field-picker-option-key">{option.key}</span>
               </li>
             );
@@ -266,10 +338,47 @@ export function FieldPicker({
     );
   };
 
+  /**
+   * LP-1.1.14: Render attribute sub-groups by category
+   */
+  const renderAttributeGroups = () => {
+    const { attributesByCategory, sortedCategories, productFields } = groupedOptions;
+    
+    if (sortedCategories.length === 0) return null;
+    
+    // Calculate starting index (after product fields)
+    let currentIndex = productFields.length;
+    
+    return (
+      <li className="field-picker-group field-picker-group--attribute field-picker-group--parent">
+        <div className="field-picker-group-title">
+          <span className="field-picker-type-icon field-picker-type-icon--attribute">🏷️</span>
+          <span className="field-picker-group-title-text">Attributes</span>
+          <span className="field-picker-group-count">{groupedOptions.attributes.length}</span>
+        </div>
+        <ul className="field-picker-subcategories">
+          {sortedCategories.map((category) => {
+            const categoryOptions = attributesByCategory[category];
+            const categoryLabel = CATEGORY_LABELS[category] || category.replace(/_/g, ' ');
+            const group = renderOptionGroup(
+              categoryLabel,
+              categoryOptions,
+              currentIndex,
+              'attribute',
+              true
+            );
+            currentIndex += categoryOptions.length;
+            return group;
+          })}
+        </ul>
+      </li>
+    );
+  };
+
   return (
     <div
       ref={containerRef}
-      className={`field-picker ${className} ${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''}`}
+      className={`field-picker ${className} ${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''} ${compact ? 'compact' : ''}`}
     >
       <div className="field-picker-input-wrapper">
         <input
@@ -315,13 +424,11 @@ export function FieldPicker({
               {renderOptionGroup(
                 'Product Fields',
                 groupedOptions.productFields,
-                0
+                0,
+                'product',
+                false
               )}
-              {renderOptionGroup(
-                'Attributes',
-                groupedOptions.attributes,
-                groupedOptions.productFields.length
-              )}
+              {renderAttributeGroups()}
             </>
           )}
         </ul>
