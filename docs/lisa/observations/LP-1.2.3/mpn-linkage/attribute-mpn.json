@@ -1,0 +1,12 @@
+{
+  "attribute_id": "mpn",
+  "label": "MPN",
+  "external_header": "MPN",
+  "category": "sku_core",
+  "data_type": "text",
+  "required_for_completion": true,
+  "required_for_export": true,
+  "import_required": false,
+  "ai_usage_notes": "Manufacturer part number",
+  "status": "active"
+}

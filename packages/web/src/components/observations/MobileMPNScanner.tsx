@@ -3,9 +3,12 @@
  * 
  * LP-1.1.1: Barcode scanner for scanning product MPNs.
  * Uses native BarcodeDetector API with @zxing/library fallback.
+ * 
+ * LP-1.2.3: Fixed 401 error by adding Authorization header to API requests.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { getAuthHeaders } from '@/lib/authHeaders';
 import './MobileMPNScanner.css';
 
 // Product type from API
@@ -69,11 +72,16 @@ export default function MobileMPNScanner({
     if (!cleanMpn) return null;
     
     try {
+      // LP-1.2.3: Get auth headers with Bearer token to fix 401 error
+      const headers = await getAuthHeaders();
       const response = await fetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`, {
-        credentials: 'include',
+        headers,
       });
       
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please sign in.');
+        }
         if (response.status === 404) {
           throw new Error(`No product found with MPN: ${cleanMpn}`);
         }
