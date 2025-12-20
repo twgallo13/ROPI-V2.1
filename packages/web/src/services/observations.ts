@@ -7,6 +7,8 @@
  * LP-1.0.1: Added support for structured fieldLink objects.
  * Server-side validation via validateFieldLink() ensures canonical keys.
  * 
+ * LP-1.1.15: Cleaned up debug logging, improved error handling.
+ * 
  * Related Notion docs:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
@@ -235,8 +237,6 @@ export async function uploadImage(
  * Uses Firestore if available, otherwise localStorage
  */
 export async function listObservations(productId: string): Promise<Observation[]> {
-  console.log('[DEBUG listObservations] Querying for productId:', productId);
-  
   if (isFirebaseAvailable() && db) {
     try {
       const q = query(
@@ -246,8 +246,6 @@ export async function listObservations(productId: string): Promise<Observation[]
       
       const querySnapshot = await getDocs(q);
       const observations: Observation[] = [];
-      
-      console.log('[DEBUG listObservations] Found', querySnapshot.size, 'observations for productId:', productId);
       
       querySnapshot.forEach((doc) => {
         observations.push(firestoreToObservation(doc.id, doc.data()));
@@ -259,7 +257,7 @@ export async function listObservations(productId: string): Promise<Observation[]
       return observations;
     } catch (error) {
       console.error('Failed to load observations from Firestore:', error);
-      console.warn('Falling back to localStorage');
+      // Fall back to localStorage silently
     }
   }
   
@@ -306,20 +304,10 @@ export async function addObservation(
   
   if (isFirebaseAvailable() && db) {
     try {
-      // DEBUG: Log before Firestore write
-      console.log('[DEBUG addObservation] About to write to Firestore:', {
-        productId: input.productId,
-        title: input.title,
-        status: newObservation.status,
-        createdById: input.createdBy?.uid,
-      });
-      
       const docRef = await addDoc(
         collection(db, COLLECTION_NAME),
         observationToFirestore(newObservation)
       );
-      
-      console.log('[DEBUG addObservation] Successfully created observation:', docRef.id);
       
       return {
         ...newObservation,
@@ -327,7 +315,7 @@ export async function addObservation(
       };
     } catch (error) {
       console.error('Failed to add observation to Firestore:', error);
-      console.warn('Falling back to localStorage');
+      // Fall back to localStorage silently
     }
   }
   
@@ -363,7 +351,7 @@ export async function resolveObservation(
       return;
     } catch (error) {
       console.error('Failed to resolve observation in Firestore:', error);
-      console.warn('Falling back to localStorage');
+      // Fall back to localStorage silently
     }
   }
   
