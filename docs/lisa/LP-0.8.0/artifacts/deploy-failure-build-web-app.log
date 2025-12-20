@@ -1,0 +1,22 @@
+preview	Build web app	﻿2025-12-20T05:43:47.9177341Z ##[group]Run set -euo pipefail
+preview	Build web app	2025-12-20T05:43:47.9177838Z [36;1mset -euo pipefail[0m
+preview	Build web app	2025-12-20T05:43:47.9178136Z [36;1mecho "Building @ropi-aoss/web package..."[0m
+preview	Build web app	2025-12-20T05:43:47.9178513Z [36;1mecho "Current working directory: $(pwd)"[0m
+preview	Build web app	2025-12-20T05:43:47.9178926Z [36;1mpnpm --filter @ropi-aoss/web build[0m
+preview	Build web app	2025-12-20T05:43:47.9179349Z [36;1mecho "Build complete."[0m
+preview	Build web app	2025-12-20T05:43:47.9213219Z shell: /usr/bin/bash -e {0}
+preview	Build web app	2025-12-20T05:43:47.9213456Z env:
+preview	Build web app	2025-12-20T05:43:47.9214002Z   VITE_FIREBASE_API_KEY: ***
+preview	Build web app	2025-12-20T05:43:47.9214255Z ##[endgroup]
+preview	Build web app	2025-12-20T05:43:47.9270643Z Building @ropi-aoss/web package...
+preview	Build web app	2025-12-20T05:43:47.9276911Z Current working directory: /home/runner/work/ROPI-V2.1/ROPI-V2.1
+preview	Build web app	2025-12-20T05:43:48.3222179Z 
+preview	Build web app	2025-12-20T05:43:48.3223439Z > @ropi-aoss/web@1.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web
+preview	Build web app	2025-12-20T05:43:48.3229872Z > tsc && vite build
+preview	Build web app	2025-12-20T05:43:48.3230705Z 
+preview	Build web app	2025-12-20T05:43:57.4501277Z ##[error]src/components/observations/__tests__/MobileMPNScanner.test.tsx(1,59): error TS6133: 'Mock' is declared but its value is never read.
+preview	Build web app	2025-12-20T05:43:57.4883705Z /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web:
+preview	Build web app	2025-12-20T05:43:57.4885543Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 build: `tsc && vite build`
+preview	Build web app	2025-12-20T05:43:57.4886213Z Exit status 2
+preview	Build web app	2025-12-20T05:43:57.5095944Z ##[error]Process completed with exit code 2.
+preview	Cleanup credentials	﻿2025-12-20T05:43:57.5152102Z ##[group]Run rm -f "$HOME/gcloud-key.json"

@@ -1,0 +1,249 @@
+preview	Set up job	﻿2025-12-20T05:43:17.5979348Z Current runner version: '2.330.0'
+preview	Set up job	2025-12-20T05:43:17.6036303Z ##[group]Runner Image Provisioner
+preview	Set up job	2025-12-20T05:43:17.6037816Z Hosted Compute Agent
+preview	Set up job	2025-12-20T05:43:17.6038800Z Version: 20251211.462
+preview	Set up job	2025-12-20T05:43:17.6039960Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+preview	Set up job	2025-12-20T05:43:17.6041168Z Build Date: 2025-12-11T16:28:49Z
+preview	Set up job	2025-12-20T05:43:17.6042550Z Worker ID: {b33b8f54-9fa3-4f53-97ea-446b901f86b5}
+preview	Set up job	2025-12-20T05:43:17.6044031Z ##[endgroup]
+preview	Set up job	2025-12-20T05:43:17.6044999Z ##[group]Operating System
+preview	Set up job	2025-12-20T05:43:17.6046013Z Ubuntu
+preview	Set up job	2025-12-20T05:43:17.6046951Z 24.04.3
+preview	Set up job	2025-12-20T05:43:17.6047754Z LTS
+preview	Set up job	2025-12-20T05:43:17.6048610Z ##[endgroup]
+preview	Set up job	2025-12-20T05:43:17.6049500Z ##[group]Runner Image
+preview	Set up job	2025-12-20T05:43:17.6050441Z Image: ubuntu-24.04
+preview	Set up job	2025-12-20T05:43:17.6051218Z Version: 20251215.174.1
+preview	Set up job	2025-12-20T05:43:17.6073376Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251215.174/images/ubuntu/Ubuntu2404-Readme.md
+preview	Set up job	2025-12-20T05:43:17.6075989Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251215.174
+preview	Set up job	2025-12-20T05:43:17.6078180Z ##[endgroup]
+preview	Set up job	2025-12-20T05:43:17.6080178Z ##[group]GITHUB_TOKEN Permissions
+preview	Set up job	2025-12-20T05:43:17.6083575Z Contents: read
+preview	Set up job	2025-12-20T05:43:17.6084473Z Metadata: read
+preview	Set up job	2025-12-20T05:43:17.6085220Z Packages: read
+preview	Set up job	2025-12-20T05:43:17.6086138Z ##[endgroup]
+preview	Set up job	2025-12-20T05:43:17.6089046Z Secret source: Actions
+preview	Set up job	2025-12-20T05:43:17.6090478Z Prepare workflow directory
+preview	Set up job	2025-12-20T05:43:17.6791171Z Prepare all required actions
+preview	Set up job	2025-12-20T05:43:17.6908007Z Getting action download info
+preview	Set up job	2025-12-20T05:43:18.2390464Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+preview	Set up job	2025-12-20T05:43:19.8609407Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+preview	Set up job	2025-12-20T05:43:20.4020808Z Download action repository 'peter-evans/create-or-update-comment@v2' (SHA:67dcc547d311b736a8e6c5c236542148a47adc3d)
+preview	Set up job	2025-12-20T05:43:21.2532692Z Complete job name: preview
+preview	Checkout PR head	﻿2025-12-20T05:43:21.3232616Z ##[group]Run actions/checkout@v4
+preview	Checkout PR head	2025-12-20T05:43:21.3233319Z with:
+preview	Checkout PR head	2025-12-20T05:43:21.3233527Z   ref: lisa/LP-1.2.2/mpn-401-fix
+preview	Checkout PR head	2025-12-20T05:43:21.3233785Z   repository: twgallo13/ROPI-V2.1
+preview	Checkout PR head	2025-12-20T05:43:21.3234191Z   token: ***
+preview	Checkout PR head	2025-12-20T05:43:21.3234371Z   ssh-strict: true
+preview	Checkout PR head	2025-12-20T05:43:21.3234569Z   ssh-user: git
+preview	Checkout PR head	2025-12-20T05:43:21.3234766Z   persist-credentials: true
+preview	Checkout PR head	2025-12-20T05:43:21.3234977Z   clean: true
+preview	Checkout PR head	2025-12-20T05:43:21.3235180Z   sparse-checkout-cone-mode: true
+preview	Checkout PR head	2025-12-20T05:43:21.3235424Z   fetch-depth: 1
+preview	Checkout PR head	2025-12-20T05:43:21.3235605Z   fetch-tags: false
+preview	Checkout PR head	2025-12-20T05:43:21.3235811Z   show-progress: true
+preview	Checkout PR head	2025-12-20T05:43:21.3236008Z   lfs: false
+preview	Checkout PR head	2025-12-20T05:43:21.3236179Z   submodules: false
+preview	Checkout PR head	2025-12-20T05:43:21.3236363Z   set-safe-directory: true
+preview	Checkout PR head	2025-12-20T05:43:21.3236767Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:21.4414836Z Syncing repository: twgallo13/ROPI-V2.1
+preview	Checkout PR head	2025-12-20T05:43:21.4416626Z ##[group]Getting Git version info
+preview	Checkout PR head	2025-12-20T05:43:21.4417286Z Working directory is '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+preview	Checkout PR head	2025-12-20T05:43:21.4418318Z [command]/usr/bin/git version
+preview	Checkout PR head	2025-12-20T05:43:21.4514949Z git version 2.52.0
+preview	Checkout PR head	2025-12-20T05:43:21.4547035Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:21.4560261Z Temporarily overriding HOME='/home/runner/work/_temp/eed02ecf-97a9-4350-9016-c6a0efa17f0c' before making global git config changes
+preview	Checkout PR head	2025-12-20T05:43:21.4563847Z Adding repository directory to the temporary git global config as a safe directory
+preview	Checkout PR head	2025-12-20T05:43:21.4567867Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+preview	Checkout PR head	2025-12-20T05:43:21.4611517Z Deleting the contents of '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+preview	Checkout PR head	2025-12-20T05:43:21.4616704Z ##[group]Initializing the repository
+preview	Checkout PR head	2025-12-20T05:43:21.4621807Z [command]/usr/bin/git init /home/runner/work/ROPI-V2.1/ROPI-V2.1
+preview	Checkout PR head	2025-12-20T05:43:21.4743751Z hint: Using 'master' as the name for the initial branch. This default branch name
+preview	Checkout PR head	2025-12-20T05:43:21.4746640Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+preview	Checkout PR head	2025-12-20T05:43:21.4748014Z hint: to use in all of your new repositories, which will suppress this warning,
+preview	Checkout PR head	2025-12-20T05:43:21.4748734Z hint: call:
+preview	Checkout PR head	2025-12-20T05:43:21.4749733Z hint:
+preview	Checkout PR head	2025-12-20T05:43:21.4750266Z hint: 	git config --global init.defaultBranch <name>
+preview	Checkout PR head	2025-12-20T05:43:21.4750830Z hint:
+preview	Checkout PR head	2025-12-20T05:43:21.4751343Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+preview	Checkout PR head	2025-12-20T05:43:21.4752456Z hint: 'development'. The just-created branch can be renamed via this command:
+preview	Checkout PR head	2025-12-20T05:43:21.4753151Z hint:
+preview	Checkout PR head	2025-12-20T05:43:21.4753469Z hint: 	git branch -m <name>
+preview	Checkout PR head	2025-12-20T05:43:21.4753876Z hint:
+preview	Checkout PR head	2025-12-20T05:43:21.4754424Z hint: Disable this message with "git config set advice.defaultBranchName false"
+preview	Checkout PR head	2025-12-20T05:43:21.4755466Z Initialized empty Git repository in /home/runner/work/ROPI-V2.1/ROPI-V2.1/.git/
+preview	Checkout PR head	2025-12-20T05:43:21.4758830Z [command]/usr/bin/git remote add origin https://github.com/twgallo13/ROPI-V2.1
+preview	Checkout PR head	2025-12-20T05:43:21.4801770Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:21.4804877Z ##[group]Disabling automatic garbage collection
+preview	Checkout PR head	2025-12-20T05:43:21.4807467Z [command]/usr/bin/git config --local gc.auto 0
+preview	Checkout PR head	2025-12-20T05:43:21.4841768Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:21.4844290Z ##[group]Setting up auth
+preview	Checkout PR head	2025-12-20T05:43:21.4849216Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+preview	Checkout PR head	2025-12-20T05:43:21.4883445Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+preview	Checkout PR head	2025-12-20T05:43:21.5252793Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+preview	Checkout PR head	2025-12-20T05:43:21.5286944Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+preview	Checkout PR head	2025-12-20T05:43:21.5546758Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+preview	Checkout PR head	2025-12-20T05:43:21.5690447Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+preview	Checkout PR head	2025-12-20T05:43:21.5874800Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+preview	Checkout PR head	2025-12-20T05:43:21.5911481Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:21.5912199Z ##[group]Fetching the repository
+preview	Checkout PR head	2025-12-20T05:43:21.5921328Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/lisa/LP-1.2.2/mpn-401-fix*:refs/remotes/origin/lisa/LP-1.2.2/mpn-401-fix* +refs/tags/lisa/LP-1.2.2/mpn-401-fix*:refs/tags/lisa/LP-1.2.2/mpn-401-fix*
+preview	Checkout PR head	2025-12-20T05:43:22.6078499Z From https://github.com/twgallo13/ROPI-V2.1
+preview	Checkout PR head	2025-12-20T05:43:22.6079560Z  * [new branch]      lisa/LP-1.2.2/mpn-401-fix -> origin/lisa/LP-1.2.2/mpn-401-fix
+preview	Checkout PR head	2025-12-20T05:43:22.6138686Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:22.6139360Z ##[group]Determining the checkout info
+preview	Checkout PR head	2025-12-20T05:43:22.6140198Z [command]/usr/bin/git branch --list --remote origin/lisa/LP-1.2.2/mpn-401-fix
+preview	Checkout PR head	2025-12-20T05:43:22.6165790Z   origin/lisa/LP-1.2.2/mpn-401-fix
+preview	Checkout PR head	2025-12-20T05:43:22.6171038Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:22.6176084Z [command]/usr/bin/git sparse-checkout disable
+preview	Checkout PR head	2025-12-20T05:43:22.6219330Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+preview	Checkout PR head	2025-12-20T05:43:22.6248122Z ##[group]Checking out the ref
+preview	Checkout PR head	2025-12-20T05:43:22.6254611Z [command]/usr/bin/git checkout --progress --force -B lisa/LP-1.2.2/mpn-401-fix refs/remotes/origin/lisa/LP-1.2.2/mpn-401-fix
+preview	Checkout PR head	2025-12-20T05:43:22.7459493Z Switched to a new branch 'lisa/LP-1.2.2/mpn-401-fix'
+preview	Checkout PR head	2025-12-20T05:43:22.7463475Z branch 'lisa/LP-1.2.2/mpn-401-fix' set up to track 'origin/lisa/LP-1.2.2/mpn-401-fix'.
+preview	Checkout PR head	2025-12-20T05:43:22.7476202Z ##[endgroup]
+preview	Checkout PR head	2025-12-20T05:43:22.7521721Z [command]/usr/bin/git log -1 --format=%H
+preview	Checkout PR head	2025-12-20T05:43:22.7546187Z 2ddf43aa0c9d8b68c44c98aa92129ee0d79bc805
+preview	Enable corepack	﻿2025-12-20T05:43:22.7730868Z ##[group]Run corepack enable
+preview	Enable corepack	2025-12-20T05:43:22.7731238Z [36;1mcorepack enable[0m
+preview	Enable corepack	2025-12-20T05:43:22.7768926Z shell: /usr/bin/bash -e {0}
+preview	Enable corepack	2025-12-20T05:43:22.7769336Z ##[endgroup]
+preview	Setup Node.js 20	﻿2025-12-20T05:43:23.8677468Z ##[group]Run actions/setup-node@v4
+preview	Setup Node.js 20	2025-12-20T05:43:23.8677806Z with:
+preview	Setup Node.js 20	2025-12-20T05:43:23.8677990Z   node-version: 20
+preview	Setup Node.js 20	2025-12-20T05:43:23.8678182Z   always-auth: false
+preview	Setup Node.js 20	2025-12-20T05:43:23.8678391Z   check-latest: false
+preview	Setup Node.js 20	2025-12-20T05:43:23.8678758Z   token: ***
+preview	Setup Node.js 20	2025-12-20T05:43:23.8678948Z ##[endgroup]
+preview	Setup Node.js 20	2025-12-20T05:43:24.0942193Z Found in cache @ /opt/hostedtoolcache/node/20.19.6/x64
+preview	Setup Node.js 20	2025-12-20T05:43:24.0957485Z ##[group]Environment details
+preview	Setup Node.js 20	2025-12-20T05:43:25.9027742Z node: v20.19.6
+preview	Setup Node.js 20	2025-12-20T05:43:25.9029762Z npm: 10.8.2
+preview	Setup Node.js 20	2025-12-20T05:43:25.9030955Z yarn: 1.22.22
+preview	Setup Node.js 20	2025-12-20T05:43:25.9033236Z ##[endgroup]
+preview	Prepare pnpm via corepack	﻿2025-12-20T05:43:25.9134029Z ##[group]Run corepack prepare pnpm@8 --activate
+preview	Prepare pnpm via corepack	2025-12-20T05:43:25.9134443Z [36;1mcorepack prepare pnpm@8 --activate[0m
+preview	Prepare pnpm via corepack	2025-12-20T05:43:25.9175242Z shell: /usr/bin/bash -e {0}
+preview	Prepare pnpm via corepack	2025-12-20T05:43:25.9175503Z ##[endgroup]
+preview	Prepare pnpm via corepack	2025-12-20T05:43:26.3487092Z Preparing pnpm@8 for immediate activation...
+preview	Install dependencies	﻿2025-12-20T05:43:27.0797073Z ##[group]Run pnpm install
+preview	Install dependencies	2025-12-20T05:43:27.0797362Z [36;1mpnpm install[0m
+preview	Install dependencies	2025-12-20T05:43:27.0830169Z shell: /usr/bin/bash -e {0}
+preview	Install dependencies	2025-12-20T05:43:27.0830414Z ##[endgroup]
+preview	Install dependencies	2025-12-20T05:43:27.7177599Z Scope: all 5 workspace projects
+preview	Install dependencies	2025-12-20T05:43:27.8148431Z  WARN  Ignoring not compatible lockfile at /home/runner/work/ROPI-V2.1/ROPI-V2.1/pnpm-lock.yaml
+preview	Install dependencies	2025-12-20T05:43:28.0875714Z Progress: resolved 1, reused 0, downloaded 0, added 0
+preview	Install dependencies	2025-12-20T05:43:28.3188301Z  WARN  deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+preview	Install dependencies	2025-12-20T05:43:29.0831504Z Progress: resolved 33, reused 0, downloaded 22, added 0
+preview	Install dependencies	2025-12-20T05:43:30.1061998Z Progress: resolved 45, reused 0, downloaded 39, added 0
+preview	Install dependencies	2025-12-20T05:43:31.1058322Z Progress: resolved 93, reused 0, downloaded 46, added 0
+preview	Install dependencies	2025-12-20T05:43:32.1173268Z Progress: resolved 103, reused 0, downloaded 82, added 0
+preview	Install dependencies	2025-12-20T05:43:33.1214073Z Progress: resolved 127, reused 0, downloaded 110, added 0
+preview	Install dependencies	2025-12-20T05:43:34.1199982Z Progress: resolved 222, reused 0, downloaded 182, added 0
+preview	Install dependencies	2025-12-20T05:43:35.1655747Z Progress: resolved 261, reused 0, downloaded 213, added 0
+preview	Install dependencies	2025-12-20T05:43:36.1644170Z Progress: resolved 292, reused 0, downloaded 233, added 0
+preview	Install dependencies	2025-12-20T05:43:37.1638539Z Progress: resolved 348, reused 0, downloaded 263, added 0
+preview	Install dependencies	2025-12-20T05:43:38.1853278Z Progress: resolved 366, reused 0, downloaded 318, added 0
+preview	Install dependencies	2025-12-20T05:43:39.2169607Z Progress: resolved 406, reused 0, downloaded 347, added 0
+preview	Install dependencies	2025-12-20T05:43:40.2214779Z Progress: resolved 507, reused 0, downloaded 418, added 0
+preview	Install dependencies	2025-12-20T05:43:41.2410868Z Progress: resolved 568, reused 0, downloaded 454, added 0
+preview	Install dependencies	2025-12-20T05:43:42.2424347Z Progress: resolved 701, reused 0, downloaded 582, added 0
+preview	Install dependencies	2025-12-20T05:43:43.2705891Z  WARN  6 deprecated subdependencies found: @humanwhocodes/config-array@0.13.0, @humanwhocodes/object-schema@2.0.3, glob@7.2.3, inflight@1.0.6, node-domexception@1.0.0, rimraf@3.0.2
+preview	Install dependencies	2025-12-20T05:43:43.2930863Z Progress: resolved 771, reused 0, downloaded 674, added 0
+preview	Install dependencies	2025-12-20T05:43:43.3078133Z Packages: +695
+preview	Install dependencies	2025-12-20T05:43:43.3081048Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+preview	Install dependencies	2025-12-20T05:43:44.2935281Z Progress: resolved 771, reused 0, downloaded 695, added 561
+preview	Install dependencies	2025-12-20T05:43:44.5016925Z Progress: resolved 771, reused 0, downloaded 695, added 695, done
+preview	Install dependencies	2025-12-20T05:43:44.7082603Z .../node_modules/@firebase/util postinstall$ node ./postinstall.js
+preview	Install dependencies	2025-12-20T05:43:44.7096479Z .../node_modules/protobufjs postinstall$ node scripts/postinstall
+preview	Install dependencies	2025-12-20T05:43:44.7867198Z .../node_modules/protobufjs postinstall: Done
+preview	Install dependencies	2025-12-20T05:43:44.7982822Z .../node_modules/@firebase/util postinstall: Done
+preview	Install dependencies	2025-12-20T05:43:44.9174805Z .../esbuild@0.21.5/node_modules/esbuild postinstall$ node install.js
+preview	Install dependencies	2025-12-20T05:43:44.9179027Z .../node_modules/@sentry/cli postinstall$ node ./scripts/install.js
+preview	Install dependencies	2025-12-20T05:43:44.9533754Z .../esbuild@0.27.2/node_modules/esbuild postinstall$ node install.js
+preview	Install dependencies	2025-12-20T05:43:44.9930286Z .../esbuild@0.21.5/node_modules/esbuild postinstall: Done
+preview	Install dependencies	2025-12-20T05:43:45.0443865Z .../esbuild@0.27.2/node_modules/esbuild postinstall: Done
+preview	Install dependencies	2025-12-20T05:43:45.0598323Z .../node_modules/@sentry/cli postinstall: Done
+preview	Install dependencies	2025-12-20T05:43:46.6303978Z 
+preview	Install dependencies	2025-12-20T05:43:46.6304842Z dependencies:
+preview	Install dependencies	2025-12-20T05:43:46.6306082Z + @notionhq/client 3.1.3 (5.6.0 is available)
+preview	Install dependencies	2025-12-20T05:43:46.6306835Z 
+preview	Install dependencies	2025-12-20T05:43:46.6307551Z devDependencies:
+preview	Install dependencies	2025-12-20T05:43:46.6308288Z + @firebase/rules-unit-testing 5.0.0
+preview	Install dependencies	2025-12-20T05:43:46.6309477Z + @google-cloud/firestore 8.0.0
+preview	Install dependencies	2025-12-20T05:43:46.6310338Z + eslint 8.57.1 (9.39.2 is available) deprecated
+preview	Install dependencies	2025-12-20T05:43:46.6311471Z + firebase 12.7.0
+preview	Install dependencies	2025-12-20T05:43:46.6312137Z + firebase-admin 13.6.0
+preview	Install dependencies	2025-12-20T05:43:46.6313538Z + pnpm 8.15.9 (10.26.1 is available)
+preview	Install dependencies	2025-12-20T05:43:46.6314470Z + prettier 2.8.8 (3.7.4 is available)
+preview	Install dependencies	2025-12-20T05:43:46.6315681Z + typescript 5.9.3
+preview	Install dependencies	2025-12-20T05:43:46.6316380Z + yargs 18.0.0
+preview	Install dependencies	2025-12-20T05:43:46.6317755Z 
+preview	Install dependencies	2025-12-20T05:43:46.6318248Z Done in 19.4s
+preview	Build SDK	﻿2025-12-20T05:43:46.7887238Z ##[group]Run set -euo pipefail
+preview	Build SDK	2025-12-20T05:43:46.7887559Z [36;1mset -euo pipefail[0m
+preview	Build SDK	2025-12-20T05:43:46.7887834Z [36;1mecho "Building @ropi-aoss/sdk package..."[0m
+preview	Build SDK	2025-12-20T05:43:46.7888163Z [36;1mpnpm --filter @ropi-aoss/sdk build[0m
+preview	Build SDK	2025-12-20T05:43:46.7888451Z [36;1mecho "SDK build complete."[0m
+preview	Build SDK	2025-12-20T05:43:46.7921045Z shell: /usr/bin/bash -e {0}
+preview	Build SDK	2025-12-20T05:43:46.7921298Z ##[endgroup]
+preview	Build SDK	2025-12-20T05:43:46.7976945Z Building @ropi-aoss/sdk package...
+preview	Build SDK	2025-12-20T05:43:47.1896969Z 
+preview	Build SDK	2025-12-20T05:43:47.1897827Z > @ropi-aoss/sdk@0.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/sdk
+preview	Build SDK	2025-12-20T05:43:47.1900030Z > tsup
+preview	Build SDK	2025-12-20T05:43:47.1900211Z 
+preview	Build SDK	2025-12-20T05:43:47.5431398Z [34mCLI[39m Building entry: src/index.ts
+preview	Build SDK	2025-12-20T05:43:47.5453711Z [34mCLI[39m Using tsconfig: tsconfig.json
+preview	Build SDK	2025-12-20T05:43:47.5454365Z [34mCLI[39m tsup v8.5.1
+preview	Build SDK	2025-12-20T05:43:47.5455493Z [34mCLI[39m Using tsup config: /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/sdk/tsup.config.ts
+preview	Build SDK	2025-12-20T05:43:47.5456493Z [34mCLI[39m Target: es2020
+preview	Build SDK	2025-12-20T05:43:47.5469861Z [34mCJS[39m Build start
+preview	Build SDK	2025-12-20T05:43:47.5482970Z [34mESM[39m Build start
+preview	Build SDK	2025-12-20T05:43:47.7590572Z [32mESM[39m [1mdist/index.mjs [22m[32m50.15 KB[39m
+preview	Build SDK	2025-12-20T05:43:47.7601025Z [32mESM[39m ⚡️ Build success in 210ms
+preview	Build SDK	2025-12-20T05:43:47.8717685Z [32mCJS[39m [1mdist/index.js [22m[32m52.64 KB[39m
+preview	Build SDK	2025-12-20T05:43:47.8718538Z [32mCJS[39m ⚡️ Build success in 323ms
+preview	Build SDK	2025-12-20T05:43:47.9123854Z SDK build complete.
+preview	Build web app	﻿2025-12-20T05:43:47.9177341Z ##[group]Run set -euo pipefail
+preview	Build web app	2025-12-20T05:43:47.9177838Z [36;1mset -euo pipefail[0m
+preview	Build web app	2025-12-20T05:43:47.9178136Z [36;1mecho "Building @ropi-aoss/web package..."[0m
+preview	Build web app	2025-12-20T05:43:47.9178513Z [36;1mecho "Current working directory: $(pwd)"[0m
+preview	Build web app	2025-12-20T05:43:47.9178926Z [36;1mpnpm --filter @ropi-aoss/web build[0m
+preview	Build web app	2025-12-20T05:43:47.9179349Z [36;1mecho "Build complete."[0m
+preview	Build web app	2025-12-20T05:43:47.9213219Z shell: /usr/bin/bash -e {0}
+preview	Build web app	2025-12-20T05:43:47.9213456Z env:
+preview	Build web app	2025-12-20T05:43:47.9214002Z   VITE_FIREBASE_API_KEY: ***
+preview	Build web app	2025-12-20T05:43:47.9214255Z ##[endgroup]
+preview	Build web app	2025-12-20T05:43:47.9270643Z Building @ropi-aoss/web package...
+preview	Build web app	2025-12-20T05:43:47.9276911Z Current working directory: /home/runner/work/ROPI-V2.1/ROPI-V2.1
+preview	Build web app	2025-12-20T05:43:48.3222179Z 
+preview	Build web app	2025-12-20T05:43:48.3223439Z > @ropi-aoss/web@1.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web
+preview	Build web app	2025-12-20T05:43:48.3229872Z > tsc && vite build
+preview	Build web app	2025-12-20T05:43:48.3230705Z 
+preview	Build web app	2025-12-20T05:43:57.4501277Z ##[error]src/components/observations/__tests__/MobileMPNScanner.test.tsx(1,59): error TS6133: 'Mock' is declared but its value is never read.
+preview	Build web app	2025-12-20T05:43:57.4883705Z /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web:
+preview	Build web app	2025-12-20T05:43:57.4885543Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 build: `tsc && vite build`
+preview	Build web app	2025-12-20T05:43:57.4886213Z Exit status 2
+preview	Build web app	2025-12-20T05:43:57.5095944Z ##[error]Process completed with exit code 2.
+preview	Cleanup credentials	﻿2025-12-20T05:43:57.5152102Z ##[group]Run rm -f "$HOME/gcloud-key.json"
+preview	Cleanup credentials	2025-12-20T05:43:57.5153025Z [36;1mrm -f "$HOME/gcloud-key.json"[0m
+preview	Cleanup credentials	2025-12-20T05:43:57.5153326Z [36;1mecho "Key file removed from runner"[0m
+preview	Cleanup credentials	2025-12-20T05:43:57.5185833Z shell: /usr/bin/bash -e {0}
+preview	Cleanup credentials	2025-12-20T05:43:57.5186084Z ##[endgroup]
+preview	Cleanup credentials	2025-12-20T05:43:57.5250087Z Key file removed from runner
+preview	Post Checkout PR head	﻿2025-12-20T05:43:57.5355136Z Post job cleanup.
+preview	Post Checkout PR head	2025-12-20T05:43:57.6347528Z [command]/usr/bin/git version
+preview	Post Checkout PR head	2025-12-20T05:43:57.6391322Z git version 2.52.0
+preview	Post Checkout PR head	2025-12-20T05:43:57.6450441Z Temporarily overriding HOME='/home/runner/work/_temp/d63b8129-0405-40fb-aad3-655fc1a8514c' before making global git config changes
+preview	Post Checkout PR head	2025-12-20T05:43:57.6453559Z Adding repository directory to the temporary git global config as a safe directory
+preview	Post Checkout PR head	2025-12-20T05:43:57.6457961Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+preview	Post Checkout PR head	2025-12-20T05:43:57.6497828Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+preview	Post Checkout PR head	2025-12-20T05:43:57.6536303Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+preview	Post Checkout PR head	2025-12-20T05:43:57.6790170Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+preview	Post Checkout PR head	2025-12-20T05:43:57.6815037Z http.https://github.com/.extraheader
+preview	Post Checkout PR head	2025-12-20T05:43:57.6830660Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+preview	Post Checkout PR head	2025-12-20T05:43:57.6865624Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+preview	Post Checkout PR head	2025-12-20T05:43:57.7113075Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+preview	Post Checkout PR head	2025-12-20T05:43:57.7150017Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+preview	Complete job	﻿2025-12-20T05:43:57.7515404Z Cleaning up orphan processes

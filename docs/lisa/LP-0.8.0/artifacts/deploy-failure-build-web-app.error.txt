@@ -1,0 +1,7 @@
+preview	Build web app	2025-12-20T05:43:48.3223439Z > @ropi-aoss/web@1.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web
+preview	Build web app	2025-12-20T05:43:48.3229872Z > tsc && vite build
+preview	Build web app	2025-12-20T05:43:48.3230705Z 
+preview	Build web app	2025-12-20T05:43:57.4501277Z ##[error]src/components/observations/__tests__/MobileMPNScanner.test.tsx(1,59): error TS6133: 'Mock' is declared but its value is never read.
+preview	Build web app	2025-12-20T05:43:57.4883705Z /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web:
+preview	Build web app	2025-12-20T05:43:57.4885543Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/web@1.0.0 build: `tsc && vite build`
+preview	Build web app	2025-12-20T05:43:57.4886213Z Exit status 2
