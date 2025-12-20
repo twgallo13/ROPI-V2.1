@@ -1,0 +1,19 @@
+HTTP/2 404 
+cache-control: max-age=600
+content-type: application/json; charset=utf-8
+etag: W/"4a-HXnmpPZdpYc7+9EvozoGi5HN7fQ"
+server: Google Frontend
+traceparent: 00-af25de77dd6c1724403a5ef976f0622d-fee084e0df149da3-01
+x-cloud-trace-context: af25de77dd6c1724403a5ef976f0622d/18365825381767093667;o=1
+x-powered-by: Express
+accept-ranges: bytes
+date: Sat, 20 Dec 2025 05:42:59 GMT
+x-served-by: cache-bur-kbur8200142-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766209377.274167,VS0,VE1877
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 74
+
+{"error":"PRODUCT_NOT_FOUND","message":"Product with MPN '123' not found"}

@@ -1,0 +1,6 @@
+Preview deploy rerun blocked by permissions.
+Workflow name: Deploy AOSS PR Preview
+Latest run ID (failed): 20389409213
+Status: failure
+Reason: gh run rerun blocked (Resource not accessible by integration).
+Workflows list saved to: docs/lisa/observations/LP-1.2.2/workflow-runs.json
