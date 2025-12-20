@@ -2,13 +2,14 @@
  * FieldPicker Component
  * 
  * LP-1.0.1: A typeahead/dropdown component for selecting canonical field links.
- * Replaces free-text linkedField input in ObservationsPanel.
+ * LP-1.1.11: Added compact mode for inline display in observation items.
  * 
  * Features:
  * - Typeahead search with fuzzy matching
  * - Groups options by type (Product fields, Attributes)
  * - Supports manual entry with client-side normalization
  * - Keyboard navigation (arrow keys, enter, escape)
+ * - Compact mode for space-constrained contexts
  * 
  * References:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
@@ -27,6 +28,8 @@ interface FieldPickerProps {
   disabled?: boolean;
   placeholder?: string;
   className?: string;
+  /** LP-1.1.11: Compact mode for inline display */
+  compact?: boolean;
 }
 
 interface AttributeFromRegistry {
@@ -46,6 +49,7 @@ export function FieldPicker({
   disabled = false,
   placeholder = 'Select or type a field...',
   className = '',
+  compact = false,
 }: FieldPickerProps) {
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -269,7 +273,7 @@ export function FieldPicker({
   return (
     <div
       ref={containerRef}
-      className={`field-picker ${className} ${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''}`}
+      className={`field-picker ${className} ${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''} ${compact ? 'compact' : ''}`}
     >
       <div className="field-picker-input-wrapper">
         <input

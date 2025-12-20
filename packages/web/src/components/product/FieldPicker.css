@@ -185,3 +185,48 @@
 .field-picker-dropdown {
   animation: fadeIn 0.15s ease-out;
 }
+
+/**
+ * LP-1.1.11: Compact mode for inline display
+ */
+.field-picker.compact {
+  width: auto;
+  display: inline-block;
+}
+
+.field-picker.compact .field-picker-input {
+  padding: 4px 40px 4px 8px;
+  font-size: 12px;
+  min-width: 140px;
+}
+
+.field-picker.compact .field-picker-clear {
+  right: 20px;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+}
+
+.field-picker.compact .field-picker-arrow {
+  font-size: 8px;
+  right: 6px;
+}
+
+.field-picker.compact .field-picker-dropdown {
+  min-width: 200px;
+  max-height: 200px;
+  font-size: 12px;
+}
+
+.field-picker.compact .field-picker-group-title {
+  padding: 4px 8px;
+  font-size: 10px;
+}
+
+.field-picker.compact .field-picker-option {
+  padding: 4px 8px;
+}
+
+.field-picker.compact .field-picker-option-key {
+  font-size: 10px;
+}
