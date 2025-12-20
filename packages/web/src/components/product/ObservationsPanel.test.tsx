@@ -1,25 +1,28 @@
 /**
  * Smoke Tests for ObservationsPanel component
  * 
- * Basic rendering and integration tests for ObservationsPanel
- * with Firestore service integration.
+ * LP-1.1.11: Updated tests for unified observations code path.
+ * Tests verify component renders correctly with mocked services.
  * 
- * Note: Full interaction tests are covered by observations service tests (12/12 passing).
- * These tests verify component renders correctly with mocked service.
+ * Note: Full interaction tests are covered by observations service tests.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
 import ObservationsPanel from './ObservationsPanel';
 import * as observationsService from '../../services/observations';
 import { AuthProvider } from '../../contexts/AuthProvider';
-import * as firebaseConfig from '../../firebaseConfig';
+import * as useObservationsSyncModule from '../../hooks/useObservationsSync';
 
 // Mock modules
 vi.mock('../../services/observations');
-vi.mock('../../firebaseConfig');
+vi.mock('../../hooks/useObservationsSync');
+
+// Mock useObservationsSync hook
+const mockSyncNow = vi.fn().mockResolvedValue({ synced: 0, failed: 0 });
+const mockAddObservation = vi.fn().mockResolvedValue({ id: 'test-obs-1' });
 
 // Mock Firebase Auth
 vi.mock('firebase/auth', () => ({
@@ -30,9 +33,8 @@ vi.mock('firebase/auth', () => ({
   sendEmailVerification: vi.fn(),
   signOut: vi.fn(),
   onAuthStateChanged: vi.fn((_auth, callback) => {
-    // Immediately call callback with mock user for tests
     callback({ uid: 'test_user_123', email: 'test@example.com', displayName: 'Test User' });
-    return vi.fn(); // unsubscribe function
+    return vi.fn();
   }),
 }));
 
@@ -44,8 +46,21 @@ vi.mock('firebase/firestore', () => ({
 }));
 
 describe('ObservationsPanel - Smoke Tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Default mock: online with no pending
+    vi.mocked(useObservationsSyncModule.useObservationsSync).mockReturnValue({
+      pendingCount: 0,
+      isOnline: true,
+      isSyncing: false,
+      addObservation: mockAddObservation,
+      syncNow: mockSyncNow,
+      pendingObservations: [],
+      refreshPending: vi.fn(),
+    });
+  });
+
   it('renders with basic structure', () => {
-    vi.mocked(firebaseConfig.isFirebaseAvailable).mockReturnValue(true);
     vi.mocked(observationsService.listenToObservations).mockReturnValue(vi.fn());
 
     render(
@@ -61,8 +76,6 @@ describe('ObservationsPanel - Smoke Tests', () => {
   });
 
   it('calls listenToObservations on mount', () => {
-    vi.mocked(firebaseConfig.isFirebaseAvailable).mockReturnValue(true);
-
     const mockListen = vi.fn().mockReturnValue(vi.fn());
     vi.mocked(observationsService.listenToObservations).mockImplementation(mockListen);
 
@@ -77,8 +90,30 @@ describe('ObservationsPanel - Smoke Tests', () => {
     expect(mockListen).toHaveBeenCalledWith('prod123', expect.any(Function));
   });
 
-  it('shows offline banner when Firebase unavailable', () => {
-    vi.mocked(firebaseConfig.isFirebaseAvailable).mockReturnValue(false);
+  it('accepts productMpn prop for unified schema', () => {
+    vi.mocked(observationsService.listenToObservations).mockReturnValue(vi.fn());
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <ObservationsPanel productId="prod123" productMpn="TEST-MPN-001" />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText('Observations')).toBeInTheDocument();
+  });
+
+  it('shows offline banner when not online', () => {
+    vi.mocked(useObservationsSyncModule.useObservationsSync).mockReturnValue({
+      pendingCount: 0,
+      isOnline: false,
+      isSyncing: false,
+      addObservation: mockAddObservation,
+      syncNow: mockSyncNow,
+      pendingObservations: [],
+      refreshPending: vi.fn(),
+    });
     vi.mocked(observationsService.listenToObservations).mockReturnValue(vi.fn());
 
     render(
@@ -90,6 +125,29 @@ describe('ObservationsPanel - Smoke Tests', () => {
     );
 
     expect(screen.getByText('Offline Mode - Changes saved locally')).toBeInTheDocument();
-    expect(screen.getByText('Retry Sync')).toBeInTheDocument();
+    expect(screen.getByText('Sync Now')).toBeInTheDocument();
+  });
+
+  it('shows pending count when observations are queued', () => {
+    vi.mocked(useObservationsSyncModule.useObservationsSync).mockReturnValue({
+      pendingCount: 3,
+      isOnline: true,
+      isSyncing: false,
+      addObservation: mockAddObservation,
+      syncNow: mockSyncNow,
+      pendingObservations: [],
+      refreshPending: vi.fn(),
+    });
+    vi.mocked(observationsService.listenToObservations).mockReturnValue(vi.fn());
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <ObservationsPanel productId="prod123" />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText('3 observations pending sync')).toBeInTheDocument();
   });
 });

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { Observation, ObservationSeverity } from '../../types/observation';
 import type { FieldLink } from '../../types/fieldLink';
-import { listenToObservations, addObservation, resolveObservation, syncLocalToFirestore } from '../../services/observations';
+import { listenToObservations, resolveObservation } from '../../services/observations';
+import { useObservationsSync } from '../../hooks/useObservationsSync';
 import { useAuth } from '@/hooks/useAuth';
-import { isFirebaseAvailable } from '../../firebaseConfig';
 import SignInModal from '@/components/Auth/SignInModal';
 import FieldPicker from './FieldPicker';
 import { fieldLinkToDisplayString, legacyLinkedFieldToFieldLink } from '../../utils/normalizeFieldLink';
@@ -12,42 +12,38 @@ import './ObservationsPanel.css';
 /**
  * Observations Panel - Product Editor Sidebar
  * 
- * Displays real-time observations from Firestore with add/resolve functionality.
- * Falls back to localStorage when Firebase is unavailable.
+ * LP-1.1.11: Unified with mobile capture flow via useObservationsSync hook.
+ * Uses same IndexedDB offline queue and API sync as MobileObservationCapture.
  * 
  * Features:
- * - Real-time observation updates via Firestore listener
+ * - Real-time observation updates via Firestore listener (read)
+ * - Offline-first creation via IndexedDB queue (write)
  * - Image upload with Firebase Storage or data URL fallback
  * - Offline mode banner with sync retry
  * - Scroll-to-field linking with highlight animation
  * - Permission checks for resolve action (creator or admin only)
  * - Auth integration: Sign-in banner when unauthenticated
  * 
- * Auth Integration (PROMPT_018B):
- * - Replace useUser() with useAuth()
- * - Use Firebase Auth user.uid for createdBy field
- * - Compute canResolve: currentUser.uid === observation.createdBy OR isAdmin
- * - Show banner when !currentUser: "Sign in to use live Observations..."
- * - Remove localStorage fallback (always use Firestore)
- * 
  * References:
  * - Workflow W1 — Observations Capture & Apply: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
- * - AOSS_OBSERVATIONS_FIRESTORE_v1.0 Implementation
- * - PROMPT_018B Spec: See HOMER_PROMPT_018B_AUDIT.txt
+ * - LP-1.1.11 Unify observations code path
  */
 
 interface ObservationsPanelProps {
   productId: string;
+  productMpn?: string; // LP-1.1.11: Optional MPN for observations queue
 }
 
-function ObservationsPanel({ productId }: ObservationsPanelProps) {
+function ObservationsPanel({ productId, productMpn }: ObservationsPanelProps) {
   const { currentUser, isAdmin, loading: authLoading } = useAuth();
+  
+  // LP-1.1.11: Use unified observations sync hook (same as mobile capture)
+  const { pendingCount, isOnline, isSyncing, addObservation: queueObservation, syncNow } = useObservationsSync();
+  
   const [observations, setObservations] = useState<Observation[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
-  const [isSyncing, setIsSyncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Form state
@@ -55,18 +51,17 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   const [newObsBody, setNewObsBody] = useState('');
   const [newObsSeverity, setNewObsSeverity] = useState<ObservationSeverity>('medium');
   const [newObsFieldLink, setNewObsFieldLink] = useState<FieldLink | null>(null);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [_imageFiles, setImageFiles] = useState<File[]>([]); // Kept for handleImageUpload
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const openObservations = observations.filter(obs => obs.status === 'open');
 
-  // Set up real-time listener for observations
+  // Set up real-time listener for observations (read path unchanged)
   useEffect(() => {
     if (!productId) return;
 
     const unsubscribe = listenToObservations(productId, (updatedObservations) => {
       setObservations(updatedObservations);
-      setIsOffline(!isFirebaseAvailable());
     });
 
     return () => {
@@ -103,17 +98,23 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     setIsSubmitting(true);
 
     try {
-      await addObservation({
-        productId,
-        title: newObsTitle,
-        body: newObsBody,
+      // LP-1.1.11: Use unified queue (same as mobile capture)
+      // Convert image previews to URLs for queue storage
+      const imageUrls = imagePreviews.length > 0 ? imagePreviews : [];
+      
+      await queueObservation({
+        product_mpn: productMpn || productId, // Use MPN if available, fallback to productId
+        text: newObsTitle, // Map title -> text (unified schema)
+        description: newObsBody, // Map body -> description
         severity: newObsSeverity,
-        fieldLink: newObsFieldLink,
-        createdBy: {
-          uid: currentUser.uid,
-          name: currentUser.displayName || currentUser.email || 'Anonymous',
-        },
-      }, imageFiles);
+        images: imageUrls,
+        fieldLink: newObsFieldLink ? {
+          type: newObsFieldLink.type,
+          fieldPath: newObsFieldLink.key,
+          displayName: newObsFieldLink.key.split('.').pop() || newObsFieldLink.key,
+        } : undefined,
+        source: 'product_editor',
+      });
 
       // Reset form
       setNewObsTitle('');
@@ -154,13 +155,12 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     return observation.createdBy.uid === currentUser.uid || isAdmin;
   };
 
+  // LP-1.1.11: Use syncNow from unified hook
   const handleRetrySync = async () => {
-    setIsSyncing(true);
     try {
-      const result = await syncLocalToFirestore(productId);
-      if (result.success > 0) {
-        alert(`Successfully synced ${result.success} observations`);
-        setIsOffline(!isFirebaseAvailable());
+      const result = await syncNow();
+      if (result.synced > 0) {
+        alert(`Successfully synced ${result.synced} observations`);
       } else if (result.failed > 0) {
         alert(`Failed to sync ${result.failed} observations. Check console for details.`);
       } else {
@@ -169,8 +169,6 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     } catch (error) {
       console.error('Sync failed:', error);
       alert('Failed to sync observations. Please try again.');
-    } finally {
-      setIsSyncing(false);
     }
   };
 
@@ -233,16 +231,22 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
         </div>
       )}
       
-      {isOffline && (
+      {/* LP-1.1.11: Show offline banner or pending count */}
+      {(!isOnline || pendingCount > 0) && (
         <div className="offline-banner">
-          <span className="offline-icon">⚠️</span>
-          <span className="offline-text">Offline Mode - Changes saved locally</span>
+          <span className="offline-icon">{isOnline ? '📤' : '⚠️'}</span>
+          <span className="offline-text">
+            {!isOnline 
+              ? 'Offline Mode - Changes saved locally'
+              : `${pendingCount} observation${pendingCount !== 1 ? 's' : ''} pending sync`
+            }
+          </span>
           <button 
             className="offline-sync-button" 
             onClick={handleRetrySync}
-            disabled={isSyncing}
+            disabled={isSyncing || !isOnline}
           >
-            {isSyncing ? 'Syncing...' : 'Retry Sync'}
+            {isSyncing ? 'Syncing...' : 'Sync Now'}
           </button>
         </div>
       )}
