@@ -1,0 +1,19 @@
+HTTP/2 401 
+content-type: application/json; charset=utf-8
+etag: W/"48-UMVdoAn5bONnED859syVCC4rIuE"
+server: Google Frontend
+traceparent: 00-036d7c7f111a926f20fdf536a1437d66-1388f0464a0978d6-01
+x-cloud-trace-context: 036d7c7f111a926f20fdf536a1437d66/1407639068233791702;o=1
+x-powered-by: Express
+accept-ranges: bytes
+date: Sat, 20 Dec 2025 04:36:01 GMT
+x-served-by: cache-bur-kbur8200142-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766205362.601592,VS0,VE119
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 72
+
+{"error":"Unauthorized","message":"Valid authentication token required"}
+HTTP_STATUS:401

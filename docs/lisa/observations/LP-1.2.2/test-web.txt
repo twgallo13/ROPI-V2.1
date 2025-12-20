@@ -1,0 +1,165 @@
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+ ✓ test/unit/AttributeConsole.shell.spec.tsx  (22 tests) 761ms
+ ✓ src/hooks/__tests__/useProducts.spec.ts  (18 tests) 1423ms
+ ✓ test/unit/MobileObservationCapture.spec.tsx  (13 tests) 1529ms
+ ✓ test/FieldPicker.test.tsx  (18 tests) 1168ms
+ ❯ src/hooks/useUsers.test.ts  (9 tests | 7 failed) 4320ms
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should fetch users list
+     → expected [] to have a length of 1 but got +0
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+     → expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+     → Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+     → expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+     → expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+     → Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+     → expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ✓ test/normalizeFieldLink.test.ts  (43 tests) 10ms
+ ✓ src/services/observations.test.ts  (12 tests) 77ms
+ ✓ test/unit/ErrorHandling.spec.tsx  (17 tests) 328ms
+ ✓ test/unit/FieldPickerGroups.spec.tsx  (12 tests) 613ms
+ ✓ src/hooks/__tests__/useMappings.spec.ts  (7 tests) 80ms
+ ✓ test/unit/CoreInformationTabDataField.spec.tsx  (15 tests) 218ms
+ ✓ test/unit/AttributeHeader.spec.tsx  (20 tests) 123ms
+ ✓ src/components/__tests__/SynonymsEditor.spec.tsx  (13 tests) 726ms
+ ✓ test/unit/AttributeInputDataField.spec.tsx  (10 tests) 129ms
+ ❯ test/useAttributes.test.tsx  (6 tests | 6 failed) 356ms
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+     → expected [] to deeply equal [ …(2) ]
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+     → expected 'Cannot read properties of undefined (…' to be 'Server error' // Object.is equality
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+     → unsubscribe is not a function
+ ✓ src/components/__tests__/MobileMPNScanner.spec.tsx  (5 tests) 557ms
+ ✓ test/unit/ObservationsSync.spec.ts  (8 tests) 36ms
+stdout | src/firebaseConfig.ts:40:11
+✅ Firebase initialized successfully
+
+ ✓ test/ImportBatchDetailPage.test.tsx  (5 tests) 673ms
+ ✓ test/apiFetch.test.ts  (11 tests) 12ms
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should load mock product data
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should update a product field
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should update a product field
+<empty line>
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should add an observation
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should resolve an observation
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should apply a suggestion
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should ignore a suggestion
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should recalculate export readiness when fields are updated
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should persist to localStorage
+[useProduct] Loading product 123, Firebase available: false
+
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 82ms
+ ❯ src/components/product/ProductAttributesTab.test.tsx  (4 tests | 1 failed) 86ms
+   ❯ src/components/product/ProductAttributesTab.test.tsx > ProductAttributesTab - Attribute Format Compatibility > should handle missing attributes gracefully
+     → expected 'Women' to be '' // Object.is equality
+ ✓ src/components/__tests__/BulkAliasImportModal.spec.tsx  (11 tests) 1716ms
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 46ms
+ ✓ test/envPolicy.test.ts  (19 tests) 16ms
+ ✓ src/components/observations/__tests__/MobileMPNScanner.test.tsx  (4 tests) 18ms
+ ❯ test/smoke.product-editor-observations.test.tsx  (1 test | 1 failed) 61ms
+   ❯ test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+     → Unable to find an element with the text: Test Product. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"product-editor-error"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mNo product ID in URL[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [0mPlease use /products/:id[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mBack to Products[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+stdout | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+[ProductEditorPage] Product ID from URL: undefined
+
+ ✓ test/smoke.observations.test.tsx  (4 tests) 7ms
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 82ms
+ ❯ test/nav.test.ts  (4 tests | 2 failed) 15ms
+   ❯ test/nav.test.ts > Navigation Configuration > should have all required main navigation items
+     → expected 8 to be 9 // Object.is equality
+   ❯ test/nav.test.ts > Navigation Configuration > should have all required settings sub-navigation items
+     → expected 10 to be 9 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+ Test Files  5 failed | 24 passed (29)
+      Tests  17 failed | 311 passed (328)
+     Errors  1 error
+   Start at  04:44:31
+   Duration  54.51s (transform 2.09s, setup 2.73s, collect 7.59s, tests 15.27s, environment 18.54s, prepare 4.12s)
+

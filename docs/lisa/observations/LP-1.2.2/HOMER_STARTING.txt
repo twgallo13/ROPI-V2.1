@@ -1,0 +1,4 @@
+Homer STARTING: LP-1.2.2 — diagnose/fix MPN 401
+Timestamp: 2025-12-20T00:00:00Z
+Env: Linux (Ubuntu 24.04.3 LTS), shell=bash, workspace=/workspaces/ROPI-V2.1, branch=lisa/LP-1.2.2/mpn-401-fix
+Notes: Will reproduce with admin token, inspect client/server auth, add logging/tests, and verify on staging. No product/attribute data creation/deletion. No token leaks (store only prefix).

@@ -1,0 +1,64 @@
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+stdout | src/endpoints/admin/users.test.ts > Users Endpoints > updateUserHandler > should create profile doc if missing (create-or-merge behavior)
+📝 Creating missing profile doc for user test-uid-no-profile
+
+stdout | src/endpoints/admin/users.test.ts > Users Endpoints > resetPasswordHandler > should generate password reset link
+Password reset link for test@test.com: https://reset.link
+
+ ✓ src/endpoints/admin/users.test.ts  (15 tests) 41ms
+ ✓ test/admin-users-enhanced.test.ts  (20 tests) 110ms
+ ❯ test/productCommitService.test.ts  (6 tests | 5 failed) 32ms
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+     → Import batch test-batch-001 not found
+ ✓ test/users-profile.unit.test.ts  (15 tests) 29ms
+ ❯ test/attributes.service.spec.ts  (20 tests | 11 failed) 113ms
+   ❯ test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+     → promise resolved "{ …(7) }" instead of rejecting
+   ❯ test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+     → expected +0 to be 3 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+     → expected +0 to be 2 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+     → expected +0 to be 1 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+     → expected +0 to be 2 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should return top values sorted by count
+     → Attribute 'department' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect limit parameter
+     → Attribute 'department' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect minCount parameter
+     → Attribute 'department' not found
+ ✓ test/unit/observations.validateFieldLink.spec.ts  (40 tests) 15ms
+ ↓ test/integration/products.filters.spec.ts  (13 tests | 13 skipped)
+ ↓ test/integration/attributes.emu.spec.ts  (9 tests | 9 skipped)
+ ✓ test/mappingService.spec.ts  (18 tests) 20ms
+ ↓ src/endpoints/__tests__/products.integration.test.ts  (14 tests | 14 skipped)
+ ✓ test/auditService.spec.ts  (16 tests) 37ms
+ ↓ test/integration/syncAttributeRegistry.emu.spec.ts  (8 tests | 8 skipped)
+ ✓ test/roles.unit.test.ts  (20 tests) 11ms
+ ✓ test/endpoints/retailopsImportPreview.test.ts  (7 tests) 75ms
+ ✓ test/unit/auth.middleware.spec.ts  (6 tests) 33ms
+ ✓ test/importService.test.ts  (4 tests) 28ms
+ ✓ test/ensure-mock.test.ts  (1 test) 104ms
+
+ Test Files  2 failed | 11 passed | 4 skipped (17)
+      Tests  16 failed | 172 passed | 44 skipped (232)
+   Start at  04:45:43
+   Duration  13.82s (transform 1.07s, setup 252ms, collect 5.00s, tests 648ms, environment 4ms, prepare 3.21s)
+

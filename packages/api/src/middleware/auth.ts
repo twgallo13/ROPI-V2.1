@@ -144,18 +144,30 @@ async function isAdminAllowlisted(email: string | undefined): Promise<boolean> {
 
 /**
  * Middleware to require admin role
+ * LP-1.2.2: Enhanced logging for 401/403 debugging
  */
 export async function requireAdmin(
   req: ExpressRequest,
   res: ExpressResponse,
   next: () => void
 ): Promise<void> {
+  const authHeader = req.headers.authorization;
   const auth = await verifyAuthToken(req);
   
   if (!auth) {
+    // LP-1.2.2: Log 401 with safe token prefix for debugging
+    const hasToken = !!authHeader?.startsWith('Bearer ');
+    const tokenPrefix = hasToken ? authHeader?.substring(7, 17) + '...' : 'none';
+    console.warn('🔐 Auth failed (401)', {
+      path: req.path,
+      method: req.method,
+      hasAuthHeader: hasToken,
+      tokenPrefix,
+      reason: hasToken ? 'token_invalid_or_expired' : 'no_token',
+    });
     res.status(401).json({
-      error: 'Unauthorized',
-      message: 'Valid authentication token required',
+      error: 'UNAUTHENTICATED',
+      message: 'Missing or invalid authentication token',
     });
     return;
   }
@@ -164,7 +176,7 @@ export async function requireAdmin(
   const hasAdminAllowlist = hasAdminClaim ? false : await isAdminAllowlisted(auth.email);
 
   if (!hasAdminClaim && !hasAdminAllowlist) {
-    console.warn('🛑 Admin check failed', {
+    console.warn('🛑 Admin check failed (403)', {
       uid: auth.uid,
       email: auth.email,
       role: auth.role,
@@ -172,7 +184,7 @@ export async function requireAdmin(
       path: req.path,
     });
     res.status(403).json({
-      error: 'Forbidden',
+      error: 'PERMISSION_DENIED',
       message: 'Admin role required for this operation',
     });
     return;

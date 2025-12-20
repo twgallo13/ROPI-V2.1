@@ -1,0 +1,3 @@
+BLOCKED: Unable to fetch Cloud Function logs.
+Reason: Firebase CLI authentication required (run `firebase login`).
+Command attempted: npx firebase-tools functions:log --only api --project=ropi-bccee

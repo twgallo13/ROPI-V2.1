@@ -1,0 +1,81 @@
+# LP-1.2.2 Code Review - MPN 401 Diagnosis
+
+## Root Cause Analysis
+
+### Issue
+Observed 401 responses when auth token is missing/invalid. Current client code includes Authorization header via `getAuthHeaders`, so 401s likely occur when user is not signed in or token cannot be retrieved.
+
+### Server-Side (packages/api/src/endpoints/products.ts:327-379)
+
+The endpoint uses `requireAdmin()` middleware which:
+1. Extracts Bearer token from Authorization header
+2. Verifies Firebase ID token via `admin.auth().verifyIdToken(token)`
+3. Returns 401 if no token or invalid token
+4. Returns 403 if user lacks admin role
+
+```typescript
+// Line 327-340 (simplified)
+export async function getProductByMpnHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    // ... handler code
+  });
+}
+```
+
+The `requireAdmin` middleware (packages/api/src/middleware/auth.ts:148-183):
+- Returns 401 if Authorization header missing or invalid
+- Returns 403 if admin role missing
+
+### Client-Side (packages/web/src/components/observations/MobileMPNScanner.tsx)
+
+Authorization header is present:
+
+```typescript
+import { getAuthHeaders } from '@/lib/authHeaders';
+
+const lookupProduct = useCallback(async (mpn: string): Promise<ScannedProduct | null> => {
+  const authHeaders = await getAuthHeaders();
+  const response = await fetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`, {
+    headers: authHeaders,
+    credentials: 'include',
+  });
+  // ...
+});
+```
+
+## Files to Modify
+
+1. **packages/web/src/components/observations/MobileMPNScanner.tsx**
+   - Add import for `getAuthHeaders`
+   - Update `lookupProduct` function to include Authorization header
+
+## Server-Side Notes
+
+The server returns proper error codes:
+- 401: Missing/invalid token (correct)
+- 403: Non-admin user (correct)
+
+Enhanced logging already present in `requireAdmin` for 401/403, with safe token prefix. Consider keeping as-is.
+
+```typescript
+// In auth.ts requireAdmin:
+console.debug('🔐 MPN lookup auth check', {
+  path: req.path,
+  uid: auth?.uid,
+  hasToken: !!authHeader,
+  tokenPrefix: token?.substring(0, 10) + '...',
+});
+```
+
+## Test Notes
+
+Add unit tests for:
+Client tests exist in `packages/web/src/components/__tests__/MobileMPNScanner.spec.tsx` covering:
+1. Authorization header presence
+2. 401 and 403 handling
+3. 404 not found handling
+4. Success path calling `onProductFound`
+
+---
+Reviewed: 2024-12-20
+LP-1.2.2 / Lisa v1.0.0

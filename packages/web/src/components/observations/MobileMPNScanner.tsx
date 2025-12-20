@@ -3,9 +3,12 @@
  * 
  * LP-1.1.1: Barcode scanner for scanning product MPNs.
  * Uses native BarcodeDetector API with @zxing/library fallback.
+ * 
+ * LP-1.2.2: Fixed 401 error by adding Authorization header via getAuthHeaders.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { getAuthHeaders } from '@/lib/authHeaders';
 import './MobileMPNScanner.css';
 
 // Product type from API
@@ -64,16 +67,27 @@ export default function MobileMPNScanner({
   }, []);
 
   // Lookup product by MPN
+  // LP-1.2.2: Added Authorization header to fix 401 error
   const lookupProduct = useCallback(async (mpn: string): Promise<ScannedProduct | null> => {
     const cleanMpn = mpn.trim();
     if (!cleanMpn) return null;
     
     try {
+      // LP-1.2.2: Get auth headers for admin API access
+      const authHeaders = await getAuthHeaders();
+      
       const response = await fetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`, {
+        headers: authHeaders,
         credentials: 'include',
       });
       
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please sign in.');
+        }
+        if (response.status === 403) {
+          throw new Error('Admin access required for MPN lookup.');
+        }
         if (response.status === 404) {
           throw new Error(`No product found with MPN: ${cleanMpn}`);
         }
@@ -81,7 +95,7 @@ export default function MobileMPNScanner({
       }
       
       const data = await response.json();
-      return data.product;
+      return data;  // LP-1.2.2: Return data directly, not data.product
     } catch (err) {
       console.error('Product lookup error:', err);
       throw err;
