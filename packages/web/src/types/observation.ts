@@ -4,7 +4,7 @@
  * Type definitions for the Observations feature.
  * 
  * LP-1.0.1: Added structured FieldLink type to replace free-text linkedField.
- * The legacy linkedField is kept for backward compatibility but deprecated.
+ * LP-1.1.12: Made title optional - body/description is the primary content.
  * 
  * Related Notion docs:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
@@ -25,7 +25,8 @@ export interface ObservationCreator {
 export interface Observation {
   id: string;
   productId: string;
-  title: string;
+  /** LP-1.1.12: Title is now optional */
+  title?: string;
   body: string;
   severity: ObservationSeverity;
   status: ObservationStatus;
@@ -42,7 +43,8 @@ export interface Observation {
 
 export interface CreateObservationInput {
   productId: string;
-  title: string;
+  /** LP-1.1.12: Title is now optional */
+  title?: string;
   body: string;
   severity: ObservationSeverity;
   /** @deprecated Use fieldLink instead. Kept for backward compatibility. */
