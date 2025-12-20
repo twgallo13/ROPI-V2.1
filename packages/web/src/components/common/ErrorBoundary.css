@@ -1,0 +1,86 @@
+/**
+ * ErrorBoundary Styles
+ * 
+ * LP-1.1.15: Styles for the ErrorBoundary component.
+ */
+
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 24px;
+  background-color: var(--error-bg, #fef2f2);
+  border: 1px solid var(--error-border, #fecaca);
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.error-boundary-content {
+  max-width: 500px;
+  text-align: center;
+}
+
+.error-boundary-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-boundary-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--error-title, #991b1b);
+  margin: 0 0 8px;
+}
+
+.error-boundary-message {
+  font-size: 14px;
+  color: var(--error-message, #b91c1c);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.error-boundary-retry {
+  padding: 8px 24px;
+  background-color: var(--error-button-bg, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.error-boundary-retry:hover {
+  background-color: var(--error-button-hover, #b91c1c);
+}
+
+.error-boundary-retry:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--error-focus, rgba(220, 38, 38, 0.3));
+}
+
+.error-boundary-details {
+  margin-top: 16px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.error-boundary-details summary {
+  cursor: pointer;
+  color: var(--error-details, #666);
+  padding: 4px 0;
+}
+
+.error-boundary-details pre {
+  background-color: var(--error-pre-bg, #f9fafb);
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  max-height: 200px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--error-pre-text, #333);
+  margin: 8px 0;
+}
