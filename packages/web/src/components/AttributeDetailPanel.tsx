@@ -2,7 +2,7 @@
  * AttributeDetailPanel Component
  * Right panel with attribute header, tabs, and tab content
  * 
- * Lisa PVS-0.2.3, updated PVS-0.2.6, PVS-0.2.9, PVS-0.3.2
+ * Lisa PVS-0.2.3, updated PVS-0.2.6, PVS-0.2.9, PVS-0.3.2, PVS-0.3.3
  */
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
@@ -14,6 +14,7 @@ import ValuesManager, {
   type AllowedValue,
   valuesToPayload,
 } from './ValuesManager';
+import AuditTab from './AuditTab';
 import styles from '../pages/Settings/AttributesConsole.module.css';
 
 export interface AttributeDetailPanelProps {
@@ -517,11 +518,9 @@ export default function AttributeDetailPanel({
         return <MappingTab attribute={attribute} attributes={attributes} />;
       case 'audit':
         return (
-          <PlaceholderTab
-            tabId="audit"
-            title="Audit Log"
-            description="View change history and audit trail for this attribute"
-            icon="📜"
+          <AuditTab
+            attribute={attribute}
+            onAttributeUpdated={onSave}
           />
         );
       default:
