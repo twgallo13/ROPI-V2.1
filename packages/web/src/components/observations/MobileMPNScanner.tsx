@@ -6,6 +6,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import './MobileMPNScanner.css';
 
 // Product type from API
@@ -33,6 +34,7 @@ export default function MobileMPNScanner({
   onClose,
   apiBaseUrl = '/api',
 }: MobileMPNScannerProps) {
+  const { currentUser } = useAuth();
   const [mode, setMode] = useState<'scan' | 'manual'>('scan');
   const [manualMpn, setManualMpn] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -69,9 +71,23 @@ export default function MobileMPNScanner({
     if (!cleanMpn) return null;
     
     try {
-      const response = await fetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`, {
-        credentials: 'include',
-      });
+      const headers: Record<string, string> = {};
+      if (currentUser) {
+        try {
+          const idToken = await currentUser.getIdToken(true);
+          headers['Authorization'] = `Bearer ${idToken}`;
+        } catch (e) {
+          console.warn('⚠️ Failed to get ID token for Authorization header:', e);
+        }
+      }
+
+      const response = await fetch(
+        `${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`,
+        {
+          credentials: 'include',
+          headers,
+        }
+      );
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -81,12 +97,13 @@ export default function MobileMPNScanner({
       }
       
       const data = await response.json();
-      return data.product;
+      // Support both direct object and { product } envelope
+      return (data && (data.product || data));
     } catch (err) {
       console.error('Product lookup error:', err);
       throw err;
     }
-  }, [apiBaseUrl]);
+  }, [apiBaseUrl, currentUser]);
 
   // Handle successful barcode scan
   const handleBarcodeScan = useCallback(async (code: string) => {
