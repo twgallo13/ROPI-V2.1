@@ -59,6 +59,7 @@ import {
   getProductHandler,
   listProductsHandler,
   getProductByMpnHandler,
+  searchProductsByMpnHandler,
 } from './endpoints/products';
 
 // Observations handlers (LP-1.1.1)
@@ -164,6 +165,7 @@ api.patch('/users/me', updateMeHandler);
  * Products endpoints
  */
 api.get('/products', listProductsHandler);
+api.get('/products/search-mpn', searchProductsByMpnHandler);
 api.get('/products/by-mpn/:mpn', getProductByMpnHandler);
 api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);

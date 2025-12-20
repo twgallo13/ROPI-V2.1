@@ -376,3 +376,82 @@ export async function getProductByMpnHandler(req: Request, res: Response) {
     }
   });
 }
+
+/**
+ * GET /products/search-mpn
+ * 
+ * LP-1.1.10: Search products by partial MPN match.
+ * Supports autocomplete/typeahead for MPN input in mobile capture.
+ * 
+ * Query params:
+ * - q: Partial MPN string (minimum 2 characters)
+ * - limit: Max results (default 10, max 50)
+ */
+export async function searchProductsByMpnHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    const query = (req.query.q as string || '').trim().toLowerCase();
+    const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
+    
+    if (!query || query.length < 2) {
+      res.status(400).json({ 
+        error: 'INVALID_QUERY', 
+        message: 'Search query must be at least 2 characters' 
+      });
+      return;
+    }
+
+    const db = admin.firestore();
+
+    try {
+      // Fetch products and filter client-side for partial match
+      // For production scale, use Algolia or dedicated search index
+      const snapshot = await db
+        .collection('products')
+        .orderBy('mpn')
+        .limit(500) // Fetch more to allow client-side filtering
+        .get();
+
+      const results: Array<{
+        id: string;
+        product_mpn: string;
+        title: string;
+        thumbnail: string | null;
+        brand: string | null;
+        sku: string | null;
+      }> = [];
+
+      for (const doc of snapshot.docs) {
+        const data = doc.data();
+        const mpn = (data.mpn || '').toLowerCase();
+        const sku = (data.sku || '').toLowerCase();
+        const name = (data.name || data.title || '').toLowerCase();
+        
+        // Match against MPN, SKU, or name
+        if (mpn.includes(query) || sku.includes(query) || name.includes(query)) {
+          results.push({
+            id: doc.id,
+            product_mpn: data.mpn || '',
+            title: data.name || data.title || 'Untitled Product',
+            thumbnail: data.images?.[0]?.thumb || data.images?.[0]?.url || data.thumbnail || null,
+            brand: data.brand || null,
+            sku: data.sku || null,
+          });
+          
+          if (results.length >= limit) break;
+        }
+      }
+
+      res.status(200).json({
+        results,
+        count: results.length,
+        query,
+      });
+    } catch (error) {
+      console.error('Error searching products by MPN:', error);
+      res.status(500).json({ 
+        error: 'INTERNAL_ERROR', 
+        message: 'Failed to search products' 
+      });
+    }
+  });
+}
