@@ -1,19 +1,19 @@
-HTTP/2 401 
+HTTP/2 404 
+cache-control: max-age=600
 content-type: application/json; charset=utf-8
-etag: W/"48-UMVdoAn5bONnED859syVCC4rIuE"
+etag: W/"4a-HXnmpPZdpYc7+9EvozoGi5HN7fQ"
 server: Google Frontend
-traceparent: 00-036d7c7f111a926f20fdf536a1437d66-1388f0464a0978d6-01
-x-cloud-trace-context: 036d7c7f111a926f20fdf536a1437d66/1407639068233791702;o=1
+traceparent: 00-3263141802b7828d733bd5480d7b90c8-4050471ca46c9376-01
+x-cloud-trace-context: 3263141802b7828d733bd5480d7b90c8/4634282204907475830;o=1
 x-powered-by: Express
 accept-ranges: bytes
-date: Sat, 20 Dec 2025 04:36:01 GMT
+date: Sat, 20 Dec 2025 04:52:06 GMT
 x-served-by: cache-bur-kbur8200142-BUR
-x-cache: MISS
-x-cache-hits: 0
-x-timer: S1766205362.601592,VS0,VE119
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1766206327.976959,VS0,VE1
 vary: Origin, x-fh-requested-host, accept-encoding
 alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
-content-length: 72
+content-length: 74
 
-{"error":"Unauthorized","message":"Valid authentication token required"}
-HTTP_STATUS:401
+{"error":"PRODUCT_NOT_FOUND","message":"Product with MPN '123' not found"}
