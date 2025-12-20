@@ -1,0 +1,34 @@
+# MPN Linkage Code Analysis
+
+## Observation Creation Flow
+
+1. MobileObservationCapture.tsx (lines 98-107):
+   - Uses `addObservation()` from useObservationsSync hook
+   - Passes `product_mpn: selectedProduct.product_mpn`
+   - Also passes `fieldLink` if set (can link to mpn attribute via type:'product', key:'product.mpn')
+
+2. MobileMPNScanner.tsx (lines 67-81):
+   - Calls `/api/products/by-mpn/:mpn` to lookup product
+   - Uses `credentials: 'include'` but NO Authorization header → 401 error
+   
+3. FieldLink types (fieldLink.ts):
+   - type: 'product' | 'attribute'
+   - key: e.g., 'product.mpn' or 'attributes.primary_color'
+   - PRODUCT_FIELDS includes { type: 'product', key: 'product.mpn', label: 'MPN' }
+
+## Observation Model
+
+- Observations use `product_mpn` as the linking field to products
+- Optional `fieldLink` for specific field attribution (can reference mpn attribute)
+- The `mpn` attribute exists in attributeRegistry.json with attribute_id: "mpn"
+
+## 401 Root Cause
+
+The MobileMPNScanner.tsx lookupProduct() function doesn't send Authorization header:
+```tsx
+const response = await fetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`, {
+  credentials: 'include',  // ← only sends cookies, not Bearer token
+});
+```
+
+The endpoint uses `requireAdmin` middleware which requires a valid Firebase ID token.
