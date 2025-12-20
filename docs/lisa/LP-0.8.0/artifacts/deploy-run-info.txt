@@ -1,0 +1,8 @@
+Rerun requested via UI (preferred). Latest preview run for PR #307:
+- Name: Deploy AOSS PR Preview
+- Run ID: 20389970423
+- URL: https://github.com/twgallo13/ROPI-V2.1/actions/runs/20389970423
+
+Actions:
+- Please click Re-run all jobs on the run above.
+- After rerun, paste new run ID/URL here and note preview URL from job output.
