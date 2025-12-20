@@ -93,7 +93,10 @@ function toFirestorePayload(
 
 /**
  * Convert Firestore document to AttributeType
- * Maps legacy field names to schema field names for compatibility
+ * Normalizes legacy field names (camelCase) to canonical (snake_case)
+ * and applies schema defaults via Zod validation.
+ * 
+ * PVS-0.2.2: Fix blank-on-load by normalizing on GET
  */
 function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | null {
   if (!doc.exists) return null;
@@ -123,14 +126,29 @@ function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | n
   };
   
   // Remove undefined values
-  const result: Record<string, unknown> = { attribute_id: mapped.attribute_id };
+  const normalized: Record<string, unknown> = { attribute_id: mapped.attribute_id };
   for (const [key, value] of Object.entries(mapped)) {
     if (value !== undefined) {
-      result[key] = value;
+      normalized[key] = value;
     }
   }
   
-  return result as AttributeType;
+  // PVS-0.2.2: Validate and apply defaults via Zod schema
+  const result = AttributeSchema.safeParse(normalized);
+  if (result.success) {
+    return result.data;
+  }
+  
+  // If validation fails, return with minimal normalization
+  // (keeps backward compatibility for edge cases)
+  console.warn(`Attribute ${doc.id} failed schema validation:`, result.error.errors);
+  return {
+    attribute_id: doc.id,
+    label: data.label || doc.id,
+    data_type: (normalized.data_type || 'string') as AttributeType['data_type'],
+    status: (normalized.status || 'active') as AttributeType['status'],
+    ...normalized,
+  } as AttributeType;
 }
 
 /**
