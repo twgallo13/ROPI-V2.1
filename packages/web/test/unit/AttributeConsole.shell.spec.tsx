@@ -273,10 +273,10 @@ describe('AttributesConsole Shell', () => {
         expect(screen.getByTestId('tab-panel-values')).toBeInTheDocument();
       });
 
-      // Should show allowed values count
-      expect(screen.getByText('Allowed Values (3)')).toBeInTheDocument();
+      // Should show values manager with allowed values
+      expect(screen.getByTestId('values-manager')).toBeInTheDocument();
       
-      // Should show each value
+      // Should show each value in the list
       expect(screen.getByText('Red')).toBeInTheDocument();
       expect(screen.getByText('Blue')).toBeInTheDocument();
       expect(screen.getByText('Green')).toBeInTheDocument();

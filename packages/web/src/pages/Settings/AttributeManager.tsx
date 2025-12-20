@@ -244,7 +244,7 @@ export default function AttributeManager() {
             <label>Synonyms (comma-separated)</label>
             <input
               type="text"
-              value={(formData.synonyms || []).join(', ')}
+              value={Array.isArray(formData.synonyms) ? formData.synonyms.join(', ') : ''}
               onChange={(e) => setFormData({ ...formData, synonyms: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
               placeholder="e.g. color, main_color"
               data-testid="synonyms-input"
