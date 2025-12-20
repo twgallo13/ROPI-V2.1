@@ -1,0 +1,8 @@
+[{"conclusion":"success","createdAt":"2025-12-20T01:32:00Z","databaseId":20387063829,"headSha":"00bcfcfb284e33120659b693c44ac4c28775e643","name":"Deploy pre-check","status":"completed"},{"conclusion":"","createdAt":"2025-12-20T01:32:00Z","databaseId":20387063822,"headSha":"00bcfcfb284e33120659b693c44ac4c28775e643","name":"Deploy AOSS Staging","status":"in_progress"},{"conclusion":"failure","createdAt":"2025-12-20T01:31:59Z","databaseId":20387063683,"headSha":"00bcfcfb284e33120659b693c44ac4c28775e643","name":".github/workflows/e2e-tests.yml","status":"completed"},{"conclusion":"success","createdAt":"2025-12-19T21:52:55Z","databaseId":20383499664,"headSha":"a76f96f76f28ed18dbbecbba266ae457c8959767","name":"Deploy pre-check","status":"completed"},{"conclusion":"success","createdAt":"2025-12-19T21:52:55Z","databaseId":20383499658,"headSha":"a76f96f76f28ed18dbbecbba266ae457c8959767","name":"Deploy AOSS Staging","status":"completed"}]
+Deploy AOSS Staging (PR #301)
+============================
+Run ID: 20387063822
+Status: completed
+Conclusion: success
+Commit: 00bcfcfb284e33120659b693c44ac4c28775e643
+Time: 2025-12-20T01:32:00Z → completed ~01:34:00Z

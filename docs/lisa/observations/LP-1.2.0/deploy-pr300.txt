@@ -1,0 +1,20 @@
+PR #300 (LP-1.1.14: FieldPicker UX Groups) Deploy
+================================================
+
+Deploy Run ID: 20387223121
+Commit SHA: 65f87238dd96e7a3f5cb1cf19f427938e57b5a3f
+Status: SUCCESS
+Duration: 1m55s
+Completed: 2025-12-20T01:46:30Z (approx)
+
+Deploy Steps:
+✓ Checkout code
+✓ Setup Node.js 20
+✓ Install dependencies
+✓ Build SDK package
+✓ Build packages/web
+✓ Build packages/api
+✓ Deploy to stable staging site
+✓ Smoke check stable staging
+
+Staging URL: https://ropi-aoss-staging.web.app

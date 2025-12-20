@@ -1,0 +1,26 @@
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ErrorBoundary > should render children when no error occurs
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ErrorBoundary > should catch errors and display error UI
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ErrorBoundary > should display Try Again button
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ErrorBoundary > should call onError callback when error is caught
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ErrorBoundary > should render custom fallback if provided
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ErrorBoundary > should reset when Try Again is clicked
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should render children
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should show success toast
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should show error toast
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should show multiple toasts
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should clear all toasts
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should limit max toasts
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should dismiss toast when close button clicked
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > ToastProvider > should auto-dismiss toast after duration
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > getErrorMessage helper > should extract message from Error object
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > getErrorMessage helper > should return string as-is
+ ✓ test/unit/ErrorHandling.spec.tsx > LP-1.1.15: Error Handling > getErrorMessage helper > should return default message for unknown types
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  01:31:40
+   Duration  1.55s (transform 160ms, setup 72ms, collect 284ms, tests 351ms, environment 538ms, prepare 116ms)
+

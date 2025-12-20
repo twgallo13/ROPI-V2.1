@@ -1,0 +1,39 @@
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Rendering > renders with placeholder text
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Rendering > renders with default placeholder when not provided
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Rendering > renders the selected value label
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Rendering > renders in disabled state
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Dropdown behavior > opens dropdown on focus
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Dropdown behavior > shows product fields group
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Dropdown behavior > shows attributes group
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Filtering > filters options based on input
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Filtering > shows no results message when no match
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Selection > calls onChange with correct fieldLink when option selected
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Selection > calls onChange with null when cleared
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Keyboard navigation > navigates with arrow keys
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Keyboard navigation > selects with Enter key
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Keyboard navigation > closes dropdown with Escape key
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Manual entry normalization > normalizes manual entry on blur
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Manual entry normalization > normalizes product field shortcuts
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Accessibility > has proper ARIA attributes
+ ✓ test/FieldPicker.test.tsx > FieldPicker > Accessibility > updates aria-expanded when open
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Group Visual Separation > should render Product Fields group with product icon 319ms
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Group Visual Separation > should render Attributes group with attribute icon
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Group Visual Separation > should display option badges with type indicators
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Attribute Category Sub-Groups > should group attributes by category
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Attribute Category Sub-Groups > should only show active attributes
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Attribute Category Sub-Groups > should display attribute count per category
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Filtering with Groups > should filter and maintain group structure
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Filtering with Groups > should show product fields when filtering by product field label
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Keyboard Navigation > should navigate through grouped options with arrow keys
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Keyboard Navigation > should select option on Enter key
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Compact Mode > should apply compact class when compact prop is true
+ ✓ test/unit/FieldPickerGroups.spec.tsx > LP-1.1.14: FieldPicker UX Groups > Compact Mode > should not apply compact class by default
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  01:43:25
+   Duration  4.27s (transform 247ms, setup 136ms, collect 647ms, tests 1.89s, environment 964ms, prepare 226ms)
+
