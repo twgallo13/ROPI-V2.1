@@ -296,6 +296,25 @@ function ObservationsPage() {
             {filteredObservations.length} observation{filteredObservations.length !== 1 ? 's' : ''}
           </span>
           <button
+            onClick={() => navigate('/observations/capture')}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#10b981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+            title="Scan MPN barcode to capture observation"
+          >
+            📱 Scan &amp; Capture
+          </button>
+          <button
             onClick={() => setShowAddModal(true)}
             style={{
               padding: '8px 16px',
