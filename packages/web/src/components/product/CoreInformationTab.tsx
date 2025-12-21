@@ -184,16 +184,18 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
           <label className="form-label">
             Active Websites <span className="required">*</span>
           </label>
+          {/* LP-3.0.2: Defensive guard for websites array */}
           <div className="checkbox-group" data-field="product.websites" data-testid="product-websites">
             {['shiekh.com', 'shiekhshoes.com', 'example.com'].map(website => (
               <label key={website} className="checkbox-label">
                 <input
                   type="checkbox"
-                  checked={product.websites.includes(website)}
+                  checked={(product.websites ?? []).includes(website)}
                   onChange={(e) => {
+                    const currentWebsites = product.websites ?? [];
                     const updated = e.target.checked
-                      ? [...product.websites, website]
-                      : product.websites.filter(w => w !== website);
+                      ? [...currentWebsites, website]
+                      : currentWebsites.filter(w => w !== website);
                     onUpdate('websites', updated);
                   }}
                   name={`product.websites.${website}`}

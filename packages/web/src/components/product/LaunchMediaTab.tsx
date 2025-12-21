@@ -66,7 +66,8 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
       <div className="form-section">
         <h3 className="form-section-title">Hero Image</h3>
         <div className="media-upload-area">
-          {product.media.heroImage ? (
+          {/* LP-3.0.2: Defensive guard for media object */}
+          {product.media?.heroImage ? (
             <div className="media-preview">
               <img src={product.media.heroImage} alt="Hero" className="media-preview-image" />
               <div className="media-preview-overlay">
@@ -99,13 +100,14 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
       <div className="form-section">
         <h3 className="form-section-title">Gallery Images</h3>
         <div className="media-gallery">
-          {product.media.gallery.map((img, index) => (
+          {/* LP-3.0.2: Defensive guard for gallery array */}
+          {(product.media?.gallery ?? []).map((img, index) => (
             <div key={index} className="gallery-item">
               <img src={img} alt={`Gallery ${index + 1}`} className="gallery-image" />
               <button
                 className="gallery-remove"
                 onClick={() => {
-                  const newGallery = product.media.gallery.filter((_, i) => i !== index);
+                  const newGallery = (product.media?.gallery ?? []).filter((_, i) => i !== index);
                   onUpdate('media.gallery', newGallery);
                 }}
               >
@@ -126,7 +128,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                   const reader = new FileReader();
                   reader.onloadend = () => {
                     const dataUrl = reader.result as string;
-                    const newGallery = [...product.media.gallery, dataUrl];
+                    const newGallery = [...(product.media?.gallery ?? []), dataUrl];
                     onUpdate('media.gallery', newGallery);
                   };
                   reader.readAsDataURL(file);
