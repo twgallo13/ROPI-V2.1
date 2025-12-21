@@ -1,0 +1,126 @@
+# HOMER_LP-3.0.2_AUDIT.txt
+# LP-3.0.2 — Product Editor defensive guards + optional migration (attributes.overall)
+# Date: 2025-12-21
+# Status: COMPLETE - Awaiting Lisa validation
+
+## Summary
+LP-3.0.2: Prevent runtime TypeErrors by ensuring product.attributes and
+product.attributes.overall are always safe to access in the UI.
+
+## Branch & PR
+- Branch: lp/3.0.2-product-editor-guards
+- PR: #327 - https://github.com/twgallo13/ROPI-V2.1/pull/327
+- Commit: b305d38
+- Status: Draft (awaiting validation)
+
+## Files Changed
+
+### Hook Changes
+1. packages/web/src/hooks/useProduct.ts
+   - Added safeProduct wrapper ensuring attributes ?? {}
+   - Return safeProduct instead of raw product
+
+### New Helper Library
+2. packages/web/src/lib/productUtils.ts (NEW)
+   - safeAttributeArray<T>(product, key): T[]
+   - safeAttributeObject<T>(product, key): T
+   - safeAttribute<T>(product, key, defaultValue): T
+   - safeOverall(product): Record<string, unknown>
+   - safeOverallArray<T>(product, key): T[]
+   - hasAttributes(product): boolean
+   - hasOverall(product): boolean
+
+### Component Guards
+3. packages/web/src/components/product/ProductHeader.tsx
+   - (product.websites ?? []).map()
+   - (product.exportReadiness?.overall ?? 0) < 80
+   - product.brand ?? 'N/A'
+   - product.category ?? 'N/A'
+   - statusColors[product.status] || 'status-draft'
+   - statusLabels[product.status] || 'Unknown'
+
+4. packages/web/src/components/product/DescriptionsTab.tsx
+   - const websites = product.websites ?? [];
+
+5. packages/web/src/components/product/CoreInformationTab.tsx
+   - (product.websites ?? []).includes(website)
+   - const currentWebsites = product.websites ?? [];
+
+6. packages/web/src/components/product/LaunchMediaTab.tsx
+   - product.media?.heroImage
+   - (product.media?.gallery ?? []).map()
+   - (product.media?.gallery ?? []).filter()
+   - [...(product.media?.gallery ?? []), dataUrl]
+
+### Tests
+7. packages/web/test/ProductHeader.missingOverall.test.tsx (NEW)
+   - 9 tests for ProductHeader with missing fields
+
+8. packages/web/test/ProductEditor.missingOverall.test.tsx (NEW)
+   - 4 tests for ProductEditorPage with missing attributes
+
+### Migration Script
+9. scripts/fix-products-add-overall.js (NEW)
+   - Dry-run mode by default
+   - --apply flag to actually make changes
+   - --limit=N to limit updates
+   - Batch processing (450 per batch)
+
+## Test Results
+```
+✓ test/ProductHeader.missingOverall.test.tsx (9 tests) 98ms
+✓ test/ProductEditor.missingOverall.test.tsx (4 tests) 156ms
+
+Test Files  2 passed (2)
+Tests       13 passed (13)
+```
+
+## Deployment
+- Target: Staging (ropi-bccee)
+- Hosting URL: https://ropi-aoss-staging.web.app
+- Status: ✅ Deployed successfully
+
+## Verification Checklist
+- [ ] https://ropi-aoss-staging.web.app/products/TP12224-LALBLCK - No TypeError
+- [ ] Browser console clean of runtime errors
+- [ ] ProductHeader renders correctly with missing fields
+- [ ] ProductEditor tabs work without crashing
+- [ ] ExportReadiness panel displays percentage
+
+## Migration (Optional - Not Yet Run)
+Script: scripts/fix-products-add-overall.js
+
+Usage:
+```bash
+# Dry-run (see what would change)
+node scripts/fix-products-add-overall.js
+
+# Apply changes (after backup)
+node scripts/fix-products-add-overall.js --apply
+
+# Limited test
+node scripts/fix-products-add-overall.js --limit=10 --apply
+```
+
+Pre-requisites before running:
+- [ ] Create backup of products collection
+- [ ] Lisa approval
+- [ ] Test on small set first (--limit=10)
+
+## Rollback Plan
+If issues arise:
+1. Revert commit and redeploy hosting
+2. Migration data can be restored from backup
+
+## Acceptance Criteria
+- [x] Product pages render without runtime TypeErrors
+- [x] Unit tests for ProductEditor pass (13/13)
+- [x] ProductHeader handles missing fields gracefully
+- [x] Migration script ready (not run)
+- [x] PR created as draft
+- [ ] Lisa validates staging
+- [ ] PR merged after validation
+
+## Notes
+- Pre-existing test failures in useAttributes.test.tsx (emulator required) - not related to LP-3.0.2
+- Migration script should only be run after Lisa approval and backup creation

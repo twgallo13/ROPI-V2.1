@@ -67,6 +67,7 @@ export default function AttributeManager() {
   const resetForm = () => {
     setFormData({ ...DEFAULT_ATTR });
     setFormError(null);
+    setSaveDetails(null);
   };
 
   const openCreate = () => {
@@ -80,6 +81,7 @@ export default function AttributeManager() {
     setEditingId(attr.attribute_id);
     setFormData({ ...DEFAULT_ATTR, ...attr });
     setFormError(null);
+    setSaveDetails(null);
   };
 
   const handleCancel = () => {
@@ -88,8 +90,12 @@ export default function AttributeManager() {
     resetForm();
   };
 
+  // LP-3.0.1: State for save errors and validation details
+  const [saveDetails, setSaveDetails] = useState<Array<{ path: string; message: string }> | null>(null);
+
   const handleSave = async () => {
     setFormError(null);
+    setSaveDetails(null);
     setSaving(true);
     try {
       const rawId = (formData.attribute_id || '').trim();
@@ -113,7 +119,14 @@ export default function AttributeManager() {
       }
 
       if (editingId) {
-        await updateAttribute(editingId, formData);
+        // LP-3.0.1: Handle structured response from updateAttribute
+        const result = await updateAttribute(editingId, formData);
+        if (!result?.ok) {
+          setFormError(result.error || 'Save failed');
+          setSaveDetails(result.details || null);
+          toastError(result.error || 'Failed to update attribute');
+          return;
+        }
         toastSuccess(`Updated attribute '${editingId}'`);
       } else {
         const toCreate = { ...formData, attribute_id: normalizedId } as Omit<Attribute, 'createdAt' | 'updatedAt'>;
@@ -181,7 +194,18 @@ export default function AttributeManager() {
           <button className="close-btn" aria-label="Close" onClick={handleCancel}>×</button>
         </div>
 
-        {formError && <div className="error" data-testid="form-error">{formError}</div>}
+        {/* LP-3.0.1: Display form error and validation details */}
+        {formError && (
+          <div className="attr-save-error" data-testid="form-error">
+            <strong>Error:</strong> {formError}
+            {saveDetails && saveDetails.length > 0 && (
+              <details className="validation-details">
+                <summary>Validation Details</summary>
+                <pre className="monospace">{JSON.stringify(saveDetails, null, 2)}</pre>
+              </details>
+            )}
+          </div>
+        )}
 
         <div className="modal-body">
           <div className="form-row">

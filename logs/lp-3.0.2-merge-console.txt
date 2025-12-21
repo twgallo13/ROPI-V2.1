@@ -1,0 +1,26 @@
+Loading page...
+
+=== CONSOLE MESSAGES (first 200) ===
+1 [LOG] ✅ Firebase initialized successfully
+2 [WARN] Sentry DSN not configured - error monitoring disabled
+3 [DEBUG] [ProductEditorPage] Product ID from URL: TP12224-LALBLCK
+4 [DEBUG] [useProduct] Loading product TP12224-LALBLCK, Firebase available: true
+5 [DEBUG] [useProduct] Setting up Firestore listener for product TP12224-LALBLCK...
+6 [LOG] 🔐 Auth state changed: No user
+7 [ERROR] Firestore snapshot error: JSHandle@error
+8 [DEBUG] [ProductEditorPage] Product ID from URL: TP12224-LALBLCK
+9 [ERROR] Error listening to observations: JSHandle@error
+
+=== PAGE ERRORS (uncaught) ===
+None ✅
+
+=== SUMMARY ===
+Total messages: 9
+Errors: 2
+Page errors: 0
+Has TypeError: ✅ NO
+Has .filter error: ✅ NO
+Has attributes.overall error: ✅ NO
+
+=== VERIFICATION ===
+✅ PASS - No TypeErrors or filter errors

@@ -1,0 +1,43 @@
+============================================================
+LP-3.0.2.2 — Product attributes.overall Migration
+============================================================
+Mode: DRY-RUN (no changes)
+Batch size: 400
+Max retries: 3
+
+Total products found: 87
+
+============================================================
+Summary
+============================================================
+Products scanned: 87
+Products needing update: 77
+Protected counts: 0
+
+Products that would be updated (first 20):
+  - 4254T1035 (4254T1035): missing attributes.overall
+  - 4254T1036 (4254T1036): missing attributes.overall
+  - 482-BLK (482-BLK): missing attributes.overall
+  - 7J236 (7J236): missing attributes.overall
+  - A13264F (A13264F): missing attributes.overall
+  - A14338F (A14338F): missing attributes.overall
+  - A14345F (A14345F): missing attributes.overall
+  - A14346F (A14346F): missing attributes.overall
+  - A14349F (A14349F): missing attributes.overall
+  - A14409F (A14409F): missing attributes.overall
+  - A14410F (A14410F): missing attributes.overall
+  - A14606F (A14606F): missing attributes.overall
+  - A14607F (A14607F): missing attributes.overall
+  - A14609F (A14609F): missing attributes.overall
+  - A15143F (A15143F): missing attributes.overall
+  - A15144F (A15144F): missing attributes.overall
+  - AMBRA-23 (AMBRA-23): missing attributes.overall
+  - Classic Unfurgettable Clog (Classic Unfurgettable Clog): missing attributes.overall
+  - DARING-03-BKPU (DARING-03-BKPU): missing attributes.overall
+  - EP25115 (EP25115): missing attributes.overall
+  ... and 57 more
+
+To apply changes, run with --apply flag
+
+Duration: 1.39s
+Done.

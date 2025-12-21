@@ -1,0 +1,47 @@
+{
+  "id": "207012-001",
+  "mpn": "207012-001",
+  "attributes": {
+    "style": {},
+    "mpn": "207012-001",
+    "brand": "Crocs",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 229000000
+    },
+    "primary_color": "Black",
+    "_normalizedAt": {
+      "_seconds": 1765416018,
+      "_nanoseconds": 62000000
+    },
+    "primaryColor": "BLACK",
+    "_meta": {
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.454Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.454Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    }
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.102Z",
+    "migratedBy": "lisa-homer"
+  },
+  "brand": "Crocs",
+  "status": "intake",
+  "websites": [],
+  "fetchedAt": "2025-12-21T14:30:54.189Z"
+}

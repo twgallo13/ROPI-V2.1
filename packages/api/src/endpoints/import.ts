@@ -3,6 +3,7 @@
  * Per AOSS API Spec — /api/import
  * 
  * LP-2.1.8: Server-side import validation with dry-run support
+ * LP-3.0.0: Fix CORS/preflight handling for browser-based imports
  * 
  * HTTP endpoint for uploading and processing RetailOps CSV imports.
  * Admin-only access.
@@ -15,11 +16,26 @@ import type { Request as ExpressRequest, Response as ExpressResponse } from 'exp
 import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 import { processCSVImport, validateCSVImport } from '../services/importService';
 
-// CORS handler for staging and production origins
+// LP-3.0.0: Allowed origins - keep narrow for staging & production
+const ALLOWED_ORIGINS = [
+  'https://ropi-aoss-staging.web.app',
+  'https://ropi-aoss.web.app',
+  'https://ropi-aoss-prod.web.app',
+];
+
+// LP-3.0.0: CORS handler with proper origin validation and preflight support
 const corsHandler = cors({
-  origin: ['https://ropi-aoss-staging.web.app', 'https://ropi-aoss.web.app'],
-  methods: ['POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, servers, mobile apps)
+    if (!origin) return callback(null, true);
+    // Allow whitelisted origins
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    // Reject unknown origins
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 });
 
 /**
@@ -185,10 +201,26 @@ async function dryRunHandler(req: AuthenticatedRequest, res: ExpressResponse): P
 }
 
 /**
+ * LP-3.0.0: Helper to handle preflight OPTIONS requests
+ */
+function handlePreflight(req: functions.https.Request, res: functions.Response): boolean {
+  if (req.method === 'OPTIONS') {
+    // Preflight handled by cors middleware, just return 204
+    res.status(204).send('');
+    return true;
+  }
+  return false;
+}
+
+/**
  * Export Cloud Function with admin auth middleware and CORS
+ * LP-3.0.0: Explicit preflight handling before auth check
  */
 export const importCSV = functions.https.onRequest((req, res) => {
   corsHandler(req as any, res as any, async () => {
+    // Handle preflight before auth
+    if (handlePreflight(req, res)) return;
+    
     await requireAdmin(req, res, async () => {
       await importHandler(req as unknown as AuthenticatedRequest, res);
     });
@@ -198,9 +230,13 @@ export const importCSV = functions.https.onRequest((req, res) => {
 /**
  * LP-2.1.8: Dry-run validation endpoint
  * POST /api/admin/imports/dry-run
+ * LP-3.0.0: Explicit preflight handling
  */
 export const importDryRun = functions.https.onRequest((req, res) => {
   corsHandler(req as any, res as any, async () => {
+    // Handle preflight before auth
+    if (handlePreflight(req, res)) return;
+    
     await requireAdmin(req, res, async () => {
       await dryRunHandler(req as unknown as AuthenticatedRequest, res);
     });

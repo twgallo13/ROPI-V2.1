@@ -51,11 +51,12 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
           <span className="product-header-value">{product.name}</span>
         </div>
         
-        <div className={`product-status-chip ${statusColors[product.status]}`}>
-          {statusLabels[product.status]}
+        <div className={`product-status-chip ${statusColors[product.status] || 'status-draft'}`}>
+          {statusLabels[product.status] || 'Unknown'}
         </div>
         
-        {product.websites.map(website => (
+        {/* LP-3.0.2: Defensive guard for websites array */}
+        {(product.websites ?? []).map(website => (
           <div key={website} className="product-website-chip">
             {website}
           </div>
@@ -63,10 +64,10 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
         
         <div className="product-header-metadata">
           <span className="product-header-meta-item">
-            Brand: <strong>{product.brand}</strong>
+            Brand: <strong>{product.brand ?? 'N/A'}</strong>
           </span>
           <span className="product-header-meta-item">
-            Category: <strong>{product.category}</strong>
+            Category: <strong>{product.category ?? 'N/A'}</strong>
           </span>
         </div>
       </div>
@@ -81,7 +82,7 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
         <button 
           onClick={onPublish}
           className="product-action-button product-action-primary"
-          disabled={product.exportReadiness.overall < 80}
+          disabled={(product.exportReadiness?.overall ?? 0) < 80}
         >
           Publish
         </button>

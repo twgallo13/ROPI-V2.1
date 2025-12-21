@@ -273,8 +273,16 @@ export function useProduct(productId: string) {
     return saveProduct(updatedProduct);
   };
 
+  // LP-3.0.2: Ensure product always has attributes object to prevent runtime errors
+  const safeProduct = product
+    ? {
+        ...product,
+        attributes: product.attributes ?? {},
+      }
+    : product;
+
   return {
-    product,
+    product: safeProduct,
     loading,
     saveProduct,
     updateField,

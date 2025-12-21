@@ -225,35 +225,66 @@ export function useAttributes() {
   };
 
   /**
-   * Update an existing attribute (optimistic update, then refresh)
+   * LP-3.0.1: Result type for attribute update that includes validation errors
    */
-  const updateAttribute = async (id: string, patch: Partial<Attribute>): Promise<Attribute> => {
+  type UpdateAttributeResult = {
+    ok: boolean;
+    attribute?: Attribute;
+    error?: string;
+    details?: Array<{ path: string; message: string }> | null;
+  };
+
+  /**
+   * Update an existing attribute
+   * LP-3.0.1: Returns structured result with ok/error/details instead of throwing
+   */
+  const updateAttribute = async (id: string, patch: Partial<Attribute>): Promise<UpdateAttributeResult> => {
     const headers = await getAuthHeaders();
     const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(id)}`;
-    const updated = await fetchJSON<Attribute>(url, {
-      method: 'PUT',
-      headers,
-      credentials: 'include',
-      body: JSON.stringify(patch),
-    });
-
-    // Optimistically update pinned or server list
-    if (pinnedMap[id]) {
-      setPinnedMap((prev) => {
-        const next = { ...prev, [id]: updated };
-        savePinned(next);
-        return next;
+    
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify(patch),
       });
-    } else {
-      setServerAttributes(prev => prev.map(a => (a.attribute_id === updated.attribute_id ? updated : a)));
+      
+      const json = await res.json().catch(() => null);
+      
+      if (!res.ok) {
+        // Return structured error to caller instead of throwing
+        return json ?? { ok: false, error: 'network_error', details: null };
+      }
+      
+      // Handle new response shape: { ok: true, attribute: {...} }
+      const updated: Attribute = json?.attribute ?? json;
+      
+      // Optimistically update pinned or server list
+      if (pinnedMap[id]) {
+        setPinnedMap((prev) => {
+          const next = { ...prev, [id]: updated };
+          savePinned(next);
+          return next;
+        });
+      } else {
+        setServerAttributes(prev => prev.map(a => (a.attribute_id === updated.attribute_id ? updated : a)));
+      }
+
+      // Refresh to keep pagination & counts in sync
+      fetchAttributes().catch(err => {
+        console.warn('Background refresh failed after update:', err);
+      });
+      
+      return { ok: true, attribute: updated };
+    } catch (err) {
+      console.error('updateAttribute fetch error:', err);
+      return { 
+        ok: false, 
+        error: err instanceof Error ? err.message : 'network_error',
+        details: null 
+      };
     }
-
-    // Refresh to keep pagination & counts in sync
-    fetchAttributes().catch(err => {
-      console.warn('Background refresh failed after update:', err);
-    });
-
-    return updated;
   };
 
   /**
