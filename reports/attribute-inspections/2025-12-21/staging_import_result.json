@@ -1,0 +1,130 @@
+(node:81161) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspaces/ROPI-V2.1/packages/sdk/scripts/import-dry-run.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspaces/ROPI-V2.1/packages/sdk/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+📂 Processing: ../../sample_import_lp2_test.csv
+📋 Format: json
+📊 Using MPN-first normalization (LP-2.1.0)
+
+📝 Found 3 rows
+
+{
+  "summary": {
+    "totalRows": 3,
+    "validRows": 3,
+    "invalidRows": 0,
+    "mpnOnly": 0,
+    "skuOnly": 0,
+    "bothMpnAndSku": 3,
+    "neitherMpnNorSku": 0,
+    "missingMpnCount": 0
+  },
+  "rows": [
+    {
+      "lineNumber": 2,
+      "source": {
+        "MPN": "LP2TEST-MPNA-001",
+        "SKU": "LP2TEST-SKU-A1",
+        "Product Name": "LP2 TEST Product A",
+        "Brand": "Test Brand A",
+        "Description": "LP-2.1.5.1 test product A",
+        "MSRP": "49.99",
+        "Quantity": "10"
+      },
+      "normalized": {
+        "mpn": "LP2TEST-MPNA-001",
+        "sku": "LP2TEST-SKU-A1",
+        "title": "LP2 TEST Product A",
+        "brand": "Test Brand A",
+        "description": "LP-2.1.5.1 test product A",
+        "msrp": 49.99,
+        "currency": "USD",
+        "quantity": 10
+      },
+      "productId": "lp2test-mpna-001",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": true,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 3,
+      "source": {
+        "MPN": "LP2TEST-MPNB-002",
+        "SKU": "LP2TEST-SKU-B1",
+        "Product Name": "LP2 TEST Product B",
+        "Brand": "Test Brand B",
+        "Description": "LP-2.1.5.1 test product B",
+        "MSRP": "79.99",
+        "Quantity": "15"
+      },
+      "normalized": {
+        "mpn": "LP2TEST-MPNB-002",
+        "sku": "LP2TEST-SKU-B1",
+        "title": "LP2 TEST Product B",
+        "brand": "Test Brand B",
+        "description": "LP-2.1.5.1 test product B",
+        "msrp": 79.99,
+        "currency": "USD",
+        "quantity": 15
+      },
+      "productId": "lp2test-mpnb-002",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": true,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 4,
+      "source": {
+        "MPN": "LP2TEST-MPNC-003",
+        "SKU": "LP2TEST-SKU-C3",
+        "Product Name": "LP2 TEST Product C",
+        "Brand": "Test Brand C",
+        "Description": "LP-2.1.5.1 test product C",
+        "MSRP": "99.99",
+        "Quantity": "20"
+      },
+      "normalized": {
+        "mpn": "LP2TEST-MPNC-003",
+        "sku": "LP2TEST-SKU-C3",
+        "title": "LP2 TEST Product C",
+        "brand": "Test Brand C",
+        "description": "LP-2.1.5.1 test product C",
+        "msrp": 99.99,
+        "currency": "USD",
+        "quantity": 20
+      },
+      "productId": "lp2test-mpnc-003",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": true,
+        "productIdSource": "mpn"
+      }
+    }
+  ]
+}
+
+==================================================
+📊 SUMMARY
+==================================================
+Total rows:         3
+Valid rows:         3
+Invalid rows:       0
+──────────────────────────────────────────────────
+MPN only:           0
+SKU only:           0
+Both MPN & SKU:     3
+Neither:            0
+==================================================
+
+✅ All rows passed validation

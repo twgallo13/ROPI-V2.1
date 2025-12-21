@@ -19,13 +19,14 @@ export declare const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[];
  */
 export declare function normalizeImportRow(sourceColumns: ImportSourceColumns, mappings?: ColumnMapping[]): ImportNormalizedFields;
 /**
- * Derive product ID from SKU
- * Per AOSS Section 3.1 — SKU is the unique key for products
+ * Derive product ID from MPN (preferred) or SKU (fallback)
+ * LP-2.1.0: MPN-first — prefer MPN for productId derivation
+ * Per Product Schema / Attribute Registry — MPN is canonical
  *
- * @param sku - Product SKU
+ * @param options - Object containing mpn and/or sku
  * @returns Product ID for use in products/{productId}
  */
-export declare function deriveProductId(sku: string | undefined): string | undefined;
+export declare function deriveProductId(options: { mpn?: string; sku?: string }): string | undefined;
 /**
  * Check if a row is empty (all values null/undefined/empty string)
  *

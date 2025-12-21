@@ -124,17 +124,46 @@ function safeValidateAttributeDefinition(input) {
 function createIssue(code, severity, field, message, value) {
   return { code, severity, field, message, value };
 }
-function validateSKU(sku) {
+function validateMPN(mpn) {
   const issues = [];
-  if (!sku) {
+  if (!mpn) {
     issues.push(
       createIssue(
         "MISSING_REQUIRED_FIELD",
         "error",
-        "sku",
-        "SKU is required"
+        "mpn",
+        "MPN (Manufacturer Part Number) is required"
       )
     );
+    return issues;
+  }
+  if (!/^[A-Z0-9\-_]+$/i.test(mpn)) {
+    issues.push(
+      createIssue(
+        "INVALID_FORMAT",
+        "error",
+        "mpn",
+        "MPN must contain only alphanumeric characters, hyphens, and underscores",
+        mpn
+      )
+    );
+  }
+  if (mpn.length < 2 || mpn.length > 50) {
+    issues.push(
+      createIssue(
+        "INVALID_VALUE",
+        "error",
+        "mpn",
+        "MPN must be between 2 and 50 characters",
+        mpn
+      )
+    );
+  }
+  return issues;
+}
+function validateSKU(sku) {
+  const issues = [];
+  if (!sku) {
     return issues;
   }
   if (!/^[A-Z0-9\-_]+$/i.test(sku)) {
@@ -399,6 +428,7 @@ function validateMedia(normalized) {
 function validateImportRow(normalized) {
   const errors = [];
   const warnings = [];
+  const mpnIssues = validateMPN(normalized.mpn);
   const skuIssues = validateSKU(normalized.sku);
   const titleIssues = validateTitle(normalized.title);
   const brandIssues = validateBrand(normalized.brand);
@@ -407,6 +437,7 @@ function validateImportRow(normalized) {
   const dateIssues = validateDates(normalized);
   const mediaIssues = validateMedia(normalized);
   const allIssues = [
+    ...mpnIssues,
     ...skuIssues,
     ...titleIssues,
     ...brandIssues,
@@ -434,8 +465,11 @@ function canProcessRow(validation) {
 
 // src/normalization/importNormalizer.ts
 var DEFAULT_COLUMN_MAPPINGS = [
-  // Core fields
-  { sourceColumn: "SKU", targetField: "sku", required: true, transform: "trim" },
+  // Core fields — MPN is required (LP-2.1.0), SKU is optional
+  { sourceColumn: "MPN", targetField: "mpn", required: true, transform: "trim" },
+  { sourceColumn: "mpn", targetField: "mpn", required: true, transform: "trim" },
+  { sourceColumn: "Manufacturer Part Number", targetField: "mpn", required: true, transform: "trim" },
+  { sourceColumn: "SKU", targetField: "sku", required: false, transform: "trim" },
   { sourceColumn: "Product Name", targetField: "title", required: true, transform: "trim" },
   { sourceColumn: "Brand", targetField: "brand", required: true, transform: "trim" },
   { sourceColumn: "Description", targetField: "description", transform: "trim" },
@@ -449,9 +483,6 @@ var DEFAULT_COLUMN_MAPPINGS = [
   { sourceColumn: "Color", targetField: "color", transform: "trim" },
   { sourceColumn: "Size", targetField: "size", transform: "trim" },
   { sourceColumn: "Material", targetField: "material", transform: "trim" },
-  { sourceColumn: "MPN", targetField: "mpn", transform: "trim" },
-  { sourceColumn: "mpn", targetField: "mpn", transform: "trim" },
-  { sourceColumn: "Manufacturer Part Number", targetField: "mpn", transform: "trim" },
   // Pricing
   { sourceColumn: "MSRP", targetField: "msrp", transform: "number" },
   { sourceColumn: "Cost", targetField: "cost", transform: "number" },
@@ -517,11 +548,12 @@ function normalizeImportRow(sourceColumns, mappings = DEFAULT_COLUMN_MAPPINGS) {
   }
   return normalized;
 }
-function deriveProductId(sku) {
-  if (!sku) {
+function deriveProductId({ mpn, sku }) {
+  const source = mpn || sku;
+  if (!source) {
     return void 0;
   }
-  return sku.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return String(source).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 function isEmptyRow(sourceColumns) {
   return Object.values(sourceColumns).every(
@@ -529,16 +561,16 @@ function isEmptyRow(sourceColumns) {
   );
 }
 function validateRequiredFields(normalized, mappings = DEFAULT_COLUMN_MAPPINGS) {
-  const missingFields = [];
+  const missingFields = /* @__PURE__ */ new Set();
   for (const mapping of mappings) {
     if (mapping.required) {
       const value = normalized[mapping.targetField];
       if (value === void 0 || value === null || value === "") {
-        missingFields.push(mapping.targetField);
+        missingFields.add(mapping.targetField);
       }
     }
   }
-  return missingFields;
+  return Array.from(missingFields);
 }
 
 // ../../node_modules/.pnpm/uuid@9.0.1/node_modules/uuid/dist/esm-browser/rng.js
@@ -608,7 +640,7 @@ function buildImportRow(sourceColumns, options) {
     });
     validation.isValid = false;
   }
-  const productId = deriveProductId(normalized.sku);
+  const productId = deriveProductId({ mpn: normalized.mpn, sku: normalized.sku });
   const meta = {
     rowId,
     batchId,

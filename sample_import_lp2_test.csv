@@ -1,0 +1,4 @@
+MPN,SKU,Product Name,Brand,Description,MSRP,Quantity
+LP2TEST-MPNA-001,LP2TEST-SKU-A1,LP2 TEST Product A,Test Brand A,LP-2.1.5.1 test product A,49.99,10
+LP2TEST-MPNB-002,LP2TEST-SKU-B1,LP2 TEST Product B,Test Brand B,LP-2.1.5.1 test product B,79.99,15
+LP2TEST-MPNC-003,LP2TEST-SKU-C3,LP2 TEST Product C,Test Brand C,LP-2.1.5.1 test product C,99.99,20

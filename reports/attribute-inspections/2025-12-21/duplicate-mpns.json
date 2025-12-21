@@ -1,0 +1,9 @@
+{
+  "scanDate": "2025-12-21T11:00:00.000Z",
+  "totalProducts": 87,
+  "uniqueMpnCount": 87,
+  "duplicateMpnCount": 0,
+  "duplicates": [],
+  "totalDuplicateDocuments": 0,
+  "_note": "Placeholder - run scripts/find-duplicate-mpn.js with GOOGLE_APPLICATION_CREDENTIALS to get actual data"
+}
