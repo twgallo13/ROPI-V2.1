@@ -1,0 +1,88 @@
+{
+  "_id": "212350-90H",
+  "_exportedAt": "2025-12-21T12:12:26.732Z",
+  "featured": false,
+  "warehouseInv": 1,
+  "primaryColor": "Multi",
+  "storeInv": 0,
+  "media": {},
+  "variants": [],
+  "isActive": true,
+  "coreProduct": false,
+  "promo": false,
+  "shipping": {
+    "expeditedOverride": false,
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0,
+    "standardOverride": false
+  },
+  "price": {
+    "ricsRetail": 0,
+    "scomSale": 0,
+    "scomRegular": 0
+  },
+  "fastfashion": false,
+  "brand": "Crocs",
+  "map": false,
+  "aiContext": {
+    "featureBullets": [],
+    "keywords": [],
+    "designNotes": ""
+  },
+  "lastReceived": "2025-11-13T08:00:00.000Z",
+  "launch": {},
+  "mpn": "212350-90H",
+  "tax": {},
+  "marketing": {
+    "seo": "",
+    "title": "",
+    "paragraphDraft": "",
+    "paragraphFinal": "",
+    "bullets": []
+  },
+  "hype": false,
+  "familySizing": false,
+  "name": "f6e75c2e-bd24-407a-b79b-b2b501275428",
+  "style": {},
+  "websites": [],
+  "firstReceived": "2025-11-13T08:00:00.000Z",
+  "status": "intake",
+  "lastUpdated": "2025-11-23T06:08:20.590Z",
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.644Z",
+    "migratedBy": "lisa-homer"
+  },
+  "attributes": {
+    "style": {},
+    "mpn": "212350-90H",
+    "brand": "Crocs",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254597,
+      "_nanoseconds": 996000000
+    },
+    "primary_color": "Multi",
+    "primaryColor": "Multi",
+    "_meta": {
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.465Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.465Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "_id": "123",
+  "_exportedAt": "2025-12-21T12:12:26.731Z",
+  "launchStatus": "scheduled",
+  "launchDate": "2025-01-15",
+  "media": {
+    "heroImage": "https://via.placeholder.com/800x600/000000/FFFFFF?text=Nike+Air+Max+270",
+    "gallery": [
+      "https://via.placeholder.com/400x300/000000/FFFFFF?text=Side+View",
+      "https://via.placeholder.com/400x300/000000/FFFFFF?text=Top+View",
+      "https://via.placeholder.com/400x300/000000/FFFFFF?text=Sole+View"
+    ]
+  },
+  "descriptions": {
+    "shiekh.com": {
+      "main": "Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet, this shoe delivers incredible cushioning and a striking look.",
+      "seoTitle": "Nike Air Max 270 Black/White - Men's Running Shoes | Shiekh",
+      "metaDescription": "Shop the Nike Air Max 270 in Black/White. Premium comfort meets iconic style. Free shipping on orders over $75."
+    },
+    "shiekhshoes.com": {
+      "main": "",
+      "seoTitle": "",
+      "metaDescription": ""
+    }
+  },
+  "styleId": "AIR-MAX-270",
+  "observations": [
+    {
+      "id": "obs-1",
+      "title": "Missing heel counter detail",
+      "description": "Product image shows visible heel counter but attribute not listed",
+      "severity": "medium",
+      "status": "open",
+      "timestamp": "2024-12-01T10:30:00Z",
+      "imageUrl": "https://via.placeholder.com/200x150/333333/FFFFFF?text=Heel+Detail",
+      "linkedField": "attributes.heel_counter"
+    },
+    {
+      "id": "obs-2",
+      "title": "Brand logo visible but not mentioned",
+      "description": "Nike swoosh visible on multiple panels, should be highlighted in description",
+      "severity": "low",
+      "status": "open",
+      "timestamp": "2024-12-01T11:15:00Z",
+      "imageUrl": "https://via.placeholder.com/200x150/333333/FFFFFF?text=Logo+View",
+      "linkedField": "descriptions.shiekh.com.main"
+    },
+    {
+      "id": "obs-3",
+      "title": "Color mismatch in gallery",
+      "description": "Gallery image #2 shows different colorway than hero image",
+      "severity": "high",
+      "status": "resolved",
+      "timestamp": "2024-11-30T14:20:00Z",
+      "imageUrl": "https://via.placeholder.com/200x150/333333/FFFFFF?text=Color+Issue",
+      "linkedField": "media.gallery.1"
+    }
+  ],
+  "name": "Nike Air Max 270 - Black/White",
+  "websites": [
+    "shiekh.com",
+    "shiekhshoes.com"
+  ],
+  "id": "123",
+  "category": "Athletic Footwear",
+  "department": "Men",
+  "sku": "NK-AIR-MAX-270-BLK-10",
+  "subcategory": "Running Shoes",
+  "brand": "Nike",
+  "firstReceived": "2024-11-15",
+  "status": "in-progress",
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:05.823Z",
+    "migratedBy": "lisa-homer"
+  },
+  "exportReadiness": {
+    "overall": 70,
+    "byWebsite": {
+      "shiekh.com": {
+        "score": 80,
+        "checklist": {
+          "coreInfo": true,
+          "attributes": true,
+          "descriptions": true,
+          "media": true,
+          "pricing": false
+        }
+      },
+      "shiekhshoes.com": {
+        "score": 60,
+        "checklist": {
+          "coreInfo": true,
+          "attributes": true,
+          "descriptions": false,
+          "media": true,
+          "pricing": false
+        }
+      }
+    }
+  },
+  "aiHistory": [
+    {
+      "timestamp": "2024-12-01T09:00:00Z",
+      "result": "Generated initial product description",
+      "id": "ai-1",
+      "action": "describe",
+      "confidence": 82
+    },
+    {
+      "confidence": 91,
+      "result": "Added 3 missing attributes: material, closure, heel_height",
+      "timestamp": "2024-12-01T10:00:00Z",
+      "action": "fix_attributes",
+      "id": "ai-2"
+    },
+    {
+      "id": "ai-1766150552414",
+      "action": "fix_attributes",
+      "timestamp": "2025-12-19T13:22:32.414Z",
+      "result": "Analyzed product data and suggested 5 missing attributes.",
+      "confidence": 80
+    },
+    {
+      "id": "ai-1766150559660",
+      "action": "re_run",
+      "timestamp": "2025-12-19T13:22:39.660Z",
+      "result": "Re-running AI analysis with updated product data...",
+      "confidence": 91
+    },
+    {
+      "id": "ai-1766150564167",
+      "action": "describe",
+      "timestamp": "2025-12-19T13:22:44.167Z",
+      "result": "Generated comprehensive product description based on attributes and images.",
+      "confidence": 91
+    }
+  ],
+  "smartSuggestions": [
+    {
+      "id": "sug-1",
+      "targetField": "attributes.cushioning",
+      "currentValue": null,
+      "reason": "Detected from product name and visible Air unit in images",
+      "proposedValue": "Air Max",
+      "confidence": 95,
+      "status": "applied"
+    },
+    {
+      "currentValue": "Mesh",
+      "reason": "Image analysis shows structured mesh pattern typical of engineered construction",
+      "id": "sug-2",
+      "targetField": "attributes.upper_material",
+      "status": "pending",
+      "confidence": 78,
+      "proposedValue": "Engineered Mesh"
+    },
+    {
+      "status": "pending",
+      "currentValue": "Experience ultimate comfort with the Nike Air Max 270...",
+      "confidence": 88,
+      "targetField": "descriptions.shiekh.com.main",
+      "reason": "Enhanced description based on visible product features and brand guidelines",
+      "proposedValue": "Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet for incredible cushioning, plus a sleek mesh and synthetic upper for breathability and support.",
+      "id": "sug-3"
+    }
+  ],
+  "attributes": {
+    "material": [
+      "Mesh",
+      "Synthetic"
+    ],
+    "pattern": "Solid",
+    "silhouette": "Low Top",
+    "heel_height": "1.5 inches",
+    "primary_color": [
+      "Black",
+      "White"
+    ],
+    "cushioning": "Air Max",
+    "category": "Athletic Footwear",
+    "department": "Men",
+    "brand": "Nike",
+    "closure_type": "Lace-up",
+    "fit": "True To Size",
+    "_normalizedAt": {
+      "_seconds": 1766303054,
+      "_nanoseconds": 50000000
+    },
+    "_meta": {
+      "closure_type": {
+        "source": "normalizer",
+        "actor": "system",
+        "ts": "2025-12-21T07:44:14.018Z",
+        "definition_version": "1.0.1",
+        "previousValue": "Lace-Up"
+      },
+      "fit": {
+        "source": "normalizer",
+        "actor": "system",
+        "ts": "2025-12-21T07:44:14.018Z",
+        "definition_version": "1.0.1",
+        "previousValue": "True to Size"
+      }
+    },
+    "launch": {
+      "fastFashion": true
+    },
+    "fast_fashion": false,
+    "technical": {
+      "expeditedOverrideShipping": 1
+    }
+  }
+}
