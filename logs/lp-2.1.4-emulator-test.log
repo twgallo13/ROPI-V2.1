@@ -1,0 +1,93 @@
+i  emulators: Starting emulators: firestore
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node << 'NODESCRIPT'
+const { initializeTestEnvironment, assertFails, assertSucceeds } = require('@firebase/rules-unit-testing');
+const fs = require('fs');
+
+(async () => {
+  console.log('=== LP-2.1.4: Client Write DENIED Test (Emulator) ===');
+  
+  const testEnv = await initializeTestEnvironment({
+    projectId: 'ropi-bccee-test',
+    firestore: {
+      rules: fs.readFileSync('firestore.rules', 'utf8'),
+      host: '127.0.0.1',
+      port: 8080,
+    },
+  });
+  
+  // Test 1: Non-admin authenticated user write (should FAIL)
+  console.log('\n--- TEST 1: Non-admin user write (should FAIL) ---');
+  const nonAdminUser = testEnv.authenticatedContext('non-admin-user-123', {
+    email: 'regularuser@example.com',
+    email_verified: true,
+  });
+  const nonAdminDb = nonAdminUser.firestore();
+  
+  try {
+    await assertFails(
+      nonAdminDb.collection('products').doc('test-product-123').set({
+        name: 'Test Product',
+        status: 'draft'
+      })
+    );
+    console.log('✅ Non-admin write correctly DENIED (PERMISSION_DENIED)');
+  } catch (error) {
+    console.log('❌ Test failed:', error.message);
+  }
+  
+  // Test 2: Admin user with role claim (should SUCCEED)
+  console.log('\n--- TEST 2: Admin user write (should SUCCEED) ---');
+  const adminUser = testEnv.authenticatedContext('admin-user-456', {
+    email: 'theo@shiekhshoes.org',
+    email_verified: true,
+    role: 'admin'
+  });
+  const adminDb = adminUser.firestore();
+  
+  try {
+    await assertSucceeds(
+      adminDb.collection('products').doc('test-product-456').set({
+        name: 'Admin Test Product',
+        status: 'active'
+      })
+    );
+    console.log('✅ Admin write correctly SUCCEEDED');
+  } catch (error) {
+    console.log('❌ Test failed:', error.message);
+  }
+  
+  // Test 3: Non-admin READ (should SUCCEED)
+  console.log('\n--- TEST 3: Non-admin user READ (should SUCCEED) ---');
+  try {
+    await assertSucceeds(nonAdminDb.collection('products').doc('test-product-456').get());
+    console.log('✅ Non-admin read correctly SUCCEEDED');
+  } catch (error) {
+    console.log('❌ Test failed:', error.message);
+  }
+  
+  await testEnv.cleanup();
+  console.log('\n=== All smoke tests PASSED ===');
+  process.exit(0);
+})();
+NODESCRIPT
+=== LP-2.1.4: Client Write DENIED Test (Emulator) ===
+
+--- TEST 1: Non-admin user write (should FAIL) ---
+[2025-12-21T10:15:10.569Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x485f037c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+Property role is undefined on object. for 'create' @ L123, false for 'create' @ L268, Property role is undefined on object. for 'update' @ L123, false for 'update' @ L268, Property role is undefined on object. for 'create' @ L123, false for 'create' @ L268
+✅ Non-admin write correctly DENIED (PERMISSION_DENIED)
+
+--- TEST 2: Admin user write (should SUCCEED) ---
+✅ Admin write correctly SUCCEEDED
+
+--- TEST 3: Non-admin user READ (should SUCCEED) ---
+✅ Non-admin read correctly SUCCEEDED
+
+=== All smoke tests PASSED ===
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
