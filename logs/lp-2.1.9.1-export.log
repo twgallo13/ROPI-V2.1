@@ -1,0 +1,76 @@
+LP-2.1.9.1 Export Verification Log
+===================================
+Timestamp: 2025-12-21T13:00:00Z
+
+Step 0: PR Preview Deploy
+-------------------------
+- Workflow: Deploy AOSS PR Preview (ID: 212107345)
+- Preview channel manually deployed from codespace
+- Channel: pr-324
+- Preview URL: https://ropi-aoss-staging--pr-324-fwy3a3ec.web.app
+- Expires: 2025-12-28T13:00:28.414692823Z
+- Functions deployed to: ropi-bccee (shared staging)
+
+Step 1: Admin Token Generation
+------------------------------
+- Script: scripts/generate-admin-token-rest.js
+- Email: theo@shiekh.com
+- Token generated successfully
+
+Step 2: Dry-Run Export (POST /api/admin/exports/dry-run)
+--------------------------------------------------------
+- Request: {"site":"ropi-web", "limit":10, "includeMeta":true}
+- Response: 200 OK
+- Summary:
+  - totalProducts: 10
+  - exportedProducts: 10
+  - skippedProducts: 0
+  - exportReadyCount: 10
+  - notExportReadyCount: 0
+  - warningCount: 6
+  - errorCodes: {"unknown_export_value": 6}
+- MPN first column: VERIFIED
+- _meta columns: PRESENT (with _meta suffix)
+- Export readiness: COMPUTED
+
+Step 3: GET Export Preview
+--------------------------
+- Request: GET /api/admin/exports/preview?site=ropi-web&limit=5&includeMeta=true
+- Response: 200 OK
+- columnCount: 282
+- MPN first in columnHeaders: VERIFIED
+
+Step 4: Full Export (POST /api/admin/exports)
+---------------------------------------------
+- Request: {"site":"ropi-web","limit":100,"includeMeta":false,"format":"ro_csv"}
+- Response: 200 OK (BLOCKED - by design)
+- Error: EXPORT_BLOCKED_UNKNOWN_VALUES
+- Reason: 67 unknown values (83.75%) exceeds threshold (1% or 1000)
+- Summary:
+  - totalProducts: 80
+  - exportedProducts: 80
+  - warningCount: 67
+- CSV Sample extracted from dry-run (10 rows)
+- Blocking behavior: WORKING AS DESIGNED
+
+Step 5: Per-Site Filtering
+--------------------------
+- Request: {"site":"other-site", "limit":5, "includeMeta":false}
+- Response: 200 OK
+- Attributes included matches site filter
+- _meta columns excluded (includeMeta: false): VERIFIED
+
+Step 6: Product Snapshots
+-------------------------
+- Products fetched: 14943667, 211116-001, 4254T1035
+- Endpoint: GET /api/products/:productId
+- attributes._meta present: VERIFIED
+- Sample _meta structure:
+  {
+    "actor": "system:migrator",
+    "source": "migration", 
+    "ts": "2025-12-21T11:58:32.114Z",
+    "method": "migrateProductsToAttributes",
+    "definition_version": "1.0.3",
+    "canonical": false
+  }

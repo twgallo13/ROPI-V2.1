@@ -1,0 +1,138 @@
+================================================================================
+LP-3.0.2.1 — PILOT MIGRATION AUDIT
+================================================================================
+Date: 2025-12-21
+Author: Homer (automated agent)
+Status: PASS ✅
+
+================================================================================
+OVERVIEW
+================================================================================
+LP-3.0.2.1 executed a limited pilot migration to add `attributes.overall = {}`
+to 10 products that were missing this field after the LP-2.1.x migrations.
+
+This pilot validates the migration script and verifies the approach before
+authorizing a full migration of all 87 products.
+
+================================================================================
+PRE-SYNC BACKUP
+================================================================================
+Backup Path: gs://ropi-aoss-backups/pre-lp-3.0.2.1-20251221144200
+Snapshot Time: 2025-12-21T14:42:00Z
+Documents Exported: 530
+Bytes: 479,367
+
+The backup can be restored using:
+  gcloud firestore import gs://ropi-aoss-backups/pre-lp-3.0.2.1-20251221144200 --project=ropi-bccee
+
+================================================================================
+DRY-RUN RESULTS
+================================================================================
+Command: node scripts/fix-products-add-overall.js --limit=10 --dry --out=reports/attribute-inspections/pilot-dryrun-10.json
+
+Results:
+- Total products scanned: 87
+- Products needing update: 87 (all have attributes but missing attributes.overall)
+- All products have attributes._meta preserved from LP-2.1.x migrations
+
+================================================================================
+PILOT APPLY RESULTS
+================================================================================
+Command: node scripts/fix-products-add-overall.js --limit=10 --apply --out=reports/attribute-inspections/pilot-apply-10.json
+
+Results:
+- Products updated: 10
+- Batch commits: 1 (all 10 in single batch)
+- Duration: < 1 second
+
+Updated Products (MPNs):
+1. 123
+2. 14943667
+3. 14943678
+4. 207012-001
+5. 209473-1001
+6. 209516-1001
+7. 209516-6916
+8. 209710-6916
+9. 211116-001
+10. 212350-90H
+
+================================================================================
+VERIFICATION RESULTS
+================================================================================
+Command: node scripts/verify-pilot-products.js
+
+Results:
+✅ 123: attributes=true, overall=true (type: object), _meta=true
+✅ 14943667: attributes=true, overall=true (type: object), _meta=true
+✅ 14943678: attributes=true, overall=true (type: object), _meta=true
+✅ 207012-001: attributes=true, overall=true (type: object), _meta=true
+✅ 209473-1001: attributes=true, overall=true (type: object), _meta=true
+✅ 209516-1001: attributes=true, overall=true (type: object), _meta=true
+✅ 209516-6916: attributes=true, overall=true (type: object), _meta=true
+✅ 209710-6916: attributes=true, overall=true (type: object), _meta=true
+✅ 211116-001: attributes=true, overall=true (type: object), _meta=true
+✅ 212350-90H: attributes=true, overall=true (type: object), _meta=true
+
+Passed: 10/10 ✅
+
+Key Observations:
+- attributes.overall is now an empty object {} as expected
+- attributes._meta is preserved (not affected by migration)
+- No data loss or corruption detected
+
+================================================================================
+FILES CREATED
+================================================================================
+Logs:
+- logs/lp-3.0.2.1-backup.log
+- logs/lp-3.0.2.1-pilot-apply.log
+- logs/lp-3.0.2-merge-deploy.log
+
+Reports:
+- reports/attribute-inspections/pilot-dryrun-10.json
+- reports/attribute-inspections/pilot-apply-10.json
+- reports/attribute-inspections/pilot-verification.json
+
+Product Snapshots:
+- reports/attribute-inspections/pilot-product-123.json
+- reports/attribute-inspections/pilot-product-14943667.json
+- reports/attribute-inspections/pilot-product-14943678.json
+- reports/attribute-inspections/pilot-product-207012-001.json
+- reports/attribute-inspections/pilot-product-209473-1001.json
+- reports/attribute-inspections/pilot-product-209516-1001.json
+- reports/attribute-inspections/pilot-product-209516-6916.json
+- reports/attribute-inspections/pilot-product-209710-6916.json
+- reports/attribute-inspections/pilot-product-211116-001.json
+- reports/attribute-inspections/pilot-product-212350-90H.json
+
+Scripts:
+- scripts/fix-products-add-overall.js (updated with --out, --dry flags)
+- scripts/verify-pilot-products.js (new verification script)
+
+================================================================================
+NEXT STEPS (PENDING LISA APPROVAL)
+================================================================================
+1. Lisa validates pilot results
+2. If approved, run full migration:
+   node scripts/fix-products-add-overall.js --apply --out=reports/attribute-inspections/full-migration.json
+3. Verify all 87 products updated
+4. Merge LP-3.0.2.1 branch or document in aoss-main
+
+================================================================================
+ROLLBACK PROCEDURE
+================================================================================
+If issues are discovered:
+1. gcloud firestore import gs://ropi-aoss-backups/pre-lp-3.0.2.1-20251221144200 --project=ropi-bccee
+2. Wait for import to complete
+3. Verify products restored
+
+================================================================================
+ATTESTATION
+================================================================================
+This pilot migration was performed by Homer (automated agent) following the
+LP-3.0.2.1 specification provided by Lisa. All steps were logged and artifacts
+committed to the branch for audit purposes.
+
+Branch: lp/3.0.2.1-migration-pilot
+Commit: e3a6a95

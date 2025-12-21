@@ -1,0 +1,77 @@
+Fetching product: 211116-001
+{
+  "id": "211116-001",
+  "mpn": "211116-001",
+  "attributes": {
+    "style": {
+      "id": "Classic Unfurgettable Clog"
+    },
+    "mpn": "211116-001",
+    "category": "Clogs",
+    "brand": "Crocs",
+    "department": "Footwear",
+    "class": "Sandals",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 206000000
+    },
+    "descriptive.gender": "Men's",
+    "age_group": "Adult",
+    "primary_color": "Black",
+    "_normalizedAt": {
+      "_seconds": 1765416018,
+      "_nanoseconds": 625000000
+    },
+    "gender": "Men's",
+    "primaryColor": "BLACK",
+    "_meta": {
+      "gender": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "ageGroup": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    },
+    "ageGroup": "Adult",
+    "overall": {}
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.559Z",
+    "migratedBy": "lisa-homer"
+  },
+  "brand": "Crocs",
+  "category": "Clogs",
+  "status": "intake",
+  "websites": [
+    "Shiekh.com"
+  ],
+  "fetchedAt": "2025-12-21T21:56:29.119Z"
+}

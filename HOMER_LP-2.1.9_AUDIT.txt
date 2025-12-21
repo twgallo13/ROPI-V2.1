@@ -1,0 +1,232 @@
+================================================================================
+HOMER LP-2.1.9 AUDIT — Export & PDP Alignment
+================================================================================
+
+Task ID:        LP-2.1.9
+Timestamp:      2025-12-21T12:43:26Z
+Branch:         lp/2.1.9-export-pdp-alignment
+Base Branch:    aoss-main
+Commit SHA:     930db07d366489f3042fcbd94afb1374613bd8ca
+PR Number:      #324
+PR URL:         https://github.com/twgallo13/ROPI-V2.1/pull/324
+
+================================================================================
+OBJECTIVE
+================================================================================
+
+Ensure exports and the Product Detail Page (PDP)/downstream consumers consume
+the canonical attribute model:
+- Exports must use MPN as the primary key
+- Export only attributes with export: true
+- Use canonical values via allowed_values / synonyms
+- Include _meta provenance columns for data lineage
+
+================================================================================
+IMPLEMENTATION SUMMARY
+================================================================================
+
+FILES CREATED:
+-----------------------------------------------------------------------------
+1. packages/api/src/services/exportService.ts (~830 lines)
+   - loadExportableAttributes(): Fetches attributes where export: true
+   - mapToCanonical(): Maps values using allowed_values and synonyms
+   - formatMultiSelect(): Joins array values with pipe delimiter
+   - calculateExportReadiness(): Computes if product is export-ready
+   - buildExportRow(): Constructs row with MPN, SKUs, attributes, _meta
+   - runDryRunExport(): Preview export with sample data
+   - runFullExport(): Full paginated export
+   - generateCsvContent(): CSV generation with escaping
+
+2. packages/api/src/endpoints/export.ts (~250 lines)
+   - dryRunHandler(): POST /api/admin/exports/dry-run
+   - exportHandler(): POST /api/admin/exports
+   - previewHandler(): GET /api/admin/exports/preview
+
+3. packages/api/test/exportService.unit.test.ts (38 tests)
+   - mapToCanonical tests
+   - formatMultiSelect tests
+   - formatValueForExport tests
+   - calculateExportReadiness tests
+   - buildExportRow tests
+   - getExportColumnHeaders tests
+   - generateCsvContent tests
+
+4. packages/api/test/exportService.integration.test.ts (20 tests)
+   - loadExportableAttributes tests
+   - runDryRunExport tests
+   - Synonym normalization tests
+   - _meta column tests
+   - CSV generation tests
+   - runFullExport tests
+   - Row diagnostics tests
+
+FILES MODIFIED:
+-----------------------------------------------------------------------------
+1. packages/api/src/apiApp.ts
+   - Added import for export handlers
+   - Added routes: /api/admin/exports/dry-run, /api/admin/exports, /api/admin/exports/preview
+
+2. packages/api/src/index.ts
+   - Added exports: exportDryRun, exportProducts, exportPreview
+
+================================================================================
+API ENDPOINTS
+================================================================================
+
+POST /api/admin/exports/dry-run
+  Purpose: Preview export with sample data
+  Request Body:
+    {
+      "site": "ropi-web",      // optional
+      "limit": 10,             // sample size (default: 10)
+      "includeMeta": true      // include _meta columns
+    }
+  Response:
+    {
+      "success": true,
+      "timestamp": "ISO-8601",
+      "summary": { ... },
+      "sampleCsv": "MPN,SKU,...",
+      "columnHeaders": ["MPN", "SKU", ...],
+      "attributesIncluded": ["gender", ...],
+      "attributesExcluded": ["internal_notes", ...]
+    }
+
+POST /api/admin/exports
+  Purpose: Run full export with pagination
+  Request Body:
+    {
+      "site": "ropi-web",
+      "includeMeta": true,
+      "batchSize": 1000
+    }
+  Response:
+    {
+      "success": true,
+      "csvContent": "MPN,SKU,...",
+      "summary": { ... },
+      "filePaths": ["storage/path/to/export.csv"]  // if saved
+    }
+  Error Condition: Blocks if >1% or >1000 unknown_export_value errors
+
+GET /api/admin/exports/preview
+  Purpose: Get column headers and attribute info
+  Response:
+    {
+      "success": true,
+      "columnHeaders": ["MPN", "SKU", ...],
+      "attributes": [{ name, data_type, display_name }],
+      "columnCount": 42
+    }
+
+================================================================================
+CRITICAL BEHAVIORS
+================================================================================
+
+1. MPN as Primary Key
+   - MPN is always the first column in exports
+   - Products without MPN are skipped with missing_mpn error code
+   - SKU column follows MPN (aggregates all variant SKUs)
+
+2. Export Flag Enforcement
+   - Only attributes with export: true are included
+   - Attributes with export: false or export: undefined are excluded
+   - Summary reports attributesIncluded and attributesExcluded
+
+3. Canonical Value Mapping
+   - Enum values matched against allowed_values (case-insensitive)
+   - If exact match found, canonical value used
+   - If value in synonyms map, mapped to canonical value
+   - Unknown values produce unknown_export_value warning
+
+4. Export Readiness
+   - Checks all attributes where required_for_export: true
+   - Product marked exportReady: true only if all required attrs present
+   - Summary reports exportReadyCount vs notExportReadyCount
+
+5. _meta Provenance Columns
+   - When includeMeta: true, adds {attr}_meta columns
+   - JSON structure: { actor, source, ts, definition_version }
+   - Enables downstream audit/lineage tracking
+
+6. MultiSelect Handling
+   - Array values joined with pipe delimiter (|)
+   - Each value in array mapped to canonical form
+   - Example: ["Suede", "Leather"] → "Suede|Leather"
+
+7. Error Blocking
+   - Full export blocked if unknown_export_value errors exceed threshold
+   - Threshold: >1% of total values OR >1000 absolute count
+   - Prevents polluting downstream with non-canonical data
+
+================================================================================
+TEST RESULTS
+================================================================================
+
+Unit Tests:       38/38 PASSED
+Integration Tests: 20/20 PASSED
+Total:            58/58 PASSED
+
+Test Command:
+  cd packages/api && pnpm vitest run test/exportService.unit.test.ts test/exportService.integration.test.ts
+
+================================================================================
+STAGING VERIFICATION
+================================================================================
+
+STATUS: PENDING (requires VITE_E2E_ADMIN_PASSWORD)
+
+To run staging verification after PR merge:
+
+1. Generate admin token:
+   export VITE_E2E_ADMIN_PASSWORD="<password>"
+   TOKEN=$(node scripts/generate-admin-token-rest.js 2>&1 | tail -1)
+
+2. Run dry-run export:
+   curl -s -X POST "https://ropi-aoss-staging.web.app/api/admin/exports/dry-run" \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"site":"ropi-web", "limit":10, "includeMeta":true}' \
+     -o reports/exports/dry-run-preview.json
+
+3. Verify output:
+   - MPN is first column
+   - Only export:true attributes included
+   - Canonical values used (no raw synonyms)
+   - _meta columns present with valid JSON
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+Depends On:
+- LP-2.1.3 (attribute registry with export flags)
+- LP-2.1.5/2.1.6 (synonyms and allowed_values)
+- LP-2.1.8 (import validation - merged as PR #323)
+
+Blocks:
+- Downstream PDP consumers
+- Feed export pipelines
+- Data warehouse ingestion
+
+================================================================================
+CHECKLIST
+================================================================================
+
+[x] Branch created from aoss-main
+[x] exportService.ts implemented
+[x] export.ts endpoints implemented
+[x] apiApp.ts routes added
+[x] index.ts exports added
+[x] Unit tests created (38 tests)
+[x] Integration tests created (20 tests)
+[x] All tests passing
+[x] Code committed
+[x] Branch pushed to origin
+[x] PR #324 created
+[ ] Staging dry-run verification (pending credentials)
+[ ] PR merged
+
+================================================================================
+END OF AUDIT
+================================================================================

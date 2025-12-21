@@ -1,0 +1,96 @@
+Fetching product: 14943667
+{
+  "id": "14943667",
+  "mpn": "14943667",
+  "attributes": {
+    "materials": [],
+    "style": {
+      "id": "14943667"
+    },
+    "mpn": "14943667",
+    "brand": "NEW ERA CAPS",
+    "department": "Accessories",
+    "class": "Hats",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 203000000
+    },
+    "descriptive.gender": "Mens",
+    "age_group": "Adult",
+    "primary_color": "Black",
+    "fit": "True to Size",
+    "gender": "Men",
+    "primaryColor": "Black",
+    "_meta": {
+      "fit": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "gender": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "ageGroup": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "category": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    },
+    "ageGroup": "Adult",
+    "category": "Casual",
+    "_normalizedAt": {
+      "_seconds": 1766320375,
+      "_nanoseconds": 660000000
+    },
+    "overall": {}
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:05.924Z",
+    "migratedBy": "lisa-homer"
+  },
+  "brand": "NEW ERA CAPS",
+  "category": "Causal",
+  "status": "intake",
+  "websites": [
+    "Mltd.com",
+    "Shiekh.com"
+  ],
+  "fetchedAt": "2025-12-21T21:56:28.250Z"
+}

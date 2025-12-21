@@ -1564,7 +1564,83 @@ var AITemplateSchema = z.object({
   updatedAt: z.string().optional()
 });
 
+// src/lib/stringUtils.ts
+function toSnakeCase(input) {
+  if (!input) return "";
+  let s = input.replace(/\./g, "_");
+  s = s.replace(/([a-z0-9])([A-Z])/g, "$1_$2");
+  s = s.replace(/[\s\-]+/g, "_");
+  s = s.replace(/[^A-Za-z0-9_]/g, "");
+  s = s.replace(/__+/g, "_").replace(/^_+|_+$/g, "");
+  return s.toLowerCase();
+}
+var DATA_TYPE_MAP = {
+  // String variants
+  "text": "string",
+  "longtext": "string",
+  "string": "string",
+  "varchar": "string",
+  "char": "string",
+  // Enum/select variants
+  "select": "enum",
+  "dropdown": "enum",
+  "enum": "enum",
+  "choice": "enum",
+  // Boolean variants
+  "boolean": "boolean",
+  "bool": "boolean",
+  "yesno": "boolean",
+  "checkbox": "boolean",
+  // Number variants
+  "number": "number",
+  "int": "number",
+  "integer": "number",
+  "float": "number",
+  "decimal": "number",
+  "numeric": "number",
+  "price": "number",
+  "currency": "number",
+  "money": "number",
+  // Array variants
+  "array": "array",
+  "list": "array",
+  "multiselect": "array",
+  "multi-select": "array",
+  // Date variants
+  "date": "date",
+  "datetime": "date",
+  "timestamp": "date",
+  // Object/JSON variants
+  "object": "object",
+  "json": "object",
+  "map": "object"
+};
+function normalizeDataType(dataType) {
+  if (!dataType) return "string";
+  const normalized = DATA_TYPE_MAP[dataType.toLowerCase().trim()];
+  return normalized || "string";
+}
+function wouldCollide(id1, id2) {
+  return toSnakeCase(id1) === toSnakeCase(id2);
+}
+function detectCollisions(ids) {
+  const canonicalMap = /* @__PURE__ */ new Map();
+  for (const id of ids) {
+    const canonical = toSnakeCase(id);
+    const existing = canonicalMap.get(canonical) || [];
+    existing.push(id);
+    canonicalMap.set(canonical, existing);
+  }
+  const collisions = [];
+  for (const [canonical, originals] of canonicalMap) {
+    if (originals.length > 1) {
+      collisions.push({ canonical, originals });
+    }
+  }
+  return collisions;
+}
+
 // src/index.ts
 var SDK_VERSION = "0.6.0";
 
-export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ImportRowRawSchema, ImportRowSchema, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, normalizeImportRow, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateProduct, validateAttributeDefinition, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateCoreProduct, validateCoreProductOrThrow, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateRequiredFields };
+export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ImportRowRawSchema, ImportRowSchema, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, detectCollisions, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, normalizeDataType, normalizeImportRow, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateProduct, toSnakeCase, validateAttributeDefinition, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateCoreProduct, validateCoreProductOrThrow, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateRequiredFields, wouldCollide };
