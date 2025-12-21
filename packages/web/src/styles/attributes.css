@@ -118,3 +118,39 @@
     max-height: calc(100vh - 140px);
   }
 }
+
+/* LP-3.0.1: Attribute save error with validation details */
+.attr-save-error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 12px 16px;
+  font-size: 14px;
+}
+
+.attr-save-error strong {
+  font-weight: 600;
+}
+
+.attr-save-error .validation-details {
+  margin-top: 8px;
+}
+
+.attr-save-error .validation-details summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: #856404;
+}
+
+.attr-save-error .validation-details pre.monospace {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
