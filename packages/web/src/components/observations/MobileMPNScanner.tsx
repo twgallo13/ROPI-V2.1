@@ -28,6 +28,15 @@ interface MobileMPNScannerProps {
   apiBaseUrl?: string;
 }
 
+// Debounce helper
+function debounce<T extends (...args: string[]) => void>(fn: T, delay: number): T {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return ((...args: string[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  }) as T;
+}
+
 // Check if native BarcodeDetector is available
 const hasNativeBarcodeDetector = 'BarcodeDetector' in window;
 
@@ -42,6 +51,12 @@ export default function MobileMPNScanner({
   const [isLoading, setIsLoading] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
+  
+  // LP-1.1.10: Autocomplete state
+  const [searchResults, setSearchResults] = useState<ScannedProduct[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,7 +81,7 @@ export default function MobileMPNScanner({
     setIsCameraReady(false);
   }, []);
 
-  // Lookup product by MPN
+  // Lookup product by MPN (exact match)
   const lookupProduct = useCallback(async (mpn: string): Promise<ScannedProduct | null> => {
     const cleanMpn = mpn.trim();
     if (!cleanMpn) return null;
@@ -89,12 +104,69 @@ export default function MobileMPNScanner({
       }
       
       const data = await response.json();
-      return data.product;
+      return data as ScannedProduct;
     } catch (err) {
       console.error('Product lookup error:', err);
       throw err;
     }
   }, [apiBaseUrl]);
+
+  // LP-1.1.10: Search products by partial MPN
+  const searchProducts = useCallback(async (query: string): Promise<ScannedProduct[]> => {
+    const cleanQuery = query.trim();
+    if (cleanQuery.length < 2) return [];
+    
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/products/search-mpn?q=${encodeURIComponent(cleanQuery)}&limit=10`,
+        { credentials: 'include' }
+      );
+      
+      if (!response.ok) {
+        console.error('Search error:', response.status);
+        return [];
+      }
+      
+      const data = await response.json();
+      return data.results || [];
+    } catch (err) {
+      console.error('Product search error:', err);
+      return [];
+    }
+  }, [apiBaseUrl]);
+
+  // LP-1.1.10: Debounced search handler
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      if (query.length < 2) {
+        setSearchResults([]);
+        setShowAutocomplete(false);
+        return;
+      }
+      
+      setIsSearching(true);
+      const results = await searchProducts(query);
+      setSearchResults(results);
+      setShowAutocomplete(results.length > 0);
+      setIsSearching(false);
+    }, 300),
+    [searchProducts]
+  );
+
+  // LP-1.1.10: Handle MPN input change with autocomplete
+  const handleMpnInputChange = useCallback((value: string) => {
+    setManualMpn(value);
+    setError(null);
+    debouncedSearch(value);
+  }, [debouncedSearch]);
+
+  // LP-1.1.10: Handle autocomplete selection
+  const handleAutocompleteSelect = useCallback((product: ScannedProduct) => {
+    setShowAutocomplete(false);
+    setSearchResults([]);
+    setManualMpn('');
+    onProductFound(product);
+  }, [onProductFound]);
 
   // Handle successful barcode scan
   const handleBarcodeScan = useCallback(async (code: string) => {
@@ -284,22 +356,72 @@ export default function MobileMPNScanner({
         </div>
       )}
 
-      {/* Manual mode */}
+      {/* Manual mode with autocomplete - LP-1.1.10 */}
       {mode === 'manual' && (
         <form className="manual-form" onSubmit={handleManualSubmit}>
-          <div className="form-group">
-            <label htmlFor="mpn-input">Enter MPN</label>
-            <input
-              id="mpn-input"
-              type="text"
-              className="mpn-input"
-              value={manualMpn}
-              onChange={(e) => setManualMpn(e.target.value)}
-              placeholder="e.g., ABC-12345"
-              autoFocus
-              autoComplete="off"
-              autoCapitalize="characters"
-            />
+          <div className="form-group autocomplete-container">
+            <label htmlFor="mpn-input">Search by MPN, SKU, or Product Name</label>
+            <div className="input-wrapper">
+              <input
+                id="mpn-input"
+                type="text"
+                className="mpn-input"
+                value={manualMpn}
+                onChange={(e) => handleMpnInputChange(e.target.value)}
+                onFocus={() => searchResults.length > 0 && setShowAutocomplete(true)}
+                onBlur={() => setTimeout(() => setShowAutocomplete(false), 200)}
+                placeholder="Type MPN, SKU, or product name..."
+                autoFocus
+                autoComplete="off"
+                autoCapitalize="characters"
+                aria-autocomplete="list"
+                aria-controls="mpn-autocomplete"
+                aria-expanded={showAutocomplete}
+              />
+              {isSearching && (
+                <span className="search-spinner" aria-label="Searching..." />
+              )}
+            </div>
+            
+            {/* Autocomplete dropdown - LP-1.1.10 */}
+            {showAutocomplete && searchResults.length > 0 && (
+              <ul
+                id="mpn-autocomplete"
+                className="autocomplete-list"
+                role="listbox"
+              >
+                {searchResults.map((product) => (
+                  <li
+                    key={product.id}
+                    role="option"
+                    className="autocomplete-item"
+                    onClick={() => handleAutocompleteSelect(product)}
+                  >
+                    {product.thumbnail && (
+                      <img
+                        src={product.thumbnail}
+                        alt=""
+                        className="autocomplete-thumb"
+                      />
+                    )}
+                    <div className="autocomplete-details">
+                      <span className="autocomplete-mpn">{product.product_mpn}</span>
+                      <span className="autocomplete-title">{product.title}</span>
+                      {product.brand && (
+                        <span className="autocomplete-brand">{product.brand}</span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            
+            {/* No results message */}
+            {manualMpn.length >= 2 && !isSearching && searchResults.length === 0 && showAutocomplete && (
+              <div className="autocomplete-empty">
+                No products found. Try a different search or enter exact MPN.
+              </div>
+            )}
           </div>
           
           <button
@@ -307,7 +429,7 @@ export default function MobileMPNScanner({
             className="lookup-btn"
             disabled={!manualMpn.trim() || isLoading}
           >
-            {isLoading ? 'Looking up...' : 'Find Product'}
+            {isLoading ? 'Looking up...' : 'Find by Exact MPN'}
           </button>
         </form>
       )}

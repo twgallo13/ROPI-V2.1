@@ -244,3 +244,113 @@
     font-size: 1.125rem;
   }
 }
+
+/* LP-1.1.10: Autocomplete styles */
+.autocomplete-container {
+  position: relative;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .mpn-input {
+  padding-right: 2.5rem;
+}
+
+.search-spinner {
+  position: absolute;
+  right: 1rem;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #3a3a3a;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.autocomplete-item:hover {
+  background: #3a3a3a;
+}
+
+.autocomplete-item:not(:last-child) {
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.autocomplete-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #1a1a1a;
+}
+
+.autocomplete-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.autocomplete-mpn {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.autocomplete-title {
+  font-size: 0.8125rem;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autocomplete-brand {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.autocomplete-empty {
+  padding: 1rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.875rem;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
