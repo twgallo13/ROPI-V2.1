@@ -3,6 +3,7 @@
  * Per AOSS Section 3.1 — Import Engine
  * 
  * LP-2.1.1: MPN-first validation — requires MPN, validates attributes against registry
+ * LP-2.1.8: Server-side import validation — validate CSV rows against registry
  * 
  * Handles CSV import, normalization, validation, and Firestore storage.
  */
@@ -10,6 +11,8 @@
 import * as admin from 'firebase-admin';
 import { v4 as uuidv4 } from 'uuid';
 import Papa from 'papaparse';
+import * as fs from 'fs';
+import * as path from 'path';
 import {
   buildImportRows,
   type ImportEngineRow,
@@ -18,6 +21,17 @@ import {
   type ValidationIssue,
 } from '@ropi-aoss/sdk';
 import { getAttribute } from './attributesService';
+import {
+  validateBatch,
+  clearRegistryCache,
+  type BatchValidationResult,
+  type RowValidationResult as ValidatorRowResult,
+} from './attributeValidator';
+
+/**
+ * LP-2.1.8: Re-export validator types
+ */
+export { BatchValidationResult, ValidatorRowResult };
 
 /**
  * LP-2.1.1: Import validation options
@@ -320,6 +334,42 @@ export async function validateImportRows(
     rowResults,
     hasBlockingErrors,
   };
+}
+
+/**
+ * LP-2.1.8: Validate CSV import against attribute registry
+ * 
+ * Validates rows before any Firestore writes.
+ * Produces per-row diagnostics with normalized values.
+ * 
+ * @param csvContent - CSV file content
+ * @param options - Validation options
+ * @returns Validation result with row diagnostics
+ */
+export async function validateCSVImport(
+  csvContent: string,
+  options: { saveReport?: boolean; reportDir?: string } = {}
+): Promise<BatchValidationResult> {
+  // Parse CSV
+  const csvData = parseCSV(csvContent);
+  
+  // Validate against registry
+  const validationResult = await validateBatch(csvData as Record<string, unknown>[]);
+  
+  // Save report if requested
+  if (options.saveReport) {
+    const dateStr = new Date().toISOString().split('T')[0];
+    const reportDir = options.reportDir || 
+      path.resolve(__dirname, `../../../../reports/attribute-inspections/${dateStr}`);
+    
+    fs.mkdirSync(reportDir, { recursive: true });
+    
+    const reportPath = path.join(reportDir, 'import-validation-diagnostics.json');
+    fs.writeFileSync(reportPath, JSON.stringify(validationResult, null, 2));
+    console.log(`📄 Validation diagnostics written to: ${reportPath}`);
+  }
+  
+  return validationResult;
 }
 
 /**

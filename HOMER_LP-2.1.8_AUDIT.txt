@@ -1,0 +1,150 @@
+# LP-2.1.8 SERVER-SIDE IMPORT VALIDATION - AUDIT FILE
+# Generated: 2025-12-21T12:30:23Z
+
+## TASK DEFINITION
+- Task ID: LP-2.1.8
+- Title: Server-side Import Validation
+- Purpose: Validate CSV import rows on the server against the canonical attribute registry
+         before persisting or applying rows.
+
+## DELIVERABLES
+
+### 1. Branch
+- Name: lp/2.1.8-import-validation
+- Base: aoss-main
+- Commit: 9cf3ac0
+
+### 2. Pull Request
+- PR #323: https://github.com/twgallo13/ROPI-V2.1/pull/323
+- Title: LP-2.1.8 — server: validate imports against attribute registry (mpn required, types, allowed values, import flag)
+- Status: Open
+
+### 3. Files Created
+- packages/api/src/services/attributeValidator.ts (670 lines)
+  - loadRegistryMap(): Fetches attribute definitions from Firestore
+  - validateRow(): Validates single row with all checks
+  - validateBatch(): Validates array of rows, produces BatchValidationResult
+  - Types: AttributeDefinition, RowValidationResult, BatchValidationResult
+
+- packages/api/test/importValidation.unit.test.ts (28 tests)
+  - MPN Validation: 4 tests
+  - Import Flag Validation: 2 tests
+  - Enum Validation: 5 tests
+  - MultiSelect Validation: 3 tests
+  - Number Validation: 3 tests
+  - Boolean Validation: 4 tests
+  - Date Validation: 2 tests
+  - Import Required Enforcement: 2 tests
+  - Unknown Attributes: 1 test
+  - Column Mapping: 2 tests
+
+- packages/api/test/importService.integration.test.ts (7 tests)
+  - CSV Parsing: 1 test
+  - Batch Validation: 2 tests
+  - Sample CSV File Processing: 2 tests
+  - Row Diagnostics: 2 tests
+
+- packages/api/test/fixtures/sample_import_mpn_validation.csv
+- tests/fixtures/sample_import_mpn_validation.csv
+
+### 4. Files Modified
+- packages/api/src/services/importService.ts
+  - Added imports: validateBatch, clearRegistryCache, BatchValidationResult, ValidatorRowResult
+  - Added function: validateCSVImport()
+
+- packages/api/src/endpoints/import.ts
+  - Added: dryRunHandler() for POST /api/admin/imports/dry-run
+  - Added: importDryRun Cloud Function export
+
+## VALIDATION FEATURES
+
+### MPN Required
+- Error code: mpn_required
+- All rows must have non-empty MPN column
+- Case-insensitive column matching (MPN, mpn)
+
+### Data Type Validation
+- string: Pass-through
+- number: Parses numeric strings, error on invalid
+- boolean: Accepts true/false, yes/no, 1/0
+- enum: Validates against allowed_values
+- multiSelect: Parses pipe|comma delimited, validates each value
+- date: Validates ISO 8601 format
+- currency: Parses numeric with optional currency symbol
+- json: Validates JSON string parsing
+
+### Enum/MultiSelect Validation
+- Validates against allowed_values array
+- Supports synonyms mapping from attribute definition
+- Case-insensitive matching
+- Non-strict: Warns on unknown values
+- Strict (import_strict: true): Errors on unknown values
+
+### Import Flag Enforcement
+- Error code: import_disabled
+- Rejects columns mapped to attributes with import: false
+
+### Import Required Enforcement
+- Error code: import_required
+- Errors when import_required: true attributes are missing from row
+
+### Per-Row Diagnostics
+- row: Row number (1-indexed)
+- status: 'valid' | 'warning' | 'invalid'
+- normalizedValues: Transformed values after validation
+- errors: Array of {code, column, message, value}
+- warnings: Array of {code, column, message, value}
+
+## TEST RESULTS
+- Unit Tests: 28/28 passing
+- Integration Tests: 7/7 passing
+- Total: 35/35 passing
+
+## API ENDPOINT
+
+### Dry-Run Validation
+POST /api/admin/imports/dry-run
+Content-Type: multipart/form-data
+Authorization: Bearer <token>
+Body: file=@import.csv
+
+Response:
+{
+  "summary": {
+    "totalRows": number,
+    "validRows": number,
+    "warningRows": number,
+    "invalidRows": number,
+    "errorCodes": Record<string, number>
+  },
+  "rows": RowValidationResult[]
+}
+
+## STAGING VALIDATION (PENDING)
+- Endpoint: https://ropi-aoss-staging.web.app/api/admin/imports/dry-run
+- Test file: tests/fixtures/sample_import_mpn_validation.csv
+- Output: reports/attribute-inspections/<date>/import-validation-diagnostics.json
+
+Note: Staging validation requires deployment. Dry-run endpoint available after
+functions deployment.
+
+## NOTES
+- SKIP_COLUMNS includes common non-attribute columns (mpn, sku, title, price, etc.)
+- COLUMN_TO_ATTRIBUTE maps common column names to attribute IDs
+- Registry cache auto-expires after 5 minutes (TTL_MS)
+- Pagination support in loadRegistryMap for large registries (PAGE_SIZE=500)
+
+## COMPLETION STATUS
+- [x] Branch created
+- [x] PR opened (#323)
+- [x] attributeValidator.ts implemented
+- [x] importService.ts updated
+- [x] import.ts endpoint added
+- [x] Unit tests passing (28/28)
+- [x] Integration tests passing (7/7)
+- [x] Sample CSV fixture created
+- [ ] Staging dry-run validation (requires deployment)
+- [x] Audit file created
+
+---
+End of LP-2.1.8 Audit

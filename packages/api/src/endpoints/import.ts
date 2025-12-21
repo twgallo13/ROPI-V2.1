@@ -2,6 +2,8 @@
  * Import Endpoint
  * Per AOSS API Spec — /api/import
  * 
+ * LP-2.1.8: Server-side import validation with dry-run support
+ * 
  * HTTP endpoint for uploading and processing RetailOps CSV imports.
  * Admin-only access.
  */
@@ -11,7 +13,7 @@ import cors from 'cors';
 import Busboy from 'busboy';
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
-import { processCSVImport } from '../services/importService';
+import { processCSVImport, validateCSVImport } from '../services/importService';
 
 // CORS handler for staging and production origins
 const corsHandler = cors({
@@ -130,12 +132,77 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
 }
 
 /**
+ * LP-2.1.8: Import dry-run validation endpoint
+ * POST /api/admin/imports/dry-run
+ * 
+ * Validates CSV against attribute registry without persisting.
+ * Returns per-row diagnostics.
+ */
+async function dryRunHandler(req: AuthenticatedRequest, res: ExpressResponse): Promise<void> {
+  try {
+    // Only accept POST
+    if (req.method !== 'POST') {
+      res.status(405).json({
+        error: 'Method Not Allowed',
+        message: 'Only POST requests are supported',
+      });
+      return;
+    }
+
+    // Verify content type
+    const contentType = req.headers['content-type'] || '';
+    if (!contentType.includes('multipart/form-data')) {
+      res.status(400).json({
+        error: 'Bad Request',
+        message: 'Content-Type must be multipart/form-data',
+      });
+      return;
+    }
+
+    // Parse upload
+    const { csvContent, fileName } = await parseUpload(req);
+
+    // Validate CSV (dry-run only)
+    const validationResult = await validateCSVImport(csvContent, { saveReport: true });
+
+    // Return validation diagnostics
+    res.status(200).json({
+      success: true,
+      mode: 'dry-run',
+      fileName,
+      ...validationResult,
+    });
+  } catch (error) {
+    console.error('Import validation failed:', error);
+    
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
+    res.status(500).json({
+      error: 'Validation Failed',
+      message: errorMessage,
+    });
+  }
+}
+
+/**
  * Export Cloud Function with admin auth middleware and CORS
  */
 export const importCSV = functions.https.onRequest((req, res) => {
   corsHandler(req as any, res as any, async () => {
     await requireAdmin(req, res, async () => {
       await importHandler(req as unknown as AuthenticatedRequest, res);
+    });
+  });
+});
+
+/**
+ * LP-2.1.8: Dry-run validation endpoint
+ * POST /api/admin/imports/dry-run
+ */
+export const importDryRun = functions.https.onRequest((req, res) => {
+  corsHandler(req as any, res as any, async () => {
+    await requireAdmin(req, res, async () => {
+      await dryRunHandler(req as unknown as AuthenticatedRequest, res);
     });
   });
 });

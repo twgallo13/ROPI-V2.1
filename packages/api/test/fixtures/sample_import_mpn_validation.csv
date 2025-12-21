@@ -1,0 +1,7 @@
+MPN,SKU,Product Name,Brand,Description,Gender,Department,Category,MSRP,Quantity,internal_notes
+DZ5485-410,SKU-001,Nike Air Max 270,Nike,Athletic sneaker with Air unit,Men,Footwear,Running Shoes,159.99,25,
+GX7918,SKU-002,Adidas Ultraboost,Adidas,Premium running shoe,Women's,Footwear,Running Shoes,190.00,30,
+,SKU-003,Product Without MPN,Generic,Missing MPN field,Men,Footwear,Casual,49.99,10,
+380462-03,SKU-004,Puma RS-X,Puma,Chunky sneaker,InvalidGender,Footwear,Sneakers,110.00,15,
+TEST-001,SKU-005,Test Product,TestBrand,Product with import:false attr,Men,Apparel,Tops,75.00,20,This should fail
+555088-001,SKU-006,Jordan 1,Nike,Classic basketball shoe,Unisex,Footwear,Basketball,170.00,40,
