@@ -8,12 +8,10 @@
 const esbuild = require('esbuild');
 const path = require('path');
 
-esbuild.build({
-  entryPoints: ['src/index.ts'],
+const commonOptions = {
   bundle: true,
   platform: 'node',
   target: 'node20',
-  outfile: 'dist/index.js',
   format: 'cjs',
   sourcemap: true,
   alias: {
@@ -51,4 +49,22 @@ esbuild.build({
   ],
   resolveExtensions: ['.ts', '.js'],
   logLevel: 'info',
+};
+
+// Build main index
+esbuild.build({
+  ...commonOptions,
+  entryPoints: ['src/index.ts'],
+  outfile: 'dist/index.js',
+}).catch(() => process.exit(1));
+
+// Build task files separately for CLI usage
+esbuild.build({
+  ...commonOptions,
+  entryPoints: [
+    'src/tasks/syncAttributeRegistry.ts',
+    'src/tasks/migrateProductsToAttributes.ts',
+    'src/tasks/normalizeProductAttributeValues.ts',
+  ],
+  outdir: 'dist/tasks',
 }).catch(() => process.exit(1));
