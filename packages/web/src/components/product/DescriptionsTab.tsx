@@ -17,9 +17,12 @@ interface DescriptionsTabProps {
 }
 
 function DescriptionsTab({ product, onUpdate }: DescriptionsTabProps) {
+  // LP-3.0.2: Defensive guard for websites array
+  const websites = product.websites ?? [];
+
   return (
     <div className="editor-tab-content">
-      {product.websites.map(website => (
+      {websites.map(website => (
         <div key={website} className="form-section">
           <h3 className="form-section-title">{website}</h3>
           
