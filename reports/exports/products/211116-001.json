@@ -1,1 +1,77 @@
-{"id":"Classic Unfurgettable Clog","featured":false,"gender":"Men's","warehouseInv":5,"primaryColor":"BLACK","storeInv":79,"media":{},"variants":[],"isActive":true,"coreProduct":false,"promo":false,"shipping":{"expeditedOverride":false,"length":5,"width":5,"weight":5,"height":5,"standardOverride":false},"price":{"ricsRetail":0,"scomSale":0,"scomRegular":0},"department":"Footwear","fastfashion":false,"brand":"Crocs","class":"Sandals","map":false,"aiContext":{"featureBullets":[],"keywords":[],"designNotes":""},"lastReceived":"2025-11-11T08:00:00.000Z","descriptiveColor":"Black","launch":{},"mpn":"211116-001","tax":{"class":"Taxable Goods"},"ageGroup":"Adult","marketing":{"seo":"","title":"","paragraphDraft":"","paragraphFinal":"","bullets":[]},"hype":false,"familySizing":false,"name":"Classic Unfurgettable Clog","websites":["Shiekh.com"],"style":{"id":"Classic Unfurgettable Clog"},"category":"Clogs","firstReceived":"2025-11-13T08:00:00.000Z","status":"intake","lastUpdated":"2025-11-22T12:46:44.124Z","_migratedKeys":["descriptive.ageGroup->age_group","descriptive.closureType->closure_type","gender->descriptive.gender","heel_height->descriptive.heelHeight","heel_type->descriptive.heelType","material->descriptive.material","primary_color->descriptive.primaryColor","launch.launchDate->launch_date","sku_core.mpn->mpn","sku_core.brand->rics_source.brand","sku_core.category->rics_source.category","width->technical.width"],"_migratedAt":{"_seconds":1765269594,"_nanoseconds":774000000},"_meta":{"migratedAt":"2025-12-10T08:12:06.559Z","migratedBy":"lisa-homer"},"attributes":{"style":{"id":"Classic Unfurgettable Clog"},"mpn":"211116-001","category":"Clogs","brand":"Crocs","department":"Footwear","class":"Sandals","_migratedVersion":"1.0.0","_migratedAt":{"_seconds":1765254598,"_nanoseconds":206000000},"descriptive.gender":"Men's","age_group":"Adult","primary_color":"Black","_normalizedAt":{"_seconds":1765416018,"_nanoseconds":625000000},"gender":"Men's","primaryColor":"BLACK","_meta":{"gender":{"actor":"system:migrator","source":"migration","ts":"2025-12-21T11:58:33.231Z","method":"migrateProductsToAttributes","definition_version":"1.0.3","canonical":false},"_migration":{"actor":"system:migrator","source":"migration","ts":"2025-12-21T11:58:33.231Z","method":"migrateProductsToAttributes","definition_version":"1.0.3","canonical":false,"note":"LP-2.1.7 migration"},"primaryColor":{"actor":"system:migrator","source":"migration","ts":"2025-12-21T11:58:33.231Z","method":"migrateProductsToAttributes","definition_version":"1.0.3","canonical":false},"ageGroup":{"actor":"system:migrator","source":"migration","ts":"2025-12-21T11:58:33.231Z","method":"migrateProductsToAttributes","definition_version":"1.0.3","canonical":false}},"ageGroup":"Adult"}}
+Fetching product: 211116-001
+{
+  "id": "211116-001",
+  "mpn": "211116-001",
+  "attributes": {
+    "style": {
+      "id": "Classic Unfurgettable Clog"
+    },
+    "mpn": "211116-001",
+    "category": "Clogs",
+    "brand": "Crocs",
+    "department": "Footwear",
+    "class": "Sandals",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 206000000
+    },
+    "descriptive.gender": "Men's",
+    "age_group": "Adult",
+    "primary_color": "Black",
+    "_normalizedAt": {
+      "_seconds": 1765416018,
+      "_nanoseconds": 625000000
+    },
+    "gender": "Men's",
+    "primaryColor": "BLACK",
+    "_meta": {
+      "gender": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "ageGroup": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.231Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    },
+    "ageGroup": "Adult",
+    "overall": {}
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.559Z",
+    "migratedBy": "lisa-homer"
+  },
+  "brand": "Crocs",
+  "category": "Clogs",
+  "status": "intake",
+  "websites": [
+    "Shiekh.com"
+  ],
+  "fetchedAt": "2025-12-21T21:56:29.119Z"
+}

@@ -1,1 +1,54 @@
-{"id":"4254T1035","featured":false,"warehouseInv":1,"primaryColor":"Blue","storeInv":60,"media":{},"variants":[],"isActive":true,"coreProduct":false,"promo":false,"shipping":{"expeditedOverride":false,"length":0,"width":0,"weight":0,"height":0,"standardOverride":false},"price":{"ricsRetail":0,"scomSale":0,"scomRegular":0},"fastfashion":false,"brand":"PSD UNDERWEAR","map":false,"aiContext":{"featureBullets":[],"keywords":[],"designNotes":""},"lastReceived":"2025-11-13T08:00:00.000Z","launch":{},"mpn":"4254T1035","tax":{},"marketing":{"seo":"","title":"","paragraphDraft":"","paragraphFinal":"","bullets":[]},"hype":false,"familySizing":false,"name":"44a25a2f-2bcb-4681-9570-b314016d720a","style":{},"websites":[],"firstReceived":"2025-11-13T08:00:00.000Z","status":"intake","lastUpdated":"2025-11-23T06:08:20.727Z","_meta":{"migratedAt":"2025-12-10T08:12:06.730Z","migratedBy":"lisa-homer"},"attributes":{"style":{},"mpn":"4254T1035","brand":"PSD UNDERWEAR","_migratedVersion":"1.0.0","_migratedAt":{"_seconds":1765254598,"_nanoseconds":34000000},"primary_color":"Blue","primaryColor":"Blue","_meta":{"_migration":{"actor":"system:migrator","source":"migration","ts":"2025-12-21T11:58:33.588Z","method":"migrateProductsToAttributes","definition_version":"1.0.3","canonical":false,"note":"LP-2.1.7 migration"},"primaryColor":{"actor":"system:migrator","source":"migration","ts":"2025-12-21T11:58:33.588Z","method":"migrateProductsToAttributes","definition_version":"1.0.3","canonical":false}}}}
+Fetching product: 4254T1035
+{
+  "id": "4254T1035",
+  "mpn": "4254T1035",
+  "attributes": {
+    "style": {},
+    "mpn": "4254T1035",
+    "brand": "PSD UNDERWEAR",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 34000000
+    },
+    "primary_color": "Blue",
+    "primaryColor": "Blue",
+    "overall": {},
+    "_meta": {
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.588Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.588Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "overall": {
+        "ts": "2025-12-21T21:07:23.298Z",
+        "method": "LP-3.0.2.2-migration",
+        "definition_version": "1.0.3",
+        "source": "migration",
+        "actor": "system:migrator",
+        "canonical": false
+      }
+    }
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.730Z",
+    "migratedBy": "lisa-homer"
+  },
+  "brand": "PSD UNDERWEAR",
+  "category": "",
+  "status": "intake",
+  "websites": [],
+  "fetchedAt": "2025-12-21T21:56:29.988Z"
+}
