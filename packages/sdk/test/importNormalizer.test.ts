@@ -1,6 +1,8 @@
 /**
  * Import Normalizer Tests
  * Tests for CSV normalization and field mapping
+ * 
+ * LP-2.1.0: Added MPN-first tests
  */
 
 import { describe, it, expect } from 'vitest';
@@ -114,14 +116,29 @@ describe('Import Normalizer', () => {
 
   describe('deriveProductId', () => {
     it('should derive product ID from SKU', () => {
-      expect(deriveProductId('TEST-SKU-001')).toBe('test-sku-001');
-      expect(deriveProductId('NK_AIR_MAX')).toBe('nk-air-max');
-      expect(deriveProductId('Product 123')).toBe('product-123');
+      expect(deriveProductId({ sku: 'TEST-SKU-001' })).toBe('test-sku-001');
+      expect(deriveProductId({ sku: 'NK_AIR_MAX' })).toBe('nk-air-max');
+      expect(deriveProductId({ sku: 'Product 123' })).toBe('product-123');
     });
 
     it('should return undefined for empty SKU', () => {
-      expect(deriveProductId(undefined)).toBeUndefined();
-      expect(deriveProductId('')).toBeUndefined();
+      expect(deriveProductId({})).toBeUndefined();
+      expect(deriveProductId({ sku: '' })).toBeUndefined();
+    });
+
+    // LP-2.1.0: MPN-first tests
+    it('LP-2.1.0: should prefer MPN over SKU for product ID derivation', () => {
+      expect(deriveProductId({ mpn: 'MPN-123', sku: 'SKU-456' })).toBe('mpn-123');
+    });
+
+    it('LP-2.1.0: should derive product ID from MPN when no SKU', () => {
+      expect(deriveProductId({ mpn: 'NK-AIR-MAX-270' })).toBe('nk-air-max-270');
+      expect(deriveProductId({ mpn: 'PRODUCT_MPN_001' })).toBe('product-mpn-001');
+    });
+
+    it('LP-2.1.0: should fall back to SKU when MPN is empty', () => {
+      expect(deriveProductId({ mpn: '', sku: 'FALLBACK-SKU' })).toBe('fallback-sku');
+      expect(deriveProductId({ mpn: undefined, sku: 'SKU-ONLY' })).toBe('sku-only');
     });
   });
 
@@ -150,6 +167,7 @@ describe('Import Normalizer', () => {
   describe('validateRequiredFields', () => {
     it('should return empty array for valid row', () => {
       const normalized = {
+        mpn: 'MPN-001',
         sku: 'TEST-001',
         title: 'Product',
         brand: 'Brand',
@@ -161,7 +179,7 @@ describe('Import Normalizer', () => {
 
     it('should return missing required fields', () => {
       const normalized = {
-        sku: 'TEST-001',
+        mpn: 'MPN-001',
         // title missing
         // brand missing
       };
@@ -169,6 +187,63 @@ describe('Import Normalizer', () => {
       const missing = validateRequiredFields(normalized);
       expect(missing).toContain('title');
       expect(missing).toContain('brand');
+    });
+
+    // LP-2.1.0: MPN-first required field tests
+    it('LP-2.1.0: should require MPN for import', () => {
+      const normalized = {
+        sku: 'SKU-001',
+        title: 'Product',
+        brand: 'Brand',
+        // mpn missing
+      };
+
+      const missing = validateRequiredFields(normalized);
+      expect(missing).toContain('mpn');
+    });
+
+    it('LP-2.1.0: should not require SKU (optional)', () => {
+      const normalized = {
+        mpn: 'MPN-001',
+        title: 'Product',
+        brand: 'Brand',
+        // sku intentionally missing — should be OK
+      };
+
+      const missing = validateRequiredFields(normalized);
+      expect(missing).not.toContain('sku');
+      expect(missing).toEqual([]);
+    });
+
+    it('LP-2.1.0: row with MPN only (no SKU) normalizes correctly', () => {
+      const sourceColumns: ImportSourceColumns = {
+        'MPN': 'MPN-ONLY-001',
+        'Product Name': 'MPN Only Product',
+        'Brand': 'Test Brand',
+      };
+
+      const normalized = normalizeImportRow(sourceColumns);
+      const missing = validateRequiredFields(normalized);
+
+      expect(normalized.mpn).toBe('MPN-ONLY-001');
+      expect(normalized.sku).toBeUndefined();
+      expect(missing).toEqual([]);
+    });
+
+    it('LP-2.1.0: row without MPN yields missing required field', () => {
+      const sourceColumns: ImportSourceColumns = {
+        'SKU': 'SKU-ONLY-001',
+        'Product Name': 'SKU Only Product',
+        'Brand': 'Test Brand',
+        // MPN missing
+      };
+
+      const normalized = normalizeImportRow(sourceColumns);
+      const missing = validateRequiredFields(normalized);
+
+      expect(normalized.sku).toBe('SKU-ONLY-001');
+      expect(normalized.mpn).toBeUndefined();
+      expect(missing).toContain('mpn');
     });
   });
 });

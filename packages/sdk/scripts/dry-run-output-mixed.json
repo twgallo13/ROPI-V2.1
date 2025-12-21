@@ -1,0 +1,224 @@
+{
+  "summary": {
+    "totalRows": 7,
+    "validRows": 4,
+    "invalidRows": 3,
+    "mpnOnly": 1,
+    "skuOnly": 2,
+    "bothMpnAndSku": 3,
+    "neitherMpnNorSku": 1,
+    "missingMpnCount": 3
+  },
+  "rows": [
+    {
+      "lineNumber": 2,
+      "source": {
+        "MPN": "NK-AIR-MAX-270",
+        "SKU": "SKU-001",
+        "Product Name": "Nike Air Max 270 - Black",
+        "Brand": "Nike",
+        "Description": "Premium running sneaker",
+        "MSRP": "159.99",
+        "Quantity": "25"
+      },
+      "normalized": {
+        "mpn": "NK-AIR-MAX-270",
+        "sku": "SKU-001",
+        "title": "Nike Air Max 270 - Black",
+        "brand": "Nike",
+        "description": "Premium running sneaker",
+        "msrp": 159.99,
+        "currency": "USD",
+        "quantity": 25
+      },
+      "productId": "nk-air-max-270",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": true,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 3,
+      "source": {
+        "MPN": "",
+        "SKU": "SKU-002",
+        "Product Name": "Product Without MPN",
+        "Brand": "Generic",
+        "Description": "Missing MPN field",
+        "MSRP": "49.99",
+        "Quantity": "10"
+      },
+      "normalized": {
+        "sku": "SKU-002",
+        "title": "Product Without MPN",
+        "brand": "Generic",
+        "description": "Missing MPN field",
+        "msrp": 49.99,
+        "currency": "USD",
+        "quantity": 10
+      },
+      "productId": "sku-002",
+      "validation": {
+        "isValid": false,
+        "missingRequired": [
+          "mpn"
+        ],
+        "hasMpn": false,
+        "hasSku": true,
+        "productIdSource": "sku"
+      }
+    },
+    {
+      "lineNumber": 4,
+      "source": {
+        "MPN": "ADIDAS-UB-21",
+        "SKU": "",
+        "Product Name": "Adidas Ultraboost - No SKU",
+        "Brand": "Adidas",
+        "Description": "Product with MPN only",
+        "MSRP": "190.00",
+        "Quantity": "30"
+      },
+      "normalized": {
+        "mpn": "ADIDAS-UB-21",
+        "title": "Adidas Ultraboost - No SKU",
+        "brand": "Adidas",
+        "description": "Product with MPN only",
+        "msrp": 190,
+        "currency": "USD",
+        "quantity": 30
+      },
+      "productId": "adidas-ub-21",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": false,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 5,
+      "source": {
+        "MPN": "",
+        "SKU": "",
+        "Product Name": "No MPN or SKU Product",
+        "Brand": "Unknown",
+        "Description": "Both MPN and SKU missing",
+        "MSRP": "0.00",
+        "Quantity": "0"
+      },
+      "normalized": {
+        "title": "No MPN or SKU Product",
+        "brand": "Unknown",
+        "description": "Both MPN and SKU missing",
+        "msrp": 0,
+        "currency": "USD",
+        "quantity": 0
+      },
+      "validation": {
+        "isValid": false,
+        "missingRequired": [
+          "mpn"
+        ],
+        "hasMpn": false,
+        "hasSku": false,
+        "productIdSource": "none"
+      }
+    },
+    {
+      "lineNumber": 6,
+      "source": {
+        "MPN": "NK-JORDAN-1",
+        "SKU": "SKU-005",
+        "Product Name": "Jordan Retro 1 High",
+        "Brand": "Jordan",
+        "Description": "Classic basketball shoe",
+        "MSRP": "180.00",
+        "Quantity": "15"
+      },
+      "normalized": {
+        "mpn": "NK-JORDAN-1",
+        "sku": "SKU-005",
+        "title": "Jordan Retro 1 High",
+        "brand": "Jordan",
+        "description": "Classic basketball shoe",
+        "msrp": 180,
+        "currency": "USD",
+        "quantity": 15
+      },
+      "productId": "nk-jordan-1",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": true,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 7,
+      "source": {
+        "MPN": "",
+        "SKU": "SKU-006",
+        "Product Name": "Another Missing MPN",
+        "Brand": "Brand X",
+        "Description": "Product without MPN",
+        "MSRP": "75.00",
+        "Quantity": "5"
+      },
+      "normalized": {
+        "sku": "SKU-006",
+        "title": "Another Missing MPN",
+        "brand": "Brand X",
+        "description": "Product without MPN",
+        "msrp": 75,
+        "currency": "USD",
+        "quantity": 5
+      },
+      "productId": "sku-006",
+      "validation": {
+        "isValid": false,
+        "missingRequired": [
+          "mpn"
+        ],
+        "hasMpn": false,
+        "hasSku": true,
+        "productIdSource": "sku"
+      }
+    },
+    {
+      "lineNumber": 8,
+      "source": {
+        "MPN": "PUMA-RS-X",
+        "SKU": "SKU-007",
+        "Product Name": "Puma RS-X - Multi",
+        "Brand": "Puma",
+        "Description": "Bold chunky sneaker",
+        "MSRP": "120.00",
+        "Quantity": "20"
+      },
+      "normalized": {
+        "mpn": "PUMA-RS-X",
+        "sku": "SKU-007",
+        "title": "Puma RS-X - Multi",
+        "brand": "Puma",
+        "description": "Bold chunky sneaker",
+        "msrp": 120,
+        "currency": "USD",
+        "quantity": 20
+      },
+      "productId": "puma-rs-x",
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": true,
+        "productIdSource": "mpn"
+      }
+    }
+  ]
+}

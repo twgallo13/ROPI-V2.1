@@ -1,0 +1,8 @@
+MPN,SKU,Product Name,Brand,Description,MSRP,Quantity
+NK-AIR-MAX-270,SKU-001,"Nike Air Max 270 - Black",Nike,"Premium running sneaker",159.99,25
+,SKU-002,"Product Without MPN",Generic,"Missing MPN field",49.99,10
+ADIDAS-UB-21,,"Adidas Ultraboost - No SKU",Adidas,"Product with MPN only",190.00,30
+,,"No MPN or SKU Product",Unknown,"Both MPN and SKU missing",0.00,0
+NK-JORDAN-1,SKU-005,"Jordan Retro 1 High",Jordan,"Classic basketball shoe",180.00,15
+,SKU-006,"Another Missing MPN",Brand X,"Product without MPN",75.00,5
+PUMA-RS-X,SKU-007,"Puma RS-X - Multi",Puma,"Bold chunky sneaker",120.00,20
