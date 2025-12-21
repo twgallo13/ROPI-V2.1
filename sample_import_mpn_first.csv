@@ -1,0 +1,4 @@
+MPN,SKU,Product Name,Brand,Description,MSRP,Quantity
+MPNA-001,SKU-A1,Sample Product A,Brand A,Sample product with both MPN and SKU,49.99,10
+,SKU-B1,Sample Product B,Brand B,Missing MPN field - should fail,29.99,5
+MPNC-003,SKU-C3,Sample Product C,Brand C,Another valid product with MPN,99.99,20
