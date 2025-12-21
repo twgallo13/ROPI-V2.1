@@ -29,7 +29,8 @@ admin.initializeApp();
 export const api = functions.https.onRequest(apiApp);
 
 // Export API endpoints
-export { importCSV } from './endpoints/import';
+export { importCSV, importDryRun } from './endpoints/import';
+export { exportApi, exportDryRun, exportRun } from './endpoints/export';
 
 /**
  * Process Import Batch - Convert import rows to products

@@ -78,6 +78,14 @@ import {
   getBatchStatusHandler,
 } from './endpoints/processImportBatch';
 import { retailopsImportPreviewApiHandler } from './endpoints/retailopsImportPreview';
+import { dryRunHandler } from './endpoints/import';
+
+// Export handlers (LP-2.1.9)
+import {
+  dryRunExportHandler,
+  runExportHandler,
+  previewExportHandler,
+} from './endpoints/export';
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 
 // Reconciliation (Homer v1.0.0)
@@ -202,6 +210,13 @@ api.post('/syncAttributeRegistry', async (req, res) => {
  * RetailOps endpoints
  */
 api.post('/retailops/import-preview', requireAdmin, retailopsImportPreviewApiHandler);
+
+/**
+ * Export endpoints (LP-2.1.9)
+ */
+api.post('/admin/exports/dry-run', requireAdmin, dryRunExportHandler);
+api.post('/admin/exports', requireAdmin, runExportHandler);
+api.get('/admin/exports/preview', requireAdmin, previewExportHandler);
 
 /**
  * Attribute Reconciliation endpoints (Homer v1.0.0)
