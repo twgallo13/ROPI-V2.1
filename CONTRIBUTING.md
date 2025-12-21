@@ -184,27 +184,80 @@ pnpm --filter @ropi-aoss/web test:e2e:debug
 
 ## Branch Naming Convention
 
-All branches **must** follow this pattern:
+All branches **must** follow one of these patterns:
+
+### LP (Launch Prompt) Branches
+
+For structured sprint work tracked by version:
+
+```
+lp/<version>-<short-desc>
+```
+
+**Examples:**
+```
+lp/2.0.1-firestore-lockdown     ✅ Firestore rules update
+lp/2.0.2-registry-normalize     ✅ Registry sync normalization
+lp/2.0.3-provenance             ✅ Attribute provenance
+```
+
+### Feature Branches
+
+For general feature development:
 
 ```
 feature/<slug>
 ```
 
-### Valid Examples
+**Examples:**
+```
+feature/auth-login              ✅ Authentication feature
+feature/infra/repo-workflow     ✅ Infrastructure work
+feature/frontend/product-editor ✅ Frontend feature
+```
+
+### Invalid Branch Names
 
 ```
-feature/auth-login
-feature/infra/repo-workflow-guard
-feature/frontend/product-editor
-```
-
-### Invalid Examples
-
-```
-fix-bug                    ❌ Missing 'feature/' prefix
+fix-bug                    ❌ Missing prefix
 dev/my-changes             ❌ Wrong prefix
 Feature/my-branch          ❌ Must be lowercase
+LP/2.0.1-test              ❌ LP must be lowercase 'lp'
 ```
+
+---
+
+## LP (Launch Prompt) PRs
+
+LP PRs follow a stricter process with required staging validation.
+
+### LP PR Title Format
+
+```
+LP-X.X.X: Short description
+```
+
+**Examples:**
+```
+LP-2.0.1: Firestore — restrict product writes to admin/server
+LP-2.0.2: Sync — normalize data_type tokens & add definition_version
+```
+
+### LP PR Requirements
+
+Every LP PR **must** include:
+
+1. **LP Version ID** in title (e.g., `LP-2.0.1`)
+2. **Staging validation evidence** (see [STAGING_CHECKLIST.md](.github/STAGING_CHECKLIST.md))
+3. **Firestore backup** before deployment
+4. **Firebase deploy logs** for staging
+5. **Validation test results** (PASS/FAIL)
+
+### LP Merge Strategy
+
+- **Squash merge** for all LP branches
+- Branch must be deleted after merge
+- CI must pass before merge
 
 ---
 
