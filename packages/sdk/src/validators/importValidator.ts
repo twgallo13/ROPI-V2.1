@@ -2,6 +2,8 @@
  * Import Row Validator
  * Per AOSS Section 2.2 — Attribute Validation Schema
  * 
+ * LP-2.1.0: MPN-first — MPN is required, SKU is optional
+ * 
  * Validates normalized import rows and generates validation issues.
  */
 
@@ -27,20 +29,60 @@ function createIssue(
 }
 
 /**
- * Validate SKU format and uniqueness
+ * Validate MPN (Manufacturer Part Number) - REQUIRED per LP-2.1.0
  */
-function validateSKU(sku: string | undefined): ValidationIssue[] {
+function validateMPN(mpn: string | undefined): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   
-  if (!sku) {
+  if (!mpn) {
     issues.push(
       createIssue(
         'MISSING_REQUIRED_FIELD',
         'error',
-        'sku',
-        'SKU is required'
+        'mpn',
+        'MPN (Manufacturer Part Number) is required'
       )
     );
+    return issues;
+  }
+  
+  // Check MPN format (basic alphanumeric + hyphens/underscores)
+  if (!/^[A-Z0-9\-_]+$/i.test(mpn)) {
+    issues.push(
+      createIssue(
+        'INVALID_FORMAT',
+        'error',
+        'mpn',
+        'MPN must contain only alphanumeric characters, hyphens, and underscores',
+        mpn
+      )
+    );
+  }
+  
+  // Check MPN length
+  if (mpn.length < 2 || mpn.length > 50) {
+    issues.push(
+      createIssue(
+        'INVALID_VALUE',
+        'error',
+        'mpn',
+        'MPN must be between 2 and 50 characters',
+        mpn
+      )
+    );
+  }
+  
+  return issues;
+}
+
+/**
+ * Validate SKU format (OPTIONAL per LP-2.1.0)
+ */
+function validateSKU(sku: string | undefined): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  
+  // LP-2.1.0: SKU is optional, so no error if missing
+  if (!sku) {
     return issues;
   }
   
@@ -364,6 +406,8 @@ function validateMedia(normalized: ImportNormalizedFields): ValidationIssue[] {
 /**
  * Validate a normalized import row
  * 
+ * LP-2.1.0: MPN-first — MPN is required, SKU is optional
+ * 
  * @param normalized - Normalized fields to validate
  * @returns Validation results with errors and warnings
  */
@@ -373,8 +417,9 @@ export function validateImportRow(
   const errors: ValidationIssue[] = [];
   const warnings: ValidationIssue[] = [];
   
-  // Validate core required fields
-  const skuIssues = validateSKU(normalized.sku);
+  // Validate core required fields (LP-2.1.0: MPN is now required)
+  const mpnIssues = validateMPN(normalized.mpn);
+  const skuIssues = validateSKU(normalized.sku); // Optional but validated if present
   const titleIssues = validateTitle(normalized.title);
   const brandIssues = validateBrand(normalized.brand);
   
@@ -386,6 +431,7 @@ export function validateImportRow(
   
   // Separate errors and warnings from all issues
   const allIssues = [
+    ...mpnIssues,
     ...skuIssues,
     ...titleIssues,
     ...brandIssues,

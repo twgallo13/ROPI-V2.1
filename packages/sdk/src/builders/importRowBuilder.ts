@@ -73,8 +73,8 @@ export function buildImportRow(
     validation.isValid = false;
   }
   
-  // Derive product ID from SKU
-  const productId = deriveProductId(normalized.sku);
+  // Derive product ID from MPN (preferred) or SKU (fallback) — LP-2.1.0
+  const productId = deriveProductId({ mpn: normalized.mpn, sku: normalized.sku });
   
   // Build metadata
   const meta: ImportRowMeta = {

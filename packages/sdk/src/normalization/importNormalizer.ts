@@ -10,10 +10,16 @@ import type { ImportSourceColumns, ImportNormalizedFields, ColumnMapping } from 
 /**
  * Default column mappings for RetailOps CSV
  * Maps common RO column names to AOSS normalized fields
+ * 
+ * LP-2.1.0: MPN-first — MPN is required, SKU is optional
+ * MPN is the canonical product identifier per Product Schema / Attribute Registry
  */
 export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
-  // Core fields
-  { sourceColumn: 'SKU', targetField: 'sku', required: true, transform: 'trim' },
+  // Core fields — MPN is required (LP-2.1.0), SKU is optional
+  { sourceColumn: 'MPN', targetField: 'mpn', required: true, transform: 'trim' },
+  { sourceColumn: 'mpn', targetField: 'mpn', required: true, transform: 'trim' },
+  { sourceColumn: 'Manufacturer Part Number', targetField: 'mpn', required: true, transform: 'trim' },
+  { sourceColumn: 'SKU', targetField: 'sku', required: false, transform: 'trim' },
   { sourceColumn: 'Product Name', targetField: 'title', required: true, transform: 'trim' },
   { sourceColumn: 'Brand', targetField: 'brand', required: true, transform: 'trim' },
   { sourceColumn: 'Description', targetField: 'description', transform: 'trim' },
@@ -28,9 +34,6 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   { sourceColumn: 'Color', targetField: 'color', transform: 'trim' },
   { sourceColumn: 'Size', targetField: 'size', transform: 'trim' },
   { sourceColumn: 'Material', targetField: 'material', transform: 'trim' },
-  { sourceColumn: 'MPN', targetField: 'mpn', transform: 'trim' },
-  { sourceColumn: 'mpn', targetField: 'mpn', transform: 'trim' },
-  { sourceColumn: 'Manufacturer Part Number', targetField: 'mpn', transform: 'trim' },
   
   // Pricing
   { sourceColumn: 'MSRP', targetField: 'msrp', transform: 'number' },
@@ -142,20 +145,22 @@ export function normalizeImportRow(
 }
 
 /**
- * Derive product ID from SKU
- * Per AOSS Section 3.1 — SKU is the unique key for products
+ * Derive product ID from MPN (preferred) or SKU (fallback)
+ * LP-2.1.0: MPN-first — prefer MPN for productId derivation
+ * Per Product Schema / Attribute Registry — MPN is canonical
  * 
- * @param sku - Product SKU
+ * @param options - Object containing mpn and/or sku
  * @returns Product ID for use in products/{productId}
  */
-export function deriveProductId(sku: string | undefined): string | undefined {
-  if (!sku) {
+export function deriveProductId({ mpn, sku }: { mpn?: string; sku?: string }): string | undefined {
+  const source = mpn || sku;
+  if (!source) {
     return undefined;
   }
   
-  // Convert SKU to lowercase and replace non-alphanumeric with hyphens
+  // Convert source to lowercase and replace non-alphanumeric with hyphens
   // e.g., "NK-AIR-MAX-270-BLK-10" -> "nk-air-max-270-blk-10"
-  return sku.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return String(source).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 /**
@@ -175,22 +180,22 @@ export function isEmptyRow(sourceColumns: ImportSourceColumns): boolean {
  * 
  * @param normalized - Normalized fields
  * @param mappings - Column mappings (to check required fields)
- * @returns Array of missing required field names
+ * @returns Array of missing required field names (deduplicated)
  */
 export function validateRequiredFields(
   normalized: ImportNormalizedFields,
   mappings: ColumnMapping[] = DEFAULT_COLUMN_MAPPINGS
 ): string[] {
-  const missingFields: string[] = [];
+  const missingFields = new Set<string>();
   
   for (const mapping of mappings) {
     if (mapping.required) {
       const value = normalized[mapping.targetField];
       if (value === undefined || value === null || value === '') {
-        missingFields.push(mapping.targetField);
+        missingFields.add(mapping.targetField);
       }
     }
   }
   
-  return missingFields;
+  return Array.from(missingFields);
 }
