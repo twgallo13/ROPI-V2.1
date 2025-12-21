@@ -124,6 +124,7 @@ export async function createAttributeHandler(req: Request, res: Response) {
 /**
  * PUT /admin/settings/attributes/:id
  * Update an existing attribute
+ * LP-3.0.1: Coerce client shapes (allowed_values/synonyms strings) and return structured errors
  */
 export async function updateAttributeHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
@@ -131,19 +132,45 @@ export async function updateAttributeHandler(req: Request, res: Response) {
       const attributeId = req.params.id;
       if (!attributeId) {
         res.status(400).json({
+          ok: false,
           error: 'INVALID_REQUEST',
           message: 'Attribute ID is required',
+          details: null,
         });
         return;
       }
 
-      const patch = req.body;
-      if (!patch || typeof patch !== 'object') {
+      const payload = { ...req.body };
+      if (!payload || typeof payload !== 'object') {
         res.status(400).json({
+          ok: false,
           error: 'VALIDATION_ERROR',
           message: 'Request body must be an object',
+          details: null,
         });
         return;
+      }
+
+      // LP-3.0.1: Coerce common client shapes for allowed_values
+      if (typeof payload.allowed_values === 'string') {
+        payload.allowed_values = payload.allowed_values
+          .split(',')
+          .map((s: string) => s.trim())
+          .filter(Boolean);
+      }
+
+      // LP-3.0.1: Coerce common client shapes for synonyms
+      if (payload.synonyms && typeof payload.synonyms === 'string') {
+        try {
+          // If client sent JSON-like string, attempt parse
+          payload.synonyms = JSON.parse(payload.synonyms);
+        } catch {
+          // Fallback: "a,b,c" -> ["a","b","c"]
+          payload.synonyms = payload.synonyms
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
+        }
       }
 
       const authReq = req as AuthenticatedRequest;
@@ -155,26 +182,47 @@ export async function updateAttributeHandler(req: Request, res: Response) {
       // Merge existing + patch. Give precedence to patch.
       const merged = {
         ...existing,
-        ...patch,
+        ...payload,
         attribute_id: attributeId, // ensure ID unchanged
       };
 
       // Validate merged object using AttributeSchema (via validateAttributeData)
       const validation = validateAttributeData(merged);
       if (!validation.success) {
+        console.error('Attribute validation failed:', JSON.stringify(validation.errors));
         res.status(400).json({
-          error: 'VALIDATION_ERROR',
+          ok: false,
+          error: 'validation_failed',
           message: 'Invalid attribute data',
-          errors: validation.errors,
+          details: validation.errors,
         });
         return;
       }
 
       // Update attribute with validated data so defaults are applied
       const updated = await updateAttribute(attributeId, validation.data as any, actor);
-      res.status(200).json(updated);
+      res.status(200).json({ ok: true, attribute: updated });
     } catch (error) {
-      handleServiceError(error, res);
+      console.error('Attribute update failed:', error);
+      // Extract structured validation details if present
+      const err = error as any;
+      const details = err?.issues || err?.errors || null;
+      
+      if (error instanceof ServiceError) {
+        res.status(error.statusCode).json({
+          ok: false,
+          error: error.code,
+          message: error.message,
+          details,
+        });
+        return;
+      }
+      
+      res.status(400).json({
+        ok: false,
+        error: err?.message || 'validation_failed',
+        details,
+      });
     }
   });
 }
