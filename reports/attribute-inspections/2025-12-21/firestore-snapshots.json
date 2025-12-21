@@ -1,0 +1,128 @@
+{
+  "age_group": {
+    "attribute_id": "age_group",
+    "label": "Age Group",
+    "external_header": "Age Group",
+    "import_required": false,
+    "ai_usage_notes": "Used for Google Shopping feed and age-appropriate product descriptions.",
+    "status": "active",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:17.705Z",
+    "updatedBy": "system",
+    "allowed_values": [
+      "Adult",
+      "Grade-School",
+      "Infant",
+      "Kids",
+      "Pre-School",
+      "Toddler"
+    ],
+    "required_for_export": true,
+    "synonyms": [
+      "ageGroup",
+      "age-group"
+    ],
+    "canonical": true,
+    "required_for_completion": true,
+    "category": "identity_demographic",
+    "aliases": [
+      "ageGroup",
+      "age-group"
+    ],
+    "definition_version": "1.0.3",
+    "data_type": "enum",
+    "source": "repo",
+    "original_id": "age_group",
+    "updatedAt": "2025-12-21T11:23:11.895Z"
+  },
+  "primary_color": {
+    "attribute_id": "primary_color",
+    "label": "Primary Color",
+    "import_required": true,
+    "ai_usage_notes": "Primary visible color for search and filtering. Use standardized color names.",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:18.043Z",
+    "updatedBy": "system",
+    "deprecationReason": "Consolidated as duplicate (same label)",
+    "replacedBy": "descriptive.primaryColor",
+    "deprecated": true,
+    "deprecatedAt": "2025-12-09T08:43:45.716Z",
+    "status": "active",
+    "allowed_values": [
+      "Beige",
+      "Black",
+      "Blue",
+      "Bronze",
+      "Brown",
+      "Clear",
+      "Cream",
+      "Cyan",
+      "Floral",
+      "Gold",
+      "Gray",
+      "Green",
+      "Grey",
+      "Metallic",
+      "Multi Color",
+      "Navy",
+      "None",
+      "Off-White",
+      "Orange",
+      "Pink",
+      "Print",
+      "Purple",
+      "Red",
+      "Silver",
+      "Transparent",
+      "Turquoise",
+      "Wheat",
+      "White",
+      "Yellow"
+    ],
+    "required_for_export": true,
+    "external_header": "Primary Color",
+    "synonyms": [
+      "color",
+      "main_color",
+      "colour"
+    ],
+    "canonical": true,
+    "required_for_completion": true,
+    "category": "color",
+    "aliases": [
+      "color",
+      "main_color",
+      "colour"
+    ],
+    "definition_version": "1.0.3",
+    "data_type": "enum",
+    "source": "repo",
+    "original_id": "primary_color",
+    "updatedAt": "2025-12-21T11:23:12.040Z"
+  },
+  "descriptive_color": {
+    "allowed_values": [],
+    "attribute_id": "descriptive_color",
+    "status": "active",
+    "updatedBy": "system",
+    "import_required": false,
+    "synonyms": [
+      "descriptiveColor"
+    ],
+    "canonical": true,
+    "label": "Descriptive Color",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "external_header": "Descriptive Color",
+    "category": "color",
+    "ai_usage_notes": "Used for copy & AI (more descriptive color phrasing than primary_color).",
+    "aliases": [
+      "descriptiveColor"
+    ],
+    "definition_version": "1.0.3",
+    "data_type": "string",
+    "source": "repo",
+    "original_id": "descriptive_color",
+    "updatedAt": "2025-12-21T11:23:12.177Z"
+  }
+}

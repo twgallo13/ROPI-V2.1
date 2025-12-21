@@ -1,0 +1,678 @@
+{
+  "timestamp": "2025-12-21T11:27:40.005Z",
+  "mode": "dry-run",
+  "registryVersion": "1.0.3",
+  "totalAttributes": 67,
+  "plannedWrites": [
+    {
+      "idCanonical": "sku",
+      "originalId": "sku",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "style_id",
+      "originalId": "style_id",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "mpn",
+      "originalId": "mpn",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "gtin",
+      "originalId": "gtin",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "name",
+      "originalId": "name",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "slug",
+      "originalId": "slug",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "brand",
+      "originalId": "brand",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "category",
+      "originalId": "category",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "class",
+      "originalId": "class",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "department",
+      "originalId": "department",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "website",
+      "originalId": "website",
+      "data_type_original": "multiSelect",
+      "data_type_normalized": "array",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "product_is_active",
+      "originalId": "product_is_active",
+      "data_type_original": "boolean",
+      "data_type_normalized": "boolean",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "status",
+      "originalId": "status",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "launch_date",
+      "originalId": "launch_date",
+      "data_type_original": "date",
+      "data_type_normalized": "date",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "kl_post_date",
+      "originalId": "kl_post_date",
+      "data_type_original": "date",
+      "data_type_normalized": "date",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "family_sizing",
+      "originalId": "family_sizing",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "hype",
+      "originalId": "hype",
+      "data_type_original": "boolean",
+      "data_type_normalized": "boolean",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "first_received",
+      "originalId": "first_received",
+      "data_type_original": "date",
+      "data_type_normalized": "date",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "last_received",
+      "originalId": "last_received",
+      "data_type_original": "date",
+      "data_type_normalized": "date",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "height",
+      "originalId": "height",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "length",
+      "originalId": "length",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "width",
+      "originalId": "width",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "shoe_width",
+      "originalId": "shoe_width",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "weight",
+      "originalId": "weight",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "gender",
+      "originalId": "gender",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "age_group",
+      "originalId": "age_group",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "primary_color",
+      "originalId": "primary_color",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "descriptive_color",
+      "originalId": "descriptive_color",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "material",
+      "originalId": "material",
+      "data_type_original": "multiSelect",
+      "data_type_normalized": "array",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "outsole_material",
+      "originalId": "outsole_material",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "closure_type",
+      "originalId": "closure_type",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "cut_type",
+      "originalId": "cut_type",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "fit",
+      "originalId": "fit",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "heel_height",
+      "originalId": "heel_height",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "platform_height",
+      "originalId": "platform_height",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "heel_type",
+      "originalId": "heel_type",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "shoe_height_map",
+      "originalId": "shoe_height_map",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "made_in",
+      "originalId": "made_in",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "league",
+      "originalId": "league",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "sports_team",
+      "originalId": "sports_team",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "collection_name",
+      "originalId": "collection_name",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "fast_fashion",
+      "originalId": "fast_fashion",
+      "data_type_original": "boolean",
+      "data_type_normalized": "boolean",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "tax_class",
+      "originalId": "tax_class",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "description_shiekh",
+      "originalId": "description_shiekh",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "description_karmaloop",
+      "originalId": "description_karmaloop",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "description_mltd",
+      "originalId": "description_mltd",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "description_sangremia",
+      "originalId": "description_sangremia",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "meta_name",
+      "originalId": "meta_name",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "meta_description",
+      "originalId": "meta_description",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "keywords",
+      "originalId": "keywords",
+      "data_type_original": "multiSelect",
+      "data_type_normalized": "array",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "rics_long_desc",
+      "originalId": "rics_long_desc",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "rics_short_description",
+      "originalId": "rics_short_description",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "media_status",
+      "originalId": "media_status",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "hide_image_date",
+      "originalId": "hide_image_date",
+      "data_type_original": "date",
+      "data_type_normalized": "date",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "map",
+      "originalId": "map",
+      "data_type_original": "money",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "scom_regular_price",
+      "originalId": "scom_regular_price",
+      "data_type_original": "money",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "scom_sale_price",
+      "originalId": "scom_sale_price",
+      "data_type_original": "money",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "promo",
+      "originalId": "promo",
+      "data_type_original": "select",
+      "data_type_normalized": "enum",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "standard_shipping_override",
+      "originalId": "standard_shipping_override",
+      "data_type_original": "money",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "expedited_override_shipping",
+      "originalId": "expedited_override_shipping",
+      "data_type_original": "money",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "custom_message",
+      "originalId": "custom_message",
+      "data_type_original": "longText",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "total_inv",
+      "originalId": "total_inv",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "warehouse_inv",
+      "originalId": "warehouse_inv",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "store_inv",
+      "originalId": "store_inv",
+      "data_type_original": "number",
+      "data_type_normalized": "number",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "pattern",
+      "originalId": "pattern",
+      "data_type_original": "text",
+      "data_type_normalized": "string",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "sustainable",
+      "originalId": "sustainable",
+      "data_type_original": "boolean",
+      "data_type_normalized": "boolean",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    },
+    {
+      "idCanonical": "waterproof",
+      "originalId": "waterproof",
+      "data_type_original": "boolean",
+      "data_type_normalized": "boolean",
+      "aliases": [],
+      "canonical": true,
+      "definition_version": "1.0.3",
+      "source": "repo"
+    }
+  ]
+}
