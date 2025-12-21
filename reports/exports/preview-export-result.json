@@ -1,0 +1,1 @@
+{"success":false,"error":"EXPORT_BLOCKED_UNKNOWN_VALUES","message":"Export blocked: 67 unknown values (83.75%) exceeds threshold","summary":{"totalProducts":80,"exportedProducts":80,"skippedProducts":0,"exportReadyCount":80,"notExportReadyCount":0,"warningCount":67,"errorCodes":{"unknown_export_value":67},"missingAttributeCounts":{}}}
