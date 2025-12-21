@@ -1,0 +1,189 @@
+{
+  "timestamp": "2025-12-21T11:58:54.576Z",
+  "lp": "LP-2.1.7",
+  "mode": "pilot-apply",
+  "limit": 100,
+  "sampledProducts": [
+    {
+      "id": "14943667",
+      "mpn": "14943667",
+      "attributes": {
+        "gender": "Mens",
+        "ageGroup": "Adults",
+        "primaryColor": "black",
+        "category": "Causal",
+        "_meta": {
+          "fit": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.114Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.114Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.114Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.114Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.114Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "category": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.114Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          }
+        }
+      }
+    },
+    {
+      "id": "211116-001",
+      "mpn": "211116-001",
+      "attributes": {
+        "gender": "Men's",
+        "ageGroup": "Adult",
+        "primaryColor": "BLACK",
+        "category": "Clogs",
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.231Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.231Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.231Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.231Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          }
+        }
+      }
+    },
+    {
+      "id": "7J236",
+      "mpn": "7J236",
+      "attributes": {
+        "gender": "Kids",
+        "ageGroup": "Toddler",
+        "primaryColor": "Red",
+        "category": "Lifestyle",
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:34.019Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:34.019Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:34.019Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:34.019Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          }
+        }
+      }
+    },
+    {
+      "id": "A13264F",
+      "mpn": "A13264F",
+      "attributes": {
+        "primaryColor": "ROTTEN APPLE/WHITE/BLACK",
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:34.113Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:34.113Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          }
+        }
+      }
+    }
+  ],
+  "verification": {
+    "allHaveMeta": true,
+    "metaHasMigrationMarker": true
+  }
+}

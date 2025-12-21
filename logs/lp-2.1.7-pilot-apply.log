@@ -1,0 +1,27 @@
+🚀 Starting LP-2.1.7 products migration...
+
+📋 Mode: APPLY
+📋 Registry version: 1.0.3
+📋 Force admin: false
+📋 Limit: 100 products
+📋 Registry keys to migrate: 33
+
+
+📦 Processing batch 1...
+   Found 87 products in batch
+   Batch 1: 83 updated, 4 skipped, 0 errors
+
+📄 Report written to: /workspaces/ROPI-V2.1/reports/attribute-inspections/2025-12-21/products-migration-audit.json
+📄 Summary written to: /workspaces/ROPI-V2.1/reports/attribute-inspections/2025-12-21/migration-summary.json
+
+─────────────────────────────────────
+📊 Migration Apply Complete:
+   Processed: 87
+   Updated:   83
+   Skipped:   4 (no changes needed)
+   Errors:    0
+   Protected: 0 admin-canonical attributes preserved
+   Changes:   132 total attribute changes
+─────────────────────────────────────
+
+✅ Migration apply completed successfully
