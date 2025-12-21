@@ -10,8 +10,8 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import * as express from 'express';
-import * as cors from 'cors';
+import express from 'express';
+import cors from 'cors';
 import { requireAdmin } from '../middleware/auth';
 import {
   runDryRunExport,
