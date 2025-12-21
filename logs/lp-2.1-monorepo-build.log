@@ -1,0 +1,62 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.17.0","pnpm":"10.13.1"})
+Scope: 4 of 5 workspace projects
+packages/api build$ node esbuild.config.js
+packages/sdk build$ tsup
+packages/api build:   dist/index.js      312.2kb
+packages/api build:   dist/index.js.map  658.9kb
+packages/api build: ⚡ Done in 44ms
+packages/api build: Done
+packages/sdk build: CLI Building entry: src/index.ts
+packages/sdk build: CLI Using tsconfig: tsconfig.json
+packages/sdk build: CLI tsup v8.5.1
+packages/sdk build: CLI Using tsup config: /workspaces/ROPI-V2.1/packages/sdk/tsup.config.ts
+packages/sdk build: CLI Target: es2020
+packages/sdk build: CJS Build start
+packages/sdk build: ESM Build start
+packages/sdk build: ESM dist/index.mjs 51.00 KB
+packages/sdk build: ESM ⚡️ Build success in 210ms
+packages/sdk build: CJS dist/index.js 53.50 KB
+packages/sdk build: CJS ⚡️ Build success in 211ms
+packages/sdk build: Done
+packages/cli build$ tsc
+packages/web build$ tsc && vite build
+packages/cli build: Done
+packages/web build: vite v5.4.21 building for production...
+packages/web build: transforming...
+packages/web build: ✓ 681 modules transformed.
+packages/web build: rendering chunks...
+packages/web build: computing gzip size...
+packages/web build: dist/index.html                     0.46 kB │ gzip:   0.30 kB
+packages/web build: dist/assets/index-Dnokfmns.css    166.94 kB │ gzip:  26.17 kB
+packages/web build: dist/assets/index-CzcWD_9z.js     390.85 kB │ gzip: 103.31 kB
+packages/web build: dist/assets/index-CTgAYm5A.js   1,112.65 kB │ gzip: 289.85 kB
+packages/web build: ✓ built in 5.49s
+packages/web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+packages/web build: - Using dynamic import() to code-split the application
+packages/web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+packages/web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+packages/web build: Done
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.17.0","pnpm":"10.13.1"})
+
+> @ropi-aoss/sdk@0.0.0 test /workspaces/ROPI-V2.1/packages/sdk
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/sdk
+
+ ✓ test/importRow.schema.test.ts  (28 tests) 18ms
+ ✓ test/retailOps.export.test.ts  (49 tests) 28ms
+ ✓ test/retailOps.import.test.ts  (70 tests) 37ms
+ ✓ test/importValidator.test.ts  (13 tests) 8ms
+ ✓ test/importNormalizer.test.ts  (19 tests) 14ms
+ ✓ test/coreProduct.schema.test.ts  (26 tests) 19ms
+ ✓ test/productValidator.test.ts  (8 tests) 13ms
+ ✓ test/attribute.schema.test.ts  (2 tests) 6ms
+ ✓ test/importRowBuilder.test.ts  (7 tests) 11ms
+
+ Test Files  9 passed (9)
+      Tests  222 passed (222)
+   Start at  09:23:00
+   Duration  1.52s (transform 403ms, setup 2ms, collect 693ms, tests 154ms, environment 2ms, prepare 1.48s)
+

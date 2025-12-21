@@ -1,0 +1,1 @@
+# Attribute Registry Normalization → Notion Canonical (snake_case) — Release v0.6.2 / Registry v1.0.1

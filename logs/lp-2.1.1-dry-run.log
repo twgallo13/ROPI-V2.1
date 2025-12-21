@@ -1,0 +1,35 @@
+============================================================
+LP-2.1.1 DRY-RUN: Import Validation with MPN Requirement
+============================================================
+
+📋 Test 1: sample-retailops.csv (all rows have MPN)
+----------------------------------------
+Total rows: 6
+Valid rows: 6
+Invalid rows: 0
+Blocking errors: NO
+✅ PASS: All rows have MPN
+
+📋 Test 2: sample-missing-mpn.csv (2 rows missing MPN)
+----------------------------------------
+Total rows: 4
+Valid rows: 2
+Invalid rows: 2
+Blocking errors: YES
+
+Blocking errors by row:
+  Line 2: MISSING_REQUIRED_FIELD
+  Line 4: MISSING_REQUIRED_FIELD
+✅ PASS: Missing MPN rows blocked
+
+📋 Test 3: sample-invalid-enums.csv (invalid enum values)
+----------------------------------------
+Total rows: 3
+Valid rows: 3
+Invalid rows: 0
+Blocking errors: NO
+✅ PASS: All rows have MPN (enum validation is non-blocking)
+
+============================================================
+DRY-RUN COMPLETE
+============================================================
