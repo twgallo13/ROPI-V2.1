@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "attributes": [
     {
       "attribute_id": "sku",
@@ -9,8 +9,8 @@
       "data_type": "text",
       "required_for_completion": true,
       "required_for_export": true,
-      "import_required": true,
-      "ai_usage_notes": "Primary SKU / item id.",
+      "import_required": false,
+      "ai_usage_notes": "Primary SKU / item id. Optional for import (MPN is primary identifier).",
       "status": "active"
     },
     {
@@ -32,8 +32,8 @@
       "data_type": "text",
       "required_for_completion": true,
       "required_for_export": true,
-      "import_required": false,
-      "ai_usage_notes": "Manufacturer part number",
+      "import_required": true,
+      "ai_usage_notes": "Manufacturer part number. Required for import (LP-2.1.2).",
       "status": "active"
     },
     {
