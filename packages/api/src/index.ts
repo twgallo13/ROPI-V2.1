@@ -28,8 +28,8 @@ admin.initializeApp();
 // Routes: /admin/**, /products/**, /processImportBatch, /importBatchStatus, /syncAttributeRegistry
 export const api = functions.https.onRequest(apiApp);
 
-// Export API endpoints
-export { importCSV } from './endpoints/import';
+// Export API endpoints (LP-3.0.0: include importDryRun with CORS fix)
+export { importCSV, importDryRun } from './endpoints/import';
 
 /**
  * Process Import Batch - Convert import rows to products
