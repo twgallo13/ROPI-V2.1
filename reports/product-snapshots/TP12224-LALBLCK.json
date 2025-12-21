@@ -1,0 +1,57 @@
+{
+  "id": "TP12224-LALBLCK",
+  "mpn": "TP12224-LALBLCK",
+  "attributes": {
+    "mpn": "TP12224-LALBLCK",
+    "category": "",
+    "brand": "",
+    "department": "",
+    "class": "",
+    "fit": "",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 215000000
+    },
+    "descriptive.gender": "",
+    "age_group": "",
+    "gender": "",
+    "_meta": {
+      "gender": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:38.860Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:38.860Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "ageGroup": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:38.860Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    },
+    "ageGroup": ""
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:11.604Z",
+    "migratedBy": "lisa-homer"
+  },
+  "brand": "",
+  "category": "",
+  "status": "intake",
+  "websites": [],
+  "fetchedAt": "2025-12-21T14:30:21.917Z"
+}
