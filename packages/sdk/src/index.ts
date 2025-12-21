@@ -191,5 +191,18 @@ export { AttributeSchema, type AttributeType } from './schema/attribute';
 export { SmartRuleSchema, SmartRuleCondition, SmartRuleAction, type SmartRuleType } from './schema/smartRule';
 export { AITemplateSchema, type AITemplateType } from './schema/aiTemplate';
 
+// ============================================================================
+// String Utilities (LP-2.1.6)
+// Canonical attribute ID normalization
+// ============================================================================
+
+export {
+  toSnakeCase,
+  normalizeDataType,
+  wouldCollide,
+  detectCollisions
+} from './lib/stringUtils';
+
 // Version info
 export const SDK_VERSION = '0.6.0';
+

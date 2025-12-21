@@ -1,0 +1,187 @@
+# LP-2.1.6 AUDIT: syncAttributeRegistry Canonicalization
+
+## Overview
+LP-2.1.6 implements canonical attribute ID normalization in the syncAttributeRegistry task.
+
+## Branch
+`lp/2.1.6-sync-normalize`
+
+## Commit
+`7e072e8` - LP-2.1.6: syncAttributeRegistry canonicalization
+
+## Changes Summary
+
+### New Utilities (`packages/sdk/src/lib/stringUtils.ts`)
+1. **toSnakeCase(input)** - Converts attribute IDs to canonical snake_case format
+   - Replaces dots with underscores (`legacy.sku` → `legacy_sku`)
+   - Converts camelCase (`productId` → `product_id`)
+   - Handles hyphens, spaces, special characters
+   - Collapses multiple underscores
+
+2. **normalizeDataType(dataType)** - Maps data types to canonical forms
+   - `text`, `longtext`, `varchar` → `string`
+   - `select`, `dropdown` → `enum`
+   - `multiSelect`, `list` → `array`
+   - `money`, `price`, `currency` → `number`
+   - `bool`, `yesno`, `checkbox` → `boolean`
+
+3. **detectCollisions(ids)** - Finds IDs that would collide after snake_case conversion
+
+### Updated Task (`packages/api/src/tasks/syncAttributeRegistry.ts`)
+- **Collision Detection**: Aborts if two IDs map to same canonical form
+- **No Fallback**: Aborts if registry not found (no product-derived fallback per LP-2.1.6)
+- **Dry-run Mode**: Default behavior; use `--apply` to write changes
+- **New Fields**:
+  - `canonical: true` - Marks document as canonical
+  - `definition_version: "1.0.3"` - Registry version
+  - `source: "repo"` - Source of truth
+  - `original_id` - Original attribute ID from registry
+  - `aliases` - Array of alternative IDs (if any)
+
+## Test Results
+
+### Unit Tests (44 tests)
+```
+✓ test/stringUtils.test.ts (44 tests) - ALL PASSING
+  - toSnakeCase: 11 tests
+  - normalizeDataType: 23 tests
+  - wouldCollide: 4 tests
+  - detectCollisions: 6 tests
+```
+
+### Dry-Run Output
+```
+════════════════════════════════════════════════════════════
+  SYNC ATTRIBUTE REGISTRY (LP-2.1.6)
+  Mode: 🔍 DRY-RUN (no changes will be made)
+════════════════════════════════════════════════════════════
+
+✅ Loaded 67 attributes from registry (v1.0.3)
+🔍 Checking for ID collisions after snake_case conversion...
+✅ No collisions detected
+📋 Processing 67 attributes...
+
+────────────────────────────────────────────────────────────
+📊 Sync (DRY-RUN) Complete:
+   Registry Version: 1.0.3
+   Would Create:     0
+   Would Update:     67
+   Skipped:          0
+   Errors:           0
+────────────────────────────────────────────────────────────
+```
+
+### Apply Output
+```
+════════════════════════════════════════════════════════════
+  SYNC ATTRIBUTE REGISTRY (LP-2.1.6)
+  Mode: ⚡ APPLY (writing to Firestore)
+════════════════════════════════════════════════════════════
+
+✅ Loaded 67 attributes from registry (v1.0.3)
+🔍 Checking for ID collisions after snake_case conversion...
+✅ No collisions detected
+📋 Processing 67 attributes...
+
+────────────────────────────────────────────────────────────
+📊 Sync  Complete:
+   Registry Version: 1.0.3
+   Would Create:     0
+   Would Update:     67
+   Skipped:          0
+   Errors:           0
+────────────────────────────────────────────────────────────
+
+✅ Changes have been applied to Firestore.
+```
+
+## Firestore Verification
+
+Sample documents in `settings/attributes/keys/`:
+
+### sku
+```json
+{
+  "canonical": true,
+  "definition_version": "1.0.3",
+  "source": "repo",
+  "data_type": "string",
+  "original_id": "sku",
+  "aliases": []
+}
+```
+
+### category
+```json
+{
+  "canonical": true,
+  "definition_version": "1.0.3",
+  "source": "repo",
+  "data_type": "enum",
+  "original_id": "category",
+  "aliases": []
+}
+```
+
+### map (money type)
+```json
+{
+  "canonical": true,
+  "definition_version": "1.0.3",
+  "source": "repo",
+  "data_type": "number",
+  "original_id": "map",
+  "aliases": []
+}
+```
+
+## Data Type Normalization Summary
+
+| Original Type | Normalized Type | Count |
+|---------------|-----------------|-------|
+| text          | string          | 21    |
+| select        | enum            | 18    |
+| longText      | string          | 6     |
+| boolean       | boolean         | 7     |
+| number        | number          | 7     |
+| multiSelect   | array           | 3     |
+| money         | number          | 5     |
+| date          | date            | 0     |
+
+## Files Changed
+1. `packages/api/src/tasks/syncAttributeRegistry.ts` - Complete rewrite with LP-2.1.6 features
+2. `packages/sdk/config/attributeRegistry.json` - Version bump to 1.0.3
+3. `packages/sdk/src/index.ts` - Export new stringUtils functions
+4. `packages/sdk/src/lib/stringUtils.ts` - NEW: String utilities
+5. `packages/sdk/src/lib/index.ts` - NEW: Lib exports
+6. `packages/sdk/test/stringUtils.test.ts` - NEW: 44 unit tests
+
+## CLI Usage
+```bash
+# Dry-run (default)
+pnpm api:sync:attributes
+
+# Explicit dry-run
+pnpm api:sync:attributes --dry
+
+# Apply changes to Firestore
+pnpm api:sync:attributes --apply
+
+# Help
+pnpm api:sync:attributes --help
+```
+
+## Status
+- ✅ Branch created: `lp/2.1.6-sync-normalize`
+- ✅ Code implemented
+- ✅ Unit tests: 44/44 passing
+- ✅ Dry-run verified: No collisions, 67 attributes
+- ✅ Applied to staging: 67 attributes updated
+- ✅ Firestore verified: canonical fields present
+- ⏳ PR pending
+
+## Audit Date
+2025-12-21
+
+## Author
+Homer (GitHub Copilot Agent)
