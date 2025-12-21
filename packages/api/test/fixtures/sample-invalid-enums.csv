@@ -1,0 +1,4 @@
+MPN,SKU,Product Name,Brand,Description,Gender,Department,Category,MSRP,Quantity
+DZ5485-410,SKU-001,Nike Air Max 270,Nike,Athletic sneaker,InvalidGender,Footwear,Running Shoes,159.99,25
+GX7918,SKU-002,Adidas Ultraboost,Adidas,Running shoe,Men's,InvalidDepartment,Running Shoes,190.00,30
+380462-03,SKU-003,Puma RS-X,Puma,Chunky sneaker,Men's,Footwear,InvalidCategory,110.00,15
