@@ -2,6 +2,8 @@
  * Import Service
  * Per AOSS Section 3.1 — Import Engine
  * 
+ * LP-2.1.1: MPN-first validation — requires MPN, validates attributes against registry
+ * 
  * Handles CSV import, normalization, validation, and Firestore storage.
  */
 
@@ -13,7 +15,42 @@ import {
   type ImportEngineRow,
   type ImportBatch,
   type ImportSourceColumns,
+  type ValidationIssue,
 } from '@ropi-aoss/sdk';
+import { getAttribute } from './attributesService';
+
+/**
+ * LP-2.1.1: Import validation options
+ */
+export interface ImportValidationOptions {
+  /** If true, only validate - don't persist to Firestore */
+  dryRun?: boolean;
+  /** If true, fail the entire batch on any blocking error */
+  strictMode?: boolean;
+}
+
+/**
+ * LP-2.1.1: Validation result for a single row
+ */
+export interface RowValidationResult {
+  lineNumber: number;
+  rowId: string;
+  isValid: boolean;
+  blockingErrors: ValidationIssue[];
+  warnings: ValidationIssue[];
+  unmappedAttributes: string[];
+}
+
+/**
+ * LP-2.1.1: Import validation result
+ */
+export interface ImportValidationResult {
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  rowResults: RowValidationResult[];
+  hasBlockingErrors: boolean;
+}
 
 /**
  * Parse CSV content
@@ -122,24 +159,195 @@ export function calculateRowStats(rows: ImportEngineRow[]): {
 }
 
 /**
+ * LP-2.1.1: Validate that MPN is present in normalized row
+ * Returns blocking error if MPN is missing
+ */
+function validateMPNRequired(row: ImportEngineRow): ValidationIssue | null {
+  if (!row.normalized.mpn) {
+    return {
+      code: 'MISSING_REQUIRED_FIELD',
+      severity: 'error',
+      field: 'mpn',
+      message: 'MPN (Manufacturer Part Number) is required for import',
+    };
+  }
+  return null;
+}
+
+/**
+ * LP-2.1.1: Validate attribute value against registry settings
+ * Checks data_type compliance and allowed_values for enum/multiSelect
+ */
+async function validateAttributeValue(
+  attributeId: string,
+  value: unknown
+): Promise<{ error?: ValidationIssue; warning?: ValidationIssue; unmapped?: boolean }> {
+  try {
+    const attributeDef = await getAttribute(attributeId);
+    
+    // Check data_type compliance
+    const dataType = attributeDef.data_type;
+    const actualType = typeof value;
+    
+    // Type checking based on data_type
+    if (dataType === 'number' && actualType !== 'number' && value !== undefined) {
+      return {
+        warning: {
+          code: 'INVALID_VALUE',
+          severity: 'warning',
+          field: attributeId,
+          message: `Expected number for ${attributeId}, got ${actualType}`,
+          value: String(value),
+        },
+      };
+    }
+    
+    // Check enum/multiSelect allowed_values
+    if ((dataType === 'enum' || dataType === 'multiSelect') && attributeDef.allowed_values) {
+      const allowedValues = attributeDef.allowed_values;
+      
+      if (dataType === 'enum' && typeof value === 'string') {
+        if (!allowedValues.includes(value)) {
+          return {
+            warning: {
+              code: 'INVALID_VALUE',
+              severity: 'warning',
+              field: attributeId,
+              message: `Value '${value}' not in allowed values for ${attributeId}`,
+              value: String(value),
+            },
+            unmapped: true,
+          };
+        }
+      }
+      
+      if (dataType === 'multiSelect' && Array.isArray(value)) {
+        const invalidValues = value.filter(v => !allowedValues.includes(v));
+        if (invalidValues.length > 0) {
+          return {
+            warning: {
+              code: 'INVALID_VALUE',
+              severity: 'warning',
+              field: attributeId,
+              message: `Values '${invalidValues.join(', ')}' not in allowed values for ${attributeId}`,
+              value: invalidValues.join(', '),
+            },
+            unmapped: true,
+          };
+        }
+      }
+    }
+    
+    return {};
+  } catch (error) {
+    // Attribute not found in registry - this is not a blocking error
+    // but we should log it as unmapped
+    return { unmapped: true };
+  }
+}
+
+/**
+ * LP-2.1.1: Validate import rows against attribute registry
+ * 
+ * @param rows - Import engine rows to validate
+ * @returns Validation result with row-level errors/warnings
+ */
+export async function validateImportRows(
+  rows: ImportEngineRow[]
+): Promise<ImportValidationResult> {
+  const rowResults: RowValidationResult[] = [];
+  let validRows = 0;
+  let invalidRows = 0;
+  let hasBlockingErrors = false;
+  
+  for (const row of rows) {
+    const blockingErrors: ValidationIssue[] = [];
+    const warnings: ValidationIssue[] = [...row.validation.warnings];
+    const unmappedAttributes: string[] = [];
+    
+    // Copy existing errors from SDK validation
+    blockingErrors.push(...row.validation.errors);
+    
+    // LP-2.1.1: Require MPN
+    const mpnError = validateMPNRequired(row);
+    if (mpnError) {
+      blockingErrors.push(mpnError);
+    }
+    
+    // Validate each normalized attribute against registry
+    const attributeKeys = Object.keys(row.normalized).filter(
+      key => !['mpn', 'sku', 'title', 'brand', 'description'].includes(key)
+    );
+    
+    for (const attrKey of attributeKeys) {
+      const value = row.normalized[attrKey];
+      if (value !== undefined && value !== null && value !== '') {
+        const result = await validateAttributeValue(attrKey, value);
+        if (result.error) {
+          blockingErrors.push(result.error);
+        }
+        if (result.warning) {
+          warnings.push(result.warning);
+        }
+        if (result.unmapped) {
+          unmappedAttributes.push(attrKey);
+        }
+      }
+    }
+    
+    const isValid = blockingErrors.length === 0;
+    if (isValid) {
+      validRows++;
+    } else {
+      invalidRows++;
+      hasBlockingErrors = true;
+    }
+    
+    rowResults.push({
+      lineNumber: row.source.lineNumber,
+      rowId: row.rowId,
+      isValid,
+      blockingErrors,
+      warnings,
+      unmappedAttributes,
+    });
+  }
+  
+  return {
+    totalRows: rows.length,
+    validRows,
+    invalidRows,
+    rowResults,
+    hasBlockingErrors,
+  };
+}
+
+/**
  * Process CSV import
  * Main service method that orchestrates the entire import flow
+ * 
+ * LP-2.1.1: Added validation layer and dry-run support
  * 
  * @param csvContent - CSV file content
  * @param fileName - Original file name
  * @param userId - User ID who initiated import
+ * @param options - Validation options (dryRun, strictMode)
  * @returns Import batch with summary
  */
 export async function processCSVImport(
   csvContent: string,
   fileName: string,
-  userId: string
+  userId: string,
+  options: ImportValidationOptions = {}
 ): Promise<{
   batch: ImportBatch;
   rowCount: number;
   errorCount: number;
   warningCount: number;
+  validationResult?: ImportValidationResult;
 }> {
+  const { dryRun = false, strictMode = false } = options;
+  
   // Generate batch ID
   const batchId = uuidv4();
   
@@ -150,8 +358,16 @@ export async function processCSVImport(
     // Build import rows with normalization and validation
     const rows = buildImportRows(csvData, batchId, userId);
     
-    // Calculate stats
-    const { errorCount, warningCount } = calculateRowStats(rows);
+    // LP-2.1.1: Run validation layer (MPN required, attribute registry checks)
+    const validationResult = await validateImportRows(rows);
+    
+    // Calculate stats (includes validation errors)
+    let errorCount = 0;
+    let warningCount = 0;
+    for (const rowResult of validationResult.rowResults) {
+      errorCount += rowResult.blockingErrors.length;
+      warningCount += rowResult.warnings.length;
+    }
     
     // Create batch record
     const batch: ImportBatch = {
@@ -164,6 +380,37 @@ export async function processCSVImport(
       errorCount,
       warningCount,
     };
+    
+    // LP-2.1.1: If dry-run, return validation results without persisting
+    if (dryRun) {
+      return {
+        batch: { ...batch, status: 'pending', notes: 'DRY RUN - no data persisted' },
+        rowCount: rows.length,
+        errorCount,
+        warningCount,
+        validationResult,
+      };
+    }
+    
+    // LP-2.1.1: If strict mode and blocking errors, fail the batch
+    if (strictMode && validationResult.hasBlockingErrors) {
+      const failedBatch: ImportBatch = {
+        ...batch,
+        status: 'failed',
+        notes: `Import blocked: ${validationResult.invalidRows} row(s) with blocking errors (missing MPN or invalid attributes)`,
+      };
+      
+      // Save failed batch record for audit trail
+      await createImportBatch(failedBatch);
+      
+      return {
+        batch: failedBatch,
+        rowCount: rows.length,
+        errorCount,
+        warningCount,
+        validationResult,
+      };
+    }
     
     // Save batch to Firestore
     await createImportBatch(batch);
@@ -189,14 +436,22 @@ export async function processCSVImport(
       rowCount: rows.length,
       errorCount,
       warningCount,
+      validationResult,
     };
   } catch (error) {
     // Update batch status to failed
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
-    await updateBatchStatus(batchId, 'failed', {
-      notes: errorMessage,
-    });
+    // Only update if not dry-run (batch might not exist)
+    if (!dryRun) {
+      try {
+        await updateBatchStatus(batchId, 'failed', {
+          notes: errorMessage,
+        });
+      } catch {
+        // Ignore update error if batch doesn't exist yet
+      }
+    }
     
     throw error;
   }

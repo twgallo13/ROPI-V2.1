@@ -1,0 +1,5 @@
+MPN,SKU,Product Name,Brand,Description,MSRP,Quantity
+,SKU-001,Product Without MPN,Generic,Missing MPN field,49.99,10
+DZ5485-410,SKU-002,Nike Air Max 270,Nike,Has MPN,159.99,25
+,SKU-003,Another No MPN,Brand X,Also missing MPN,75.00,5
+GX7918,,Adidas Ultraboost,Adidas,Has MPN no SKU,190.00,30
