@@ -1,0 +1,134 @@
+# HOMER_LP-2.1.4_AUDIT.txt
+# LP-2.1.4: Lock Down Firestore Products Collection Writes
+# Generated: 2025-12-21T10:20:00Z
+
+## Summary
+SECURITY LP to prevent direct client writes to products/* collection.
+Forces all product attribute updates through server API or admin role.
+
+## Branch & Commits
+- Branch: lp/2.1.4-firestore-products-lockdown
+- Commit: 72af213b362b68d936bcdb85811b71844d73b92f
+- PR: https://github.com/twgallo13/ROPI-V2.1/pull/319
+
+## Files Changed
+1. firestore.rules
+   - Updated products/{productId} match block
+   - Read: authenticated users (unchanged)
+   - Write: requires isAdmin() OR isAdminViaMetadata()
+
+2. infra/backup/firestore.rules.before-lockdown (NEW)
+   - Backup of previous rules for rollback
+
+## Firebase Deploy
+- Command: firebase deploy --only firestore:rules --project ropi-bccee
+- Status: ✅ SUCCESS
+- Log: logs/lp-2.1.4-rules-deploy.log
+- Output:
+  ```
+  ✔  cloud.firestore: rules file firestore.rules compiled successfully
+  ✔  firestore: released rules firestore.rules to cloud.firestore
+  ✔  Deploy complete!
+  Project Console: https://console.firebase.google.com/project/ropi-bccee/overview
+  ```
+
+## Smoke Tests (Emulator)
+- Command: firebase emulators:exec --only firestore "node test-script"
+- Log: logs/lp-2.1.4-emulator-test.log
+
+### Test Results
+| # | Test | Expected | Actual | Status |
+|---|------|----------|--------|--------|
+| 1 | Non-admin user write | PERMISSION_DENIED | PERMISSION_DENIED | ✅ PASS |
+| 2 | Admin user write (role claim) | SUCCESS | SUCCESS | ✅ PASS |
+| 3 | Non-admin user read | SUCCESS | SUCCESS | ✅ PASS |
+
+### Raw Test Output
+```
+=== LP-2.1.4: Client Write DENIED Test (Emulator) ===
+
+--- TEST 1: Non-admin user write (should FAIL) ---
+[2025-12-21T10:15:10.569Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream error. 
+Code: 7 Message: 7 PERMISSION_DENIED:
+Property role is undefined on object. for 'create' @ L123, false for 'create' @ L268
+✅ Non-admin write correctly DENIED (PERMISSION_DENIED)
+
+--- TEST 2: Admin user write (should SUCCEED) ---
+✅ Admin write correctly SUCCEEDED
+
+--- TEST 3: Non-admin user READ (should SUCCEED) ---
+✅ Non-admin read correctly SUCCEEDED
+
+=== All smoke tests PASSED ===
+✔  Script exited successfully (code 0)
+```
+
+## Admin SDK Write Verification
+- Command: node admin-sdk-test.js
+- Sample Product: 123
+- Write test field: _lp214_test_admin
+- Result: ✅ SUCCEEDED
+- Cleanup: ✅ Test fields removed
+
+## Firestore Sample Documents
+### Product: 123
+```json
+{
+  "id": "123",
+  "status": "in-progress",
+  "brand": "Nike"
+}
+```
+
+### Product: 14943667
+```json
+{
+  "id": "14943667",
+  "mpn": "14943667",
+  "status": "intake",
+  "brand": "NEW ERA CAPS",
+  "_migratedVersion": "1.0.0"
+}
+```
+
+### Product: 14943678
+```json
+{
+  "id": "14943678",
+  "mpn": "14943678",
+  "status": "intake",
+  "brand": "NEW ERA CAPS",
+  "_migratedVersion": "1.0.0"
+}
+```
+
+## metadata/admins Document
+```json
+{
+  "emails": [
+    "theo@shiekhshoes.org",
+    "theo@shiekh.com"
+  ],
+  "updatedAt": {
+    "_seconds": 1764694118,
+    "_nanoseconds": 418000000
+  },
+  "updatedBy": "system"
+}
+```
+
+## Rollback Steps
+1. cp infra/backup/firestore.rules.before-lockdown firestore.rules
+2. firebase deploy --only firestore:rules --project ropi-bccee
+
+## Risks & Next Steps
+- **Risk**: Any existing client-side code that directly writes to products/* will now fail.
+  Client apps must be updated to use server API endpoints (PATCH /api/products/:mpn/attributes).
+- **Risk**: If metadata/admins doc is deleted/corrupted, isAdminViaMetadata() will fail.
+  Custom claims (isAdmin()) should be the primary auth method in production.
+- **Next Step**: LP-2.1.5 (MPN-first importer) after Lisa validates this LP.
+
+## Status
+- PR NOT MERGED — awaiting Lisa sign-off
+- Rules deployed to staging (ropi-bccee)
+- All smoke tests PASSED

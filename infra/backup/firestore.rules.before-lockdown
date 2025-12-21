@@ -104,24 +104,12 @@ service cloud.firestore {
     }
     
     // ========================================
-    // PRODUCTS COLLECTION (LP-2.1.4 — Lockdown)
+    // PRODUCTS COLLECTION (Placeholder)
     // ========================================
-    // Related Notion docs:
-    // - Section 2.1 — Product Schema
-    // - Section 9 — Security & IAM
-    //
-    // LP-2.1.4: Lock down direct client writes to products/*
-    // All product attribute updates must go through server API endpoints.
-    // This prevents unexpected attribute mutation from client-side code.
+    // TODO: Implement product security rules
+    // TODO: Add field-level validation
     match /products/{productId} {
-      // Read: authenticated users can read products
-      allow read: if request.auth != null;
-      
-      // Write: only admins (server/service accounts with admin role or metadata allow-list)
-      // Client updates MUST call API endpoints (PATCH /api/products/:mpn/attributes)
-      // Uses existing isAdmin() (custom claims) and isAdminViaMetadata() (metadata/admins doc)
-      allow write: if request.auth != null 
-                   && (isAdmin() || isAdminViaMetadata());
+      allow read, write: if request.auth != null;
     }
     
     // ========================================
