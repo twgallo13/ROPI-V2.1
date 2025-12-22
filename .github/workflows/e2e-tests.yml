@@ -185,16 +185,11 @@ jobs:
           fi
           
           if [ "$MODE" = "smoke" ]; then
-             echo "🚀 Running SMOKE tests only (Fail limit: 1)"
-             # Fallback to all tests if @smoke tag is not found to prevent empty run failure
-             if grep -r "@smoke" e2e > /dev/null; then
-                npx playwright test --grep "@smoke" --max-failures=1
-             else
-                echo "::warning::No @smoke tags found. Running ALL tests."
-                npx playwright test --max-failures=5
-             fi
+             echo "🚀 Running SMOKE tests only (Fail limit: 3)"
+             # Run only tests tagged with @smoke - these are fast, critical path tests
+             npx playwright test --grep "@smoke" --max-failures=3
           else
-             echo "🐢 Running ALL tests (Fail limit: 10)"
+             echo "🐢 Running ALL tests (Fail limit: 5)"
              npx playwright test --max-failures=5
           fi
 

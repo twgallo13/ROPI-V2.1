@@ -28,6 +28,11 @@ export default function AttributeManager() {
   const [saving, setSaving] = useState(false);
   const [recentlyCreatedId, setRecentlyCreatedId] = useState<string | null>(null);
 
+  // LP-3.0.10: Field-level validation errors
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
+  const setFieldError = (field: string, msg: string | null) => setFieldErrors(prev => ({ ...prev, [field]: msg }));
+  const fieldError = (field: string) => fieldErrors[field] || null;
+
   const DEFAULT_ATTR = {
     data_type: 'string' as const,
     status: 'active' as const,
@@ -68,6 +73,7 @@ export default function AttributeManager() {
     setFormData({ ...DEFAULT_ATTR });
     setFormError(null);
     setSaveDetails(null);
+    setFieldErrors({});
   };
 
   const openCreate = () => {
@@ -93,24 +99,56 @@ export default function AttributeManager() {
   // LP-3.0.1: State for save errors and validation details
   const [saveDetails, setSaveDetails] = useState<Array<{ path: string; message: string }> | null>(null);
 
+  // LP-3.0.10: Auto-generate attribute_id from label when blank, ensure uniqueness
   const handleSave = async () => {
     setFormError(null);
     setSaveDetails(null);
+    setFieldErrors({});
     setSaving(true);
+
     try {
-      const rawId = (formData.attribute_id || '').trim();
-      if (!rawId) {
-        setFormError('Attribute ID is required.');
-        setSaving(false);
-        return;
-      }
-      const normalizedId = toSnakeCase(rawId);
-      if (!formData.label) {
-        setFormError('Label is required.');
+      // Basic label check
+      const label = (formData.label || '').trim();
+      if (!label) {
+        setFieldError('label', 'Label is required.');
         setSaving(false);
         return;
       }
 
+      // Prepare attribute_id: prefer explicit user value; otherwise derive from label
+      let rawId = (formData.attribute_id || '').trim();
+      const existingIds = new Set(attributes.map(a => a.attribute_id));
+
+      if (!rawId) {
+        // Derive from label
+        const baseId = toSnakeCase(label);
+        if (!baseId) {
+          setFormError('Could not derive Attribute ID; please enter one manually.');
+          setSaving(false);
+          return;
+        }
+        // Ensure uniqueness by checking existing attributes
+        let candidate = baseId;
+        let suffix = 2;
+        while (existingIds.has(candidate)) {
+          candidate = `${baseId}_${suffix}`;
+          suffix += 1;
+        }
+        rawId = candidate;
+      } else {
+        // If user typed an ID, normalize it
+        rawId = toSnakeCase(rawId);
+        // Check uniqueness (only when creating new attribute)
+        if (!editingId && existingIds.has(rawId)) {
+          setFieldError('attribute_id', 'This Attribute ID is already in use. Choose another or edit the existing attribute.');
+          setSaving(false);
+          return;
+        }
+      }
+
+      const normalizedId = rawId;
+
+      // Validate enum/multiSelect allowed_values
       if ((formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
           (!formData.allowed_values || formData.allowed_values.length === 0)) {
         setFormError('Allowed values are required for enum/multi-select.');
@@ -124,6 +162,9 @@ export default function AttributeManager() {
         if (!result?.ok) {
           setFormError(result.error || 'Save failed');
           setSaveDetails(result.details || null);
+          if (result.details) {
+            result.details.forEach((d: { path: string; message: string }) => setFieldError(d.path, d.message));
+          }
           toastError(result.error || 'Failed to update attribute');
           return;
         }
@@ -209,7 +250,7 @@ export default function AttributeManager() {
 
         <div className="modal-body">
           <div className="form-row">
-            <label htmlFor="attribute_id">Attribute ID *</label>
+            <label htmlFor="attribute_id">Attribute ID {!editingId && '(auto-generated if blank)'}</label>
             <input
               id="attribute_id"
               name="attribute_id"
@@ -217,10 +258,28 @@ export default function AttributeManager() {
               data-testid="attribute-id-input"
               aria-label="Attribute ID"
               value={formData.attribute_id || ''}
-              onChange={(e) => setFormData({ ...formData, attribute_id: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, attribute_id: e.target.value });
+                setFieldError('attribute_id', null); // Clear error on change
+              }}
+              onBlur={(e) => {
+                // LP-3.0.10: Normalize on blur and check uniqueness
+                const raw = (e.target.value || '').trim();
+                if (!raw) return; // Leave blank; we auto-generate on save
+                const normalized = toSnakeCase(raw);
+                const existingIds = new Set(attributes.map(a => a.attribute_id));
+                // When editing an existing attribute, the id is disabled anyway
+                if (!editingId && existingIds.has(normalized)) {
+                  setFieldError('attribute_id', 'This Attribute ID is already in use.');
+                } else {
+                  setFieldError('attribute_id', null);
+                }
+                setFormData(prev => ({ ...prev, attribute_id: normalized }));
+              }}
               disabled={!!editingId}
               autoComplete="off"
             />
+            {fieldError('attribute_id') && <div className="field-error" data-testid="attribute-id-error">{fieldError('attribute_id')}</div>}
             <small>IDs are normalized to snake_case on save</small>
           </div>
 
@@ -233,9 +292,13 @@ export default function AttributeManager() {
               data-testid="attribute-label-input"
               aria-label="Label"
               value={formData.label || ''}
-              onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, label: e.target.value });
+                setFieldError('label', null); // Clear error on change
+              }}
               autoComplete="off"
             />
+            {fieldError('label') && <div className="field-error" data-testid="label-error">{fieldError('label')}</div>}
           </div>
 
           <div className="form-row">

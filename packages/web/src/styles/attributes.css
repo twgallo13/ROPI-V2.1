@@ -154,3 +154,10 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* LP-3.0.10: Field-level validation errors */
+.field-error {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
