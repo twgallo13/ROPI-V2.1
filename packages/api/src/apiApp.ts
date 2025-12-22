@@ -59,7 +59,6 @@ import {
   getProductHandler,
   listProductsHandler,
   getProductByMpnHandler,
-  searchProductsByMpnHandler,
 } from './endpoints/products';
 
 // Observations handlers (LP-1.1.1)
@@ -78,14 +77,6 @@ import {
   getBatchStatusHandler,
 } from './endpoints/processImportBatch';
 import { retailopsImportPreviewApiHandler } from './endpoints/retailopsImportPreview';
-import { dryRunHandler } from './endpoints/import';
-
-// Export handlers (LP-2.1.9)
-import {
-  dryRunExportHandler,
-  runExportHandler,
-  previewExportHandler,
-} from './endpoints/export';
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 
 // Reconciliation (Homer v1.0.0)
@@ -173,7 +164,6 @@ api.patch('/users/me', updateMeHandler);
  * Products endpoints
  */
 api.get('/products', listProductsHandler);
-api.get('/products/search-mpn', searchProductsByMpnHandler);
 api.get('/products/by-mpn/:mpn', getProductByMpnHandler);
 api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);
@@ -195,9 +185,21 @@ api.post('/processImportBatch', processImportBatchHandler);
 api.get('/importBatchStatus', getBatchStatusHandler);
 // PVS-0.3.1 Import preview with mapping support
 api.post('/admin/imports/preview', importPreviewHandler);
-api.post('/syncAttributeRegistry', async (req, res) => {
+// LP-1.1.0: Protect syncAttributeRegistry endpoint (require admin + dryRun default true)
+api.post('/syncAttributeRegistry', requireAdmin, async (req, res) => {
   try {
-    const result = await runSyncAttributeRegistry();
+    // dryRun defaults to true for safety
+    const dryRun = req.body.dryRun !== false;
+    const caller = (req as any).user;
+    const callerUid = caller?.uid || 'unknown';
+    const callerEmail = caller?.email || 'unknown';
+
+    // Audit log
+    console.log(
+      `[syncAttributeRegistry] Invoked by uid=${callerUid} email=${callerEmail} dryRun=${dryRun}`
+    );
+
+    const result = await runSyncAttributeRegistry(dryRun);
     res.status(200).json(result);
   } catch (err: unknown) {
     console.error('syncAttributeRegistry error:', err);
@@ -210,13 +212,6 @@ api.post('/syncAttributeRegistry', async (req, res) => {
  * RetailOps endpoints
  */
 api.post('/retailops/import-preview', requireAdmin, retailopsImportPreviewApiHandler);
-
-/**
- * Export endpoints (LP-2.1.9)
- */
-api.post('/admin/exports/dry-run', requireAdmin, dryRunExportHandler);
-api.post('/admin/exports', requireAdmin, runExportHandler);
-api.get('/admin/exports/preview', requireAdmin, previewExportHandler);
 
 /**
  * Attribute Reconciliation endpoints (Homer v1.0.0)
