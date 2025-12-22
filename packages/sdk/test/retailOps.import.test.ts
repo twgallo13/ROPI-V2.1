@@ -672,3 +672,62 @@ describe('RetailOps Import - Helper Functions', () => {
     expect(products[0].brand).toBe('NIKE');
   });
 });
+
+// ============================================================================
+// LP-1.1.0: Pass-Through Protection Tests
+// ============================================================================
+
+describe('LP-1.1.0 Pass-Through Protection', () => {
+  it('should store Status in raw._passThrough, not in status', () => {
+    const csv = `SKU,Status,Brand
+NK-001,active,Nike`;
+    const rows = parseRetailOpsCsv(csv);
+    const importRow = retailOpsRowToImportRow(rows[0], 0);
+    
+    expect(importRow.raw._passThrough).toBeDefined();
+    expect(importRow.raw._passThrough.status).toBe('active');
+    expect(importRow.raw['Status']).toBeUndefined();
+    expect(importRow.raw['status']).toBeUndefined();
+  });
+
+  it('should store Product Is Active in raw._passThrough', () => {
+    const csv = `SKU,Product Is Active,Brand
+NK-001,Yes,Nike`;
+    const rows = parseRetailOpsCsv(csv);
+    const importRow = retailOpsRowToImportRow(rows[0], 0);
+    
+    expect(importRow.raw._passThrough).toBeDefined();
+    expect(importRow.raw._passThrough.product_is_active).toBe('Yes');
+    expect(importRow.raw['Product Is Active']).toBeUndefined();
+  });
+
+  it('should handle both Status and Product Is Active simultaneously', () => {
+    const csv = `SKU,Status,Product Is Active,Brand
+NK-001,intake,No,Nike`;
+    const rows = parseRetailOpsCsv(csv);
+    const importRow = retailOpsRowToImportRow(rows[0], 0);
+    
+    expect(importRow.raw._passThrough.status).toBe('intake');
+    expect(importRow.raw._passThrough.product_is_active).toBe('No');
+  });
+
+  it('should handle case-insensitive column matching', () => {
+    const csv = `SKU,STATUS,product_is_active,Brand
+NK-001,ACTIVE,yes,Nike`;
+    const rows = parseRetailOpsCsv(csv);
+    const importRow = retailOpsRowToImportRow(rows[0], 0);
+    
+    expect(importRow.raw._passThrough.status).toBe('ACTIVE');
+    expect(importRow.raw._passThrough.product_is_active).toBe('yes');
+  });
+
+  it('should not map Product Is Active to status field', () => {
+    const csv = `SKU,Product Is Active,Brand
+NK-001,Yes,Nike`;
+    const rows = parseRetailOpsCsv(csv);
+    const importRow = retailOpsRowToImportRow(rows[0], 0);
+    
+    // status should remain undefined, not mapped from Product Is Active
+    expect(importRow.status).toBeUndefined();
+  });
+});
