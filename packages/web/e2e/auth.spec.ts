@@ -34,7 +34,7 @@ test.describe('Authentication Flows', () => {
     await page.goto('/');
   });
 
-  test('should allow email/password sign-in for regular user', async ({ page }) => {
+  test('should allow email/password sign-in for regular user @smoke', async ({ page }) => {
     const user = TEST_USERS.regularUser;
     
     await signInWithEmail(page, user.email, user.password);
@@ -52,7 +52,7 @@ test.describe('Authentication Flows', () => {
     await expect(page.locator(`text=/${escapedDisplayName}|${escapedEmail}/i`)).toBeVisible();
   });
 
-  test('should allow email/password sign-in for admin user', async ({ page }) => {
+  test('should allow email/password sign-in for admin user @smoke', async ({ page }) => {
     const user = TEST_USERS.admin;
     
     await signInWithEmail(page, user.email, user.password);

@@ -6,25 +6,23 @@
  */
 
 import { test, expect } from '@playwright/test';
-
-// TODO: Import helper functions once they're available
-// import { adminLogin, waitForApiResponse } from './helpers';
+import { TEST_USERS, signInWithEmail } from './helpers';
 
 test.describe('Admin Attribute Management', () => {
   test.beforeEach(async ({ page }) => {
-    // TODO: Implement admin login
-    // await adminLogin(page);
+    // Sign in as admin first
+    await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
     
     // Navigate to attributes page
     await page.goto('/settings/attributes');
     
     // Wait for page to load
     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
-    await pageHeading.waitFor({ state: 'visible', timeout: 60000 });
+    await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
     
     // Wait for New Attribute button to be visible
     const newBtn = page.getByTestId('new-attribute-button');
-    await newBtn.waitFor({ state: 'visible', timeout: 60000 });
+    await newBtn.waitFor({ state: 'visible', timeout: 30000 });
   });
 
   test('should display attribute manager page', async ({ page }) => {
