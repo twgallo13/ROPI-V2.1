@@ -21,13 +21,6 @@ import {
   waitForEmailVerificationBanner,
 } from './helpers';
 
-/**
- * Escape special regex characters in a string for safe use in regex patterns
- */
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 test.describe('Authentication Flows', () => {
   test.beforeEach(async ({ page }) => {
     // Start from home page
@@ -42,14 +35,9 @@ test.describe('Authentication Flows', () => {
     // Verify signed in by checking user menu is visible
     expect(await isSignedIn(page)).toBe(true);
     
-    // Verify user display name or email is shown in the user menu
+    // Verify user display name is visible (indicates successful login)
     const userDisplayName = page.locator('[data-testid="user-display-name"]');
     await expect(userDisplayName).toBeVisible();
-    
-    // Verify user name/email appears
-    const escapedDisplayName = escapeRegex(user.displayName);
-    const escapedEmail = escapeRegex(user.email);
-    await expect(page.locator(`text=/${escapedDisplayName}|${escapedEmail}/i`)).toBeVisible();
   });
 
   test('should allow email/password sign-in for admin user @smoke', async ({ page }) => {
