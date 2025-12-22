@@ -209,32 +209,40 @@ export default function AttributeManager() {
 
         <div className="modal-body">
           <div className="form-row">
-            <label>Attribute ID *</label>
+            <label htmlFor="attribute_id">Attribute ID *</label>
             <input
+              id="attribute_id"
+              name="attribute_id"
               type="text"
               data-testid="attribute-id-input"
               aria-label="Attribute ID"
               value={formData.attribute_id || ''}
               onChange={(e) => setFormData({ ...formData, attribute_id: e.target.value })}
               disabled={!!editingId}
+              autoComplete="off"
             />
             <small>IDs are normalized to snake_case on save</small>
           </div>
 
           <div className="form-row">
-            <label>Label *</label>
+            <label htmlFor="label">Label *</label>
             <input
+              id="label"
+              name="label"
               type="text"
               data-testid="attribute-label-input"
               aria-label="Label"
               value={formData.label || ''}
               onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+              autoComplete="off"
             />
           </div>
 
           <div className="form-row">
-            <label>Data Type *</label>
+            <label htmlFor="data_type">Data Type *</label>
             <select
+              id="data_type"
+              name="data_type"
               data-testid="data-type-select"
               aria-label="Data Type"
               value={formData.data_type}
@@ -253,42 +261,53 @@ export default function AttributeManager() {
 
           {(formData.data_type === 'enum' || formData.data_type === 'multiSelect') && (
             <div className="form-row">
-              <label>Allowed values (comma-separated)</label>
+              <label htmlFor="allowed_values">Allowed values (comma-separated)</label>
               <input
+                id="allowed_values"
+                name="allowed_values"
                 type="text"
+                data-testid="allowed-values-input"
                 value={(formData.allowed_values || []).join(', ')}
                 onChange={(e) => setFormData({ ...formData, allowed_values: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
                 placeholder="e.g. Men, Women, Unisex"
-                data-testid="allowed-values-input"
+                autoComplete="off"
               />
             </div>
           )}
 
           <div className="form-row">
-            <label>Synonyms (comma-separated)</label>
+            <label htmlFor="synonyms">Synonyms (comma-separated)</label>
             <input
+              id="synonyms"
+              name="synonyms"
               type="text"
+              data-testid="synonyms-input"
               value={Array.isArray(formData.synonyms) ? formData.synonyms.join(', ') : ''}
               onChange={(e) => setFormData({ ...formData, synonyms: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
               placeholder="e.g. color, main_color"
-              data-testid="synonyms-input"
+              autoComplete="off"
             />
           </div>
 
           <div className="form-row">
-            <label>Category</label>
+            <label htmlFor="category">Category</label>
             <input
+              id="category"
+              name="category"
               type="text"
               data-testid="category-input"
               aria-label="Category"
               value={formData.category || ''}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              autoComplete="off"
             />
           </div>
 
           <div className="form-row">
-            <label>Status</label>
+            <label htmlFor="status">Status</label>
             <select
+              id="status"
+              name="status"
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as Attribute['status'] })}
             >
@@ -299,8 +318,10 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-row">
-            <label>AI Usage Notes</label>
+            <label htmlFor="ai_usage_notes">AI Usage Notes</label>
             <textarea
+              id="ai_usage_notes"
+              name="ai_usage_notes"
               value={formData.ai_usage_notes || ''}
               onChange={(e) => setFormData({ ...formData, ai_usage_notes: e.target.value })}
               rows={3}
@@ -308,19 +329,24 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-row">
-            <label>External Header</label>
+            <label htmlFor="external_header">External Header</label>
             <input
+              id="external_header"
+              name="external_header"
               type="text"
               value={formData.external_header || ''}
               onChange={(e) => setFormData({ ...formData, external_header: e.target.value })}
               placeholder="CSV header for import mapping"
+              autoComplete="off"
             />
             <small>Header name used to match during import preview</small>
           </div>
 
           <div className="form-row checkbox-row">
-            <label>Required for Import</label>
+            <label htmlFor="import_required">Required for Import</label>
             <input
+              id="import_required"
+              name="import_required"
               type="checkbox"
               checked={!!formData.import_required}
               onChange={(e) => setFormData({ ...formData, import_required: e.target.checked })}
@@ -329,8 +355,10 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-row checkbox-row">
-            <label>Required for Export</label>
+            <label htmlFor="required_for_export">Required for Export</label>
             <input
+              id="required_for_export"
+              name="required_for_export"
               type="checkbox"
               checked={!!formData.required_for_export}
               onChange={(e) => setFormData({ ...formData, required_for_export: e.target.checked })}
@@ -338,8 +366,10 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-row checkbox-row">
-            <label>Required for Completion</label>
+            <label htmlFor="required_for_completion">Required for Completion</label>
             <input
+              id="required_for_completion"
+              name="required_for_completion"
               type="checkbox"
               checked={!!formData.required_for_completion}
               onChange={(e) => setFormData({ ...formData, required_for_completion: e.target.checked })}
@@ -347,8 +377,8 @@ export default function AttributeManager() {
           </div>
 
           <div className="form-row">
-            <label>Source</label>
-            <input type="text" value={formData.source || ''} readOnly />
+            <label htmlFor="source">Source</label>
+            <input id="source" name="source" type="text" value={formData.source || ''} readOnly />
             <small>Source of attribute (notion|derived|json)</small>
           </div>
         </div>
@@ -356,6 +386,7 @@ export default function AttributeManager() {
         <div className="form-actions actions">
           {editingId && (
             <button
+              type="button"
               className="danger"
               onClick={() => handleDelete(editingId)}
               disabled={saving}
@@ -364,6 +395,7 @@ export default function AttributeManager() {
             </button>
           )}
           <button
+            type="button"
             className="primary"
             data-testid="save-attribute-button"
             onClick={handleSave}
@@ -372,6 +404,7 @@ export default function AttributeManager() {
             {saving ? 'Saving...' : editingId ? 'Update' : 'Create'}
           </button>
           <button
+            type="button"
             className="secondary"
             data-testid="cancel-attribute-button"
             onClick={handleCancel}
