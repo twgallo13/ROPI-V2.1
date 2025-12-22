@@ -273,11 +273,16 @@ export function useProduct(productId: string) {
     return saveProduct(updatedProduct);
   };
 
-  // LP-3.0.2: Ensure product always has attributes object to prevent runtime errors
+  // LP-3.0.2, LP-3.0.7: Ensure product always has safe defaults to prevent runtime errors
+  // Defensive guards for attributes, exportReadiness, and array fields
   const safeProduct = product
     ? {
         ...product,
         attributes: product.attributes ?? {},
+        exportReadiness: product.exportReadiness ?? { overall: 0, byWebsite: {} },
+        websites: Array.isArray(product.websites) ? product.websites : [],
+        observations: Array.isArray(product.observations) ? product.observations : [],
+        smartSuggestions: Array.isArray(product.smartSuggestions) ? product.smartSuggestions : [],
       }
     : product;
 

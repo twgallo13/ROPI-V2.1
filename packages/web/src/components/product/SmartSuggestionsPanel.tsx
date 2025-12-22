@@ -19,7 +19,9 @@ interface SmartSuggestionsPanelProps {
 }
 
 function SmartSuggestionsPanel({ suggestions, onApplySuggestion, onIgnoreSuggestion }: SmartSuggestionsPanelProps) {
-  const pendingSuggestions = suggestions.filter(s => s.status === 'pending');
+  // LP-3.0.7: Defensive guard for suggestions array
+  const safeSuggestions = Array.isArray(suggestions) ? suggestions : [];
+  const pendingSuggestions = safeSuggestions.filter(s => s && s.status === 'pending');
 
   return (
     <div className="product-panel">

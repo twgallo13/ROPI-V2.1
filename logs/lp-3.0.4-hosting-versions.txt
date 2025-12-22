@@ -1,0 +1,1 @@
+gcloud app versions not applicable for Firebase Hosting

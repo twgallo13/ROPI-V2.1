@@ -41,6 +41,9 @@ const corsHandler = cors({
 /**
  * Parse multipart/form-data upload
  * Extracts CSV file content from request
+ * 
+ * LP-3.0.6: Fixed for 2nd Gen Cloud Functions (Cloud Run)
+ * Uses rawBody buffer instead of req.pipe() since Cloud Run pre-buffers the body
  */
 async function parseUpload(req: ExpressRequest): Promise<{
   csvContent: string;
@@ -81,8 +84,19 @@ async function parseUpload(req: ExpressRequest): Promise<{
       reject(error);
     });
 
-    // Pipe request into busboy
-    req.pipe(busboy);
+    // LP-3.0.6: 2nd Gen Cloud Functions (Cloud Run) pre-buffer the body
+    // Use rawBody if available, otherwise fall back to piping
+    const rawBody = (req as any).rawBody;
+    if (rawBody && Buffer.isBuffer(rawBody)) {
+      busboy.end(rawBody);
+    } else if (typeof req.body === 'string') {
+      busboy.end(Buffer.from(req.body));
+    } else if (Buffer.isBuffer(req.body)) {
+      busboy.end(req.body);
+    } else {
+      // Fallback for 1st Gen functions or emulator
+      req.pipe(busboy);
+    }
   });
 }
 

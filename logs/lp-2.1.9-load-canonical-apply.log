@@ -1,0 +1,67 @@
+===============================================================================
+LP-2.1.9 CANONICAL VALUE MAPPINGS APPLY LOG
+===============================================================================
+Session Date: 2025-12-21
+Branch: aoss-main (post PR #324 merge)
+
+-------------------------------------------------------------------------------
+PROBLEM IDENTIFIED
+-------------------------------------------------------------------------------
+After merging PR #324, export dry-run showed 85% unknown values (170/200 products)
+due to missing canonical value mappings in the attribute registry.
+
+-------------------------------------------------------------------------------
+SOLUTION APPLIED
+-------------------------------------------------------------------------------
+1. Created canonical-value-synonyms.json (v1.0.5) with mappings for 7 attributes:
+   - gender: Men→Men's, Women→Women's, Boys→Boy's, Girls→Girl's, Unisex→Unisex, Kids→Kids
+   - class: +Hats, +Sandals to allowed_values
+   - category: Footwear→Casual, Basketball→Athletic, Running→Athletic, etc.
+   - department: Accessories→Apparel
+   - primary_color: 57 synonyms including Multi→Multi Color, Bone→Beige, Navy→Navy Blue, etc.
+   - fit: True To Size→Regular
+   - age_group: Toddler→Kids, Kids→Kids
+
+2. Created and ran scripts/load-canonical-synonyms.js to apply mappings to Firestore
+
+3. Backed up pre-apply snapshots to reports/attribute-inspections/2025-12-21/pre-canonical-snapshots.json
+
+4. Cache clearing attempts:
+   - Deleted/redeployed exportDryRun function multiple times (ineffective)
+   - Discovered /api/** routes to unified 'api' function via firebase.json rewrites
+   - Deleted and redeployed 'api' function to clear registryCache
+
+5. Final verification:
+   - Dry-run with limit=100 returned 80 products
+   - 0 warnings (unknown values)
+   - 100% export ready
+   - Unknown percent: 0%
+
+-------------------------------------------------------------------------------
+FIRESTORE CHANGES
+-------------------------------------------------------------------------------
+Collection: settings/attributes/keys
+
+Updated Documents:
+- gender: +6 synonyms, definition_version → 1.0.5
+- class: +2 allowed_values (Hats, Sandals), definition_version → 1.0.5  
+- category: +7 synonyms, definition_version → 1.0.5
+- department: +1 synonym, definition_version → 1.0.5
+- primary_color: +57 synonyms, definition_version → 1.0.5
+- fit: +1 synonym, definition_version → 1.0.5
+- age_group: +2 synonyms, definition_version → 1.0.5
+
+-------------------------------------------------------------------------------
+FUNCTION DEPLOYMENTS
+-------------------------------------------------------------------------------
+- firebase functions:delete api --force (cleared stale cache)
+- firebase deploy --only functions:api (recreated with fresh state)
+
+-------------------------------------------------------------------------------
+RESULT
+-------------------------------------------------------------------------------
+Status: PASS
+Unknown Percent: 0% (threshold: 1%)
+Export: UNBLOCKED
+
+-------------------------------------------------------------------------------

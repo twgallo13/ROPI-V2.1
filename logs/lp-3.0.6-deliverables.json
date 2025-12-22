@@ -1,0 +1,58 @@
+{
+  "lp": "LP-3.0.6",
+  "hosting": {
+    "hosting_site": "logs/lp-3.0.6-hosting-site.json",
+    "revisions": "logs/lp-3.0.6-hosting-channels.txt",
+    "rewrites": "logs/lp-3.0.6-rewrites.json",
+    "hosting_deploy_log": "N/A - hosting was current (2025-12-22 01:11:02)"
+  },
+  "mapping_get": {
+    "tested_url": "/api/admin/settings/attributes/mapping",
+    "result": "404 - expected, route is /api/admin/settings/attributes/:id/mapping",
+    "correct_url_tested": "/api/admin/settings/attributes/department/mapping → 200 OK",
+    "global_mappings": "/api/admin/settings/mappings → 200 OK"
+  },
+  "api_deploy_log": "logs/lp-3.0.6-api-deploy.log",
+  "fn_api_describe": "logs/lp-3.0.6-fn-api-describe.json",
+  "firestore_rules": "logs/lp-3.0.6-firestore.rules",
+  "permission_logs": "logs/lp-3.0.6-permission-errors.json (empty - no permission errors)",
+  "theo_claims": "logs/lp-3.0.6-theo-claims.json",
+  "create_attribute_test": {
+    "log": "logs/lp-3.0.6-create-attribute.txt",
+    "result": "SUCCESS - created lp306_test_attr"
+  },
+  "import_post": {
+    "log": "logs/lp-3.0.6-import-post.txt",
+    "result": "SUCCESS - 6 rows processed, 0 errors, 6 warnings"
+  },
+  "status": "PASS",
+  "fixes_applied": [
+    {
+      "issue": "Import 500 'Unexpected end of form'",
+      "root_cause": "2nd Gen Cloud Functions (Cloud Run) pre-buffer request body; req.pipe() fails",
+      "fix": "packages/api/src/endpoints/import.ts - Use rawBody/Buffer instead of req.pipe()",
+      "file": "packages/api/src/endpoints/import.ts"
+    },
+    {
+      "issue": "Import 500 'Cannot use undefined as Firestore value'",
+      "root_cause": "SDK importRowBuilder sets errorMessage: undefined for valid rows",
+      "fix": "Use spread operator to conditionally include errorMessage",
+      "file": "packages/sdk/src/builders/importRowBuilder.ts"
+    }
+  ],
+  "verified_working": [
+    "PUT /admin/settings/attributes/:id - 200 OK (synonyms normalized)",
+    "POST /admin/settings/attributes - 201 Created (attribute creation)",
+    "GET /admin/settings/attributes/:id/mapping - 200 OK",
+    "GET /admin/settings/mappings - 200 OK (global mappings)",
+    "POST /importCSV - 200 OK (multipart form upload works)",
+    "OPTIONS /importCSV - 204 with CORS headers"
+  ],
+  "theo_claims_verified": {
+    "uid": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "email": "theo@shiekh.com",
+    "customClaims": { "role": "admin" },
+    "emailVerified": true
+  },
+  "notes": "Two bugs fixed: (1) 2nd Gen Cloud Function multipart parsing required using rawBody instead of req.pipe(), (2) SDK was setting errorMessage to undefined which Firestore rejects. Both deployed and verified working. Mapping 404 was user URL error - the route requires :id parameter."
+}

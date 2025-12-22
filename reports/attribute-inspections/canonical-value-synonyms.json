@@ -1,0 +1,120 @@
+{
+  "_version": "1.0.5",
+  "_description": "Canonical value synonyms and allowed_values extensions for LP-2.1.9 (extended)",
+  "_date": "2025-12-21",
+  
+  "gender": {
+    "synonyms": {
+      "Men": "Men's",
+      "Women": "Women's",
+      "Mens": "Men's",
+      "Womens": "Women's",
+      "M": "Men's",
+      "W": "Women's",
+      "Male": "Men's",
+      "Female": "Women's",
+      "Boy": "Boys",
+      "Girl": "Girls",
+      "Kid": "Kids"
+    },
+    "allowed_values_extend": []
+  },
+  
+  "class": {
+    "synonyms": {
+      "Hat": "Hats",
+      "Sandal": "Sandals",
+      "Sneaker": "Sneakers",
+      "Boot": "Boots",
+      "Slipper": "Slippers",
+      "Hoodie": "Hoodies",
+      "Run": "Running"
+    },
+    "allowed_values_extend": ["Hats", "Sandals", "Boots", "Sneakers", "Slippers", "Hoodies", "Running"]
+  },
+  
+  "category": {
+    "synonyms": {
+      "Clog": "Clogs",
+      "Shoe": "Footwear",
+      "Shoes": "Footwear",
+      "Sandal": "Sandals",
+      "None": "Casual",
+      "Flat": "Casual",
+      "Lifestyle": "Casual"
+    },
+    "allowed_values_extend": ["Clogs", "Basketball"]
+  },
+  
+  "department": {
+    "synonyms": {
+      "Clothes": "Footwear",
+      "Clothing": "Footwear"
+    },
+    "allowed_values_extend": []
+  },
+  
+  "primary_color": {
+    "synonyms": {
+      "Multi": "Multi Color",
+      "Multicolor": "Multi Color",
+      "MultiColor": "Multi Color",
+      "multi": "Multi Color",
+      "multi-color": "Multi Color",
+      "BLACK": "Black",
+      "WHITE": "White",
+      "BLUE": "Blue",
+      "RED": "Red",
+      "GREEN": "Green",
+      "GRAY": "Gray",
+      "GREY": "Grey",
+      "BROWN": "Brown",
+      "PINK": "Pink",
+      "ORANGE": "Orange",
+      "YELLOW": "Yellow",
+      "PURPLE": "Purple",
+      "GOLD": "Gold",
+      "SILVER": "Silver",
+      "BEIGE": "Beige",
+      "NAVY": "Navy",
+      "CREAM": "Cream",
+      "BLACK PU": "Black",
+      "BLACK | BLK": "Black",
+      "BLACK/WHITE/BLACK": "Black",
+      "DAYS AHEAD/WHITE/DAYSAHEAD": "Multi Color",
+      "DARKLY JADED/WHITE/NATURAL IVORY": "Multi Color",
+      "DARKLY JADED/WHITE/BLACK": "Multi Color",
+      "BETSCA": "Multi Color",
+      "RED LEOPARD": "Red",
+      "ROTTEN APPLE/WHITE/BLACK": "Multi Color",
+      "BLUEIT/BLACK/WHITE": "Multi Color",
+      "PINKFROSTING/WHITE/BLACK": "Multi Color",
+      "CRISPY COBALT/WHITE/BLACK": "Multi Color"
+    },
+    "allowed_values_extend": []
+  },
+  
+  "fit": {
+    "synonyms": {
+      "True To Size": "True To Size",
+      "TTS": "True To Size",
+      "true to size": "True To Size",
+      "Runs Small": "Runs A Half Size Small",
+      "Runs Big": "Runs A Half Size Big",
+      "G": "True To Size"
+    },
+    "allowed_values_extend": []
+  },
+  
+  "age_group": {
+    "synonyms": {
+      "adult": "Adult",
+      "ADULT": "Adult",
+      "kid": "Kids",
+      "KID": "Kids",
+      "child": "Kids",
+      "Child": "Kids"
+    },
+    "allowed_values_extend": []
+  }
+}

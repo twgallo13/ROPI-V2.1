@@ -28,6 +28,7 @@ import {
   AuditServiceError,
   type AuditAction,
 } from '../../services/auditService';
+import { normalizeSynonymsShape } from '../../lib/attributeUtils';
 
 /**
  * Format service error for HTTP response
@@ -171,6 +172,11 @@ export async function updateAttributeHandler(req: Request, res: Response) {
             .map((s: string) => s.trim())
             .filter(Boolean);
         }
+      }
+
+      // LP-3.0.4: Normalize synonyms to canonical array-of-objects shape
+      if (payload.synonyms != null) {
+        payload.synonyms = normalizeSynonymsShape(payload.synonyms);
       }
 
       const authReq = req as AuthenticatedRequest;

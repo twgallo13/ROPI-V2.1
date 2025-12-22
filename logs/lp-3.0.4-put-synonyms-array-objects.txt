@@ -1,0 +1,21 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   133    0     0  100   133      0    649 --:--:-- --:--:-- --:--:--   648100   526  100   393  100   133   1378    466 --:--:-- --:--:-- --:--:--  1839
+HTTP/2 400 
+content-type: application/json; charset=utf-8
+etag: W/"189-d1tSRdZNM+oSN+jzr6FID6q3tAQ"
+server: Google Frontend
+traceparent: 00-161edcc5d7a2e98ff946a161135516f1-e23ade021ffa21a9-01
+x-cloud-trace-context: 161edcc5d7a2e98ff946a161135516f1/16301585901928718761;o=1
+x-powered-by: Express
+accept-ranges: bytes
+date: Mon, 22 Dec 2025 01:00:06 GMT
+x-served-by: cache-bur-kbur8200053-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766365207.509691,VS0,VE237
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 393
+
+{"ok":false,"error":"validation_failed","message":"Invalid attribute data","details":[{"path":"synonyms.0","message":"Expected string, received object"},{"path":"synonyms.1","message":"Expected string, received object"},{"path":"source","message":"Invalid enum value. Expected 'notion' | 'derived' | 'json', received 'repo'"},{"path":"updatedAt","message":"Expected string, received object"}]}

@@ -1,0 +1,89 @@
+{
+  "lp": "LP-3.0.4",
+  "timestamp": "2025-12-22T01:01:00Z",
+  "aoss_main_sha_file": "logs/lp-3.0.4-aoss-main-sha.txt",
+  "aoss_main_sha": "0cfb4242c79634fce098d72b7549dde73796cc90",
+  "aoss_main_commit_date": "2025-12-21 14:06:44 -0800 (22:06:44 UTC)",
+  "hosting_channels": "logs/lp-3.0.4-hosting-channels.txt",
+  "hosting_versions": "logs/lp-3.0.4-hosting-versions.txt",
+  "hosting_last_deploy": "2025-12-02 04:05:51 (OUTDATED - 19 days old)",
+  "fn_api_describe": "logs/lp-3.0.4-fn-api-describe.json",
+  "fn_import_describe": "logs/lp-3.0.4-fn-importCSV-describe.json",
+  "api_logs": "logs/lp-3.0.4-api-logs.json",
+  "import_logs": "logs/lp-3.0.4-importCSV-logs.json",
+  "attribute_logs": "logs/lp-3.0.4-attribute-logs.json",
+  "put_response_object": "logs/lp-3.0.4-put-synonyms-object.txt",
+  "put_response_array_objects": "logs/lp-3.0.4-put-synonyms-array-objects.txt",
+  "import_options": "logs/lp-3.0.4-import-options.txt",
+  "import_post": "logs/lp-3.0.4-import-post.txt",
+  "api_logs_text": "logs/lp-3.0.4-api-logs-text.txt",
+  "registryCache_lines": "none",
+  "function_deploy_status": {
+    "api": {
+      "updateTime": "2025-12-21T22:38:24.472275353Z",
+      "status": "ACTIVE",
+      "runtime": "nodejs20",
+      "is_after_commit": true
+    },
+    "importCSV": {
+      "updateTime": "2025-12-21T22:38:36.130695510Z",
+      "state": "ACTIVE",
+      "revision": "importcsv-00041-vav",
+      "is_after_commit": true
+    }
+  },
+  "test_results": {
+    "put_synonyms_object": {
+      "status": 400,
+      "error": "validation_failed",
+      "details": "synonyms: Expected array, received object; source: Invalid enum value. Expected 'notion' | 'derived' | 'json', received 'repo'"
+    },
+    "put_synonyms_array_objects": {
+      "status": 400,
+      "error": "validation_failed",
+      "details": "synonyms.0: Expected string, received object; synonyms.1: Expected string, received object"
+    },
+    "import_options": {
+      "status": 204,
+      "cors_origin": "https://ropi-aoss-staging.web.app",
+      "cors_present": true
+    },
+    "import_post": {
+      "status": 500,
+      "error": "Unexpected end of form",
+      "cors_origin": "https://ropi-aoss-staging.web.app",
+      "cors_present": true,
+      "note": "500 error is file parsing issue, not CORS - CORS headers ARE present"
+    }
+  },
+  "root_cause_analysis": {
+    "issue_1_put_synonyms_400": {
+      "cause": "Schema mismatch in packages/sdk/src/schema/attribute.ts",
+      "schema_expects": "synonyms: z.array(z.string()) - array of strings",
+      "firestore_stores": "synonyms: Record<string,string> - object mapping alias to canonical",
+      "also_failing": "source enum only allows ['notion','derived','json'] but Firestore has 'repo'"
+    },
+    "issue_2_import_cors": {
+      "cause": "NOT A CORS ISSUE - CORS headers ARE present",
+      "actual_issue": "File upload parsing error: 'Unexpected end of form'",
+      "cors_verified": "Access-Control-Allow-Origin header present on both OPTIONS and POST responses"
+    }
+  },
+  "status": "BLOCKED",
+  "blocking_issues": [
+    "PUT /api/admin/settings/attributes fails with 400 due to schema mismatch - synonyms must be Record<string,string> but schema expects array of strings",
+    "PUT fails on 'source' field - schema enum missing 'repo' value"
+  ],
+  "non_blocking_issues": [
+    "Hosting deploy is 19 days old (2025-12-02) - frontend may not have latest changes",
+    "Import POST returns 500 but this is a file parsing issue, not CORS"
+  ],
+  "recommended_fixes": [
+    "1. Update packages/sdk/src/schema/attribute.ts to change synonyms from z.array(z.string()) to z.record(z.string(), z.string())",
+    "2. Update source enum to include 'repo': z.enum(['notion', 'derived', 'json', 'repo'])",
+    "3. Rebuild SDK and API packages",
+    "4. Redeploy api function",
+    "5. Optionally: redeploy hosting to get latest frontend"
+  ],
+  "notes": "Functions are deployed with latest code (updateTime after commit). The issue is the AttributeSchema in @ropi-aoss/sdk does not match the actual Firestore data structure. The schema was designed for a different synonyms format (array of strings) than what the system actually uses (object mapping alias→canonical). Import CORS is WORKING - the 500 error is unrelated to CORS."
+}

@@ -1,12 +1,31 @@
 /**
  * Product Utility Functions
  * LP-3.0.2: Defensive access helpers for product attributes
+ * LP-3.0.7: Generic safe accessors for any array/object
  * 
  * These utilities ensure safe access to product.attributes fields
  * without runtime TypeErrors when attributes or sub-fields are undefined.
  */
 
 import type { Product } from '../types/product';
+
+/**
+ * LP-3.0.7: Generic safe array accessor
+ * Safely returns an array, or empty array if value is not an array
+ */
+export function safeArray<T>(value: T[] | undefined | null): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
+/**
+ * LP-3.0.7: Generic safe object accessor
+ * Safely returns an object, or empty object if value is not an object
+ */
+export function safeObject<T extends object>(value: T | undefined | null): T {
+  return (value && typeof value === 'object' && !Array.isArray(value)) 
+    ? value 
+    : {} as T;
+}
 
 /**
  * Safely get an array attribute from a product.
