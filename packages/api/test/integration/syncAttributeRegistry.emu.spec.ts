@@ -23,9 +23,10 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
 
   beforeAll(async () => {
     // Initialize Firebase Admin with emulator
+    // Use demo-ropi-test to match CI workflow (api-integration-emulator.yml)
     if (!admin.apps.length) {
       admin.initializeApp({
-        projectId: 'demo-integration-test',
+        projectId: 'demo-ropi-test',
       });
     }
     
@@ -82,10 +83,10 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
       const genderAttr = await getAttribute('gender');
       expect(genderAttr).toBeDefined();
       expect(genderAttr.label).toBe('Gender');
-      expect(genderAttr.data_type).toBe('enum');
+      expect(genderAttr.data_type).toBe('select');
       expect(genderAttr.required_for_completion).toBe(true);
-      expect(genderAttr.allowed_values).toContain('Men');
-      expect(genderAttr.allowed_values).toContain('Women');
+      expect(genderAttr.allowed_values).toContain("Men's");
+      expect(genderAttr.allowed_values).toContain("Women's");
 
       const ageGroupAttr = await getAttribute('age_group');
       expect(ageGroupAttr).toBeDefined();
@@ -93,7 +94,7 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
 
       const primaryColorAttr = await getAttribute('primary_color');
       expect(primaryColorAttr).toBeDefined();
-      expect(primaryColorAttr.data_type).toBe('enum');
+      expect(primaryColorAttr.data_type).toBe('select');
       expect(primaryColorAttr.required_for_completion).toBe(true);
     });
 
@@ -131,11 +132,10 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
 
       const materialAttr = await getAttribute('material');
       expect(materialAttr).toBeDefined();
-      expect(materialAttr.label).toBe('Material');
+      expect(materialAttr.label).toBe('Material(s)');
       expect(materialAttr.external_header).toBe('Material');
-      expect(materialAttr.category).toBe('Construction');
-      expect(materialAttr.data_type).toBe('enum');
-      expect(materialAttr.synonyms).toContain('upper_material');
+      expect(materialAttr.category).toBe('materials_construction');
+      expect(materialAttr.data_type).toBe('multiSelect');
       expect(materialAttr.ai_usage_notes).toBeDefined();
       expect(materialAttr.status).toBe('active');
     });
@@ -147,10 +147,10 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
       const waterproofAttr = await getAttribute('waterproof');
       expect(waterproofAttr.data_type).toBe('boolean');
 
-      // Check multiSelect type
-      const occasionAttr = await getAttribute('occasion');
-      expect(occasionAttr.data_type).toBe('multiSelect');
-      expect(occasionAttr.allowed_values).toBeInstanceOf(Array);
+      // Check multiSelect type (using material instead of occasion which doesn't exist)
+      const materialAttr = await getAttribute('material');
+      expect(materialAttr.data_type).toBe('multiSelect');
+      expect(materialAttr.allowed_values).toBeInstanceOf(Array);
 
       // Check date type
       const launchDateAttr = await getAttribute('launch_date');

@@ -61,7 +61,7 @@ jobs:
           firebase emulators:exec \
             --only firestore \
             --project demo-ropi-test \
-            "pnpm --filter @ropi-aoss/api test -- --poolOptions.threads.singleThread"
+            "pnpm --filter @ropi-aoss/api exec vitest run --config vitest.config.emu.ts --no-file-parallelism"
 
       - name: Upload test results
         if: always()

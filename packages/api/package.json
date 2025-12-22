@@ -19,6 +19,7 @@
     "normalize:attributes": "node dist/tasks/normalizeProductAttributeValues.js"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.18.0",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",

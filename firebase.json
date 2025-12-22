@@ -13,7 +13,8 @@
         "*.local"
       ],
       "predeploy": [
-        "pnpm --filter @ropi-aoss/api build"
+        "pnpm --filter @ropi-aoss/api build",
+        "node -e \"const fs=require('fs');const path=require('path');const src=path.resolve('packages/sdk/config/attributeRegistry.json');const destDir=path.resolve('packages/api/dist/config');if(!fs.existsSync(src)){console.error('❌ Authoritative registry missing at',src);process.exit(1);}if(!fs.existsSync(destDir))fs.mkdirSync(destDir,{recursive:true});fs.copyFileSync(src,path.join(destDir,'attributeRegistry.json'));console.log('✅ Copied registry to',path.join(destDir,'attributeRegistry.json'))\""
       ]
     }
   ],
