@@ -6,8 +6,12 @@ const isEmulator =
   !!process.env.FIRESTORE_EMULATOR_HOST ||
   process.env.NODE_ENV === 'test_emulator';
 
-if (!isEmulator) {
-  vi.mock('firebase-admin', async (importOriginal) => {
+if (isEmulator) {
+  // Running integration tests against emulator: do not mock admin
+  console.log('Running in emulator mode: using real firebase-admin');
+} else {
+  // vi.doMock is NOT hoisted, so the condition is properly evaluated at runtime
+  vi.doMock('firebase-admin', async (importOriginal) => {
     const actual = await importOriginal();
 
     // Track initialized apps so tests that check admin.apps work
@@ -85,7 +89,4 @@ if (!isEmulator) {
       apps,
     };
   });
-} else {
-  // Running integration tests against emulator: do not mock admin
-  // Optional: console.log('Running in emulator mode: using real firebase-admin')
 }

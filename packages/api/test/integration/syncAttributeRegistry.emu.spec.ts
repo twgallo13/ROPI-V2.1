@@ -25,7 +25,7 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
     // Initialize Firebase Admin with emulator
     if (!admin.apps.length) {
       admin.initializeApp({
-        projectId: 'demo-integration-test',
+        projectId: process.env.GCLOUD_PROJECT || 'demo-ropi-test',
       });
     }
     
