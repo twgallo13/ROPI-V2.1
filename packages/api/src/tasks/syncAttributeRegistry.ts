@@ -18,6 +18,7 @@
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Storage } from '@google-cloud/storage';
 
 // Type definitions
 interface AttributeDefinition {
@@ -44,15 +45,63 @@ interface SyncResult {
   attributes: string[];
 }
 
-// LP-1.1.0: Path resolution with fallback (packaged → dev)
+// LP-1.2.2: Path resolution with fallback (packaged → dev → GCS)
 const PACKAGED_REGISTRY_PATH = path.resolve(__dirname, '../config/attributeRegistry.json');
 const DEV_REGISTRY_PATH = path.resolve(__dirname, '../../../sdk/config/attributeRegistry.json');
-const REGISTRY_JSON_PATH = fs.existsSync(PACKAGED_REGISTRY_PATH)
-  ? PACKAGED_REGISTRY_PATH
-  : DEV_REGISTRY_PATH;
+let REGISTRY_JSON_PATH = PACKAGED_REGISTRY_PATH;
+
+// GCS fallback env vars (optional) - to be set in deployment env if desired:
+// ATTRIBUTE_REGISTRY_GCS_BUCKET=ropi-bccee-config
+// ATTRIBUTE_REGISTRY_GCS_KEY=attributeRegistry.json
+const GCS_BUCKET = process.env.ATTRIBUTE_REGISTRY_GCS_BUCKET || '';
+const GCS_KEY = process.env.ATTRIBUTE_REGISTRY_GCS_KEY || 'attributeRegistry.json';
+
+// Attempt to resolve registry path at startup
+if (!fs.existsSync(PACKAGED_REGISTRY_PATH)) {
+  // fallback to dev path if present
+  if (fs.existsSync(DEV_REGISTRY_PATH)) {
+    REGISTRY_JSON_PATH = DEV_REGISTRY_PATH;
+  } else {
+    REGISTRY_JSON_PATH = PACKAGED_REGISTRY_PATH; // keep packaged path, will attempt GCS next
+  }
+}
 
 // Firestore collection path
 const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
+
+/**
+ * LP-1.2.2: Fetch registry from GCS if local file is missing
+ */
+async function fetchRegistryFromGCSIfMissing(): Promise<boolean> {
+  try {
+    if (fs.existsSync(REGISTRY_JSON_PATH)) return true;
+    if (!GCS_BUCKET) {
+      console.warn('⚠️ ATTRIBUTE_REGISTRY_GCS_BUCKET not set — cannot fetch registry from GCS');
+      return false;
+    }
+    const storage = new Storage();
+    const tmpDir = path.resolve(__dirname, '../../tmp');
+    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+    const destPath = path.resolve(tmpDir, GCS_KEY);
+    console.log(`📥 Attempting to download attribute registry from gs://${GCS_BUCKET}/${GCS_KEY} to ${destPath}`);
+    const bucket = storage.bucket(GCS_BUCKET);
+    const file = bucket.file(GCS_KEY);
+    await file.download({ destination: destPath });
+    // validate JSON
+    const raw = fs.readFileSync(destPath, 'utf8');
+    JSON.parse(raw);
+    // copy into expected packaged location so rest of logic can reuse it
+    const destDir = path.dirname(PACKAGED_REGISTRY_PATH);
+    if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+    fs.copyFileSync(destPath, PACKAGED_REGISTRY_PATH);
+    REGISTRY_JSON_PATH = PACKAGED_REGISTRY_PATH;
+    console.log('✅ Attribute registry downloaded and copied to packaged path.');
+    return true;
+  } catch (err) {
+    console.error('❌ Failed to fetch registry from GCS:', err);
+    return false;
+  }
+}
 
 /**
  * Load attribute registry from the JSON file
@@ -64,9 +113,14 @@ async function loadRegistryFromFile(): Promise<AttributeDefinition[] | null> {
       `[loadRegistryFromFile] Checking paths:\n  PACKAGED: ${PACKAGED_REGISTRY_PATH} exists=${fs.existsSync(PACKAGED_REGISTRY_PATH)}\n  DEV: ${DEV_REGISTRY_PATH} exists=${fs.existsSync(DEV_REGISTRY_PATH)}\n  SELECTED: ${REGISTRY_JSON_PATH}`
     );
 
+    // LP-1.2.2: Try GCS fallback if file not found
     if (!fs.existsSync(REGISTRY_JSON_PATH)) {
-      console.warn(`⚠️ Registry file not found at ${REGISTRY_JSON_PATH}`);
-      return null;
+      console.warn(`⚠️ Registry not found at ${REGISTRY_JSON_PATH}. Attempting GCS fallback...`);
+      const ok = await fetchRegistryFromGCSIfMissing();
+      if (!ok) {
+        console.error(`❌ Registry file not found at ${REGISTRY_JSON_PATH} and GCS fallback failed.`);
+        return null;
+      }
     }
 
     const raw = fs.readFileSync(REGISTRY_JSON_PATH, 'utf-8');
