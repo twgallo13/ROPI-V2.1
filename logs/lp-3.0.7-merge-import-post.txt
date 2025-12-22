@@ -1,0 +1,15 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  1989    0     0  100  1989      0   9132 --:--:-- --:--:-- --:--:--  9123100  1989    0     0  100  1989      0   1631  0:00:01  0:00:01 --:--:--  1631100  1989    0     0  100  1989      0    895  0:00:02  0:00:02 --:--:--   895100  1989    0     0  100  1989      0    617  0:00:03  0:00:03 --:--:--   617100  2193  100   204  100  1989     53    524  0:00:03  0:00:03 --:--:--   577
+HTTP/2 200 
+access-control-allow-origin: https://ropi-aoss-staging.web.app
+vary: Origin
+access-control-allow-credentials: true
+content-type: application/json; charset=utf-8
+x-cloud-trace-context: cab3cddd6e6e4b51ece44edda25ec29c;o=1
+date: Mon, 22 Dec 2025 07:18:49 GMT
+server: Google Frontend
+content-length: 204
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+{"success":true,"batchId":"59de0e30-7172-48aa-b9c9-989d5828aa27","fileName":"sample-retailops.csv","rowCount":6,"errorCount":0,"warningCount":6,"status":"processed","createdAt":"2025-12-22T07:18:49.708Z"}

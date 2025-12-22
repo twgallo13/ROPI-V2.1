@@ -53,9 +53,18 @@ export default function MappingTab({ attribute, attributes }: MappingTabProps) {
 
   // Fetch mappings on mount and when attribute changes
   useEffect(() => {
+    // Always fetch global mapping
     fetchGlobalMapping();
-    fetchAttributeMapping(attribute.attribute_id);
-  }, [fetchGlobalMapping, fetchAttributeMapping, attribute.attribute_id]);
+
+    // Only fetch attribute-level mapping when we have a valid attribute_id.
+    // This prevents accidental calls like /attributes/mapping (no id) which return 404
+    // and cause the UI to set an error state and interrupt create/save flows.
+    if (attribute && attribute.attribute_id) {
+      fetchAttributeMapping(attribute.attribute_id);
+    }
+    // When no attribute_id exists (creating new attribute), fetchAttributeMapping
+    // will reset to empty mapping state via the guard in useMappings hook.
+  }, [fetchGlobalMapping, fetchAttributeMapping, attribute?.attribute_id]);
 
   // Show toast notification
   const showToast = useCallback((message: string, type: 'success' | 'error') => {

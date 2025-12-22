@@ -1,0 +1,24 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   466  100   347  100   119    558    191 --:--:-- --:--:-- --:--:--   750100   466  100   347  100   119    558    191 --:--:-- --:--:-- --:--:--   750
+HTTP/2 201 
+cache-control: private
+content-type: application/json; charset=utf-8
+etag: W/"15b-jvdHd8Q1JbQxskGKQf2ZrnGnhWQ"
+server: Google Frontend
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+traceparent: 00-6473c88e2af757bcd5e26afdd658925e-fbdc58ba19ef68a9-01
+x-cloud-trace-context: 6473c88e2af757bcd5e26afdd658925e/18148478154718537897;o=1
+x-country-code: US
+x-powered-by: Express
+accept-ranges: bytes
+date: Mon, 22 Dec 2025 08:19:46 GMT
+x-served-by: cache-bur-kbur8200111-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766391586.814590,VS0,VE528
+vary: Origin,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 347
+
+{"attribute_id":"lp308_curl_test","label":"LP308 Curl Test","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-22T08:19:46.232Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-22T08:19:46.232Z"}

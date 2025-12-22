@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-12-22T08:19:37.687Z",
+  "testAttributeId": "lp308_headless_1766391531642",
+  "passed": true,
+  "networkStats": {
+    "totalCalls": 1,
+    "mapping404sWithoutId": 0,
+    "attributeCreates": 1,
+    "successfulCreates": 1
+  },
+  "consoleStats": {
+    "totalMessages": 3,
+    "typeErrors": 0
+  },
+  "mapping404Details": [],
+  "createResult": {
+    "status": 201,
+    "statusText": "",
+    "body": "{\"attribute_id\":\"lp308_headless_1766391531642\",\"label\":\"LP308 Headless Test\",\"data_type\":\"string\",\"required_for_completion\":false,\"required_for_export\":false,\"import_required\":false,\"status\":\"active\",\"createdBy\":\"zmAn8kKTE3ZW3fM386d8tiWW97U2\",\"createdAt\":\"2025-12-22T08:19:35.084Z\",\"updatedBy\":\"zmAn8kKTE3ZW3fM386d8tiWW97U2\",\"updatedAt\":\"2025-12-22T08:19:35.084Z\"}"
+  }
+}

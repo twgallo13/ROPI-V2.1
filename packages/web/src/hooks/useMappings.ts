@@ -118,7 +118,7 @@ export interface UseMappingsReturn {
   
   // Operations
   fetchGlobalMapping: () => Promise<void>;
-  fetchAttributeMapping: (attributeId: string) => Promise<void>;
+  fetchAttributeMapping: (attributeId?: string) => Promise<void>;
   updateGlobalMapping: (data: Partial<GlobalMapping>, merge?: boolean) => Promise<void>;
   updateAttributeMapping: (attributeId: string, data: Partial<AttributeMapping>, merge?: boolean) => Promise<void>;
   deleteAttributeMapping: (attributeId: string) => Promise<void>;
@@ -243,7 +243,15 @@ export function useMappings(options: UseMappingsOptions = {}): UseMappingsReturn
   // Attribute Mapping Operations
   // =============================================
 
-  const fetchAttributeMapping = useCallback(async (attrId: string) => {
+  const fetchAttributeMapping = useCallback(async (attrId?: string) => {
+    // Defensive: if attrId is falsy, reset attributeMapping to an empty shape and return.
+    // This prevents /attributes/mapping (no id) 404 errors during attribute creation.
+    if (!attrId) {
+      setAttributeMapping({ aliases: {}, value_synonyms: {} });
+      setCurrentAttributeId(undefined);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setCurrentAttributeId(attrId);

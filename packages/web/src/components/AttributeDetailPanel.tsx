@@ -515,7 +515,15 @@ export default function AttributeDetailPanel({
           />
         );
       case 'mapping':
-        return <MappingTab attribute={attribute} attributes={attributes} />;
+        // Guard: only render MappingTab when attribute has a valid attribute_id.
+        // During attribute creation (no id), show placeholder to avoid mapping 404 errors.
+        return attribute && attribute.attribute_id ? (
+          <MappingTab attribute={attribute} attributes={attributes} />
+        ) : (
+          <div className={styles.placeholderTab} data-testid="mapping-placeholder">
+            <p>Save the attribute first to configure mappings.</p>
+          </div>
+        );
       case 'audit':
         return (
           <AuditTab

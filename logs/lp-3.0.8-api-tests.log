@@ -1,0 +1,364 @@
+ WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.17.0","pnpm":"10.13.1"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+stderr | src/endpoints/admin/users.test.ts > Users Endpoints > createUserHandler > should return 400 for invalid role
+⚠️ Failed to normalize role input: invalid-role
+
+stdout | src/endpoints/admin/users.test.ts > Users Endpoints > updateUserHandler > should create profile doc if missing (create-or-merge behavior)
+📝 Creating missing profile doc for user test-uid-no-profile
+
+stdout | src/endpoints/admin/users.test.ts > Users Endpoints > resetPasswordHandler > should generate password reset link
+Password reset link for test@test.com: https://reset.link
+
+ ✓ src/endpoints/admin/users.test.ts  (15 tests) 31ms
+ ✓ test/exportService.unit.test.ts  (38 tests) 50ms
+stderr | test/admin-users-enhanced.test.ts > Role Normalization > POST /admin/settings/users - createUserHandler with role normalization > should reject invalid role
+⚠️ Failed to normalize role input: invalid_role
+
+stderr | test/admin-users-enhanced.test.ts > Role Normalization > POST /admin/settings/users - createUserHandler with role normalization > should reject legacy role "user"
+⚠️ Failed to normalize role input: user
+
+stderr | test/admin-users-enhanced.test.ts > Role Normalization > PATCH /admin/settings/users/:uid - updateUserHandler with role normalization > should reject invalid role in update
+⚠️ Failed to normalize role input: invalid
+
+ ✓ test/admin-users-enhanced.test.ts  (20 tests) 129ms
+ ✓ test/exportService.integration.test.ts  (20 tests) 18ms
+ ✓ test/importValidation.unit.test.ts  (28 tests) 24ms
+stderr | test/users-profile.unit.test.ts > GET /users/me > should handle user not found gracefully
+User profile endpoint error: Error: User not found
+    at /workspaces/ROPI-V2.1/packages/api/test/users-profile.unit.test.ts:136:27
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5) {
+  code: 'auth/user-not-found'
+}
+
+ ✓ test/users-profile.unit.test.ts  (15 tests) 50ms
+ ❯ test/productCommitService.test.ts  (6 tests | 5 failed) 42ms
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+     → Import batch test-batch-001 not found
+ ✓ test/unit/observations.validateFieldLink.spec.ts  (40 tests) 20ms
+ ❯ test/attributes.service.spec.ts  (20 tests | 11 failed) 105ms
+   ❯ test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+     → promise resolved "{ …(7) }" instead of rejecting
+   ❯ test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+     → expected +0 to be 3 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+     → expected +0 to be 2 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+     → expected +0 to be 1 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+     → expected +0 to be 2 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should return top values sorted by count
+     → Attribute 'department' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect limit parameter
+     → Attribute 'department' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect minCount parameter
+     → Attribute 'department' not found
+ ↓ test/integration/attributes.emu.spec.ts  (9 tests | 9 skipped)
+ ↓ test/integration/products.filters.spec.ts  (13 tests | 13 skipped)
+ ✓ test/mappingService.spec.ts  (18 tests) 18ms
+ ↓ src/endpoints/__tests__/products.integration.test.ts  (14 tests | 14 skipped)
+ ✓ test/auditService.spec.ts  (16 tests) 28ms
+ ✓ test/importService.integration.test.ts  (7 tests) 20ms
+ ✓ test/importService.test.ts  (7 tests) 96ms
+ ✓ test/roles.unit.test.ts  (20 tests) 16ms
+ ↓ test/integration/syncAttributeRegistry.emu.spec.ts  (8 tests | 8 skipped)
+ ✓ test/admin.settings.attributeUpdate.test.ts  (12 tests) 6ms
+ ✓ test/import.cors.test.ts  (8 tests) 39ms
+ ✓ test/endpoints/retailopsImportPreview.test.ts  (7 tests) 126ms
+ ✓ test/unit/products.searchMpn.spec.ts  (5 tests) 8ms
+ ✓ test/ensure-mock.test.ts  (1 test) 101ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+AssertionError: promise resolved "{ …(7) }" instead of rejecting
+
+- Expected
++ Received
+
+- [Error: rejected promise]
++ Object {
++   "attribute_id": "test-color-primary",
++   "createdAt": "2025-12-22T08:17:05.637Z",
++   "createdBy": "test-user-123",
++   "data_type": "string",
++   "label": "Color Primary",
++   "updatedAt": "2025-12-22T08:17:05.637Z",
++   "updatedBy": "test-user-123",
++ }
+
+ ❯ test/attributes.service.spec.ts:136:57
+    134|       
+    135|       // Try to create duplicate
+    136|       await expect(createAttribute(attribute, testActor))
+       |                                                         ^
+    137|         .rejects
+    138|         .toThrow(ServiceError);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+ServiceError: Attribute 'test-color-primary' not found
+ ❯ Module.getAttribute src/services/attributesService.ts:225:11
+    223|   const attribute = fromFirestore(doc);
+    224|   if (!attribute) {
+    225|     throw new ServiceError(
+       |           ^
+    226|       `Attribute '${attributeId}' not found`,
+    227|       404,
+ ❯ test/attributes.service.spec.ts:160:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+ServiceError: Attribute 'test-color-primary' not found
+ ❯ Module.updateAttribute src/services/attributesService.ts:308:11
+    306|   const existing = await docRef.get();
+    307|   if (!existing.exists) {
+    308|     throw new ServiceError(
+       |           ^
+    309|       `Attribute '${attributeId}' not found`,
+    310|       404,
+ ❯ test/attributes.service.spec.ts:193:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+ServiceError: Attribute 'test-color-primary' not found
+ ❯ Module.deleteAttribute src/services/attributesService.ts:375:11
+    373|   const existing = await docRef.get();
+    374|   if (!existing.exists) {
+    375|     throw new ServiceError(
+       |           ^
+    376|       `Attribute '${attributeId}' not found`,
+    377|       404,
+ ❯ test/attributes.service.spec.ts:224:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+AssertionError: expected +0 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ test/attributes.service.spec.ts:263:35
+    261|       const result = await listAttributes();
+    262|       
+    263|       expect(result.items.length).toBe(3);
+       |                                   ^
+    264|       expect(result.total).toBe(3);
+    265|       expect(result.hasMore).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/attributes.service.spec.ts:271:35
+    269|       const result = await listAttributes({ limit: 2 });
+    270|       
+    271|       expect(result.items.length).toBe(2);
+       |                                   ^
+    272|       expect(result.hasMore).toBe(true);
+    273|       expect(result.pageToken).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/attributes.service.spec.ts:279:35
+    277|       const result = await listAttributes({ q: 'color' });
+    278|       
+    279|       expect(result.items.length).toBe(1);
+       |                                   ^
+    280|       expect(result.items[0].attribute_id).toBe('color-primary');
+    281|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/attributes.service.spec.ts:285:34
+    283|     it('should paginate correctly', async () => {
+    284|       const page1 = await listAttributes({ limit: 2 });
+    285|       expect(page1.items.length).toBe(2);
+       |                                  ^
+    286|       expect(page1.hasMore).toBe(true);
+    287|       
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getTopValues > should return top values sorted by count
+ServiceError: Attribute 'department' not found
+ ❯ Module.getTopValues src/services/attributesService.ts:459:11
+    457|   const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attri…
+    458|   if (!attrDoc.exists) {
+    459|     throw new ServiceError(
+       |           ^
+    460|       `Attribute '${attributeId}' not found`,
+    461|       404,
+ ❯ test/attributes.service.spec.ts:332:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect limit parameter
+ServiceError: Attribute 'department' not found
+ ❯ Module.getTopValues src/services/attributesService.ts:459:11
+    457|   const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attri…
+    458|   if (!attrDoc.exists) {
+    459|     throw new ServiceError(
+       |           ^
+    460|       `Attribute '${attributeId}' not found`,
+    461|       404,
+ ❯ test/attributes.service.spec.ts:351:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect minCount parameter
+ServiceError: Attribute 'department' not found
+ ❯ Module.getTopValues src/services/attributesService.ts:459:11
+    457|   const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attri…
+    458|   if (!attrDoc.exists) {
+    459|     throw new ServiceError(
+       |           ^
+    460|       `Attribute '${attributeId}' not found`,
+    461|       404,
+ ❯ test/attributes.service.spec.ts:359:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:216:11
+    214|   
+    215|   if (!batchDoc.exists) {
+    216|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    217|   }
+    218| 
+ ❯ test/productCommitService.test.ts:108:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:216:11
+    214|   
+    215|   if (!batchDoc.exists) {
+    216|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    217|   }
+    218| 
+ ❯ test/productCommitService.test.ts:180:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:216:11
+    214|   
+    215|   if (!batchDoc.exists) {
+    216|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    217|   }
+    218| 
+ ❯ test/productCommitService.test.ts:265:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:216:11
+    214|   
+    215|   if (!batchDoc.exists) {
+    216|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    217|   }
+    218| 
+ ❯ test/productCommitService.test.ts:372:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/16]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Error: Import batch test-batch-001 not found
+ ❯ Module.getBatchStatus src/services/productCommitService.ts:307:11
+    305| 
+    306|   if (!batchDoc.exists) {
+    307|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    308|   }
+    309| 
+ ❯ test/productCommitService.test.ts:411:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/16]⎯
+
+ Test Files  2 failed | 17 passed | 4 skipped (23)
+      Tests  16 failed | 287 passed | 44 skipped (347)
+   Start at  08:17:03
+   Duration  5.42s (transform 1.18s, setup 325ms, collect 5.22s, tests 927ms, environment 6ms, prepare 3.65s)
+
+ ELIFECYCLE  Test failed. See above for more details.

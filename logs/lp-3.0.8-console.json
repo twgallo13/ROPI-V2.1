@@ -1,0 +1,17 @@
+[
+  {
+    "type": "log",
+    "text": "✅ Firebase initialized successfully",
+    "timestamp": "2025-12-22T08:19:29.932Z"
+  },
+  {
+    "type": "warn",
+    "text": "Sentry DSN not configured - error monitoring disabled",
+    "timestamp": "2025-12-22T08:19:29.996Z"
+  },
+  {
+    "type": "log",
+    "text": "🔐 Auth state changed: No user",
+    "timestamp": "2025-12-22T08:19:30.228Z"
+  }
+]
