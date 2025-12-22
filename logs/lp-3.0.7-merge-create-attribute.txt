@@ -1,0 +1,24 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   121    0     0  100   121      0    100  0:00:01  0:00:01 --:--:--   100100   121    0     0  100   121      0     54  0:00:02  0:00:02 --:--:--    54100   470  100   349  100   121    112     38  0:00:03  0:00:03 --:--:--   150100   470  100   349  100   121    112     38  0:00:03  0:00:03 --:--:--   150
+HTTP/2 201 
+cache-control: private
+content-type: application/json; charset=utf-8
+etag: W/"15d-e01bYrNBjbLPk5b+CGc5csdMPNw"
+server: Google Frontend
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+traceparent: 00-a799112e57ff99f9dcb1ec2d9d5114a2-b1ce08b7a2c17b95-01
+x-cloud-trace-context: a799112e57ff99f9dcb1ec2d9d5114a2/12812187574718266261;o=1
+x-country-code: US
+x-powered-by: Express
+accept-ranges: bytes
+date: Mon, 22 Dec 2025 07:18:12 GMT
+x-served-by: cache-bur-kbur8200111-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766387890.637275,VS0,VE3073
+vary: Origin,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 349
+
+{"attribute_id":"lp328_merge_test","label":"LP328 Merge Test","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-22T07:18:09.759Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-22T07:18:09.759Z"}

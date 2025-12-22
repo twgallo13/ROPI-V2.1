@@ -1,0 +1,11 @@
+[
+  {
+    "url": "https://ropi-aoss-staging.web.app/api/admin/settings/attributes",
+    "method": "POST",
+    "status": 201,
+    "statusText": "",
+    "response": "{\"attribute_id\":\"lp308_headless_1766391531642\",\"label\":\"LP308 Headless Test\",\"data_type\":\"string\",\"required_for_completion\":false,\"required_for_export\":false,\"import_required\":false,\"status\":\"active\",\"createdBy\":\"zmAn8kKTE3ZW3fM386d8tiWW97U2\",\"createdAt\":\"2025-12-22T08:19:35.084Z\",\"updatedBy\":\"zmAn8kKTE3ZW3fM386d8tiWW97U2\",\"updatedAt\":\"2025-12-22T08:19:35.084Z\"}",
+    "timestamp": "2025-12-22T08:19:35.587Z",
+    "isMappingWithoutId": false
+  }
+]

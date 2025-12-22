@@ -24,6 +24,7 @@
     "playwright": "^1.57.0",
     "pnpm": "^8.0.0",
     "prettier": "^2.8.0",
+    "puppeteer": "^24.34.0",
     "typescript": "^5.0.0",
     "yargs": "^18.0.0"
   },
