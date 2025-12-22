@@ -18,6 +18,11 @@ interface ExportReadinessPanelProps {
 }
 
 function ExportReadinessPanel({ readiness, websites, onJumpToTab }: ExportReadinessPanelProps) {
+  // LP-3.0.7: Defensive guards for readiness data
+  const safeReadiness = readiness ?? { overall: 0, byWebsite: {} };
+  const safeWebsites = Array.isArray(websites) ? websites : [];
+  const overallScore = typeof safeReadiness.overall === 'number' ? safeReadiness.overall : 0;
+
   const getScoreClass = (score: number): string => {
     if (score >= 80) return 'score-ready';
     if (score >= 50) return 'score-progress';
@@ -44,31 +49,31 @@ function ExportReadinessPanel({ readiness, websites, onJumpToTab }: ExportReadin
     <div className="product-panel">
       <div className="product-panel-header">
         <h4 className="product-panel-title">Export Readiness</h4>
-        <span className={`product-panel-badge ${getScoreClass(readiness.overall)}`}>
-          {readiness.overall}%
+        <span className={`product-panel-badge ${getScoreClass(overallScore)}`}>
+          {overallScore}%
         </span>
       </div>
       
       <div className="product-panel-content">
         <div className="readiness-bar">
           <div 
-            className={`readiness-bar-fill ${getScoreClass(readiness.overall)}`}
-            style={{ width: `${readiness.overall}%` }}
+            className={`readiness-bar-fill ${getScoreClass(overallScore)}`}
+            style={{ width: `${overallScore}%` }}
           ></div>
         </div>
 
         <div className="readiness-overall-status">
-          {readiness.overall >= 80 ? (
+          {overallScore >= 80 ? (
             <p className="status-ready">✓ Ready for export</p>
           ) : (
             <p className="status-incomplete">
-              {100 - readiness.overall}% more to reach export-ready
+              {100 - overallScore}% more to reach export-ready
             </p>
           )}
         </div>
 
-        {websites.map(website => {
-          const siteReadiness = readiness.byWebsite[website];
+        {safeWebsites.map(website => {
+          const siteReadiness = safeReadiness.byWebsite?.[website];
           if (!siteReadiness) return null;
 
           return (

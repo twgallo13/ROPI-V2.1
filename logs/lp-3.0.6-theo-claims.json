@@ -1,0 +1,14 @@
+{
+  "uid": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+  "email": "theo@shiekh.com",
+  "emailVerified": true,
+  "displayName": "Theo (Admin E2E)",
+  "customClaims": {
+    "role": "admin"
+  },
+  "disabled": false,
+  "metadata": {
+    "creationTime": "Sat, 06 Dec 2025 02:03:04 GMT",
+    "lastSignInTime": "Mon, 22 Dec 2025 06:20:22 GMT"
+  }
+}

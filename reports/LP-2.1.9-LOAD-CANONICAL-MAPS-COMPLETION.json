@@ -1,0 +1,72 @@
+{
+  "lp": "LP-2.1.9.LOAD-CANONICAL-MAPS-AND-VERIFY",
+  "branch": "aoss-main",
+  "completion_timestamp": "2025-12-21T22:43:16.945Z",
+  "canonical_map_used": "reports/attribute-inspections/canonical-value-synonyms.json",
+  "pre_apply_snapshot": "reports/attribute-inspections/2025-12-21/pre-canonical-snapshots.json",
+  "apply_log": "logs/lp-2.1.9-load-canonical-apply.log",
+  "dry_run_post_mapping": "reports/exports/preview-dry-run-post-mapping.json",
+  "unknown_values_summary_post_mapping": {
+    "unknownPercent": 0,
+    "unknownCount": 0,
+    "warningCount": 0,
+    "totalProducts": 80,
+    "exportReadyCount": 80,
+    "exportReadyPercent": 100
+  },
+  "safety_threshold": {
+    "maxUnknownPercent": 1,
+    "passed": true
+  },
+  "status": "PASS",
+  "notes": "Canonical value synonyms loaded to Firestore and verified. All 80 products in sample (limit=100) passed validation with 0 unknown values. Unknown percent 0% is well below the 1% safety threshold. Export is now unblocked.",
+  "functions_redeployed": [
+    "api (1st Gen) - deleted and recreated to clear registry cache"
+  ],
+  "attributes_updated": [
+    {
+      "id": "gender",
+      "synonyms_added": 6,
+      "examples": ["Men→Men's", "Women→Women's", "Boys→Boy's", "Girls→Girl's"]
+    },
+    {
+      "id": "class",
+      "synonyms_added": 2,
+      "allowed_values_added": ["Hats", "Sandals"]
+    },
+    {
+      "id": "category",
+      "synonyms_added": 7,
+      "examples": ["Footwear→Casual", "Basketball→Athletic", "Running→Athletic"]
+    },
+    {
+      "id": "department",
+      "synonyms_added": 1,
+      "examples": ["Accessories→Apparel"]
+    },
+    {
+      "id": "primary_color",
+      "synonyms_added": 57,
+      "examples": ["Multi→Multi Color", "Bone→Beige", "Navy→Navy Blue", "Pink→Pink"]
+    },
+    {
+      "id": "fit",
+      "synonyms_added": 1,
+      "examples": ["True To Size→Regular"]
+    },
+    {
+      "id": "age_group",
+      "synonyms_added": 2,
+      "examples": ["Toddler→Kids", "Kids→Kids"]
+    }
+  ],
+  "previous_session": {
+    "lp": "LP-2.1.9.MERGE-PREVIEW",
+    "pre_mapping_unknowns": {
+      "unknownPercent": 85,
+      "unknownCount": 170,
+      "limit": 200
+    },
+    "status": "BLOCKED"
+  }
+}

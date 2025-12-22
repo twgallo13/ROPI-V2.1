@@ -1,0 +1,15 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 204 
+x-powered-by: Express
+access-control-allow-origin: https://ropi-aoss-staging.web.app
+vary: Origin, Access-Control-Request-Headers
+access-control-allow-methods: GET,HEAD,PUT,PATCH,POST,DELETE
+function-execution-id: q5pk0x2ndinq
+x-cloud-trace-context: 3b678ed5636952e3a1c59fcae77b361b;o=1
+date: Mon, 22 Dec 2025 01:00:23 GMT
+content-type: text/html
+server: Google Frontend
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+

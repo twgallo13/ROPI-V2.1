@@ -650,7 +650,7 @@ function buildImportRow(sourceColumns, options) {
     importedAt: (/* @__PURE__ */ new Date()).toISOString(),
     importedBy: userId,
     status: validation.isValid ? "pending" : "failed",
-    errorMessage: validation.isValid ? void 0 : validation.errors.map((e) => e.message).join("; ")
+    ...validation.isValid ? {} : { errorMessage: validation.errors.map((e) => e.message).join("; ") }
   };
   const row = {
     rowId,
@@ -1485,6 +1485,11 @@ function importRowsToCoreProducts(rows) {
   }
   return products;
 }
+var SynonymsSchema = zod.z.union([
+  zod.z.array(zod.z.string()),
+  zod.z.record(zod.z.string(), zod.z.string()),
+  zod.z.array(zod.z.object({ alias: zod.z.string(), canonical: zod.z.string() }))
+]).optional();
 var AttributeSchema = zod.z.object({
   attribute_id: zod.z.string().min(1).regex(/^[a-z0-9-_.]+$/),
   label: zod.z.string().min(1),
@@ -1492,17 +1497,18 @@ var AttributeSchema = zod.z.object({
   category: zod.z.string().optional(),
   data_type: zod.z.enum(["string", "number", "boolean", "enum", "currency", "json", "multiSelect", "date"]),
   allowed_values: zod.z.array(zod.z.string()).optional(),
-  synonyms: zod.z.array(zod.z.string()).optional(),
+  synonyms: SynonymsSchema,
   required_for_completion: zod.z.boolean().optional().default(false),
   required_for_export: zod.z.boolean().optional().default(false),
   import_required: zod.z.boolean().optional().default(false),
   ai_usage_notes: zod.z.string().optional(),
   status: zod.z.enum(["active", "deprecated", "hidden"]).optional().default("active"),
-  source: zod.z.enum(["notion", "derived", "json"]).optional(),
+  // LP-3.0.4: Added 'repo' to source enum for repository-sourced attributes
+  source: zod.z.enum(["notion", "derived", "json", "repo"]).optional(),
   createdBy: zod.z.string().optional(),
-  createdAt: zod.z.string().optional(),
+  createdAt: zod.z.union([zod.z.string(), zod.z.object({}).passthrough()]).optional(),
   updatedBy: zod.z.string().optional(),
-  updatedAt: zod.z.string().optional()
+  updatedAt: zod.z.union([zod.z.string(), zod.z.object({}).passthrough()]).optional()
 });
 var SmartRuleCondition = zod.z.object({
   field: zod.z.string(),

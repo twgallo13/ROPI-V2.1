@@ -1,0 +1,22 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0100    73  100    73    0     0     30      0  0:00:02  0:00:02 --:--:--    30
+HTTP/2 404 
+cache-control: max-age=600
+content-type: application/json; charset=utf-8
+etag: W/"49-N/w3VqjwjvveDhvvZhrEcXE4I+w"
+server: Google Frontend
+traceparent: 00-7e733f905484ed15c41660f088c71cd6-aebd4033fab58150-01
+x-cloud-trace-context: 7e733f905484ed15c41660f088c71cd6/12591290725191483728;o=1
+x-powered-by: Express
+accept-ranges: bytes
+date: Mon, 22 Dec 2025 06:20:25 GMT
+x-served-by: cache-bur-kbur8200111-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766384423.110135,VS0,VE2282
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 73
+
+{"error":"ATTRIBUTE_NOT_FOUND","message":"Attribute 'mapping' not found"}

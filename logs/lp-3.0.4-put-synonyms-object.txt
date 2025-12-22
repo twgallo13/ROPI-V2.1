@@ -1,0 +1,21 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   406  100   323  100    83    650    167 --:--:-- --:--:-- --:--:--   818
+HTTP/2 400 
+content-type: application/json; charset=utf-8
+etag: W/"143-1GYXmDeHtXPXcRV+OpT1cNNYl3c"
+server: Google Frontend
+traceparent: 00-f38049e259bf4cd0030e80e04160f428-32f0914b65ad7418-01
+x-cloud-trace-context: f38049e259bf4cd0030e80e04160f428/3670593449321395224;o=1
+x-powered-by: Express
+accept-ranges: bytes
+date: Mon, 22 Dec 2025 00:59:55 GMT
+x-served-by: cache-bur-kbur8200053-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766365195.857271,VS0,VE398
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 323
+
+{"ok":false,"error":"validation_failed","message":"Invalid attribute data","details":[{"path":"synonyms","message":"Expected array, received object"},{"path":"source","message":"Invalid enum value. Expected 'notion' | 'derived' | 'json', received 'repo'"},{"path":"updatedAt","message":"Expected string, received object"}]}

@@ -1,0 +1,1 @@
+{"attribute_id":"lp306_test_attr","label":"LP-3.0.6 Test Attribute","category":"test","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-22T06:22:03.306Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-22T06:22:03.306Z"}

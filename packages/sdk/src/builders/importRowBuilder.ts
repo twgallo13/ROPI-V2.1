@@ -77,6 +77,7 @@ export function buildImportRow(
   const productId = deriveProductId({ mpn: normalized.mpn, sku: normalized.sku });
   
   // Build metadata
+  // LP-3.0.6: Only include errorMessage when there are errors (Firestore rejects undefined)
   const meta: ImportRowMeta = {
     rowId,
     batchId,
@@ -84,7 +85,7 @@ export function buildImportRow(
     importedAt: new Date().toISOString(),
     importedBy: userId,
     status: validation.isValid ? 'pending' : 'failed',
-    errorMessage: validation.isValid ? undefined : validation.errors.map(e => e.message).join('; '),
+    ...(validation.isValid ? {} : { errorMessage: validation.errors.map(e => e.message).join('; ') }),
   };
   
   // Build complete row

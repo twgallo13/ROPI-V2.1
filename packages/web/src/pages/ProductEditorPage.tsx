@@ -10,6 +10,8 @@ import AIActionsTab from '../components/product/AIActionsTab';
 import ObservationsPanel from '../components/product/ObservationsPanel';
 import SmartSuggestionsPanel from '../components/product/SmartSuggestionsPanel';
 import ExportReadinessPanel from '../components/product/ExportReadinessPanel';
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import { safeArray } from '../lib/productUtils';
 import './ProductEditorPage.css';
 
 /**
@@ -93,6 +95,11 @@ function ProductEditorPage() {
     return <div className="product-editor-error">Product not found</div>;
   }
 
+  // LP-3.0.7: Ensure safe defaults for product data
+  const safeExportReadiness = product.exportReadiness ?? { overall: 0, byWebsite: {} };
+  const safeWebsites = safeArray(product.websites);
+  const safeSuggestions = safeArray(product.smartSuggestions);
+
   const tabs = [
     { id: 'core', label: 'Core Information' },
     { id: 'attributes', label: 'Product Attributes' },
@@ -119,55 +126,57 @@ function ProductEditorPage() {
   };
 
   return (
-    <div className="product-editor">
-      {/* Product Header */}
-      <ProductHeader
-        product={product}
-        onSave={handleSave}
-        onPublish={handlePublish}
-        onBack={() => navigate('/products')}
-      />
+    <ErrorBoundary>
+      <div className="product-editor">
+        {/* Product Header */}
+        <ProductHeader
+          product={product}
+          onSave={handleSave}
+          onPublish={handlePublish}
+          onBack={() => navigate('/products')}
+        />
 
-      {/* Tab Bar */}
-      <div className="product-tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={`product-tab ${activeTab === tab.id ? 'product-tab-active' : ''}`}
-            onClick={() => handleTabChange(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Main Content Area with Sidebar */}
-      <div className="product-body">
-        {/* Tab Content Area */}
-        <div className="product-content">
-          {renderTabContent()}
+        {/* Tab Bar */}
+        <div className="product-tabs">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`product-tab ${activeTab === tab.id ? 'product-tab-active' : ''}`}
+              onClick={() => handleTabChange(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        {/* Right Sidebar with Panels */}
-        <div className="product-sidebar">
-          <ObservationsPanel
-            productId={product.id}
-          />
-          
-          <SmartSuggestionsPanel
-            suggestions={product.smartSuggestions}
-            onApplySuggestion={applySuggestion}
-            onIgnoreSuggestion={ignoreSuggestion}
-          />
-          
-          <ExportReadinessPanel
-            readiness={product.exportReadiness}
-            websites={product.websites}
-            onJumpToTab={handleTabChange}
-          />
+        {/* Main Content Area with Sidebar */}
+        <div className="product-body">
+          {/* Tab Content Area */}
+          <div className="product-content">
+            {renderTabContent()}
+          </div>
+
+          {/* Right Sidebar with Panels */}
+          <div className="product-sidebar">
+            <ObservationsPanel
+              productId={product.id}
+            />
+            
+            <SmartSuggestionsPanel
+              suggestions={safeSuggestions}
+              onApplySuggestion={applySuggestion}
+              onIgnoreSuggestion={ignoreSuggestion}
+            />
+            
+            <ExportReadinessPanel
+              readiness={safeExportReadiness}
+              websites={safeWebsites}
+              onJumpToTab={handleTabChange}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }
 

@@ -1,0 +1,39 @@
+{
+  "lp": "LP-2.1.9.FULL-EXPORT-STAGING",
+  "timestamp": "2025-12-21T22:47:24.984Z",
+  "report_dir": "reports/exports/2025-12-21_224635Z",
+  "staging_export_result": "reports/exports/2025-12-21_224635Z/staging-export-result.json",
+  "export_summary": "reports/exports/2025-12-21_224635Z/export-summary.json",
+  "csv": "reports/exports/2025-12-21_224635Z/ro-export-staging-2025-12-21_224635Z.csv",
+  "csv_sample": "reports/exports/2025-12-21_224635Z/ro-export-staging-sample-6.csv",
+  "logs": ["logs/lp-2.1.9-full-export-staging.stderr.log"],
+  "unknown_values_summary": {
+    "unknownPercent": 0,
+    "unknownCount": 0
+  },
+  "export_statistics": {
+    "totalProducts": 80,
+    "exportedProducts": 80,
+    "skippedProducts": 0,
+    "exportReadyCount": 80,
+    "notExportReadyCount": 0,
+    "warningCount": 0,
+    "csv_lines": 81,
+    "csv_size_bytes": 29156
+  },
+  "safety_thresholds": {
+    "max_unknown_percent": 1,
+    "max_unknown_count": 1000,
+    "actual_unknown_percent": 0,
+    "actual_unknown_count": 0,
+    "all_passed": true
+  },
+  "status": "PASS",
+  "notes": "Full export completed successfully. 80 products exported with 0 unknown values (0%). All safety thresholds passed. CSV includes _meta columns per includeMeta:true option. Export is ready for Lisa's review.",
+  "preconditions_verified": {
+    "LP-2.1.9.LOAD-CANONICAL-MAPS-AND-VERIFY": "PASS",
+    "api_function_redeployed": true,
+    "canonical_mappings_loaded": true
+  },
+  "next_step": "LP-3.0.3 — Production Migration Plan & Execution (awaiting authorization)"
+}

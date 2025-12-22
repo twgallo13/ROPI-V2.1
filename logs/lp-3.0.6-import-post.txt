@@ -1,0 +1,1 @@
+{"success":true,"batchId":"30c71fe9-bc08-4ff3-96c3-e06c99905b1f","fileName":"sample-retailops.csv","rowCount":6,"errorCount":0,"warningCount":6,"status":"processed","createdAt":"2025-12-22T06:28:52.725Z"}
