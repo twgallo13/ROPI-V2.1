@@ -31,9 +31,10 @@ describeIfEmulator('Attributes Emulator Integration Tests', () => {
 
   beforeAll(async () => {
     // Initialize Firebase Admin with emulator
+    // Use demo-ropi-test to match CI workflow (api-integration-emulator.yml)
     if (!admin.apps.length) {
       admin.initializeApp({
-        projectId: 'demo-integration-test',
+        projectId: 'demo-ropi-test',
       });
     }
     

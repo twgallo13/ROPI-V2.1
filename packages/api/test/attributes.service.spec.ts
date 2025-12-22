@@ -29,9 +29,10 @@ describe('Attributes Service', () => {
 
   beforeEach(async () => {
     // Initialize Firebase Admin if not already done
+    // Use demo-ropi-test to match CI workflow (api-integration-emulator.yml)
     if (!admin.apps.length) {
       admin.initializeApp({
-        projectId: 'demo-test-project',
+        projectId: 'demo-ropi-test',
       });
     }
     
