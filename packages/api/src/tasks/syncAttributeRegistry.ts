@@ -18,6 +18,7 @@
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 import { Storage } from '@google-cloud/storage';
 
 // Type definitions
@@ -80,9 +81,8 @@ async function fetchRegistryFromGCSIfMissing(): Promise<boolean> {
       return false;
     }
     const storage = new Storage();
-    const tmpDir = path.resolve(__dirname, '../../tmp');
-    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-    const destPath = path.resolve(tmpDir, GCS_KEY);
+    const tmpDir = os.tmpdir();
+    const destPath = path.join(tmpDir, GCS_KEY);
     console.log(`📥 Attempting to download attribute registry from gs://${GCS_BUCKET}/${GCS_KEY} to ${destPath}`);
     const bucket = storage.bucket(GCS_BUCKET);
     const file = bucket.file(GCS_KEY);
@@ -90,12 +90,9 @@ async function fetchRegistryFromGCSIfMissing(): Promise<boolean> {
     // validate JSON
     const raw = fs.readFileSync(destPath, 'utf8');
     JSON.parse(raw);
-    // copy into expected packaged location so rest of logic can reuse it
-    const destDir = path.dirname(PACKAGED_REGISTRY_PATH);
-    if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
-    fs.copyFileSync(destPath, PACKAGED_REGISTRY_PATH);
-    REGISTRY_JSON_PATH = PACKAGED_REGISTRY_PATH;
-    console.log('✅ Attribute registry downloaded and copied to packaged path.');
+    // Use the temp path as the resolved registry JSON path
+    REGISTRY_JSON_PATH = destPath;
+    console.log('✅ Attribute registry downloaded to temp path; using it for sync.');
     return true;
   } catch (err) {
     console.error('❌ Failed to fetch registry from GCS:', err);
