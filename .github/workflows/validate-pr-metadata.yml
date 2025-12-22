@@ -1,31 +1,84 @@
-name: Validate PR Metadata
+name: PR Governance — LP ID in Title + Label Match
+
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: [opened, edited, synchronize, labeled, unlabeled, reopened]
 
 jobs:
-  validate:
+  enforce-lp-id:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
-      - name: Validate PR title includes PVS tag
+      - name: Validate PR title includes exactly one Phase-Scoped LP ID
         uses: actions/github-script@v7
         with:
           script: |
-            const title = context.payload.pull_request.title || "";
-            const re = /\bPVS-\d+\.\d+\.\d+\b/;
-            if (!re.test(title)) {
-              core.setFailed('PR title must include a PVS tag (example: [PVS-0.1.0])');
-            } else {
-              console.log('PVS tag present in title.');
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed("This workflow only runs on pull_request events.");
+              return;
             }
 
-      - name: Validate PR body has Acceptance Criteria
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const body = context.payload.pull_request.body || "";
-            if (!body.toLowerCase().includes('acceptance criteria')) {
-              core.setFailed('PR body must contain an "Acceptance Criteria" section.');
-            } else {
-              console.log('Acceptance Criteria found.');
+            const title = pr.title || "";
+            // Matches: [LP-AUTH-0.1.0] (phase key: A–Z0–9 and dashes)
+            const lpBracketRegex = /\[LP-([A-Z0-9-]{3,12})-(\d+)\.(\d+)\.(\d+)\]/g;
+
+            const matches = [...title.matchAll(lpBracketRegex)];
+            if (matches.length === 0) {
+              core.setFailed(
+                `PR title must include a Phase-Scoped LP ID in brackets.\n` +
+                `Expected format: [LP-<PHASE_KEY>-<MAJOR>.<MINOR>.<PATCH>] <description>\n` +
+                `Example: [LP-AUTH-0.1.0] Add login endpoint\n` +
+                `Current title: "${title}"`
+              );
+              return;
             }
+            if (matches.length > 1) {
+              core.setFailed(
+                `PR title must include exactly ONE Phase-Scoped LP ID tag.\n` +
+                `Found ${matches.length}: ${matches.map(m => m[0]).join(", ")}\n` +
+                `Current title: "${title}"`
+              );
+              return;
+            }
+
+            const fullLpId = matches[0][0].slice(1, -1); // remove surrounding [ ]
+            const phaseKey = matches[0][1];
+            const version = `${matches[0][2]}.${matches[0][3]}.${matches[0][4]}`;
+
+            // Enforce Phase Key constraints (already mostly covered by regex length)
+            if (phaseKey.length < 3 || phaseKey.length > 12) {
+              core.setFailed(`PHASE_KEY must be 3–12 chars. Got "${phaseKey}" from "${matches[0][0]}".`);
+              return;
+            }
+
+            // --- Optional but recommended: require matching lp:<PHASE_KEY>-<version> label ---
+            const expectedLabel = `lp:${phaseKey}-${version}`;
+            const labels = (pr.labels || []).map(l => l.name);
+
+            if (!labels.includes(expectedLabel)) {
+              core.setFailed(
+                `Missing required label matching the title LP ID.\n` +
+                `Title LP ID: [${fullLpId}]\n` +
+                `Expected label: "${expectedLabel}"\n` +
+                `Found labels: ${labels.length ? labels.join(", ") : "(none)"}\n\n` +
+                `Fix by adding the label "${expectedLabel}" to this PR (and ensure it's the only lp:* label per governance).`
+              );
+              return;
+            }
+
+            // Optional guard: ensure there is exactly one lp:* label total
+            const lpLabels = labels.filter(n => n.startsWith("lp:"));
+            if (lpLabels.length !== 1) {
+              core.setFailed(
+                `PR must have exactly ONE lp:* label.\n` +
+                `Found ${lpLabels.length}: ${lpLabels.join(", ")}\n` +
+                `Expected: "${expectedLabel}"`
+              );
+              return;
+            }
+
+            core.info(`✅ Title contains exactly one LP ID: [${fullLpId}]`);
+            core.info(`✅ Matching label present: ${expectedLabel}`);
