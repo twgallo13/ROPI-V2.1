@@ -44,8 +44,12 @@ interface SyncResult {
   attributes: string[];
 }
 
-// Path to the attribute registry JSON file
-const REGISTRY_JSON_PATH = path.resolve(__dirname, '../../../sdk/config/attributeRegistry.json');
+// LP-1.1.0: Path resolution with fallback (packaged → dev)
+const PACKAGED_REGISTRY_PATH = path.resolve(__dirname, '../config/attributeRegistry.json');
+const DEV_REGISTRY_PATH = path.resolve(__dirname, '../../../sdk/config/attributeRegistry.json');
+const REGISTRY_JSON_PATH = fs.existsSync(PACKAGED_REGISTRY_PATH)
+  ? PACKAGED_REGISTRY_PATH
+  : DEV_REGISTRY_PATH;
 
 // Firestore collection path
 const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
@@ -55,6 +59,11 @@ const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
  */
 async function loadRegistryFromFile(): Promise<AttributeDefinition[] | null> {
   try {
+    // LP-1.1.0: Diagnostic logging
+    console.log(
+      `[loadRegistryFromFile] Checking paths:\n  PACKAGED: ${PACKAGED_REGISTRY_PATH} exists=${fs.existsSync(PACKAGED_REGISTRY_PATH)}\n  DEV: ${DEV_REGISTRY_PATH} exists=${fs.existsSync(DEV_REGISTRY_PATH)}\n  SELECTED: ${REGISTRY_JSON_PATH}`
+    );
+
     if (!fs.existsSync(REGISTRY_JSON_PATH)) {
       console.warn(`⚠️ Registry file not found at ${REGISTRY_JSON_PATH}`);
       return null;
@@ -168,7 +177,8 @@ async function deriveAttributesFromProducts(): Promise<AttributeDefinition[]> {
 /**
  * Main sync function - loads registry and upserts to Firestore
  */
-export async function runSyncAttributeRegistry(): Promise<SyncResult> {
+// LP-1.1.0: Add dryRun parameter (default false for CLI, apiApp.ts defaults true)
+export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResult> {
   const result: SyncResult = {
     created: 0,
     updated: 0,
@@ -213,6 +223,19 @@ export async function runSyncAttributeRegistry(): Promise<SyncResult> {
     try {
       const existingDoc = await docRef.get();
       const now = new Date().toISOString();
+      
+      // LP-1.1.0: Skip writes when dryRun is true
+      if (dryRun) {
+        if (existingDoc.exists) {
+          result.skipped++;
+          console.log(`  [DRY-RUN] Would update: ${attr.attribute_id}`);
+        } else {
+          result.skipped++;
+          console.log(`  [DRY-RUN] Would create: ${attr.attribute_id}`);
+        }
+        result.attributes.push(attr.attribute_id);
+        continue;
+      }
       
       if (existingDoc.exists) {
         // Update existing attribute (merge to preserve any local customizations)

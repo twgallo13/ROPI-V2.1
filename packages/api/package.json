@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "node esbuild.config.js",
+    "postbuild": "mkdir -p dist/config && cp -f ../../sdk/config/attributeRegistry.json dist/config/attributeRegistry.json || true",
     "build:types": "tsc --emitDeclarationOnly || true",
     "lint": "eslint src --ext .ts || true",
     "test": "vitest run",

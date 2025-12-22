@@ -1,0 +1,3 @@
+BLOCKED: Browser console capture requires UI session.
+Please reproduce MPN lookup in staging and save console output here.
+Expected: No 401s; if 401, verify Authorization header present.

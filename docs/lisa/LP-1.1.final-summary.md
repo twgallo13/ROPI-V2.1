@@ -4,7 +4,9 @@
 **Agent:** Lisa  
 **Session:** LP-1.1.8 → LP-1.2.0  
 
----
+---gh secret set VITE_E2E_ADMIN_PASSWORD --body 'RopiE2E-Admin!ec87c6a16e844897#2025'
+gh secret set VITE_E2E_USER_PASSWORD --body 'RopiE2E-User!ca1c9b7586df9e31#2025'
+gh secret set VITE_E2E_UNVERIFIED_PASSWORD --body 'RopiE2E-Unv!8907c4af5e0d1493#2025'
 
 ## Executive Summary
 

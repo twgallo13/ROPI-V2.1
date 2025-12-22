@@ -227,7 +227,9 @@ const COLUMN_MAPPINGS: Record<string, string[]> = {
   launchDate: ['Launch Date', 'LaunchDate', 'launch_date', 'Release Date'],
   images: ['Images', 'IMAGES', 'images', 'Media', 'Image URLs'],
   primaryImage: ['Primary Image', 'PrimaryImage', 'primary_image', 'Main Image'],
-  status: ['Status', 'STATUS', 'status', 'Product Is Active'],
+  // NOTE: 'Product Is Active' is intentionally **not** included as a synonym for status.
+  // Product Is Active is a separate operational command/flag and must be treated as pass-through.
+  status: ['Status', 'STATUS', 'status'],
   styleId: ['Style ID', 'StyleID', 'style_id', 'Style'],
 };
 
@@ -314,6 +316,29 @@ export function retailOpsRowToImportRow(parsed: ParsedRetailOpsRow): ImportRow {
 
   // For MVP (Nike men's footwear), default size scale
   const normalizedSizeScale = normalizedGender === 'MEN' ? 'MENS_US' : undefined;
+
+  // === Pass-through protection ===
+  // Keep Status and Product Is Active as pass-through metadata only.
+  // We place them into raw._passThrough to make accidental promotion to canonical fields unlikely.
+  const statusRaw = raw['Status'] || raw['STATUS'] || raw['status'] || '';
+  const productIsActiveRaw = raw['Product Is Active'] || raw['product_is_active'] || raw['PRODUCT_IS_ACTIVE'] || '';
+
+  // Ensure _passThrough exists on the raw snapshot for clarity.
+  if (!raw['_passThrough']) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (raw as any)['_passThrough'] = {};
+  }
+  // Store original pass-through values (do not use these for canonical mapping).
+  (raw as any)['_passThrough'].status = statusRaw;
+  (raw as any)['_passThrough'].product_is_active = productIsActiveRaw;
+
+  // Remove from raw to prevent accidental use
+  delete raw['Status'];
+  delete raw['status'];
+  delete raw['STATUS'];
+  delete raw['Product Is Active'];
+  delete raw['product_is_active'];
+  delete raw['PRODUCT_IS_ACTIVE'];
 
   return {
     source: 'RETAILOPS_EXPORT',

@@ -1,0 +1,2658 @@
+{
+  "timestamp": "2025-12-22T08:43:19.457Z",
+  "totalProducts": 87,
+  "sampledProducts": 87,
+  "productsWithMissingAttributes": [
+    {
+      "id": "123",
+      "mpn": "(no mpn)",
+      "sku": "NK-AIR-MAX-270-BLK-10",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.class",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color"
+      ]
+    },
+    {
+      "id": "14943667",
+      "mpn": "14943667",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "14943678",
+      "mpn": "14943678",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "207012-001",
+      "mpn": "207012-001",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "209473-1001",
+      "mpn": "209473-1001",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "209516-1001",
+      "mpn": "209516-1001",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "209516-6916",
+      "mpn": "209516-6916",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "209710-6916",
+      "mpn": "209710-6916",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "211116-001",
+      "mpn": "211116-001",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "212350-90H",
+      "mpn": "212350-90H",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "4254T1035",
+      "mpn": "4254T1035",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "4254T1036",
+      "mpn": "4254T1036",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "482-BLK",
+      "mpn": "482-BLK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "7J236",
+      "mpn": "7J236",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A13264F",
+      "mpn": "A13264F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14338F",
+      "mpn": "A14338F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14345F",
+      "mpn": "A14345F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14346F",
+      "mpn": "A14346F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14349F",
+      "mpn": "A14349F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14409F",
+      "mpn": "A14409F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14410F",
+      "mpn": "A14410F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14606F",
+      "mpn": "A14606F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14607F",
+      "mpn": "A14607F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A14609F",
+      "mpn": "A14609F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A15143F",
+      "mpn": "A15143F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "A15144F",
+      "mpn": "A15144F",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "AMBRA-23",
+      "mpn": "AMBRA-23",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "Classic Unfurgettable Clog",
+      "mpn": "Classic Unfurgettable Clog",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "DARING-03-BKPU",
+      "mpn": "DARING-03-BKPU",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "EP25115",
+      "mpn": "EP25115",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "FD ZAHARA-S-BLK",
+      "mpn": "FD ZAHARA-S-BLK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "FD ZAHARA-S-CHO",
+      "mpn": "FD ZAHARA-S-CHO",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "FD ZAHARA-S-WHT",
+      "mpn": "FD ZAHARA-S-WHT",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "HK12789-LADBLUE",
+      "mpn": "HK12789-LADBLUE",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "HTG240320BLK",
+      "mpn": "HTG240320BLK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "HTG250221BLU",
+      "mpn": "HTG250221BLU",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "HTG250221BNE",
+      "mpn": "HTG250221BNE",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JI0080",
+      "mpn": "JI0080",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JK11198-UNCCLBL",
+      "mpn": "JK11198-UNCCLBL",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JP6903",
+      "mpn": "JP6903",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JP9499",
+      "mpn": "JP9499",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JP9500",
+      "mpn": "JP9500",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JPM AMBRA-23_BLKKPU",
+      "mpn": "JPM AMBRA-23/BLKKPU",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "JQ2851",
+      "mpn": "JQ2851",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JQ9493",
+      "mpn": "JQ9493",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JR8848",
+      "mpn": "JR8848",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JS1339",
+      "mpn": "JS1339",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JW0272",
+      "mpn": "JW0272",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JW1226",
+      "mpn": "JW1226",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JW5200",
+      "mpn": "JW5200",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JX7730",
+      "mpn": "JX7730",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "JZ1120",
+      "mpn": "JZ1120",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "KB3060",
+      "mpn": "KB3060",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "KG2677",
+      "mpn": "KG2677",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "KH1744",
+      "mpn": "KH1744",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "KI5719",
+      "mpn": "KI5719",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "LLD1316162-EGG",
+      "mpn": "LLD1316162-EGG",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "LLD5316107-BLK",
+      "mpn": "LLD5316107-BLK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "M9160",
+      "mpn": "M9160",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "M9166",
+      "mpn": "M9166",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "MELANIE-21-BRCO",
+      "mpn": "MELANIE-21-BRCO",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "MELANIE-39-BKFR",
+      "mpn": "MELANIE-39-BKFR",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "MELANIE-39-TNML",
+      "mpn": "MELANIE-39-TNML",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "MKT25Q3-HD0861BLK",
+      "mpn": "MKT25Q3-HD0861BLK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "MKT25Q3-LS0862WHT",
+      "mpn": "MKT25Q3-LS0862WHT",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-001",
+      "mpn": "TEST-001",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "TEST-002",
+      "mpn": "TEST-002",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-003",
+      "mpn": "TEST-003",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-004",
+      "mpn": "TEST-004",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-005",
+      "mpn": "TEST-005",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-006",
+      "mpn": "TEST-006",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-007",
+      "mpn": "TEST-007",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-008",
+      "mpn": "TEST-008",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TEST-009",
+      "mpn": "TEST-009",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TP12224-LALBLCK",
+      "mpn": "TP12224-LALBLCK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "TP12224-SF4BLCK",
+      "mpn": "TP12224-SF4BLCK",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "brand",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.brand",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "VN000D7ZYJ71",
+      "mpn": "VN000D7ZYJ71",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "VN000EE6BGS1",
+      "mpn": "VN000EE6BGS1",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "VN000EGABX91",
+      "mpn": "VN000EGABX91",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "VN000EGARED1",
+      "mpn": "VN000EGARED1",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "YOKO-06-BKPU",
+      "mpn": "YOKO-06-BKPU",
+      "sku": "(no sku)",
+      "missingAttributes": [
+        "styleCode",
+        "gender",
+        "category",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.name",
+        "attributes.category",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "sku-1001",
+      "mpn": "(no mpn)",
+      "sku": "SKU-1001",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "sku-1002",
+      "mpn": "(no mpn)",
+      "sku": "SKU-1002",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "sku-1003",
+      "mpn": "(no mpn)",
+      "sku": "SKU-1003",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.class",
+        "attributes.department",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.age_group",
+        "attributes.descriptive_color",
+        "attributes.material"
+      ]
+    },
+    {
+      "id": "test-product-001",
+      "mpn": "(no mpn)",
+      "sku": "TEST-RUN-001",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.class",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "test-product-002",
+      "mpn": "(no mpn)",
+      "sku": "TEST-SNK-002",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.class",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    },
+    {
+      "id": "test-product-003",
+      "mpn": "(no mpn)",
+      "sku": "TEST-BOOT-003",
+      "missingAttributes": [
+        "mpn",
+        "styleCode",
+        "gender",
+        "class",
+        "colorPrimary",
+        "sizeScale",
+        "launchDate",
+        "attributes.sku",
+        "attributes.mpn",
+        "attributes.name",
+        "attributes.website",
+        "attributes.product_is_active",
+        "attributes.gender",
+        "attributes.primary_color",
+        "attributes.descriptive_color",
+        "attributes.material",
+        "attributes.fit"
+      ]
+    }
+  ],
+  "missingAttributesSummary": {
+    "mpn": 7,
+    "styleCode": 87,
+    "gender": 74,
+    "class": 74,
+    "colorPrimary": 87,
+    "sizeScale": 87,
+    "attributes.sku": 87,
+    "attributes.mpn": 7,
+    "attributes.name": 87,
+    "attributes.class": 73,
+    "attributes.website": 87,
+    "attributes.product_is_active": 87,
+    "attributes.gender": 74,
+    "attributes.age_group": 71,
+    "attributes.descriptive_color": 87,
+    "launchDate": 83,
+    "attributes.material": 86,
+    "category": 67,
+    "attributes.category": 67,
+    "attributes.department": 70,
+    "attributes.fit": 77,
+    "attributes.primary_color": 23,
+    "brand": 18,
+    "attributes.brand": 18
+  },
+  "productsWithInvalidStatus": [
+    {
+      "id": "123",
+      "status": "in-progress"
+    },
+    {
+      "id": "14943667",
+      "mpn": "14943667",
+      "status": "intake"
+    },
+    {
+      "id": "14943678",
+      "mpn": "14943678",
+      "status": "intake"
+    },
+    {
+      "id": "207012-001",
+      "mpn": "207012-001",
+      "status": "intake"
+    },
+    {
+      "id": "209473-1001",
+      "mpn": "209473-1001",
+      "status": "intake"
+    },
+    {
+      "id": "209516-1001",
+      "mpn": "209516-1001",
+      "status": "intake"
+    },
+    {
+      "id": "209516-6916",
+      "mpn": "209516-6916",
+      "status": "intake"
+    },
+    {
+      "id": "209710-6916",
+      "mpn": "209710-6916",
+      "status": "intake"
+    },
+    {
+      "id": "211116-001",
+      "mpn": "211116-001",
+      "status": "intake"
+    },
+    {
+      "id": "212350-90H",
+      "mpn": "212350-90H",
+      "status": "intake"
+    },
+    {
+      "id": "4254T1035",
+      "mpn": "4254T1035",
+      "status": "intake"
+    },
+    {
+      "id": "4254T1036",
+      "mpn": "4254T1036",
+      "status": "intake"
+    },
+    {
+      "id": "482-BLK",
+      "mpn": "482-BLK",
+      "status": "intake"
+    },
+    {
+      "id": "7J236",
+      "mpn": "7J236",
+      "status": "intake"
+    },
+    {
+      "id": "A13264F",
+      "mpn": "A13264F",
+      "status": "intake"
+    },
+    {
+      "id": "A14338F",
+      "mpn": "A14338F",
+      "status": "intake"
+    },
+    {
+      "id": "A14345F",
+      "mpn": "A14345F",
+      "status": "intake"
+    },
+    {
+      "id": "A14346F",
+      "mpn": "A14346F",
+      "status": "intake"
+    },
+    {
+      "id": "A14349F",
+      "mpn": "A14349F",
+      "status": "intake"
+    },
+    {
+      "id": "A14409F",
+      "mpn": "A14409F",
+      "status": "intake"
+    },
+    {
+      "id": "A14410F",
+      "mpn": "A14410F",
+      "status": "intake"
+    },
+    {
+      "id": "A14606F",
+      "mpn": "A14606F",
+      "status": "intake"
+    },
+    {
+      "id": "A14607F",
+      "mpn": "A14607F",
+      "status": "intake"
+    },
+    {
+      "id": "A14609F",
+      "mpn": "A14609F",
+      "status": "intake"
+    },
+    {
+      "id": "A15143F",
+      "mpn": "A15143F",
+      "status": "intake"
+    },
+    {
+      "id": "A15144F",
+      "mpn": "A15144F",
+      "status": "intake"
+    },
+    {
+      "id": "AMBRA-23",
+      "mpn": "AMBRA-23",
+      "status": "intake"
+    },
+    {
+      "id": "Classic Unfurgettable Clog",
+      "mpn": "Classic Unfurgettable Clog",
+      "status": "intake"
+    },
+    {
+      "id": "DARING-03-BKPU",
+      "mpn": "DARING-03-BKPU",
+      "status": "intake"
+    },
+    {
+      "id": "EP25115",
+      "mpn": "EP25115",
+      "status": "intake"
+    },
+    {
+      "id": "FD ZAHARA-S-BLK",
+      "mpn": "FD ZAHARA-S-BLK",
+      "status": "validated"
+    },
+    {
+      "id": "FD ZAHARA-S-CHO",
+      "mpn": "FD ZAHARA-S-CHO",
+      "status": "intake"
+    },
+    {
+      "id": "FD ZAHARA-S-WHT",
+      "mpn": "FD ZAHARA-S-WHT",
+      "status": "intake"
+    },
+    {
+      "id": "HK12789-LADBLUE",
+      "mpn": "HK12789-LADBLUE",
+      "status": "intake"
+    },
+    {
+      "id": "HTG240320BLK",
+      "mpn": "HTG240320BLK",
+      "status": "intake"
+    },
+    {
+      "id": "HTG250221BLU",
+      "mpn": "HTG250221BLU",
+      "status": "intake"
+    },
+    {
+      "id": "HTG250221BNE",
+      "mpn": "HTG250221BNE",
+      "status": "intake"
+    },
+    {
+      "id": "JI0080",
+      "mpn": "JI0080",
+      "status": "intake"
+    },
+    {
+      "id": "JK11198-UNCCLBL",
+      "mpn": "JK11198-UNCCLBL",
+      "status": "intake"
+    },
+    {
+      "id": "JP6903",
+      "mpn": "JP6903",
+      "status": "intake"
+    },
+    {
+      "id": "JP9499",
+      "mpn": "JP9499",
+      "status": "intake"
+    },
+    {
+      "id": "JP9500",
+      "mpn": "JP9500",
+      "status": "intake"
+    },
+    {
+      "id": "JPM AMBRA-23_BLKKPU",
+      "mpn": "JPM AMBRA-23/BLKKPU",
+      "status": "intake"
+    },
+    {
+      "id": "JQ2851",
+      "mpn": "JQ2851",
+      "status": "intake"
+    },
+    {
+      "id": "JQ9493",
+      "mpn": "JQ9493",
+      "status": "intake"
+    },
+    {
+      "id": "JR8848",
+      "mpn": "JR8848",
+      "status": "intake"
+    },
+    {
+      "id": "JS1339",
+      "mpn": "JS1339",
+      "status": "intake"
+    },
+    {
+      "id": "JW0272",
+      "mpn": "JW0272",
+      "status": "intake"
+    },
+    {
+      "id": "JW1226",
+      "mpn": "JW1226",
+      "status": "intake"
+    },
+    {
+      "id": "JW5200",
+      "mpn": "JW5200",
+      "status": "intake"
+    },
+    {
+      "id": "JX7730",
+      "mpn": "JX7730",
+      "status": "intake"
+    },
+    {
+      "id": "JZ1120",
+      "mpn": "JZ1120",
+      "status": "intake"
+    },
+    {
+      "id": "KB3060",
+      "mpn": "KB3060",
+      "status": "intake"
+    },
+    {
+      "id": "KG2677",
+      "mpn": "KG2677",
+      "status": "intake"
+    },
+    {
+      "id": "KH1744",
+      "mpn": "KH1744",
+      "status": "intake"
+    },
+    {
+      "id": "KI5719",
+      "mpn": "KI5719",
+      "status": "intake"
+    },
+    {
+      "id": "LLD1316162-EGG",
+      "mpn": "LLD1316162-EGG",
+      "status": "intake"
+    },
+    {
+      "id": "LLD5316107-BLK",
+      "mpn": "LLD5316107-BLK",
+      "status": "intake"
+    },
+    {
+      "id": "M9160",
+      "mpn": "M9160",
+      "status": "intake"
+    },
+    {
+      "id": "M9166",
+      "mpn": "M9166",
+      "status": "intake"
+    },
+    {
+      "id": "MELANIE-21-BRCO",
+      "mpn": "MELANIE-21-BRCO",
+      "status": "intake"
+    },
+    {
+      "id": "MELANIE-39-BKFR",
+      "mpn": "MELANIE-39-BKFR",
+      "status": "intake"
+    },
+    {
+      "id": "MELANIE-39-TNML",
+      "mpn": "MELANIE-39-TNML",
+      "status": "intake"
+    },
+    {
+      "id": "MKT25Q3-HD0861BLK",
+      "mpn": "MKT25Q3-HD0861BLK",
+      "status": "intake"
+    },
+    {
+      "id": "MKT25Q3-LS0862WHT",
+      "mpn": "MKT25Q3-LS0862WHT",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-001",
+      "mpn": "TEST-001",
+      "status": "Active"
+    },
+    {
+      "id": "TEST-002",
+      "mpn": "TEST-002",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-003",
+      "mpn": "TEST-003",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-004",
+      "mpn": "TEST-004",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-005",
+      "mpn": "TEST-005",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-006",
+      "mpn": "TEST-006",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-007",
+      "mpn": "TEST-007",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-008",
+      "mpn": "TEST-008",
+      "status": "intake"
+    },
+    {
+      "id": "TEST-009",
+      "mpn": "TEST-009",
+      "status": "intake"
+    },
+    {
+      "id": "TP12224-LALBLCK",
+      "mpn": "TP12224-LALBLCK",
+      "status": "intake"
+    },
+    {
+      "id": "TP12224-SF4BLCK",
+      "mpn": "TP12224-SF4BLCK",
+      "status": "intake"
+    },
+    {
+      "id": "VN000D7ZYJ71",
+      "mpn": "VN000D7ZYJ71",
+      "status": "intake"
+    },
+    {
+      "id": "VN000EE6BGS1",
+      "mpn": "VN000EE6BGS1",
+      "status": "intake"
+    },
+    {
+      "id": "VN000EGABX91",
+      "mpn": "VN000EGABX91",
+      "status": "intake"
+    },
+    {
+      "id": "VN000EGARED1",
+      "mpn": "VN000EGARED1",
+      "status": "intake"
+    },
+    {
+      "id": "YOKO-06-BKPU",
+      "mpn": "YOKO-06-BKPU",
+      "status": "intake"
+    },
+    {
+      "id": "sku-1001",
+      "status": "In Progress"
+    },
+    {
+      "id": "sku-1002",
+      "status": "Draft"
+    },
+    {
+      "id": "sku-1003",
+      "status": "Export-ready"
+    },
+    {
+      "id": "test-product-001",
+      "status": "active"
+    },
+    {
+      "id": "test-product-002",
+      "status": "active"
+    },
+    {
+      "id": "test-product-003",
+      "status": "active"
+    }
+  ],
+  "productsWithRawStatusData": []
+}

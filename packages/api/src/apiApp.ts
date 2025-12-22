@@ -185,9 +185,21 @@ api.post('/processImportBatch', processImportBatchHandler);
 api.get('/importBatchStatus', getBatchStatusHandler);
 // PVS-0.3.1 Import preview with mapping support
 api.post('/admin/imports/preview', importPreviewHandler);
-api.post('/syncAttributeRegistry', async (req, res) => {
+// LP-1.1.0: Protect syncAttributeRegistry endpoint (require admin + dryRun default true)
+api.post('/syncAttributeRegistry', requireAdmin, async (req, res) => {
   try {
-    const result = await runSyncAttributeRegistry();
+    // dryRun defaults to true for safety
+    const dryRun = req.body.dryRun !== false;
+    const caller = (req as any).user;
+    const callerUid = caller?.uid || 'unknown';
+    const callerEmail = caller?.email || 'unknown';
+
+    // Audit log
+    console.log(
+      `[syncAttributeRegistry] Invoked by uid=${callerUid} email=${callerEmail} dryRun=${dryRun}`
+    );
+
+    const result = await runSyncAttributeRegistry(dryRun);
     res.status(200).json(result);
   } catch (err: unknown) {
     console.error('syncAttributeRegistry error:', err);

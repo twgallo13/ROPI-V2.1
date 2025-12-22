@@ -1,0 +1,2 @@
+Pending: After fix deploy, capture console logs during MPN lookup.
+Expected: No 401s; successful product fetch.
