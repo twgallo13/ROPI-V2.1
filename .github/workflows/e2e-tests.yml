@@ -73,7 +73,7 @@ jobs:
         shell: bash
 
       # --- BACKEND PREP TASKS (Required before tests) ---
-      
+
       - name: Run attribute normalization
         # Only run if NOT emulator (using contains to be safe on PRs where inputs is null)
         if: ${{ !contains(inputs.base_url, 'emulator') }}
@@ -105,14 +105,14 @@ jobs:
           max_wait=300 # 5 minutes max
           elapsed=0
           interval=15
-          
+
           while [ $elapsed -lt $max_wait ]; do
             RUNS=$(gh run list --workflow="Deploy AOSS PR Preview" --json status,conclusion,headSha,databaseId --jq ".[] | select(.headSha == \"${{ github.event.pull_request.head.sha }}\")")
             if [ -n "$RUNS" ]; then
               STATUS=$(echo "$RUNS" | jq -r '.status')
               CONCLUSION=$(echo "$RUNS" | jq -r '.conclusion')
               RUN_ID=$(echo "$RUNS" | jq -r '.databaseId')
-              
+
               if [ "$STATUS" = "completed" ]; then
                 if [ "$CONCLUSION" = "success" ]; then
                   echo "✅ Deployment complete."
@@ -172,18 +172,18 @@ jobs:
           CI: true
         run: |
           cd packages/web
-          
+
           # Logic: PRs run Smoke tests. Manual runs follow input.
-          
+
           MODE="all"
           if [ "${{ github.event_name }}" = "pull_request" ]; then
              MODE="smoke"
           fi
-          
+
           if [ "${{ inputs.test_scope }}" = "smoke" ]; then
              MODE="smoke"
           fi
-          
+
           if [ "$MODE" = "smoke" ]; then
              echo "🚀 Running SMOKE tests only (Fail limit: 1)"
              # Fallback to all tests if @smoke tag is not found to prevent empty run failure
