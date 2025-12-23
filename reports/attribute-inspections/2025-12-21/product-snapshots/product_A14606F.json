@@ -1,0 +1,88 @@
+{
+  "_id": "A14606F",
+  "_exportedAt": "2025-12-21T12:12:26.734Z",
+  "featured": false,
+  "warehouseInv": 28,
+  "primaryColor": "DARKLY JADED/WHITE/BLACK",
+  "storeInv": 127,
+  "media": {},
+  "variants": [],
+  "isActive": true,
+  "coreProduct": false,
+  "promo": false,
+  "shipping": {
+    "expeditedOverride": false,
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0,
+    "standardOverride": false
+  },
+  "price": {
+    "ricsRetail": 0,
+    "scomSale": 0,
+    "scomRegular": 0
+  },
+  "fastfashion": false,
+  "brand": "CONVERSE",
+  "map": false,
+  "aiContext": {
+    "featureBullets": [],
+    "keywords": [],
+    "designNotes": ""
+  },
+  "lastReceived": "2025-11-11T08:00:00.000Z",
+  "launch": {},
+  "mpn": "A14606F",
+  "tax": {},
+  "marketing": {
+    "seo": "",
+    "title": "",
+    "paragraphDraft": "",
+    "paragraphFinal": "",
+    "bullets": []
+  },
+  "hype": false,
+  "familySizing": false,
+  "name": "f473e74a-3e15-4a70-a661-b2b401180f9b",
+  "style": {},
+  "websites": [],
+  "firstReceived": "2025-11-14T08:00:00.000Z",
+  "status": "intake",
+  "lastUpdated": "2025-11-23T06:08:17.507Z",
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:07.595Z",
+    "migratedBy": "lisa-homer"
+  },
+  "attributes": {
+    "style": {},
+    "mpn": "A14606F",
+    "brand": "CONVERSE",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 74000000
+    },
+    "primary_color": "DARKLY JADED/WHITE/BLACK",
+    "primaryColor": "DARKLY JADED/WHITE/BLACK",
+    "_meta": {
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:34.698Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:34.698Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    }
+  }
+}

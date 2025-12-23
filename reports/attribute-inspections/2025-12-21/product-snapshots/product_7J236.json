@@ -1,0 +1,136 @@
+{
+  "_id": "7J236",
+  "_exportedAt": "2025-12-21T12:12:26.733Z",
+  "featured": false,
+  "gender": "Kids",
+  "warehouseInv": 12,
+  "primaryColor": "Red",
+  "storeInv": 191,
+  "media": {},
+  "variants": [],
+  "isActive": true,
+  "coreProduct": false,
+  "promo": false,
+  "shipping": {
+    "expeditedOverride": false,
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0,
+    "standardOverride": false
+  },
+  "price": {
+    "ricsRetail": 0,
+    "scomSale": 0,
+    "scomRegular": 0
+  },
+  "department": "Footwear",
+  "fastfashion": false,
+  "brand": "CONVERSE",
+  "class": "Sneakers",
+  "map": false,
+  "aiContext": {
+    "featureBullets": [],
+    "keywords": [],
+    "designNotes": ""
+  },
+  "lastReceived": "2022-02-01T08:00:00.000Z",
+  "mpn": "7J236",
+  "tax": {},
+  "launch": {
+    "fastFashion": false
+  },
+  "ageGroup": "Toddler",
+  "marketing": {
+    "seo": "",
+    "title": "",
+    "paragraphDraft": "",
+    "paragraphFinal": "",
+    "bullets": []
+  },
+  "hype": false,
+  "familySizing": false,
+  "name": "7J236 RED",
+  "style": {},
+  "websites": [],
+  "category": "Lifestyle",
+  "firstReceived": "2025-11-13T08:00:00.000Z",
+  "status": "intake",
+  "lastUpdated": "2025-11-23T06:08:20.994Z",
+  "_migratedKeys": [
+    "descriptive.ageGroup->age_group",
+    "descriptive.closureType->closure_type",
+    "gender->descriptive.gender",
+    "heel_height->descriptive.heelHeight",
+    "heel_type->descriptive.heelType",
+    "material->descriptive.material",
+    "primary_color->descriptive.primaryColor",
+    "launch.launchDate->launch_date",
+    "sku_core.mpn->mpn",
+    "sku_core.brand->rics_source.brand",
+    "sku_core.category->rics_source.category",
+    "width->technical.width"
+  ],
+  "_migratedAt": {
+    "_seconds": 1765269594,
+    "_nanoseconds": 774000000
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.970Z",
+    "migratedBy": "lisa-homer"
+  },
+  "attributes": {
+    "style": {},
+    "mpn": "7J236",
+    "category": "Lifestyle",
+    "brand": "CONVERSE",
+    "department": "Footwear",
+    "class": "Sneakers",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 47000000
+    },
+    "descriptive.gender": "Kids",
+    "age_group": "Toddler",
+    "primary_color": "Red",
+    "gender": "Kids",
+    "primaryColor": "Red",
+    "_meta": {
+      "gender": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:34.019Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:34.019Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:34.019Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "ageGroup": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:34.019Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    },
+    "ageGroup": "Toddler"
+  }
+}

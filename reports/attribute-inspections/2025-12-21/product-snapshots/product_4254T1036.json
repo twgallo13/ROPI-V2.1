@@ -1,0 +1,88 @@
+{
+  "_id": "4254T1036",
+  "_exportedAt": "2025-12-21T12:12:26.733Z",
+  "featured": false,
+  "warehouseInv": 1,
+  "primaryColor": "RED LEOPARD",
+  "storeInv": 60,
+  "media": {},
+  "variants": [],
+  "isActive": true,
+  "coreProduct": false,
+  "promo": false,
+  "shipping": {
+    "expeditedOverride": false,
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0,
+    "standardOverride": false
+  },
+  "price": {
+    "ricsRetail": 0,
+    "scomSale": 0,
+    "scomRegular": 0
+  },
+  "fastfashion": false,
+  "brand": "PSD UNDERWEAR",
+  "map": false,
+  "aiContext": {
+    "featureBullets": [],
+    "keywords": [],
+    "designNotes": ""
+  },
+  "lastReceived": "2025-11-13T08:00:00.000Z",
+  "launch": {},
+  "mpn": "4254T1036",
+  "tax": {},
+  "marketing": {
+    "seo": "",
+    "title": "",
+    "paragraphDraft": "",
+    "paragraphFinal": "",
+    "bullets": []
+  },
+  "hype": false,
+  "familySizing": false,
+  "name": "7d40e052-bd24-4c84-af64-b314016ced3a",
+  "style": {},
+  "websites": [],
+  "firstReceived": "2025-11-13T08:00:00.000Z",
+  "status": "intake",
+  "lastUpdated": "2025-11-23T06:08:20.865Z",
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:06.817Z",
+    "migratedBy": "lisa-homer"
+  },
+  "attributes": {
+    "style": {},
+    "mpn": "4254T1036",
+    "brand": "PSD UNDERWEAR",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 21000000
+    },
+    "primary_color": "RED LEOPARD",
+    "primaryColor": "RED LEOPARD",
+    "_meta": {
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.782Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:33.782Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    }
+  }
+}

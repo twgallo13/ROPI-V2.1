@@ -1,0 +1,176 @@
+{
+  "_id": "14943667",
+  "_exportedAt": "2025-12-21T12:12:26.731Z",
+  "featured": false,
+  "warehouseInv": 11,
+  "storeInv": 116,
+  "media": {},
+  "variants": [],
+  "isActive": true,
+  "coreProduct": false,
+  "promo": false,
+  "shipping": {
+    "expeditedOverride": false,
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0,
+    "standardOverride": false
+  },
+  "price": {
+    "ricsRetail": 0,
+    "scomSale": 0,
+    "scomRegular": 0
+  },
+  "fastfashion": false,
+  "brand": "NEW ERA CAPS",
+  "map": false,
+  "aiContext": {
+    "featureBullets": [],
+    "keywords": [],
+    "designNotes": ""
+  },
+  "lastReceived": "2025-11-06T08:00:00.000Z",
+  "mpn": "14943667",
+  "tax": {},
+  "hype": false,
+  "familySizing": false,
+  "firstReceived": "2025-11-11T08:00:00.000Z",
+  "status": "intake",
+  "gender": "Mens",
+  "launch": {
+    "fastFashion": false,
+    "hype": false
+  },
+  "ageGroup": "Adults",
+  "materials": [],
+  "style": {
+    "id": "14943667"
+  },
+  "id": "14943667",
+  "department": "Accessories",
+  "category": "Causal",
+  "class": "Hats",
+  "name": "950",
+  "websites": [
+    "Mltd.com",
+    "Shiekh.com"
+  ],
+  "fit": "True to Size",
+  "primaryColor": "black",
+  "lastUpdated": "2025-11-25T06:01:21.474Z",
+  "marketing": {
+    "bullets": [],
+    "seo": "Experience the New Era 950 cap, engineered for durability and comfort. True to size fit, superior construction for lasting style.",
+    "title": "New Era 950 Performance Cap",
+    "paragraphDraft": "<h3>Engineered for Performance</h3>\n<p>This cap is built for the demands of everyday wear, combining a sleek aesthetic with robust construction. The black colorway offers a versatile look, while the design ensures a true to size fit for all-day performance. Experience the difference of a cap crafted for durability and lasting style.</p>\n<p>This cap integrates advanced materials and construction techniques to provide exceptional comfort and resilience. Whether you're on the move or relaxing, this cap delivers a consistently superior experience.</p>\n<ul>\n  <li><b>Optimized Fit:</b> Designed for a secure and true to size fit, ensuring the cap stays in place during any activity.</li>\n  <li><b>Enhanced Comfort:</b> Interior construction minimizes pressure points for all-day wearability.</li>\n  <li><b>Lasting Durability:</b> High-quality materials and reinforced stitching provide exceptional resistance to wear and tear.</li>\n</ul>",
+    "paragraphFinal": "<h3>Engineered for Performance</h3>\n<p>This cap is built for the demands of everyday wear, combining a sleek aesthetic with robust construction. The black colorway offers a versatile look, while the design ensures a true to size fit for all-day performance. Experience the difference of a cap crafted for durability and lasting style.</p>\n<p>This cap integrates advanced materials and construction techniques to provide exceptional comfort and resilience. Whether you're on the move or relaxing, this cap delivers a consistently superior experience.</p>\n<ul>\n  <li><b>Optimized Fit:</b> Designed for a secure and true to size fit, ensuring the cap stays in place during any activity.</li>\n  <li><b>Enhanced Comfort:</b> Interior construction minimizes pressure points for all-day wearability.</li>\n  <li><b>Lasting Durability:</b> High-quality materials and reinforced stitching provide exceptional resistance to wear and tear.</li>\n</ul>"
+  },
+  "keywords": [
+    "cap",
+    "black",
+    "adults",
+    "mens",
+    "performance"
+  ],
+  "_migratedKeys": [
+    "descriptive.ageGroup->age_group",
+    "descriptive.closureType->closure_type",
+    "gender->descriptive.gender",
+    "heel_height->descriptive.heelHeight",
+    "heel_type->descriptive.heelType",
+    "material->descriptive.material",
+    "primary_color->descriptive.primaryColor",
+    "launch.launchDate->launch_date",
+    "sku_core.mpn->mpn",
+    "sku_core.brand->rics_source.brand",
+    "sku_core.category->rics_source.category",
+    "width->technical.width"
+  ],
+  "_migratedAt": {
+    "_seconds": 1765269594,
+    "_nanoseconds": 772000000
+  },
+  "_meta": {
+    "migratedAt": "2025-12-10T08:12:05.924Z",
+    "migratedBy": "lisa-homer"
+  },
+  "attributes": {
+    "materials": [],
+    "style": {
+      "id": "14943667"
+    },
+    "mpn": "14943667",
+    "brand": "NEW ERA CAPS",
+    "department": "Accessories",
+    "class": "Hats",
+    "_migratedVersion": "1.0.0",
+    "_migratedAt": {
+      "_seconds": 1765254598,
+      "_nanoseconds": 203000000
+    },
+    "descriptive.gender": "Mens",
+    "age_group": "Adult",
+    "primary_color": "Black",
+    "_normalizedAt": {
+      "_seconds": 1766303054,
+      "_nanoseconds": 279000000
+    },
+    "fit": "True to Size",
+    "gender": "Mens",
+    "primaryColor": "black",
+    "_meta": {
+      "fit": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "gender": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "_migration": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false,
+        "note": "LP-2.1.7 migration"
+      },
+      "primaryColor": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "ageGroup": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      },
+      "category": {
+        "actor": "system:migrator",
+        "source": "migration",
+        "ts": "2025-12-21T11:58:32.114Z",
+        "method": "migrateProductsToAttributes",
+        "definition_version": "1.0.3",
+        "canonical": false
+      }
+    },
+    "ageGroup": "Adults",
+    "category": "Causal"
+  }
+}
