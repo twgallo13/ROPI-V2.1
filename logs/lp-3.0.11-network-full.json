@@ -1,0 +1,327 @@
+[
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/",
+    "method": "GET",
+    "headers": {
+      "accept-language": "en-US,en;q=0.9",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Linux\""
+    },
+    "timestamp": "2025-12-23T02:14:52.372Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:52.464Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+    "method": "GET",
+    "headers": {
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:14:52.470Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
+    "method": "GET",
+    "headers": {
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:14:52.470Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:52.481Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:52.519Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "method": "GET",
+    "headers": {
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/home",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua-mobile": "?0"
+    },
+    "timestamp": "2025-12-23T02:14:52.611Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "method": "GET",
+    "headers": {
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/home",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua-mobile": "?0"
+    },
+    "timestamp": "2025-12-23T02:14:52.617Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:52.630Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:52.631Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "method": "GET",
+    "headers": {
+      "accept-language": "en-US,en;q=0.9",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Linux\""
+    },
+    "timestamp": "2025-12-23T02:14:53.515Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:53.528Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+    "method": "GET",
+    "headers": {
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:14:53.537Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:53.537Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
+    "method": "GET",
+    "headers": {
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:14:53.538Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:53.538Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "method": "GET",
+    "headers": {
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua-mobile": "?0"
+    },
+    "timestamp": "2025-12-23T02:14:53.575Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:53.575Z"
+  },
+  {
+    "type": "request",
+    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+    "method": "OPTIONS",
+    "headers": {
+      "accept": "*/*",
+      "access-control-request-headers": "authorization,content-type,x-client-version,x-firebase-client,x-firebase-gmpid",
+      "access-control-request-method": "POST",
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-fetch-mode": "cors",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:14:59.395Z"
+  },
+  {
+    "type": "request",
+    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+    "method": "POST",
+    "headers": {
+      "x-firebase-client": "eyJ2ZXJzaW9uIjoyLCJoZWFydGJlYXRzIjpbeyJhZ2VudCI6ImZpcmUtY29yZS8wLjE0LjYgZmlyZS1jb3JlLWVzbTIwMjAvMC4xNC42IGZpcmUtanMvIGZpcmUtYXV0aC8xLjEyLjAgZmlyZS1hdXRoLWVzbTIwMjAvMS4xMi4wIGZpcmUtZnN0LzQuOS4zIGZpcmUtZnN0LWVzbTIwMjAvNC45LjMgZmlyZS1qcy1hbGwtYXBwLzEyLjcuMCBmaXJlLWdjcy8wLjE0LjAgZmlyZS1nY3MtZXNtMjAyMC8wLjE0LjAiLCJkYXRlcyI6WyIyMDI1LTEyLTIzIl19XX0",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "x-firebase-gmpid": "1:892791174441:web:2ea5843a253b167d12b338",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "x-client-version": "Chrome/JsCore/12.6.0/FirebaseCore-web",
+      "content-type": "application/json"
+    },
+    "postData": "{\"returnSecureToken\":true,\"email\":\"theo@shiekh.com\",\"password\":\"test\",\"clientType\":\"CLIENT_TYPE_WEB\"}",
+    "timestamp": "2025-12-23T02:14:59.395Z"
+  },
+  {
+    "type": "response",
+    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:59.455Z"
+  },
+  {
+    "type": "response",
+    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+    "status": 401,
+    "timestamp": "2025-12-23T02:14:59.521Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "method": "GET",
+    "headers": {
+      "accept-language": "en-US,en;q=0.9",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Linux\""
+    },
+    "timestamp": "2025-12-23T02:15:04.566Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "status": 200,
+    "timestamp": "2025-12-23T02:15:04.567Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+    "method": "GET",
+    "headers": {
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:15:04.575Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+    "status": 200,
+    "timestamp": "2025-12-23T02:15:04.575Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
+    "method": "GET",
+    "headers": {
+      "origin": "https://ropi-aoss-staging.web.app",
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
+    },
+    "timestamp": "2025-12-23T02:15:04.576Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
+    "status": 200,
+    "timestamp": "2025-12-23T02:15:04.576Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "method": "GET",
+    "headers": {
+      "sec-ch-ua-platform": "\"Linux\"",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
+      "accept-language": "en-US,en;q=0.9",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua-mobile": "?0"
+    },
+    "timestamp": "2025-12-23T02:15:04.602Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/vite.svg",
+    "status": 200,
+    "timestamp": "2025-12-23T02:15:04.604Z"
+  }
+]

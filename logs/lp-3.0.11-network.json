@@ -1,0 +1,44 @@
+[
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "method": "GET",
+    "headers": {
+      "accept-language": "en-US,en;q=0.9",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Linux\""
+    },
+    "timestamp": "2025-12-23T02:14:53.515Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "status": 200,
+    "timestamp": "2025-12-23T02:14:53.528Z"
+  },
+  {
+    "type": "request",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "method": "GET",
+    "headers": {
+      "accept-language": "en-US,en;q=0.9",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
+      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Linux\""
+    },
+    "timestamp": "2025-12-23T02:15:04.566Z"
+  },
+  {
+    "type": "response",
+    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
+    "status": 200,
+    "timestamp": "2025-12-23T02:15:04.567Z"
+  }
+]

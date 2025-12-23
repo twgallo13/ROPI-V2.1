@@ -1,0 +1,130 @@
+[
+  {
+    "type": "log",
+    "text": "✅ Firebase initialized successfully",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 904
+    },
+    "timestamp": "2025-12-23T02:14:52.550Z"
+  },
+  {
+    "type": "warn",
+    "text": "Sentry DSN not configured - error monitoring disabled",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 12009
+    },
+    "timestamp": "2025-12-23T02:14:52.554Z"
+  },
+  {
+    "type": "log",
+    "text": "🔐 Auth state changed: No user",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 13569
+    },
+    "timestamp": "2025-12-23T02:14:52.622Z"
+  },
+  {
+    "type": "log",
+    "text": "✅ Firebase initialized successfully",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 904
+    },
+    "timestamp": "2025-12-23T02:14:53.540Z"
+  },
+  {
+    "type": "warn",
+    "text": "Sentry DSN not configured - error monitoring disabled",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 12009
+    },
+    "timestamp": "2025-12-23T02:14:53.543Z"
+  },
+  {
+    "type": "log",
+    "text": "🔐 Auth state changed: No user",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 13569
+    },
+    "timestamp": "2025-12-23T02:14:53.580Z"
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 401 ()",
+    "location": {
+      "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8"
+    },
+    "timestamp": "2025-12-23T02:14:59.522Z"
+  },
+  {
+    "type": "error",
+    "text": "❌ Email sign-in failed: JSHandle@error",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 14809
+    },
+    "timestamp": "2025-12-23T02:14:59.522Z"
+  },
+  {
+    "type": "error",
+    "text": "[Auth Error] Firebase: Error (auth/request-had-invalid-authentication-credentials.-expected-oauth-2-access-token,-login-cookie-or-other-valid-authentication-credential.-see-https://developers.google.com/identity/sign-in/web/devconsole-project.). JSHandle@object",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 12180
+    },
+    "timestamp": "2025-12-23T02:14:59.523Z"
+  },
+  {
+    "type": "error",
+    "text": "Error fetching attributes: NotAuthenticated: User not signed in. Please sign in to access admin features.",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 54610
+    },
+    "timestamp": "2025-12-23T02:15:01.550Z"
+  },
+  {
+    "type": "log",
+    "text": "✅ Firebase initialized successfully",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 904
+    },
+    "timestamp": "2025-12-23T02:15:04.579Z"
+  },
+  {
+    "type": "warn",
+    "text": "Sentry DSN not configured - error monitoring disabled",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 12009
+    },
+    "timestamp": "2025-12-23T02:15:04.583Z"
+  },
+  {
+    "type": "log",
+    "text": "🔐 Auth state changed: No user",
+    "location": {
+      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
+      "lineNumber": 3544,
+      "columnNumber": 13569
+    },
+    "timestamp": "2025-12-23T02:15:04.606Z"
+  }
+]

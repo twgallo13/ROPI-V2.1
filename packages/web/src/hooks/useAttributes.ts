@@ -196,9 +196,12 @@ export function useAttributes() {
   /**
    * Create a new attribute.
    * Pins the item to localStorage so it survives page refresh until server returns it.
+   * LP-3.0.11: Added defensive logging
    */
   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
+    console.debug('[useAttributes] createAttribute called', { data });
     const headers = await getAuthHeaders();
+    console.debug('[useAttributes] Got auth headers, calling POST');
     const url = `${API_BASE}/api/admin/settings/attributes`;
 
     // POST to server: this returns the created attribute
@@ -208,6 +211,7 @@ export function useAttributes() {
       credentials: 'include',
       body: JSON.stringify(data),
     });
+    console.debug('[useAttributes] createAttribute POST response:', created);
 
     // Pin to localStorage so it survives page refresh
     setPinnedMap((prev) => {
