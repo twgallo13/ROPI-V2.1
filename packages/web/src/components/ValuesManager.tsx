@@ -904,21 +904,25 @@ export default function ValuesManager({
           >
             📋 Bulk Add
           </button>
-          <button
-            type="button"
-            className={styles.btnPrimary}
-            onClick={handleSave}
-            disabled={isDisabled || saving || !isDirty || duplicates.size > 0}
-            data-testid="save-values-btn"
-          >
-            {saving ? (
-              <>
-                <span className={styles.spinner} /> Saving...
-              </>
-            ) : (
-              'Save Values'
-            )}
-          </button>
+          {/* LP-ATTR-1.2.2: Only render Save Values if onSave prop is provided.
+              If onSave is not passed, the parent Save will persist values. */}
+          {typeof onSave === 'function' && (
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={handleSave}
+              disabled={isDisabled || saving || !isDirty || duplicates.size > 0}
+              data-testid="save-values-btn"
+            >
+              {saving ? (
+                <>
+                  <span className={styles.spinner} /> Saving...
+                </>
+              ) : (
+                'Save Values'
+              )}
+            </button>
+          )}
         </div>
       </div>
 
