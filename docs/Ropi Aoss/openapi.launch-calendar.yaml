@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: ROPI AOSS Launch Calendar API
+  version: "1.0.0"
+  description: >
+    Launch Calendar endpoints for ROPI AOSS v1.0. Supports both public homepage
+    and internal ROPI app use cases.
+
+servers:
+  - url: https://api.ropi-aoss.example.com
+    description: Production
+  - url: https://staging-api.ropi-aoss.example.com
+    description: Staging
+
+paths:
+  /public/launch-cards:
+    get:
+      summary: Public Launch Cards (Homepage Feed)
+      description: >
+        Public-safe launch card feed used by the Shiekh.com Launch Calendar and
+        related frontends. No Firebase authentication required. Returns only the
+        fields needed for the public homepage as defined in Section 7.2.2 and
+        Section 7.3.4.
+      security: []  # public; typically consumed via trusted frontend / edge
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Inclusive start date (YYYY-MM-DD). Defaults to today - 30 days.
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Inclusive end date (YYYY-MM-DD). Defaults to today + 90 days.
+        - name: brand
+          in: query
+          schema:
+            type: string
+          description: Optional brand filter (e.g. "Nike").
+      responses:
+        "200":
+          description: List of public launch cards within the requested window.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LaunchCardPublic"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "429":
+          $ref: "#/components/responses/Error"
+
+  /launch-cards:
+    get:
+      summary: Internal Launch Cards (Internal Calendar + Notes)
+      description: >
+        Authenticated internal launch card feed used by the ROPI app. Returns
+        the internal launch card representation, which may include internal-only
+        fields such as customMessage, validation/export readiness indicators,
+        and role-specific metadata. Public frontends should use
+        GET /public/launch-cards instead.
+      security:
+        - firebaseBearerAuth: []
+      parameters:
+        - name: publicOnly
+          in: query
+          schema:
+            type: boolean
+          description: >
+            If true, restricts the payload to the same public-safe subset of
+            fields used by GET /public/launch-cards, while still requiring
+            Firebase authentication. Intended for internal tools that want to
+            preview the public feed.
+      responses:
+        "200":
+          description: List of launch cards for internal ROPI use.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LaunchCardInternal"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+components:
+  securitySchemes:
+    firebaseBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        Firebase ID token (JWT) obtained from the ROPI frontend app. Required
+        for all internal AOSS endpoints.
+
+  responses:
+    ValidationError:
+      description: Request validation error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              details:
+                type: array
+                items:
+                  type: string
+    Error:
+      description: Generic error (rate limits, upstream failures, etc.).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  schemas:
+    LaunchCardPublic:
+      type: object
+      description: Public-safe launch card shape for homepage and public Launch Calendar.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        brand:
+          type: string
+        gender:
+          type: string
+        primaryColor:
+          type: string
+        descriptiveColor:
+          type: string
+        launchDate:
+          type: string
+          format: date
+        imageUrl:
+          type: string
+        descriptionShiekh:
+          type: string
+        productUrl:
+          type: string
+      required:
+        - id
+        - name
+        - brand
+        - gender
+        - primaryColor
+        - descriptiveColor
+        - launchDate
+        - imageUrl
+        - descriptionShiekh
+
+    LaunchCardInternal:
+      allOf:
+        - $ref: "#/components/schemas/LaunchCardPublic"
+        - type: object
+          description: Internal-only fields for use inside the ROPI app.
+          properties:
+            customMessage:
+              type: string
+              description: Internal note (see Section 7.3.3). Not exposed publicly.
+            exportReadinessScore:
+              type: number
+              format: float
+            exportReadinessBuckets:
+              type: object
+              additionalProperties:
+                type: integer

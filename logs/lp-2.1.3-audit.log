@@ -1,0 +1,36 @@
+
+═══════════════════════════════════════════
+  LP-2.1.3: Attribute Usage Audit
+═══════════════════════════════════════════
+
+📋 Registry contains 67 attributes
+
+📊 Scanning products collection...
+  Processed 87 products...
+✅ Scanned 87 products, found 31 unique attributes
+📄 Written: logs/attribute-usage-report.csv
+📄 Written: logs/candidate-deletions.csv
+
+─────────────────────────────────────
+📊 Audit Summary:
+   Total attributes in registry: 67
+   Total unique attributes found: 81
+   Attributes with usage > 0: 31
+   Candidate deletions: 32
+─────────────────────────────────────
+
+🗑️  Candidate deletions (zero usage, no code refs):
+   - collection_name
+   - custom_message
+   - cut_type
+   - description_sangremia
+   - expedited_override_shipping
+   - family_sizing
+   - fast_fashion
+   - first_received
+   - heel_type
+   - hide_image_date
+   ... and 22 more
+
+✅ Audit completed successfully
+   Timestamp: 2025-12-21T09:36:20.543Z

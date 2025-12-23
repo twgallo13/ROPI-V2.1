@@ -1,0 +1,62 @@
+=== BEFORE SNAPSHOT ===
+mpn.import_required: true
+sku.import_required: false
+
+--- Full MPN ---
+{
+  "importerColumns": [
+    "mpn"
+  ],
+  "canonicalPath": "sku_core.mpn",
+  "description": "Manufacturer Part Number (Product ID)",
+  "bulkEditable": false,
+  "export": true,
+  "updatedBy": "system",
+  "external_header": "MPN",
+  "attribute_id": "mpn",
+  "status": "active",
+  "allowed_values": [],
+  "synonyms": [
+    "manufacturer_part_number",
+    "Mpn"
+  ],
+  "required_for_export": true,
+  "definition_version": "1.0.1",
+  "canonical": true,
+  "label": "MPN",
+  "source": "json",
+  "required_for_completion": true,
+  "category": "sku_core",
+  "import_required": true,
+  "data_type": "text",
+  "ai_usage_notes": "Manufacturer part number. Required for import (LP-2.1.2).",
+  "updatedAt": "2025-12-21T09:25:36.221Z"
+}
+
+--- Full SKU ---
+{
+  "canonicalPath": "sku_core.sku",
+  "description": "SKU (Variant ID)",
+  "export": true,
+  "importerColumns": [],
+  "bulkEditable": false,
+  "allowed_values": [],
+  "synonyms": [
+    "Sku"
+  ],
+  "updatedBy": "system",
+  "canonical": true,
+  "label": "SKU",
+  "source": "json",
+  "required_for_completion": true,
+  "required_for_export": true,
+  "definition_version": "1.0.1",
+  "external_header": "SKU",
+  "attribute_id": "sku",
+  "category": "sku_core",
+  "status": "active",
+  "import_required": false,
+  "data_type": "text",
+  "ai_usage_notes": "Primary SKU / item id. Optional for import (MPN is primary identifier).",
+  "updatedAt": "2025-12-21T09:25:35.569Z"
+}

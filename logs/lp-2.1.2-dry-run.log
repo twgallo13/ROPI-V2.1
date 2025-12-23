@@ -1,0 +1,80 @@
+✅ Loaded 67 attributes from /workspaces/ROPI-V2.1/packages/sdk/config/attributeRegistry.json
+
+📋 Syncing 67 attributes to Firestore...
+
+  ↻ Updated: sku
+  ↻ Updated: style_id
+  ↻ Updated: mpn
+  ↻ Updated: gtin
+  ↻ Updated: name
+  ↻ Updated: slug
+  ↻ Updated: brand
+  ↻ Updated: category
+  ↻ Updated: class
+  ↻ Updated: department
+  ↻ Updated: website
+  ↻ Updated: product_is_active
+  ↻ Updated: status
+  ↻ Updated: launch_date
+  ↻ Updated: kl_post_date
+  ↻ Updated: family_sizing
+  ↻ Updated: hype
+  ↻ Updated: first_received
+  ↻ Updated: last_received
+  ↻ Updated: height
+  ↻ Updated: length
+  ↻ Updated: width
+  ↻ Updated: shoe_width
+  ↻ Updated: weight
+  ↻ Updated: gender
+  ↻ Updated: age_group
+  ↻ Updated: primary_color
+  ↻ Updated: descriptive_color
+  ↻ Updated: material
+  ↻ Updated: outsole_material
+  ↻ Updated: closure_type
+  ↻ Updated: cut_type
+  ↻ Updated: fit
+  ↻ Updated: heel_height
+  ↻ Updated: platform_height
+  ↻ Updated: heel_type
+  ↻ Updated: shoe_height_map
+  ↻ Updated: made_in
+  ↻ Updated: league
+  ↻ Updated: sports_team
+  ↻ Updated: collection_name
+  ↻ Updated: fast_fashion
+  ↻ Updated: tax_class
+  ↻ Updated: description_shiekh
+  ↻ Updated: description_karmaloop
+  ↻ Updated: description_mltd
+  ↻ Updated: description_sangremia
+  ↻ Updated: meta_name
+  ↻ Updated: meta_description
+  ↻ Updated: keywords
+  ↻ Updated: rics_long_desc
+  ↻ Updated: rics_short_description
+  ↻ Updated: media_status
+  ↻ Updated: hide_image_date
+  ↻ Updated: map
+  ↻ Updated: scom_regular_price
+  ↻ Updated: scom_sale_price
+  ↻ Updated: promo
+  ↻ Updated: standard_shipping_override
+  ↻ Updated: expedited_override_shipping
+  ↻ Updated: custom_message
+  ↻ Updated: total_inv
+  ↻ Updated: warehouse_inv
+  ↻ Updated: store_inv
+  ↻ Updated: pattern
+  ↻ Updated: sustainable
+  ↻ Updated: waterproof
+
+─────────────────────────────────────
+📊 Sync Complete:
+   Created: 0
+   Updated: 67
+   Errors:  0
+─────────────────────────────────────
+
+Sync completed successfully
