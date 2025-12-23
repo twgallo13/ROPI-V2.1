@@ -1,0 +1,133 @@
+{
+  "audit": "LP-ATTR-1.2.1",
+  "title": "Attribute Edit (isDirty) & Save Values Wiring",
+  "date": "2025-01-13",
+  "auditor": "HOMER",
+  "scope": [
+    "AttributesConsole.tsx - parent state/handlers",
+    "AttributeDetailPanel.tsx - tab routing + ValuesTab",
+    "ValuesManager.tsx - values CRUD + Save button",
+    "AttributeHeader.tsx - Save button"
+  ],
+  "findings": {
+    "issue_A": {
+      "title": "ValuesManager internal isDirty never triggers parent isDirty",
+      "status": "FALSE_POSITIVE",
+      "evidence": {
+        "ValuesManager_internal_isDirty": "line 689: local isDirty calculated from isNew/isDeleted/originalValue",
+        "ValuesManager_onChange": "line 710-714: handleValueChange calls onChange(values)",
+        "ValuesTab_handleValuesChange": "AttributeDetailPanel.tsx line 185-191: calls onChange({...formData, allowed_values, synonyms})",
+        "onFormChange_is_passed": "AttributeDetailPanel.tsx line 499: onChange={onFormChange}",
+        "onFormChange_sets_isDirty": "AttributesConsole.tsx line 467-469: handleFormChange sets setIsDirty(true)"
+      },
+      "conclusion": "The chain IS wired correctly: ValuesManager.onChange -> handleValuesChange -> onFormChange -> setIsDirty(true). The parent isDirty SHOULD become true when values are edited."
+    },
+    "issue_B": {
+      "title": "ValuesManager 'Save Values' button has no onSave prop",
+      "status": "CONFIRMED_BUG",
+      "evidence": {
+        "ValuesManagerProps": "line 41: onSave?: (payload: ValuesPayload) => Promise<void> - OPTIONAL",
+        "ValuesTab_renders": "line 196-200: <ValuesManager values={initialValues} onChange={handleValuesChange} readOnly={false} />",
+        "onSave_not_passed": "ValuesTab does NOT pass onSave prop",
+        "handleSave_guards": "line 812: if (!onSave) return; - early return",
+        "button_disabled_check": "line 911: disabled={isDisabled || saving || !isDirty || duplicates.size > 0}"
+      },
+      "conclusion": "The 'Save Values' button calls handleSave which returns early because onSave is undefined. This is a confirmed bug.",
+      "impact": "MEDIUM - Users cannot use the 'Save Values' button in ValuesManager, but they CAN use the parent Save button in AttributeHeader which DOES work."
+    },
+    "issue_C": {
+      "title": "AttributeHeader Save button disabled when isDirty=false",
+      "status": "VERIFIED_CORRECT",
+      "evidence": {
+        "button_disabled": "AttributeHeader.tsx line 180: disabled={saving || !isDirty}",
+        "isDirty_passed": "AttributeDetailPanel.tsx line 543: isDirty={isDirty}",
+        "isDirty_from_parent": "AttributesConsole.tsx line 679: isDirty={isDirty}",
+        "isDirty_state": "AttributesConsole.tsx line 413: const [isDirty, setIsDirty] = useState(false)"
+      },
+      "conclusion": "This is correct behavior - Save should be disabled when no changes."
+    },
+    "issue_D": {
+      "title": "ValuesManager initialValues computed with useMemo + Date.now()",
+      "status": "POTENTIAL_ISSUE",
+      "evidence": {
+        "useMemo_deps": "AttributeDetailPanel.tsx line 169-182: useMemo depends on [formData.allowed_values, formData.synonyms]",
+        "id_generation": "line 179: id: `val-${idx}-${Date.now()}`",
+        "originalValue_not_set": "initialValues do not set originalValue, so isDirty in ValuesManager will be wrong"
+      },
+      "conclusion": "When formData changes, initialValues regenerates with new Date.now() IDs but no originalValue. This may cause ValuesManager's internal isDirty to be incorrect (always false for existing values)."
+    }
+  },
+  "facts_table": [
+    {
+      "assertion": "ValuesManager calls onChange when value edited",
+      "result": "TRUE",
+      "evidence": "line 710-714 handleValueChange -> onChange(values)"
+    },
+    {
+      "assertion": "ValuesTab.handleValuesChange calls parent onChange",
+      "result": "TRUE",
+      "evidence": "line 185-191 calls onChange({...formData, ...})"
+    },
+    {
+      "assertion": "onFormChange prop is passed from AttributeDetailPanel",
+      "result": "TRUE",
+      "evidence": "line 499: onChange={onFormChange}"
+    },
+    {
+      "assertion": "handleFormChange sets isDirty(true)",
+      "result": "TRUE",
+      "evidence": "AttributesConsole.tsx line 468: setIsDirty(true)"
+    },
+    {
+      "assertion": "isDirty is passed to AttributeHeader",
+      "result": "TRUE",
+      "evidence": "line 543: isDirty={isDirty}"
+    },
+    {
+      "assertion": "Save button in AttributeHeader enables when isDirty=true",
+      "result": "TRUE",
+      "evidence": "line 180: disabled={saving || !isDirty}"
+    },
+    {
+      "assertion": "ValuesManager receives onSave prop",
+      "result": "FALSE",
+      "evidence": "ValuesTab line 196-200 does not pass onSave"
+    },
+    {
+      "assertion": "'Save Values' button works without onSave",
+      "result": "FALSE",
+      "evidence": "line 812: if (!onSave) return"
+    }
+  ],
+  "root_cause_analysis": {
+    "primary_issue": "ValuesManager 'Save Values' button does nothing because onSave prop is not passed",
+    "secondary_issue": "ValuesManager internal isDirty may be incorrectly false because initialValues lack originalValue",
+    "not_an_issue": "Parent isDirty flow is correctly wired - the AttributeHeader Save button SHOULD work"
+  },
+  "recommended_fixes": [
+    {
+      "id": "FIX-A",
+      "priority": "HIGH",
+      "description": "Remove 'Save Values' button from ValuesManager since parent Save handles persistence",
+      "alternative": "OR: Wire onSave through ValuesTab to call parent handleSave",
+      "files": ["ValuesManager.tsx", "AttributeDetailPanel.tsx"]
+    },
+    {
+      "id": "FIX-B",
+      "priority": "MEDIUM",
+      "description": "Set originalValue in initialValues so ValuesManager isDirty is accurate",
+      "files": ["AttributeDetailPanel.tsx"]
+    },
+    {
+      "id": "FIX-C",
+      "priority": "LOW",
+      "description": "Add toast/feedback when parent Save succeeds",
+      "files": ["AttributesConsole.tsx"]
+    }
+  ],
+  "verification_needed": {
+    "test_1": "Edit a value in ValuesManager, check if parent isDirty becomes true",
+    "test_2": "Click Save button in header after editing values, verify API call made",
+    "test_3": "Click 'Save Values' button, confirm it does nothing (current bug)"
+  }
+}
