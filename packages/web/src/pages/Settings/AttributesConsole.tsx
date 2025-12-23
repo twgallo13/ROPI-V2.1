@@ -614,23 +614,34 @@ export default function AttributesConsole() {
   }, [selectedId, updateAttribute]);
 
   // Handle delete action (hard delete)
+  // LP-ATTR-1.3.1: Clear selection on BOTH success AND failure to prevent stale UI state
   const handleDelete = useCallback(async () => {
     if (!selectedId || !deleteAttribute) return;
     setSaving(true);
+    const deletingId = selectedId; // Capture before clearing
     try {
-      await deleteAttribute(selectedId);
-      toastSuccess(`Attribute '${selectedId}' has been deleted.`);
+      await deleteAttribute(deletingId);
+      toastSuccess(`Attribute '${deletingId}' has been deleted.`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to delete attribute';
+      // LP-ATTR-1.3.1: Even on failure (e.g., 404), clear selection to prevent stuck UI
+      // The attribute may already be deleted, or there was a transient error.
+      // Either way, forcing the user to re-select ensures a clean state.
+      console.warn(`[AttributesConsole] Delete failed for '${deletingId}':`, message);
+      toastError(message);
+    } finally {
+      // LP-ATTR-1.3.1: Always clear selection and reset form after delete attempt
       setShowDeleteModal(false);
       setSelectedId(null);
       setFormData({ ...DEFAULT_ATTR });
       setIsDirty(false);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to delete attribute';
-      toastError(message);
-    } finally {
       setSaving(false);
+      // Refresh the list to ensure we have current server state
+      if (refresh) {
+        refresh().catch(err => console.warn('[AttributesConsole] Refresh after delete failed:', err));
+      }
     }
-  }, [selectedId, deleteAttribute]);
+  }, [selectedId, deleteAttribute, refresh]);
 
   // Show loading state
   if (loading && attributes.length === 0) {
