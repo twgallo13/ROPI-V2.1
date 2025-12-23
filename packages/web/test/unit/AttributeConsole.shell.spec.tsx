@@ -546,4 +546,170 @@ describe('AttributesConsole Shell', () => {
       });
     });
   });
+
+  // LP-ATTR-1.3.1: Delete State Cleanup Tests
+  describe('Delete State Cleanup (LP-ATTR-1.3.1)', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      mockUseAttributes.deleteAttribute.mockReset();
+      mockUseAttributes.refresh.mockReset();
+    });
+
+    it('clears selection after successful delete', async () => {
+      mockUseAttributes.deleteAttribute.mockResolvedValueOnce(undefined);
+      mockUseAttributes.refresh.mockResolvedValueOnce(undefined);
+
+      render(<AttributesConsole />);
+
+      // Select an attribute
+      fireEvent.click(screen.getByTestId('list-item-color'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('attribute-detail-panel')).toBeInTheDocument();
+      });
+
+      // Open kebab menu and click delete
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      fireEvent.click(screen.getByTestId('menu-delete'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('confirmation-modal')).toBeInTheDocument();
+      });
+
+      // Type attribute ID to enable confirm
+      fireEvent.change(screen.getByTestId('confirm-input'), { target: { value: 'color' } });
+
+      // Click confirm
+      fireEvent.click(screen.getByTestId('modal-confirm'));
+
+      // Wait for delete to complete
+      await waitFor(() => {
+        expect(mockUseAttributes.deleteAttribute).toHaveBeenCalledWith('color');
+      });
+
+      // Modal should close and detail panel should show empty state
+      await waitFor(() => {
+        expect(screen.queryByTestId('confirmation-modal')).not.toBeInTheDocument();
+        expect(screen.getByTestId('attribute-detail-panel-empty')).toBeInTheDocument();
+      });
+
+      // Refresh should have been called
+      expect(mockUseAttributes.refresh).toHaveBeenCalled();
+    });
+
+    it('clears selection after delete failure (404)', async () => {
+      mockUseAttributes.deleteAttribute.mockRejectedValueOnce(new Error('Not found: 404'));
+      mockUseAttributes.refresh.mockResolvedValueOnce(undefined);
+
+      render(<AttributesConsole />);
+
+      // Select an attribute
+      fireEvent.click(screen.getByTestId('list-item-color'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('attribute-detail-panel')).toBeInTheDocument();
+      });
+
+      // Open kebab menu and click delete
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      fireEvent.click(screen.getByTestId('menu-delete'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('confirmation-modal')).toBeInTheDocument();
+      });
+
+      // Type attribute ID to enable confirm
+      fireEvent.change(screen.getByTestId('confirm-input'), { target: { value: 'color' } });
+
+      // Click confirm
+      fireEvent.click(screen.getByTestId('modal-confirm'));
+
+      // Wait for delete to fail
+      await waitFor(() => {
+        expect(mockUseAttributes.deleteAttribute).toHaveBeenCalledWith('color');
+      });
+
+      // Despite error, modal should close and detail panel should show empty state
+      await waitFor(() => {
+        expect(screen.queryByTestId('confirmation-modal')).not.toBeInTheDocument();
+        expect(screen.getByTestId('attribute-detail-panel-empty')).toBeInTheDocument();
+      });
+
+      // Refresh should still be called to sync server state
+      expect(mockUseAttributes.refresh).toHaveBeenCalled();
+    });
+
+    it('clears selection after generic delete failure', async () => {
+      mockUseAttributes.deleteAttribute.mockRejectedValueOnce(new Error('Network error'));
+      mockUseAttributes.refresh.mockResolvedValueOnce(undefined);
+
+      render(<AttributesConsole />);
+
+      // Select an attribute
+      fireEvent.click(screen.getByTestId('list-item-size'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('attribute-detail-panel')).toBeInTheDocument();
+      });
+
+      // Open kebab menu and click delete
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      fireEvent.click(screen.getByTestId('menu-delete'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('confirmation-modal')).toBeInTheDocument();
+      });
+
+      // Type attribute ID to enable confirm
+      fireEvent.change(screen.getByTestId('confirm-input'), { target: { value: 'size' } });
+
+      // Click confirm
+      fireEvent.click(screen.getByTestId('modal-confirm'));
+
+      // Wait for delete to fail
+      await waitFor(() => {
+        expect(mockUseAttributes.deleteAttribute).toHaveBeenCalledWith('size');
+      });
+
+      // Despite error, selection should still be cleared (LP-ATTR-1.3.1 fix)
+      await waitFor(() => {
+        expect(screen.queryByTestId('confirmation-modal')).not.toBeInTheDocument();
+        expect(screen.getByTestId('attribute-detail-panel-empty')).toBeInTheDocument();
+      });
+    });
+
+    it('allows selecting another attribute after delete failure', async () => {
+      mockUseAttributes.deleteAttribute.mockRejectedValueOnce(new Error('Server error'));
+      mockUseAttributes.refresh.mockResolvedValueOnce(undefined);
+
+      render(<AttributesConsole />);
+
+      // Select color attribute
+      fireEvent.click(screen.getByTestId('list-item-color'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('header-id')).toHaveTextContent('color');
+      });
+
+      // Try to delete (will fail)
+      fireEvent.click(screen.getByTestId('kebab-button'));
+      fireEvent.click(screen.getByTestId('menu-delete'));
+      await waitFor(() => expect(screen.getByTestId('confirmation-modal')).toBeInTheDocument());
+      fireEvent.change(screen.getByTestId('confirm-input'), { target: { value: 'color' } });
+      fireEvent.click(screen.getByTestId('modal-confirm'));
+
+      // Wait for failure and cleanup
+      await waitFor(() => {
+        expect(screen.getByTestId('attribute-detail-panel-empty')).toBeInTheDocument();
+      });
+
+      // Now select a different attribute - should work fine
+      fireEvent.click(screen.getByTestId('list-item-size'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('attribute-detail-panel')).toBeInTheDocument();
+        expect(screen.getByTestId('header-id')).toHaveTextContent('size');
+      });
+    });
+  });
 });
