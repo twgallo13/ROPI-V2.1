@@ -1,0 +1,76 @@
+{
+  "lp": "LP-ATTR-1.1.0",
+  "title": "canonicalAttributeMap & attributeRegistry sync (dry-run → apply to staging)",
+  "timestamp": "2025-12-23T01:17:00.000Z",
+  "status": "PASS",
+  
+  "registry_version": "1.0.3",
+  "total_canonical_attributes": 67,
+  "total_firestore_keys": 125,
+  
+  "dry_run_summary": {
+    "collisions": 0,
+    "protected_overwrites": 0,
+    "would_create": 0,
+    "would_update": 67,
+    "errors": 0
+  },
+  
+  "apply_summary": {
+    "created": 0,
+    "updated": 67,
+    "skipped": 0,
+    "errors": 0,
+    "elapsed_seconds": 10.27
+  },
+  
+  "verification": {
+    "canonical_true": 67,
+    "source_repo": 67,
+    "definition_version_present": 67,
+    "aliases_populated": 7,
+    "sample_docs_verified": ["age_group", "primary_color", "descriptive_color", "gender", "material"]
+  },
+  
+  "export_readiness": {
+    "reference": "LP-2.1.9-LOAD-CANONICAL-MAPS-COMPLETION.json",
+    "unknown_percent": 0,
+    "threshold": 1,
+    "status": "PASS",
+    "note": "LP-2.1.9 verified 0% unknown values. This sync updates registry version but does not change allowed_values or synonyms - no export regression expected."
+  },
+  
+  "backup": {
+    "location": "gs://ropi-bccee-backups/pre-attr-sync-staging-2025-12-23_010947Z",
+    "log": "logs/lp-attr-1.1.0-backup.log"
+  },
+  
+  "artifacts": {
+    "dryrun_json": "reports/attribute-inspections/canonical-sync-2025-12-23_010947Z/sync-dryrun.json",
+    "dryrun_log": "logs/lp-attr-1.1.0-dryrun.log",
+    "apply_json": "reports/attribute-inspections/canonical-sync-2025-12-23_010947Z/sync-apply.json",
+    "apply_log": "logs/lp-attr-1.1.0-apply.log",
+    "keys_snapshot": "reports/attribute-inspections/canonical-sync-2025-12-23_010947Z/keys-snapshot.json",
+    "backup_path": "logs/lp-attr-1.1.0-pre-sync-backup.txt"
+  },
+  
+  "config_files": {
+    "attribute_registry": "packages/sdk/config/attributeRegistry.json",
+    "canonical_attribute_map": "packages/sdk/config/canonicalAttributeMap.approved.json"
+  },
+  
+  "acceptance_criteria": {
+    "dry_run_no_collisions": true,
+    "dry_run_no_protected_overwrites": true,
+    "apply_successful": true,
+    "canonical_fields_verified": true,
+    "export_threshold_passed": true
+  },
+  
+  "notes": [
+    "All 67 canonical attributes synced to settings/attributes/keys/* with canonical:true, source:'repo', definition_version:1.0.3",
+    "58 additional derived/legacy attributes remain in Firestore (125 total - 67 canonical = 58 others)",
+    "GCS backup created before apply for rollback safety",
+    "Export readiness inherited from LP-2.1.9 (0% unknown) - no regression as this sync only updates registry metadata, not allowed_values"
+  ]
+}

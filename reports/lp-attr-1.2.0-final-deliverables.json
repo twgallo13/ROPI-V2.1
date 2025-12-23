@@ -1,0 +1,39 @@
+{
+  "lp": "LP-ATTR-1.2.0",
+  "merged_pr": 335,
+  "merged_sha": "78f9ead330fcfbef95e690fdb343e312887e49be",
+  "ci_runs_file": "logs/lp-attr-1.2.0-ci-runs-post-merge.json",
+  "ci_runs_summary": {
+    "deploy_staging": { "id": 20449076674, "status": "success" },
+    "deploy_precheck": { "id": 20449076673, "status": "success" }
+  },
+  "e2e_ci_log": "logs/lp-attr-1.2.0-headless.log",
+  "create_api_log": "logs/lp-attr-1.2.0-create-api.txt",
+  "create_api_result": {
+    "status": 201,
+    "attribute_id": "lp335_smoke_test",
+    "label": "LP335 Smoke Test"
+  },
+  "edit_api_log": "logs/lp-attr-1.2.0-edit-api.txt",
+  "edit_api_result": {
+    "status": 200,
+    "attribute_id": "lp335_smoke_test",
+    "label": "LP335 Smoke Test EDITED"
+  },
+  "headless_log": "logs/lp-attr-1.2.0-headless.log",
+  "headless_network": "logs/lp-attr-1.2.0-network.json",
+  "headless_console": "logs/lp-attr-1.2.0-console.json",
+  "headless_summary": "logs/lp-attr-1.2.0-summary.json",
+  "screenshot": "screenshots/lp-attr-1.2.0-attribute-create.png",
+  "acceptance_criteria": {
+    "ci_pass": true,
+    "unit_tests_present": true,
+    "e2e_smoke_tests_active": true,
+    "post_201": true,
+    "put_200": true,
+    "no_mapping_404s": true,
+    "no_typeErrors": true
+  },
+  "status": "PASS",
+  "notes": "All acceptance criteria met. MappingTab guard tests (6 unit) and attribute-create-edit e2e tests (10 tests, 2 @smoke) successfully merged and verified on staging. No rollback required."
+}

@@ -1,0 +1,1 @@
+{"headRefName":"lp/2.1.7-migration-per-key-meta","isDraft":false,"labels":[{"id":"LA_kwDOQQzsDM8AAAACTJJKXw","name":"lp:ATTR-2.1.7","description":"LP-ATTR-2.1.7","color":"32CD32"}],"number":322,"state":"OPEN","title":"[LP-ATTR-2.1.7] migrateProductsToAttributes & normalizeProductAttributeValues: per-key updates + attributes._meta provenance"}

@@ -1,0 +1,24 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   474  100   370  100   104   1053    296 --:--:-- --:--:-- --:--:--  1354
+HTTP/2 201 
+cache-control: private
+content-type: application/json; charset=utf-8
+etag: W/"172-jFs5KSV00tA97hXXZVfLsKYPQkw"
+server: Google Frontend
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+traceparent: 00-8a8fdc5d6664793472fbb4a691009e00-a43a927980eb8c51-00
+x-cloud-trace-context: 8a8fdc5d6664793472fbb4a691009e00/11833932021421018193
+x-country-code: US
+x-powered-by: Express
+accept-ranges: bytes
+date: Tue, 23 Dec 2025 01:59:11 GMT
+x-served-by: cache-bur-kbur8200137-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766455152.614229,VS0,VE309
+vary: Origin,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 370
+
+{"attribute_id":"lp335_smoke_test","label":"LP335 Smoke Test","category":"testing","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-23T01:59:11.676Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-23T01:59:11.676Z"}

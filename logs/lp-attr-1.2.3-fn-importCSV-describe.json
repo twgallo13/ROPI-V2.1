@@ -1,0 +1,61 @@
+{
+  "buildConfig": {
+    "automaticUpdatePolicy": {},
+    "build": "projects/892791174441/locations/us-central1/builds/7709f530-68dc-4335-bc97-b43b92bfe5fa",
+    "dockerRegistry": "ARTIFACT_REGISTRY",
+    "dockerRepository": "projects/ropi-bccee/locations/us-central1/repositories/gcf-artifacts",
+    "entryPoint": "importCSV",
+    "environmentVariables": {
+      "GOOGLE_NODE_RUN_SCRIPTS": ""
+    },
+    "runtime": "nodejs20",
+    "serviceAccount": "projects/ropi-bccee/serviceAccounts/892791174441-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "gcf-v2-sources-892791174441-us-central1",
+        "generation": "1766449062470055",
+        "object": "importCSV/function-source.zip"
+      }
+    },
+    "sourceProvenance": {
+      "resolvedStorageSource": {
+        "bucket": "gcf-v2-sources-892791174441-us-central1",
+        "generation": "1766449062470055",
+        "object": "importCSV/function-source.zip"
+      }
+    }
+  },
+  "createTime": "2025-12-09T05:55:48.809649299Z",
+  "environment": "GEN_2",
+  "labels": {
+    "deployment-tool": "cli-firebase",
+    "firebase-functions-codebase": "api",
+    "firebase-functions-hash": "b182db2582b7b3c162a3662c861ac6598fddea9a"
+  },
+  "name": "projects/ropi-bccee/locations/us-central1/functions/importCSV",
+  "satisfiesPzi": true,
+  "serviceConfig": {
+    "allTrafficOnLatestRevision": true,
+    "availableCpu": "1",
+    "availableMemory": "256Mi",
+    "environmentVariables": {
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/ropi-bccee/locations/us-central1/services/importCSV",
+      "FIREBASE_CONFIG": "{\"projectId\":\"ropi-bccee\",\"storageBucket\":\"ropi-bccee.firebasestorage.app\"}",
+      "FUNCTION_SIGNATURE_TYPE": "http",
+      "FUNCTION_TARGET": "importCSV",
+      "GCLOUD_PROJECT": "ropi-bccee",
+      "LOG_EXECUTION_ID": "true"
+    },
+    "ingressSettings": "ALLOW_ALL",
+    "maxInstanceCount": 20,
+    "maxInstanceRequestConcurrency": 80,
+    "revision": "importcsv-00051-kin",
+    "service": "projects/ropi-bccee/locations/us-central1/services/importcsv",
+    "serviceAccountEmail": "892791174441-compute@developer.gserviceaccount.com",
+    "timeoutSeconds": 60,
+    "uri": "https://importcsv-ofrc5r2g3q-uc.a.run.app"
+  },
+  "state": "ACTIVE",
+  "updateTime": "2025-12-23T00:17:57.099482532Z",
+  "url": "https://us-central1-ropi-bccee.cloudfunctions.net/importCSV"
+}

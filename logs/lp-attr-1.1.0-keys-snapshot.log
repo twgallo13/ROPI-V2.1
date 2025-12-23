@@ -1,0 +1,58 @@
+
+📋 Fetching attribute keys from Firestore...
+   Total keys: 125
+
+📊 Field Presence Summary:
+   canonical: true  → 67/125
+   source: 'repo'   → 67/125
+   definition_version → 67/125
+   aliases (non-empty) → 7/125
+
+🔍 Sample Documents:
+
+   age_group:
+     canonical: true
+     source: repo
+     definition_version: 1.0.3
+     data_type: enum
+     aliases: ["ageGroup","age-group"]
+     allowed_values: 6 items
+
+   descriptive_color:
+     canonical: true
+     source: repo
+     definition_version: 1.0.3
+     data_type: string
+     aliases: ["descriptiveColor"]
+     allowed_values: 0 items
+
+   gender:
+     canonical: true
+     source: repo
+     definition_version: 1.0.3
+     data_type: enum
+     aliases: ["sex","target_gender"]
+     allowed_values: 6 items
+
+   material:
+     canonical: true
+     source: repo
+     definition_version: 1.0.3
+     data_type: array
+     aliases: ["upper_material","fabric"]
+     allowed_values: 79 items
+
+   primary_color:
+     canonical: true
+     source: repo
+     definition_version: 1.0.3
+     data_type: enum
+     aliases: ["color","main_color","colour"]
+     allowed_values: 29 items
+
+📄 Output saved to: reports/attribute-inspections/canonical-sync-2025-12-23_010947Z/keys-snapshot.json
+
+========================================
+Verification: ⚠️ PARTIAL
+========================================
+

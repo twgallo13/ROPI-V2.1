@@ -1,0 +1,14 @@
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+ ✓ test/ValuesManager.noSaveButton.test.tsx > ValuesManager Save Button Visibility > should NOT render Save Values button when onSave prop is NOT provided
+ ✓ test/ValuesManager.noSaveButton.test.tsx > ValuesManager Save Button Visibility > should render Save Values button when onSave prop IS provided
+ ✓ test/ValuesManager.noSaveButton.test.tsx > ValuesManager Save Button Visibility > should call onSave when Save Values button is clicked
+ ✓ test/ValuesManager.noSaveButton.test.tsx > ValuesManager Save Button Visibility > should still show Bulk Add button regardless of onSave prop
+ ✓ test/ValuesManager.noSaveButton.test.tsx > ValuesManager Save Button Visibility > should disable Save Values button when no changes (isDirty = false)
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  06:50:13
+   Duration  1.25s (transform 167ms, setup 85ms, collect 252ms, tests 79ms, environment 505ms, prepare 86ms)
+

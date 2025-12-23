@@ -1,0 +1,165 @@
+[LP-ATTR-1.1.0] Using service account: /workspaces/ROPI-V2.1/service-account.json
+
+========================================
+LP-ATTR-1.1.0: Canonical Attribute Registry Sync
+Mode: DRY-RUN (no writes)
+========================================
+
+Invoking runSyncAttributeRegistry(dryRun=true)...
+
+
+════════════════════════════════════════════════════════════
+  SYNC ATTRIBUTE REGISTRY (LP-2.1.6)
+  Mode: 🔍 DRY-RUN (no changes will be made)
+════════════════════════════════════════════════════════════
+
+✅ Loaded 67 attributes from registry (v1.0.3)
+
+🔍 Checking for ID collisions after snake_case conversion...
+✅ No collisions detected
+
+📋 Processing 67 attributes...
+
+  ↻ UPDATE: sku
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: style_id
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: mpn
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: gtin
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: name
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: slug
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: brand
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: category
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: class
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: department
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: website
+      data_type: "multiSelect" → normalized: "array"
+  ↻ UPDATE: product_is_active
+  ↻ UPDATE: status
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: launch_date
+  ↻ UPDATE: kl_post_date
+  ↻ UPDATE: family_sizing
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: hype
+  ↻ UPDATE: first_received
+  ↻ UPDATE: last_received
+  ↻ UPDATE: height
+  ↻ UPDATE: length
+  ↻ UPDATE: width
+  ↻ UPDATE: shoe_width
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: weight
+  ↻ UPDATE: gender
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: age_group
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: primary_color
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: descriptive_color
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: material
+      data_type: "multiSelect" → normalized: "array"
+  ↻ UPDATE: outsole_material
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: closure_type
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: cut_type
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: fit
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: heel_height
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: platform_height
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: heel_type
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: shoe_height_map
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: made_in
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: league
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: sports_team
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: collection_name
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: fast_fashion
+  ↻ UPDATE: tax_class
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: description_shiekh
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: description_karmaloop
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: description_mltd
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: description_sangremia
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: meta_name
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: meta_description
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: keywords
+      data_type: "multiSelect" → normalized: "array"
+  ↻ UPDATE: rics_long_desc
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: rics_short_description
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: media_status
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: hide_image_date
+  ↻ UPDATE: map
+      data_type: "money" → normalized: "number"
+  ↻ UPDATE: scom_regular_price
+      data_type: "money" → normalized: "number"
+  ↻ UPDATE: scom_sale_price
+      data_type: "money" → normalized: "number"
+  ↻ UPDATE: promo
+      data_type: "select" → normalized: "enum"
+  ↻ UPDATE: standard_shipping_override
+      data_type: "money" → normalized: "number"
+  ↻ UPDATE: expedited_override_shipping
+      data_type: "money" → normalized: "number"
+  ↻ UPDATE: custom_message
+      data_type: "longText" → normalized: "string"
+  ↻ UPDATE: total_inv
+  ↻ UPDATE: warehouse_inv
+  ↻ UPDATE: store_inv
+  ↻ UPDATE: pattern
+      data_type: "text" → normalized: "string"
+  ↻ UPDATE: sustainable
+  ↻ UPDATE: waterproof
+
+────────────────────────────────────────────────────────────
+📊 Sync (DRY-RUN) Complete:
+   Registry Version: 1.0.3
+   Would Create:     0
+   Would Update:     67
+   Skipped:          0
+   Errors:           0
+────────────────────────────────────────────────────────────
+
+💡 This was a DRY-RUN. To apply changes, run with --apply flag.
+
+
+========================================
+LP-ATTR-1.1.0 Sync Result:
+  Mode: dry-run
+  Created: 0
+  Updated: 67
+  Skipped: 0
+  Errors: 0
+  Total Attributes: 67
+  Elapsed: 8.60s
+  Status: PASS
+========================================
+
+📄 Output saved to: reports/attribute-inspections/canonical-sync-2025-12-23_010947Z/sync-dryrun.json

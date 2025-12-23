@@ -1,0 +1,327 @@
+e2e	Run E2E tests	﻿2025-12-23T06:46:36.5375556Z ##[group]Run cd packages/web
+e2e	Run E2E tests	2025-12-23T06:46:36.5376059Z [36;1mcd packages/web[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5376439Z [36;1m[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5376886Z [36;1m# Logic: PRs run Smoke tests. Manual runs follow input.[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5377440Z [36;1m[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5377748Z [36;1mMODE="all"[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5378489Z [36;1mif [ "pull_request" = "pull_request" ]; then[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5379000Z [36;1m   MODE="smoke"[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5379354Z [36;1mfi[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5379655Z [36;1m[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5379971Z [36;1mif [ "" = "smoke" ]; then[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5380389Z [36;1m   MODE="smoke"[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5380750Z [36;1mfi[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5381032Z [36;1m[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5381320Z [36;1mif [ "$MODE" = "smoke" ]; then[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5381862Z [36;1m   echo "🚀 Running SMOKE tests only (Fail limit: 3)"[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5382647Z [36;1m   # Run only tests tagged with @smoke - these are fast, critical path tests[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5383513Z [36;1m   npx playwright test --grep "@smoke" --max-failures=3[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5384148Z [36;1melse[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5384561Z [36;1m   echo "🐢 Running ALL tests (Fail limit: 5)"[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5385345Z [36;1m   npx playwright test --max-failures=5[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5385868Z [36;1mfi[0m
+e2e	Run E2E tests	2025-12-23T06:46:36.5425894Z shell: /usr/bin/bash -e {0}
+e2e	Run E2E tests	2025-12-23T06:46:36.5426144Z env:
+e2e	Run E2E tests	2025-12-23T06:46:36.5426333Z   VITE_E2E_ADMIN_EMAIL: theo@shiekh.com
+e2e	Run E2E tests	2025-12-23T06:46:36.5426602Z   VITE_E2E_USER_EMAIL: user@shiekh.com
+e2e	Run E2E tests	2025-12-23T06:46:36.5426886Z   VITE_E2E_UNVERIFIED_EMAIL: unverified@shiekh.com
+e2e	Run E2E tests	2025-12-23T06:46:36.5427739Z   VITE_E2E_ADMIN_PASSWORD: ***
+e2e	Run E2E tests	2025-12-23T06:46:36.5428363Z   VITE_E2E_USER_PASSWORD: ***
+e2e	Run E2E tests	2025-12-23T06:46:36.5428938Z   VITE_E2E_UNVERIFIED_PASSWORD: ***
+e2e	Run E2E tests	2025-12-23T06:46:36.5509042Z   GCP_SA_KEY_BASE64: ***
+e2e	Run E2E tests	2025-12-23T06:46:36.5509327Z   BASE_URL: https://ropi-aoss-staging.web.app
+e2e	Run E2E tests	2025-12-23T06:46:36.5509606Z   CI: true
+e2e	Run E2E tests	2025-12-23T06:46:36.5509792Z ##[endgroup]
+e2e	Run E2E tests	2025-12-23T06:46:36.5586105Z 🚀 Running SMOKE tests only (Fail limit: 3)
+e2e	Run E2E tests	2025-12-23T06:46:38.7919833Z 
+e2e	Run E2E tests	2025-12-23T06:46:38.7922009Z Running 4 tests using 1 worker
+e2e	Run E2E tests	2025-12-23T06:46:38.7924369Z 
+e2e	Run E2E tests	2025-12-23T06:47:12.4956250Z   ✘  1 [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke (31.8s)
+e2e	Run E2E tests	2025-12-23T06:47:45.4568949Z   ✘  2 [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke (retry #1) (32.0s)
+e2e	Run E2E tests	2025-12-23T06:48:18.1352693Z   ✘  3 [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke (31.9s)
+e2e	Run E2E tests	2025-12-23T06:48:51.0629468Z   ✘  4 [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke (retry #1) (32.0s)
+e2e	Run E2E tests	2025-12-23T06:48:53.8786776Z   ✓  5 [chromium] › e2e/auth.spec.ts:30:3 › Authentication Flows › should allow email/password sign-in for regular user @smoke (2.1s)
+e2e	Run E2E tests	2025-12-23T06:48:55.9509038Z   ✓  6 [chromium] › e2e/auth.spec.ts:43:3 › Authentication Flows › should allow email/password sign-in for admin user @smoke (2.0s)
+e2e	Run E2E tests	2025-12-23T06:48:56.0488972Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0493648Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0503828Z   1) [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	2025-12-23T06:48:56.0506344Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0507093Z     [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+e2e	Run E2E tests	2025-12-23T06:48:56.0508108Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0508345Z       22 |   let testAttrId: string;
+e2e	Run E2E tests	2025-12-23T06:48:56.0508819Z       23 |   
+e2e	Run E2E tests	2025-12-23T06:48:56.0509280Z     > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	2025-12-23T06:48:56.0509799Z          |        ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0510201Z       25 |     // Sign in as admin
+e2e	Run E2E tests	2025-12-23T06:48:56.0511469Z       26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	2025-12-23T06:48:56.0512246Z       27 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0513029Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0514062Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0514412Z     Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	2025-12-23T06:48:56.0515190Z     Call log:
+e2e	Run E2E tests	2025-12-23T06:48:56.0516219Z     [2m  - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible[22m
+e2e	Run E2E tests	2025-12-23T06:48:56.0516900Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0516919Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0517140Z       31 |     // Wait for page to load
+e2e	Run E2E tests	2025-12-23T06:48:56.0518049Z       32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0519125Z     > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0519826Z          |                       ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0520272Z       34 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0520695Z       35 |     // Wait for New Attribute button
+e2e	Run E2E tests	2025-12-23T06:48:56.0521400Z       36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	2025-12-23T06:48:56.0522439Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0523131Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0523920Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0525475Z     test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium/test-failed-1.png
+e2e	Run E2E tests	2025-12-23T06:48:56.0527010Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0527537Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0528278Z     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0529607Z     test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium/video.webm
+e2e	Run E2E tests	2025-12-23T06:48:56.0531147Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0531667Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0532498Z     Error Context: test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium/error-context.md
+e2e	Run E2E tests	2025-12-23T06:48:56.0533424Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0534406Z     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0534727Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0535345Z     [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+e2e	Run E2E tests	2025-12-23T06:48:56.0535883Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0536099Z       22 |   let testAttrId: string;
+e2e	Run E2E tests	2025-12-23T06:48:56.0536539Z       23 |   
+e2e	Run E2E tests	2025-12-23T06:48:56.0537010Z     > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	2025-12-23T06:48:56.0537497Z          |        ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0537888Z       25 |     // Sign in as admin
+e2e	Run E2E tests	2025-12-23T06:48:56.0538708Z       26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	2025-12-23T06:48:56.0539512Z       27 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0540311Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0540982Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0541628Z     Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	2025-12-23T06:48:56.0542192Z     Call log:
+e2e	Run E2E tests	2025-12-23T06:48:56.0543170Z     [2m  - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible[22m
+e2e	Run E2E tests	2025-12-23T06:48:56.0543813Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0543826Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0544024Z       31 |     // Wait for page to load
+e2e	Run E2E tests	2025-12-23T06:48:56.0544841Z       32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0545993Z     > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0546608Z          |                       ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0546965Z       34 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0547616Z       35 |     // Wait for New Attribute button
+e2e	Run E2E tests	2025-12-23T06:48:56.0548203Z       36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	2025-12-23T06:48:56.0549127Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0549727Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0550443Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0551734Z     test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium-retry1/test-failed-1.png
+e2e	Run E2E tests	2025-12-23T06:48:56.0553131Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0553599Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0554238Z     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0555641Z     test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium-retry1/video.webm
+e2e	Run E2E tests	2025-12-23T06:48:56.0557017Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0557470Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0558266Z     Error Context: test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium-retry1/error-context.md
+e2e	Run E2E tests	2025-12-23T06:48:56.0559157Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0559812Z     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0561017Z     test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium-retry1/trace.zip
+e2e	Run E2E tests	2025-12-23T06:48:56.0561876Z     Usage:
+e2e	Run E2E tests	2025-12-23T06:48:56.0562045Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0562924Z         npx playwright show-trace test-results/attribute-create-edit-Attr-eabe9-D-and-verify-POST-201-smoke-chromium-retry1/trace.zip
+e2e	Run E2E tests	2025-12-23T06:48:56.0563849Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0564435Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0565091Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0566482Z   2) [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	2025-12-23T06:48:56.0567519Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0568112Z     [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+e2e	Run E2E tests	2025-12-23T06:48:56.0568850Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0569047Z       22 |   let testAttrId: string;
+e2e	Run E2E tests	2025-12-23T06:48:56.0569447Z       23 |   
+e2e	Run E2E tests	2025-12-23T06:48:56.0570016Z     > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	2025-12-23T06:48:56.0570599Z          |        ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0571069Z       25 |     // Sign in as admin
+e2e	Run E2E tests	2025-12-23T06:48:56.0571926Z       26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	2025-12-23T06:48:56.0572652Z       27 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0574401Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0576393Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0577025Z     Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	2025-12-23T06:48:56.0577547Z     Call log:
+e2e	Run E2E tests	2025-12-23T06:48:56.0578418Z     [2m  - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible[22m
+e2e	Run E2E tests	2025-12-23T06:48:56.0579022Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0579043Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0579235Z       31 |     // Wait for page to load
+e2e	Run E2E tests	2025-12-23T06:48:56.0580038Z       32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0581013Z     > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0581626Z          |                       ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0581988Z       34 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0582375Z       35 |     // Wait for New Attribute button
+e2e	Run E2E tests	2025-12-23T06:48:56.0583002Z       36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	2025-12-23T06:48:56.0583943Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0584572Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0585423Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0586670Z     test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium/test-failed-1.png
+e2e	Run E2E tests	2025-12-23T06:48:56.0587996Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0588455Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0589096Z     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0590229Z     test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium/video.webm
+e2e	Run E2E tests	2025-12-23T06:48:56.0591475Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0591925Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0592750Z     Error Context: test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium/error-context.md
+e2e	Run E2E tests	2025-12-23T06:48:56.0593637Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0594259Z     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0594708Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0595482Z     [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+e2e	Run E2E tests	2025-12-23T06:48:56.0596234Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0596439Z       22 |   let testAttrId: string;
+e2e	Run E2E tests	2025-12-23T06:48:56.0596863Z       23 |   
+e2e	Run E2E tests	2025-12-23T06:48:56.0597281Z     > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	2025-12-23T06:48:56.0597731Z          |        ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0598072Z       25 |     // Sign in as admin
+e2e	Run E2E tests	2025-12-23T06:48:56.0598759Z       26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	2025-12-23T06:48:56.0599401Z       27 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0600074Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0600678Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0600980Z     Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	2025-12-23T06:48:56.0601700Z     Call log:
+e2e	Run E2E tests	2025-12-23T06:48:56.0602552Z     [2m  - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible[22m
+e2e	Run E2E tests	2025-12-23T06:48:56.0603109Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0603119Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0603286Z       31 |     // Wait for page to load
+e2e	Run E2E tests	2025-12-23T06:48:56.0604037Z       32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0605183Z     > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	2025-12-23T06:48:56.0605823Z          |                       ^
+e2e	Run E2E tests	2025-12-23T06:48:56.0606186Z       34 |     
+e2e	Run E2E tests	2025-12-23T06:48:56.0606554Z       35 |     // Wait for New Attribute button
+e2e	Run E2E tests	2025-12-23T06:48:56.0607178Z       36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	2025-12-23T06:48:56.0608121Z         at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0608719Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0609387Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0610646Z     test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium-retry1/test-failed-1.png
+e2e	Run E2E tests	2025-12-23T06:48:56.0612039Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0612482Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0613086Z     attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0614282Z     test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium-retry1/video.webm
+e2e	Run E2E tests	2025-12-23T06:48:56.0615837Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0616281Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0617101Z     Error Context: test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium-retry1/error-context.md
+e2e	Run E2E tests	2025-12-23T06:48:56.0617992Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0618618Z     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0619822Z     test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium-retry1/trace.zip
+e2e	Run E2E tests	2025-12-23T06:48:56.0620694Z     Usage:
+e2e	Run E2E tests	2025-12-23T06:48:56.0620860Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0621698Z         npx playwright show-trace test-results/attribute-create-edit-Attr-92813-te-and-verify-PUT-200-smoke-chromium-retry1/trace.zip
+e2e	Run E2E tests	2025-12-23T06:48:56.0622596Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0623147Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	2025-12-23T06:48:56.0623593Z 
+e2e	Run E2E tests	2025-12-23T06:48:56.0623716Z   2 failed
+e2e	Run E2E tests	2025-12-23T06:48:56.0625066Z     [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	2025-12-23T06:48:56.0626886Z     [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	2025-12-23T06:48:56.0628030Z   2 passed (2.3m)
+e2e	Run E2E tests	2025-12-23T06:48:56.0641436Z ##[error]  1) [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+e2e	Run E2E tests	
+e2e	Run E2E tests	      22 |   let testAttrId: string;
+e2e	Run E2E tests	      23 |   
+e2e	Run E2E tests	    > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	         |        ^
+e2e	Run E2E tests	      25 |     // Sign in as admin
+e2e	Run E2E tests	      26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	      27 |     
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0655713Z ##[error]  1) [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	    Call log:
+e2e	Run E2E tests	      - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible
+e2e	Run E2E tests	
+e2e	Run E2E tests	
+e2e	Run E2E tests	      31 |     // Wait for page to load
+e2e	Run E2E tests	      32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	    > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	         |                       ^
+e2e	Run E2E tests	      34 |     
+e2e	Run E2E tests	      35 |     // Wait for New Attribute button
+e2e	Run E2E tests	      36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0668588Z ##[error]  1) [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	
+e2e	Run E2E tests	    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+e2e	Run E2E tests	
+e2e	Run E2E tests	      22 |   let testAttrId: string;
+e2e	Run E2E tests	      23 |   
+e2e	Run E2E tests	    > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	         |        ^
+e2e	Run E2E tests	      25 |     // Sign in as admin
+e2e	Run E2E tests	      26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	      27 |     
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0682425Z ##[error]  1) [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	
+e2e	Run E2E tests	    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	    Call log:
+e2e	Run E2E tests	      - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible
+e2e	Run E2E tests	
+e2e	Run E2E tests	
+e2e	Run E2E tests	      31 |     // Wait for page to load
+e2e	Run E2E tests	      32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	    > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	         |                       ^
+e2e	Run E2E tests	      34 |     
+e2e	Run E2E tests	      35 |     // Wait for New Attribute button
+e2e	Run E2E tests	      36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0694707Z ##[error]  2) [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+e2e	Run E2E tests	
+e2e	Run E2E tests	      22 |   let testAttrId: string;
+e2e	Run E2E tests	      23 |   
+e2e	Run E2E tests	    > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	         |        ^
+e2e	Run E2E tests	      25 |     // Sign in as admin
+e2e	Run E2E tests	      26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	      27 |     
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0707982Z ##[error]  2) [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	    Call log:
+e2e	Run E2E tests	      - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible
+e2e	Run E2E tests	
+e2e	Run E2E tests	
+e2e	Run E2E tests	      31 |     // Wait for page to load
+e2e	Run E2E tests	      32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	    > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	         |                       ^
+e2e	Run E2E tests	      34 |     
+e2e	Run E2E tests	      35 |     // Wait for New Attribute button
+e2e	Run E2E tests	      36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0720913Z ##[error]  2) [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	
+e2e	Run E2E tests	    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+e2e	Run E2E tests	
+e2e	Run E2E tests	      22 |   let testAttrId: string;
+e2e	Run E2E tests	      23 |   
+e2e	Run E2E tests	    > 24 |   test.beforeEach(async ({ page }) => {
+e2e	Run E2E tests	         |        ^
+e2e	Run E2E tests	      25 |     // Sign in as admin
+e2e	Run E2E tests	      26 |     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
+e2e	Run E2E tests	      27 |     
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:24:8
+e2e	Run E2E tests	2025-12-23T06:48:56.0736150Z ##[error]  2) [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	
+e2e	Run E2E tests	    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+e2e	Run E2E tests	    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+e2e	Run E2E tests	    Call log:
+e2e	Run E2E tests	      - waiting for getByRole('heading', { name: /attribute manager/i, level: 1 }) to be visible
+e2e	Run E2E tests	
+e2e	Run E2E tests	
+e2e	Run E2E tests	      31 |     // Wait for page to load
+e2e	Run E2E tests	      32 |     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
+e2e	Run E2E tests	    > 33 |     await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+e2e	Run E2E tests	         |                       ^
+e2e	Run E2E tests	      34 |     
+e2e	Run E2E tests	      35 |     // Wait for New Attribute button
+e2e	Run E2E tests	      36 |     const newBtn = page.getByTestId('new-attribute-button');
+e2e	Run E2E tests	        at /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/e2e/attribute-create-edit.spec.ts:33:23
+e2e	Run E2E tests	2025-12-23T06:48:56.0748065Z ##[notice]  2 failed
+e2e	Run E2E tests	    [chromium] › e2e/attribute-create-edit.spec.ts:85:3 › Attribute Create/Edit E2E › should create attribute with explicit ID and verify POST 201 @smoke 
+e2e	Run E2E tests	    [chromium] › e2e/attribute-create-edit.spec.ts:129:3 › Attribute Create/Edit E2E › should edit existing attribute and verify PUT 200 @smoke 
+e2e	Run E2E tests	  2 passed (2.3m)
+e2e	Run E2E tests	2025-12-23T06:48:56.0803300Z ##[error]Process completed with exit code 1.

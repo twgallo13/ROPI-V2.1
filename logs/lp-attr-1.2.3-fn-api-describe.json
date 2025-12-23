@@ -1,0 +1,38 @@
+{
+  "automaticUpdatePolicy": {},
+  "availableMemoryMb": 256,
+  "buildEnvironmentVariables": {
+    "GOOGLE_NODE_RUN_SCRIPTS": ""
+  },
+  "buildId": "d200337e-253c-4636-a83d-c463c84355b5",
+  "buildName": "projects/892791174441/locations/us-central1/builds/d200337e-253c-4636-a83d-c463c84355b5",
+  "buildServiceAccount": "projects/ropi-bccee/serviceAccounts/892791174441-compute@developer.gserviceaccount.com",
+  "dockerRegistry": "ARTIFACT_REGISTRY",
+  "entryPoint": "api",
+  "environmentVariables": {
+    "ATTRIBUTE_REGISTRY_GCS_BUCKET": "ropi-bccee-config",
+    "ATTRIBUTE_REGISTRY_GCS_KEY": "attributeRegistry.json",
+    "EVENTARC_CLOUD_EVENT_SOURCE": "projects/ropi-bccee/locations/us-central1/functions/api",
+    "FIREBASE_CONFIG": "{\"projectId\":\"ropi-bccee\",\"storageBucket\":\"ropi-bccee.firebasestorage.app\"}",
+    "GCLOUD_PROJECT": "ropi-bccee"
+  },
+  "httpsTrigger": {
+    "securityLevel": "SECURE_OPTIONAL",
+    "url": "https://us-central1-ropi-bccee.cloudfunctions.net/api"
+  },
+  "ingressSettings": "ALLOW_ALL",
+  "labels": {
+    "deployment-tool": "cli-firebase",
+    "firebase-functions-codebase": "api",
+    "firebase-functions-hash": "a71a079c784d90b614867f48d0193f671b48ca1a"
+  },
+  "name": "projects/ropi-bccee/locations/us-central1/functions/api",
+  "runtime": "nodejs20",
+  "satisfiesPzi": true,
+  "serviceAccountEmail": "ropi-bccee@appspot.gserviceaccount.com",
+  "sourceUploadUrl": "https://storage.googleapis.com/uploads-675256837627.us-central1.cloudfunctions.appspot.com/3089f0cc-dfb6-43ae-ba58-cefee57d7d1a.zip",
+  "status": "ACTIVE",
+  "timeout": "60s",
+  "updateTime": "2025-12-23T00:17:36.847Z",
+  "versionId": "14"
+}

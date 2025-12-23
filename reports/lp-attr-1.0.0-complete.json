@@ -1,0 +1,117 @@
+{
+  "lp": "LP-ATTR-1.0.0",
+  "phase": "ATTR",
+  "title": "Merge in-scope PRs & clear blockers",
+  "timestamp": "2025-12-22T12:00:00Z",
+  "executor": "Homer",
+  "status": "BLOCKED",
+  "merged_prs": [],
+  "merged_shas": {},
+  "ci_runs": [],
+  "smoke_logs": [],
+  "blockers": [
+    {
+      "pr": 333,
+      "title": "LP-1.2.2: Fix attribute registry packaging + GCS fallback",
+      "branch": "lp-1.2.2/fix-registry-packaging",
+      "state": "OPEN",
+      "mergeable": true,
+      "issues": [
+        {
+          "type": "CI_FAILURE",
+          "name": "enforce-lp-id",
+          "reason": "PR title must include Phase-Scoped LP ID in brackets format [LP-<PHASE_KEY>-X.Y.Z]. Current title: 'LP-1.2.2: Fix attribute registry packaging + GCS fallback'",
+          "resolution": "Update PR title to format: '[LP-ATTR-1.2.2] Fix attribute registry packaging + GCS fallback' and add label 'lp:ATTR-1.2.2'"
+        },
+        {
+          "type": "CI_FAILURE",
+          "name": "API Tests with Firebase Emulator",
+          "reason": "42 failed tests in syncAttributeRegistry.emu.spec.ts - Attribute not found errors",
+          "resolution": "Tests require emulator setup with registry attributes. May need to seed emulator or skip registry tests."
+        }
+      ],
+      "coderabbit": {
+        "status": "SUCCESS",
+        "blocking_comments": false,
+        "summary": "Rate limited during review, walkthrough posted. Nitpick suggestions: extract predeploy script to separate file, validate GCS_KEY format."
+      },
+      "passing_checks": ["preview", "check", "e2e", "SDK Unit Tests"]
+    },
+    {
+      "pr": 318,
+      "title": "LP-2.1.3: Attribute Usage Audit — 28 candidates for deletion",
+      "branch": "lp/2.1.3-attribute-audit",
+      "state": "OPEN",
+      "mergeable": true,
+      "issues": [
+        {
+          "type": "CI_FAILURE",
+          "name": "validate (LP ID governance)",
+          "reason": "PR title format does not match expected [LP-<PHASE_KEY>-X.Y.Z] pattern",
+          "resolution": "Update PR title to format: '[LP-ATTR-2.1.3] Attribute Usage Audit — 28 candidates for deletion' and add label 'lp:ATTR-2.1.3'"
+        },
+        {
+          "type": "CI_FAILURE",
+          "name": "API Tests with Firebase Emulator",
+          "reason": "Test failures in integration tests",
+          "resolution": "Address test failures or verify they are unrelated to PR changes"
+        }
+      ],
+      "coderabbit": {
+        "status": "SUCCESS",
+        "blocking_comments": false,
+        "summary": "Actionable comments posted: 3 major, 5 nitpick. Suggestions include: fail-fast on registry load error, add error handling for Firestore queries, CSV escaping."
+      },
+      "passing_checks": ["preview", "check", "SDK Unit Tests"]
+    },
+    {
+      "pr": 322,
+      "title": "[PVS-0.4.0] LP-2.1.7 — migrateProductsToAttributes & normalizeProductAttributeValues: per-key updates + attributes._meta provenance",
+      "branch": "lp/2.1.7-migration-per-key-meta",
+      "state": "OPEN",
+      "mergeable": true,
+      "issues": [
+        {
+          "type": "DRAFT_STATE",
+          "reason": "PR is in Draft state - needs to be marked Ready for Review",
+          "resolution": "Mark PR as ready for review using 'gh pr ready 322'"
+        },
+        {
+          "type": "CI_FAILURE", 
+          "name": "API Tests with Firebase Emulator",
+          "reason": "Test failures in integration tests",
+          "resolution": "Address test failures or verify they are unrelated to PR changes"
+        }
+      ],
+      "coderabbit": {
+        "status": "SKIPPED",
+        "blocking_comments": false,
+        "summary": "Review skipped due to Draft status. Awaiting Lisa sign-off before merge."
+      },
+      "passing_checks": ["preview", "check", "validate", "SDK Unit Tests"]
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": 1,
+      "action": "Fix PR title formats for PRs #333 and #318 to match governance requirements [LP-ATTR-X.Y.Z]",
+      "rationale": "LP ID governance check is a required CI check that blocks merges"
+    },
+    {
+      "priority": 2,
+      "action": "Mark PR #322 as Ready for Review",
+      "rationale": "PR is in Draft state which prevents CodeRabbit review and merge"
+    },
+    {
+      "priority": 3,
+      "action": "Investigate API Tests failures",
+      "rationale": "All 3 PRs have failing API tests - may be systemic issue or flaky tests"
+    },
+    {
+      "priority": 4,
+      "action": "Re-run CI after fixes",
+      "rationale": "Once title/label issues resolved, CI needs to pass before merge"
+    }
+  ],
+  "notes": "Cannot proceed with merges until CI blockers are resolved. The LP ID governance check requires specific title format [LP-<PHASE_KEY>-X.Y.Z] with matching label lp:<PHASE_KEY>-X.Y.Z. Current titles use legacy format without brackets and without phase key prefix."
+}

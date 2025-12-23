@@ -1,0 +1,42 @@
+{
+  "insertId": "694a4e970004c358c8eb9ab4",
+  "labels": {
+    "execution_id": "ay044wj2th7f",
+    "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+    "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+  },
+  "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+  "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+  "resource": {
+    "labels": {
+      "function_name": "api",
+      "project_id": "ropi-bccee",
+      "region": "us-central1"
+    },
+    "type": "cloud_function"
+  },
+  "textPayload": "Failed to create audit event for attribute lp337_smoke_20251223t081041z update: Error: Value for argument \"data\" is not a valid Firestore document. Cannot use \"undefined\" as a Firestore value (found in field \"reason\"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.",
+  "timestamp": "2025-12-23T08:11:03.312152Z",
+  "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+}
+{
+  "insertId": "694a4e8400097f5115bb3be6",
+  "labels": {
+    "execution_id": "ay04ssnrtwvn",
+    "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+    "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+  },
+  "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+  "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+  "resource": {
+    "labels": {
+      "function_name": "api",
+      "project_id": "ropi-bccee",
+      "region": "us-central1"
+    },
+    "type": "cloud_function"
+  },
+  "textPayload": "Failed to create audit event for attribute lp337_smoke_20251223t081041z: Error: Value for argument \"data\" is not a valid Firestore document. Cannot use \"undefined\" as a Firestore value (found in field \"reason\"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.",
+  "timestamp": "2025-12-23T08:10:44.622417Z",
+  "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+}

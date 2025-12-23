@@ -1,0 +1,21 @@
+HTTP/2 201 
+cache-control: private
+content-type: application/json; charset=utf-8
+etag: W/"17e-iWLtTxflhatqlcd+57Ovwrqv1PA"
+server: Google Frontend
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+traceparent: 00-da85c84fd19983878fb16bab4cd2a967-fdcdbf0153e59901-01
+x-cloud-trace-context: da85c84fd19983878fb16bab4cd2a967/18288483674244880641;o=1
+x-country-code: US
+x-powered-by: Express
+accept-ranges: bytes
+date: Tue, 23 Dec 2025 07:49:23 GMT
+x-served-by: cache-bur-kbur8200021-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766476163.166936,VS0,VE420
+vary: Origin,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 382
+
+{"attribute_id":"lp_diag_20251223074923","label":"LP Diag Test 20251223074923","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","source":"json","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-23T07:49:23.497Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-23T07:49:23.497Z"}

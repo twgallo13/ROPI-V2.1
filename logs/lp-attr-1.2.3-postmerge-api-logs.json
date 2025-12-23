@@ -1,0 +1,674 @@
+[
+  {
+    "insertId": "am9qgf8wosy5",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution took 359 ms, finished with status code: 200",
+    "timestamp": "2025-12-23T08:11:03.313651052Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c3969e4eafa2",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at ProxyTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)",
+    "timestamp": "2025-12-23T08:11:03.312214Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c392a5e1e6dd",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at NoopTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)",
+    "timestamp": "2025-12-23T08:11:03.312210Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c38ce275b3c7",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at ContextAPI.with (/workspace/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)",
+    "timestamp": "2025-12-23T08:11:03.312204Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c38726022f15",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at NoopContextManager.with (/workspace/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)",
+    "timestamp": "2025-12-23T08:11:03.312199Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c3822563d469",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at /workspace/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30",
+    "timestamp": "2025-12-23T08:11:03.312194Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c37e2d5b776c",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at /workspace/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:348:41",
+    "timestamp": "2025-12-23T08:11:03.312190Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c3799d992ea8",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at WriteBatch.set (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)",
+    "timestamp": "2025-12-23T08:11:03.312185Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c3757a2cc2c8",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at validateDocumentData (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)",
+    "timestamp": "2025-12-23T08:11:03.312181Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c370fca290d9",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)",
+    "timestamp": "2025-12-23T08:11:03.312176Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c36bab5468bc",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)",
+    "timestamp": "2025-12-23T08:11:03.312171Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "694a4e970004c358c8eb9ab4",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:03.624050114Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "Failed to create audit event for attribute lp337_smoke_20251223t081041z update: Error: Value for argument \"data\" is not a valid Firestore document. Cannot use \"undefined\" as a Firestore value (found in field \"reason\"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.",
+    "timestamp": "2025-12-23T08:11:03.312152Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "4rugztf8jcumi",
+    "labels": {
+      "execution_id": "ay044wj2th7f",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:11:02.960809769Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution started",
+    "timestamp": "2025-12-23T08:11:02.953917593Z",
+    "trace": "projects/ropi-bccee/traces/2f51df16cb3f05c449b1987891b53ca7"
+  },
+  {
+    "insertId": "1u3fuycfd2lc1l",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution took 2654 ms, finished with status code: 201",
+    "timestamp": "2025-12-23T08:10:44.624051664Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f9d99d13da4",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at ProxyTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24)",
+    "timestamp": "2025-12-23T08:10:44.622493Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f96c38f5b17",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at NoopTracer.startActiveSpan (/workspace/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)",
+    "timestamp": "2025-12-23T08:10:44.622486Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f8f1eb0291f",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at ContextAPI.with (/workspace/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)",
+    "timestamp": "2025-12-23T08:10:44.622479Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f8a87833b5a",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at NoopContextManager.with (/workspace/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)",
+    "timestamp": "2025-12-23T08:10:44.622474Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f85f6bdbb59",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at /workspace/node_modules/@google-cloud/firestore/build/src/telemetry/enabled-trace-util.js:110:30",
+    "timestamp": "2025-12-23T08:10:44.622469Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f802f03404f",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at /workspace/node_modules/@google-cloud/firestore/build/src/reference/document-reference.js:348:41",
+    "timestamp": "2025-12-23T08:10:44.622464Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f7aae53a6d9",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at WriteBatch.set (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:263:9)",
+    "timestamp": "2025-12-23T08:10:44.622458Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f742c719c43",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at validateDocumentData (/workspace/node_modules/@google-cloud/firestore/build/src/write-batch.js:609:40)",
+    "timestamp": "2025-12-23T08:10:44.622452Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f6fb7d82998",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:375:13)",
+    "timestamp": "2025-12-23T08:10:44.622447Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f688baac081",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "    at validateUserInput (/workspace/node_modules/@google-cloud/firestore/build/src/serializer.js:383:19)",
+    "timestamp": "2025-12-23T08:10:44.622440Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "694a4e8400097f5115bb3be6",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "instance_id": "0007e26d68909ddf1b64c6bbfe7af1d58bd8e95b1184082e643fb410fbf75857adc6cb033a20e9cb5799fd54aa635dd217644a1b8089c26834dbf83c8a3621b095bb4c1a526387b0d195b7c49e3b",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:44.694495365Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "textPayload": "Failed to create audit event for attribute lp337_smoke_20251223t081041z: Error: Value for argument \"data\" is not a valid Firestore document. Cannot use \"undefined\" as a Firestore value (found in field \"reason\"). If you want to ignore undefined values, enable `ignoreUndefinedProperties`.",
+    "timestamp": "2025-12-23T08:10:44.622417Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "c8xe62ffwidyw",
+    "labels": {
+      "execution_id": "ay04ssnrtwvn",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:42.032232377Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution started",
+    "timestamp": "2025-12-23T08:10:41.969741111Z",
+    "trace": "projects/ropi-bccee/traces/dfdbdc002e72db632cd2f14cab11d6d9"
+  },
+  {
+    "insertId": "1ojdevjf6s2bcc",
+    "labels": {
+      "execution_id": "ay04saqdmyjy",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:35.036333866Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution took 359 ms, finished with status code: 400",
+    "timestamp": "2025-12-23T08:10:34.725063153Z",
+    "trace": "projects/ropi-bccee/traces/6c5e2c50449054abb7700210cd8f464f"
+  },
+  {
+    "insertId": "1xnndwxf6wq0mb",
+    "labels": {
+      "execution_id": "ay04saqdmyjy",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:34.368905366Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution started",
+    "timestamp": "2025-12-23T08:10:34.365079959Z",
+    "trace": "projects/ropi-bccee/traces/6c5e2c50449054abb7700210cd8f464f"
+  },
+  {
+    "insertId": "tpf5wuf9gimu6",
+    "labels": {
+      "execution_id": "ay04h2pyvsdw",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:05.151804081Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution took 105 ms, finished with status code: 404",
+    "timestamp": "2025-12-23T08:10:04.917642276Z",
+    "trace": "projects/ropi-bccee/traces/d605270cb597c0ffb731f50f1c2e0291"
+  },
+  {
+    "insertId": "1r0hx9bf7x6qa7",
+    "labels": {
+      "execution_id": "ay04h2pyvsdw",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:10:04.818709746Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution started",
+    "timestamp": "2025-12-23T08:10:04.812302433Z",
+    "trace": "projects/ropi-bccee/traces/d605270cb597c0ffb731f50f1c2e0291"
+  },
+  {
+    "insertId": "1p2ype9f8ihtxm",
+    "labels": {
+      "execution_id": "ay047hz1720a",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:09:39.982860061Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution took 108 ms, finished with status code: 404",
+    "timestamp": "2025-12-23T08:09:39.750523514Z",
+    "trace": "projects/ropi-bccee/traces/8a081a2f89064a4194cb809d2e455054"
+  },
+  {
+    "insertId": "16snwtef8kdpyv",
+    "labels": {
+      "execution_id": "ay047hz1720a",
+      "runtime_version": "nodejs20_20251207_20_19_5_RC00"
+    },
+    "logName": "projects/ropi-bccee/logs/cloudfunctions.googleapis.com%2Fcloud-functions",
+    "receiveTimestamp": "2025-12-23T08:09:39.649775797Z",
+    "resource": {
+      "labels": {
+        "function_name": "api",
+        "project_id": "ropi-bccee",
+        "region": "us-central1"
+      },
+      "type": "cloud_function"
+    },
+    "severity": "DEBUG",
+    "textPayload": "Function execution started",
+    "timestamp": "2025-12-23T08:09:39.642411082Z",
+    "trace": "projects/ropi-bccee/traces/8a081a2f89064a4194cb809d2e455054"
+  }
+]

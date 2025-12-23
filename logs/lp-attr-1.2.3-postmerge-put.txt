@@ -1,0 +1,13 @@
+HTTP/2 200 
+x-powered-by: Express
+vary: Origin
+content-type: application/json; charset=utf-8
+etag: W/"193-iG20soYRqC5ppjTmeUheJjty94I"
+function-execution-id: ay044wj2th7f
+x-cloud-trace-context: 2f51df16cb3f05c449b1987891b53ca7;o=1
+date: Tue, 23 Dec 2025 08:11:03 GMT
+server: Google Frontend
+content-length: 403
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+{"ok":true,"attribute":{"attribute_id":"lp337_smoke_20251223t081041z","label":"lp337_smoke_edited","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","source":"json","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-23T08:10:41.978Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-23T08:11:03.216Z"}}

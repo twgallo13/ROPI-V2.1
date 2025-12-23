@@ -1,0 +1,2060 @@
+
+> @ropi-aoss/web@1.0.0 test /workspaces/ROPI-V2.1/packages/web
+> vitest -- --run test/ValuesManager.noSaveButton.test.tsx
+
+
+ DEV  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should handle 401 unauthorized error
+[useProducts] Fetch error: Error: Unauthorized. Please sign in again.
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useProducts.ts:187:17
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should handle 403 forbidden error
+[useProducts] Fetch error: Error: You do not have permission to view products.
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useProducts.ts:190:17
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should handle network errors
+[useProducts] Fetch error: Error: Network error
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/__tests__/useProducts.spec.ts:218:37
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+
+stderr | test/unit/AttributeConsole.shell.spec.tsx > AttributesConsole Shell > Data Type Conversion (PVS-0.2.7) > does not show conversion modal for existing enum attributes
+Warning: An update to AttributesConsole inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AttributesConsole (/workspaces/ROPI-V2.1/packages/web/src/pages/Settings/AttributesConsole.tsx:655:61)
+Warning: An update to AttributesConsole inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at AttributesConsole (/workspaces/ROPI-V2.1/packages/web/src/pages/Settings/AttributesConsole.tsx:655:61)
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should debounce search input with default 300ms
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+ ✓ test/unit/AttributeConsole.shell.spec.tsx  (22 tests) 586ms
+ ✓ src/hooks/__tests__/useProducts.spec.ts  (18 tests) 1451ms
+ ✓ test/unit/ValuesManager.spec.tsx  (20 tests) 1294ms
+ ✓ test/unit/MobileObservationCapture.spec.tsx  (13 tests) 1397ms
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should fetch users list
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should handle fetch errors
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+ ✓ test/FieldPicker.test.tsx  (18 tests) 1035ms
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > createUser > should handle creation errors
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+ ✓ test/normalizeFieldLink.test.ts  (43 tests) 13ms
+stderr | src/services/observations.test.ts > Observations Service - localStorage fallback > should handle errors gracefully when localStorage is full
+Failed to save observations to localStorage: Error: QuotaExceededError
+    at Proxy.<anonymous> (/workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:248:13)
+    at Proxy.mockCall (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+spy@1.6.1/node_modules/@vitest/spy/dist/index.js:50:17)
+    at Proxy.spy (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/tinyspy@2.2.1/node_modules/tinyspy/dist/index.js:42:80)
+    at saveToLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:188:18)
+    at Module.addObservation (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:327:3)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:260:31
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+
+stderr | src/services/observations.test.ts > Observations Service - Edge Cases > should handle corrupted localStorage data
+Failed to load observations from localStorage: SyntaxError: Unexpected token 'i', "invalid json {{{" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at loadFromLocalStorage (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:164:31)
+    at Module.listObservations (/workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:265:10)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.test.ts:286:32
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+
+ ✓ src/services/observations.test.ts  (12 tests) 75ms
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+stderr | src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+Failed to fetch users: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:123:24
+Failed to fetch roles: Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+    at Module.apiFetch [as default] (/workspaces/ROPI-V2.1/packages/web/src/lib/apiFetch.ts:49:13)
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useUsers.ts:289:24
+
+ ✓ test/unit/ErrorHandling.spec.tsx  (17 tests) 289ms
+ ❯ src/hooks/useUsers.test.ts  (9 tests | 7 failed) 4342ms
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should fetch users list
+     → expected [] to have a length of 1 but got +0
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+     → expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+     → Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+     → expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+     → expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+     → Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+   ❯ src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+     → expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ✓ src/components/__tests__/MappingTab.guard.spec.tsx  (6 tests) 488ms
+stderr | src/hooks/__tests__/useMappings.spec.ts > useMappings > fetchGlobalMapping > should handle fetch error
+fetchGlobalMapping error: HTTP 401: {"error":"Unauthorized"}
+
+ ✓ src/hooks/__tests__/useMappings.spec.ts  (7 tests) 44ms
+ ✓ test/unit/FieldPickerGroups.spec.tsx  (12 tests) 600ms
+ ✓ test/unit/AttributeHeader.spec.tsx  (20 tests) 111ms
+ ✓ test/unit/CoreInformationTabDataField.spec.tsx  (15 tests) 255ms
+stderr | test/unit/CoreInformationTabDataField.spec.tsx > CoreInformationTab data-field attributes (LP-1.0.2) > Identification section > SKU input has correct data-field and name attributes
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | test/unit/AttributeInputDataField.spec.tsx > AttributeInput data-field attributes (LP-1.0.2) > renders enum input with correct data-field attribute
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/unit/AttributeInputDataField.spec.tsx  (10 tests) 161ms
+ ✓ src/components/__tests__/SynonymsEditor.spec.tsx  (13 tests) 754ms
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+Error fetching attributes: Cannot read properties of undefined (reading 'get')
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:193:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:193:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+Error fetching attributes: res.text is not a function
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:193:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+Error fetching attributes: res.text is not a function
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:193:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+Error fetching attributes: res.text is not a function
+
+ ❯ test/useAttributes.test.tsx  (6 tests | 6 failed) 371ms
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+     → expected [] to deeply equal [ …(2) ]
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+     → expected 'Cannot read properties of undefined (…' to be 'Server error' // Object.is equality
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+     → expected "spy" to be called with arguments: [ …(2) ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   "/admin/settings/attributes/color",
++   "/api/admin/settings/attributes",
+    Object {
+-     "body": "{\"label\":\"Primary Color\"}",
+-     "headers": Object {
+-       "Content-Type": "application/json",
+-     },
+-     "method": "PUT",
++     "credentials": "include",
++     "headers": undefined,
++     "method": "GET",
+    },
+  ]
+
+  2nd spy call:
+
+  Array [
+-   "/admin/settings/attributes/color",
++   "/api/admin/settings/attributes/color",
+    Object {
+      "body": "{\"label\":\"Primary Color\"}",
+-     "headers": Object {
+-       "Content-Type": "application/json",
+-     },
++     "credentials": "include",
++     "headers": undefined,
+      "method": "PUT",
+    },
+  ]
+
+  3rd spy call:
+
+  Array [
+-   "/admin/settings/attributes/color",
++   "/api/admin/settings/attributes",
+    Object {
+-     "body": "{\"label\":\"Primary Color\"}",
+-     "headers": Object {
+-       "Content-Type": "application/json",
+-     },
+-     "method": "PUT",
++     "credentials": "include",
++     "headers": undefined,
++     "method": "GET",
+    },
+  ]
+
+
+Number of calls: 3
+
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+     → res.text is not a function
+     → unsubscribe is not a function
+   ❯ test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+     → unsubscribe is not a function
+stderr | test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+TypeError: unsubscribe is not a function
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useAttributes.ts:193:18
+    at safelyCallDestroy (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5)
+    at commitHookEffectListUnmount (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11)
+    at commitPassiveUnmountInsideDeletedTreeOnFiber (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11)
+    at commitPassiveUnmountEffectsInsideOfDeletedTree_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5)
+    at commitPassiveUnmountEffects_begin (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11)
+    at commitPassiveUnmountEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3)
+    at flushPassiveEffectsImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3)
+    at flushPassiveEffects (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+    at commitRootImpl (/workspaces/ROPI-V2.1/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+The above error occurred in the <TestComponent> component:
+
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+ ✓ test/AttributeManager.saveError.test.tsx  (5 tests) 484ms
+ ❯ test/unit/MobileMPNScanner.spec.tsx  (6 tests | 5 failed) 129ms
+   ❯ test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should send Authorization header when looking up product
+     → Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ❯ test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 401 error with appropriate message
+     → Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ❯ test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 404 error with not found message
+     → Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ❯ test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should call onProductFound when product is found
+     → Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ❯ test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > UI Interactions > should switch between scan and manual modes
+     → Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+stderr | test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should send Authorization header when looking up product
+Camera error: Error: Camera not available
+    at /workspaces/ROPI-V2.1/packages/web/test/unit/MobileMPNScanner.spec.tsx:38:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:59
+    at Array.map (<anonymous>)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:47)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:694:10)
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:774:30)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+
+stderr | test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 401 error with appropriate message
+Camera error: Error: Camera not available
+    at /workspaces/ROPI-V2.1/packages/web/test/unit/MobileMPNScanner.spec.tsx:38:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:59
+    at Array.map (<anonymous>)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:47)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:694:10)
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:774:30)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+
+stderr | test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 404 error with not found message
+Camera error: Error: Camera not available
+    at /workspaces/ROPI-V2.1/packages/web/test/unit/MobileMPNScanner.spec.tsx:38:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:59
+    at Array.map (<anonymous>)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:47)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:694:10)
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:774:30)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+
+stderr | test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should call onProductFound when product is found
+Camera error: Error: Camera not available
+    at /workspaces/ROPI-V2.1/packages/web/test/unit/MobileMPNScanner.spec.tsx:38:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:59
+    at Array.map (<anonymous>)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:47)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:694:10)
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:774:30)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+
+stderr | test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > UI Interactions > should switch between scan and manual modes
+Camera error: Error: Camera not available
+    at /workspaces/ROPI-V2.1/packages/web/test/unit/MobileMPNScanner.spec.tsx:38:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:59
+    at Array.map (<anonymous>)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:47)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:694:10)
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:774:30)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+
+stderr | test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > UI Interactions > should call onClose when cancel button is clicked
+Camera error: Error: Camera not available
+    at /workspaces/ROPI-V2.1/packages/web/test/unit/MobileMPNScanner.spec.tsx:38:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:59
+    at Array.map (<anonymous>)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:700:47)
+    at callSuiteHook (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:694:10)
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:774:30)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+Warning: An update to MobileMPNScanner inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at MobileMPNScanner (/workspaces/ROPI-V2.1/packages/web/src/components/observations/MobileMPNScanner.tsx:18:3)
+
+ ✓ test/unit/ObservationsSync.spec.ts  (8 tests) 25ms
+ ✓ src/components/__tests__/RevertModal.spec.tsx  (18 tests) 1467ms
+stderr | src/hooks/__tests__/useAudit.spec.ts > useAudit > fetchEvents > should handle fetch error
+fetchEvents error: Server error
+
+stderr | src/hooks/__tests__/useAudit.spec.ts > useAudit > revertToEvent > should handle revert error
+revertToEvent error: Cannot revert
+
+ ✓ src/hooks/__tests__/useAudit.spec.ts  (8 tests) 40ms
+stdout | src/firebaseConfig.ts:40:11
+✅ Firebase initialized successfully
+
+stderr | test/ImportBatchDetailPage.test.tsx > ImportBatchDetailPage > should render commit counters
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/ImportBatchDetailPage.test.tsx  (5 tests) 206ms
+ ✓ test/ProductHeader.missingOverall.test.tsx  (9 tests) 85ms
+ ✓ src/components/__tests__/AuditTimeline.spec.tsx  (15 tests) 343ms
+ ✓ test/apiFetch.test.ts  (11 tests) 12ms
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should load mock product data
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should update a product field
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should update a product field
+<empty line>
+stderr | src/hooks/useProduct.test.ts > useProduct hook > should update a product field
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should add an observation
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should resolve an observation
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should apply a suggestion
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should ignore a suggestion
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should recalculate export readiness when fields are updated
+[useProduct] Loading product 123, Firebase available: false
+
+stdout | src/hooks/useProduct.test.ts > useProduct hook > should persist to localStorage
+[useProduct] Loading product 123, Firebase available: false
+
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 63ms
+ ❯ src/components/product/ProductAttributesTab.test.tsx  (4 tests | 1 failed) 60ms
+   ❯ src/components/product/ProductAttributesTab.test.tsx > ProductAttributesTab - Attribute Format Compatibility > should handle missing attributes gracefully
+     → expected 'Women' to be '' // Object.is equality
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestExecutor.cachedRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:189:14)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:233:12)
+    at /workspaces/ROPI-V2.1/packages/web/src/contexts/AuthProvider.tsx:5:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+ ✓ src/components/__tests__/BulkAliasImportModal.spec.tsx  (11 tests) 1105ms
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should initialize with no user
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should expose resendVerificationEmail function
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | test/auth.customClaims.test.tsx > AuthProvider with Custom Claims > should have correct interface shape
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 28ms
+ ✓ test/unit/ProductSearchMpn.spec.ts  (6 tests) 7ms
+ ✓ test/ProductEditor.missingOverall.test.tsx  (4 tests) 175ms
+ ✓ src/components/__tests__/DiffViewer.spec.tsx  (13 tests) 132ms
+ ✓ test/ValuesManager.noSaveButton.test.tsx  (5 tests) 83ms
+ ✓ test/envPolicy.test.ts  (19 tests) 14ms
+ ✓ test/smoke.observations.test.tsx  (4 tests) 6ms
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+ ❯ test/smoke.product-editor-observations.test.tsx  (1 test | 1 failed) 51ms
+   ❯ test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+     → Unable to find an element with the text: Test Product. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"product-editor-error"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mNo product ID in URL[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [0mPlease use /products/:id[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mBack to Products[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+stdout | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+[ProductEditorPage] Product ID from URL: undefined
+
+stderr | test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/firebaseConfig.ts:42:11
+❌ Firebase initialization failed: Error: [vitest] No "getFirestore" export is defined on the "firebase/firestore" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at /workspaces/ROPI-V2.1/packages/web/src/firebaseConfig.ts:37:8
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5)
+    at VitestMocker.requestWithMock (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:338:19)
+    at VitestExecutor.dependencyRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:576:20)
+    at /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts:3:31
+    at VitestExecutor.runModule (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:362:5)
+    at VitestExecutor.directRequest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vite-node@1.6.1_@types+node@18.19.130/node_modules/vite-node/dist/client.mjs:346:5) {
+  codeFrame: 'vi.mock("firebase/firestore", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | src/firebaseConfig.ts:43:11
+⚠️ Running in offline mode - using localStorage fallback
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > renders with basic structure
+⚠️ Firebase Auth not available, running without authentication
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > calls listenToObservations on mount
+⚠️ Firebase Auth not available, running without authentication
+
+stderr | src/components/product/ObservationsPanel.test.tsx > ObservationsPanel - Smoke Tests > shows offline banner when Firebase unavailable
+⚠️ Firebase Auth not available, running without authentication
+
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 58ms
+stderr | test/unit/ObservationsPage.spec.tsx > ObservationsPage > Page rendering > renders the observations page
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ test/unit/ObservationsPage.spec.tsx  (6 tests) 140ms
+ ❯ test/nav.test.ts  (4 tests | 2 failed) 10ms
+   ❯ test/nav.test.ts > Navigation Configuration > should have all required main navigation items
+     → expected 8 to be 9 // Object.is equality
+   ❯ test/nav.test.ts > Navigation Configuration > should have all required settings sub-navigation items
+     → expected 10 to be 9 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/nav.test.ts > Navigation Configuration > should have all required main navigation items
+AssertionError: expected 8 to be 9 // Object.is equality
+
+- Expected
++ Received
+
+- 9
++ 8
+
+ ❯ test/nav.test.ts:7:37
+      5|   it('should have all required main navigation items', () => {
+      6|     expect(navigationConfig).toBeDefined();
+      7|     expect(navigationConfig.length).toBe(9);
+       |                                     ^
+      8|     
+      9|     const navIds = navigationConfig.map(item => item.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/26]⎯
+
+ FAIL  test/nav.test.ts > Navigation Configuration > should have all required settings sub-navigation items
+AssertionError: expected 10 to be 9 // Object.is equality
+
+- Expected
++ Received
+
+- 9
++ 10
+
+ ❯ test/nav.test.ts:32:38
+     30|   it('should have all required settings sub-navigation items', () => {
+     31|     expect(settingsNavConfig).toBeDefined();
+     32|     expect(settingsNavConfig.length).toBe(9);
+       |                                      ^
+     33|     
+     34|     const settingsIds = settingsNavConfig.map(item => item.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/26]⎯
+
+ FAIL  test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+TestingLibraryElementError: Unable to find an element with the text: Test Product. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"product-editor-error"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mNo product ID in URL[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [0mPlease use /products/:id[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mBack to Products[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ test/smoke.product-editor-observations.test.tsx:108:19
+    106| 
+    107|     // Verify main UI sections render
+    108|     expect(screen.getByText('Test Product')).toBeInTheDocument();
+       |                   ^
+    109|     expect(screen.getAllByText('Core Information').length).toBeGreater…
+    110|     expect(screen.getByText('Observations')).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/26]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+AssertionError: expected [] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+- Array [
+-   Object {
+-     "attribute_id": "color",
+-     "data_type": "enum",
+-     "label": "Color",
+-   },
+-   Object {
+-     "attribute_id": "size",
+-     "data_type": "string",
+-     "label": "Size",
+-   },
+- ]
++ Array []
+
+ ❯ test/useAttributes.test.tsx:74:39
+     72|     });
+     73| 
+     74|     expect(result.current.attributes).toEqual(mockAttributes);
+       |                                       ^
+     75|     expect(result.current.error).toBeNull();
+     76|     expect(mockFetch).toHaveBeenCalledWith('/admin/settings/attributes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/26]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+AssertionError: expected 'Cannot read properties of undefined (…' to be 'Server error' // Object.is equality
+
+- Expected
++ Received
+
+- Server error
++ Cannot read properties of undefined (reading 'get')
+
+ ❯ test/useAttributes.test.tsx:94:34
+     92|     });
+     93| 
+     94|     expect(result.current.error).toBe('Server error');
+       |                                  ^
+     95|     expect(result.current.attributes).toEqual([]);
+     96|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/26]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+TypeError: unsubscribe is not a function
+ ❯ src/hooks/useAttributes.ts:193:18
+    191|       }
+    192|     });
+    193|     return () => unsubscribe();
+       |                  ^
+    194|   }, [fetchAttributes]);
+    195| 
+ ❯ safelyCallDestroy ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22971:5
+ ❯ commitHookEffectListUnmount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23139:11
+ ❯ commitPassiveUnmountInsideDeletedTreeOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25140:11
+ ❯ commitPassiveUnmountEffectsInsideOfDeletedTree_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:25087:5
+ ❯ commitPassiveUnmountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24995:11
+ ❯ commitPassiveUnmountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24980:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27077:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ commitRootImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26974:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/26]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+TypeError: res.text is not a function
+ ❯ fetchJSON src/hooks/useAttributes.ts:82:26
+     80| async function fetchJSON<T>(url: string, options?: RequestInit): Promi…
+     81|   const res = await fetch(url, options);
+     82|   const text = await res.text();
+       |                          ^
+     83|   const contentType = res.headers.get('content-type') || '';
+     84| 
+ ❯ Object.createAttribute src/hooks/useAttributes.ts:205:21
+ ❯ test/useAttributes.test.tsx:130:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/26]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+AssertionError: expected "spy" to be called with arguments: [ …(2) ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   "/admin/settings/attributes/color",
++   "/api/admin/settings/attributes",
+    Object {
+-     "body": "{\"label\":\"Primary Color\"}",
+-     "headers": Object {
+-       "Content-Type": "application/json",
+-     },
+-     "method": "PUT",
++     "credentials": "include",
++     "headers": undefined,
++     "method": "GET",
+    },
+  ]
+
+  2nd spy call:
+
+  Array [
+-   "/admin/settings/attributes/color",
++   "/api/admin/settings/attributes/color",
+    Object {
+      "body": "{\"label\":\"Primary Color\"}",
+-     "headers": Object {
+-       "Content-Type": "application/json",
+-     },
++     "credentials": "include",
++     "headers": undefined,
+      "method": "PUT",
+    },
+  ]
+
+  3rd spy call:
+
+  Array [
+-   "/admin/settings/attributes/color",
++   "/api/admin/settings/attributes",
+    Object {
+-     "body": "{\"label\":\"Primary Color\"}",
+-     "headers": Object {
+-       "Content-Type": "application/json",
+-     },
+-     "method": "PUT",
++     "credentials": "include",
++     "headers": undefined,
++     "method": "GET",
+    },
+  ]
+
+
+Number of calls: 3
+
+ ❯ test/useAttributes.test.tsx:175:23
+    173|     });
+    174| 
+    175|     expect(mockFetch).toHaveBeenCalledWith('/admin/settings/attributes…
+       |                       ^
+    176|       method: 'PUT',
+    177|       headers: { 'Content-Type': 'application/json' },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/26]⎯
+
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+TypeError: res.text is not a function
+ ❯ fetchJSON src/hooks/useAttributes.ts:82:26
+     80| async function fetchJSON<T>(url: string, options?: RequestInit): Promi…
+     81|   const res = await fetch(url, options);
+     82|   const text = await res.text();
+       |                          ^
+     83|   const contentType = res.headers.get('content-type') || '';
+     84| 
+ ❯ Object.deleteAttribute src/hooks/useAttributes.ts:298:7
+ ❯ test/useAttributes.test.tsx:211:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should fetch users list
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:75:36
+     73|       });
+     74| 
+     75|       expect(result.current.users).toHaveLength(1);
+       |                                    ^
+     76|       expect(result.current.users[0].email).toBe('user1@test.com');
+     77|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+AssertionError: expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:111:38
+    109| 
+    110|       await waitFor(() => {
+    111|         expect(result.current.users).toHaveLength(1);
+       |                                      ^
+    112|       });
+    113| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+ ❯ Module.apiFetch [as default] src/lib/apiFetch.ts:49:13
+     47|       headers = { ...headers, ...authHeaders };
+     48|     } catch (err) {
+     49|       throw new Error(`Authentication required: ${err instanceof Error…
+       |             ^
+     50|     }
+     51|   }
+ ❯ Object.createUser src/hooks/useUsers.ts:176:24
+ ❯ src/hooks/useUsers.test.ts:173:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+AssertionError: expected [] to have a length of 1 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:249:38
+    247| 
+    248|       await waitFor(() => {
+    249|         expect(result.current.users).toHaveLength(1);
+       |                                      ^
+    250|       });
+    251| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+AssertionError: expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:286:38
+    284| 
+    285|       await waitFor(() => {
+    286|         expect(result.current.users).toHaveLength(2);
+       |                                      ^
+    287|       });
+    288| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+Error: Authentication required: Firebase: No Firebase App '[DEFAULT]' has been created - call initializeApp() first (app/no-app).
+ ❯ Module.apiFetch [as default] src/lib/apiFetch.ts:49:13
+     47|       headers = { ...headers, ...authHeaders };
+     48|     } catch (err) {
+     49|       throw new Error(`Authentication required: ${err instanceof Error…
+       |             ^
+     50|     }
+     51|   }
+ ❯ Object.resetPassword src/hooks/useUsers.ts:266:24
+ ❯ src/hooks/useUsers.test.ts:324:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/26]⎯
+
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+AssertionError: expected [] to have a length of 2 but got +0
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/hooks/useUsers.test.ts:357:38
+    355| 
+    356|       await waitFor(() => {
+    357|         expect(result.current.roles).toHaveLength(2);
+       |                                      ^
+    358|       });
+    359| 
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/26]⎯
+
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should send Authorization header when looking up product
+TestingLibraryElementError: Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ test/unit/MobileMPNScanner.spec.tsx:71:28
+     69| 
+     70|       // Enter MPN
+     71|       const input = screen.getByLabelText('Enter MPN');
+       |                            ^
+     72|       fireEvent.change(input, { target: { value: 'ABC-123' } });
+     73| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/26]⎯
+
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 401 error with appropriate message
+TestingLibraryElementError: Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ test/unit/MobileMPNScanner.spec.tsx:110:28
+    108| 
+    109|       // Enter MPN and submit
+    110|       const input = screen.getByLabelText('Enter MPN');
+       |                            ^
+    111|       fireEvent.change(input, { target: { value: 'TEST-MPN' } });
+    112|       fireEvent.click(screen.getByText('Find Product'));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/26]⎯
+
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 404 error with not found message
+TestingLibraryElementError: Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ test/unit/MobileMPNScanner.spec.tsx:139:28
+    137| 
+    138|       // Enter MPN and submit
+    139|       const input = screen.getByLabelText('Enter MPN');
+       |                            ^
+    140|       fireEvent.change(input, { target: { value: 'NONEXISTENT' } });
+    141|       fireEvent.click(screen.getByText('Find Product'));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/26]⎯
+
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should call onProductFound when product is found
+TestingLibraryElementError: Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ test/unit/MobileMPNScanner.spec.tsx:175:28
+    173| 
+    174|       // Enter MPN and submit
+    175|       const input = screen.getByLabelText('Enter MPN');
+       |                            ^
+    176|       fireEvent.change(input, { target: { value: 'XYZ-789' } });
+    177|       fireEvent.click(screen.getByText('Find Product'));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/26]⎯
+
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > UI Interactions > should switch between scan and manual modes
+TestingLibraryElementError: Unable to find a label with the text of: Enter MPN
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"mobile-mpn-scanner"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"scanner-tabs"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn "[39m
+        [36m>[39m
+          [0m📷 Scan[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"tab-btn active"[39m
+        [36m>[39m
+          [0m⌨️ Manual[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"manual-form"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group autocomplete-container"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"mpn-input"[39m
+          [36m>[39m
+            [0mSearch by MPN, SKU, or Product Name[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"input-wrapper"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33maria-autocomplete[39m=[32m"list"[39m
+              [33maria-controls[39m=[32m"mpn-autocomplete"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33mautocapitalize[39m=[32m"characters"[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mclass[39m=[32m"mpn-input"[39m
+              [33mid[39m=[32m"mpn-input"[39m
+              [33mplaceholder[39m=[32m"Type MPN, SKU, or product name..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"lookup-btn"[39m
+          [33mdisabled[39m=[32m""[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0mFind by Exact MPN[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Close scanner"[39m
+        [33mclass[39m=[32m"close-scanner-btn"[39m
+      [36m>[39m
+        [0mCancel[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ test/unit/MobileMPNScanner.spec.tsx:201:21
+    199|       // Switch to manual
+    200|       fireEvent.click(manualTab);
+    201|       expect(screen.getByLabelText('Enter MPN')).toBeInTheDocument();
+       |                     ^
+    202| 
+    203|       // Switch back to scan
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/26]⎯
+
+ FAIL  src/components/product/ProductAttributesTab.test.tsx > ProductAttributesTab - Attribute Format Compatibility > should handle missing attributes gracefully
+AssertionError: expected 'Women' to be '' // Object.is equality
+
+- Expected
++ Received
+
++ Women
+
+ ❯ src/components/product/ProductAttributesTab.test.tsx:137:35
+    135|     // Attributes should render but with empty values
+    136|     const departmentInput = screen.getByTestId('attr-input-department'…
+    137|     expect(departmentInput.value).toBe('');
+       |                                   ^
+    138| 
+    139|     const categoryInput = screen.getByTestId('attr-input-category') as…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/26]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+AssertionError: expected [Function] to throw error including 'Attribute already exists' but got 'Cannot read properties of undefined (…'
+
+- Expected
++ Received
+
+- Attribute already exists
++ Cannot read properties of undefined (reading 'get')
+
+ ❯ Assertion.<anonymous> ../../node_modules/.pnpm/@vitest+expect@1.6.1/node_modules/@vitest/expect/dist/index.js:1324:19
+ ❯ Assertion.<anonymous> ../../node_modules/.pnpm/@vitest+expect@1.6.1/node_modules/@vitest/expect/dist/index.js:800:17
+ ❯ Assertion.methodWrapper ../../node_modules/.pnpm/chai@4.5.0/node_modules/chai/lib/chai/utils/addMethod.js:57:25
+ ❯ ../../node_modules/.pnpm/@vitest+expect@1.6.1/node_modules/@vitest/expect/dist/index.js:1525:29
+ ❯ ../../node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/act-compat.js:63:15
+ ❯ ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:2552:13
+
+This error originated in "test/useAttributes.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ Test Files  6 failed | 34 passed (40)
+      Tests  22 failed | 418 passed (440)
+     Errors  1 error
+   Start at  06:40:52
+   Duration  33.37s (transform 1.70s, setup 3.52s, collect 8.70s, tests 17.99s, environment 24.24s, prepare 4.41s)
+
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+ ELIFECYCLE  Test failed. See above for more details.

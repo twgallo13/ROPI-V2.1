@@ -1,0 +1,9 @@
+
+🔧 Firebase Admin Token Generator
+Project: ropi-bccee
+Admin Email: theo@shiekh.com
+
+Creating custom token for theo@shiekh.com...
+
+❌ Error: Failed to create custom token: Failed to determine service account. Make sure to initialize the SDK with a service account credential. Alternatively specify a service account with iam.serviceAccounts.signBlob permission. Original error: Error: Error while making request: getaddrinfo ENOTFOUND metadata. Error code: ENOTFOUND
+

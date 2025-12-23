@@ -1,0 +1,10 @@
+Waiting for [projects/ropi-bccee/databases/(default)/operations/ASA4MDNiNTRjNGNmZjMtODJmYS01Y2I0LTE5MWUtNWVmODlkODkkGnNlbmlsZXBpcAkKMxI] to finish...
+........................................................................................................................................................................................................................................................................................................................................................................................done.
+metadata:
+  '@type': type.googleapis.com/google.firestore.admin.v1.ExportDocumentsMetadata
+  collectionIds:
+  - settings
+  operationState: PROCESSING
+  outputUriPrefix: gs://ropi-bccee-backups/pre-attr-sync-staging-2025-12-23_010947Z
+  startTime: '2025-12-23T01:12:02.573383Z'
+name: projects/ropi-bccee/databases/(default)/operations/ASA4MDNiNTRjNGNmZjMtODJmYS01Y2I0LTE5MWUtNWVmODlkODkkGnNlbmlsZXBpcAkKMxI
