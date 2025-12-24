@@ -10,8 +10,9 @@
  */
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useAttributes, type Attribute } from '../../hooks/useAttributes';
+import { useAttributes, type Attribute, attributeIdExists } from '../../hooks/useAttributes';
 import { toastError, toastSuccess } from '../../lib/notifications';
+import { toSnakeCase } from '../../lib/stringUtils';
 import AttributeListPanel from '../../components/AttributeListPanel';
 import AttributeDetailPanel from '../../components/AttributeDetailPanel';
 import styles from './AttributesConsole.module.css';
@@ -495,13 +496,42 @@ export default function AttributesConsole() {
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
+      // LP-ATTR-1.3.3: Auto-generate attribute_id if blank in create mode
+      let finalFormData = { ...formData };
+      if (isCreating && !finalFormData.attribute_id?.trim()) {
+        if (!finalFormData.label?.trim()) {
+          toastError('Label is required.');
+          setSaving(false);
+          return;
+        }
+        
+        // Generate base ID from label
+        let baseId = toSnakeCase(finalFormData.label.trim());
+        // Ensure it doesn't start with a digit
+        if (/^\d/.test(baseId)) {
+          baseId = `attr_${baseId}`;
+        }
+        
+        // Check uniqueness and add suffix if needed
+        let candidateId = baseId;
+        let suffix = 2;
+        while (await attributeIdExists(candidateId)) {
+          candidateId = `${baseId}_${suffix}`;
+          suffix++;
+        }
+        
+        finalFormData.attribute_id = candidateId;
+        // Update form state with generated ID
+        setFormData(finalFormData);
+      }
+
       // Validation
-      if (!formData.attribute_id?.trim()) {
+      if (!finalFormData.attribute_id?.trim()) {
         toastError('Attribute ID is required.');
         setSaving(false);
         return;
       }
-      if (!formData.label?.trim()) {
+      if (!finalFormData.label?.trim()) {
         toastError('Label is required.');
         setSaving(false);
         return;
@@ -509,13 +539,13 @@ export default function AttributesConsole() {
 
       // Check for conversion to enum/multiSelect without values
       const isConvertingToSelect = 
-        (formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
+        (finalFormData.data_type === 'enum' || finalFormData.data_type === 'multiSelect') &&
         originalDataType !== 'enum' && originalDataType !== 'multiSelect' &&
-        (!formData.allowed_values || formData.allowed_values.length === 0);
+        (!finalFormData.allowed_values || finalFormData.allowed_values.length === 0);
       
       if (isConvertingToSelect) {
         // Open conversion modal instead of blocking
-        setConversionTargetType(formData.data_type as 'enum' | 'multiSelect');
+        setConversionTargetType(finalFormData.data_type as 'enum' | 'multiSelect');
         setShowConversionModal(true);
         setSaving(false);
         return;
@@ -523,8 +553,8 @@ export default function AttributesConsole() {
 
       // Check for existing enum/multiSelect without values (not a conversion)
       if (
-        (formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
-        (!formData.allowed_values || formData.allowed_values.length === 0)
+        (finalFormData.data_type === 'enum' || finalFormData.data_type === 'multiSelect') &&
+        (!finalFormData.allowed_values || finalFormData.allowed_values.length === 0)
       ) {
         toastError('Allowed values are required for enum/multi-select.');
         setSaving(false);
@@ -534,14 +564,14 @@ export default function AttributesConsole() {
       if (isCreating) {
         // Create new attribute
         const created = await createAttribute(
-          formData as Omit<Attribute, 'createdAt' | 'updatedAt'>
+          finalFormData as Omit<Attribute, 'createdAt' | 'updatedAt'>
         );
         setSelectedId(created.attribute_id);
         setIsCreating(false);
         toastSuccess(`Created attribute '${created.attribute_id}'`);
       } else if (selectedId) {
         // Update existing attribute
-        await updateAttribute(selectedId, formData);
+        await updateAttribute(selectedId, finalFormData);
         toastSuccess(`Updated attribute '${selectedId}'`);
       }
 
@@ -689,6 +719,7 @@ export default function AttributesConsole() {
         formData={formData}
         isDirty={isDirty}
         saving={saving}
+        isCreating={isCreating}
         onFormChange={handleFormChange}
         onCancel={handleCancel}
         onSync={handleSync}

@@ -7,6 +7,8 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import type { Attribute } from '../hooks/useAttributes';
+import { attributeIdExists } from '../hooks/useAttributes';
+import { toSnakeCase } from '../lib/stringUtils';
 import AttributeHeader from './AttributeHeader';
 import AttributeTabs, { type TabId } from './AttributeTabs';
 import MappingTab from './MappingTab';
@@ -23,6 +25,7 @@ export interface AttributeDetailPanelProps {
   formData: Partial<Attribute>;
   isDirty: boolean;
   saving: boolean;
+  isCreating?: boolean;  // LP-ATTR-1.3.3: Flag for create mode
   onFormChange: (data: Partial<Attribute>) => void;
   onCancel: () => void;
   onSync: () => void;
@@ -35,10 +38,63 @@ export interface AttributeDetailPanelProps {
 function OverviewTab({
   formData,
   onChange,
+  isCreating,
 }: {
   formData: Partial<Attribute>;
   onChange: (data: Partial<Attribute>) => void;
+  isCreating?: boolean;
 }) {
+  // LP-ATTR-1.3.3: Determine if we're in create mode
+  // Check both isCreating prop and if attribute_id is the dummy value 'new_attribute'
+  const isCreateMode = isCreating || formData.attribute_id === 'new_attribute' || !formData.attribute_id;
+  const isIdReadOnly = !isCreateMode;
+
+  // LP-ATTR-1.3.3: State for ID validation
+  const [idError, setIdError] = useState<string | null>(null);
+  const [checkingId, setCheckingId] = useState(false);
+
+  // LP-ATTR-1.3.3: Normalize ID to snake_case
+  const normalizeId = (input: string): string => {
+    // Remove leading/trailing whitespace
+    let normalized = input.trim();
+    // Convert to snake_case using existing utility
+    normalized = toSnakeCase(normalized);
+    // Ensure it doesn't start with a digit (prepend 'attr_' if needed)
+    if (normalized && /^\d/.test(normalized)) {
+      normalized = `attr_${normalized}`;
+    }
+    return normalized;
+  };
+
+  // LP-ATTR-1.3.3: Check ID uniqueness on blur
+  const handleIdBlur = useCallback(async () => {
+    const id = formData.attribute_id?.trim();
+    if (!id || isIdReadOnly) return;
+
+    setCheckingId(true);
+    setIdError(null);
+
+    try {
+      const exists = await attributeIdExists(id);
+      if (exists) {
+        setIdError('This Attribute ID already exists. Please choose a unique ID.');
+      }
+    } catch (err) {
+      console.error('Error checking attribute ID:', err);
+      setIdError('Unable to verify ID uniqueness. Please try again.');
+    } finally {
+      setCheckingId(false);
+    }
+  }, [formData.attribute_id, isIdReadOnly]);
+
+  // LP-ATTR-1.3.3: Handle ID input changes with normalization
+  const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    const normalized = normalizeId(rawValue);
+    onChange({ ...formData, attribute_id: normalized });
+    setIdError(null); // Clear error on change
+  };
+
   return (
     <div className={styles.tabPanel} data-testid="tab-panel-overview">
       <div className={styles.card}>
@@ -61,17 +117,37 @@ function OverviewTab({
 
           <div className={styles.formRow}>
             <label className={styles.formLabel} htmlFor="attr-id">
-              Attribute ID
+              Attribute ID {isCreateMode && '*'}
             </label>
             <input
               id="attr-id"
               type="text"
               className={styles.formInput}
               value={formData.attribute_id || ''}
-              disabled
+              onChange={handleIdChange}
+              onBlur={handleIdBlur}
+              disabled={isIdReadOnly}
+              placeholder={isCreateMode ? "Leave blank to auto-generate from Label" : ""}
               data-testid="form-id"
             />
-            <p className={styles.formHelp}>Canonical identifier (read-only after creation)</p>
+            {isIdReadOnly && (
+              <p className={styles.formHelp}>Canonical identifier (read-only after creation)</p>
+            )}
+            {isCreateMode && !idError && (
+              <p className={styles.formHelp}>
+                Unique identifier in snake_case. Leave blank to auto-generate.
+              </p>
+            )}
+            {checkingId && (
+              <p className={styles.formHelp} style={{ color: '#666' }}>
+                Checking availability...
+              </p>
+            )}
+            {idError && (
+              <p className={styles.formHelp} style={{ color: '#c62828' }}>
+                {idError}
+              </p>
+            )}
           </div>
 
           <div className={styles.formRowInline}>
@@ -461,6 +537,7 @@ export default function AttributeDetailPanel({
   formData,
   isDirty,
   saving,
+  isCreating,
   onFormChange,
   onCancel,
   onSync,
@@ -498,7 +575,7 @@ export default function AttributeDetailPanel({
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <OverviewTab formData={formData} onChange={onFormChange} />;
+        return <OverviewTab formData={formData} onChange={onFormChange} isCreating={isCreating} />;
       case 'values':
         return <ValuesTab formData={formData} onChange={onFormChange} />;
       case 'behavior':
