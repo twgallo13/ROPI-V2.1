@@ -20,8 +20,10 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   { sourceColumn: 'mpn', targetField: 'mpn', required: true, transform: 'trim' },
   { sourceColumn: 'Manufacturer Part Number', targetField: 'mpn', required: true, transform: 'trim' },
   { sourceColumn: 'SKU', targetField: 'sku', required: false, transform: 'trim' },
-  { sourceColumn: 'Product Name', targetField: 'title', required: true, transform: 'trim' },
-  { sourceColumn: 'Brand', targetField: 'brand', required: true, transform: 'trim' },
+  // LP-ATTR-1.3.1: Product Name maps to the registry attribute 'name' (not 'title').
+  // Make Product Name and Brand optional; the registry (import_required) is authoritative.
+  { sourceColumn: 'Product Name', targetField: 'name', required: false, transform: 'trim' },
+  { sourceColumn: 'Brand', targetField: 'brand', required: false, transform: 'trim' },
   { sourceColumn: 'Description', targetField: 'description', transform: 'trim' },
   
   // Attributes
