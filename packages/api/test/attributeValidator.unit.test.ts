@@ -45,7 +45,7 @@ vi.mock('firebase-admin', () => {
       id: 'category',
       attribute_id: 'category',
       label: 'Category',
-      data_type: 'select',
+      data_type: 'enum', // Use 'enum' for allowed_values validation
       allowed_values: ['Footwear', 'Apparel'],
       import: true,
       import_required: false,
