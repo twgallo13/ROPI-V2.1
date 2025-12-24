@@ -17,10 +17,13 @@ import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 import { processCSVImport, validateCSVImport } from '../services/importService';
 
 // LP-3.0.0: Allowed origins - keep narrow for staging & production
+// LP-ATTR-1.3.1: Add firebaseapp.com domains for staging/prod
 const ALLOWED_ORIGINS = [
   'https://ropi-aoss-staging.web.app',
   'https://ropi-aoss.web.app',
   'https://ropi-aoss-prod.web.app',
+  'https://ropi-aoss-staging.firebaseapp.com',
+  'https://ropi-aoss.firebaseapp.com',
 ];
 
 // LP-3.0.0: CORS handler with proper origin validation and preflight support
