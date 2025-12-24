@@ -1,0 +1,44 @@
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/web
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should handle 401 unauthorized error
+[useProducts] Fetch error: Error: Unauthorized. Please sign in again.
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useProducts.ts:187:17
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should handle 403 forbidden error
+[useProducts] Fetch error: Error: You do not have permission to view products.
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/useProducts.ts:190:17
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should handle network errors
+[useProducts] Fetch error: Error: Network error
+    at /workspaces/ROPI-V2.1/packages/web/src/hooks/__tests__/useProducts.spec.ts:218:37
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.2.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+
+stderr | src/hooks/__tests__/useProducts.spec.ts > useProducts > should debounce search input with default 300ms
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (/workspaces/ROPI-V2.1/node_modules/.pnpm/@testing-library+react@16.3.0_@testing-library+dom@10.4.1_@types+react-dom@18.3.7_@type_518e95b9fd5d6a2824e6f20b085f4963/node_modules/@testing-library/react/dist/pure.js:329:5)
+
+ ✓ src/hooks/__tests__/useProducts.spec.ts  (18 tests) 1435ms
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  21:55:03
+   Duration  2.75s (transform 118ms, setup 79ms, collect 165ms, tests 1.44s, environment 509ms, prepare 106ms)
+

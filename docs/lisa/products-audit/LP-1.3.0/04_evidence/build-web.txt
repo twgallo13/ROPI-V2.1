@@ -1,0 +1,20 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"10.26.0"})
+
+> @ropi-aoss/web@1.0.0 build /workspaces/ROPI-V2.1/packages/web
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 684 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.46 kB │ gzip:   0.29 kB
+dist/assets/index-Dnokfmns.css    166.94 kB │ gzip:  26.17 kB
+dist/assets/index-CzcWD_9z.js     390.85 kB │ gzip: 103.31 kB
+dist/assets/index-DWVtsyfh.js   1,118.20 kB │ gzip: 291.68 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.35s
