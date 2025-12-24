@@ -28,8 +28,9 @@ export async function processImportBatchHandler(req: Request, res: Response) {
       return;
     }
 
-    // Get user ID from auth middleware
-    const userId = (req as any).uid;
+    // Get user ID from auth middleware (requireAdmin sets req.auth)
+    const auth = (req as any).auth;
+    const userId = auth?.uid;
 
     if (!userId) {
       res.status(401).json({
