@@ -110,7 +110,7 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
  * Throws on network or unexpected errors.
  */
 async function attributeIdExists(attributeId: string): Promise<boolean> {
-  const headers = getAuthHeaders();
+  const headers = await getAuthHeaders();
   const url = `${API_BASE}/settings/attributes/${encodeURIComponent(attributeId)}`;
   
   try {
