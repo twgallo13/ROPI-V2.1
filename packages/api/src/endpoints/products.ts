@@ -265,26 +265,74 @@ export async function listProductsHandler(req: Request, res: Response) {
         }
       }
 
-      const snapshot = await query.get();
-      let docs = snapshot.docs;
+      let docs: admin.firestore.QueryDocumentSnapshot[] = [];
+      let usedSearchFallback = false;
 
-      // Client-side search filtering (Firestore limitations)
-      // For production scale (>5k products), migrate to Algolia or Elasticsearch
+      // Improved search strategy:
+      // 1. If search query provided, try exact MPN/SKU match first (fast, indexed)
+      // 2. If no exact match, use larger window with client-side filtering
+      // 3. If no search, use standard paginated query
       if (searchQuery) {
-        docs = docs.filter(doc => {
-          const data = doc.data();
-          const searchFields = [
-            data.sku,
-            data.mpn,
-            data.name,
-            data.brand,
-            data.category,
-            data.department,
-            data.class,
-          ].filter(Boolean).map(v => String(v).toLowerCase());
+        // Try exact MPN match first (indexed query)
+        const mpnSnap = await db.collection('products')
+          .where('mpn', '==', searchQuery)
+          .limit(limit)
+          .get();
+        
+        if (!mpnSnap.empty) {
+          docs = mpnSnap.docs;
+        } else {
+          // Try case-insensitive MPN match (uppercase)
+          const mpnUpperSnap = await db.collection('products')
+            .where('mpn', '==', searchQuery.toUpperCase())
+            .limit(limit)
+            .get();
+          
+          if (!mpnUpperSnap.empty) {
+            docs = mpnUpperSnap.docs;
+          } else {
+            // Try exact SKU match
+            const skuSnap = await db.collection('products')
+              .where('sku', '==', searchQuery)
+              .limit(limit)
+              .get();
+            
+            if (!skuSnap.empty) {
+              docs = skuSnap.docs;
+            } else {
+              // Fallback: fetch larger window for client-side substring search
+              // Note: This works well for small catalogs (<500 products)
+              // For production scale, migrate to Algolia or Elasticsearch
+              usedSearchFallback = true;
+              const searchLimit = 500; // Larger window for search
+              
+              const fallbackSnap = await db.collection('products')
+                .orderBy(sortField, sortDir)
+                .limit(searchLimit)
+                .get();
+              
+              docs = fallbackSnap.docs.filter(doc => {
+                const data = doc.data();
+                const searchFields = [
+                  data.sku,
+                  data.mpn,
+                  data.name,
+                  data.brand,
+                  data.category,
+                  data.department,
+                  data.class,
+                  doc.id, // Also search by document ID
+                ].filter(Boolean).map(v => String(v).toLowerCase());
 
-          return searchFields.some(field => field.includes(searchQuery));
-        });
+                return searchFields.some(field => field.includes(searchQuery));
+              });
+            }
+          }
+        }
+      } else {
+        // No search query - use standard paginated query
+        const snapshot = await query.get();
+        docs = snapshot.docs;
       }
 
       const hasMore = docs.length > limit;
@@ -311,6 +359,25 @@ export async function listProductsHandler(req: Request, res: Response) {
       });
     } catch (error) {
       console.error('Error listing products:', error);
+      
+      // Check for Firestore composite index errors
+      const msg = error instanceof Error ? error.message : String(error);
+      if (msg.includes('requires an index') || msg.includes('create a composite index') || msg.includes('FAILED_PRECONDITION')) {
+        // Extract index URL if present in error message
+        const indexUrlMatch = msg.match(/https?:\/\/[^\s)]+/);
+        const indexUrl = indexUrlMatch ? indexUrlMatch[0] : undefined;
+        
+        console.error('Missing Firestore composite index. URL:', indexUrl || 'not provided');
+        
+        res.status(400).json({ 
+          error: 'MISSING_INDEX', 
+          message: 'This query requires a Firestore composite index. Please create the index and retry.',
+          indexUrl,
+          hint: 'Try removing filters or contact admin to create the required index.'
+        });
+        return;
+      }
+      
       res.status(500).json({ 
         error: 'INTERNAL_ERROR', 
         message: 'Failed to list products' 
