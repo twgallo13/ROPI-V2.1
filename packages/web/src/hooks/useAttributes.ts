@@ -104,6 +104,29 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 /**
+ * Check if an attribute_id already exists in the system.
+ * Makes a GET request to /api/admin/settings/attributes/:id
+ * Returns true if the attribute exists (200), false if not (404).
+ * Throws on network or unexpected errors.
+ */
+async function attributeIdExists(attributeId: string): Promise<boolean> {
+  const headers = getAuthHeaders();
+  const url = `${API_BASE}/settings/attributes/${encodeURIComponent(attributeId)}`;
+  
+  try {
+    const res = await fetch(url, { headers });
+    if (res.ok) return true; // 200 = exists
+    if (res.status === 404) return false; // not found
+    // Unexpected status
+    throw new Error(`Unexpected status ${res.status} checking attribute ID existence`);
+  } catch (err) {
+    // Network error or other fetch failure
+    if (err instanceof Error) throw err;
+    throw new Error('Failed to check attribute ID existence');
+  }
+}
+
+/**
  * Hook to manage product attributes via the admin API.
  * 
  * Uses a "pinned" pattern: newly-created attributes are stored in localStorage
@@ -408,4 +431,5 @@ export function useAttributes() {
   };
 }
 
+export { attributeIdExists };
 export default useAttributes;
