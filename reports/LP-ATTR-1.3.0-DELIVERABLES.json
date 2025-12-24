@@ -1,0 +1,52 @@
+{
+  "lp": "LP-ATTR-1.3.0-FIX-REGISTRY-VALIDATION",
+  "branch": "lp/ATTR-1.3.0-fix-registry-validation",
+  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/340",
+  "pr_number": 340,
+  "commit_sha": "8f47430fb034ff632e0daac6e9e5300deb5715c2",
+  "api_unit_tests_log": "logs/lp-attr-1.3.0-unit-tests.log",
+  "api_integration_tests_log": "logs/lp-attr-1.3.0-integration-tests.log",
+  "ci_run_ids": [20482705475, 20482705495],
+  "test_results": {
+    "unit_tests": {
+      "total": 12,
+      "passed": 12,
+      "failed": 0,
+      "status": "PASS"
+    },
+    "integration_tests": {
+      "total": 12,
+      "passed": 12,
+      "failed": 0,
+      "status": "PASS"
+    }
+  },
+  "files_modified": [
+    "packages/api/src/services/attributeValidator.ts",
+    "packages/api/src/services/productCommitService.ts",
+    "packages/sdk/src/normalization/importNormalizer.ts",
+    "packages/sdk/src/schema/importEngine.ts",
+    "packages/api/test/importService.integration.test.ts",
+    "packages/api/test/attributeValidator.unit.test.ts"
+  ],
+  "status": "PASS",
+  "notes": [
+    "Server-side validation now consults attribute registry import_required flag",
+    "Product Name column now maps to 'name' attribute instead of 'title'",
+    "Both 'name' and legacy 'title' fields supported for backward compatibility",
+    "Only MPN is marked as import_required in registry; Brand and Product Name are optional",
+    "All 24 tests (12 unit + 12 integration) passing",
+    "SKIP_COLUMNS updated to allow validation of name and brand attributes",
+    "CI governance check requires manual label (label does not exist in repo)",
+    "API Integration Tests and Deploy Preview in progress at time of report"
+  ],
+  "acceptance_criteria": {
+    "registry_driven_validation": true,
+    "title_normalized_to_name": true,
+    "mpn_only_import_passes": true,
+    "unit_tests_added": true,
+    "integration_tests_added": true,
+    "tests_passing": true
+  },
+  "timestamp": "2025-12-24T09:06:52Z"
+}

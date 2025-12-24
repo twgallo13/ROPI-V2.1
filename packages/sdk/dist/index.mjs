@@ -470,8 +470,10 @@ var DEFAULT_COLUMN_MAPPINGS = [
   { sourceColumn: "mpn", targetField: "mpn", required: true, transform: "trim" },
   { sourceColumn: "Manufacturer Part Number", targetField: "mpn", required: true, transform: "trim" },
   { sourceColumn: "SKU", targetField: "sku", required: false, transform: "trim" },
-  { sourceColumn: "Product Name", targetField: "title", required: true, transform: "trim" },
-  { sourceColumn: "Brand", targetField: "brand", required: true, transform: "trim" },
+  // LP-ATTR-1.3.1: Product Name maps to the registry attribute 'name' (not 'title').
+  // Make Product Name and Brand optional; the registry (import_required) is authoritative.
+  { sourceColumn: "Product Name", targetField: "name", required: false, transform: "trim" },
+  { sourceColumn: "Brand", targetField: "brand", required: false, transform: "trim" },
   { sourceColumn: "Description", targetField: "description", transform: "trim" },
   // Attributes
   { sourceColumn: "Department", targetField: "department", transform: "trim" },
@@ -1212,7 +1214,9 @@ var COLUMN_MAPPINGS = {
   launchDate: ["Launch Date", "LaunchDate", "launch_date", "Release Date"],
   images: ["Images", "IMAGES", "images", "Media", "Image URLs"],
   primaryImage: ["Primary Image", "PrimaryImage", "primary_image", "Main Image"],
-  status: ["Status", "STATUS", "status", "Product Is Active"],
+  // NOTE: 'Product Is Active' is intentionally **not** included as a synonym for status.
+  // Product Is Active is a separate operational command/flag and must be treated as pass-through.
+  status: ["Status", "STATUS", "status"],
   styleId: ["Style ID", "StyleID", "style_id", "Style"]
 };
 function findColumnValue(raw, key) {
@@ -1260,6 +1264,19 @@ function retailOpsRowToImportRow(parsed) {
     normalizedCategory = department.toUpperCase();
   }
   const normalizedSizeScale = normalizedGender === "MEN" ? "MENS_US" : void 0;
+  const statusRaw = raw["Status"] || raw["STATUS"] || raw["status"] || "";
+  const productIsActiveRaw = raw["Product Is Active"] || raw["product_is_active"] || raw["PRODUCT_IS_ACTIVE"] || "";
+  if (!raw["_passThrough"]) {
+    raw["_passThrough"] = {};
+  }
+  raw["_passThrough"].status = statusRaw;
+  raw["_passThrough"].product_is_active = productIsActiveRaw;
+  delete raw["Status"];
+  delete raw["status"];
+  delete raw["STATUS"];
+  delete raw["Product Is Active"];
+  delete raw["product_is_active"];
+  delete raw["PRODUCT_IS_ACTIVE"];
   return {
     source: "RETAILOPS_EXPORT",
     rowId,

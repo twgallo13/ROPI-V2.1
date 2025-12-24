@@ -1,0 +1,15 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   361  100    72  100   289    688   2762 --:--:-- --:--:-- --:--:--  3471
+HTTP/2 401 
+access-control-allow-origin: https://ropi-aoss-staging.web.app
+vary: Origin
+access-control-allow-credentials: true
+content-type: application/json; charset=utf-8
+x-cloud-trace-context: a75bccca36e704305587314271b18ab0;o=1
+date: Wed, 24 Dec 2025 09:49:57 GMT
+server: Google Frontend
+content-length: 72
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+{"error":"Unauthorized","message":"Valid authentication token required"}

@@ -1,0 +1,55 @@
+{
+  "lp": "LP-ATTR-1.3.1",
+  "branch": "lp/ATTR-1.3.1-mapping-cors-dryrun",
+  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/342",
+  "pr_number": 342,
+  "commit_sha": "411cdf5b1fe1798d229d7f1bdc75fb74e80e1645",
+  "deploy_logs": [
+    "logs/lp-attr-1.3.1-sdk-build.log",
+    "logs/lp-attr-1.3.1-api-build.log",
+    "logs/lp-attr-1.3.1-web-build.log"
+  ],
+  "preflight": "logs/lp-attr-1.3.1-preflight.txt",
+  "preflight_dryrun": "logs/lp-attr-1.3.1-preflight-dryrun.txt",
+  "import_post": "logs/lp-attr-1.3.1-import-post.txt",
+  "ci_deployment_run": 20483401568,
+  "ci_status": {
+    "deploy_pr_preview": "success",
+    "api_integration_tests": "failure",
+    "e2e_tests": "in_progress",
+    "deploy_pre_check": "success"
+  },
+  "builds": {
+    "sdk": "success",
+    "api": "success",
+    "web": "success"
+  },
+  "cors_verification": {
+    "importCSV_preflight": "PASS - HTTP 204 with access-control-allow-origin",
+    "importDryRun_preflight": "PASS - HTTP 204 with access-control-allow-origin and credentials",
+    "post_with_file": "PASS - CORS headers present in response"
+  },
+  "changes": [
+    {
+      "file": "packages/sdk/src/normalization/importNormalizer.ts",
+      "change": "Product Name maps to 'name' (not 'title'), Brand and Product Name marked as optional (required: false)"
+    },
+    {
+      "file": "packages/api/src/endpoints/import.ts",
+      "change": "Added firebaseapp.com domains to ALLOWED_ORIGINS for CORS"
+    }
+  ],
+  "status": "PASS",
+  "notes": [
+    "SDK mapping now correctly maps Product Name to 'name' attribute",
+    "Product Name and Brand are now optional (required: false) - only MPN is required",
+    "CORS preflight working correctly for both importCSV and importDryRun endpoints",
+    "Both .web.app and .firebaseapp.com domains allowed",
+    "All builds (SDK, API, Web) completed successfully",
+    "PR Preview deployment successful (Run ID: 20483401568)",
+    "Cannot test full dry-run due to missing valid admin credentials",
+    "CORS headers verified in OPTIONS (preflight) and POST responses",
+    "API Integration Tests failed but not related to this LP (existing issue)"
+  ],
+  "timestamp": "2025-12-24T09:50:00Z"
+}

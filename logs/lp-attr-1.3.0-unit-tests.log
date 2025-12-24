@@ -1,0 +1,22 @@
+ WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.21.1","pnpm":"10.26.1"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run attributeValidator.unit.test.ts
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+stdout | vitest.setup.unit.ts:7:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:88:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/attributeValidator.unit.test.ts  (12 tests) 8ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  08:51:14
+   Duration  461ms (transform 129ms, setup 40ms, collect 103ms, tests 8ms, environment 0ms, prepare 130ms)
+
