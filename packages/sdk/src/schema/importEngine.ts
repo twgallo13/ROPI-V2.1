@@ -44,11 +44,14 @@ export interface ImportSourceColumns {
  * Normalized product fields mapped from source columns
  * Per AOSS Section 3.2 — Import Normalization Rules
  * LP-2.1.0: MPN is the canonical product identifier
+ * LP-ATTR-1.3.0: Product Name uses 'name' field (legacy 'title' for backward compat)
  */
 export interface ImportNormalizedFields {
   // Core fields — MPN is primary identifier (LP-2.1.0)
   mpn?: string;
   sku?: string;
+  // LP-ATTR-1.3.0: Prefer 'name' over 'title' (title kept for backward compatibility)
+  name?: string;
   title?: string;
   brand?: string;
   description?: string;

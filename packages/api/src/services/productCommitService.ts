@@ -55,9 +55,10 @@ function convertRowToProduct(row: ImportEngineRow): Product {
   const now = new Date().toISOString();
 
   // Build core fields (filter out undefined values)
+  // LP-ATTR-1.3.0: Use 'name' field, fallback to legacy 'title' for backward compatibility
   const core: ProductCore = {
     sku: normalized.sku || '',
-    title: normalized.title || '',
+    title: normalized.name || normalized.title || '',
     brand: normalized.brand || '',
     ...(normalized.description && { description: normalized.description }),
     status: 'draft', // New imports start as drafts

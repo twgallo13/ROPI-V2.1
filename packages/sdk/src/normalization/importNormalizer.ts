@@ -12,6 +12,7 @@ import type { ImportSourceColumns, ImportNormalizedFields, ColumnMapping } from 
  * Maps common RO column names to AOSS normalized fields
  * 
  * LP-2.1.0: MPN-first — MPN is required, SKU is optional
+ * LP-ATTR-1.3.0: Registry-driven required validation — only MPN is import_required
  * MPN is the canonical product identifier per Product Schema / Attribute Registry
  */
 export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
@@ -20,8 +21,10 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   { sourceColumn: 'mpn', targetField: 'mpn', required: true, transform: 'trim' },
   { sourceColumn: 'Manufacturer Part Number', targetField: 'mpn', required: true, transform: 'trim' },
   { sourceColumn: 'SKU', targetField: 'sku', required: false, transform: 'trim' },
-  { sourceColumn: 'Product Name', targetField: 'title', required: true, transform: 'trim' },
-  { sourceColumn: 'Brand', targetField: 'brand', required: true, transform: 'trim' },
+  // LP-ATTR-1.3.0: Product Name maps to 'name' attribute (not 'title')
+  { sourceColumn: 'Product Name', targetField: 'name', required: false, transform: 'trim' },
+  // LP-ATTR-1.3.0: Brand is not import_required per registry
+  { sourceColumn: 'Brand', targetField: 'brand', required: false, transform: 'trim' },
   { sourceColumn: 'Description', targetField: 'description', transform: 'trim' },
   
   // Attributes

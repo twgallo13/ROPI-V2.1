@@ -388,17 +388,32 @@ function validateMultiSelect(
 
 /**
  * Non-attribute columns (skip validation)
+ * LP-ATTR-1.3.0: Removed name, Brand from skip list (now validated attributes)
  */
 const SKIP_COLUMNS = new Set([
-  'mpn', 'MPN', 'sku', 'SKU', 'title', 'name', 'Product Name',
   'description', 'Description', 'price', 'Price', 'MSRP', 'quantity', 'Quantity',
-  'image', 'images', 'url', 'barcode', 'upc', 'UPC', 'Brand',
+  'image', 'images', 'url', 'barcode', 'upc', 'UPC',
 ]);
 
 /**
  * Map common column names to attribute IDs
+ * LP-ATTR-1.3.0: Add title → name mapping for Product Name normalization
  */
 const COLUMN_TO_ATTRIBUTE: Record<string, string> = {
+  // LP-ATTR-1.3.0: Product Name normalization
+  'Product Name': 'name',
+  'title': 'name',
+  'Title': 'name',
+  'name': 'name',
+  'Name': 'name',
+  // Core identifiers
+  'MPN': 'mpn',
+  'mpn': 'mpn',
+  'SKU': 'sku',
+  'sku': 'sku',
+  'Brand': 'brand',
+  'brand': 'brand',
+  // Classification attributes
   'Gender': 'gender',
   'gender': 'gender',
   'Department': 'department',
@@ -457,12 +472,16 @@ export function validateRow(
   normalizedValues['mpn'] = mpn;
   
   // Track required attributes that are missing
+  // LP-ATTR-1.3.0: Build set of required attributes from registry
   const requiredAttrs = new Set<string>();
   registryMap.forEach((def, _id) => {
     if (def.import_required) {
       requiredAttrs.add(def.attribute_id);
     }
   });
+  
+  // LP-ATTR-1.3.0: MPN is already validated and present, so mark as seen
+  requiredAttrs.delete('mpn');
   
   // Validate each column
   for (const [col, rawVal] of Object.entries(row)) {
