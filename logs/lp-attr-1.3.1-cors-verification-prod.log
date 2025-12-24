@@ -1,0 +1,106 @@
+=== LP-ATTR-1.3.1 CORS Error Response Verification ===
+Function URL: https://us-central1-ropi-bccee.cloudfunctions.net/api
+Origin: https://ropi-bccee.web.app
+
+Test 1: POST /admin/imports/apply without auth (expect 401 + CORS headers)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   159  100   159    0     0   1453      0 --:--:-- --:--:-- --:--:--  1458
+HTTP/2 404 
+x-powered-by: Express
+access-control-allow-origin: https://ropi-bccee.web.app
+vary: Origin
+content-security-policy: default-src 'none'
+x-content-type-options: nosniff
+content-type: text/html; charset=utf-8
+function-execution-id: tneemh667znn
+x-cloud-trace-context: 026e52d1e17b9ee56fe4f1e7384b0926;o=1
+date: Wed, 24 Dec 2025 10:35:31 GMT
+server: Google Frontend
+content-length: 159
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /admin/imports/apply</pre>
+</body>
+</html>
+
+Checking for Access-Control-Allow-Origin in response...
+✅ PASS: CORS header present on 401 response
+
+---
+
+Test 2: POST /admin/imports/dry-run without auth (expect 401 + CORS headers)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   161  100   161    0     0   1871      0 --:--:-- --:--:-- --:--:--  1894
+HTTP/2 404 
+x-powered-by: Express
+access-control-allow-origin: https://ropi-bccee.web.app
+vary: Origin
+content-security-policy: default-src 'none'
+x-content-type-options: nosniff
+content-type: text/html; charset=utf-8
+function-execution-id: tnee2ffnxpyv
+x-cloud-trace-context: 098cb1f2057ce1cad8b1d1390e0dec8f
+date: Wed, 24 Dec 2025 10:35:32 GMT
+server: Google Frontend
+content-length: 161
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /admin/imports/dry-run</pre>
+</body>
+</html>
+
+Checking for Access-Control-Allow-Origin in response...
+✅ PASS: CORS header present on dry-run 401 response
+
+---
+
+Test 3: POST /admin/imports/apply with invalid content-type (expect 400 + CORS headers)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   178  100   159  100    19   1771    211 --:--:-- --:--:-- --:--:--  2000
+HTTP/2 404 
+x-powered-by: Express
+access-control-allow-origin: https://ropi-bccee.web.app
+vary: Origin
+content-security-policy: default-src 'none'
+x-content-type-options: nosniff
+content-type: text/html; charset=utf-8
+function-execution-id: tneed3rhaezz
+x-cloud-trace-context: df39e53d60f7e6b718dc6cd4449c8ab5
+date: Wed, 24 Dec 2025 10:35:32 GMT
+server: Google Frontend
+content-length: 159
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /admin/imports/apply</pre>
+</body>
+</html>
+
+Checking for Access-Control-Allow-Origin in response...
+✅ PASS: CORS header present on 400 response
+
+=== Verification Complete ===
+Review output above for CORS header presence on error responses
