@@ -397,8 +397,16 @@ const SKIP_COLUMNS = new Set([
 
 /**
  * Map common column names to attribute IDs
+ * LP-ATTR-1.3.0: Add title → name mapping for Product Name normalization
  */
 const COLUMN_TO_ATTRIBUTE: Record<string, string> = {
+  // LP-ATTR-1.3.0: Product Name normalization
+  'Product Name': 'name',
+  'title': 'name',
+  'Title': 'name',
+  'name': 'name',
+  'Name': 'name',
+  // Core attributes
   'Gender': 'gender',
   'gender': 'gender',
   'Department': 'department',

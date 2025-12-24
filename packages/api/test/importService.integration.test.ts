@@ -56,6 +56,31 @@ vi.mock('firebase-admin', () => {
       data_type: 'string',
       import: true,
     },
+    // LP-ATTR-1.3.0: Add name and brand attributes for registry-driven validation tests
+    'name': {
+      id: 'name',
+      attribute_id: 'name',
+      label: 'Product Name',
+      data_type: 'text',
+      import: true,
+      import_required: false, // Not required for import
+    },
+    'brand': {
+      id: 'brand',
+      attribute_id: 'brand',
+      label: 'Brand',
+      data_type: 'text',
+      import: true,
+      import_required: false, // Not required for import
+    },
+    'mpn': {
+      id: 'mpn',
+      attribute_id: 'mpn',
+      label: 'MPN',
+      data_type: 'text',
+      import: true,
+      import_required: true, // Only MPN is required
+    },
   };
 
   const mockFirestore = () => ({
@@ -229,4 +254,75 @@ GX7918,SKU-002,Adidas Ultraboost,Women`;
       });
     });
   });
+  
+  // LP-ATTR-1.3.0: Registry-driven required validation tests
+  describe('LP-ATTR-1.3.0: Registry-driven Required Validation', () => {
+    it('should allow import with MPN only (no Product Name or Brand)', async () => {
+      const rows = [
+        { MPN: 'MPNA-001' },
+        { MPN: 'MPNB-002', SKU: 'SKU-B2' },
+      ];
+      
+      const result = await validateBatch(rows);
+      
+      // Both rows should be valid (no blocking errors for missing name/brand)
+      expect(result.validRows).toBe(2);
+      expect(result.invalidRows).toBe(0);
+      
+      // Verify no MISSING_REQUIRED_FIELD errors for name or brand
+      result.rows.forEach(row => {
+        expect(row.errors.some(e => 
+          e.code === 'missing_required' && 
+          (e.attribute === 'name' || e.attribute === 'brand')
+        )).toBe(false);
+      });
+    });
+    
+    it('should map Product Name column to name attribute', async () => {
+      const rows = [
+        { MPN: 'TEST-001', 'Product Name': 'Test Product' },
+      ];
+      
+      const result = await validateBatch(rows);
+      
+      expect(result.rows[0].status).toBe('valid');
+      expect(result.rows[0].normalizedValues['name']).toBe('Test Product');
+    });
+    
+    it('should map title column to name attribute', async () => {
+      const rows = [
+        { MPN: 'TEST-002', 'title': 'Another Product' },
+      ];
+      
+      const result = await validateBatch(rows);
+      
+      expect(result.rows[0].status).toBe('valid');
+      expect(result.rows[0].normalizedValues['name']).toBe('Another Product');
+    });
+    
+    it('should only require MPN as import_required attribute', async () => {
+      // Row with MPN but missing Product Name and Brand
+      const rows = [
+        { MPN: 'MPNA-001', Category: 'Test' },
+      ];
+      
+      const result = await validateBatch(rows);
+      
+      // Should be valid with no blocking errors
+      expect(result.rows[0].status).toBe('valid');
+      expect(result.rows[0].errors.length).toBe(0);
+    });
+    
+    it('should reject rows missing MPN (import_required: true)', async () => {
+      const rows = [
+        { 'Product Name': 'Product Without MPN', Brand: 'Test Brand' },
+      ];
+      
+      const result = await validateBatch(rows);
+      
+      expect(result.rows[0].status).toBe('invalid');
+      expect(result.rows[0].errors[0].code).toBe('missing_mpn');
+    });
+  });
 });
+
