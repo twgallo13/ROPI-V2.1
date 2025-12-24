@@ -106,7 +106,18 @@ const api: Router = Router();
 
 // Allow CORS from any origin (handlers themselves perform requireAdmin where needed)
 app.use(cors({ origin: true }));
-app.use(express.json({ limit: '2mb' }));
+
+// LP-ATTR-1.3.1.1: Apply JSON body parser only to non-multipart routes
+// Import endpoints (importCSV, importDryRun) handle multipart/form-data with Busboy
+app.use((req, res, next) => {
+  const contentType = req.headers['content-type'] || '';
+  // Skip JSON parsing for multipart requests (file uploads)
+  if (contentType.includes('multipart/form-data')) {
+    return next();
+  }
+  // Apply JSON parsing for all other requests
+  express.json({ limit: '2mb' })(req, res, next);
+});
 
 /**
  * Admin Settings endpoints
