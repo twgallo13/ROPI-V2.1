@@ -1,0 +1,25 @@
+# Hosting Smoke Check — LP-1.3.0 Post-Merge
+Date: 2025-12-24T22:45:00Z
+
+## 1. Root Page
+URL: https://ropi-aoss-staging.web.app
+HTTP Status: 200
+Content-Type: text/html; charset=utf-8
+Last-Modified: Wed, 24 Dec 2025 22:41:11 GMT
+
+## 2. Products Page
+URL: https://ropi-aoss-staging.web.app/app/products
+HTTP Status: 200
+Content-Type: text/html; charset=utf-8
+Last-Modified: Wed, 24 Dec 2025 22:41:11 GMT
+Page Title: ROPI AOSS
+
+## 3. CI Smoke Check (from workflow)
+HTTP Status: 200 ✅
+
+## Warnings
+None
+
+## Summary
+All hosting endpoints return HTTP 200 successfully.
+Deploy artifacts are served correctly from Firebase Hosting.
