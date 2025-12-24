@@ -116,43 +116,40 @@ function validateSKU(sku: string | undefined): ValidationIssue[] {
 }
 
 /**
- * Validate title
+ * Validate name (Product Name)
+ * LP-ATTR-1.3.1: name is optional per registry (import_required: false)
+ * Check both 'name' (canonical) and 'title' (legacy) for backward compatibility
  */
-function validateTitle(title: string | undefined): ValidationIssue[] {
+function validateName(name: string | undefined, title: string | undefined): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   
-  if (!title) {
-    issues.push(
-      createIssue(
-        'MISSING_REQUIRED_FIELD',
-        'error',
-        'title',
-        'Product title is required'
-      )
-    );
-    return issues;
+  // LP-ATTR-1.3.1: Product Name (name) is optional - no error if missing
+  const productName = name || title;
+  if (!productName) {
+    return issues; // Optional field
   }
   
-  if (title.length < 5) {
+  // Validate format if present
+  if (productName.length < 5) {
     issues.push(
       createIssue(
         'INVALID_VALUE',
         'warning',
-        'title',
-        'Product title is very short (less than 5 characters)',
-        title
+        name ? 'name' : 'title',
+        'Product name is very short (less than 5 characters)',
+        productName
       )
     );
   }
   
-  if (title.length > 200) {
+  if (productName.length > 200) {
     issues.push(
       createIssue(
         'INVALID_VALUE',
         'error',
-        'title',
-        'Product title is too long (max 200 characters)',
-        title
+        name ? 'name' : 'title',
+        'Product name is too long (max 200 characters)',
+        productName
       )
     );
   }
@@ -162,17 +159,26 @@ function validateTitle(title: string | undefined): ValidationIssue[] {
 
 /**
  * Validate brand
+ * LP-ATTR-1.3.1: brand is optional per registry (import_required: false)
  */
 function validateBrand(brand: string | undefined): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   
+  // LP-ATTR-1.3.1: Brand is optional - no error if missing
+  // Registry import_required: false is authoritative
   if (!brand) {
+    return issues; // Optional field
+  }
+  
+  // Validate format if present
+  if (brand.length > 100) {
     issues.push(
       createIssue(
-        'MISSING_REQUIRED_FIELD',
+        'INVALID_VALUE',
         'error',
         'brand',
-        'Brand is required'
+        'Brand is too long (max 100 characters)',
+        brand
       )
     );
   }
@@ -420,7 +426,8 @@ export function validateImportRow(
   // Validate core required fields (LP-2.1.0: MPN is now required)
   const mpnIssues = validateMPN(normalized.mpn);
   const skuIssues = validateSKU(normalized.sku); // Optional but validated if present
-  const titleIssues = validateTitle(normalized.title);
+  // LP-ATTR-1.3.1: Check both 'name' (canonical) and 'title' (legacy)
+  const nameIssues = validateName(normalized.name, normalized.title);
   const brandIssues = validateBrand(normalized.brand);
   
   // Validate optional fields
@@ -433,7 +440,7 @@ export function validateImportRow(
   const allIssues = [
     ...mpnIssues,
     ...skuIssues,
-    ...titleIssues,
+    ...nameIssues,
     ...brandIssues,
     ...pricingIssues,
     ...inventoryIssues,
