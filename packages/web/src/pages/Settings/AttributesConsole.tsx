@@ -615,22 +615,42 @@ export default function AttributesConsole() {
 
   // Handle delete action (hard delete)
   // LP-ATTR-1.3.1: Clear selection on BOTH success AND failure to prevent stale UI state
+  // LP-ATTR-1.3.2: Improved error handling with parseResponseSafely - shows readable toast messages
   const handleDelete = useCallback(async () => {
     if (!selectedId || !deleteAttribute) return;
     setSaving(true);
     const deletingId = selectedId; // Capture before clearing
     try {
-      await deleteAttribute(deletingId);
-      toastSuccess(`Attribute '${deletingId}' has been deleted.`);
+      const success = await deleteAttribute(deletingId);
+      if (success) {
+        toastSuccess(`Attribute '${deletingId}' has been deleted.`);
+      } else {
+        // 404 - attribute not found (already deleted or never existed)
+        toastSuccess(`Attribute '${deletingId}' was already deleted.`);
+      }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to delete attribute';
-      // LP-ATTR-1.3.1: Even on failure (e.g., 404), clear selection to prevent stuck UI
-      // The attribute may already be deleted, or there was a transient error.
-      // Either way, forcing the user to re-select ensures a clean state.
+      // LP-ATTR-1.3.2: Extract readable message from error
+      let message = 'Failed to delete attribute';
+      if (err instanceof Error) {
+        message = err.message;
+      } else if (typeof err === 'object' && err !== null) {
+        // Handle structured error responses
+        const errObj = err as any;
+        if (errObj.message) {
+          message = errObj.message;
+        } else if (errObj.error) {
+          message = errObj.error;
+        } else if (errObj.rawText) {
+          // Log raw text for debugging but show friendly message to user
+          console.warn(`[AttributesConsole] Delete failed for '${deletingId}', raw response:`, errObj.rawText);
+          message = `Delete failed: Server returned non-JSON response (see console for details)`;
+        }
+      }
+      
       console.warn(`[AttributesConsole] Delete failed for '${deletingId}':`, message);
       toastError(message);
     } finally {
-      // LP-ATTR-1.3.1: Always clear selection and reset form after delete attempt
+      // LP-ATTR-1.3.1/1.3.2: Always clear selection and reset form after delete attempt
       setShowDeleteModal(false);
       setSelectedId(null);
       setFormData({ ...DEFAULT_ATTR });
