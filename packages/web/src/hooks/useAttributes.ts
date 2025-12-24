@@ -104,6 +104,41 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 /**
+ * Parse response safely - handles 204 No Content, checks content-type, attempts JSON parse with fallback to text
+ * LP-ATTR-1.3.2: Prevents "Expected JSON response but got unknown content-type" console errors on DELETE 204
+ * 
+ * @param res - Fetch Response object
+ * @returns Parsed JSON object, or { rawText: string } if parsing fails or no content
+ */
+export async function parseResponseSafely(res: Response): Promise<any> {
+  // 204 No Content or 205 Reset Content - no body expected
+  if (res.status === 204 || res.status === 205) {
+    return null;
+  }
+
+  const contentType = (res.headers.get('content-type') || '').toLowerCase();
+  const text = await res.text();
+
+  // If no content-type or empty body, return raw text
+  if (!contentType || !text.trim()) {
+    return text ? { rawText: text } : null;
+  }
+
+  // If content-type indicates JSON, attempt parse
+  if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(text);
+    } catch (parseErr) {
+      console.warn('[parseResponseSafely] JSON parse failed despite content-type:', parseErr);
+      return { rawText: text };
+    }
+  }
+
+  // Non-JSON content (HTML, text, etc.) - return as rawText
+  return { rawText: text };
+}
+
+/**
  * Hook to manage product attributes via the admin API.
  * 
  * Uses a "pinned" pattern: newly-created attributes are stored in localStorage
@@ -196,9 +231,12 @@ export function useAttributes() {
   /**
    * Create a new attribute.
    * Pins the item to localStorage so it survives page refresh until server returns it.
+   * LP-3.0.11: Added defensive logging
    */
   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
+    console.debug('[useAttributes] createAttribute called', { data });
     const headers = await getAuthHeaders();
+    console.debug('[useAttributes] Got auth headers, calling POST');
     const url = `${API_BASE}/api/admin/settings/attributes`;
 
     // POST to server: this returns the created attribute
@@ -208,6 +246,7 @@ export function useAttributes() {
       credentials: 'include',
       body: JSON.stringify(data),
     });
+    console.debug('[useAttributes] createAttribute POST response:', created);
 
     // Pin to localStorage so it survives page refresh
     setPinnedMap((prev) => {
@@ -289,41 +328,64 @@ export function useAttributes() {
 
   /**
    * Delete an attribute (optimistic remove, then refresh)
+   * LP-ATTR-1.3.2: Updated to use parseResponseSafely to handle 204 responses without parse errors
    */
   const deleteAttribute = async (id: string): Promise<boolean> => {
     const headers = await getAuthHeaders();
     const url = `${API_BASE}/api/admin/settings/attributes/${encodeURIComponent(id)}`;
 
     try {
-      await fetchJSON<{ success: boolean }>(url, {
+      const res = await fetch(url, {
         method: 'DELETE',
         headers,
         credentials: 'include',
       });
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      const isNotFound = message.includes('ATTRIBUTE_NOT_FOUND') || message.includes('HTTP 404');
-      if (!isNotFound) {
-        throw err;
-      }
 
-      // If the server no longer has the attribute, clean it up locally and continue.
-      if (pinnedMap[id]) {
-        setPinnedMap((prev) => {
-          const next = { ...prev };
-          delete next[id];
-          savePinned(next);
-          return next;
+      // LP-ATTR-1.3.2: Use parseResponseSafely instead of unconditional res.json()
+      const parsed = await parseResponseSafely(res);
+
+      if (!res.ok) {
+        // Extract error message from parsed response
+        let errorMessage = `HTTP ${res.status}`;
+        if (parsed && typeof parsed === 'object') {
+          if ('message' in parsed) {
+            errorMessage = parsed.message as string;
+          } else if ('error' in parsed) {
+            errorMessage = parsed.error as string;
+          } else if ('rawText' in parsed) {
+            errorMessage = `${errorMessage}: ${(parsed.rawText as string).substring(0, 200)}`;
+          }
+        }
+        
+        const isNotFound = res.status === 404 || errorMessage.includes('ATTRIBUTE_NOT_FOUND');
+        
+        if (!isNotFound) {
+          throw new Error(errorMessage);
+        }
+
+        // If the server no longer has the attribute (404), clean it up locally and continue.
+        if (pinnedMap[id]) {
+          setPinnedMap((prev) => {
+            const next = { ...prev };
+            delete next[id];
+            savePinned(next);
+            return next;
+          });
+        } else {
+          setServerAttributes(prev => prev.filter(a => a.attribute_id !== id));
+        }
+
+        fetchAttributes().catch(error => {
+          console.warn('Background refresh failed after delete (404):', error);
         });
-      } else {
-        setServerAttributes(prev => prev.filter(a => a.attribute_id !== id));
+
+        return false;
       }
 
-      fetchAttributes().catch(error => {
-        console.warn('Background refresh failed after delete (404):', error);
-      });
-
-      return false;
+      // Success (204) - no parse errors now thanks to parseResponseSafely
+    } catch (err: unknown) {
+      // Network or other unexpected errors
+      throw err;
     }
 
     // Optimistically remove from pinned or server list
