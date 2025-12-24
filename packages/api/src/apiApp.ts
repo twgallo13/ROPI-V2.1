@@ -200,7 +200,8 @@ api.post('/observations/:id/analyze-image', analyzeImageHandler);
 // LP-ATTR-1.3.1.1: Add importCSV and importDryRun routes for /api/* access
 api.post('/importCSV', requireAdmin, importCSVHandler);
 api.post('/importDryRun', requireAdmin, importDryRunHandler);
-api.post('/processImportBatch', processImportBatchHandler);
+// LP-ATTR-1.3.1.1: processImportBatch needs requireAdmin to set req.uid
+api.post('/processImportBatch', requireAdmin, processImportBatchHandler);
 api.get('/importBatchStatus', getBatchStatusHandler);
 // PVS-0.3.1 Import preview with mapping support
 api.post('/admin/imports/preview', importPreviewHandler);
