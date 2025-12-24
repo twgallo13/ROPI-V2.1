@@ -55,6 +55,12 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
     try {
       // Get auth headers
       const authHeaders = await getAuthHeaders();
+      
+      // LP-ATTR-1.3.1.1: For multipart/form-data, only include Authorization header
+      // Do NOT set Content-Type - browser sets it automatically with boundary
+      const uploadHeaders: Record<string, string> = {
+        Authorization: authHeaders.Authorization,
+      };
 
       // Prepare form data
       const formData = new FormData();
@@ -68,7 +74,7 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
       // This ensures CORS works correctly through same-origin request
       const response = await fetch('/api/importCSV', {
         method: 'POST',
-        headers: authHeaders,
+        headers: uploadHeaders,
         body: formData,
       });
 
