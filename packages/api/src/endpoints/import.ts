@@ -29,6 +29,7 @@ const ALLOWED_ORIGINS = [
 /**
  * LP-ATTR-1.3.1: Helper to set CORS headers explicitly on every response
  * Ensures CORS headers are present even on error paths (400, 401, 500, etc.)
+ * LP-ATTR-1.3.1.1: Support both Express Request and Cloud Functions Request
  */
 function setCorsHeaders(res: ExpressResponse, origin: string | undefined): void {
   const allowOrigin = (!origin || ALLOWED_ORIGINS.includes(origin)) ? (origin || '*') : '';
@@ -38,6 +39,18 @@ function setCorsHeaders(res: ExpressResponse, origin: string | undefined): void 
     res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
     res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   }
+}
+
+/**
+ * LP-ATTR-1.3.1.1: Helper to get origin from request (supports both Express and Cloud Functions)
+ */
+function getOrigin(req: any): string | undefined {
+  // Try Express/Cloud Functions .get() method first
+  if (typeof req.get === 'function') {
+    return req.get('Origin');
+  }
+  // Fall back to direct headers access for tests
+  return req.headers?.origin || req.headers?.Origin;
 }
 
 // LP-3.0.0: CORS handler with proper origin validation and preflight support
@@ -128,7 +141,7 @@ async function parseUpload(req: ExpressRequest): Promise<{
  */
 async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): Promise<void> {
   // LP-ATTR-1.3.1: Set CORS headers immediately
-  const origin = req.get('Origin');
+  const origin = getOrigin(req);
   setCorsHeaders(res, origin);
   
   try {
@@ -178,6 +191,7 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
     // LP-ATTR-1.3.1: Ensure CORS headers on error response
+    const origin = getOrigin(req);
     setCorsHeaders(res, origin);
     
     res.status(500).json({
@@ -198,7 +212,7 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
  */
 async function dryRunHandler(req: AuthenticatedRequest, res: ExpressResponse): Promise<void> {
   // LP-ATTR-1.3.1: Set CORS headers immediately
-  const origin = req.get('Origin');
+  const origin = getOrigin(req);
   setCorsHeaders(res, origin);
   
   try {
@@ -240,6 +254,7 @@ async function dryRunHandler(req: AuthenticatedRequest, res: ExpressResponse): P
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
     // LP-ATTR-1.3.1: Ensure CORS headers on error response
+    const origin = getOrigin(req);
     setCorsHeaders(res, origin);
     
     res.status(500).json({
@@ -262,13 +277,20 @@ function handlePreflight(req: functions.https.Request, res: functions.Response):
 }
 
 /**
+ * LP-ATTR-1.3.1.1: Export Express handlers for apiApp routing
+ * These are used by apiApp.ts to mount under /api/importCSV
+ */
+export { importHandler as importCSVHandler };
+export { dryRunHandler as importDryRunHandler };
+
+/**
  * Export Cloud Function with admin auth middleware and CORS
  * LP-3.0.0: Explicit preflight handling before auth check
  * LP-ATTR-1.3.1: Set CORS headers before any processing to ensure they're on all responses
  */
 export const importCSV = functions.https.onRequest((req, res) => {
   // LP-ATTR-1.3.1: Set CORS headers FIRST, before any middleware
-  const origin = req.get('Origin');
+  const origin = getOrigin(req);
   setCorsHeaders(res as any, origin);
   
   // Handle preflight early
@@ -292,7 +314,7 @@ export const importCSV = functions.https.onRequest((req, res) => {
  */
 export const importDryRun = functions.https.onRequest((req, res) => {
   // LP-ATTR-1.3.1: Set CORS headers FIRST, before any middleware
-  const origin = req.get('Origin');
+  const origin = getOrigin(req);
   setCorsHeaders(res as any, origin);
   
   // Handle preflight early

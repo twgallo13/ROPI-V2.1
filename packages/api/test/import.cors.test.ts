@@ -88,9 +88,10 @@ describe('Import CORS Tests (LP-3.0.0)', () => {
       
       await (importCSV as any)(mockReq, mockRes);
       
-      expect(mockCorsMiddleware).toHaveBeenCalled();
+      // LP-ATTR-1.3.1.1: Early OPTIONS handling sets headers directly, no middleware call
       expect(mockRes.status).toHaveBeenCalledWith(204);
       expect(mockRes.send).toHaveBeenCalledWith('');
+      expect(mockRes.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', 'https://ropi-aoss-staging.web.app');
     });
 
     it('should return 204 for OPTIONS request from allowed production origin', async () => {
@@ -186,9 +187,9 @@ describe('Import CORS Tests (LP-3.0.0)', () => {
       
       await (importCSV as any)(mockReq, mockRes);
       
-      // Should still process the request
-      expect(mockCorsMiddleware).toHaveBeenCalled();
+      // LP-ATTR-1.3.1.1: Early OPTIONS handling, no origin means wildcard CORS
       expect(mockRes.status).toHaveBeenCalledWith(204);
+      expect(mockRes.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
     });
   });
 });

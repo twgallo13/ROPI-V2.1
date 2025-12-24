@@ -78,6 +78,11 @@ import {
 } from './endpoints/processImportBatch';
 import { retailopsImportPreviewApiHandler } from './endpoints/retailopsImportPreview';
 import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
+// LP-ATTR-1.3.1.1: Import CSV handlers for apiApp routing
+import {
+  importCSVHandler,
+  importDryRunHandler,
+} from './endpoints/import';
 
 // Reconciliation (Homer v1.0.0)
 import reconcileAttributesRouter from './admin/reconcileAttributes';
@@ -181,6 +186,9 @@ api.post('/observations/:id/analyze-image', analyzeImageHandler);
 /**
  * Import, batch and sync endpoints
  */
+// LP-ATTR-1.3.1.1: Add importCSV and importDryRun routes for /api/* access
+api.post('/importCSV', requireAdmin, importCSVHandler);
+api.post('/importDryRun', requireAdmin, importDryRunHandler);
 api.post('/processImportBatch', processImportBatchHandler);
 api.get('/importBatchStatus', getBatchStatusHandler);
 // PVS-0.3.1 Import preview with mapping support
