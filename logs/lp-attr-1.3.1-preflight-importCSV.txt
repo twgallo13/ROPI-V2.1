@@ -19,7 +19,7 @@
 * TLSv1.3 (IN), TLS handshake, Certificate (11):
 { [10194 bytes data]
 * TLSv1.3 (IN), TLS handshake, CERT verify (15):
-{ [79 bytes data]
+{ [80 bytes data]
 * TLSv1.3 (IN), TLS handshake, Finished (20):
 { [52 bytes data]
 * TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
@@ -40,17 +40,17 @@
 *   Certificate level 2: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
 } [5 bytes data]
 * using HTTP/2
-* [HTTP/2] [1] OPENED stream for https://us-central1-ropi-bccee.cloudfunctions.net/importDryRun
+* [HTTP/2] [1] OPENED stream for https://us-central1-ropi-bccee.cloudfunctions.net/importCSV
 * [HTTP/2] [1] [:method: OPTIONS]
 * [HTTP/2] [1] [:scheme: https]
 * [HTTP/2] [1] [:authority: us-central1-ropi-bccee.cloudfunctions.net]
-* [HTTP/2] [1] [:path: /importDryRun]
+* [HTTP/2] [1] [:path: /importCSV]
 * [HTTP/2] [1] [user-agent: curl/8.5.0]
 * [HTTP/2] [1] [accept: */*]
 * [HTTP/2] [1] [origin: https://ropi-aoss-staging.web.app]
 * [HTTP/2] [1] [access-control-request-method: POST]
 } [5 bytes data]
-> OPTIONS /importDryRun HTTP/2
+> OPTIONS /importCSV HTTP/2
 > Host: us-central1-ropi-bccee.cloudfunctions.net
 > User-Agent: curl/8.5.0
 > Accept: */*
@@ -69,21 +69,21 @@
 < access-control-allow-credentials: true
 < access-control-allow-headers: Content-Type,Authorization,X-Requested-With
 < access-control-allow-methods: GET,POST,OPTIONS
-< x-cloud-trace-context: 9e9881d7a218b1876614cea6e7629988;o=1
-< date: Wed, 24 Dec 2025 11:09:11 GMT
+< x-cloud-trace-context: a65e925d5d09cf804c39ee2ddee1224f;o=1
+< date: Wed, 24 Dec 2025 11:09:04 GMT
 < content-type: text/html
 < server: Google Frontend
 < alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
 < 
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 * Connection #0 to host us-central1-ropi-bccee.cloudfunctions.net left intact
 HTTP/2 204 
 access-control-allow-origin: https://ropi-aoss-staging.web.app
 access-control-allow-credentials: true
 access-control-allow-headers: Content-Type,Authorization,X-Requested-With
 access-control-allow-methods: GET,POST,OPTIONS
-x-cloud-trace-context: 9e9881d7a218b1876614cea6e7629988;o=1
-date: Wed, 24 Dec 2025 11:09:11 GMT
+x-cloud-trace-context: a65e925d5d09cf804c39ee2ddee1224f;o=1
+date: Wed, 24 Dec 2025 11:09:04 GMT
 content-type: text/html
 server: Google Frontend
 alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000

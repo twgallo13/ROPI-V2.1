@@ -1,3 +1,4 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host us-central1-ropi-bccee.cloudfunctions.net:443 was resolved.
@@ -19,7 +20,7 @@
 * TLSv1.3 (IN), TLS handshake, Certificate (11):
 { [10194 bytes data]
 * TLSv1.3 (IN), TLS handshake, CERT verify (15):
-{ [79 bytes data]
+{ [80 bytes data]
 * TLSv1.3 (IN), TLS handshake, Finished (20):
 { [52 bytes data]
 * TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
@@ -40,23 +41,29 @@
 *   Certificate level 2: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
 } [5 bytes data]
 * using HTTP/2
-* [HTTP/2] [1] OPENED stream for https://us-central1-ropi-bccee.cloudfunctions.net/importDryRun
-* [HTTP/2] [1] [:method: OPTIONS]
+* [HTTP/2] [1] OPENED stream for https://us-central1-ropi-bccee.cloudfunctions.net/importCSV
+* [HTTP/2] [1] [:method: POST]
 * [HTTP/2] [1] [:scheme: https]
 * [HTTP/2] [1] [:authority: us-central1-ropi-bccee.cloudfunctions.net]
-* [HTTP/2] [1] [:path: /importDryRun]
+* [HTTP/2] [1] [:path: /importCSV]
 * [HTTP/2] [1] [user-agent: curl/8.5.0]
 * [HTTP/2] [1] [accept: */*]
 * [HTTP/2] [1] [origin: https://ropi-aoss-staging.web.app]
-* [HTTP/2] [1] [access-control-request-method: POST]
+* [HTTP/2] [1] [authorization: Bearer invalid-token-123]
+* [HTTP/2] [1] [content-length: 289]
+* [HTTP/2] [1] [content-type: multipart/form-data; boundary=------------------------xTMJ0SPOIuzINUKr8eLD9l]
 } [5 bytes data]
-> OPTIONS /importDryRun HTTP/2
+> POST /importCSV HTTP/2
 > Host: us-central1-ropi-bccee.cloudfunctions.net
 > User-Agent: curl/8.5.0
 > Accept: */*
 > Origin: https://ropi-aoss-staging.web.app
-> Access-Control-Request-Method: POST
+> Authorization: Bearer invalid-token-123
+> Content-Length: 289
+> Content-Type: multipart/form-data; boundary=------------------------xTMJ0SPOIuzINUKr8eLD9l
 > 
+} [5 bytes data]
+* We are completely uploaded and fine
 { [5 bytes data]
 * TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
 { [282 bytes data]
@@ -64,27 +71,33 @@
 { [282 bytes data]
 * old SSL session ID is stale, removing
 { [5 bytes data]
-< HTTP/2 204 
+< HTTP/2 401 
 < access-control-allow-origin: https://ropi-aoss-staging.web.app
 < access-control-allow-credentials: true
 < access-control-allow-headers: Content-Type,Authorization,X-Requested-With
 < access-control-allow-methods: GET,POST,OPTIONS
-< x-cloud-trace-context: 9e9881d7a218b1876614cea6e7629988;o=1
-< date: Wed, 24 Dec 2025 11:09:11 GMT
-< content-type: text/html
+< vary: Origin
+< content-type: application/json; charset=utf-8
+< x-cloud-trace-context: 6d0fb02b01580bc2f27de36c005181e0;o=1
+< date: Wed, 24 Dec 2025 11:09:19 GMT
 < server: Google Frontend
+< content-length: 72
 < alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
 < 
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+{ [72 bytes data]
+100   361  100    72  100   289    695   2793 --:--:-- --:--:-- --:--:--  3504
 * Connection #0 to host us-central1-ropi-bccee.cloudfunctions.net left intact
-HTTP/2 204 
+HTTP/2 401 
 access-control-allow-origin: https://ropi-aoss-staging.web.app
 access-control-allow-credentials: true
 access-control-allow-headers: Content-Type,Authorization,X-Requested-With
 access-control-allow-methods: GET,POST,OPTIONS
-x-cloud-trace-context: 9e9881d7a218b1876614cea6e7629988;o=1
-date: Wed, 24 Dec 2025 11:09:11 GMT
-content-type: text/html
+vary: Origin
+content-type: application/json; charset=utf-8
+x-cloud-trace-context: 6d0fb02b01580bc2f27de36c005181e0;o=1
+date: Wed, 24 Dec 2025 11:09:19 GMT
 server: Google Frontend
+content-length: 72
 alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
 
+{"error":"Unauthorized","message":"Valid authentication token required"}
