@@ -17,11 +17,28 @@ import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 import { processCSVImport, validateCSVImport } from '../services/importService';
 
 // LP-3.0.0: Allowed origins - keep narrow for staging & production
+// LP-ATTR-1.3.1: Add firebaseapp.com domains for staging/prod
 const ALLOWED_ORIGINS = [
   'https://ropi-aoss-staging.web.app',
   'https://ropi-aoss.web.app',
   'https://ropi-aoss-prod.web.app',
+  'https://ropi-aoss-staging.firebaseapp.com',
+  'https://ropi-aoss.firebaseapp.com',
 ];
+
+/**
+ * LP-ATTR-1.3.1: Helper to set CORS headers explicitly on every response
+ * Ensures CORS headers are present even on error paths (400, 401, 500, etc.)
+ */
+function setCorsHeaders(res: ExpressResponse, origin: string | undefined): void {
+  const allowOrigin = (!origin || ALLOWED_ORIGINS.includes(origin)) ? (origin || '*') : '';
+  if (allowOrigin) {
+    res.set('Access-Control-Allow-Origin', allowOrigin);
+    res.set('Access-Control-Allow-Credentials', 'true');
+    res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
+    res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  }
+}
 
 // LP-3.0.0: CORS handler with proper origin validation and preflight support
 const corsHandler = cors({
@@ -106,8 +123,14 @@ async function parseUpload(req: ExpressRequest): Promise<{
  * 
  * Accepts multipart/form-data with CSV file
  * Admin-only access
+ * 
+ * LP-ATTR-1.3.1: Ensure CORS headers on all response paths
  */
 async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): Promise<void> {
+  // LP-ATTR-1.3.1: Set CORS headers immediately
+  const origin = req.get('Origin');
+  setCorsHeaders(res, origin);
+  
   try {
     // Only accept POST
     if (req.method !== 'POST') {
@@ -154,6 +177,9 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
     
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
+    // LP-ATTR-1.3.1: Ensure CORS headers on error response
+    setCorsHeaders(res, origin);
+    
     res.status(500).json({
       error: 'Import Failed',
       message: errorMessage,
@@ -167,8 +193,14 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
  * 
  * Validates CSV against attribute registry without persisting.
  * Returns per-row diagnostics.
+ * 
+ * LP-ATTR-1.3.1: Ensure CORS headers on all response paths
  */
 async function dryRunHandler(req: AuthenticatedRequest, res: ExpressResponse): Promise<void> {
+  // LP-ATTR-1.3.1: Set CORS headers immediately
+  const origin = req.get('Origin');
+  setCorsHeaders(res, origin);
+  
   try {
     // Only accept POST
     if (req.method !== 'POST') {
@@ -207,6 +239,9 @@ async function dryRunHandler(req: AuthenticatedRequest, res: ExpressResponse): P
     
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
+    // LP-ATTR-1.3.1: Ensure CORS headers on error response
+    setCorsHeaders(res, origin);
+    
     res.status(500).json({
       error: 'Validation Failed',
       message: errorMessage,
@@ -229,12 +264,20 @@ function handlePreflight(req: functions.https.Request, res: functions.Response):
 /**
  * Export Cloud Function with admin auth middleware and CORS
  * LP-3.0.0: Explicit preflight handling before auth check
+ * LP-ATTR-1.3.1: Set CORS headers before any processing to ensure they're on all responses
  */
 export const importCSV = functions.https.onRequest((req, res) => {
+  // LP-ATTR-1.3.1: Set CORS headers FIRST, before any middleware
+  const origin = req.get('Origin');
+  setCorsHeaders(res as any, origin);
+  
+  // Handle preflight early
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  
   corsHandler(req as any, res as any, async () => {
-    // Handle preflight before auth
-    if (handlePreflight(req, res)) return;
-    
     await requireAdmin(req, res, async () => {
       await importHandler(req as unknown as AuthenticatedRequest, res);
     });
@@ -245,12 +288,20 @@ export const importCSV = functions.https.onRequest((req, res) => {
  * LP-2.1.8: Dry-run validation endpoint
  * POST /api/admin/imports/dry-run
  * LP-3.0.0: Explicit preflight handling
+ * LP-ATTR-1.3.1: Set CORS headers before any processing to ensure they're on all responses
  */
 export const importDryRun = functions.https.onRequest((req, res) => {
+  // LP-ATTR-1.3.1: Set CORS headers FIRST, before any middleware
+  const origin = req.get('Origin');
+  setCorsHeaders(res as any, origin);
+  
+  // Handle preflight early
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  
   corsHandler(req as any, res as any, async () => {
-    // Handle preflight before auth
-    if (handlePreflight(req, res)) return;
-    
     await requireAdmin(req, res, async () => {
       await dryRunHandler(req as unknown as AuthenticatedRequest, res);
     });

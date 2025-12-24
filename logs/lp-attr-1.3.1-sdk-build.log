@@ -1,0 +1,15 @@
+
+> @ropi-aoss/sdk@0.0.0 build /workspaces/ROPI-V2.1/packages/sdk
+> tsup
+
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /workspaces/ROPI-V2.1/packages/sdk/tsup.config.ts
+CLI Target: es2020
+CJS Build start
+ESM Build start
+ESM dist/index.mjs 54.12 KB
+ESM ⚡️ Build success in 432ms
+CJS dist/index.js 56.76 KB
+CJS ⚡️ Build success in 432ms

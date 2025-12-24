@@ -1,0 +1,92 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host us-central1-ropi-bccee.cloudfunctions.net:443 was resolved.
+* IPv6: 2001:4860:4802:36::36
+* IPv4: 216.239.36.54
+*   Trying 216.239.36.54:443...
+* Connected to us-central1-ropi-bccee.cloudfunctions.net (216.239.36.54) port 443
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [15 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [10194 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [79 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [52 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [52 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / id-ecPublicKey
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=misc.google.com
+*  start date: Dec  3 15:53:46 2025 GMT
+*  expire date: Feb 25 15:53:45 2026 GMT
+*  subjectAltName: host "us-central1-ropi-bccee.cloudfunctions.net" matched cert's "*.cloudfunctions.net"
+*  issuer: C=US; O=Google Trust Services; CN=WE2
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA256
+*   Certificate level 1: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA384
+*   Certificate level 2: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
+} [5 bytes data]
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://us-central1-ropi-bccee.cloudfunctions.net/importDryRun
+* [HTTP/2] [1] [:method: OPTIONS]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: us-central1-ropi-bccee.cloudfunctions.net]
+* [HTTP/2] [1] [:path: /importDryRun]
+* [HTTP/2] [1] [user-agent: curl/8.5.0]
+* [HTTP/2] [1] [accept: */*]
+* [HTTP/2] [1] [origin: https://ropi-aoss-staging.web.app]
+* [HTTP/2] [1] [access-control-request-method: POST]
+} [5 bytes data]
+> OPTIONS /importDryRun HTTP/2
+> Host: us-central1-ropi-bccee.cloudfunctions.net
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Origin: https://ropi-aoss-staging.web.app
+> Access-Control-Request-Method: POST
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [282 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [282 bytes data]
+* old SSL session ID is stale, removing
+{ [5 bytes data]
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0< HTTP/2 204 
+< access-control-allow-origin: https://ropi-aoss-staging.web.app
+< vary: Origin
+< access-control-allow-credentials: true
+< access-control-allow-methods: GET,POST,OPTIONS
+< access-control-allow-headers: Content-Type,Authorization,X-Requested-With
+< x-cloud-trace-context: b23132c0164981622f9c7b57c9c091c7;o=1
+< date: Wed, 24 Dec 2025 09:49:26 GMT
+< content-type: text/html
+< server: Google Frontend
+< alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+* Connection #0 to host us-central1-ropi-bccee.cloudfunctions.net left intact
+HTTP/2 204 
+access-control-allow-origin: https://ropi-aoss-staging.web.app
+vary: Origin
+access-control-allow-credentials: true
+access-control-allow-methods: GET,POST,OPTIONS
+access-control-allow-headers: Content-Type,Authorization,X-Requested-With
+x-cloud-trace-context: b23132c0164981622f9c7b57c9c091c7;o=1
+date: Wed, 24 Dec 2025 09:49:26 GMT
+content-type: text/html
+server: Google Frontend
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+

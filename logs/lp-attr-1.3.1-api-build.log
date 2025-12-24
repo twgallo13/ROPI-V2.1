@@ -1,0 +1,14 @@
+ WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.21.1","pnpm":"10.26.1"})
+
+> @ropi-aoss/api@0.0.0 build /workspaces/ROPI-V2.1/packages/api
+> node esbuild.config.js
+
+
+  dist/index.js      1.9mb ⚠️
+  dist/index.js.map  3.4mb
+
+⚡ Done in 519ms
+
+> @ropi-aoss/api@0.0.0 postbuild /workspaces/ROPI-V2.1/packages/api
+> mkdir -p dist/config && cp -f ../sdk/config/attributeRegistry.json dist/config/attributeRegistry.json || true
+
