@@ -190,38 +190,31 @@ function validateSKU(sku) {
   }
   return issues;
 }
-function validateTitle(title) {
+function validateName(name, title) {
   const issues = [];
-  if (!title) {
-    issues.push(
-      createIssue(
-        "MISSING_REQUIRED_FIELD",
-        "error",
-        "title",
-        "Product title is required"
-      )
-    );
+  const productName = name || title;
+  if (!productName) {
     return issues;
   }
-  if (title.length < 5) {
+  if (productName.length < 5) {
     issues.push(
       createIssue(
         "INVALID_VALUE",
         "warning",
-        "title",
-        "Product title is very short (less than 5 characters)",
-        title
+        name ? "name" : "title",
+        "Product name is very short (less than 5 characters)",
+        productName
       )
     );
   }
-  if (title.length > 200) {
+  if (productName.length > 200) {
     issues.push(
       createIssue(
         "INVALID_VALUE",
         "error",
-        "title",
-        "Product title is too long (max 200 characters)",
-        title
+        name ? "name" : "title",
+        "Product name is too long (max 200 characters)",
+        productName
       )
     );
   }
@@ -230,12 +223,16 @@ function validateTitle(title) {
 function validateBrand(brand) {
   const issues = [];
   if (!brand) {
+    return issues;
+  }
+  if (brand.length > 100) {
     issues.push(
       createIssue(
-        "MISSING_REQUIRED_FIELD",
+        "INVALID_VALUE",
         "error",
         "brand",
-        "Brand is required"
+        "Brand is too long (max 100 characters)",
+        brand
       )
     );
   }
@@ -430,7 +427,7 @@ function validateImportRow(normalized) {
   const warnings = [];
   const mpnIssues = validateMPN(normalized.mpn);
   const skuIssues = validateSKU(normalized.sku);
-  const titleIssues = validateTitle(normalized.title);
+  const nameIssues = validateName(normalized.name, normalized.title);
   const brandIssues = validateBrand(normalized.brand);
   const pricingIssues = validatePricing(normalized);
   const inventoryIssues = validateInventory(normalized);
@@ -439,7 +436,7 @@ function validateImportRow(normalized) {
   const allIssues = [
     ...mpnIssues,
     ...skuIssues,
-    ...titleIssues,
+    ...nameIssues,
     ...brandIssues,
     ...pricingIssues,
     ...inventoryIssues,
