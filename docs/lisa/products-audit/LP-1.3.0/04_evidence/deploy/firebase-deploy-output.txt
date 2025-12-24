@@ -1,0 +1,44 @@
+# Firebase Deploy Output — LP-1.3.0 Post-Merge Deploy
+
+**Actions Run ID:** 20494970346
+**Workflow:** deploy-staging.yml
+**Trigger:** Push to aoss-main (merge commit e93f1584e8582d88a4406c366bab6ed90cb3578c)
+**Date/Time:** 2025-12-24T22:39:01Z
+
+## Deployment Status
+
+### Hosting Channel Deploy (aoss-main-staging)
+status: success
+site: ropi-aoss-staging
+url: https://ropi-aoss-staging--aoss-main-staging-66cwdo2b.web.app
+expireTime: 2025-12-31T22:40:50.994478914Z
+
+### Cloud Functions Deploy
+status: success
+
+### Hosting Deploy (aoss-staging)
+status: success
+
+## Stable Staging URL
+https://ropi-aoss-staging.web.app
+
+## Smoke Check (CI)
+HTTP status: 200
+
+## Build Steps Summary
+| Step | Status |
+|------|--------|
+| Set up job | success |
+| Checkout code | success |
+| Setup Node.js 20 | success |
+| Enable corepack and prepare pnpm | success |
+| Install dependencies | success |
+| Build SDK package | success (CJS + ESM) |
+| Build packages/web | success |
+| Build packages/api | success |
+| Verify build output | success |
+| Setup gcloud authentication | success |
+| Install Firebase CLI | success |
+| Deploy to stable staging site | success |
+| Smoke check stable staging | success (HTTP 200) |
+| Cleanup credentials | success |
