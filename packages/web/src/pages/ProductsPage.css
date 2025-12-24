@@ -398,7 +398,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-tertiary, #999);
+}
+
+.product-card__image-placeholder.hidden {
+  display: none;
+}
+
+.product-card__image-fallback {
+  /* Same styles as placeholder, shown on image load error */
 }
 
 .product-card__content {
