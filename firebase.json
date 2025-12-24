@@ -29,6 +29,14 @@
       ],
       "rewrites": [
         {
+          "source": "/api/importCSV",
+          "function": "importCSV"
+        },
+        {
+          "source": "/api/importDryRun",
+          "function": "importDryRun"
+        },
+        {
           "source": "/api/**",
           "function": "api"
         },
