@@ -64,8 +64,9 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
       // In future, backend should accept custom mappings in the request
 
       // Call import API
-      const apiUrl = (import.meta.env.VITE_API_BASE || '').replace('/api', '') || 'https://us-central1-ropi-bccee.cloudfunctions.net';
-      const response = await fetch(`${apiUrl}/api/importCSV`, {
+      // LP-ATTR-1.3.1.1: Use relative URL to leverage hosting rewrites (/api/** → api function)
+      // This ensures CORS works correctly through same-origin request
+      const response = await fetch('/api/importCSV', {
         method: 'POST',
         headers: authHeaders,
         body: formData,
@@ -93,7 +94,7 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
         warningCount: uploadResult.warningCount || 0,
       });
 
-      const processResponse = await fetch(`${apiUrl}/api/processImportBatch`, {
+      const processResponse = await fetch('/api/processImportBatch', {
         method: 'POST',
         headers: {
           ...authHeaders,
