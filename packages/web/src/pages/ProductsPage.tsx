@@ -25,10 +25,8 @@ import PageLayout from '@/components/common/PageLayout';
 import { Pagination } from '@/components/common/Pagination';
 import { ProductsTable, BulkActionToolbar } from '@/components/products';
 import { useProducts, type ProductSummary, type ProductFilters } from '@/hooks/useProducts';
+import { useAttributeRegistry } from '@/hooks/useAttributeRegistry';
 import './ProductsPage.css';
-
-// Department enum values from attributeRegistry.json
-const DEPARTMENT_OPTIONS = ['Mens', 'Womens', 'Kids', 'Unisex', 'Boys', 'Girls'];
 
 // Status options
 const STATUS_OPTIONS = ['draft', 'pending', 'active', 'discontinued'];
@@ -205,6 +203,13 @@ function ProductsPage() {
     autoLoad: true,
     debounceMs: 300,
   });
+
+  // LP-1.3.6: Get department attribute from registry for dynamic filter options
+  const { getAttributeById } = useAttributeRegistry();
+  const departmentAttribute = getAttributeById('department');
+  const departmentOptions = useMemo(() => {
+    return departmentAttribute?.allowed_values ?? [];
+  }, [departmentAttribute]);
 
   // Get unique brands from current items for dropdown
   const availableBrands = useMemo(() => {
@@ -549,7 +554,7 @@ function ProductsPage() {
               aria-label="Filter by department"
             >
               <option value="">All Departments</option>
-              {DEPARTMENT_OPTIONS.map((dept) => (
+              {departmentOptions.map((dept) => (
                 <option key={dept} value={dept}>
                   {dept}
                 </option>
