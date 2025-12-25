@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-12-24T08:49:41.011Z",
+  "url": "https://ropi-aoss-staging--pr-339-iktcwvsh.web.app/settings/attributes",
+  "steps": [
+    {
+      "step": "Navigation",
+      "status": "pass",
+      "details": "Loaded https://ropi-aoss-staging--pr-339-iktcwvsh.web.app/settings/attributes",
+      "timestamp": "2025-12-24T08:50:05.248Z"
+    },
+    {
+      "step": "Create Attribute",
+      "status": "fail",
+      "details": "page.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"New Attribute\"), button:has-text(\"Create\"), button:has-text(\"Add Attribute\")')\u001b[22m\n",
+      "timestamp": "2025-12-24T08:50:10.250Z"
+    },
+    {
+      "step": "Delete Attribute (204)",
+      "status": "skip",
+      "details": "No attribute row found to delete",
+      "timestamp": "2025-12-24T08:50:12.255Z"
+    },
+    {
+      "step": "Delete Again (404)",
+      "status": "skip",
+      "details": "Cannot re-select deleted attribute for 404 test",
+      "timestamp": "2025-12-24T08:50:13.259Z"
+    },
+    {
+      "step": "Create After Delete",
+      "status": "fail",
+      "details": "page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"New Attribute\"), button:has-text(\"Create\")')\u001b[22m\n",
+      "timestamp": "2025-12-24T08:50:44.259Z"
+    }
+  ],
+  "artifacts": {
+    "har": null,
+    "console_logs": [
+      {
+        "type": "log",
+        "text": "✅ Firebase initialized successfully",
+        "timestamp": "2025-12-24T08:50:04.075Z"
+      },
+      {
+        "type": "warning",
+        "text": "Sentry DSN not configured - error monitoring disabled",
+        "timestamp": "2025-12-24T08:50:04.149Z"
+      },
+      {
+        "type": "log",
+        "text": "🔐 Auth state changed: No user",
+        "timestamp": "2025-12-24T08:50:04.504Z"
+      },
+      {
+        "type": "error",
+        "text": "Error fetching attributes: NotAuthenticated: User not signed in. Please sign in to access admin features.",
+        "timestamp": "2025-12-24T08:50:12.420Z"
+      }
+    ],
+    "network_logs": []
+  },
+  "summary": {
+    "total_steps": 5,
+    "passed": 1,
+    "failed": 2
+  },
+  "create_save_works": false
+}

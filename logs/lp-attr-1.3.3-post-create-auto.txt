@@ -1,0 +1,35 @@
+HTTP/2 400 
+content-type: application/json; charset=utf-8
+etag: W/"77-F4tMEAhPmOttmIBBHxKzFLFDM18"
+server: Google Frontend
+traceparent: 00-7ede50cf65f02e08ad8477e86c26dff9-af729ec7e3350f63-00
+x-cloud-trace-context: 7ede50cf65f02e08ad8477e86c26dff9/12642341685329989475
+x-powered-by: Express
+accept-ranges: bytes
+date: Wed, 24 Dec 2025 10:12:08 GMT
+x-served-by: cache-bur-kbur8200056-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766571128.165382,VS0,VE681
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 119
+
+{"error":"VALIDATION_ERROR","message":"Invalid attribute data","errors":[{"path":"attribute_id","message":"Required"}]}HTTP/2 400 
+content-type: application/json; charset=utf-8
+etag: W/"c6-F+LqISS3+MBR3W7UrV2u5+7/OpE"
+server: Google Frontend
+traceparent: 00-5115d974703007ae41b059001e2e24c1-a8a2be4c208bb7cd-01
+x-cloud-trace-context: 5115d974703007ae41b059001e2e24c1/12151483978771838925;o=1
+x-powered-by: Express
+accept-ranges: bytes
+date: Wed, 24 Dec 2025 10:12:15 GMT
+x-served-by: cache-bur-kbur8200056-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766571136.762198,VS0,VE226
+vary: Origin, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 198
+
+{"error":"VALIDATION_ERROR","message":"Invalid attribute data","errors":[{"path":"attribute_id","message":"String must contain at least 1 character(s)"},{"path":"attribute_id","message":"Invalid"}]}

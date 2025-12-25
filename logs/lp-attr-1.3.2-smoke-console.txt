@@ -1,0 +1,4 @@
+[2025-12-24T08:50:04.075Z] [log] ✅ Firebase initialized successfully
+[2025-12-24T08:50:04.149Z] [warning] Sentry DSN not configured - error monitoring disabled
+[2025-12-24T08:50:04.504Z] [log] 🔐 Auth state changed: No user
+[2025-12-24T08:50:12.420Z] [error] Error fetching attributes: NotAuthenticated: User not signed in. Please sign in to access admin features.
