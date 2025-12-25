@@ -1,0 +1,21 @@
+HTTP/2 201 
+cache-control: private
+content-type: application/json; charset=utf-8
+etag: W/"16d-eRZRJy4cU/nnoCiSjovmbjSyBbA"
+server: Google Frontend
+strict-transport-security: max-age=31556926; includeSubDomains; preload
+traceparent: 00-d488ade8f53ffe63a869a1b92bf545e0-61d0e2d166e546f8-01
+x-cloud-trace-context: d488ade8f53ffe63a869a1b92bf545e0/7048382805837170424;o=1
+x-country-code: US
+x-powered-by: Express
+accept-ranges: bytes
+date: Wed, 24 Dec 2025 10:12:01 GMT
+x-served-by: cache-bur-kbur8200056-BUR
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1766571121.153930,VS0,VE287
+vary: Origin,cookie,need-authorization, x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+content-length: 365
+
+{"attribute_id":"manual_test_id_1766571120","label":"lp341_manual_1766571120","data_type":"string","required_for_completion":false,"required_for_export":false,"import_required":false,"status":"active","createdBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","createdAt":"2025-12-24T10:12:01.302Z","updatedBy":"zmAn8kKTE3ZW3fM386d8tiWW97U2","updatedAt":"2025-12-24T10:12:01.302Z"}

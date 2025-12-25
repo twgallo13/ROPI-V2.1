@@ -236,7 +236,7 @@ export async function listProductsHandler(req: Request, res: Response) {
     try {
       let query: admin.firestore.Query = db.collection('products');
 
-      // Apply filters (must be done before sorting for composite indexes)
+      // Apply filters
       if (brandFilter) {
         query = query.where('brand', '==', brandFilter);
       }
@@ -250,40 +250,29 @@ export async function listProductsHandler(req: Request, res: Response) {
         query = query.where('department', '==', departmentFilter);
       }
 
-      // IMPORTANT: Firestore excludes documents that don't have the orderBy field
-      // Only apply orderBy if we have filters (which require indexes) or explicit sort request
-      // For the default case, fetch all documents and sort client-side
-      const useServerSort = hasFilters || (req.query.sortBy as string);
+      // IMPORTANT: Do NOT use server-side orderBy with filters
+      // This avoids requiring composite indexes (filter + sort field)
+      // Instead, we fetch filtered docs and sort client-side
+      // This is fine for small catalogs (<1000 products)
       
-      if (useServerSort) {
-        // Apply sorting (requires documents to have the sort field)
-        query = query.orderBy(sortField, sortDir);
-        
-        // Add secondary sort by ID for stable pagination
-        if (sortField !== 'updatedAt') {
-          query = query.orderBy('updatedAt', 'desc');
-        }
-      }
+      // Only use server sort when no filters and no search (simple pagination case)
+      const useServerSort = !hasFilters && !searchQuery && !pageToken;
       
-      // For search queries, fetch more documents to search across
-      // This is a workaround for Firestore's lack of full-text search
-      const fetchLimit = searchQuery ? 500 : (limit + 1);
+      // For filtered/search queries, fetch more documents
+      // For simple list, use normal pagination
+      const fetchLimit = (hasFilters || searchQuery) ? 500 : (limit + 1);
       query = query.limit(fetchLimit);
 
-      // Apply pagination cursor
-      if (pageToken) {
-        const lastDoc = await db.collection('products').doc(pageToken).get();
-        if (lastDoc.exists) {
-          query = query.startAfter(lastDoc);
-        }
-      }
+      // Note: Pagination with startAfter requires orderBy, which we avoid for filters
+      // For filtered queries, we return all matching docs (up to fetchLimit)
+      // Client-side pagination can be implemented in the UI if needed
 
       const snapshot = await query.get();
       let docs = snapshot.docs;
 
-      // Client-side sorting when server sort was not applied
-      // This ensures all documents are included even if they lack the sort field
-      if (!useServerSort && docs.length > 1) {
+      // Always sort client-side to ensure consistent ordering
+      // and to include documents that may lack the sort field
+      if (docs.length > 1) {
         docs = [...docs].sort((a, b) => {
           const aData = a.data();
           const bData = b.data();
