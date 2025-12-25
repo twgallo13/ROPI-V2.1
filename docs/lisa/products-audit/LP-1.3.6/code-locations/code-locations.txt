@@ -1,0 +1,16 @@
+10: * - Enhanced filters: Brand (dropdown), Department (enum), Status, Import Date (date-range)
+30:// Department enum values from attributeRegistry.json
+31:const DEPARTMENT_OPTIONS = ['Mens', 'Womens', 'Kids', 'Unisex', 'Boys', 'Girls'];
+61:    department,
+133:          {department && (
+134:            <div className="product-card__department">{department}</div>
+408:  const hasActiveFilters = filters.brand || filters.status || filters.category || filters.department || dateFrom || dateTo;
+539:          {/* Department Filter (Enum) */}
+541:            <label htmlFor="department-filter" className="products-page__filter-label">
+542:              Department:
+545:              id="department-filter"
+547:              value={filters.department || ''}
+548:              onChange={(e) => handleFilterChange('department', e.target.value)}
+549:              aria-label="Filter by department"
+551:              <option value="">All Departments</option>
+552:              {DEPARTMENT_OPTIONS.map((dept) => (
