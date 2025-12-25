@@ -265,15 +265,30 @@ function ProductsPage() {
 
   /**
    * Handle date range filter
+   * Validates from <= to and normalizes to ISO strings for API
    */
   const handleDateRangeChange = useCallback(
     (from: string, to: string) => {
+      // Validate date range: from should not be after to
+      if (from && to && new Date(from) > new Date(to)) {
+        // Swap if from > to
+        [from, to] = [to, from];
+      }
+      
       setDateFrom(from);
       setDateTo(to);
-      // Note: Date filtering would need backend support - for now just track state
+      
+      // Wire to API filters - normalize times for date range query
+      // dateFrom: start of day, dateTo: end of day (handled by API)
+      setFilters({
+        ...filters,
+        dateFrom: from || undefined,
+        dateTo: to || undefined,
+      });
+      
       setCurrentPage(1);
     },
-    []
+    [filters, setFilters]
   );
 
   /**

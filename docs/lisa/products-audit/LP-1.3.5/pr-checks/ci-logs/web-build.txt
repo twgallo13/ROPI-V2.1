@@ -1,0 +1,19 @@
+
+> @ropi-aoss/web@1.0.0 build /workspaces/ROPI-V2.1/packages/web
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 691 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.46 kB │ gzip:   0.30 kB
+dist/assets/index-DmDDZarn.css    175.98 kB │ gzip:  27.77 kB
+dist/assets/index-CzcWD_9z.js     390.85 kB │ gzip: 103.31 kB
+dist/assets/index-D7SIlLBw.js   1,130.33 kB │ gzip: 294.48 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 6.17s
