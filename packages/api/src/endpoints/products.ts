@@ -193,8 +193,9 @@ export async function getProductHandler(req: Request, res: Response) {
  * List products with pagination, search, filtering, and sorting.
  * 
  * Query params:
- * - limit: Max items per page (default 50, max 100)
+ * - limit: Max items per page (default 25, max 100)
  * - pageToken: Pagination cursor (document ID)
+ * - page: Page number for client-side pagination tracking
  * - q: Search query (searches SKU, MPN, name, brand, category)
  * - sortBy: Field to sort by (name, sku, updatedAt, createdAt) - default: updatedAt
  * - sortDir: Sort direction (asc, desc) - default: desc
@@ -202,18 +203,24 @@ export async function getProductHandler(req: Request, res: Response) {
  * - status: Filter by status (exact match)
  * - category: Filter by category (exact match)
  * - department: Filter by department (exact match)
+ * - dateFrom: Filter by createdAt >= value (ISO date string)
+ * - dateTo: Filter by createdAt <= value (ISO date string)
  * 
  * Returns:
  * - items: Array of products
  * - hasMore: Boolean indicating if more results available
- * - pageToken: Cursor for next page
+ * - nextPageToken: Cursor for next page (always included when hasMore is true)
  * - total: Total count (estimated, only returned on first page)
+ * - page: Current page number
+ * 
+ * LP-1.3.5: Enhanced filters & pagination
  */
 export async function listProductsHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
     const db = admin.firestore();
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const limit = Math.min(parseInt(req.query.limit as string) || 25, 100);
     const pageToken = req.query.pageToken as string | undefined;
+    const page = parseInt(req.query.page as string) || 1;
     const searchQuery = (req.query.q as string || '').toLowerCase().trim();
     
     // Sorting parameters
@@ -225,13 +232,17 @@ export async function listProductsHandler(req: Request, res: Response) {
     const statusFilter = req.query.status as string | undefined;
     const categoryFilter = req.query.category as string | undefined;
     const departmentFilter = req.query.department as string | undefined;
+    
+    // Date range filter (LP-1.3.5)
+    const dateFrom = req.query.dateFrom as string | undefined;
+    const dateTo = req.query.dateTo as string | undefined;
 
     // Validate sortBy field
     const allowedSortFields = ['name', 'sku', 'updatedAt', 'createdAt', 'brand', 'status'];
     const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'updatedAt';
     
     // Check if any filters are applied
-    const hasFilters = brandFilter || statusFilter || categoryFilter || departmentFilter;
+    const hasFilters = brandFilter || statusFilter || categoryFilter || departmentFilter || dateFrom || dateTo;
 
     try {
       let query: admin.firestore.Query = db.collection('products');
@@ -287,6 +298,33 @@ export async function listProductsHandler(req: Request, res: Response) {
         });
       }
 
+      // Client-side date range filtering (LP-1.3.5)
+      // Firestore doesn't allow range queries on different fields without composite indexes
+      if (dateFrom || dateTo) {
+        docs = docs.filter(doc => {
+          const data = doc.data();
+          const createdAt = data.createdAt;
+          if (!createdAt) return false;
+          
+          // Handle both Timestamp objects and ISO strings
+          const docDate = createdAt.toDate ? createdAt.toDate() : new Date(createdAt);
+          
+          if (dateFrom) {
+            const fromDate = new Date(dateFrom);
+            fromDate.setHours(0, 0, 0, 0);
+            if (docDate < fromDate) return false;
+          }
+          
+          if (dateTo) {
+            const toDate = new Date(dateTo);
+            toDate.setHours(23, 59, 59, 999);
+            if (docDate > toDate) return false;
+          }
+          
+          return true;
+        });
+      }
+
       // Client-side search filtering (Firestore limitations)
       // For production scale (>5k products), migrate to Algolia or Elasticsearch
       if (searchQuery) {
@@ -320,14 +358,19 @@ export async function listProductsHandler(req: Request, res: Response) {
       if (!pageToken && items.length > 0) {
         // For filtered queries, count is approximate
         // For exact counts, consider caching or using aggregation queries
-        total = items.length + (hasMore ? limit : 0);
+        total = docs.length; // Use actual filtered count
       }
+
+      // LP-1.3.5: Always include nextPageToken for consistency
+      const nextPageToken = hasMore ? resultDocs[resultDocs.length - 1]?.id : undefined;
 
       res.status(200).json({
         items,
         hasMore,
-        pageToken: hasMore ? resultDocs[resultDocs.length - 1]?.id : undefined,
+        nextPageToken, // LP-1.3.5: renamed from pageToken for clarity
+        pageToken: nextPageToken, // Keep backward compatibility
         total,
+        page, // LP-1.3.5: echo back current page
       });
     } catch (error) {
       console.error('Error listing products:', error);

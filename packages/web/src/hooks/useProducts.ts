@@ -48,7 +48,9 @@ export interface ProductsListResponse {
   items: ProductSummary[];
   hasMore?: boolean;
   pageToken?: string;
+  nextPageToken?: string; // LP-1.3.5
   total?: number;
+  page?: number; // LP-1.3.5
 }
 
 export interface ProductFilters {
@@ -56,6 +58,8 @@ export interface ProductFilters {
   status?: string;
   category?: string;
   department?: string;
+  dateFrom?: string; // LP-1.3.5: ISO date string
+  dateTo?: string; // LP-1.3.5: ISO date string
 }
 
 export interface UseProductsOptions {
@@ -176,6 +180,13 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
       }
       if (currentFilters.department) {
         params.append('department', currentFilters.department);
+      }
+      // LP-1.3.5: Date range filters
+      if (currentFilters.dateFrom) {
+        params.append('dateFrom', currentFilters.dateFrom);
+      }
+      if (currentFilters.dateTo) {
+        params.append('dateTo', currentFilters.dateTo);
       }
 
       // Fetch from API

@@ -1,0 +1,128 @@
+/**
+ * Pagination Styles
+ * 
+ * LP-1.3.5: Products filters & pagination
+ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  padding: 12px 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.pagination__rows-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination__label {
+  white-space: nowrap;
+}
+
+.pagination__select {
+  padding: 6px 28px 6px 12px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  background: var(--bg-card, #ffffff);
+  font-size: 0.875rem;
+  color: var(--text-primary, #374151);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 6px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+.pagination__select:hover {
+  border-color: var(--border-color-dark, #d1d5db);
+}
+
+.pagination__select:focus {
+  outline: none;
+  border-color: var(--color-primary, #3b82f6);
+  box-shadow: 0 0 0 2px var(--color-primary-light, rgba(59, 130, 246, 0.2));
+}
+
+.pagination__select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination__info {
+  min-width: 120px;
+  text-align: center;
+}
+
+.pagination__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #374151);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pagination__btn:hover:not(:disabled) {
+  background: var(--bg-hover, #f3f4f6);
+  border-color: var(--border-color-dark, #d1d5db);
+}
+
+.pagination__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination__btn svg {
+  flex-shrink: 0;
+}
+
+.pagination__btn-text {
+  /* Hidden on mobile */
+}
+
+.pagination__page-indicator {
+  padding: 0 8px;
+  font-weight: 500;
+  color: var(--text-primary, #374151);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .pagination__btn-text {
+    display: none;
+  }
+
+  .pagination__btn {
+    padding: 8px;
+  }
+
+  .pagination__info {
+    min-width: auto;
+    order: 3;
+    width: 100%;
+    text-align: center;
+  }
+}

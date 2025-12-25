@@ -1,0 +1,119 @@
+# LP-1.3.5 Code Locations Audit
+# Date: December 25, 2024
+
+## Frontend Components
+
+### ProductsPage.tsx
+Location: packages/web/src/pages/ProductsPage.tsx
+Lines: 515 total
+Description: Main products list page component with card-based grid layout
+
+Key Sections:
+- ProductCard component: Lines 36-141
+  - Displays: sku, name, status, brand, category, department, websites, imageUrl
+- ProductsPage component: Lines 150-515
+  - Search form: Lines 207-260
+  - Sort dropdown: Lines 270-305
+  - Filter controls: Lines 309-380 (brand, status, category, department)
+  - Products grid: Lines 463-510
+
+Current State:
+- Card-based grid layout (not table)
+- No rows-per-page selector
+- Infinite scroll via "Load More" button
+- Filters: brand (text input), status (dropdown), category (text), department (text)
+- Status options: draft, pending, active, discontinued
+
+### useProducts.ts (Hook)
+Location: packages/web/src/hooks/useProducts.ts
+Lines: 304 total
+Description: Data fetching hook with pagination and filters
+
+Key Interfaces:
+- ProductSummary (lines 30-44): id, sku, mpn, name, status, brand, category, department, class, websites, imageUrl, updatedAt, createdAt
+- ProductFilters (lines 53-58): brand, status, category, department
+- UseProductsOptions (lines 60-67): limit, initialSearch, initialFilters, initialSortBy, initialSortDir, autoLoad, debounceMs
+
+Current Pagination: cursor-based pageToken (document ID)
+
+## Backend API
+
+### products.ts (Endpoints)
+Location: packages/api/src/endpoints/products.ts
+Lines: 497 total
+Description: Products API endpoints
+
+Key Endpoints:
+- GET /products/:productId - Single product (lines 132-176)
+- GET /products - List with pagination (lines 178-350)
+- PATCH /products/:productId/attributes - Update attributes (lines 22-130)
+
+Query Parameters (listProductsHandler):
+- limit: Max items per page (default 50, max 100)
+- pageToken: Pagination cursor
+- q: Search query
+- sortBy: name, sku, updatedAt, createdAt, brand, status
+- sortDir: asc, desc
+- brand, status, category, department: Filters
+
+## Data Model
+
+### Product Fields (from Firestore/test data)
+- id: Document ID
+- sku: String (e.g., "NIKE-001")
+- mpn: String
+- name: String (e.g., "Nike Air Max")
+- brand: String (e.g., "Nike", "Adidas", "Puma")
+- status: String ("draft", "pending", "active", "discontinued")
+- category: String (e.g., "Shoes", "Apparel")
+- department: String (e.g., "Mens", "Womens", "Kids", "Unisex", "Boys", "Girls")
+- websites: Array of strings
+- imageUrl: String
+- updatedAt: Timestamp
+- createdAt: Timestamp
+- attributes: Object (nested attributes)
+
+### Attribute Registry
+Location: packages/sdk/config/attributeRegistry.json
+
+Department enum (line 115):
+  ["Mens", "Womens", "Kids", "Unisex", "Boys", "Girls"]
+
+Status field: data_type "text" (no enum constraint at registry level)
+  UI uses: ["draft", "pending", "active", "discontinued"]
+
+## CSS Styles
+Location: packages/web/src/pages/ProductsPage.css
+Description: Styles for products page grid, cards, controls
+
+## Type Definitions
+Location: packages/web/src/types/product.ts
+Description: Product editor types (ProductStatus, Product interface)
+
+## Tests
+Location: packages/api/test/integration/products.filters.spec.ts
+Description: Integration tests for product filtering
+
+## Missing/Required for LP-1.3.5
+
+### Frontend Changes Needed:
+1. Add table view as default (cards as optional toggle)
+2. Add rows-per-page selector (25/50/100) - default 25
+3. Add Next/Prev pagination controls
+4. Add header checkbox for select-all-visible
+5. Add bulk action toolbar (appears when items selected)
+6. Convert brand filter to dropdown (populated from data)
+7. Add Import Date filter (date-range picker)
+8. Show Category filter only when applicable
+
+### Backend Changes Needed:
+1. Add dateFrom/dateTo filter params for createdAt
+2. Return nextPageToken consistently
+3. Add MISSING_INDEX error messages
+4. Consider composite indexes for filter+sort combinations
+
+### New Components to Create:
+- ProductsTable.tsx (table view component)
+- RowsPerPageSelector.tsx
+- DateRangeFilter.tsx
+- BulkActionToolbar.tsx
