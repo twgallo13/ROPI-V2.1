@@ -1,0 +1,62 @@
+ ✓ test/unit/AttributeConsole.shell.spec.tsx  (26 tests) 608ms
+ ✓ src/hooks/__tests__/useProducts.spec.ts  (18 tests) 1442ms
+ ✓ test/unit/AttributeDetailPanel.create-id.test.tsx  (7 tests) 188ms
+ ✓ test/unit/ValuesManager.spec.tsx  (20 tests) 1184ms
+ ✓ test/unit/MobileObservationCapture.spec.tsx  (13 tests) 1407ms
+ ✓ test/FieldPicker.test.tsx  (18 tests) 1003ms
+ ✓ test/normalizeFieldLink.test.ts  (43 tests) 15ms
+ ✓ src/services/observations.test.ts  (12 tests) 77ms
+ ✓ test/unit/ErrorHandling.spec.tsx  (17 tests) 263ms
+ ✓ src/components/__tests__/MappingTab.guard.spec.tsx  (6 tests) 335ms
+ ✓ test/unit/FieldPickerGroups.spec.tsx  (12 tests) 377ms
+ ✓ src/hooks/__tests__/useMappings.spec.ts  (7 tests) 46ms
+ ✓ test/unit/CoreInformationTabDataField.spec.tsx  (15 tests) 183ms
+ ✓ test/unit/AttributeHeader.spec.tsx  (20 tests) 107ms
+ ✓ src/components/__tests__/SynonymsEditor.spec.tsx  (13 tests) 613ms
+ ✓ test/unit/AttributeInputDataField.spec.tsx  (10 tests) 144ms
+ ✓ test/AttributeManager.saveError.test.tsx  (5 tests) 337ms
+ ✓ src/components/__tests__/RevertModal.spec.tsx  (18 tests) 856ms
+ ✓ test/unit/ObservationsSync.spec.ts  (8 tests) 38ms
+ ✓ src/hooks/__tests__/useAudit.spec.ts  (8 tests) 40ms
+ ✓ test/ImportBatchDetailPage.test.tsx  (5 tests) 158ms
+ ✓ test/ProductHeader.missingOverall.test.tsx  (9 tests) 72ms
+ ✓ src/components/__tests__/AuditTimeline.spec.tsx  (15 tests) 330ms
+ ✓ test/apiFetch.test.ts  (11 tests) 8ms
+ ✓ src/hooks/useProduct.test.ts  (8 tests) 57ms
+ ✓ test/auth.customClaims.test.tsx  (6 tests) 29ms
+ ✓ src/components/__tests__/BulkAliasImportModal.spec.tsx  (11 tests) 995ms
+ ✓ test/unit/ProductSearchMpn.spec.ts  (6 tests) 6ms
+ ✓ test/ProductEditor.missingOverall.test.tsx  (4 tests) 153ms
+ ✓ src/components/__tests__/DiffViewer.spec.tsx  (13 tests) 116ms
+ ✓ test/ValuesManager.noSaveButton.test.tsx  (5 tests) 76ms
+ ✓ test/envPolicy.test.ts  (19 tests) 9ms
+ ✓ test/smoke.observations.test.tsx  (4 tests) 5ms
+ ✓ test/unit/ObservationsPage.spec.tsx  (6 tests) 103ms
+ ✓ src/components/product/ObservationsPanel.test.tsx  (3 tests) 55ms
+ FAIL  test/nav.test.ts > Navigation Configuration > should have all required main navigation items
+ FAIL  test/nav.test.ts > Navigation Configuration > should have all required settings sub-navigation items
+ FAIL  test/smoke.product-editor-observations.test.tsx > Smoke Test: ProductEditorPage with Observations > renders Product Editor with wired ObservationsPanel
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should fetch attributes on mount
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should handle fetch error
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should throw error on create failure
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should create a new attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should update an existing attribute and refresh
+ FAIL  test/useAttributes.test.tsx > useAttributes Hook > should delete an attribute and refresh
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should fetch users list
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchUsers > should support pagination
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > createUser > should create a new user
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > updateUser > should update user properties
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > deleteUser > should delete a user
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > resetPassword > should send password reset email
+ FAIL  src/hooks/useUsers.test.ts > useUsers Hook > fetchRoles > should fetch available roles
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should send Authorization header when looking up product
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 401 error with appropriate message
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should handle 404 error with not found message
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > Product Lookup > should call onProductFound when product is found
+ FAIL  test/unit/MobileMPNScanner.spec.tsx > MobileMPNScanner > UI Interactions > should switch between scan and manual modes
+ FAIL  src/components/product/ProductAttributesTab.test.tsx > ProductAttributesTab - Attribute Format Compatibility > should handle missing attributes gracefully
+ FAIL  Tests failed. Watching for file changes...

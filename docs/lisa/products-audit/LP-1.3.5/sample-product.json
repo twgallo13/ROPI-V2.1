@@ -1,0 +1,143 @@
+{
+  "sampleProduct": {
+    "id": "NIKE-001",
+    "sku": "NIKE-001",
+    "mpn": "NIKE-AM-001",
+    "name": "Nike Air Max",
+    "brand": "Nike",
+    "status": "active",
+    "category": "Shoes",
+    "department": "Mens",
+    "class": "Athletic",
+    "websites": ["shiekh.com", "Karmaloop.com"],
+    "imageUrl": "https://example.com/images/nike-001.jpg",
+    "updatedAt": "2024-01-01T00:00:00.000Z",
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "attributes": {
+      "color": "Black/White",
+      "size_range": ["7", "8", "9", "10", "11", "12"],
+      "material": ["Leather", "Mesh"],
+      "fit": "True To Size"
+    }
+  },
+  "fieldDefinitions": {
+    "id": {
+      "type": "string",
+      "description": "Firestore document ID",
+      "source": "auto-generated"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Stock Keeping Unit",
+      "filterable": false,
+      "searchable": true
+    },
+    "mpn": {
+      "type": "string",
+      "description": "Manufacturer Part Number",
+      "searchable": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Product name",
+      "searchable": true,
+      "sortable": true
+    },
+    "brand": {
+      "type": "string",
+      "description": "Brand name",
+      "filterable": true,
+      "searchable": true,
+      "sortable": true
+    },
+    "status": {
+      "type": "string",
+      "description": "Product status (ROPI internal status)",
+      "enum": ["draft", "pending", "active", "discontinued"],
+      "filterable": true,
+      "sortable": true
+    },
+    "category": {
+      "type": "string",
+      "description": "Product category",
+      "filterable": true,
+      "searchable": true
+    },
+    "department": {
+      "type": "string",
+      "description": "Department classification",
+      "enum": ["Mens", "Womens", "Kids", "Unisex", "Boys", "Girls"],
+      "filterable": true,
+      "searchable": true
+    },
+    "class": {
+      "type": "string",
+      "description": "Product class/subcategory",
+      "searchable": true
+    },
+    "websites": {
+      "type": "array",
+      "items": "string",
+      "description": "Target websites for product",
+      "allowedValues": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "fbrkclothing.com", "Vnds.com", "Kazbah.com", "Tiltedsole.com", "NOT FOR WEB"]
+    },
+    "imageUrl": {
+      "type": "string",
+      "description": "Primary product image URL"
+    },
+    "updatedAt": {
+      "type": "timestamp",
+      "description": "Last update timestamp",
+      "sortable": true
+    },
+    "createdAt": {
+      "type": "timestamp",
+      "description": "Creation timestamp (Import Date)",
+      "sortable": true,
+      "filterable": true,
+      "note": "Used for Import Date filter (date-range)"
+    },
+    "attributes": {
+      "type": "object",
+      "description": "Nested product attributes from attributeRegistry"
+    }
+  },
+  "filterParams": {
+    "current": {
+      "brand": "string - exact match",
+      "status": "string - exact match",
+      "category": "string - exact match",
+      "department": "string - exact match"
+    },
+    "proposed": {
+      "brand": "string - exact match (populated dropdown)",
+      "status": "string - exact match enum",
+      "category": "string - exact match (show when applicable)",
+      "department": "string - enum select",
+      "dateFrom": "ISO date string - createdAt >= value",
+      "dateTo": "ISO date string - createdAt <= value"
+    }
+  },
+  "paginationParams": {
+    "current": {
+      "limit": "number (default 50, max 100)",
+      "pageToken": "string - last document ID"
+    },
+    "proposed": {
+      "limit": "number (default 25, options: 25/50/100)",
+      "pageToken": "string - cursor for next page",
+      "nextPageToken": "string - returned in response"
+    }
+  },
+  "statusEnums": {
+    "ropiStatus": {
+      "description": "Internal ROPI workflow status",
+      "values": ["draft", "pending", "active", "discontinued"],
+      "usage": "Filter by internal product state"
+    }
+  },
+  "departmentEnums": {
+    "values": ["Mens", "Womens", "Kids", "Unisex", "Boys", "Girls"],
+    "source": "attributeRegistry.json line 115"
+  }
+}

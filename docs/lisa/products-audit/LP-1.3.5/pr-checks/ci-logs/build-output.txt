@@ -1,0 +1,6 @@
+
+> ropi-aoss@0.0.0 build /workspaces/ROPI-V2.1
+> pnpm -r --filter ./... build
+
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+No projects matched the filters in "/workspaces/ROPI-V2.1"

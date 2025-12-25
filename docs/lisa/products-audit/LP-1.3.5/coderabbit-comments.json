@@ -1,0 +1,126 @@
+{
+  "pr_number": 350,
+  "pr_title": "feat(products): LP-1.3.5 - Enhanced filters & pagination",
+  "review_timestamp": "2025-12-25T04:45:26Z",
+  "reviewer": "coderabbitai[bot]",
+  "ci_status": {
+    "state": "success",
+    "context": "CodeRabbit",
+    "description": "Review completed",
+    "sha": "f030a1ee7c70dcff8c43c4e0911a640973d26859"
+  },
+  "summary": {
+    "total_actionable_comments": 6,
+    "blocking_comments": 1,
+    "major_comments": 3,
+    "minor_comments": 2,
+    "nitpick_comments": 5,
+    "files_reviewed": 16,
+    "additional_comments_approved": 25
+  },
+  "actionable_comments": [
+    {
+      "id": 1,
+      "file": "docs/lisa/products-audit/LP-1.3.5/code-locations.txt",
+      "line": 57,
+      "severity": "minor",
+      "category": "documentation",
+      "title": "Documentation shows outdated default limit",
+      "body": "Line 52 states 'default 50, max 100' but the updated products.ts now uses a default of 25. Consider updating for accuracy.",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/350#discussion_r2646535792",
+      "requires_code_change": true,
+      "blocking": false
+    },
+    {
+      "id": 2,
+      "file": "docs/lisa/products-audit/LP-1.3.5/diagnostics.md",
+      "line": 3,
+      "severity": "minor",
+      "category": "documentation",
+      "title": "Date appears to be incorrect",
+      "body": "The date shows 'December 25, 2024' but based on the PR creation date, this should likely be 'December 25, 2025'.",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/350#discussion_r2646535794",
+      "requires_code_change": true,
+      "blocking": false
+    },
+    {
+      "id": 3,
+      "file": "packages/web/src/pages/ProductsPage.css",
+      "line": 654,
+      "severity": "major",
+      "category": "style",
+      "title": "CSS rule redefinition may cause conflicts",
+      "body": "The .products-page__filters selector was previously defined at lines 175-179 with a grid layout, and is redefined here with a flex layout. This creates a conflicting ruleset.",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/350#discussion_r2646535795",
+      "requires_code_change": true,
+      "blocking": false,
+      "suggested_fix": "Remove the old definition (lines 175-191) if the flex layout is the intended behavior, or use a modifier class like .products-page__filters--enhanced"
+    },
+    {
+      "id": 4,
+      "file": "packages/web/src/pages/ProductsPage.css",
+      "line": 663,
+      "severity": "major",
+      "category": "style",
+      "title": "CSS rule redefinition changes filter layout",
+      "body": "The .products-page__filter selector was previously defined at lines 193-197 and is redefined here with different flex properties.",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/350#discussion_r2646535797",
+      "requires_code_change": true,
+      "blocking": false,
+      "suggested_fix": "Consider using a modifier class or removing the old definition"
+    },
+    {
+      "id": 5,
+      "file": "packages/web/src/pages/ProductsPage.css",
+      "line": 720,
+      "severity": "major",
+      "category": "style",
+      "title": "Duplicate CSS rule definitions",
+      "body": "The .products-page__results-count (lines 716-720) and .link-button (lines 723-735) selectors are exact duplicates of earlier definitions.",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/350#discussion_r2646535798",
+      "requires_code_change": true,
+      "blocking": false,
+      "suggested_fix": "Remove duplicate rules at lines 716-735"
+    },
+    {
+      "id": 6,
+      "file": "packages/web/src/pages/ProductsPage.tsx",
+      "line": 277,
+      "severity": "major",
+      "category": "logic",
+      "title": "Date range filter is not connected to the API",
+      "body": "The handleDateRangeChange updates local state but never passes dateFrom/dateTo to setFilters or useProducts. The backend supports these parameters but the frontend doesn't send them.",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/350#discussion_r2646535799",
+      "requires_code_change": true,
+      "blocking": true,
+      "suggested_fix": "Update handleDateRangeChange to call setFilters({ ...filters, dateFrom: from || undefined, dateTo: to || undefined })"
+    }
+  ],
+  "nitpick_comments": [
+    {
+      "file": "docs/lisa/products-audit/LP-1.3.5/sample-product.json",
+      "line": 82,
+      "note": "Consider documenting the 'NOT FOR WEB' website value as a special flag"
+    },
+    {
+      "file": "packages/web/src/components/common/Pagination.tsx",
+      "lines": "32-36",
+      "note": "Edge case: startItem could exceed totalItems on invalid page state"
+    },
+    {
+      "file": "packages/web/src/components/products/ProductsTable.tsx",
+      "lines": "33-45",
+      "note": "new Date() doesn't throw on invalid input; consider explicit validation with isNaN(date.getTime())"
+    },
+    {
+      "file": "packages/api/src/endpoints/products.ts",
+      "lines": "269-270",
+      "note": "useServerSort variable is defined but never used"
+    },
+    {
+      "file": "packages/web/src/components/products/BulkActionToolbar.tsx",
+      "lines": "37-39",
+      "note": "Consider using selectedCount <= 0 for defensive check"
+    }
+  ]
+}

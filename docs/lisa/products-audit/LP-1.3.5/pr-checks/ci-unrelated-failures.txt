@@ -1,0 +1,62 @@
+# Pre-existing Test Failures - Not Related to LP-1.3.5
+
+**Date:** December 25, 2025  
+**Branch:** lisa/LP-1.3.5/products-filters-pagination  
+**Verification:** Failures exist on aoss-main branch (verified by checkout)
+
+## Summary
+
+22 test failures exist in the codebase that are **NOT related to LP-1.3.5 changes**.
+These failures exist on the base branch (aoss-main) and are pre-existing issues.
+
+## LP-1.3.5 Specific Tests
+
+✅ **useProducts.spec.ts - 18/18 PASSED**
+- All product-related tests pass
+- Date filter integration is tested
+- Pagination, sorting, and filtering work correctly
+
+## Pre-existing Failures (22 tests in 6 files)
+
+### 1. test/nav.test.ts (2 failures)
+- `should have all required main navigation items` - expects 9, got 8
+- `should have all required settings sub-navigation items` - expects 9, got 10
+- **Root cause:** Navigation config has changed, test not updated
+
+### 2. test/useAttributes.test.tsx (10 failures)
+- Multiple failures related to Firebase mock setup
+- `fetchJSON` function not receiving mocked responses
+- **Root cause:** Test mock setup incompatible with current implementation
+
+### 3. src/hooks/useUsers.test.ts (7 failures)
+- Firebase Auth initialization errors
+- `Authentication required: No Firebase App '[DEFAULT]'`
+- **Root cause:** Firebase not properly mocked in test environment
+
+### 4. test/unit/MobileMPNScanner.spec.tsx (5 failures)
+- Unable to find label 'Enter MPN'
+- Label text changed to 'Search by MPN, SKU, or Product Name'
+- **Root cause:** Component UI changed, test not updated
+
+### 5. test/smoke.product-editor-observations.test.tsx (1 failure)
+- Unable to find 'Test Product'
+- Error: "No product ID in URL"
+- **Root cause:** Route setup in test not providing product ID
+
+### 6. src/components/product/ProductAttributesTab.test.tsx (1 failure)
+- Expected empty string, got 'Women'
+- **Root cause:** Test expectation doesn't match component behavior
+
+## Recommendation
+
+These failures should be addressed in a separate ticket/PR, not LP-1.3.5.
+LP-1.3.5 changes do not introduce any new test failures.
+
+## Verification Command
+
+```bash
+# Verify useProducts tests pass specifically
+cd packages/web && pnpm test -- --run src/hooks/__tests__/useProducts.spec.ts
+
+# Result: ✓ 18 tests passed
+```
