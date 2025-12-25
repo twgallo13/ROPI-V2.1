@@ -229,6 +229,9 @@ export async function listProductsHandler(req: Request, res: Response) {
     // Validate sortBy field
     const allowedSortFields = ['name', 'sku', 'updatedAt', 'createdAt', 'brand', 'status'];
     const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'updatedAt';
+    
+    // Check if any filters are applied
+    const hasFilters = brandFilter || statusFilter || categoryFilter || departmentFilter;
 
     try {
       let query: admin.firestore.Query = db.collection('products');
@@ -247,15 +250,25 @@ export async function listProductsHandler(req: Request, res: Response) {
         query = query.where('department', '==', departmentFilter);
       }
 
-      // Apply sorting
-      query = query.orderBy(sortField, sortDir);
+      // IMPORTANT: Firestore excludes documents that don't have the orderBy field
+      // Only apply orderBy if we have filters (which require indexes) or explicit sort request
+      // For the default case, fetch all documents and sort client-side
+      const useServerSort = hasFilters || (req.query.sortBy as string);
       
-      // Add secondary sort by ID for stable pagination
-      if (sortField !== 'updatedAt') {
-        query = query.orderBy('updatedAt', 'desc');
+      if (useServerSort) {
+        // Apply sorting (requires documents to have the sort field)
+        query = query.orderBy(sortField, sortDir);
+        
+        // Add secondary sort by ID for stable pagination
+        if (sortField !== 'updatedAt') {
+          query = query.orderBy('updatedAt', 'desc');
+        }
       }
       
-      query = query.limit(limit + 1);
+      // For search queries, fetch more documents to search across
+      // This is a workaround for Firestore's lack of full-text search
+      const fetchLimit = searchQuery ? 500 : (limit + 1);
+      query = query.limit(fetchLimit);
 
       // Apply pagination cursor
       if (pageToken) {
@@ -265,74 +278,44 @@ export async function listProductsHandler(req: Request, res: Response) {
         }
       }
 
-      let docs: admin.firestore.QueryDocumentSnapshot[] = [];
-      let usedSearchFallback = false;
+      const snapshot = await query.get();
+      let docs = snapshot.docs;
 
-      // Improved search strategy:
-      // 1. If search query provided, try exact MPN/SKU match first (fast, indexed)
-      // 2. If no exact match, use larger window with client-side filtering
-      // 3. If no search, use standard paginated query
-      if (searchQuery) {
-        // Try exact MPN match first (indexed query)
-        const mpnSnap = await db.collection('products')
-          .where('mpn', '==', searchQuery)
-          .limit(limit)
-          .get();
-        
-        if (!mpnSnap.empty) {
-          docs = mpnSnap.docs;
-        } else {
-          // Try case-insensitive MPN match (uppercase)
-          const mpnUpperSnap = await db.collection('products')
-            .where('mpn', '==', searchQuery.toUpperCase())
-            .limit(limit)
-            .get();
+      // Client-side sorting when server sort was not applied
+      // This ensures all documents are included even if they lack the sort field
+      if (!useServerSort && docs.length > 1) {
+        docs = [...docs].sort((a, b) => {
+          const aData = a.data();
+          const bData = b.data();
+          const aVal = aData[sortField] || '';
+          const bVal = bData[sortField] || '';
           
-          if (!mpnUpperSnap.empty) {
-            docs = mpnUpperSnap.docs;
+          if (sortDir === 'asc') {
+            return String(aVal).localeCompare(String(bVal));
           } else {
-            // Try exact SKU match
-            const skuSnap = await db.collection('products')
-              .where('sku', '==', searchQuery)
-              .limit(limit)
-              .get();
-            
-            if (!skuSnap.empty) {
-              docs = skuSnap.docs;
-            } else {
-              // Fallback: fetch larger window for client-side substring search
-              // Note: This works well for small catalogs (<500 products)
-              // For production scale, migrate to Algolia or Elasticsearch
-              usedSearchFallback = true;
-              const searchLimit = 500; // Larger window for search
-              
-              const fallbackSnap = await db.collection('products')
-                .orderBy(sortField, sortDir)
-                .limit(searchLimit)
-                .get();
-              
-              docs = fallbackSnap.docs.filter(doc => {
-                const data = doc.data();
-                const searchFields = [
-                  data.sku,
-                  data.mpn,
-                  data.name,
-                  data.brand,
-                  data.category,
-                  data.department,
-                  data.class,
-                  doc.id, // Also search by document ID
-                ].filter(Boolean).map(v => String(v).toLowerCase());
-
-                return searchFields.some(field => field.includes(searchQuery));
-              });
-            }
+            return String(bVal).localeCompare(String(aVal));
           }
-        }
-      } else {
-        // No search query - use standard paginated query
-        const snapshot = await query.get();
-        docs = snapshot.docs;
+        });
+      }
+
+      // Client-side search filtering (Firestore limitations)
+      // For production scale (>5k products), migrate to Algolia or Elasticsearch
+      if (searchQuery) {
+        docs = docs.filter(doc => {
+          const data = doc.data();
+          const searchFields = [
+            data.sku,
+            data.mpn,
+            data.name,
+            data.brand,
+            data.category,
+            data.department,
+            data.class,
+            doc.id, // Also search by document ID
+          ].filter(Boolean).map(v => String(v).toLowerCase());
+
+          return searchFields.some(field => field.includes(searchQuery));
+        });
       }
 
       const hasMore = docs.length > limit;
