@@ -1,0 +1,23 @@
+================================================================================
+PR #350 MERGE RECORD
+================================================================================
+
+PR: feat(products): LP-1.3.5 - Enhanced filters & pagination
+URL: https://github.com/twgallo13/ROPI-V2.1/pull/350
+State: MERGED
+
+Merge Details:
+- Merge Commit SHA: d3d14e478e009c6eaa5000ab1476a19a775d1874
+- Merged At: 2025-12-25T12:02:48Z
+- Merged By: twgallo13
+- Merge Type: Squash
+- Body: LP-1.3.5: Enhanced filters & pagination — squash merge per Lisa authorization. Tests & CodeRabbit approved.
+
+Branch:
+- Source: lisa/LP-1.3.5/products-filters-pagination
+- Target: aoss-main
+- Branch Deleted: Yes (--delete-branch)
+
+Authorization: Lisa explicit approval (December 25, 2025)
+
+================================================================================

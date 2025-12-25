@@ -1,0 +1,112 @@
+# Bulk Action Verification Log
+
+**Date:** December 25, 2025  
+**Feature:** LP-1.3.5 Bulk Selection & Actions
+
+---
+
+## UI Components Verified
+
+### Header Checkbox
+- Location: ProductsTable.tsx, line 100-110
+- Behavior: Selects/deselects all visible rows
+- Indeterminate state: Shows when some (not all) rows selected
+- Status: ✅ IMPLEMENTED
+
+### Row Checkboxes
+- Location: ProductsTable.tsx, line 183-190
+- Behavior: Individual row selection toggle
+- Accessibility: aria-label per row
+- Status: ✅ IMPLEMENTED
+
+### Bulk Action Toolbar
+- Location: BulkActionToolbar.tsx
+- Appears when: selectedIds.size > 0
+- Status: ✅ IMPLEMENTED
+
+---
+
+## Bulk Action Buttons
+
+| Action | Button | Handler | Status |
+|--------|--------|---------|--------|
+| Export | "Export Selected" | onBulkAction('export', selectedIds) | ✅ UI Ready |
+| Set Status | "Set Status" | onBulkAction('setStatus', selectedIds) | ✅ UI Ready |
+| Delete | "Delete" | onBulkAction('delete', selectedIds) | ✅ UI Ready |
+
+---
+
+## Bulk Action Flow (ProductsPage.tsx)
+
+```
+1. User selects rows via checkboxes
+   → selectedIds Set updated via handleSelectOne/handleSelectAll
+
+2. BulkActionToolbar displays with count
+   → Shows "{N} selected"
+
+3. User clicks action button (e.g., "Delete")
+   → handleBulkAction('delete', selectedIds) called
+
+4. Confirmation dialog appears
+   → confirm(`Delete ${selectedIds.size} products?`)
+
+5. On confirm:
+   → Action placeholder executes
+   → Selection cleared
+   → Alert shown with result
+
+6. On cancel:
+   → No action taken
+```
+
+---
+
+## Test Scenarios
+
+### Scenario 1: Select All
+- [x] Click header checkbox
+- [x] All visible rows selected
+- [x] Toolbar shows correct count
+- [x] Header checkbox shows checked state
+
+### Scenario 2: Partial Selection
+- [x] Select 3 individual rows
+- [x] Header checkbox shows indeterminate
+- [x] Toolbar shows "3 selected"
+
+### Scenario 3: Export Action
+- [x] Select rows
+- [x] Click "Export Selected"
+- [x] Alert: "Export started for N products"
+- [x] Selection cleared after action
+
+### Scenario 4: Delete Action
+- [x] Select rows
+- [x] Click "Delete"
+- [x] Confirmation dialog appears
+- [x] On confirm: Alert with result
+- [x] On cancel: No action
+
+### Scenario 5: Pagination Clears Selection
+- [x] Select rows on page 1
+- [x] Navigate to page 2
+- [x] Selection cleared (expected behavior)
+
+---
+
+## Implementation Notes
+
+1. **Backend operations not implemented** - Bulk actions are UI-ready placeholders
+2. **Progress UI ready** - Loading spinners on buttons during action
+3. **Error handling** - try/catch with finally for loading state reset
+4. **Documented limitation** - See diagnostics.md line 77
+
+---
+
+## Status
+
+**✅ BULK ACTIONS UI VERIFIED**
+
+All bulk action UI components working as designed.
+Backend implementation deferred to future ticket.
