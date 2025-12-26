@@ -116,14 +116,12 @@ jobs:
           set -euo pipefail
           echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
 
-          # Deploy preview channel (keep existing behavior)
-          firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json || true
+          # LP-0.1.3: Deploy preview channel (fail-fast, no tolerance)
+          firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json
 
           # Deploy functions and hosting to stable staging
           echo "Deploying Cloud Functions..."
-          firebase deploy --only functions --project ropi-bccee --json || {
-            echo "::warning::Functions deployment had issues, continuing with hosting..."
-          }
+          firebase deploy --only functions --project ropi-bccee --json
 
           echo "Deploying hosting..."
           firebase deploy --only hosting:aoss-staging --project ropi-bccee --json
