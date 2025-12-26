@@ -110,23 +110,45 @@ function AttributeInput({
 
     case 'multiSelect':
       return (
-        <input
-          type="text"
-          className="form-input"
-          value={arrayValue.join(', ')}
-          onChange={(e) =>
-            onChange(
-              e.target.value
-                .split(',')
-                .map((s) => s.trim())
-                .filter(Boolean)
-            )
-          }
-          placeholder="Enter values separated by commas"
-          data-testid={`attr-input-${attr.attribute_id}`}
-          data-field={fieldKey}
-          name={fieldKey}
-        />
+        <div className="multi-select-wrapper">
+          <select
+            multiple
+            className="form-select form-select-mult"
+            value={arrayValue}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions).map(o => o.value);
+              onChange(selected);
+            }}
+            data-testid={`attr-input-${attr.attribute_id}`}
+            data-field={fieldKey}
+            name={fieldKey}
+          >
+            {(attr.allowed_values || []).map((opt) => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+
+          {attr.allow_custom_values && (
+            <div className="multi-select-custom">
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Add custom value and press Enter"
+                data-testid={`attr-custom-input-${attr.attribute_id}`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const v = (e.target as HTMLInputElement).value.trim();
+                    if (!v) return;
+                    const next = Array.from(new Set([...arrayValue, v]));
+                    onChange(next);
+                    (e.target as HTMLInputElement).value = '';
+                  }
+                }}
+              />
+            </div>
+          )}
+        </div>
       );
 
     case 'boolean':

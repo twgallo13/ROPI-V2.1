@@ -3,29 +3,33 @@ import { render, screen } from '@testing-library/react';
 import ProductAttributesTab from './ProductAttributesTab';
 import type { Product } from '../../types/product';
 
+// Mock attributes for useAttributeRegistry - matching TAB2_ATTRIBUTE_IDS
+const mockAttributes = [
+  {
+    attribute_id: 'primary_color',
+    label: 'Primary Color',
+    data_type: 'string',
+    category: 'Product Info',
+    required_for_completion: true,
+    allowed_values: ['Black', 'White', 'Red'],
+  },
+  {
+    attribute_id: 'material',
+    label: 'Material',
+    data_type: 'string',
+    category: 'Product Info',
+    required_for_completion: false,
+    allowed_values: ['Leather', 'Canvas', 'Rubber'],
+  },
+];
+
 // Mock the useAttributeRegistry hook
 vi.mock('../../hooks/useAttributeRegistry', () => ({
   useAttributeRegistry: () => ({
-    activeAttributes: [
-      {
-        attribute_id: 'department',
-        label: 'Department',
-        data_type: 'string',
-        category: 'Product Info',
-        required_for_completion: true,
-        allowed_values: [],
-      },
-      {
-        attribute_id: 'category',
-        label: 'Category',
-        data_type: 'string',
-        category: 'Product Info',
-        required_for_completion: false,
-        allowed_values: [],
-      },
-    ],
+    activeAttributes: mockAttributes,
     loading: false,
     error: null,
+    getAttributeById: (id: string) => mockAttributes.find(a => a.attribute_id === id),
   }),
 }));
 
@@ -59,70 +63,70 @@ describe('ProductAttributesTab - Attribute Format Compatibility', () => {
   it('should read attributes from new format (attributes.*)', () => {
     const productNewFormat = createMockProduct({
       attributes: {
-        department: 'Women',
-        category: 'Shoes',
+        primary_color: 'Black',
+        material: 'Leather',
       },
     });
 
     render(<ProductAttributesTab product={productNewFormat} onUpdate={mockOnUpdate} />);
 
-    // Check that department attribute is rendered
-    const departmentCard = screen.getByTestId('attr-card-department');
-    expect(departmentCard).toBeTruthy();
+    // Check that primary_color attribute is rendered
+    const colorCard = screen.getByTestId('attr-card-primary_color');
+    expect(colorCard).toBeTruthy();
 
-    // Check that category attribute is rendered
-    const categoryCard = screen.getByTestId('attr-card-category');
-    expect(categoryCard).toBeTruthy();
+    // Check that material attribute is rendered
+    const materialCard = screen.getByTestId('attr-card-material');
+    expect(materialCard).toBeTruthy();
 
     // Check that input fields have the correct values
-    const departmentInput = screen.getByTestId('attr-input-department') as HTMLInputElement;
-    expect(departmentInput.value).toBe('Women');
+    const colorInput = screen.getByTestId('attr-input-primary_color') as HTMLSelectElement;
+    expect(colorInput.value).toBe('Black');
 
-    const categoryInput = screen.getByTestId('attr-input-category') as HTMLInputElement;
-    expect(categoryInput.value).toBe('Shoes');
+    const materialInput = screen.getByTestId('attr-input-material') as HTMLSelectElement;
+    expect(materialInput.value).toBe('Leather');
   });
 
   it('should read attributes from legacy format (top-level keys)', () => {
     const productLegacyFormat = createMockProduct({
-      department: 'Men',
-      category: 'Apparel',
+      primary_color: 'White',
+      material: 'Canvas',
     });
 
     render(<ProductAttributesTab product={productLegacyFormat} onUpdate={mockOnUpdate} />);
 
-    // Check that department attribute is rendered from top-level
-    const departmentCard = screen.getByTestId('attr-card-department');
-    expect(departmentCard).toBeTruthy();
+    // Check that primary_color attribute is rendered from top-level
+    const colorCard = screen.getByTestId('attr-card-primary_color');
+    expect(colorCard).toBeTruthy();
 
-    // Check that category attribute is rendered from top-level
-    const categoryCard = screen.getByTestId('attr-card-category');
-    expect(categoryCard).toBeTruthy();
+    // Check that material attribute is rendered from top-level
+    const materialCard = screen.getByTestId('attr-card-material');
+    expect(materialCard).toBeTruthy();
 
     // Check that input fields have the correct values
-    const departmentInput = screen.getByTestId('attr-input-department') as HTMLInputElement;
-    expect(departmentInput.value).toBe('Men');
+    const colorInput = screen.getByTestId('attr-input-primary_color') as HTMLSelectElement;
+    expect(colorInput.value).toBe('White');
 
-    const categoryInput = screen.getByTestId('attr-input-category') as HTMLInputElement;
-    expect(categoryInput.value).toBe('Apparel');
+    const materialInput = screen.getByTestId('attr-input-material') as HTMLSelectElement;
+    expect(materialInput.value).toBe('Canvas');
   });
 
   it('should prefer new format when both formats exist', () => {
     const productBothFormats = createMockProduct({
-      department: 'Kids', // legacy format
+      primary_color: 'Red', // legacy format
       attributes: {
-        department: 'Women', // new format - should take precedence
-        category: 'Accessories',
+        primary_color: 'Black', // new format - should take precedence
+        material: 'Rubber',
       },
     });
 
     render(<ProductAttributesTab product={productBothFormats} onUpdate={mockOnUpdate} />);
 
-    // Check that the new format value is used (Women, not Kids)
-    const departmentInput = screen.getByTestId('attr-input-department') as HTMLInputElement;
-    expect(departmentInput.value).toBe('Women');
+    // Check that the new format value is used (Black, not Red)
+    const colorInput = screen.getByTestId('attr-input-primary_color') as HTMLSelectElement;
+    expect(colorInput.value).toBe('Black');
 
-    const categoryInput = screen.getByTestId('attr-input-category') as HTMLInputElement;
-    expect(categoryInput.value).toBe('Accessories');
+    const materialInput = screen.getByTestId('attr-input-material') as HTMLSelectElement;
+    expect(materialInput.value).toBe('Rubber');
   });
 
   it('should handle missing attributes gracefully', () => {
@@ -133,10 +137,10 @@ describe('ProductAttributesTab - Attribute Format Compatibility', () => {
     render(<ProductAttributesTab product={productNoAttributes} onUpdate={mockOnUpdate} />);
 
     // Attributes should render but with empty values
-    const departmentInput = screen.getByTestId('attr-input-department') as HTMLInputElement;
-    expect(departmentInput.value).toBe('');
+    const colorInput = screen.getByTestId('attr-input-primary_color') as HTMLSelectElement;
+    expect(colorInput.value).toBe('');
 
-    const categoryInput = screen.getByTestId('attr-input-category') as HTMLInputElement;
-    expect(categoryInput.value).toBe('');
+    const materialInput = screen.getByTestId('attr-input-material') as HTMLSelectElement;
+    expect(materialInput.value).toBe('');
   });
 });

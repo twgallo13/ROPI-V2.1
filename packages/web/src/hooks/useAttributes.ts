@@ -21,6 +21,7 @@ export type Attribute = {
   category?: string;
   data_type: 'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date';
   allowed_values?: string[];
+  allow_custom_values?: boolean;
   // synonyms can be legacy string[] or per-value map { [value: string]: string[] }
   synonyms?: string[] | Record<string, string[]>;
   required_for_completion?: boolean;

@@ -259,3 +259,26 @@
   font-size: var(--font-size-sm);
   margin: 0;
 }
+
+/* ============================================
+   MULTI-SELECT (LP-0.1.1)
+   ============================================ */
+.multi-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-select-mult {
+  min-height: 100px;
+  min-width: 100%;
+}
+
+.multi-select-custom {
+  display: flex;
+  flex-direction: column;
+}
+
+.multi-select-custom .form-input {
+  font-size: var(--font-size-sm, 0.875rem);
+}
