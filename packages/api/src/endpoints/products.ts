@@ -287,13 +287,25 @@ export async function listProductsHandler(req: Request, res: Response) {
         docs = [...docs].sort((a, b) => {
           const aData = a.data();
           const bData = b.data();
-          const aVal = aData[sortField] || '';
-          const bVal = bData[sortField] || '';
+          let aVal = aData[sortField];
+          let bVal = bData[sortField];
+          
+          // Handle Firestore Timestamp objects for date fields
+          if (sortField === 'updatedAt' || sortField === 'createdAt') {
+            // Convert to milliseconds for numeric comparison
+            const aTime = aVal?.toMillis?.() ?? aVal?.getTime?.() ?? (aVal ? new Date(aVal).getTime() : 0);
+            const bTime = bVal?.toMillis?.() ?? bVal?.getTime?.() ?? (bVal ? new Date(bVal).getTime() : 0);
+            return sortDir === 'asc' ? aTime - bTime : bTime - aTime;
+          }
+          
+          // String comparison for text fields
+          const aStr = String(aVal || '');
+          const bStr = String(bVal || '');
           
           if (sortDir === 'asc') {
-            return String(aVal).localeCompare(String(bVal));
+            return aStr.localeCompare(bStr);
           } else {
-            return String(bVal).localeCompare(String(aVal));
+            return bStr.localeCompare(aStr);
           }
         });
       }
@@ -343,6 +355,15 @@ export async function listProductsHandler(req: Request, res: Response) {
 
           return searchFields.some(field => field.includes(searchQuery));
         });
+      }
+
+      // Client-side pagination: skip documents before the pageToken
+      if (pageToken) {
+        const tokenIndex = docs.findIndex(doc => doc.id === pageToken);
+        if (tokenIndex >= 0) {
+          // Skip all documents up to and including the one with this ID
+          docs = docs.slice(tokenIndex + 1);
+        }
       }
 
       const hasMore = docs.length > limit;
