@@ -140,10 +140,10 @@ export interface Product {
   // LP-0.4.4: Tab 3 (Launch & Media) - Additional pricing/launch fields
   /** Hide Image Date */
   hide_image_date?: string;
-  /** Drawing/Raffle status (Yes/No/Pending) */
+  /** Drawing type (FCFS, Store-only, Web-only, Store & Web, Token set) */
   drawing?: string;
-  /** MAP - Minimum Advertised Price */
-  map?: string;
+  /** MAP - Minimum Advertised Price toggle (boolean) */
+  map?: boolean;
   /** Promo status (Allowed/Disallowed) */
   promo?: string;
   /** SCOM Regular Price */

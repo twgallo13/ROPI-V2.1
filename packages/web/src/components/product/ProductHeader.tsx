@@ -2,11 +2,16 @@ import type { Product } from '../../types/product';
 import './ProductHeader.css';
 
 /**
- * Product Header Component — PVS-0.4.0
+ * Product Header Component — LP-0.4.1.1
  * 
  * Persistent sticky header bar displaying read-only product metadata.
  * All fields in this component are read-only as they represent metadata
  * from external systems (ROPI, warehouse) or derived states.
+ * 
+ * LP-0.4.1.1: websites field displays values from Firestore document.
+ * If a product shows unexpected website values (e.g., "shiekhshoes.com"),
+ * this indicates the data exists in Firestore - check the product document.
+ * Empty state ("No websites") displays when websites array is empty/undefined.
  * 
  * Tab 0 Fields (per LP-0.4.0):
  * - status: Current workflow state (Badge)
@@ -16,7 +21,7 @@ import './ProductHeader.css';
  * - total_inv: Sum of WHS + Store inventory
  * - warehouse_inv: Warehouse inventory count
  * - store_inv: Store inventory count
- * - media_status: Based on image count (Icon)
+ * - media_status: Based on image count (Icon) - READ-ONLY from external workflow
  * 
  * References:
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b

@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "attributes": [
     {
       "attribute_id": "sku",
@@ -666,10 +666,11 @@
       "label": "MAP",
       "external_header": "MAP",
       "category": "launch_media_pricing",
-      "data_type": "money",
+      "data_type": "boolean",
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
+      "ai_usage_notes": "Minimum Advertised Price toggle - indicates if MAP pricing applies",
       "status": "active"
     },
     {
@@ -712,11 +713,11 @@
       "external_header": "Drawing",
       "category": "launch_media_pricing",
       "data_type": "select",
-      "allowed_values": ["Yes", "No", "Pending"],
+      "allowed_values": ["FCFS", "Store-only", "Web-only", "Store & Web", "Token set"],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "ai_usage_notes": "Indicates if product is part of a drawing/raffle release",
+      "ai_usage_notes": "Indicates drawing/raffle release type for limited product launches",
       "status": "active"
     },
     {
