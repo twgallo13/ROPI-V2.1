@@ -1,7 +1,8 @@
 /**
- * ProductAttributesTab.css — LP-0.4.1
+ * ProductAttributesTab.css — LP-0.4.2.2
  * 
  * Styles for Product Attributes tab (Tab 2 physical traits)
+ * Includes Fast Fashion conditional section
  */
 
 /* ============================================
@@ -156,4 +157,105 @@
 .add-attribute-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* ============================================
+   LP-0.4.2.2: FAST FASHION SECTION
+   ============================================ */
+
+/* Fast Fashion Toggle */
+.fast-fashion-toggle {
+  padding: 1rem;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.checkbox-label-prominent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.checkbox-label-prominent input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+}
+
+.toggle-label {
+  flex: 1;
+}
+
+.toggle-label strong {
+  color: var(--color-text-primary);
+}
+
+.toggle-hint {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Fast Fashion Details Container */
+.fast-fashion-details {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 2px solid #0ea5e9;
+  border-radius: 12px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-subsection-title {
+  font-size: var(--font-size-base, 1rem);
+  font-weight: 600;
+  color: #0369a1;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #7dd3fc;
+}
+
+/* Highlighted attributes grid */
+.attributes-grid-highlighted {
+  background: transparent;
+}
+
+.attribute-card-highlighted {
+  background: white;
+  border-color: #0ea5e9;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+.attribute-card-highlighted:hover {
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+
+/* Fast Fashion hint when collapsed */
+.fast-fashion-hint {
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+.fast-fashion-hint .text-muted {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
 }

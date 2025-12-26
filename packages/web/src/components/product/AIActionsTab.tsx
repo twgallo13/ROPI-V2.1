@@ -67,7 +67,7 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     [selectedTemplate]
   );
 
-  // Simulate async describe job
+  // Simulate async describe job - LP-0.4.2.2: Wire to Tab 6 fields
   const handleGenerateDescriptions = async () => {
     if (jobProgress.status !== 'idle') return;
 
@@ -77,15 +77,33 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     setJobProgress({ status: 'preparing', progress: 10, message: 'Analyzing product attributes...', startTime });
     await new Promise(resolve => setTimeout(resolve, 800));
     
-    // Phase 2: Generating
+    // Phase 2: Generating site descriptions
     setJobProgress({ status: 'generating', progress: 30, message: 'Generating descriptions for Shiekh...', startTime });
     await new Promise(resolve => setTimeout(resolve, 600));
+    
+    // LP-0.4.2.2: Generate and update Shiekh description
+    const shiekhDesc = generateSiteDescription('shiekh', product, selectedTone, templateDetails);
+    onUpdate('description_shiekh', shiekhDesc);
     
     setJobProgress({ status: 'generating', progress: 50, message: 'Generating descriptions for Karmaloop...', startTime });
     await new Promise(resolve => setTimeout(resolve, 600));
     
+    // LP-0.4.2.2: Generate and update Karmaloop description
+    const karmaloopDesc = generateSiteDescription('karmaloop', product, selectedTone, templateDetails);
+    onUpdate('description_karmaloop', karmaloopDesc);
+    
+    // LP-0.4.2.2: Generate and update MLTD description
+    const mltdDesc = generateSiteDescription('mltd', product, selectedTone, templateDetails);
+    onUpdate('description_mltd', mltdDesc);
+    
     setJobProgress({ status: 'generating', progress: 70, message: 'Generating SEO metadata...', startTime });
     await new Promise(resolve => setTimeout(resolve, 600));
+    
+    // LP-0.4.2.2: Generate and update SEO fields
+    const metaName = generateMetaTitle(product);
+    const metaDesc = generateMetaDescription(product, selectedTone);
+    onUpdate('meta_name', metaName);
+    onUpdate('meta_description', metaDesc);
     
     setJobProgress({ status: 'generating', progress: 90, message: 'Finalizing outputs...', startTime });
     await new Promise(resolve => setTimeout(resolve, 400));
@@ -320,6 +338,115 @@ function formatAction(action: string): string {
 function formatTime(timestamp: string): string {
   const date = new Date(timestamp);
   return date.toLocaleString();
+}
+
+// LP-0.4.2.2: Description generation helpers
+// These simulate AI-generated content; in production, would call real AI service
+
+interface TemplateInfo {
+  id: string;
+  name: string;
+  description: string;
+}
+
+// Helper to safely get attribute value from product
+function getProductAttr(product: Product, key: string): string {
+  // Check top-level first, then attributes object
+  const topLevel = (product as unknown as Record<string, unknown>)[key];
+  if (typeof topLevel === 'string') return topLevel;
+  
+  const attrValue = product.attributes?.[key];
+  if (typeof attrValue === 'string') return attrValue;
+  if (Array.isArray(attrValue)) return attrValue.join(', ');
+  
+  return '';
+}
+
+function generateSiteDescription(
+  site: 'shiekh' | 'karmaloop' | 'mltd', 
+  product: Product, 
+  tone: string,
+  template?: TemplateInfo
+): string {
+  const productName = (product.name ?? getProductAttr(product, 'name')) || 'Product';
+  const brandName = product.brand ?? getProductAttr(product, 'brand_name');
+  const color = getProductAttr(product, 'color');
+  const material = getProductAttr(product, 'materials');
+  
+  const audienceStyle = template?.name ?? 'Streetwear Enthusiast';
+  
+  // Site-specific variations
+  const siteIntros: Record<string, string> = {
+    shiekh: `Step up your sneaker game with the ${productName}`,
+    karmaloop: `Level up your streetwear rotation with the ${productName}`,
+    mltd: `Elevate your style with the ${productName}`,
+  };
+  
+  const toneModifiers: Record<string, string> = {
+    professional: 'Crafted with premium quality,',
+    enthusiastic: 'Get ready to turn heads!',
+    minimalist: 'Clean. Simple. Essential.',
+    technical: 'Engineered for performance,',
+    storytelling: 'Every step tells a story.',
+  };
+  
+  const intro = siteIntros[site] || siteIntros.shiekh;
+  const modifier = toneModifiers[tone] || toneModifiers.professional;
+  
+  let description = `${intro}`;
+  if (brandName) description += ` from ${brandName}`;
+  description += `. ${modifier}`;
+  if (color) description += ` Available in ${color}.`;
+  if (material) description += ` Made with ${material}.`;
+  description += ` Perfect for the ${audienceStyle.toLowerCase()} lifestyle.`;
+  description += ` [AI-Generated: ${template?.id ?? 'default'} template, ${tone} tone]`;
+  
+  return description;
+}
+
+function generateMetaTitle(product: Product): string {
+  const productName = (product.name ?? getProductAttr(product, 'name')) || 'Product';
+  const brandName = product.brand ?? getProductAttr(product, 'brand_name');
+  
+  let title = productName;
+  if (brandName) title = `${brandName} ${productName}`;
+  title += ' | Shop Now';
+  
+  // SEO best practice: keep under 60 chars
+  if (title.length > 60) {
+    title = title.substring(0, 57) + '...';
+  }
+  
+  return title;
+}
+
+function generateMetaDescription(product: Product, tone: string): string {
+  const productName = (product.name ?? getProductAttr(product, 'name')) || 'Product';
+  const brandName = product.brand ?? getProductAttr(product, 'brand_name');
+  const color = getProductAttr(product, 'color');
+  
+  // Use tone to vary the CTA style
+  const ctaVariants: Record<string, string> = {
+    professional: 'Shop now.',
+    enthusiastic: 'Grab yours today!',
+    minimalist: 'Shop.',
+    technical: 'Order now.',
+    storytelling: 'Start your journey.',
+  };
+  const cta = ctaVariants[tone] || ctaVariants.professional;
+  
+  let description = `Shop the ${productName}`;
+  if (brandName) description += ` by ${brandName}`;
+  description += `. `;
+  if (color) description += `Available in ${color}. `;
+  description += `Free shipping on orders over $75. ${cta}`;
+  
+  // SEO best practice: keep under 160 chars
+  if (description.length > 160) {
+    description = description.substring(0, 157) + '...';
+  }
+  
+  return description;
 }
 
 export default AIActionsTab;
