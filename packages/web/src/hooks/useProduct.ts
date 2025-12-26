@@ -273,7 +273,8 @@ export function useProduct(productId: string) {
     return saveProduct(updatedProduct);
   };
 
-  // LP-3.0.2, LP-3.0.7: Ensure product always has safe defaults to prevent runtime errors
+  // LP-3.0.2, LP-3.0.7, LP-0.4.7: Ensure product always has safe defaults to prevent runtime errors
+  // LP-0.4.7 "Ghost Killer": websites defaults to [] (empty array), never hardcoded values
   // Defensive guards for attributes, exportReadiness, and array fields
   const safeProduct = product
     ? {
