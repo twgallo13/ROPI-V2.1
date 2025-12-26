@@ -4,7 +4,7 @@
   "styleId": "AIR-MAX-270",
   "name": "Nike Air Max 270 - Black/White",
   "status": "in-progress",
-  "websites": ["shiekh.com", "shiekhshoes.com"],
+  "websites": ["shiekh.com"],
   "brand": "Nike",
   "category": "Athletic Footwear",
   "department": "Men",
@@ -26,11 +26,6 @@
       "main": "Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet, this shoe delivers incredible cushioning and a striking look.",
       "seoTitle": "Nike Air Max 270 Black/White - Men's Running Shoes | Shiekh",
       "metaDescription": "Shop the Nike Air Max 270 in Black/White. Premium comfort meets iconic style. Free shipping on orders over $75."
-    },
-    "shiekhshoes.com": {
-      "main": "",
-      "seoTitle": "",
-      "metaDescription": ""
     }
   },
   "media": {
@@ -42,7 +37,7 @@
     ]
   },
   "exportReadiness": {
-    "overall": 65,
+    "overall": 75,
     "byWebsite": {
       "shiekh.com": {
         "score": 75,
@@ -51,16 +46,6 @@
           "attributes": true,
           "descriptions": true,
           "media": true,
-          "pricing": false
-        }
-      },
-      "shiekhshoes.com": {
-        "score": 35,
-        "checklist": {
-          "coreInfo": true,
-          "attributes": true,
-          "descriptions": false,
-          "media": false,
           "pricing": false
         }
       }
