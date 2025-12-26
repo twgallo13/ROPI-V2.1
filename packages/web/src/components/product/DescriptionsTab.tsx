@@ -136,6 +136,9 @@ function DescriptionsTab({ product, onUpdate }: DescriptionsTabProps) {
       {/* Site-Specific Descriptions */}
       {activeWebsites.map(site => {
         const config = WEBSITE_CONFIG[site];
+        // LP-0.4.4: Guard against undefined config (crash fix)
+        if (!config) return null;
+        
         const aiContent = mockAIContent[site];
         const currentValue = getSiteDescription(config.key);
         const hasAccepted = acceptedSites.has(site);
