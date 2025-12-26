@@ -26,9 +26,9 @@ import {
 // Firestore collection paths
 const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
 
-// Default pagination limit
-const DEFAULT_LIMIT = 50;
-const MAX_LIMIT = 100;
+// Default pagination limit - LP-0.4.3: raised from 50 to 1000 to avoid truncation
+const DEFAULT_LIMIT = 1000;
+const MAX_LIMIT = 1000;
 
 /**
  * Service error with HTTP status code

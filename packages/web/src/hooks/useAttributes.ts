@@ -158,7 +158,8 @@ export function useAttributes() {
     setError(null);
     try {
       const headers = await getAuthHeaders();
-      const url = `${API_BASE}/api/admin/settings/attributes`;
+      // LP-0.4.3: Explicitly request limit=200 to ensure all attributes are fetched
+      const url = `${API_BASE}/api/admin/settings/attributes?limit=200`;
       const body = await fetchJSON<ListResult>(url, {
         method: 'GET',
         headers,
