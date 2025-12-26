@@ -279,6 +279,78 @@ A simple, append-only timeline:
 
 ---
 
+# Phase 4 (PVS-0.4.0) — Product Page Redesign — 100% COMPLETE ✅
+
+**Timestamp:** 2025-12-26T10:57:00 UTC
+
+**Status:** ✅ **100% COMPLETE** — Merged to `aoss-main`
+
+**Owner:** Lisa (approver)
+
+**Executor:** Homer (executor)
+
+**Relayed by:** Theo (human relay)
+
+---
+
+## Summary
+
+Phase 4 Product Page Redesign is complete. PR #352 has been merged to `aoss-main` via squash merge after passing all remediation gates (LP-0.4.0 through LP-0.4.5).
+
+---
+
+## Key Deliverables
+
+- **Product Header (Tab 0):** Read-only metadata display (MPN, active status, inventory, media status)
+- **Core Information Tab (Tab 1):** Identity fields with gender/age_group selects (relocated from Tab 2)
+- **Product Attributes Tab (Tab 2):** Physical traits, colors, materials using registry-driven progressive disclosure
+- **Launch & Media Tab (Tab 3):** Launch config, pricing (MAP, SCOM prices), shipping overrides, drawing status, media gallery with status indicator
+- **Technical Tab (Tab 4):** SKU, Style ID, tax class, package dimensions (gtin removed per LP-0.4.4)
+- **Descriptions Tab (Tab 6):** Site-specific descriptions and SEO metadata
+- **AI Actions Tab (Tab 7):** Smart suggestions and AI history
+- **Attribute Registry v1.1.0:** family_sizing→boolean, outsole_material→deprecated, drawing attribute added
+
+---
+
+## Governance Trail
+
+| LP | Description | Status |
+| --- | --- | --- |
+| LP-0.4.0 | PDP Layout Phase 4 - Initial PR | ✅ Complete |
+| LP-0.4.1 | Tab 0 & Tab 1 Implementation | ✅ Complete |
+| LP-0.4.2 | Tab 4 Technical Implementation | ✅ Complete |
+| LP-0.4.3 | Governance Review & Staging Deploy | ✅ Complete |
+| LP-0.4.4 | Registry Update, Layout Fixes & Media Debugging | ✅ Complete |
+| LP-0.4.5 | Final Approval, Merge & Branch Cleanup | ✅ Complete |
+
+---
+
+## Merge Details
+
+- **PR:** #352 (feature/pvs-0.4.0-pdp-layout)
+- **Merge SHA:** `0007c0e2293d64a437cb42ce2df179c990908124`
+- **Merge Method:** Squash
+- **Labels:** `state:merged`, `cleanup:done`, `lp:0.4.0`
+- **Branch:** Deleted after merge
+
+---
+
+## Staging URL
+
+[https://ropi-aoss-staging.web.app](https://ropi-aoss-staging.web.app)
+
+---
+
+## Next Phase
+
+Phase 5 planning to be defined by Lisa. Potential focus areas:
+- Production migration plan
+- Additional attribute coverage
+- PDP preview renderer
+- CI/E2E test expansion
+
+---
+
 # vNEXT Operation Complete — CI & Deploy Validation (Homer vNEXT)
 
 **Timestamp:** 2025-12-02T11:17:34 UTC
