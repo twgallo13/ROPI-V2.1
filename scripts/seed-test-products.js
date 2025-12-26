@@ -24,7 +24,8 @@ const args = process.argv.slice(2);
 const envArg = args.find(a => a.startsWith('--env='));
 const env = envArg ? envArg.split('=')[1] : 'staging';
 
-console.log(`🌱 Seeding test products for environment: ${env}\n`);
+console.log(`🌱 Seeding test products for environment: ${env}`);
+console.log(`📍 SEED_INCLUDE_TEST_SITES: ${process.env.SEED_INCLUDE_TEST_SITES || 'false (default)'}\n`);
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -51,6 +52,11 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// LP-0.1.2: Gate shiekhshoes.com behind environment variable
+const includeTestSites = process.env.SEED_INCLUDE_TEST_SITES === 'true';
+const baseWebsites = ['shiekh.com'];
+const testWebsites = includeTestSites ? ['shiekh.com', 'shiekhshoes.com'] : baseWebsites;
+
 // Test products with canonical attribute structure
 const testProducts = [
   {
@@ -62,7 +68,7 @@ const testProducts = [
     department: 'Footwear',
     status: 'active',
     isActive: true,
-    websites: ['shiekh.com', 'shiekhshoes.com'],
+    websites: testWebsites, // LP-0.1.2: gated by SEED_INCLUDE_TEST_SITES
     media: {
       heroImage: 'https://via.placeholder.com/400x400?text=Test+Product+001',
       gallery: ['https://via.placeholder.com/400x400?text=Gallery+1'],
@@ -147,7 +153,7 @@ const testProducts = [
     department: 'Footwear',
     status: 'active',
     isActive: true,
-    websites: ['shiekh.com', 'shiekhshoes.com'],
+    websites: testWebsites, // LP-0.1.2: gated by SEED_INCLUDE_TEST_SITES
     media: {
       heroImage: 'https://via.placeholder.com/400x400?text=Test+Product+003',
       gallery: ['https://via.placeholder.com/400x400?text=Boot+Gallery+1'],
