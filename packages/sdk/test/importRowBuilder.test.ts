@@ -33,7 +33,7 @@ describe('Import Row Builder', () => {
       expect(row?.source.lineNumber).toBe(2);
       expect(row?.normalized.mpn).toBe('MPN-TEST-001');
       expect(row?.normalized.sku).toBe('TEST-SKU-001');
-      expect(row?.normalized.title).toBe('Test Product');
+      expect(row?.normalized.name).toBe('Test Product');
       expect(row?.normalized.brand).toBe('Test Brand');
       // LP-2.1.0: productId should derive from MPN (preferred)
       expect(row?.meta.productId).toBe('mpn-test-001');

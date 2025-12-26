@@ -25,12 +25,18 @@ test.describe('Attribute Create/Edit E2E', () => {
     // Sign in as admin
     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
     
-    // Navigate to attribute manager
-    await page.goto('/settings/attributes');
+    // Navigate to attribute manager with networkidle wait
+    await page.goto('/settings/attributes', { waitUntil: 'networkidle' });
     
-    // Wait for page to load
+    // Wait for loading state to finish (loading spinner shows "Loading attributes...")
+    // The h1 "Attribute Manager" only appears after loading=false
+    await page.waitForSelector('.loading', { state: 'hidden', timeout: 30000 }).catch(() => {
+      // Loading may have already finished, continue
+    });
+    
+    // Wait for page to load - use longer timeout for slow CI environments
     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
-    await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+    await pageHeading.waitFor({ state: 'visible', timeout: 45000 });
     
     // Wait for New Attribute button
     const newBtn = page.getByTestId('new-attribute-button');
@@ -298,10 +304,13 @@ test.describe('Attribute Create/Edit E2E', () => {
 test.describe('Attribute MappingTab Guard', () => {
   test.beforeEach(async ({ page }) => {
     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
-    await page.goto('/settings/attributes');
+    await page.goto('/settings/attributes', { waitUntil: 'networkidle' });
+    
+    // Wait for loading to finish
+    await page.waitForSelector('.loading', { state: 'hidden', timeout: 30000 }).catch(() => {});
     
     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
-    await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+    await pageHeading.waitFor({ state: 'visible', timeout: 45000 });
   });
 
   test('should NOT call attribute mapping API during attribute creation', async ({ page }) => {
