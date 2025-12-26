@@ -4,14 +4,16 @@ import { useAttributeRegistry, type Attribute } from '../../hooks/useAttributeRe
 import './ProductAttributesTab.css';
 
 /**
- * Product Attributes Tab — LP-0.4.2.2
+ * Product Attributes Tab — LP-0.4.4
  * 
  * Tab 2: Physical product traits and characteristics
  * 
- * Displays ONLY these attributes (per LP-0.4.1):
- * - gender, age_group, primary_color, descriptive_color
- * - material, outsole_material, fit, cut_type, closure_type
- * - heel_height, platform_height, league, sports_team, collection_name
+ * LP-0.4.4: Removed gender, age_group (moved to Tab 1), outsole_material (deprecated)
+ * 
+ * Displays ONLY these attributes:
+ * - primary_color, descriptive_color, material
+ * - fit, cut_type, closure_type
+ * - league, sports_team, collection_name
  * 
  * LP-0.4.2.2: Fast Fashion Footwear Group
  * - fast_fashion toggle at top of new section
@@ -25,15 +27,12 @@ import './ProductAttributesTab.css';
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
  */
 
-// LP-0.4.1: Physical trait attribute IDs (Tab 2 only)
-// LP-0.4.2.2: Excludes Fast Fashion fields (they're in separate section)
+// LP-0.4.4: Physical trait attribute IDs (Tab 2 only)
+// Removed: gender, age_group (moved to Tab 1), outsole_material (deprecated)
 const TAB2_ATTRIBUTE_IDS = [
-  'gender',
-  'age_group',
   'primary_color',
   'descriptive_color',
   'material',
-  'outsole_material',
   'fit',
   'cut_type',
   'closure_type',

@@ -3,17 +3,18 @@ import { useAttributeRegistry } from '../../hooks/useAttributeRegistry';
 import './TechnicalTab.css';
 
 /**
- * Technical Tab — LP-0.4.2
+ * Technical Tab — LP-0.4.4
  * 
  * Tab 4: Foundational identifiers and shipping data
  * 
- * Fields (per LP-0.4.2):
+ * Fields (per LP-0.4.4):
  * - sku: Stock Keeping Unit
  * - styleId: Manufacturer style ID
- * - gtin: Global Trade Item Number (UPC/EAN)
  * - tax_class: Tax classification (dropdown from registry)
  * - height, length, width, weight: Package dimensions
  * - first_received: Read-only metadata field
+ * 
+ * Note: gtin/upc removed per LP-0.4.4 directive
  * 
  * References:
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
@@ -30,7 +31,6 @@ function TechnicalTab({ product, onUpdate }: TechnicalTabProps) {
   // Get attribute definitions for field labels and dropdown options
   const skuAttr = getAttributeById('sku');
   const styleIdAttr = getAttributeById('style_id');
-  const gtinAttr = getAttributeById('gtin');
   const taxClassAttr = getAttributeById('tax_class');
   const heightAttr = getAttributeById('height');
   const lengthAttr = getAttributeById('length');
@@ -42,7 +42,6 @@ function TechnicalTab({ product, onUpdate }: TechnicalTabProps) {
   const taxClassOptions = taxClassAttr?.allowed_values ?? ['Taxable Goods', 'None'];
   
   // Get current values (supporting both snake_case and camelCase)
-  const gtinValue = product.gtin ?? (product.attributes?.gtin as string) ?? '';
   const taxClassValue = product.tax_class ?? (product.attributes?.tax_class as string) ?? 'Taxable Goods';
   const heightValue = product.height ?? (product.attributes?.height as string) ?? '';
   const lengthValue = product.length ?? (product.attributes?.length as string) ?? '';
@@ -89,23 +88,6 @@ function TechnicalTab({ product, onUpdate }: TechnicalTabProps) {
               placeholder="Enter Style ID..."
             />
             <span className="form-hint">Manufacturer style/model identifier</span>
-          </div>
-
-          <div className="form-field">
-            <label className="form-label">
-              {gtinAttr?.label ?? 'GTIN/UPC'}
-            </label>
-            <input
-              type="text"
-              className="form-input"
-              value={gtinValue}
-              onChange={(e) => onUpdate('gtin', e.target.value)}
-              data-field="product.gtin"
-              name="product.gtin"
-              placeholder="Enter GTIN/UPC..."
-              maxLength={14}
-            />
-            <span className="form-hint">Global Trade Item Number (UPC/EAN barcode)</span>
           </div>
         </div>
       </div>

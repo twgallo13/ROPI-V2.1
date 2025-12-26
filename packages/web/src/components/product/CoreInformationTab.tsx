@@ -3,12 +3,13 @@ import { useAttributeRegistry } from '../../hooks/useAttributeRegistry';
 import './CoreInformationTab.css';
 
 /**
- * Core Information Tab — LP-0.4.1
+ * Core Information Tab — LP-0.4.4
  * 
  * Tab 1: Core product identification and classification
- * Fields: name, brand, department, class, category, website (multi-select)
+ * Fields: name, brand, department, class, category, gender, age_group, website (multi-select)
  * 
- * NOTE: sku and styleId have been moved to Tab 5 (Identifiers)
+ * LP-0.4.4: Added gender and age_group (moved from Tab 2)
+ * NOTE: sku and styleId have been moved to Tab 4 (Technical)
  * 
  * References:
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
@@ -48,6 +49,13 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
   
   const categoryAttr = getAttributeById('category');
   const categoryOptions = categoryAttr?.allowed_values ?? [];
+  
+  // LP-0.4.4: Added gender and age_group (moved from Tab 2)
+  const genderAttr = getAttributeById('gender');
+  const genderOptions = genderAttr?.allowed_values ?? ['Men', 'Women', 'Boys', 'Girls', 'Unisex'];
+  
+  const ageGroupAttr = getAttributeById('age_group');
+  const ageGroupOptions = ageGroupAttr?.allowed_values ?? ['Adult', 'Kids', 'Infant', 'Toddler', 'Youth'];
   
   const websiteAttr = getAttributeById('website');
   const websiteOptions = websiteAttr?.allowed_values ?? WEBSITE_OPTIONS;
@@ -141,6 +149,43 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
             >
               <option value="">Select Category...</option>
               {categoryOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+          </div>
+          
+          {/* LP-0.4.4: Added gender and age_group (moved from Tab 2) */}
+          <div className="form-field">
+            <label className="form-label">
+              Gender <span className="required">*</span>
+            </label>
+            <select
+              className="form-input"
+              value={(product as unknown as Record<string, unknown>).gender as string || product.attributes?.gender as string || ''}
+              onChange={(e) => onUpdate('attributes.gender', e.target.value)}
+              data-field="product.gender"
+              name="product.gender"
+            >
+              <option value="">Select Gender...</option>
+              {genderOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="form-field">
+            <label className="form-label">
+              Age Group <span className="required">*</span>
+            </label>
+            <select
+              className="form-input"
+              value={(product as unknown as Record<string, unknown>).age_group as string || product.attributes?.age_group as string || ''}
+              onChange={(e) => onUpdate('attributes.age_group', e.target.value)}
+              data-field="product.age_group"
+              name="product.age_group"
+            >
+              <option value="">Select Age Group...</option>
+              {ageGroupOptions.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>

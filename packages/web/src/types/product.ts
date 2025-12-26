@@ -130,12 +130,32 @@ export interface Product {
   // LP-0.4.1: Tab 3 (Launch & Media) fields
   /** HYPE product flag - high-demand/limited release */
   hype?: boolean;
-  /** Family Sizing info (e.g., Runs small, True to size) */
-  family_sizing?: string;
+  /** Family Sizing - Boolean for family sizes availability */
+  family_sizing?: boolean;
   /** KL Post Date */
   kl_post_date?: string;
   /** Launch Date (alternate snake_case accessor) */
   launch_date?: string;
+  
+  // LP-0.4.4: Tab 3 (Launch & Media) - Additional pricing/launch fields
+  /** Hide Image Date */
+  hide_image_date?: string;
+  /** Drawing/Raffle status (Yes/No/Pending) */
+  drawing?: string;
+  /** MAP - Minimum Advertised Price */
+  map?: string;
+  /** Promo status (Allowed/Disallowed) */
+  promo?: string;
+  /** SCOM Regular Price */
+  scom_regular_price?: string;
+  /** SCOM Sale Price */
+  scom_sale_price?: string;
+  /** Standard Shipping Override */
+  standard_shipping_override?: string;
+  /** Expedited Shipping Override */
+  expedited_override_shipping?: string;
+  /** Custom Message (Internal) */
+  custom_message?: string;
   
   // LP-0.4.2: Tab 4 (Technical) fields
   /** GTIN/UPC - Global Trade Item Number */
