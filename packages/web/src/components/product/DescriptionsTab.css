@@ -1,3 +1,25 @@
+/**
+ * DescriptionsTab.css — LP-0.4.2
+ * 
+ * Styles for Descriptions & SEO Tab (Tab 6)
+ */
+
+/* ============================================
+   WARNING BANNER
+   ============================================ */
+.warning-banner {
+  padding: 0.75rem 1rem;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: #92400e;
+}
+
+/* ============================================
+   CHARACTER COUNT
+   ============================================ */
 .character-count {
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
@@ -9,61 +31,215 @@
   font-weight: 500;
 }
 
-.ai-sample-box {
-  padding: 1.5rem;
-  background: var(--color-background);
-  border: 2px dashed var(--color-border);
-  border-radius: 8px;
+.count-info {
+  color: var(--color-text-secondary);
 }
 
-.ai-sample-header {
+/* ============================================
+   SITE DESCRIPTION SECTION
+   ============================================ */
+.site-description-section {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.site-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
 }
 
-.ai-sample-label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-primary);
+.site-section-header .form-section-title {
+  margin-bottom: 0;
 }
 
-.ai-sample-button,
-.ai-apply-button {
-  padding: 0.375rem 1rem;
-  background: var(--color-background-secondary);
+/* Copy Dropdown */
+.copy-dropdown {
+  position: relative;
+}
+
+.copy-button {
+  padding: 0.375rem 0.75rem;
+  background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-xs, 0.75rem);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copy-button:hover {
+  border-color: var(--color-primary);
+}
+
+.copy-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  min-width: 140px;
+  background: var(--color-background-secondary, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.copy-dropdown:hover .copy-menu {
+  display: block;
+}
+
+.copy-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: var(--font-size-sm, 0.875rem);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-menu-item:hover {
+  background: var(--color-background-hover, #f5f5f5);
+}
+
+.copy-menu-item:first-child {
+  border-radius: 7px 7px 0 0;
+}
+
+.copy-menu-item:last-child {
+  border-radius: 0 0 7px 7px;
+}
+
+/* ============================================
+   AI SUGGESTION CARD
+   ============================================ */
+.ai-suggestion-card {
+  padding: 1rem;
+  background: linear-gradient(135deg, #f0f4ff 0%, #fff 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.ai-suggestion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.ai-badge {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  color: #667eea;
+}
+
+.ai-confidence {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary);
+}
+
+.ai-suggestion-text {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+  font-style: italic;
+}
+
+.accept-ai-button {
+  padding: 0.5rem 1rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.ai-sample-button:hover,
-.ai-apply-button:hover {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+.accept-ai-button:hover {
+  background: #5a67d8;
 }
 
-.ai-sample-text {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
-  line-height: 1.6;
-  margin: 0 0 1rem 0;
+/* ============================================
+   SEO SECTION
+   ============================================ */
+.seo-section {
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
 }
 
-.ai-sample-footer {
+.section-header-with-icon {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
-.ai-confidence {
-  font-size: var(--font-size-xs);
+.section-icon {
+  font-size: 1.25rem;
+}
+
+.section-header-with-icon .form-section-title {
+  margin-bottom: 0;
+}
+
+.form-section-description {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: var(--font-size-sm, 0.875rem);
   color: var(--color-text-secondary);
+}
+
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   SEO PREVIEW
+   ============================================ */
+.seo-preview {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.seo-preview-title {
+  font-size: 1.125rem;
+  color: #1a0dab;
+  margin-bottom: 0.25rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.seo-preview-url {
+  font-size: 0.8125rem;
+  color: #006621;
+  margin-bottom: 0.375rem;
+}
+
+.seo-preview-description {
+  font-size: 0.8125rem;
+  color: #545454;
+  line-height: 1.5;
 }

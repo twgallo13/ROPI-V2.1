@@ -1,0 +1,80 @@
+/**
+ * TechnicalTab.css — LP-0.4.2
+ * 
+ * Styles for Technical Tab (Tab 4)
+ */
+
+/* ============================================
+   FORM GRID VARIANTS
+   ============================================ */
+.form-grid-4col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .form-grid-4col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .form-grid-4col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   INPUT WITH UNIT SUFFIX
+   ============================================ */
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-with-unit .form-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.input-unit {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ============================================
+   READ-ONLY INPUT STYLING
+   ============================================ */
+.form-input-readonly {
+  background: var(--color-background-muted, #f5f5f5);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.form-input-readonly:focus {
+  outline: none;
+  border-color: var(--color-border);
+}
+
+/* ============================================
+   FORM HINT TEXT
+   ============================================ */
+.form-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   SECTION DESCRIPTION
+   ============================================ */
+.form-section-description {
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary);
+}

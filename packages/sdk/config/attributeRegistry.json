@@ -181,10 +181,11 @@
       "label": "Family Sizing",
       "external_header": "Family Sizing",
       "category": "lifecycle",
-      "data_type": "text",
+      "data_type": "boolean",
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
+      "ai_usage_notes": "Indicates if product is part of a family sizing collection",
       "status": "active"
     },
     {
@@ -371,7 +372,7 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Optional; used when outsole differs from upper.",
-      "status": "active"
+      "status": "deprecated"
     },
     {
       "attribute_id": "closure_type",
@@ -703,6 +704,19 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
+      "status": "active"
+    },
+    {
+      "attribute_id": "drawing",
+      "label": "Drawing",
+      "external_header": "Drawing",
+      "category": "launch_media_pricing",
+      "data_type": "select",
+      "allowed_values": ["Yes", "No", "Pending"],
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Indicates if product is part of a drawing/raffle release",
       "status": "active"
     },
     {

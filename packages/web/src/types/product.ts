@@ -106,6 +106,88 @@ export interface Product {
   observations: Observation[];
   smartSuggestions: SmartSuggestion[];
   aiHistory: AIHistoryEntry[];
+  
+  // LP-0.4.0: Tab 0 (Product Header) fields - Read-only metadata
+  /** MPN - Manufacturer Part Number (required for export) */
+  mpn?: string;
+  /** Product Is Active - Toggle state from ROPI */
+  product_is_active?: boolean;
+  /** Last Received - Latest warehouse scan date */
+  last_received?: string;
+  /** Total Inventory - Sum of warehouse + store inventory */
+  total_inv?: number;
+  /** Warehouse Inventory */
+  warehouse_inv?: number;
+  /** Store Inventory */
+  store_inv?: number;
+  /** Media Status - Derived from image count (e.g., 'complete', 'partial', 'missing') */
+  media_status?: 'complete' | 'partial' | 'missing';
+  
+  // LP-0.4.1: Tab 1 (Core Information) - Class field
+  /** Product Class (e.g., Lifestyle, Performance) */
+  class?: string;
+  
+  // LP-0.4.1: Tab 3 (Launch & Media) fields
+  /** HYPE product flag - high-demand/limited release */
+  hype?: boolean;
+  /** Family Sizing - Boolean for family sizes availability */
+  family_sizing?: boolean;
+  /** KL Post Date */
+  kl_post_date?: string;
+  /** Launch Date (alternate snake_case accessor) */
+  launch_date?: string;
+  
+  // LP-0.4.4: Tab 3 (Launch & Media) - Additional pricing/launch fields
+  /** Hide Image Date */
+  hide_image_date?: string;
+  /** Drawing/Raffle status (Yes/No/Pending) */
+  drawing?: string;
+  /** MAP - Minimum Advertised Price */
+  map?: string;
+  /** Promo status (Allowed/Disallowed) */
+  promo?: string;
+  /** SCOM Regular Price */
+  scom_regular_price?: string;
+  /** SCOM Sale Price */
+  scom_sale_price?: string;
+  /** Standard Shipping Override */
+  standard_shipping_override?: string;
+  /** Expedited Shipping Override */
+  expedited_override_shipping?: string;
+  /** Custom Message (Internal) */
+  custom_message?: string;
+  
+  // LP-0.4.2: Tab 4 (Technical) fields
+  /** GTIN/UPC - Global Trade Item Number */
+  gtin?: string;
+  /** Tax Class - for export classification */
+  tax_class?: string;
+  /** Package height (inches) */
+  height?: string;
+  /** Package length (inches) */
+  length?: string;
+  /** Package width (inches) */
+  width?: string;
+  /** Package weight (oz) */
+  weight?: string;
+  /** First received date (snake_case alternate) */
+  first_received?: string;
+  
+  // LP-0.4.2: Tab 6 (Descriptions & SEO) fields
+  /** Site-specific description - Shiekh */
+  description_shiekh?: string;
+  /** Site-specific description - Karmaloop */
+  description_karmaloop?: string;
+  /** Site-specific description - MLTD */
+  description_mltd?: string;
+  /** Site-specific description - Sangremia */
+  description_sangremia?: string;
+  /** SEO Meta Title */
+  meta_name?: string;
+  /** SEO Meta Description */
+  meta_description?: string;
+  /** SEO Keywords (comma-separated) */
+  keywords?: string;
 }
 
 export interface NewObservation {
