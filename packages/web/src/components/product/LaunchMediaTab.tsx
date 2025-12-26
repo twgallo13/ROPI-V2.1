@@ -1,23 +1,22 @@
-import { useMemo } from 'react';
 import type { Product } from '../../types/product';
 import { useAttributeRegistry } from '../../hooks/useAttributeRegistry';
 import './LaunchMediaTab.css';
 
 /**
- * Launch & Media Tab — LP-0.4.4
+ * Launch & Media Tab — LP-0.4.1.1
  * 
  * Tab 3: Launch configuration, pricing, and media asset management
  * 
- * Fields (per LP-0.4.4):
+ * Fields (per LP-0.4.1.1):
  * - Launch Configuration:
  *   - launch_date: Product launch date
  *   - kl_post_date: KL post date
  *   - hide_image_date: Date to hide images
  *   - hype: Boolean flag for HYPE products
  *   - family_sizing: Boolean for family sizing availability
- *   - drawing: Drawing/raffle status (Yes/No/Pending)
+ *   - drawing: Drawing type (FCFS, Store-only, Web-only, Store & Web, Token set)
  * - Pricing:
- *   - map: Minimum Advertised Price
+ *   - map: MAP toggle (boolean)
  *   - promo: Promo status (Allowed/Disallowed)
  *   - scom_regular_price: SCOM regular price
  *   - scom_sale_price: SCOM sale price
@@ -26,7 +25,10 @@ import './LaunchMediaTab.css';
  *   - expedited_override_shipping: Expedited shipping cost override
  * - Custom Message:
  *   - custom_message: Internal notes/messaging
- * - Media gallery with media_status indicator
+ * - Media gallery (local demo only - does NOT affect media_status)
+ * 
+ * LP-0.4.1.1: media_status is READ-ONLY metadata from external workflow.
+ * Gallery images are stored as data URLs for demo purposes.
  * 
  * References:
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
@@ -38,22 +40,8 @@ interface LaunchMediaTabProps {
 }
 
 /**
- * Calculate media status based on image presence
- */
-function calculateMediaStatus(product: Product): 'complete' | 'partial' | 'missing' {
-  const hasHero = Boolean(product.media?.heroImage);
-  const galleryCount = product.media?.gallery?.length ?? 0;
-  
-  if (hasHero && galleryCount >= 3) {
-    return 'complete';
-  } else if (hasHero || galleryCount > 0) {
-    return 'partial';
-  }
-  return 'missing';
-}
-
-/**
- * Media status display configuration
+ * Media status display configuration (read-only indicator)
+ * LP-0.4.1.1: media_status is read-only metadata from external workflow
  */
 const mediaStatusConfig = {
   complete: { icon: '✓', label: 'Complete', className: 'media-status--complete' },
@@ -80,70 +68,61 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const customMessageAttr = getAttributeById('custom_message');
   
   // Get allowed values from registry
-  const drawingOptions = drawingAttr?.allowed_values ?? ['Yes', 'No', 'Pending'];
+  const drawingOptions = drawingAttr?.allowed_values ?? ['FCFS', 'Store-only', 'Web-only', 'Store & Web', 'Token set'];
   const promoOptions = promoAttr?.allowed_values ?? ['Allowed', 'Disallowed'];
   
-  // Calculate media status based on current images
-  const mediaStatus = useMemo(() => calculateMediaStatus(product), [product]);
+  // LP-0.4.1.1: media_status is read-only from external workflow, not computed locally
+  const mediaStatus = product.media_status ?? 'missing';
   const statusDisplay = mediaStatusConfig[mediaStatus];
 
-  // Update parent media_status when images change
-  const updateMediaStatus = (newStatus: 'complete' | 'partial' | 'missing') => {
-    onUpdate('media_status', newStatus);
-  };
-
+  /**
+   * LP-0.4.1.1: Sanitized image upload handler
+   * Converts File to data URL string before storing.
+   * Does NOT update media_status (read-only external field).
+   */
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const dataUrl = reader.result as string;
+        // Only store the data URL string - no File objects
         onUpdate(field, dataUrl);
-        // Update media_status after image change
-        setTimeout(() => {
-          const newStatus = calculateMediaStatus({
-            ...product,
-            media: {
-              ...product.media,
-              [field === 'media.heroImage' ? 'heroImage' : 'gallery']: 
-                field === 'media.heroImage' ? dataUrl : [...(product.media?.gallery ?? []), dataUrl]
-            }
-          } as Product);
-          updateMediaStatus(newStatus);
-        }, 0);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  /**
+   * LP-0.4.1.1: Sanitized gallery image upload
+   * Ensures only string URLs are stored in gallery array.
+   */
   const handleGalleryImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const dataUrl = reader.result as string;
-        const newGallery = [...(product.media?.gallery ?? []), dataUrl];
+        // Build new gallery with only string URLs
+        const currentGallery = (product.media?.gallery ?? []).filter(
+          (item): item is string => typeof item === 'string'
+        );
+        const newGallery = [...currentGallery, dataUrl];
         onUpdate('media.gallery', newGallery);
-        // Update media_status after gallery change
-        const newStatus = calculateMediaStatus({
-          ...product,
-          media: { ...product.media, gallery: newGallery }
-        } as Product);
-        updateMediaStatus(newStatus);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  /**
+   * LP-0.4.1.1: Gallery image removal
+   */
   const handleRemoveGalleryImage = (index: number) => {
-    const newGallery = (product.media?.gallery ?? []).filter((_, i) => i !== index);
+    const currentGallery = (product.media?.gallery ?? []).filter(
+      (item): item is string => typeof item === 'string'
+    );
+    const newGallery = currentGallery.filter((_, i) => i !== index);
     onUpdate('media.gallery', newGallery);
-    // Update media_status after removal
-    const newStatus = calculateMediaStatus({
-      ...product,
-      media: { ...product.media, gallery: newGallery }
-    } as Product);
-    updateMediaStatus(newStatus);
   };
 
   // Get values using snake_case attribute IDs (now typed on Product)
@@ -160,7 +139,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const drawingValue = product.drawing ?? 
                        (product.attributes?.drawing as string) ?? '';
   const mapValue = product.map ?? 
-                   (product.attributes?.map as string) ?? '';
+                   (product.attributes?.map as unknown as boolean) ?? false;
   const promoValue = product.promo ?? 
                      (product.attributes?.promo as string) ?? '';
   const scomRegularPriceValue = product.scom_regular_price ?? 
@@ -286,20 +265,17 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
         <h3 className="form-section-title">Pricing</h3>
         <div className="form-grid">
           <div className="form-field">
-            <label className="form-label">
-              {mapAttr?.label ?? 'MAP'}
+            <label className="form-label checkbox-field-label">
+              <input
+                type="checkbox"
+                checked={Boolean(mapValue)}
+                onChange={(e) => onUpdate('map', e.target.checked)}
+                data-field="product.map"
+                name="product.map"
+              />
+              <span>{mapAttr?.label ?? 'MAP'}</span>
             </label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-input"
-              value={mapValue}
-              onChange={(e) => onUpdate('map', e.target.value)}
-              data-field="product.map"
-              name="product.map"
-              placeholder="0.00"
-            />
-            <span className="form-hint">Minimum Advertised Price</span>
+            <span className="form-hint">Minimum Advertised Price applies</span>
           </div>
 
           <div className="form-field">
