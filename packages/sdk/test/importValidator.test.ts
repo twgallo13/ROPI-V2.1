@@ -56,23 +56,25 @@ describe('Import Validator', () => {
       expect(validation.errors.some(e => e.field === 'sku')).toBe(false);
     });
 
-    it('should fail validation for missing title', () => {
+    // LP-ATTR-1.3.1: title/name is now optional per registry
+    it('should pass validation without name/title (optional per LP-ATTR-1.3.1)', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'SKU-001',
         brand: 'Brand',
+        // name/title intentionally missing - should be OK now
       };
 
       const validation = validateImportRow(normalized);
 
-      expect(validation.isValid).toBe(false);
-      expect(validation.errors.some(e => e.field === 'title')).toBe(true);
+      expect(validation.isValid).toBe(true);
+      expect(validation.errors.some(e => e.field === 'title' || e.field === 'name')).toBe(false);
     });
 
     it('LP-2.1.0: should fail validation for invalid MPN format', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'invalid mpn!',
-        title: 'Product',
+        name: 'Product',
         brand: 'Brand',
       };
 
@@ -86,7 +88,7 @@ describe('Import Validator', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'invalid sku!',
-        title: 'Product',
+        name: 'Product',
         brand: 'Brand',
       };
 
@@ -96,11 +98,11 @@ describe('Import Validator', () => {
       expect(validation.errors.some(e => e.code === 'INVALID_FORMAT' && e.field === 'sku')).toBe(true);
     });
 
-    it('should warn for short title', () => {
+    it('should warn for short name', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'SKU-001',
-        title: 'Prod',
+        name: 'Prod',
         brand: 'Brand',
       };
 
@@ -108,14 +110,14 @@ describe('Import Validator', () => {
 
       expect(validation.isValid).toBe(true); // Warnings don't fail validation
       expect(validation.warnings).toHaveLength(1);
-      expect(validation.warnings[0].field).toBe('title');
+      expect(validation.warnings[0].field).toBe('name');
     });
 
     it('should fail validation for negative prices', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'SKU-001',
-        title: 'Product',
+        name: 'Product',
         brand: 'Brand',
         msrp: -10,
       };
@@ -130,7 +132,7 @@ describe('Import Validator', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'SKU-001',
-        title: 'Product',
+        name: 'Product',
         brand: 'Brand',
         msrp: 100,
         retailPrice: 150,
@@ -146,7 +148,7 @@ describe('Import Validator', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'SKU-001',
-        title: 'Product',
+        name: 'Product',
         brand: 'Brand',
         launchDate: 'not-a-date',
       };
@@ -161,7 +163,7 @@ describe('Import Validator', () => {
       const normalized: ImportNormalizedFields = {
         mpn: 'MPN-001',
         sku: 'SKU-001',
-        title: 'Product',
+        name: 'Product',
         brand: 'Brand',
         primaryImage: 'not-a-url',
       };

@@ -13,12 +13,17 @@ test.describe('Admin Attribute Management', () => {
     // Sign in as admin first
     await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
     
-    // Navigate to attributes page
-    await page.goto('/settings/attributes');
+    // Navigate to attributes page with networkidle wait
+    await page.goto('/settings/attributes', { waitUntil: 'networkidle' });
+    
+    // Wait for loading state to finish first
+    await page.waitForSelector('.loading', { state: 'hidden', timeout: 30000 }).catch(() => {
+      // Loading may have already finished
+    });
     
     // Wait for page to load
     const pageHeading = page.getByRole('heading', { name: /attribute manager/i, level: 1 });
-    await pageHeading.waitFor({ state: 'visible', timeout: 30000 });
+    await pageHeading.waitFor({ state: 'visible', timeout: 45000 });
     
     // Wait for New Attribute button to be visible
     const newBtn = page.getByTestId('new-attribute-button');

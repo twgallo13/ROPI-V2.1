@@ -30,7 +30,7 @@ describe('Import Normalizer', () => {
       const normalized = normalizeImportRow(sourceColumns);
 
       expect(normalized.sku).toBe('TEST-SKU-001');
-      expect(normalized.title).toBe('Test Product');
+      expect(normalized.name).toBe('Test Product');
       expect(normalized.brand).toBe('Test Brand');
       expect(normalized.description).toBe('Test description');
       expect(normalized.msrp).toBe(99.99);
@@ -47,7 +47,7 @@ describe('Import Normalizer', () => {
       const normalized = normalizeImportRow(sourceColumns);
 
       expect(normalized.sku).toBe('MIN-001');
-      expect(normalized.title).toBe('Minimal Product');
+      expect(normalized.name).toBe('Minimal Product');
       expect(normalized.brand).toBe('Brand');
       expect(normalized.description).toBeUndefined();
       expect(normalized.msrp).toBeUndefined();
@@ -76,7 +76,7 @@ describe('Import Normalizer', () => {
       const normalized = normalizeImportRow(sourceColumns);
 
       expect(normalized.sku).toBe('TRIM-001');
-      expect(normalized.title).toBe('Product');
+      expect(normalized.name).toBe('Product');
       expect(normalized.brand).toBe('Brand');
     });
 
@@ -178,15 +178,16 @@ describe('Import Normalizer', () => {
     });
 
     it('should return missing required fields', () => {
+      // LP-ATTR-1.3.1: Only MPN is required, title/brand are optional
       const normalized = {
-        mpn: 'MPN-001',
-        // title missing
-        // brand missing
+        // mpn missing - this is the only required field
+        name: 'Product',
+        brand: 'Brand',
       };
 
       const missing = validateRequiredFields(normalized);
-      expect(missing).toContain('title');
-      expect(missing).toContain('brand');
+      expect(missing).toContain('mpn');
+      // title/brand are no longer required per registry
     });
 
     // LP-2.1.0: MPN-first required field tests
