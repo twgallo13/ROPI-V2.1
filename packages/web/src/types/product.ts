@@ -122,6 +122,20 @@ export interface Product {
   store_inv?: number;
   /** Media Status - Derived from image count (e.g., 'complete', 'partial', 'missing') */
   media_status?: 'complete' | 'partial' | 'missing';
+  
+  // LP-0.4.1: Tab 1 (Core Information) - Class field
+  /** Product Class (e.g., Lifestyle, Performance) */
+  class?: string;
+  
+  // LP-0.4.1: Tab 3 (Launch & Media) fields
+  /** HYPE product flag - high-demand/limited release */
+  hype?: boolean;
+  /** Family Sizing info (e.g., Runs small, True to size) */
+  family_sizing?: string;
+  /** KL Post Date */
+  kl_post_date?: string;
+  /** Launch Date (alternate snake_case accessor) */
+  launch_date?: string;
 }
 
 export interface NewObservation {

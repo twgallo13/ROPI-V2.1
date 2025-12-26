@@ -1,3 +1,87 @@
+/**
+ * LaunchMediaTab.css — LP-0.4.1
+ * 
+ * Styles for Launch & Media tab including media status indicator
+ */
+
+/* ============================================
+   MEDIA STATUS BANNER
+   ============================================ */
+.media-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--color-background-secondary, #f9fafb);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.media-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+}
+
+.media-status-icon {
+  font-size: 1rem;
+}
+
+.media-status-label {
+  white-space: nowrap;
+}
+
+.media-status--complete {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.media-status--partial {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.media-status--missing {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.media-status-detail {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary, #6b7280);
+}
+
+/* ============================================
+   FORM ENHANCEMENTS
+   ============================================ */
+.checkbox-field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-field-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.form-hint {
+  display: block;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary, #6b7280);
+  margin-top: 0.25rem;
+}
+
+/* ============================================
+   MEDIA UPLOAD AREA
+   ============================================ */
 .media-upload-area {
   width: 100%;
   max-width: 600px;

@@ -1,3 +1,31 @@
+/**
+ * ProductAttributesTab.css — LP-0.4.1
+ * 
+ * Styles for Product Attributes tab (Tab 2 physical traits)
+ */
+
+/* ============================================
+   WARNING BANNER
+   ============================================ */
+.warning-banner {
+  padding: 0.75rem 1rem;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: #92400e;
+}
+
+.warning-banner small {
+  display: block;
+  margin-top: 0.25rem;
+  opacity: 0.8;
+}
+
+/* ============================================
+   ATTRIBUTES GRID
+   ============================================ */
 .attributes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -15,6 +43,18 @@
 .attribute-card:hover {
   border-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Placeholder card for missing registry attributes */
+.attribute-placeholder {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  opacity: 0.7;
+}
+
+.attribute-placeholder .form-input-placeholder {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .attribute-header {
@@ -46,6 +86,12 @@
   justify-content: center;
   border-radius: 4px;
   transition: all 0.2s;
+}
+
+/* Missing badge style */
+.attribute-badge-missing {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .attribute-delete:hover {
