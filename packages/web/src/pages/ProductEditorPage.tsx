@@ -4,9 +4,10 @@ import { useProduct } from '../hooks/useProduct';
 import ProductHeader from '../components/product/ProductHeader';
 import CoreInformationTab from '../components/product/CoreInformationTab';
 import ProductAttributesTab from '../components/product/ProductAttributesTab';
-import DescriptionsTab from '../components/product/DescriptionsTab';
 import LaunchMediaTab from '../components/product/LaunchMediaTab';
+import TechnicalTab from '../components/product/TechnicalTab';
 import AIActionsTab from '../components/product/AIActionsTab';
+import DescriptionsTab from '../components/product/DescriptionsTab';
 import ObservationsPanel from '../components/product/ObservationsPanel';
 import SmartSuggestionsPanel from '../components/product/SmartSuggestionsPanel';
 import ExportReadinessPanel from '../components/product/ExportReadinessPanel';
@@ -63,7 +64,7 @@ function ProductEditorPage() {
   // Sync tab with URL query param
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['core', 'attributes', 'descriptions', 'launch', 'ai'].includes(tabParam)) {
+    if (tabParam && ['core', 'attributes', 'launch', 'technical', 'ai', 'descriptions'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -100,12 +101,14 @@ function ProductEditorPage() {
   const safeWebsites = safeArray(product.websites);
   const safeSuggestions = safeArray(product.smartSuggestions);
 
+  // LP-0.4.2: Updated tab order - Technical (4), AI Actions (5), Descriptions (6)
   const tabs = [
     { id: 'core', label: 'Core Information' },
     { id: 'attributes', label: 'Product Attributes' },
-    { id: 'descriptions', label: 'Descriptions & SEO' },
     { id: 'launch', label: 'Launch & Media' },
+    { id: 'technical', label: 'Technical' },
     { id: 'ai', label: 'AI Actions' },
+    { id: 'descriptions', label: 'Descriptions & SEO' },
   ];
 
   const renderTabContent = () => {
@@ -114,12 +117,14 @@ function ProductEditorPage() {
         return <CoreInformationTab product={product} onUpdate={updateField} />;
       case 'attributes':
         return <ProductAttributesTab product={product} onUpdate={updateField} />;
-      case 'descriptions':
-        return <DescriptionsTab product={product} onUpdate={updateField} />;
       case 'launch':
         return <LaunchMediaTab product={product} onUpdate={updateField} />;
+      case 'technical':
+        return <TechnicalTab product={product} onUpdate={updateField} />;
       case 'ai':
         return <AIActionsTab product={product} onUpdate={updateField} />;
+      case 'descriptions':
+        return <DescriptionsTab product={product} onUpdate={updateField} />;
       default:
         return null;
     }

@@ -136,6 +136,38 @@ export interface Product {
   kl_post_date?: string;
   /** Launch Date (alternate snake_case accessor) */
   launch_date?: string;
+  
+  // LP-0.4.2: Tab 4 (Technical) fields
+  /** GTIN/UPC - Global Trade Item Number */
+  gtin?: string;
+  /** Tax Class - for export classification */
+  tax_class?: string;
+  /** Package height (inches) */
+  height?: string;
+  /** Package length (inches) */
+  length?: string;
+  /** Package width (inches) */
+  width?: string;
+  /** Package weight (oz) */
+  weight?: string;
+  /** First received date (snake_case alternate) */
+  first_received?: string;
+  
+  // LP-0.4.2: Tab 6 (Descriptions & SEO) fields
+  /** Site-specific description - Shiekh */
+  description_shiekh?: string;
+  /** Site-specific description - Karmaloop */
+  description_karmaloop?: string;
+  /** Site-specific description - MLTD */
+  description_mltd?: string;
+  /** Site-specific description - Sangremia */
+  description_sangremia?: string;
+  /** SEO Meta Title */
+  meta_name?: string;
+  /** SEO Meta Description */
+  meta_description?: string;
+  /** SEO Keywords (comma-separated) */
+  keywords?: string;
 }
 
 export interface NewObservation {
