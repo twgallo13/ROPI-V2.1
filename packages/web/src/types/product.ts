@@ -106,6 +106,22 @@ export interface Product {
   observations: Observation[];
   smartSuggestions: SmartSuggestion[];
   aiHistory: AIHistoryEntry[];
+  
+  // LP-0.4.0: Tab 0 (Product Header) fields - Read-only metadata
+  /** MPN - Manufacturer Part Number (required for export) */
+  mpn?: string;
+  /** Product Is Active - Toggle state from ROPI */
+  product_is_active?: boolean;
+  /** Last Received - Latest warehouse scan date */
+  last_received?: string;
+  /** Total Inventory - Sum of warehouse + store inventory */
+  total_inv?: number;
+  /** Warehouse Inventory */
+  warehouse_inv?: number;
+  /** Store Inventory */
+  store_inv?: number;
+  /** Media Status - Derived from image count (e.g., 'complete', 'partial', 'missing') */
+  media_status?: 'complete' | 'partial' | 'missing';
 }
 
 export interface NewObservation {
