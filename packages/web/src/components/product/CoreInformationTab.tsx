@@ -237,7 +237,14 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
                   }
                 }
 
+                // DEBUG: log for troubleshooting
+                console.debug('[CoreInformationTab] update websites ->', merged);
+
+                // Write both top-level and attributes path to keep both in sync.
+                // onUpdate triggers updateField (Firestore) which will merge fields.
+                // Do both writes to tolerate mixed storage schemas.
                 onUpdate('websites', merged);
+                onUpdate('attributes.website', merged);
               };
 
               return (
