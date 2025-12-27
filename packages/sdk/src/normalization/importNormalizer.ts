@@ -37,6 +37,12 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   { sourceColumn: 'Size', targetField: 'size', transform: 'trim' },
   { sourceColumn: 'Material', targetField: 'material', transform: 'trim' },
   
+  // LP-0.2.0: RICS field mappings
+  { sourceColumn: 'RICS Category', targetField: 'ricsCategory', transform: 'trim' },
+  { sourceColumn: 'RICS Color', targetField: 'ricsColor', transform: 'trim' },
+  { sourceColumn: 'rics_category', targetField: 'ricsCategory', transform: 'trim' },
+  { sourceColumn: 'rics_color', targetField: 'ricsColor', transform: 'trim' },
+  
   // Pricing
   { sourceColumn: 'MSRP', targetField: 'msrp', transform: 'number' },
   { sourceColumn: 'Cost', targetField: 'cost', transform: 'number' },
