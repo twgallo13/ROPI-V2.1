@@ -11,6 +11,7 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     environment: staging
+    timeout-minutes: 60  # LP-0.1.3.fix: Job-level timeout to prevent runaway deploys
 
     steps:
       - name: Checkout code
@@ -120,11 +121,12 @@ jobs:
           firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json
 
           # Deploy functions and hosting to stable staging
-          echo "Deploying Cloud Functions..."
-          firebase deploy --only functions --project ropi-bccee --json
+          # LP-0.1.3.fix: Add timeouts to prevent runaway deploys
+          echo "Deploying Cloud Functions (20m timeout)..."
+          timeout 20m firebase deploy --only functions --project ropi-bccee --json
 
-          echo "Deploying hosting..."
-          firebase deploy --only hosting:aoss-staging --project ropi-bccee --json
+          echo "Deploying hosting (10m timeout)..."
+          timeout 10m firebase deploy --only hosting:aoss-staging --project ropi-bccee --json
           echo "Stable staging URL: https://ropi-aoss-staging.web.app"
 
       - name: Smoke check stable staging
