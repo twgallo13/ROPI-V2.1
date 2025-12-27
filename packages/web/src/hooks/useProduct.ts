@@ -371,6 +371,12 @@ export function useProduct(productId: string) {
         attributes: product.attributes ?? {},
         exportReadiness: product.exportReadiness ?? { overall: 0, byWebsite: {} },
         websites: Array.isArray(product.websites) ? product.websites : [],
+        // Ensure descriptions and media exist so downstream code can index them safely
+        descriptions: product.descriptions ?? {},
+        media: {
+          ...(product.media ?? {}),
+          gallery: Array.isArray(product.media?.gallery) ? product.media!.gallery : [],
+        },
         observations: Array.isArray(product.observations) ? product.observations : [],
         smartSuggestions: Array.isArray(product.smartSuggestions) ? product.smartSuggestions : [],
       }
@@ -398,16 +404,33 @@ export function useProduct(productId: string) {
  */
 function calculateExportReadiness(product: Product) {
   let overall = 0;
-  const byWebsite: any = {};
+  const byWebsite: Record<string, any> = {};
 
-  product.websites.forEach(website => {
+  const sites = Array.isArray(product.websites) ? product.websites : [];
+
+  // Defensive: if no websites, return zero readiness
+  if (sites.length === 0) {
+    return { overall: 0, byWebsite: {} };
+  }
+
+  sites.forEach((website) => {
+    // Safe checks using optional chaining and type guards
+    const coreInfo = Boolean(product.sku && product.name && product.brand && product.category);
+    const attributesOk = Boolean(product.attributes && Object.keys(product.attributes).length >= 5);
+
+    const descForSite = (product.descriptions && (product.descriptions as any)[website]) || undefined;
+    const hasLongDescription = Boolean(descForSite && typeof descForSite.main === 'string' && descForSite.main.length > 50);
+
+    const mediaObj = product.media ?? {};
+    const hasHero = Boolean(mediaObj?.heroImage);
+    const hasGallery = Array.isArray(mediaObj?.gallery) && mediaObj.gallery.length > 0;
+
     const checklist = {
-      coreInfo: !!(product.sku && product.name && product.brand && product.category),
-      attributes: Object.keys(product.attributes).length >= 5,
-      descriptions: !!(product.descriptions[website]?.main && 
-                       product.descriptions[website]?.main.length > 50),
-      media: !!(product.media.heroImage && product.media.gallery.length > 0),
-      pricing: false, // TODO: Add pricing data to product model
+      coreInfo,
+      attributes: attributesOk,
+      descriptions: hasLongDescription,
+      media: hasHero && hasGallery,
+      pricing: false,
     };
 
     const score = Object.values(checklist).filter(Boolean).length * 20;
@@ -420,7 +443,7 @@ function calculateExportReadiness(product: Product) {
     overall += score;
   });
 
-  overall = Math.round(overall / product.websites.length);
+  overall = Math.round(overall / sites.length);
 
   return {
     overall,
