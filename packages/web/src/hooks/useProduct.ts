@@ -127,7 +127,19 @@ export function useProduct(productId: string) {
       try {
         const stored = localStorage.getItem(`aoss:product:${productId}`);
         if (stored) {
-          setProduct(JSON.parse(stored));
+          const parsed = JSON.parse(stored);
+          // LP-0.1.1: Sanitize websites array to prevent ghost values
+          if (Array.isArray(parsed.websites)) {
+            parsed.websites = Array.from(new Set(
+              parsed.websites
+                .map((w: unknown) => (typeof w === 'string' ? w.trim() : w))
+                .filter(Boolean)
+            ));
+          }
+          // Audit marker for debugging — not persisted to Firestore
+          parsed.__source = 'localStorage';
+          console.warn(`[useProduct] Using localStorage fallback for ${productId} — sanitized websites:`, parsed.websites);
+          setProduct(parsed as Product);
         } else {
           setProduct(mockProductData as Product);
         }
