@@ -124,7 +124,7 @@
       "external_header": "Websites",
       "category": "sku_core",
       "data_type": "multiSelect",
-      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "fbrkclothing.com", "Vnds.com", "Kazbah.com", "Tiltedsole.com", "NOT FOR WEB"],
+      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "NOT FOR WEB"],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
