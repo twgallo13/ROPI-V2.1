@@ -11,6 +11,9 @@
 
 export type ProductStatus = 'draft' | 'in-progress' | 'export-ready';
 
+/** LP-0.1.1: Debug/audit field for tracking product data source */
+export type ProductSource = 'localStorage' | 'firestore' | 'mock';
+
 export type ObservationSeverity = 'low' | 'medium' | 'high';
 
 export type ObservationStatus = 'open' | 'resolved';
@@ -188,6 +191,9 @@ export interface Product {
   meta_description?: string;
   /** SEO Keywords (comma-separated) */
   keywords?: string;
+  
+  /** LP-0.1.1: Debug/audit field — tracks where product data was loaded from */
+  __source?: ProductSource;
 }
 
 export interface NewObservation {
