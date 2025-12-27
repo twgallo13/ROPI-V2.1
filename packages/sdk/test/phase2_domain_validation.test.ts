@@ -161,6 +161,32 @@ describe('validateAttributeDomain', () => {
       expect(result.valid).toBe(true);
     });
   });
+
+  describe('multiSelect validation (CodeRabbit feedback)', () => {
+    it('should accept valid array of websites', () => {
+      const result = validateAttributeDomain('website', ['shiekh.com']);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should accept multiple valid websites', () => {
+      const result = validateAttributeDomain('website', ['shiekh.com', 'mltd.com']);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should reject array with invalid website', () => {
+      const result = validateAttributeDomain('website', ['shiekh.com', 'invalid.com']);
+      expect(result.valid).toBe(false);
+      expect(result.message).toContain('invalid.com');
+      expect(result.message).toContain('Invalid values');
+    });
+
+    it('should reject array with all invalid websites', () => {
+      const result = validateAttributeDomain('website', ['bad-site.com', 'another-bad.com']);
+      expect(result.valid).toBe(false);
+      expect(result.message).toContain('bad-site.com');
+      expect(result.message).toContain('another-bad.com');
+    });
+  });
 });
 
 // ============================================================================
