@@ -112,7 +112,7 @@
       "external_header": "Department",
       "category": "classification",
       "data_type": "select",
-      "allowed_values": ["Mens", "Womens", "Kids", "Unisex", "Boys", "Girls"],
+      "allowed_values": ["Footwear", "Accessories", "Clothing"],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
@@ -801,30 +801,6 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Pattern type (solid, striped, floral, geometric, etc.)",
-      "status": "active"
-    },
-    {
-      "attribute_id": "sustainable",
-      "label": "Sustainable",
-      "external_header": "Sustainable",
-      "category": "attributes",
-      "data_type": "boolean",
-      "required_for_completion": false,
-      "required_for_export": false,
-      "import_required": false,
-      "ai_usage_notes": "Indicates if product meets sustainability standards",
-      "status": "active"
-    },
-    {
-      "attribute_id": "waterproof",
-      "label": "Waterproof",
-      "external_header": "Waterproof",
-      "category": "material_performance",
-      "data_type": "boolean",
-      "required_for_completion": false,
-      "required_for_export": false,
-      "import_required": false,
-      "ai_usage_notes": "Indicates if product is waterproof",
       "status": "active"
     }
   ]
