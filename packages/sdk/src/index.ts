@@ -56,6 +56,8 @@ export type {
 export {
   validateProduct,
   safeValidateProduct,
+  validateProductWithDomains,
+  validateAttributesOnly,
   ProductSchema,
   ProductCoreSchema,
   ProductAttributesSchema,
@@ -63,6 +65,7 @@ export {
   ProductInventorySchema,
   ProductMediaSchema,
 } from './validators/productValidator';
+export type { ProductValidationResult } from './validators/productValidator';
 
 export {
   validateAttributeDefinition,
@@ -202,6 +205,28 @@ export {
   wouldCollide,
   detectCollisions
 } from './lib/stringUtils';
+
+// ============================================================================
+// Attribute Registry (LP-attr-enforce-2.1.0)
+// Runtime access to attributeRegistry.json for domain validation
+// ============================================================================
+
+export {
+  getAttributeRegistry,
+  getAttributes,
+  getAttributeById,
+  getAllowedValues,
+  allowsCustomValues,
+  validateAttributeDomain,
+  validateAttributeDomains,
+  getRegistryVersion,
+} from './registry';
+
+export type {
+  RegistryAttribute,
+  AttributeRegistryData,
+  DomainValidationResult,
+} from './registry';
 
 // Version info
 export const SDK_VERSION = '0.6.0';

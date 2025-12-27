@@ -1,12 +1,15 @@
 /**
  * Product Validator
  * Per AOSS Section 2.1 — Product Schema (JSON)
+ * LP-attr-enforce-2.1.0 — Phase 2: Registry-based domain validation
  * 
  * Runtime validation for product objects using zod.
+ * Integrates with attributeRegistry.json for domain enforcement.
  */
 
 import { z } from 'zod';
 import type { Product, ProductCore, ProductAttributes, ProductPricing, ProductInventory, ProductMedia } from '../schema/product';
+import { validateAttributeDomains, DomainValidationResult } from '../registry';
 
 /**
  * ProductCore schema - required fields for product identification
@@ -107,4 +110,71 @@ export function validateProduct(input: unknown): Product {
  */
 export function safeValidateProduct(input: unknown): z.SafeParseReturnType<unknown, Product> {
   return ProductSchema.safeParse(input);
+}
+
+// ============================================================================
+// Domain Validation (LP-attr-enforce-2.1.0)
+// ============================================================================
+
+/**
+ * Extended validation result including domain checks
+ */
+export interface ProductValidationResult {
+  success: boolean;
+  data?: Product;
+  schemaErrors?: z.ZodError;
+  domainErrors: DomainValidationResult[];
+}
+
+/**
+ * Validate product with full domain enforcement
+ * 
+ * Performs two-phase validation:
+ * 1. Zod schema validation (structure and types)
+ * 2. Domain validation (allowed_values from attributeRegistry)
+ * 
+ * @param input - Unvalidated input
+ * @returns Validation result with both schema and domain errors
+ */
+export function validateProductWithDomains(input: unknown): ProductValidationResult {
+  // Phase 1: Schema validation
+  const schemaResult = ProductSchema.safeParse(input);
+  
+  if (!schemaResult.success) {
+    return {
+      success: false,
+      schemaErrors: schemaResult.error,
+      domainErrors: [],
+    };
+  }
+  
+  // Phase 2: Domain validation on attributes
+  const product = schemaResult.data;
+  const domainErrors = validateAttributeDomains(product.attributes || {});
+  
+  if (domainErrors.length > 0) {
+    return {
+      success: false,
+      data: product,
+      domainErrors,
+    };
+  }
+  
+  return {
+    success: true,
+    data: product,
+    domainErrors: [],
+  };
+}
+
+/**
+ * Validate only the attributes object against domain constraints
+ * 
+ * Use this for quick validation of attribute values without full product validation.
+ * 
+ * @param attributes - Object with attribute_id keys and values
+ * @returns Array of domain validation errors (empty if all valid)
+ */
+export function validateAttributesOnly(attributes: Record<string, unknown>): DomainValidationResult[] {
+  return validateAttributeDomains(attributes);
 }
