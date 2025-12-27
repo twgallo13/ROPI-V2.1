@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Product, Observation, NewObservation } from '../types/product';
 import { isFirebaseAvailable, db } from '../firebaseConfig';
 import {
@@ -67,6 +67,10 @@ function mergeTopLevelAttributesToAttributesMap(docData: Record<string, unknown>
 export function useProduct(productId: string) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // LP-0.1.x: Track pending optimistic updates to prevent snapshot overwrite race
+  // Using ref instead of state to avoid stale closure in onSnapshot callback
+  const pendingUpdateRef = useRef<number | null>(null);
 
   // Load product data from Firestore or localStorage fallback
   useEffect(() => {
@@ -89,7 +93,15 @@ export function useProduct(productId: string) {
           // Use real-time listener for live updates
           unsub = onSnapshot(ref, (snap) => {
             // Debug: Log snapshot status
-            console.debug(`[useProduct] Firestore snapshot for product ${productId}: exists=${snap.exists()}`);
+            console.debug(`[useProduct] Firestore snapshot for product ${productId}: exists=${snap.exists()}, pendingUpdate=`, pendingUpdateRef.current);
+            
+            // LP-0.1.x: Skip snapshot if there's a recent optimistic update (race prevention)
+            // Allow snapshot after 2 seconds (enough time for write to propagate)
+            if (pendingUpdateRef.current && Date.now() - pendingUpdateRef.current < 2000) {
+              console.debug(`[useProduct] Skipping snapshot - optimistic update in flight (${Date.now() - pendingUpdateRef.current}ms ago)`);
+              setLoading(false);
+              return;
+            }
             
             if (snap.exists()) {
               const docData = snap.data();
@@ -251,6 +263,9 @@ export function useProduct(productId: string) {
 
     const prevProduct = product;
     try {
+      // LP-0.1.x: Mark pending update to prevent snapshot race
+      pendingUpdateRef.current = Date.now();
+      
       // optimistic UI update
       setProduct(updatedProduct);
 
@@ -266,11 +281,15 @@ export function useProduct(productId: string) {
       }
 
       console.debug('[useProduct:updateFields] success updates=', updates);
+      
+      // Clear pending flag after write completes
+      pendingUpdateRef.current = null;
       return true;
     } catch (err) {
       console.error('[useProduct:updateFields] Error persisting updates:', err);
       // rollback UI
       setProduct(prevProduct);
+      pendingUpdateRef.current = null;
       return false;
     }
   };
