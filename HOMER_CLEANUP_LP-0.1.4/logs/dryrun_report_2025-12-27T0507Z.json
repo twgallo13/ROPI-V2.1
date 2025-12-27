@@ -1,0 +1,60 @@
+{
+  "_metadata": {
+    "script": "cleanup-shiekhshoes-v2.js",
+    "version": "2.0.0",
+    "mode": "write",
+    "timestamp": "2025-12-27T05:07:19.551Z",
+    "backupSha": "cf9854770431e5a4845f83a22f14139e07b6025a8498ea18549f6b37165f3183",
+    "targetValue": "shiekhshoes.com",
+    "documentsFound": 3
+  },
+  "documents": [
+    {
+      "docId": "123",
+      "original_websites": [
+        "shiekhshoes.com",
+        "shiekh.com",
+        "Karmaloop.com"
+      ],
+      "proposed_websites": [
+        "shiekh.com",
+        "Karmaloop.com"
+      ],
+      "removed": [
+        "shiekhshoes.com"
+      ],
+      "removed_count": 1,
+      "timestamp": "2025-12-27T05:07:19.551Z"
+    },
+    {
+      "docId": "test-product-001",
+      "original_websites": [
+        "shiekh.com",
+        "shiekhshoes.com"
+      ],
+      "proposed_websites": [
+        "shiekh.com"
+      ],
+      "removed": [
+        "shiekhshoes.com"
+      ],
+      "removed_count": 1,
+      "timestamp": "2025-12-27T05:07:19.551Z"
+    },
+    {
+      "docId": "test-product-003",
+      "original_websites": [
+        "shiekh.com",
+        "shiekhshoes.com"
+      ],
+      "proposed_websites": [
+        "shiekh.com"
+      ],
+      "removed": [
+        "shiekhshoes.com"
+      ],
+      "removed_count": 1,
+      "timestamp": "2025-12-27T05:07:19.551Z"
+    }
+  ]
+}

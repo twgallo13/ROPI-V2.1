@@ -1,0 +1,12 @@
+{
+  "file": "/workspaces/ROPI-V2.1/HOMER_CLEANUP_LP-0.1.4/backups/backup_products_2025-12-27T0504Z.json",
+  "sha256": "cf9854770431e5a4845f83a22f14139e07b6025a8498ea18549f6b37165f3183",
+  "size": 83373,
+  "documentCount": 39,
+  "timestamp": "2025-12-27T05:04:39.688Z",
+  "targetDocsFound": [
+    "123",
+    "test-product-001",
+    "test-product-003"
+  ]
+}

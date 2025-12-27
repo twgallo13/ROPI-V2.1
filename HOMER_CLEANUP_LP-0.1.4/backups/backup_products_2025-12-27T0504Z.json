@@ -1,0 +1,2876 @@
+{
+  "_metadata": {
+    "collection": "products",
+    "environment": "staging",
+    "project": "ropi-bccee",
+    "timestamp": "2025-12-27T05:04:39.688Z",
+    "documentCount": 39,
+    "backupVersion": "1.0.0",
+    "createdBy": "backup-products-lp014.js",
+    "purpose": "LP-0.1.4 pre-cleanup backup"
+  },
+  "documents": [
+    {
+      "_id": "123",
+      "launchStatus": "scheduled",
+      "launchDate": "2025-01-15",
+      "styleId": "AIR-MAX-270",
+      "observations": [
+        {
+          "id": "obs-1",
+          "title": "Missing heel counter detail",
+          "description": "Product image shows visible heel counter but attribute not listed",
+          "severity": "medium",
+          "status": "open",
+          "timestamp": "2024-12-01T10:30:00Z",
+          "imageUrl": "https://via.placeholder.com/200x150/333333/FFFFFF?text=Heel+Detail",
+          "linkedField": "attributes.heel_counter"
+        },
+        {
+          "id": "obs-2",
+          "title": "Brand logo visible but not mentioned",
+          "description": "Nike swoosh visible on multiple panels, should be highlighted in description",
+          "severity": "low",
+          "status": "open",
+          "timestamp": "2024-12-01T11:15:00Z",
+          "imageUrl": "https://via.placeholder.com/200x150/333333/FFFFFF?text=Logo+View",
+          "linkedField": "descriptions.shiekh.com.main"
+        },
+        {
+          "id": "obs-3",
+          "title": "Color mismatch in gallery",
+          "description": "Gallery image #2 shows different colorway than hero image",
+          "severity": "high",
+          "status": "resolved",
+          "timestamp": "2024-11-30T14:20:00Z",
+          "imageUrl": "https://via.placeholder.com/200x150/333333/FFFFFF?text=Color+Issue",
+          "linkedField": "media.gallery.1"
+        }
+      ],
+      "id": "123",
+      "sku": "NK-AIR-MAX-270-BLK-10",
+      "subcategory": "Running Shoes",
+      "brand": "Nike",
+      "firstReceived": "2024-11-15",
+      "status": "in-progress",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:05.823Z",
+        "migratedBy": "lisa-homer"
+      },
+      "class": "Casual",
+      "hype": true,
+      "media_status": "complete",
+      "family_sizing": true,
+      "promo": "Allowed",
+      "map": false,
+      "scom_regular_price": "25.00",
+      "scom_sale_price": "22.50",
+      "name": "Nike Air Max 270 - Black/White",
+      "media": {
+        "heroImage": "https://via.placeholder.com/800x600/000000/FFFFFF?text=Nike+Air+Max+270",
+        "gallery": [
+          "https://via.placeholder.com/400x300/000000/FFFFFF?text=Side+View",
+          "https://via.placeholder.com/400x300/000000/FFFFFF?text=Top+View",
+          "https://via.placeholder.com/400x300/000000/FFFFFF?text=Sole+View"
+        ]
+      },
+      "descriptions": {
+        "shiekh.com": {
+          "main": "Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet, this shoe delivers incredible cushioning and a striking look.",
+          "seoTitle": "Nike Air Max 270 Black/White - Men's Running Shoes | Shiekh",
+          "metaDescription": "Shop the Nike Air Max 270 in Black/White. Premium comfort meets iconic style. Free shipping on orders over $75."
+        },
+        "shiekhshoes.com": {
+          "main": "",
+          "seoTitle": "",
+          "metaDescription": ""
+        },
+        "shiekh": {
+          "com": {
+            "main": "Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet for incredible cushioning, plus a sleek mesh and synthetic upper for breathability and support."
+          }
+        }
+      },
+      "drawing": "Store & Web",
+      "kl_post_date": "2025-12-27",
+      "department": "Footwear",
+      "category": "Athletic",
+      "attributes": {
+        "pattern": "Solid",
+        "silhouette": "Low Top",
+        "heel_height": "1.5 inches",
+        "cushioning": "Air Max",
+        "category": "Athletic Footwear",
+        "department": "Men",
+        "brand": "Nike",
+        "closure_type": "Lace-up",
+        "_meta": {
+          "closure_type": {
+            "source": "normalizer",
+            "actor": "system",
+            "ts": "2025-12-21T07:44:14.018Z",
+            "definition_version": "1.0.1",
+            "previousValue": "Lace-Up"
+          },
+          "fit": {
+            "source": "normalizer",
+            "actor": "system",
+            "ts": "2025-12-21T07:44:14.018Z",
+            "definition_version": "1.0.1",
+            "previousValue": "True to Size"
+          }
+        },
+        "launch": {
+          "fastFashion": true
+        },
+        "technical": {
+          "expeditedOverrideShipping": 1
+        },
+        "overall": {},
+        "_normalizedAt": {
+          "seconds": 1766303054,
+          "nanoseconds": 50000000,
+          "type": "firestore/timestamp/1.0"
+        },
+        "league": "MLB",
+        "class": "Casual",
+        "collection_name": "Stadium 90",
+        "sports_team": "Cincinnati Reds",
+        "color": [
+          "Black",
+          "White"
+        ],
+        "material": [
+          "Mesh",
+          "Synthetic"
+        ],
+        "upper_material": "Engineered Mesh",
+        "gender": "Men's",
+        "primary_color": "Black",
+        "fit": "True To Size",
+        "fast_fashion": true
+      },
+      "aiHistory": [
+        {
+          "result": "Generated initial product description",
+          "id": "ai-1",
+          "confidence": 82,
+          "action": "describe",
+          "timestamp": "2024-12-01T09:00:00Z"
+        },
+        {
+          "result": "Added 3 missing attributes: material, closure, heel_height",
+          "action": "fix_attributes",
+          "confidence": 91,
+          "timestamp": "2024-12-01T10:00:00Z",
+          "id": "ai-2"
+        },
+        {
+          "id": "ai-1766791983544",
+          "action": "generate_descriptions",
+          "timestamp": "2025-12-26T23:33:03.544Z",
+          "result": "Generated descriptions using \"Streetwear Enthusiast\" template with \"professional\" tone",
+          "confidence": 90
+        },
+        {
+          "id": "ai-1766792066745",
+          "action": "enhance_seo",
+          "timestamp": "2025-12-26T23:34:26.745Z",
+          "result": "enhance seo completed",
+          "confidence": 96
+        },
+        {
+          "id": "ai-1766792069735",
+          "action": "validate_export",
+          "timestamp": "2025-12-26T23:34:29.735Z",
+          "result": "validate export completed",
+          "confidence": 86
+        }
+      ],
+      "description_shiekh": "Step up your game with the latest drop. This silhouette brings serious heat with premium construction and unmistakable style. Built for the streets, designed for those who set the trends.",
+      "meta_description": "Shop the Nike Air Max 270 - Black White by Nike. Free shipping on orders over $75. Shop now.",
+      "meta_name": "Nike Nike Air Max 270 - Black White | Shop Now",
+      "description_mltd": "Elevate your style with the Nike Air Max 270 - Black White from Nike. Crafted with premium quality, Perfect for the streetwear enthusiast lifestyle. [AI-Generated: streetwear template, professional tone]",
+      "smartSuggestions": [
+        {
+          "currentValue": null,
+          "confidence": 95,
+          "targetField": "attributes.cushioning",
+          "status": "applied",
+          "reason": "Detected from product name and visible Air unit in images",
+          "proposedValue": "Air Max",
+          "id": "sug-1"
+        },
+        {
+          "id": "sug-2",
+          "confidence": 78,
+          "currentValue": "Mesh",
+          "status": "applied",
+          "targetField": "attributes.upper_material",
+          "reason": "Image analysis shows structured mesh pattern typical of engineered construction",
+          "proposedValue": "Engineered Mesh"
+        },
+        {
+          "proposedValue": "Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet for incredible cushioning, plus a sleek mesh and synthetic upper for breathability and support.",
+          "confidence": 88,
+          "reason": "Enhanced description based on visible product features and brand guidelines",
+          "status": "applied",
+          "currentValue": "Experience ultimate comfort with the Nike Air Max 270...",
+          "targetField": "descriptions.shiekh.com.main",
+          "id": "sug-3"
+        }
+      ],
+      "description_karmaloop": "Level up your streetwear rotation with the Nike Air Max 270 - Black White from Nike. Crafted with premium quality, Perfect for the streetwear enthusiast lifestyle. [AI-Generated: streetwear template, professional tone]",
+      "exportReadiness": {
+        "overall": 67,
+        "byWebsite": {
+          "shiekhshoes.com": {
+            "score": 60,
+            "checklist": {
+              "coreInfo": true,
+              "attributes": true,
+              "descriptions": false,
+              "media": true,
+              "pricing": false
+            }
+          },
+          "shiekh.com": {
+            "score": 80,
+            "checklist": {
+              "coreInfo": true,
+              "attributes": true,
+              "descriptions": true,
+              "media": true,
+              "pricing": false
+            }
+          },
+          "Karmaloop.com": {
+            "score": 60,
+            "checklist": {
+              "coreInfo": true,
+              "attributes": true,
+              "descriptions": false,
+              "media": true,
+              "pricing": false
+            }
+          }
+        }
+      },
+      "websites": [
+        "shiekhshoes.com",
+        "shiekh.com",
+        "Karmaloop.com"
+      ]
+    },
+    {
+      "_id": "14943678",
+      "featured": false,
+      "warehouseInv": 12,
+      "primaryColor": "BLACK/BLACK",
+      "storeInv": 187,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "NEW ERA CAPS",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-06T08:00:00.000Z",
+      "launch": {},
+      "mpn": "14943678",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "79270bb6-f24f-4ec7-b440-b38b0141273c",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-11T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:24.020Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:06.010Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "14943678",
+        "brand": "NEW ERA CAPS",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.210Z"
+        },
+        "primary_color": "Black",
+        "primaryColor": "Black",
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.251Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:32.251Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          }
+        },
+        "_normalizedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-21T12:32:55.712Z"
+        },
+        "overall": {}
+      }
+    },
+    {
+      "_id": "211116-001",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.437Z",
+        "sku": "SHK3034624",
+        "title": "",
+        "brand": "Crocs",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.437Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:26.437Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.437Z"
+      },
+      "attributes": {
+        "gender": "men's",
+        "ageGroup": "Adult",
+        "category": "Clogs",
+        "department": "Footwear",
+        "class": "Sandals"
+      },
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "212350-90h",
+      "core": {
+        "createdAt": "2025-12-25T21:20:25.269Z",
+        "sku": "SHK3025031",
+        "title": "",
+        "brand": "Crocs",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:25.269Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:25.269Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:25.269Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "4254T1035",
+      "featured": false,
+      "warehouseInv": 1,
+      "primaryColor": "Blue",
+      "storeInv": 60,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "PSD UNDERWEAR",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-13T08:00:00.000Z",
+      "launch": {},
+      "mpn": "4254T1035",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "44a25a2f-2bcb-4681-9570-b314016d720a",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-13T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:20.727Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:06.730Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "4254T1035",
+        "brand": "PSD UNDERWEAR",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.034Z"
+        },
+        "primary_color": "Blue",
+        "primaryColor": "Blue",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.588Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.588Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "ts": "2025-12-21T21:07:23.298Z",
+            "method": "LP-3.0.2.2-migration",
+            "definition_version": "1.0.3",
+            "source": "migration",
+            "actor": "system:migrator",
+            "canonical": false
+          }
+        }
+      }
+    },
+    {
+      "_id": "4254T1036",
+      "featured": false,
+      "warehouseInv": 1,
+      "primaryColor": "RED LEOPARD",
+      "storeInv": 60,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "PSD UNDERWEAR",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-13T08:00:00.000Z",
+      "launch": {},
+      "mpn": "4254T1036",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "7d40e052-bd24-4c84-af64-b314016ced3a",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-13T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:20.865Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:06.817Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "4254T1036",
+        "brand": "PSD UNDERWEAR",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.021Z"
+        },
+        "primary_color": "RED LEOPARD",
+        "primaryColor": "RED LEOPARD",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.782Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:33.782Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "definition_version": "1.0.3",
+            "ts": "2025-12-21T21:07:23.300Z",
+            "method": "LP-3.0.2.2-migration",
+            "canonical": false,
+            "actor": "system:migrator",
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "4254t1035",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.722Z",
+        "sku": "SHK3051437",
+        "title": "",
+        "brand": "PSD UNDERWEAR",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.722Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:26.722Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.722Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "4254t1036",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.007Z",
+        "sku": "SHK3035179",
+        "title": "",
+        "brand": "PSD UNDERWEAR",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.007Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:26.007Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.007Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "7j236",
+      "core": {
+        "createdAt": "2025-12-25T21:20:25.813Z",
+        "sku": "SHK2551267",
+        "title": "",
+        "brand": "CONVERSE",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:25.813Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:25.813Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:25.813Z"
+      },
+      "attributes": {
+        "gender": "kids",
+        "ageGroup": "Toddler",
+        "category": "Lifestyle",
+        "department": "Footwear",
+        "class": "Sneakers"
+      },
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "AMBRA-23",
+      "featured": false,
+      "gender": "Women's",
+      "warehouseInv": 22,
+      "primaryColor": "BLACK",
+      "storeInv": 0,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "fit": "True To Size",
+      "promo": false,
+      "lastUpdated": "2025-11-23T06:08:21.824Z",
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 2,
+        "width": 3,
+        "weight": 1,
+        "height": 4,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 6.99,
+        "scomRegular": 0
+      },
+      "department": "Footwear",
+      "fastfashion": true,
+      "brand": "J P ORIGINAL",
+      "class": "Sandals",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2020-08-25T07:00:00.000Z",
+      "descriptiveColor": "Black",
+      "mpn": "AMBRA-23",
+      "tax": {},
+      "launch": {
+        "fastFashion": true,
+        "hype": false,
+        "klPostDate": "2022-03-28T06:12:00.000Z"
+      },
+      "ageGroup": "Adult",
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "materials": [
+        "Synthetic"
+      ],
+      "hype": false,
+      "familySizing": false,
+      "name": "Ambra-23 Flat Sandals",
+      "style": {},
+      "websites": [
+        "Plndr.com",
+        "Shiekh.com"
+      ],
+      "category": "Flat",
+      "firstReceived": "2025-11-13T08:00:00.000Z",
+      "status": "intake",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.774Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:07.987Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "materials": [
+          "Synthetic"
+        ],
+        "style": {},
+        "mpn": "AMBRA-23",
+        "category": "Flat",
+        "brand": "J P ORIGINAL",
+        "department": "Footwear",
+        "class": "Sandals",
+        "fit": "True To Size",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.202Z"
+        },
+        "descriptive.gender": "Women's",
+        "age_group": "Adult",
+        "primary_color": "Black",
+        "_normalizedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-11T01:20:18.734Z"
+        },
+        "gender": "Women's",
+        "primaryColor": "BLACK",
+        "ageGroup": "Adult",
+        "overall": {},
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.092Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.092Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.092Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.092Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "canonical": false,
+            "actor": "system:migrator",
+            "ts": "2025-12-21T21:07:23.301Z",
+            "definition_version": "1.0.3",
+            "method": "LP-3.0.2.2-migration",
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "DARING-03-BKPU",
+      "featured": false,
+      "warehouseInv": 14,
+      "primaryColor": "BLACK PU",
+      "storeInv": 509,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "LEGEND FOOTWEAR INC",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-06T08:00:00.000Z",
+      "launch": {},
+      "mpn": "DARING-03-BKPU",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "9a5b8434-7133-4561-9997-b375013238da",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-14T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:18.240Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:08.132Z",
+        "migratedBy": "lisa-homer"
+      },
+      "exportReadiness": {
+        "overall": null,
+        "byWebsite": {}
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "DARING-03-BKPU",
+        "brand": "LEGEND FOOTWEAR INC",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.207Z"
+        },
+        "primary_color": "BLACK PU",
+        "primaryColor": "BLACK PU",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.247Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.247Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "ts": "2025-12-21T21:07:23.302Z",
+            "definition_version": "1.0.3",
+            "method": "LP-3.0.2.2-migration",
+            "source": "migration",
+            "canonical": false,
+            "actor": "system:migrator"
+          }
+        },
+        "fit": "True To Size",
+        "fast_fashion": false
+      },
+      "department": "Footwear"
+    },
+    {
+      "_id": "EP25115",
+      "featured": false,
+      "warehouseInv": 6,
+      "primaryColor": "BLACK",
+      "storeInv": 90,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "Smoke Rise",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-06T08:00:00.000Z",
+      "launch": {},
+      "mpn": "EP25115",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "390a7ac5-7eee-4e3e-b028-b386016bfa2b",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-13T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:21.278Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:08.206Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "EP25115",
+        "brand": "Smoke Rise",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.207Z"
+        },
+        "primary_color": "Black",
+        "_normalizedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-11T01:20:19.126Z"
+        },
+        "primaryColor": "BLACK",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.336Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.336Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "canonical": false,
+            "method": "LP-3.0.2.2-migration",
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T21:07:23.302Z",
+            "definition_version": "1.0.3"
+          }
+        }
+      }
+    },
+    {
+      "_id": "HK12789-LADBLUE",
+      "featured": false,
+      "warehouseInv": 5,
+      "primaryColor": "Blue",
+      "storeInv": 56,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "Mitchell & Ness",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-06T08:00:00.000Z",
+      "launch": {},
+      "mpn": "HK12789-LADBLUE",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "488c8a64-1390-487f-8fdf-b38401698879",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-12T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:23.757Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:08.524Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "HK12789-LADBLUE",
+        "brand": "Mitchell & Ness",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.210Z"
+        },
+        "primary_color": "Blue",
+        "primaryColor": "Blue",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.686Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.686Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "canonical": false,
+            "definition_version": "1.0.3",
+            "ts": "2025-12-21T21:07:23.302Z",
+            "actor": "system:migrator",
+            "source": "migration",
+            "method": "LP-3.0.2.2-migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "HTG240320BLK",
+      "featured": false,
+      "gender": "",
+      "keywords": [],
+      "variants": [],
+      "ricsLongDesc": "",
+      "fit": "",
+      "promo": false,
+      "lastUpdated": "2025-11-07T21:14:58.445Z",
+      "materialFabric": "",
+      "shipping": {
+        "length": null,
+        "width": null,
+        "weight": null,
+        "height": null
+      },
+      "id": "HTG240320BLK",
+      "department": "",
+      "fastfashion": false,
+      "brand": "",
+      "class": "",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "league": "",
+      "mpn": "HTG240320BLK",
+      "ageGroup": "",
+      "ricsCategory": "",
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "name": "",
+      "sportsTeam": "",
+      "websites": [],
+      "category": "",
+      "status": "intake",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.775Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:08.597Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "mpn": "HTG240320BLK",
+        "category": "",
+        "brand": "",
+        "department": "",
+        "class": "",
+        "fit": "",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.208Z"
+        },
+        "descriptive.gender": "",
+        "age_group": "",
+        "gender": "",
+        "ageGroup": "",
+        "overall": {},
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.760Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.760Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.760Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "definition_version": "1.0.3",
+            "source": "migration",
+            "actor": "system:migrator",
+            "canonical": false,
+            "method": "LP-3.0.2.2-migration",
+            "ts": "2025-12-21T21:07:23.302Z"
+          }
+        }
+      }
+    },
+    {
+      "_id": "HTG250221BLU",
+      "featured": false,
+      "warehouseInv": 4,
+      "storeInv": 0,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "Honor The Gift",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-13T08:00:00.000Z",
+      "mpn": "HTG250221BLU",
+      "tax": {},
+      "hype": false,
+      "familySizing": false,
+      "name": "d434e2b6-3bb4-42ca-bf34-b2fe012459e3",
+      "websites": [],
+      "firstReceived": "2025-11-13T08:00:00.000Z",
+      "status": "intake",
+      "gender": "Mens",
+      "launch": {
+        "fastFashion": false,
+        "hype": false
+      },
+      "ageGroup": "Adults",
+      "fit": "",
+      "lastUpdated": {
+        "_methodName": "serverTimestamp"
+      },
+      "marketing": {
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": [],
+        "seo": "m",
+        "title": "d434e2b6-3bb4-42ca-bf34-b2fe012459e3"
+      },
+      "materials": [],
+      "style": {
+        "id": "HTG250221BLU"
+      },
+      "id": "HTG250221BLU",
+      "department": "Clothing",
+      "category": "Basketball",
+      "class": "Hoodies",
+      "primaryColor": "Pink",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.776Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:08.671Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "materials": [],
+        "style": {
+          "id": "HTG250221BLU"
+        },
+        "mpn": "HTG250221BLU",
+        "category": "Basketball",
+        "brand": "Honor The Gift",
+        "department": "Clothing",
+        "class": "Hoodies",
+        "fit": "",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.209Z"
+        },
+        "descriptive.gender": "Mens",
+        "age_group": "Adult",
+        "primary_color": "Pink",
+        "gender": "Men",
+        "primaryColor": "Pink",
+        "ageGroup": "Adult",
+        "_normalizedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-21T12:32:55.923Z"
+        },
+        "overall": {},
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.838Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.838Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.838Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.838Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "method": "LP-3.0.2.2-migration",
+            "source": "migration",
+            "canonical": false,
+            "definition_version": "1.0.3",
+            "ts": "2025-12-21T21:07:23.302Z",
+            "actor": "system:migrator"
+          }
+        }
+      }
+    },
+    {
+      "_id": "HTG250221BNE",
+      "featured": false,
+      "warehouseInv": 9,
+      "primaryColor": "Bone",
+      "storeInv": 0,
+      "media": {},
+      "variants": [],
+      "isActive": true,
+      "coreProduct": false,
+      "promo": false,
+      "shipping": {
+        "expeditedOverride": false,
+        "length": 0,
+        "width": 0,
+        "weight": 0,
+        "height": 0,
+        "standardOverride": false
+      },
+      "price": {
+        "ricsRetail": 0,
+        "scomSale": 0,
+        "scomRegular": 0
+      },
+      "fastfashion": false,
+      "brand": "Honor The Gift",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "lastReceived": "2025-11-13T08:00:00.000Z",
+      "launch": {},
+      "mpn": "HTG250221BNE",
+      "tax": {},
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "familySizing": false,
+      "name": "ac00c300-e1b3-4ff6-a441-b2fe01246c1a",
+      "style": {},
+      "websites": [],
+      "firstReceived": "2025-11-13T08:00:00.000Z",
+      "status": "intake",
+      "lastUpdated": "2025-11-23T06:08:21.561Z",
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:08.742Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "style": {},
+        "mpn": "HTG250221BNE",
+        "brand": "Honor The Gift",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.219Z"
+        },
+        "primary_color": "Bone",
+        "primaryColor": "Bone",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.924Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "primaryColor": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:35.924Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "actor": "system:migrator",
+            "method": "LP-3.0.2.2-migration",
+            "ts": "2025-12-21T21:07:23.302Z",
+            "canonical": false,
+            "definition_version": "1.0.3",
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "TP12224-LALBLCK",
+      "featured": false,
+      "gender": "",
+      "keywords": [],
+      "variants": [],
+      "ricsLongDesc": "",
+      "fit": "",
+      "promo": false,
+      "lastUpdated": "2025-11-07T21:15:00.800Z",
+      "materialFabric": "",
+      "shipping": {
+        "length": null,
+        "width": null,
+        "weight": null,
+        "height": null
+      },
+      "id": "TP12224-LALBLCK",
+      "department": "",
+      "fastfashion": false,
+      "brand": "",
+      "class": "",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "league": "",
+      "mpn": "TP12224-LALBLCK",
+      "ageGroup": "",
+      "ricsCategory": "",
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "name": "",
+      "sportsTeam": "",
+      "websites": [],
+      "category": "",
+      "status": "intake",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:11.604Z",
+        "migratedBy": "lisa-homer"
+      },
+      "exportReadiness": {
+        "overall": null,
+        "byWebsite": {}
+      },
+      "sku": "TP12224-LALBLCK",
+      "smartSuggestions": [],
+      "observations": [],
+      "_migratedAt": {
+        "seconds": 1765269594,
+        "nanoseconds": 779000000,
+        "type": "firestore/timestamp/1.0"
+      },
+      "attributes": {
+        "mpn": "TP12224-LALBLCK",
+        "category": "",
+        "brand": "",
+        "department": "",
+        "class": "",
+        "fit": "",
+        "_migratedVersion": "1.0.0",
+        "descriptive.gender": "",
+        "age_group": "",
+        "gender": "",
+        "ageGroup": "",
+        "overall": {},
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:38.860Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:38.860Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:38.860Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "method": "LP-3.0.2.2-migration",
+            "ts": "2025-12-21T21:07:23.305Z",
+            "actor": "system:migrator",
+            "source": "migration",
+            "definition_version": "1.0.3",
+            "canonical": false
+          }
+        },
+        "_migratedAt": {
+          "seconds": 1765254598,
+          "nanoseconds": 215000000,
+          "type": "firestore/timestamp/1.0"
+        }
+      }
+    },
+    {
+      "_id": "TP12224-SF4BLCK",
+      "featured": false,
+      "gender": "",
+      "keywords": [],
+      "variants": [],
+      "ricsLongDesc": "",
+      "fit": "",
+      "promo": false,
+      "lastUpdated": "2025-11-07T21:15:00.940Z",
+      "materialFabric": "",
+      "shipping": {
+        "length": null,
+        "width": null,
+        "weight": null,
+        "height": null
+      },
+      "id": "TP12224-SF4BLCK",
+      "department": "",
+      "fastfashion": false,
+      "brand": "",
+      "class": "",
+      "map": false,
+      "aiContext": {
+        "featureBullets": [],
+        "keywords": [],
+        "designNotes": ""
+      },
+      "league": "",
+      "mpn": "TP12224-SF4BLCK",
+      "ageGroup": "",
+      "ricsCategory": "",
+      "marketing": {
+        "seo": "",
+        "title": "",
+        "paragraphDraft": "",
+        "paragraphFinal": "",
+        "bullets": []
+      },
+      "hype": false,
+      "name": "",
+      "sportsTeam": "",
+      "websites": [],
+      "category": "",
+      "status": "intake",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.779Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:11.679Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "mpn": "TP12224-SF4BLCK",
+        "category": "",
+        "brand": "",
+        "department": "",
+        "class": "",
+        "fit": "",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.240Z"
+        },
+        "descriptive.gender": "",
+        "age_group": "",
+        "gender": "",
+        "ageGroup": "",
+        "overall": {},
+        "_meta": {
+          "gender": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:38.934Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:38.934Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "ageGroup": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:38.934Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "canonical": false,
+            "method": "LP-3.0.2.2-migration",
+            "actor": "system:migrator",
+            "definition_version": "1.0.3",
+            "ts": "2025-12-21T21:07:23.305Z",
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "a15143f",
+      "core": {
+        "createdAt": "2025-12-25T21:20:24.932Z",
+        "sku": "SHK3024901",
+        "title": "",
+        "brand": "CONVERSE",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:24.932Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.724Z",
+        "normalizedAt": "2025-12-25T21:20:24.932Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:24.932Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "a15144f",
+      "core": {
+        "createdAt": "2025-12-25T21:20:24.636Z",
+        "sku": "SHK3024973",
+        "title": "",
+        "brand": "CONVERSE",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:24.636Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.724Z",
+        "normalizedAt": "2025-12-25T21:20:24.636Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:24.636Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "cushy-11-pkfr",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.932Z",
+        "sku": "SHK3049869",
+        "title": "",
+        "brand": "LEGEND FOOTWEAR INC",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.932Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:26.932Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.932Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "daring-03-bkpu",
+      "core": {
+        "createdAt": "2025-12-25T21:20:25.124Z",
+        "sku": "SHK3051114",
+        "title": "",
+        "brand": "LEGEND FOOTWEAR INC",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:25.124Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:25.124Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:25.124Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "ji0080",
+      "core": {
+        "createdAt": "2025-12-25T21:20:25.516Z",
+        "sku": "SHK3024776",
+        "title": "",
+        "brand": "ADIDAS",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:25.516Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:25.516Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:25.516Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "jp6903",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.110Z",
+        "sku": "SHK3024425",
+        "title": "",
+        "brand": "ADIDAS",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.110Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:26.110Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.110Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "jp9500",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.832Z",
+        "sku": "SHK3036705",
+        "title": "",
+        "brand": "ADIDAS",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.832Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:26.832Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.832Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "js1339",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.320Z",
+        "sku": "SHK3016794",
+        "title": "",
+        "brand": "ADIDAS",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.320Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:26.320Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.320Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "ki5719",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.506Z",
+        "sku": "SHK3029514",
+        "title": "",
+        "brand": "ADIDAS",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.506Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.725Z",
+        "normalizedAt": "2025-12-25T21:20:26.506Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.506Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "m9160",
+      "core": {
+        "createdAt": "2025-12-25T21:20:25.694Z",
+        "sku": "409491",
+        "title": "",
+        "brand": "CONVERSE",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:25.694Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:25.694Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:25.694Z"
+      },
+      "attributes": {
+        "gender": "men's",
+        "ageGroup": "Adult",
+        "category": "None",
+        "department": "Footwear",
+        "class": "Sneakers"
+      },
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "m9166",
+      "core": {
+        "createdAt": "2025-12-25T21:20:25.420Z",
+        "sku": "920666",
+        "title": "",
+        "brand": "CONVERSE",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:25.420Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:25.420Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:25.420Z"
+      },
+      "attributes": {
+        "gender": "men's",
+        "ageGroup": "Adult",
+        "category": "None",
+        "department": "Footwear",
+        "class": "Sneakers"
+      },
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    },
+    {
+      "_id": "mpna-001",
+      "core": {
+        "createdAt": "2025-12-24T19:43:46.133Z",
+        "sku": "SKU-A1",
+        "title": "",
+        "brand": "",
+        "status": "draft",
+        "updatedAt": "2025-12-24T19:43:46.133Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-24T19:43:40.846Z",
+        "normalizedAt": "2025-12-24T19:43:46.133Z",
+        "source": "csv",
+        "validatedAt": "2025-12-24T19:43:46.133Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null,
+      "smartSuggestions": [],
+      "observations": [],
+      "websites": [],
+      "id": "mpna-001",
+      "exportReadiness": {
+        "overall": null,
+        "byWebsite": {}
+      },
+      "department": "Men",
+      "brand": "Ropi",
+      "sku": "mpna-001"
+    },
+    {
+      "_id": "mpnb-002",
+      "core": {
+        "createdAt": "2025-12-24T19:43:46.534Z",
+        "sku": "SKU-B2",
+        "title": "",
+        "brand": "",
+        "status": "draft",
+        "updatedAt": "2025-12-24T19:43:46.534Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-24T19:43:40.854Z",
+        "normalizedAt": "2025-12-24T19:43:46.534Z",
+        "source": "csv",
+        "validatedAt": "2025-12-24T19:43:46.534Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null,
+      "smartSuggestions": [],
+      "observations": [],
+      "exportReadiness": {
+        "byWebsite": {},
+        "overall": 0
+      },
+      "websites": [],
+      "id": "mpnb-002"
+    },
+    {
+      "_id": "mpnc-003",
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null,
+      "core": {
+        "createdAt": "2025-12-24T19:43:46.393Z",
+        "sku": "SKU-C3",
+        "title": "",
+        "brand": "Some Brand",
+        "status": "draft",
+        "updatedAt": "2025-12-25T12:08:18.770Z"
+      },
+      "_meta": {
+        "source": "csv",
+        "importedAt": "2025-12-25T12:08:17.271Z",
+        "normalizedAt": "2025-12-25T12:08:18.770Z",
+        "validatedAt": "2025-12-25T12:08:18.770Z"
+      }
+    },
+    {
+      "_id": "sku-1001",
+      "sku": "SKU-1001",
+      "name": "Ropi Runner — Black Leather",
+      "brand": "Ropi",
+      "category": "Sneakers",
+      "status": "In Progress",
+      "websites": [
+        "shiekh.com"
+      ],
+      "firstReceived": {
+        "_type": "Timestamp",
+        "_value": "2025-11-12T15:16:57.327Z"
+      },
+      "launchDate": {
+        "_type": "Timestamp",
+        "_value": "2025-12-12T15:16:57.327Z"
+      },
+      "images": [],
+      "createdAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-02T15:16:57.327Z"
+      },
+      "updatedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-02T15:16:57.327Z"
+      },
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.780Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:12.278Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "fit": "Regular",
+        "category": "Sneakers",
+        "brand": "Ropi",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.245Z"
+        },
+        "descriptive.material": "Leather",
+        "primary_color": "Black",
+        "overall": {},
+        "_meta": {
+          "overall": {
+            "method": "LP-3.0.2.2-migration",
+            "ts": "2025-12-21T21:07:23.306Z",
+            "actor": "system:migrator",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "sku-1002",
+      "sku": "SKU-1002",
+      "name": "Ropi Classic — White Canvas",
+      "brand": "Ropi",
+      "category": "Casual",
+      "status": "Draft",
+      "websites": [
+        "shiekh.com"
+      ],
+      "firstReceived": {
+        "_type": "Timestamp",
+        "_value": "2025-11-20T15:16:57.327Z"
+      },
+      "launchDate": {
+        "_type": "Timestamp",
+        "_value": "2025-12-27T15:16:57.327Z"
+      },
+      "images": [],
+      "createdAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-02T15:16:57.327Z"
+      },
+      "updatedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-02T15:16:57.327Z"
+      },
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.780Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:12.364Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "fit": "Narrow",
+        "category": "Casual",
+        "brand": "Ropi",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.238Z"
+        },
+        "descriptive.material": "Canvas",
+        "primary_color": "White",
+        "overall": {},
+        "_meta": {
+          "overall": {
+            "canonical": false,
+            "method": "LP-3.0.2.2-migration",
+            "definition_version": "1.0.3",
+            "ts": "2025-12-21T21:07:23.306Z",
+            "source": "migration",
+            "actor": "system:migrator"
+          }
+        }
+      }
+    },
+    {
+      "_id": "sku-1003",
+      "sku": "SKU-1003",
+      "name": "Ropi HighTop — Brown Suede",
+      "brand": "Ropi",
+      "category": "Boots",
+      "status": "Export-ready",
+      "websites": [
+        "shiekh.com"
+      ],
+      "firstReceived": {
+        "_type": "Timestamp",
+        "_value": "2025-10-18T15:16:57.327Z"
+      },
+      "launchDate": {
+        "_type": "Timestamp",
+        "_value": "2025-11-30T15:16:57.327Z"
+      },
+      "images": [],
+      "createdAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-02T15:16:57.327Z"
+      },
+      "updatedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-02T15:16:57.327Z"
+      },
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.780Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:12.437Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "fit": "Wide",
+        "category": "Boots",
+        "brand": "Ropi",
+        "_migratedVersion": "1.0.0",
+        "_migratedAt": {
+          "_type": "Timestamp",
+          "_value": "2025-12-09T04:29:58.244Z"
+        },
+        "descriptive.material": "Suede",
+        "primary_color": "Brown",
+        "overall": {},
+        "_meta": {
+          "overall": {
+            "definition_version": "1.0.3",
+            "actor": "system:migrator",
+            "canonical": false,
+            "ts": "2025-12-21T21:07:23.306Z",
+            "method": "LP-3.0.2.2-migration",
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "test-product-001",
+      "exportReadiness": {
+        "byWebsite": {},
+        "overall": 80
+      },
+      "media": {
+        "heroImage": "https://via.placeholder.com/400x400?text=Test+Product+001",
+        "gallery": [
+          "https://via.placeholder.com/400x400?text=Gallery+1"
+        ]
+      },
+      "isActive": true,
+      "descriptions": {
+        "shiekh.com": {
+          "short": "Test running shoe",
+          "main": "This is a test running shoe for E2E testing. It has great cushioning and support."
+        }
+      },
+      "createdAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T04:30:14.614Z"
+      },
+      "smartSuggestions": [],
+      "price": {
+        "sale": 99.99,
+        "retail": 129.99
+      },
+      "observations": [],
+      "name": "Test Running Shoe",
+      "websites": [
+        "shiekh.com",
+        "shiekhshoes.com"
+      ],
+      "id": "test-product-001",
+      "category": "Athletic",
+      "department": "Footwear",
+      "sku": "TEST-RUN-001",
+      "brand": "TestBrand",
+      "status": "active",
+      "updatedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T04:30:14.614Z"
+      },
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_migratedAt": {
+        "_type": "Timestamp",
+        "_value": "2025-12-09T08:39:54.780Z"
+      },
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:12.512Z",
+        "migratedBy": "lisa-homer"
+      },
+      "attributes": {
+        "sustainable": true,
+        "style": "Athletic",
+        "waterproof": false,
+        "category": "Athletic",
+        "secondaryColor": "White",
+        "descriptive.gender": "Men",
+        "descriptive.material": "Mesh",
+        "age_group": "Adult",
+        "primary_color": "Black",
+        "department": "Footwear",
+        "brand": "TestBrand",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.410Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "department": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.410Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "brand": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.410Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "ts": "2025-12-21T21:07:23.306Z",
+            "actor": "system:migrator",
+            "canonical": false,
+            "definition_version": "1.0.3",
+            "method": "LP-3.0.2.2-migration",
+            "source": "migration"
+          }
+        }
+      }
+    },
+    {
+      "_id": "test-product-002",
+      "media": {
+        "heroImage": "https://via.placeholder.com/400x400?text=Test+Product+002",
+        "gallery": []
+      },
+      "isActive": true,
+      "descriptions": {
+        "shiekh.com": {
+          "short": "Test casual sneaker",
+          "main": "A comfortable casual sneaker for everyday wear. Perfect for testing."
+        }
+      },
+      "smartSuggestions": [],
+      "price": {
+        "retail": 89.99
+      },
+      "observations": [],
+      "name": "Test Casual Sneaker",
+      "websites": [
+        "shiekh.com"
+      ],
+      "id": "test-product-002",
+      "category": "Casual",
+      "department": "Footwear",
+      "sku": "TEST-SNK-002",
+      "brand": "TestBrand",
+      "status": "active",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:12.587Z",
+        "migratedBy": "lisa-homer"
+      },
+      "exportReadiness": {
+        "overall": 60,
+        "byWebsite": {
+          "shiekh.com": {
+            "score": 60,
+            "checklist": {
+              "coreInfo": true,
+              "attributes": true,
+              "descriptions": true,
+              "media": false,
+              "pricing": false
+            }
+          }
+        }
+      },
+      "attributes": {
+        "style": "Casual",
+        "waterproof": false,
+        "category": "Casual",
+        "descriptive.gender": "Women",
+        "descriptive.material": "Leather",
+        "primary_color": "White",
+        "sku_core": {
+          "coreProduct": true
+        },
+        "department": "Footwear",
+        "brand": "TestBrand",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.484Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "department": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.484Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "brand": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.484Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "ts": "2025-12-21T21:07:23.306Z",
+            "method": "LP-3.0.2.2-migration",
+            "source": "migration",
+            "definition_version": "1.0.3",
+            "actor": "system:migrator",
+            "canonical": false
+          }
+        },
+        "age_group": "Grade-School"
+      },
+      "createdAt": {
+        "seconds": 1765254614,
+        "nanoseconds": 713000000,
+        "type": "firestore/timestamp/1.0"
+      },
+      "_migratedAt": {
+        "seconds": 1765269594,
+        "nanoseconds": 780000000,
+        "type": "firestore/timestamp/1.0"
+      },
+      "updatedAt": {
+        "seconds": 1765254614,
+        "nanoseconds": 713000000,
+        "type": "firestore/timestamp/1.0"
+      }
+    },
+    {
+      "_id": "test-product-003",
+      "media": {
+        "heroImage": "https://via.placeholder.com/400x400?text=Test+Product+003",
+        "gallery": [
+          "https://via.placeholder.com/400x400?text=Boot+Gallery+1"
+        ]
+      },
+      "isActive": true,
+      "price": {
+        "sale": 129.99,
+        "retail": 159.99
+      },
+      "observations": [
+        {
+          "id": "obs-test-001",
+          "title": "Test Observation",
+          "description": "This is a test observation for E2E testing",
+          "severity": "low",
+          "status": "open",
+          "timestamp": "2025-12-09T04:30:14.280Z"
+        }
+      ],
+      "name": "Test Boot",
+      "websites": [
+        "shiekh.com",
+        "shiekhshoes.com"
+      ],
+      "id": "test-product-003",
+      "category": "Boots",
+      "sku": "TEST-BOOT-003",
+      "brand": "TestBrand",
+      "status": "active",
+      "_migratedKeys": [
+        "descriptive.ageGroup->age_group",
+        "descriptive.closureType->closure_type",
+        "gender->descriptive.gender",
+        "heel_height->descriptive.heelHeight",
+        "heel_type->descriptive.heelType",
+        "material->descriptive.material",
+        "primary_color->descriptive.primaryColor",
+        "launch.launchDate->launch_date",
+        "sku_core.mpn->mpn",
+        "sku_core.brand->rics_source.brand",
+        "sku_core.category->rics_source.category",
+        "width->technical.width"
+      ],
+      "descriptions": {
+        "shiekh.com": {
+          "short": "Test winter boot",
+          "main": "A sturdy test boot for winter weather. Waterproof and durable."
+        },
+        "shiekh": {
+          "com": {
+            "main": "Stay warm and dry with this premium waterproof leather boot, perfect for winter weather."
+          }
+        }
+      },
+      "smartSuggestions": [
+        {
+          "proposedValue": "Stay warm and dry with this premium waterproof leather boot, perfect for winter weather.",
+          "confidence": 0.85,
+          "id": "sug-test-001",
+          "targetField": "descriptions.shiekh.com.main",
+          "currentValue": "A sturdy test boot for winter weather. Waterproof and durable.",
+          "status": "applied",
+          "type": "description"
+        }
+      ],
+      "_meta": {
+        "migratedAt": "2025-12-10T08:12:12.661Z",
+        "migratedBy": "lisa-homer"
+      },
+      "exportReadiness": {
+        "overall": 70,
+        "byWebsite": {
+          "shiekh.com": {
+            "score": 80,
+            "checklist": {
+              "coreInfo": true,
+              "attributes": true,
+              "descriptions": true,
+              "media": true,
+              "pricing": false
+            }
+          },
+          "shiekhshoes.com": {
+            "score": 60,
+            "checklist": {
+              "coreInfo": true,
+              "attributes": true,
+              "descriptions": false,
+              "media": true,
+              "pricing": false
+            }
+          }
+        }
+      },
+      "department": "Women",
+      "attributes": {
+        "age_group": "Adult",
+        "descriptive.gender": "Unisex",
+        "descriptive.heelHeight": "2 inches",
+        "descriptive.heelType": "Block",
+        "descriptive.material": "Leather",
+        "sustainable": false,
+        "category": "Boots",
+        "department": "Women",
+        "brand": "TestBrand",
+        "overall": {},
+        "_meta": {
+          "_migration": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.558Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "note": "LP-2.1.7 migration"
+          },
+          "category": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.558Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "department": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.558Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "brand": {
+            "actor": "system:migrator",
+            "source": "migration",
+            "ts": "2025-12-21T11:58:39.558Z",
+            "method": "migrateProductsToAttributes",
+            "definition_version": "1.0.3",
+            "canonical": false
+          },
+          "overall": {
+            "ts": "2025-12-21T21:07:23.306Z",
+            "method": "LP-3.0.2.2-migration",
+            "definition_version": "1.0.3",
+            "canonical": false,
+            "actor": "system:migrator",
+            "source": "migration"
+          }
+        },
+        "class": "Athletic",
+        "closure_type": "Pull-on"
+      },
+      "createdAt": {
+        "seconds": 1765254614,
+        "nanoseconds": 797000000,
+        "type": "firestore/timestamp/1.0"
+      },
+      "_migratedAt": {
+        "seconds": 1765269594,
+        "nanoseconds": 781000000,
+        "type": "firestore/timestamp/1.0"
+      },
+      "updatedAt": {
+        "seconds": 1765254614,
+        "nanoseconds": 797000000,
+        "type": "firestore/timestamp/1.0"
+      }
+    },
+    {
+      "_id": "yoko-06-bkpu",
+      "core": {
+        "createdAt": "2025-12-25T21:20:26.618Z",
+        "sku": "SHK3051425",
+        "title": "",
+        "brand": "LEGEND FOOTWEAR INC",
+        "status": "draft",
+        "updatedAt": "2025-12-25T21:20:26.618Z"
+      },
+      "roUploadBatchId": null,
+      "statusFlags": {
+        "uploaded_to_ro": false,
+        "ready_for_export": false,
+        "validation_status": "valid"
+      },
+      "_meta": {
+        "importedAt": "2025-12-25T21:20:21.726Z",
+        "normalizedAt": "2025-12-25T21:20:26.618Z",
+        "source": "csv",
+        "validatedAt": "2025-12-25T21:20:26.618Z"
+      },
+      "attributes": {},
+      "inventory": {
+        "quantity": 0
+      },
+      "roUploadDate": null
+    }
+  ]
+}
