@@ -198,7 +198,12 @@ export function useProduct(productId: string) {
     const newReadiness = calculateExportReadiness(updatedProduct);
     updatedProduct.exportReadiness = newReadiness;
 
+    // OPTIMISTIC UPDATE: show immediate change then persist; rollback on failure
+    const prevProduct = product;
     try {
+      // optimistic UI update
+      setProduct(updatedProduct);
+
       if (isFirebaseAvailable() && db) {
         const ref = doc(db, 'products', product.id);
         // Firestore accepts nested paths as keys: updateDoc(ref, { 'attributes.color': 'Red' })
@@ -209,10 +214,63 @@ export function useProduct(productId: string) {
       } else {
         await saveProduct(updatedProduct);
       }
-      setProduct(updatedProduct);
+
+      console.debug(`[useProduct:updateField] success path=${path}`, value);
       return true;
     } catch (error) {
+      // rollback optimistic UI update
       console.error('Error updating field:', error);
+      setProduct(prevProduct);
+      return false;
+    }
+  };
+
+  /**
+   * Update multiple fields atomically (single updateDoc call).
+   * Accepts an object of fieldPath => value pairs.
+   * Performs optimistic UI update and rollback on error.
+   */
+  const updateFields = async (updates: Record<string, unknown>): Promise<boolean> => {
+    if (!product) return false;
+
+    // Build updatedProduct locally
+    const updatedProduct = JSON.parse(JSON.stringify(product));
+    for (const [path, value] of Object.entries(updates)) {
+      const keys = path.split('.');
+      let current: Record<string, unknown> = updatedProduct;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current = current[keys[i]] as Record<string, unknown>;
+      }
+      current[keys[keys.length - 1]] = value;
+    }
+
+    // Recalculate readiness from the updated product
+    const newReadiness = calculateExportReadiness(updatedProduct);
+    updatedProduct.exportReadiness = newReadiness;
+
+    const prevProduct = product;
+    try {
+      // optimistic UI update
+      setProduct(updatedProduct);
+
+      if (isFirebaseAvailable() && db) {
+        const ref = doc(db, 'products', product.id);
+        await updateDoc(ref, {
+          ...updates,
+          exportReadiness: newReadiness,
+        });
+      } else {
+        // Persist full product if no db
+        await saveProduct(updatedProduct);
+      }
+
+      console.debug('[useProduct:updateFields] success updates=', updates);
+      return true;
+    } catch (err) {
+      console.error('[useProduct:updateFields] Error persisting updates:', err);
+      // rollback UI
+      setProduct(prevProduct);
       return false;
     }
   };
@@ -304,6 +362,7 @@ export function useProduct(productId: string) {
     loading,
     saveProduct,
     updateField,
+    updateFields,
     addObservation,
     resolveObservation,
     applySuggestion,

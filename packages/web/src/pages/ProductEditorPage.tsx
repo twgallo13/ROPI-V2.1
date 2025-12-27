@@ -57,6 +57,7 @@ function ProductEditorPage() {
     loading,
     saveProduct,
     updateField,
+    updateFields,
     applySuggestion,
     ignoreSuggestion,
   } = useProduct(id);
@@ -114,7 +115,7 @@ function ProductEditorPage() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'core':
-        return <CoreInformationTab product={product} onUpdate={updateField} />;
+        return <CoreInformationTab product={product} onUpdate={updateField} onUpdateMultiple={updateFields} />;
       case 'attributes':
         return <ProductAttributesTab product={product} onUpdate={updateField} />;
       case 'launch':

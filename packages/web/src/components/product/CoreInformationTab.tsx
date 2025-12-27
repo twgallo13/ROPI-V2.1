@@ -19,6 +19,7 @@ import './CoreInformationTab.css';
 interface CoreInformationTabProps {
   product: Product;
   onUpdate: (path: string, value: unknown) => void;
+  onUpdateMultiple?: (updates: Record<string, unknown>) => Promise<boolean>;
 }
 
 /**
@@ -37,7 +38,7 @@ const WEBSITE_OPTIONS = [
   'NOT FOR WEB',
 ];
 
-function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
+function CoreInformationTab({ product, onUpdate, onUpdateMultiple }: CoreInformationTabProps) {
   const { getAttributeById } = useAttributeRegistry();
   
   // Get allowed values from registry for select fields
@@ -238,13 +239,22 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
                 }
 
                 // DEBUG: log for troubleshooting
-                console.debug('[CoreInformationTab] update websites ->', merged);
+                console.debug('[CoreInformationTab] handleChange before update, rawWebsites=', rawWebsites, 'merged=', merged);
 
-                // Write both top-level and attributes path to keep both in sync.
-                // onUpdate triggers updateField (Firestore) which will merge fields.
-                // Do both writes to tolerate mixed storage schemas.
-                onUpdate('websites', merged);
-                onUpdate('attributes.website', merged);
+                // Use atomic updateFields if available; fallback to two sequential writes
+                if (onUpdateMultiple) {
+                  onUpdateMultiple({
+                    websites: merged,
+                    'attributes.website': merged,
+                  }).then(success => {
+                    if (!success) console.error('[CoreInformationTab] updateFields failed for websites');
+                    else console.debug('[CoreInformationTab] updateFields success for websites');
+                  });
+                } else {
+                  // fallback: call onUpdate twice (existing approach)
+                  onUpdate('websites', merged);
+                  onUpdate('attributes.website', merged);
+                }
               };
 
               return (
