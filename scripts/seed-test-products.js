@@ -6,26 +6,40 @@
  * Creates test product fixtures in Firestore for E2E testing.
  * 
  * Usage:
- *   node scripts/seed-test-products.js
- *   node scripts/seed-test-products.js --env=staging
+ *   node scripts/seed-test-products.js                    # Staging, shiekh.com only
+ *   node scripts/seed-test-products.js --env=staging      # Explicit staging
+ *   node scripts/seed-test-products.js --dry-run          # Preview without writing
+ *   node scripts/seed-test-products.js --yes              # Skip confirmation prompt
  * 
- * Environment:
+ * Environment Variables:
  *   GOOGLE_APPLICATION_CREDENTIALS - Path to service account JSON
- *   GCP_SA_KEY_BASE64 - Base64-encoded service account JSON
+ *   GCP_SA_KEY_BASE64              - Base64-encoded service account JSON
+ *   SEED_INCLUDE_TEST_SITES        - 'true' to include shiekhshoes.com in all products
  * 
- * Lisa v1.0.0
+ * Behavior when SEED_INCLUDE_TEST_SITES=true:
+ *   - ALL seeded products will have websites: ['shiekh.com', 'shiekhshoes.com']
+ *   - Descriptions will be generated for BOTH websites
+ *   - This ensures exportReadiness and downstream logic have deterministic values
+ * 
+ * LP-0.1.2: Consistent test-site gating with descriptions coverage
+ * Lisa v1.0.1
  */
 
 const admin = require('firebase-admin');
 const fs = require('fs');
+const readline = require('readline');
 
 // Parse command line args
 const args = process.argv.slice(2);
 const envArg = args.find(a => a.startsWith('--env='));
 const env = envArg ? envArg.split('=')[1] : 'staging';
+const isDryRun = args.includes('--dry-run');
+const skipConfirm = args.includes('--yes');
 
 console.log(`🌱 Seeding test products for environment: ${env}`);
-console.log(`📍 SEED_INCLUDE_TEST_SITES: ${process.env.SEED_INCLUDE_TEST_SITES || 'false (default)'}\n`);
+console.log(`📍 SEED_INCLUDE_TEST_SITES: ${process.env.SEED_INCLUDE_TEST_SITES || 'false (default)'}`);
+console.log(`📍 Dry-run mode: ${isDryRun ? 'YES (no writes)' : 'NO (will write to Firestore)'}`);
+console.log();
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -50,12 +64,32 @@ if (!admin.apps.length) {
   }
 }
 
-const db = admin.firestore();
+const db = isDryRun ? null : admin.firestore();
 
 // LP-0.1.2: Gate shiekhshoes.com behind environment variable
+// When true, ALL products get both websites and descriptions for consistency
 const includeTestSites = process.env.SEED_INCLUDE_TEST_SITES === 'true';
 const baseWebsites = ['shiekh.com'];
 const testWebsites = includeTestSites ? ['shiekh.com', 'shiekhshoes.com'] : baseWebsites;
+
+/**
+ * LP-0.1.2: Generate descriptions for all included websites
+ * Ensures exportReadiness and downstream logic have deterministic values
+ */
+function generateDescriptions(baseDescription) {
+  const descriptions = {
+    'shiekh.com': baseDescription,
+  };
+  
+  if (includeTestSites) {
+    descriptions['shiekhshoes.com'] = {
+      main: `[ShiekhShoes] ${baseDescription.main}`,
+      short: `[SS] ${baseDescription.short}`,
+    };
+  }
+  
+  return descriptions;
+}
 
 // Test products with canonical attribute structure
 const testProducts = [
@@ -73,12 +107,10 @@ const testProducts = [
       heroImage: 'https://via.placeholder.com/400x400?text=Test+Product+001',
       gallery: ['https://via.placeholder.com/400x400?text=Gallery+1'],
     },
-    descriptions: {
-      'shiekh.com': {
-        main: 'This is a test running shoe for E2E testing. It has great cushioning and support.',
-        short: 'Test running shoe',
-      },
-    },
+    descriptions: generateDescriptions({
+      main: 'This is a test running shoe for E2E testing. It has great cushioning and support.',
+      short: 'Test running shoe',
+    }),
     attributes: {
       gender: 'Men',
       ageGroup: 'Adult',
@@ -112,17 +144,15 @@ const testProducts = [
     department: 'Footwear',
     status: 'active',
     isActive: true,
-    websites: ['shiekh.com'],
+    websites: testWebsites, // LP-0.1.2: consistent gating for ALL products
     media: {
       heroImage: 'https://via.placeholder.com/400x400?text=Test+Product+002',
       gallery: [],
     },
-    descriptions: {
-      'shiekh.com': {
-        main: 'A comfortable casual sneaker for everyday wear. Perfect for testing.',
-        short: 'Test casual sneaker',
-      },
-    },
+    descriptions: generateDescriptions({
+      main: 'A comfortable casual sneaker for everyday wear. Perfect for testing.',
+      short: 'Test casual sneaker',
+    }),
     attributes: {
       gender: 'Women',
       ageGroup: 'Adult',
@@ -158,12 +188,10 @@ const testProducts = [
       heroImage: 'https://via.placeholder.com/400x400?text=Test+Product+003',
       gallery: ['https://via.placeholder.com/400x400?text=Boot+Gallery+1'],
     },
-    descriptions: {
-      'shiekh.com': {
-        main: 'A sturdy test boot for winter weather. Waterproof and durable.',
-        short: 'Test winter boot',
-      },
-    },
+    descriptions: generateDescriptions({
+      main: 'A sturdy test boot for winter weather. Waterproof and durable.',
+      short: 'Test winter boot',
+    }),
     attributes: {
       gender: 'Unisex',
       ageGroup: 'Adult',
@@ -210,8 +238,54 @@ const testProducts = [
   },
 ];
 
+/**
+ * Prompt user for confirmation (unless --yes flag or dry-run)
+ */
+async function confirmSeed() {
+  if (skipConfirm || isDryRun) return true;
+  
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  
+  return new Promise((resolve) => {
+    rl.question('Are you sure you want to seed these products? (y/N): ', (answer) => {
+      rl.close();
+      resolve(answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes');
+    });
+  });
+}
+
 async function seedTestProducts() {
-  console.log(`📦 Creating ${testProducts.length} test products...\n`);
+  // Display what will be seeded
+  console.log('─────────────────────────────────────');
+  console.log('📋 SEED PREVIEW:');
+  console.log(`   Websites to seed: ${testWebsites.join(', ')}`);
+  console.log(`   Products to seed: ${testProducts.length}`);
+  console.log('');
+  
+  for (const product of testProducts) {
+    console.log(`   📦 ${product.id} (${product.name})`);
+    console.log(`      websites: [${product.websites.join(', ')}]`);
+    console.log(`      descriptions: [${Object.keys(product.descriptions).join(', ')}]`);
+  }
+  console.log('─────────────────────────────────────\n');
+  
+  if (isDryRun) {
+    console.log('🔍 DRY-RUN MODE: No data was written to Firestore.');
+    console.log('   Run without --dry-run to actually seed the products.\n');
+    return;
+  }
+  
+  // Confirm before writing
+  const confirmed = await confirmSeed();
+  if (!confirmed) {
+    console.log('❌ Seeding cancelled by user.');
+    process.exit(0);
+  }
+
+  console.log(`\n📦 Creating ${testProducts.length} test products...\n`);
 
   for (const product of testProducts) {
     try {
