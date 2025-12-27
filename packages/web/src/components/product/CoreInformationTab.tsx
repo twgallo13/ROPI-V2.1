@@ -203,23 +203,55 @@ function CoreInformationTab({ product, onUpdate }: CoreInformationTabProps) {
             Active Websites <span className="required">*</span>
           </label>
           <div className="checkbox-group" data-field="product.websites" data-testid="product-websites">
-            {websiteOptions.map(website => (
-              <label key={website} className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={(product.websites ?? []).includes(website)}
-                  onChange={(e) => {
-                    const currentWebsites = product.websites ?? [];
-                    const updated = e.target.checked
-                      ? [...currentWebsites, website]
-                      : currentWebsites.filter(w => w !== website);
-                    onUpdate('websites', updated);
-                  }}
-                  name={`product.websites.${website}`}
-                />
-                {website}
-              </label>
-            ))}
+            {websiteOptions.map((website) => {
+              // get canonical current websites array (top-level or attributes.*)
+              const rawWebsites = Array.isArray((product as any).websites)
+                ? (product as any).websites
+                : Array.isArray(product.attributes?.website)
+                  ? product.attributes.website
+                  : [];
+
+              // normalization helper
+              const norm = (s: unknown) => (s === undefined || s === null) ? '' : String(s).trim().toLowerCase();
+
+              // check presence using normalized comparison
+              const isChecked = rawWebsites.some((w: unknown) => norm(w) === website.toLowerCase());
+
+              const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                // compute updated array preserving canonical casing from websiteOptions
+                // start from rawWebsites but remove any entries equal to website (normalized)
+                const filtered = rawWebsites.filter((w: unknown) => norm(w) !== website.toLowerCase());
+
+                const updated = e.target.checked ? [...filtered, website] : [...filtered];
+
+                // dedupe while preserving option canonicalization for options, but preserve unknowns
+                const merged: string[] = [];
+                const seen = new Set<string>();
+                // keep existing non-matching entries (but normalize their trimming)
+                for (const w of updated) {
+                  const wStr = String(w).trim();
+                  const key = wStr.toLowerCase();
+                  if (!seen.has(key)) {
+                    seen.add(key);
+                    merged.push(wStr);
+                  }
+                }
+
+                onUpdate('websites', merged);
+              };
+
+              return (
+                <label key={website} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={handleChange}
+                    name={`product.websites.${website}`}
+                  />
+                  {website}
+                </label>
+              );
+            })}
           </div>
         </div>
       </div>
