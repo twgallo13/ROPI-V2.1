@@ -1,0 +1,57 @@
+{
+  "pr_number": 363,
+  "pr_title": "infra(deploy): remove || true tolerance, add fail-fast, add Cache-Control header (LP-0.1.3)",
+  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/363",
+  "coderabbit_review_summary": {
+    "status": "reviewed",
+    "review_profile": "CHILL",
+    "files_reviewed": 2,
+    "actionable_comments": 0,
+    "nitpick_comments": 1,
+    "additional_comments": 3
+  },
+  "counts": {
+    "errors": 0,
+    "warnings": 1,
+    "suggestions": 1
+  },
+  "findings": [
+    {
+      "type": "nitpick",
+      "severity": "suggestion",
+      "file": ".github/workflows/deploy-staging.yml",
+      "line": "119-127",
+      "title": "Consider adding timeouts for Firebase deploy commands",
+      "description": "While the fail-fast approach is excellent, consider adding timeout protection to prevent hung deploys from blocking the workflow indefinitely. GitHub Actions has a default job timeout of 360 minutes.",
+      "suggested_fix": "Wrap critical deploy commands with `timeout 10m` or `timeout 15m`"
+    },
+    {
+      "type": "verification_request",
+      "severity": "warning",
+      "file": "firebase.json",
+      "line": "30-49",
+      "title": "Verify that the build system hashes entry point JS/CSS files, not just chunks",
+      "description": "Vite's default configuration hashes dependency chunks (e.g., `main-abc123.js`) but does NOT hash entry files (e.g., `index.js`). Your firebase.json pattern `**/*.@(js|css)` catches both hashed and unhashed files. If entry files aren't hashed, applying immutable cache with 1-year max-age will prevent users from receiving updates.",
+      "suggested_fixes": [
+        "Configure Vite to hash all files including entry points by setting `entryFileNames` in `build.rollupOptions.output`",
+        "Separate your cache headers to only apply immutable cache to versioned chunks (e.g., `**/*-[hash].js`)"
+      ],
+      "requires_verification": true
+    }
+  ],
+  "positive_feedback": [
+    {
+      "file": ".github/workflows/deploy-staging.yml",
+      "lines": "119-120",
+      "comment": "LGTM: Preview channel now fails fast."
+    },
+    {
+      "file": ".github/workflows/deploy-staging.yml",
+      "line": "124",
+      "comment": "LGTM: Functions deploy now fails fast."
+    }
+  ],
+  "blocking_status": true,
+  "blocking_reason": "1 verification request requiring confirmation of Vite hash behavior",
+  "coderabbit_label": "blocked:coderabbit-review"
+}

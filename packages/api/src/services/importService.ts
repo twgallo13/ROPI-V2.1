@@ -76,7 +76,7 @@ export function parseCSV(csvContent: string): ImportSourceColumns[] {
   const result = Papa.parse<ImportSourceColumns>(csvContent, {
     header: true,
     skipEmptyLines: true,
-    dynamicTyping: true, // Convert numbers automatically
+    dynamicTyping: false, // LP-0.2.1: Keep all values as strings to preserve MPN/SKU identifiers
     transformHeader: (header: string) => header.trim(),
   });
   

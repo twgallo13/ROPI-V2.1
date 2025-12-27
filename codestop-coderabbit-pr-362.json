@@ -1,0 +1,48 @@
+{
+  "pr_number": 362,
+  "pr_title": "chore(seed): gate shiekhshoes.com behind SEED_INCLUDE_TEST_SITES (LP-0.1.2)",
+  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/362",
+  "coderabbit_review_summary": {
+    "status": "reviewed",
+    "review_profile": "CHILL",
+    "files_reviewed": 1,
+    "actionable_comments": 1,
+    "nitpick_comments": 0,
+    "additional_comments": 2
+  },
+  "counts": {
+    "errors": 0,
+    "warnings": 1,
+    "suggestions": 0
+  },
+  "findings": [
+    {
+      "type": "actionable",
+      "severity": "potential_issue",
+      "file": "scripts/seed-test-products.js",
+      "line": 71,
+      "title": "Verify consistent gating and descriptions coverage",
+      "description": "Two products (001 and 003) now use `testWebsites`, but product-002 (line 115) still uses a hard-coded array. Additionally, when `includeTestSites=true`, products 001 and 003 will be assigned to both `shiekh.com` and `shiekhshoes.com`, but their `descriptions` objects only contain entries for `shiekh.com`.",
+      "questions": [
+        "1. Is the exclusion of product-002 from the gating intentional, or should it also use `testWebsites` for consistency?",
+        "2. Does the system handle products assigned to websites that lack corresponding description entries? This could cause validation failures or display issues."
+      ],
+      "requires_adjudication": true
+    }
+  ],
+  "positive_feedback": [
+    {
+      "file": "scripts/seed-test-products.js",
+      "lines": "27-28",
+      "comment": "LGTM! Clear startup logging."
+    },
+    {
+      "file": "scripts/seed-test-products.js",
+      "lines": "55-58",
+      "comment": "LGTM! Gating logic is correct."
+    }
+  ],
+  "blocking_status": true,
+  "blocking_reason": "1 actionable comment requiring Lisa adjudication",
+  "coderabbit_label": "blocked:coderabbit-review"
+}
