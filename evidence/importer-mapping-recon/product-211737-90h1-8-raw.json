@@ -1,0 +1,77 @@
+{
+  "_docId": "211737-90h1-8",
+  "_capturedAt": "2025-12-28T22:39:45.438Z",
+  "_note": "LP-1.3.9 verification - raw Firestore doc for MPN 211737-90h1-8",
+  "core": {
+    "createdAt": "2025-12-28T22:25:51.608Z",
+    "lastReceived": "12/18/2025",
+    "mpn": "211737-90H1-8",
+    "sku": "SHK3037625",
+    "title": "4bfae23e-6bc2-4d87-9391-b324010c2a0a",
+    "brand": "Crocs",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2025-12-28T22:25:51.608Z"
+  },
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "_meta": {
+    "importedAt": "2025-12-28T22:25:49.585Z",
+    "normalizedAt": "2025-12-28T22:25:51.608Z",
+    "source": "csv",
+    "validatedAt": "2025-12-28T22:25:51.608Z"
+  },
+  "inventory": {
+    "store_inv": 88,
+    "warehouse_inv": 12
+  },
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0,
+    "map": null
+  },
+  "dimensions": {
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0
+  },
+  "exportReadiness": {
+    "overall": 0,
+    "byWebsite": {}
+  },
+  "attributes": {
+    "rics_color": "Multi",
+    "media_status": "sdfsdfgdf-23rcwsdf34-sdf34r-",
+    "gender": "Men's",
+    "keywords": "Geen crocidial",
+    "sports_team": "Los Angeles Dodge",
+    "descriptive_color": "Green Croc",
+    "fit": "True to Size",
+    "promo": "Allowed",
+    "rics_long_desc": "REALTREE APX ALL TERRAIN CLOG",
+    "fast_fashion": "TRUE",
+    "kl_post_date": "12/30/2025",
+    "rics_category": "Mens||Footwear||Sandal||Athletic",
+    "department": "Footwear",
+    "class": "Sandle",
+    "website": "shiekh.com",
+    "rics_short_description": "REALTREE APX ALL TER",
+    "age_group": "Adults",
+    "tax_class": "Taxable Goods",
+    "league": "MLB",
+    "ageGroup": "Adults",
+    "primary_color": "Green",
+    "product_is_active": "TRUE",
+    "material": "Pholyester",
+    "hype": "FALSE",
+    "category": "Slides",
+    "collection_name": ""
+  }
+}

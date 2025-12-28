@@ -1480,48 +1480,223 @@ function canProcessRow(validation) {
   return validation.isValid;
 }
 
-// src/normalization/importNormalizer.ts
-var DEFAULT_COLUMN_MAPPINGS = [
-  // Core fields — MPN is required (LP-2.1.0), SKU is optional
-  { sourceColumn: "MPN", targetField: "mpn", required: true, transform: "trim" },
-  { sourceColumn: "mpn", targetField: "mpn", required: true, transform: "trim" },
-  { sourceColumn: "Manufacturer Part Number", targetField: "mpn", required: true, transform: "trim" },
-  { sourceColumn: "SKU", targetField: "sku", required: false, transform: "trim" },
-  // LP-ATTR-1.3.1: Product Name maps to the registry attribute 'name' (not 'title').
-  // Make Product Name and Brand optional; the registry (import_required) is authoritative.
-  { sourceColumn: "Product Name", targetField: "name", required: false, transform: "trim" },
-  { sourceColumn: "Brand", targetField: "brand", required: false, transform: "trim" },
-  { sourceColumn: "Description", targetField: "description", transform: "trim" },
-  // Attributes
-  { sourceColumn: "Department", targetField: "department", transform: "trim" },
-  { sourceColumn: "Class", targetField: "class", transform: "trim" },
-  { sourceColumn: "Category", targetField: "category", transform: "trim" },
-  { sourceColumn: "Subcategory", targetField: "subcategory", transform: "trim" },
-  { sourceColumn: "Gender", targetField: "gender", transform: "lowercase" },
-  { sourceColumn: "Age Group", targetField: "ageGroup", transform: "trim" },
-  { sourceColumn: "Color", targetField: "color", transform: "trim" },
-  { sourceColumn: "Size", targetField: "size", transform: "trim" },
-  { sourceColumn: "Material", targetField: "material", transform: "trim" },
-  // LP-0.2.0: RICS field mappings
-  { sourceColumn: "RICS Category", targetField: "ricsCategory", transform: "trim" },
-  { sourceColumn: "RICS Color", targetField: "ricsColor", transform: "trim" },
-  { sourceColumn: "rics_category", targetField: "ricsCategory", transform: "trim" },
-  { sourceColumn: "rics_color", targetField: "ricsColor", transform: "trim" },
+// src/normalization/legacyToRegistryMap.ts
+var LEGACY_TO_REGISTRY = {
+  // ======================================================================
+  // SKU / Identifiers (category: sku_core, identifiers)
+  // ======================================================================
+  "mpn": "mpn",
+  "MPN": "mpn",
+  "manufacturerPartNumber": "mpn",
+  "sku": "sku",
+  "SKU": "sku",
+  "name": "name",
+  "productName": "name",
+  "title": "name",
+  // legacy alias
+  "brand": "brand",
+  "styleId": "style_id",
+  "style_id": "style_id",
+  "gtin": "gtin",
+  "upc": "gtin",
+  "slug": "slug",
+  // ======================================================================
+  // Colors (category: color)
+  // Registry: primary_color, descriptive_color
+  // ======================================================================
+  "color": "primary_color",
+  "primaryColor": "primary_color",
+  "primary_color": "primary_color",
+  "mainColor": "primary_color",
+  "main_color": "primary_color",
+  "descriptiveColor": "descriptive_color",
+  "descriptive_color": "descriptive_color",
+  // ======================================================================
+  // RICS Reference Fields (category: rics_reference)
+  // Note: Registry only has rics_long_desc, rics_short_description
+  // ricsCategory and ricsColor are not in registry - kept for legacy CSV import
+  // ======================================================================
+  "ricsLongDesc": "rics_long_desc",
+  "ricsLongDescription": "rics_long_desc",
+  "rics_long_desc": "rics_long_desc",
+  "ricsShortDesc": "rics_short_description",
+  "ricsShortDescription": "rics_short_description",
+  "rics_short_description": "rics_short_description",
+  // Legacy RICS fields not in registry - map to themselves (unmapped reference)
+  "ricsCategory": "rics_category",
+  "rics_category": "rics_category",
+  "ricsColor": "rics_color",
+  "rics_color": "rics_color",
+  // ======================================================================
+  // Classification (category: classification)
+  // ======================================================================
+  "category": "category",
+  "class": "class",
+  "department": "department",
+  "subcategory": "subcategory",
+  // ======================================================================
+  // Identity / Demographic (category: identity_demographic)
+  // ======================================================================
+  "gender": "gender",
+  "ageGroup": "age_group",
+  "age_group": "age_group",
+  // ======================================================================
+  // Materials & Construction (category: materials_construction)
+  // ======================================================================
+  "material": "material",
+  "closureType": "closure_type",
+  "closure_type": "closure_type",
+  "cutType": "cut_type",
+  "cut_type": "cut_type",
+  // ======================================================================
+  // Sizing / Measurements (category: measurements)
+  // ======================================================================
+  "size": "size",
+  "shoeWidth": "shoe_width",
+  "shoe_width": "shoe_width",
+  "weight": "weight",
+  "height": "height",
+  "width": "width",
+  "length": "length",
+  // ======================================================================
+  // Lifecycle / Dates (category: lifecycle)
+  // ======================================================================
+  "launchDate": "launch_date",
+  "launch_date": "launch_date",
+  "firstReceived": "first_received",
+  "first_received": "first_received",
+  "lastReceived": "last_received",
+  "last_received": "last_received",
+  // ======================================================================
   // Pricing
-  { sourceColumn: "MSRP", targetField: "msrp", transform: "number" },
-  { sourceColumn: "Cost", targetField: "cost", transform: "number" },
-  { sourceColumn: "Retail Price", targetField: "retailPrice", transform: "number" },
-  { sourceColumn: "Currency", targetField: "currency", transform: "uppercase", defaultValue: "USD" },
-  // Inventory
-  { sourceColumn: "Quantity", targetField: "quantity", transform: "number", defaultValue: 0 },
-  { sourceColumn: "Warehouse", targetField: "warehouse", transform: "trim" },
-  { sourceColumn: "Location", targetField: "location", transform: "trim" },
-  // Dates
-  { sourceColumn: "First Received", targetField: "firstReceived", transform: "date" },
-  { sourceColumn: "Launch Date", targetField: "launchDate", transform: "date" },
-  // Media (pipe-separated URLs)
-  { sourceColumn: "Images", targetField: "images", transform: "array" },
-  { sourceColumn: "Primary Image", targetField: "primaryImage", transform: "trim" }
+  // Note: msrp, cost, retailPrice kept as-is (not in registry as separate attributes)
+  // ======================================================================
+  "msrp": "msrp",
+  "cost": "cost",
+  "retailPrice": "retail_price",
+  "retail_price": "retail_price",
+  // ======================================================================
+  // Inventory / Logistics
+  // ======================================================================
+  "quantity": "quantity",
+  "warehouse": "warehouse",
+  "location": "location",
+  // ======================================================================
+  // Media
+  // ======================================================================
+  "images": "images",
+  "primaryImage": "primary_image",
+  "primary_image": "primary_image",
+  // ======================================================================
+  // Website / Assignment (category: sku_core)
+  // ======================================================================
+  "website": "website",
+  "websites": "website",
+  // ======================================================================
+  // Descriptions (category: copy)
+  // ======================================================================
+  "description": "description",
+  "shortDescription": "short_description",
+  "short_description": "short_description",
+  "longDescription": "long_description",
+  "long_description": "long_description"
+};
+var REGISTRY_TO_LEGACY = Object.entries(LEGACY_TO_REGISTRY).reduce((acc, [legacy, registry]) => {
+  if (!acc[registry]) {
+    acc[registry] = legacy;
+  }
+  return acc;
+}, {});
+
+// src/normalization/importNormalizer.ts
+function normalizeTargetFieldToRegistry(targetField) {
+  if (!targetField) return targetField;
+  const mapped = LEGACY_TO_REGISTRY[targetField];
+  if (mapped) {
+    return mapped;
+  }
+  return targetField;
+}
+function sourceColumnMatchesHeader(sourceColumn, header) {
+  const normalizedHeader = header.toLowerCase().trim();
+  if (Array.isArray(sourceColumn)) {
+    return sourceColumn.some((alias) => alias.toLowerCase().trim() === normalizedHeader);
+  }
+  return sourceColumn.toLowerCase().trim() === normalizedHeader;
+}
+var DEFAULT_COLUMN_MAPPINGS = [
+  // ======================================================================
+  // Core Identifiers (category: sku_core)
+  // MPN is required (LP-2.1.0), SKU is optional
+  // ======================================================================
+  { sourceColumn: ["MPN", "mpn", "Manufacturer Part Number"], targetField: "mpn", required: true, transform: "trim" },
+  { sourceColumn: ["SKU", "sku", "Style"], targetField: "sku", required: false, transform: "trim" },
+  { sourceColumn: ["Product Name", "Name", "name", "Title"], targetField: "name", required: false, transform: "trim" },
+  { sourceColumn: ["Brand", "brand"], targetField: "brand", required: false, transform: "trim" },
+  { sourceColumn: ["Description", "description"], targetField: "description", transform: "trim" },
+  { sourceColumn: ["Style ID", "styleId", "style_id"], targetField: "style_id", transform: "trim" },
+  { sourceColumn: ["GTIN", "gtin", "UPC", "upc"], targetField: "gtin", transform: "trim" },
+  // ======================================================================
+  // Classification (category: classification)
+  // ======================================================================
+  { sourceColumn: ["Department", "department"], targetField: "department", transform: "trim" },
+  { sourceColumn: ["Class", "class"], targetField: "class", transform: "trim" },
+  { sourceColumn: ["Category", "category"], targetField: "category", transform: "trim" },
+  { sourceColumn: ["Subcategory", "subcategory"], targetField: "subcategory", transform: "trim" },
+  // ======================================================================
+  // Identity / Demographic (category: identity_demographic)
+  // ======================================================================
+  { sourceColumn: ["Gender", "gender"], targetField: "gender", transform: "lowercase" },
+  { sourceColumn: ["Age Group", "ageGroup", "age_group"], targetField: "age_group", transform: "trim" },
+  // ======================================================================
+  // Colors (category: color)
+  // Registry: primary_color, descriptive_color
+  // ======================================================================
+  { sourceColumn: ["Color", "Primary Color", "color", "primary_color"], targetField: "primary_color", transform: "trim" },
+  { sourceColumn: ["Descriptive Color", "DescriptiveColor", "descriptive_color"], targetField: "descriptive_color", transform: "trim" },
+  // ======================================================================
+  // Materials & Construction (category: materials_construction)
+  // ======================================================================
+  { sourceColumn: ["Material", "material"], targetField: "material", transform: "trim" },
+  { sourceColumn: ["Closure Type", "closure", "closure_type"], targetField: "closure_type", transform: "trim" },
+  { sourceColumn: ["Cut Type", "cut_type"], targetField: "cut_type", transform: "trim" },
+  // ======================================================================
+  // Sizing / Measurements (category: measurements)
+  // ======================================================================
+  { sourceColumn: ["Size", "size"], targetField: "size", transform: "trim" },
+  { sourceColumn: ["Shoe Width", "shoe_width"], targetField: "shoe_width", transform: "trim" },
+  { sourceColumn: ["Weight", "weight"], targetField: "weight", transform: "number" },
+  // ======================================================================
+  // RICS Reference Fields (category: rics_reference)
+  // Note: rics_category and rics_color are reference fields (not in registry)
+  // ======================================================================
+  { sourceColumn: ["RICS Category", "rics_category", "ricsCategory"], targetField: "rics_category", transform: "trim" },
+  { sourceColumn: ["RICS Color", "rics_color", "ricsColor"], targetField: "rics_color", transform: "trim" },
+  { sourceColumn: ["RICS Long Description", "RICS Long Desc", "rics_long_desc"], targetField: "rics_long_desc", transform: "trim" },
+  { sourceColumn: ["RICS Short Description", "RICS Short Desc", "rics_short_description"], targetField: "rics_short_description", transform: "trim" },
+  // ======================================================================
+  // Pricing
+  // ======================================================================
+  { sourceColumn: ["MSRP", "msrp"], targetField: "msrp", transform: "number" },
+  { sourceColumn: ["Cost", "cost"], targetField: "cost", transform: "number" },
+  { sourceColumn: ["Retail Price", "retailPrice", "retail_price"], targetField: "retail_price", transform: "number" },
+  { sourceColumn: ["Currency", "currency"], targetField: "currency", transform: "uppercase", defaultValue: "USD" },
+  // ======================================================================
+  // Inventory / Logistics
+  // ======================================================================
+  { sourceColumn: ["Quantity", "Qty", "quantity"], targetField: "quantity", transform: "number", defaultValue: 0 },
+  { sourceColumn: ["Warehouse", "warehouse"], targetField: "warehouse", transform: "trim" },
+  { sourceColumn: ["Location", "location"], targetField: "location", transform: "trim" },
+  // ======================================================================
+  // Lifecycle / Dates (category: lifecycle)
+  // ======================================================================
+  { sourceColumn: ["First Received", "firstReceived", "first_received"], targetField: "first_received", transform: "date" },
+  { sourceColumn: ["Launch Date", "launchDate", "launch_date"], targetField: "launch_date", transform: "date" },
+  // ======================================================================
+  // Media
+  // ======================================================================
+  { sourceColumn: ["Images", "images", "image_urls"], targetField: "images", transform: "array" },
+  { sourceColumn: ["Primary Image", "primaryImage", "primary_image"], targetField: "primary_image", transform: "trim" }
 ];
 function applyTransform(value, transform) {
   if (value === null || value === void 0 || value === "") {
@@ -1558,16 +1733,40 @@ function applyTransform(value, transform) {
       return strValue.trim();
   }
 }
+function findSourceValue(sourceColumns, sourceColumn) {
+  if (Array.isArray(sourceColumn)) {
+    for (const alias of sourceColumn) {
+      if (sourceColumns[alias] !== void 0) {
+        return sourceColumns[alias];
+      }
+      const key2 = Object.keys(sourceColumns).find(
+        (k) => k.toLowerCase().trim() === alias.toLowerCase().trim()
+      );
+      if (key2 && sourceColumns[key2] !== void 0) {
+        return sourceColumns[key2];
+      }
+    }
+    return void 0;
+  }
+  if (sourceColumns[sourceColumn] !== void 0) {
+    return sourceColumns[sourceColumn];
+  }
+  const key = Object.keys(sourceColumns).find(
+    (k) => k.toLowerCase().trim() === sourceColumn.toLowerCase().trim()
+  );
+  return key ? sourceColumns[key] : void 0;
+}
 function normalizeImportRow(sourceColumns, mappings = DEFAULT_COLUMN_MAPPINGS) {
   const normalized = {};
   for (const mapping of mappings) {
-    const sourceValue = sourceColumns[mapping.sourceColumn];
+    const sourceValue = findSourceValue(sourceColumns, mapping.sourceColumn);
     let normalizedValue = applyTransform(sourceValue, mapping.transform);
     if (normalizedValue === void 0 && mapping.defaultValue !== void 0) {
       normalizedValue = mapping.defaultValue;
     }
     if (normalizedValue !== void 0) {
-      normalized[mapping.targetField] = normalizedValue;
+      const canonicalTarget = normalizeTargetFieldToRegistry(mapping.targetField);
+      normalized[canonicalTarget] = normalizedValue;
     }
   }
   return normalized;
@@ -1588,9 +1787,10 @@ function validateRequiredFields(normalized, mappings = DEFAULT_COLUMN_MAPPINGS) 
   const missingFields = /* @__PURE__ */ new Set();
   for (const mapping of mappings) {
     if (mapping.required) {
-      const value = normalized[mapping.targetField];
+      const canonicalTarget = normalizeTargetFieldToRegistry(mapping.targetField);
+      const value = normalized[canonicalTarget];
       if (value === void 0 || value === null || value === "") {
-        missingFields.add(mapping.targetField);
+        missingFields.add(canonicalTarget);
       }
     }
   }
@@ -1687,8 +1887,23 @@ function buildImportRow(sourceColumns, options) {
   };
   return row;
 }
-function buildImportRows(csvData, batchId, userId, mappings) {
+function convertClientMappings(clientMappings) {
+  return Object.entries(clientMappings).map(([sourceColumn, targetField]) => ({
+    sourceColumn,
+    targetField,
+    transform: "trim"
+  }));
+}
+function buildImportRows(csvData, batchId, userId, mappingsOrClientMappings) {
   const rows = [];
+  let mappings;
+  if (mappingsOrClientMappings) {
+    if (Array.isArray(mappingsOrClientMappings)) {
+      mappings = mappingsOrClientMappings;
+    } else if (typeof mappingsOrClientMappings === "object" && Object.keys(mappingsOrClientMappings).length > 0) {
+      mappings = convertClientMappings(mappingsOrClientMappings);
+    }
+  }
   for (let i = 0; i < csvData.length; i++) {
     const lineNumber = i + 2;
     const sourceColumns = csvData[i];
@@ -2688,4 +2903,4 @@ function detectCollisions(ids) {
 // src/index.ts
 var SDK_VERSION = "0.6.0";
 
-export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ImportRowRawSchema, ImportRowSchema, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getRegistryVersion, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, normalizeDataType, normalizeImportRow, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateProduct, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCoreProduct, validateCoreProductOrThrow, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRequiredFields, wouldCollide };
+export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ImportRowRawSchema, ImportRowSchema, LEGACY_TO_REGISTRY, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, REGISTRY_TO_LEGACY, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getRegistryVersion, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, normalizeDataType, normalizeImportRow, normalizeTargetFieldToRegistry, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateProduct, sourceColumnMatchesHeader, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCoreProduct, validateCoreProductOrThrow, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRequiredFields, wouldCollide };
