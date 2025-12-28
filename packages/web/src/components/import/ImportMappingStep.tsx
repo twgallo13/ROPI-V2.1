@@ -91,7 +91,9 @@ function buildRegistryOptions(attrs: Attribute[]): AttributeOption[] {
       importerColumns: buildImporterColumns(a),
       usage: a.usage,
       data_type: a.data_type,
-      required: !!a.import_required || !!a.required_for_completion,
+      // Importer-required should only reflect import_required (not required_for_completion)
+      // required_for_completion is a business/completion rule and must not block imports
+      required: !!a.import_required,
       allowed_values: a.allowed_values,
     } as AttributeOption;
   });
@@ -239,17 +241,29 @@ export function ImportMappingStep({ headers, onMappingComplete, onBack }: Import
     ];
   }, [fieldOptions]);
 
-  // Auto-suggest mappings on mount/when options load
+  // Auto-suggest mappings on mount/when options load — safer approach
+  // LP-1.3.1: Only auto-assign exact importerColumns matches, enforce uniqueness
   useEffect(() => {
     if (loadingAttrs || fieldOptions.length === 0) return;
-    
+
     const suggestedMappings: ColumnMappingConfig = {};
-    
+    const usedTargets = new Set<string>();
+
     headers.forEach(header => {
+      const h = header.trim().toLowerCase();
+      // Compute suggestions (same helper)
       const suggestions = suggestOptionsForHeader(header);
-      if (suggestions.length > 0) {
-        suggestedMappings[header] = suggestions[0].value;
+      // Only auto-assign if there's an exact importerColumns match (score 3)
+      const exact = suggestions.find(s =>
+        s.importerColumns.some(ic => ic.toLowerCase() === h)
+      );
+      const candidate = exact ?? null;
+
+      if (candidate && !usedTargets.has(candidate.value)) {
+        suggestedMappings[header] = candidate.value;
+        usedTargets.add(candidate.value);
       }
+      // Otherwise leave unmapped — show suggestion hint only
     });
 
     setMappings(suggestedMappings);

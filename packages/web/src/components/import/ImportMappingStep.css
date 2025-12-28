@@ -166,3 +166,34 @@
   justify-content: space-between;
   gap: 1rem;
 }
+
+/* LP-1.3.1: MappingOptionLabel styles for consistent typography */
+.mapping-option-label {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-sm, 13px);
+  font-family: var(--font-family-ui, inherit);
+}
+
+.mapping-option-label__main {
+  font-size: var(--font-size-sm, 13px);
+  color: var(--color-text-primary);
+}
+
+.mapping-option-label__badge {
+  margin-left: 8px;
+}
+
+.mapping-option-label__badge--reference {
+  color: var(--color-text-secondary, #666);
+  font-style: italic;
+}
+
+.mapping-option-label__badge--taxonomy {
+  color: var(--color-info, #0a66c2);
+}
+
+.mapping-option-label__note {
+  font-size: var(--font-size-xs, 12px);
+  color: var(--color-text-secondary, #777);
+}
