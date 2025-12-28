@@ -17,12 +17,26 @@ interface ColumnMappingConfig {
   [sourceColumn: string]: string; // Maps CSV column to normalized field
 }
 
-// Build available target fields from DEFAULT_COLUMN_MAPPINGS
-const AVAILABLE_FIELDS = DEFAULT_COLUMN_MAPPINGS.map((m: any) => ({
-  value: m.targetField,
-  label: m.targetField,
-  required: m.required || false,
-}));
+/**
+ * LP-importer-mapping-recon-1.0.0: Deduplicate target fields
+ * 
+ * DEFAULT_COLUMN_MAPPINGS contains multiple source column aliases mapping to the
+ * same targetField (e.g., 'MPN', 'mpn', 'Manufacturer Part Number' all map to 'mpn').
+ * 
+ * We dedupe by targetField to avoid duplicate dropdown options in the UI.
+ * If any alias for a target is required, the option is marked required.
+ */
+const uniqueFieldMap = new Map<string, { value: string; label: string; required: boolean }>();
+for (const m of DEFAULT_COLUMN_MAPPINGS as any[]) {
+  const key = m.targetField;
+  if (!uniqueFieldMap.has(key)) {
+    uniqueFieldMap.set(key, { value: key, label: key, required: !!m.required });
+  } else if (m.required) {
+    // If any alias for this target is required, mark the option as required
+    uniqueFieldMap.get(key)!.required = true;
+  }
+}
+const AVAILABLE_FIELDS = Array.from(uniqueFieldMap.values());
 
 // Add unmapped option
 const FIELD_OPTIONS = [
