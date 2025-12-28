@@ -1,6 +1,6 @@
 # Phase Completion — LP-importer-mapping-recon
 
-**LP:** LP-importer-mapping-recon-1.3.6 (Final Phase)  
+**LP:** LP-importer-mapping-recon-1.3.8 (Final Phase)  
 **Completed:** 2025-12-28  
 **Updated:** 2025-12-28  
 **By:** Homer  
@@ -31,6 +31,39 @@ The LP-importer-mapping-recon phase is **complete**. All phases delivered:
 - `65f1bf2` — fix(web): correct property name in ImportMappingStep tests
 - `ec990f4` — fix(web): LP-1.3.1 importer mapping fixes
 - `0de36c5` — fix(api,sdk,web): LP-1.3.3 persist mappings server-side, SDK client mappings, RICS fallback
+
+---
+
+## LP-1.3.8 Fixes — Attribute Field Rendering (Commit `0d198e0`)
+
+| Fix | Description |
+|-----|-------------|
+| **Root Cause** | `mergeCoreFieldsToTopLevel()` only merged `core.*` and `inventory.*`, NOT `attributes.*` |
+| **UI expectation** | CoreInformationTab reads `product.class`, `product.category` at top-level |
+| **Importer writes** | `product.attributes.class`, `product.attributes.category` (nested) |
+| **Fix** | Added `ATTRIBUTE_FIELDS_TO_TOP_LEVEL` array (30+ fields) to merge function |
+| **Fields merged** | class, category, department, gender, age_group, primary_color, descriptive_color, material, fit, fast_fashion, currency, etc. |
+| **Unit tests** | 5 new tests for attribute merging (10 total tests passing) |
+
+### Before vs After Fix
+
+| Field | Before Fix | After Fix |
+|-------|-----------|-----------|
+| `product.class` | ❌ undefined | ✅ "Sandle" (merged from attributes) |
+| `product.category` | ❌ undefined | ✅ "Slides" (merged from attributes) |
+| `product.primary_color` | ❌ undefined | ✅ "Green" (merged from attributes) |
+
+---
+
+## LP-1.3.7 Fixes — Core & Inventory Field Merging (Commit `7265ca7`)
+
+| Fix | Description |
+|-----|-------------|
+| **Root Cause** | UI read `product.mpn`, `product.brand` at top-level, but Firestore stores in `core.*` |
+| **Fix** | Added `mergeCoreFieldsToTopLevel()` function to useProduct.ts |
+| **Core fields** | Merged mpn, brand, style_id, upc, title, short_description, long_description, etc. |
+| **Inventory fields** | Merged warehouse_inv, store_inv, whs_inv |
+| **Unit tests** | 5 tests for core/inventory merging (all passing) |
 
 ---
 
@@ -161,6 +194,9 @@ See `staging-screenshots-README.md` for manual verification checklist:
 | Registry Migration | `scripts/apply-registry-migration.js` |
 | LP-1.3.4 Summary | `evidence/importer-mapping-recon/post-migration-verification.md` |
 | **LP-1.3.6 Summary** | `evidence/importer-mapping-recon/LP-1.3.6-COMPLETION-SUMMARY.md` |
+| **LP-1.3.7 Commit** | `7265ca7` — merge core/inventory fields to top-level |
+| **LP-1.3.8 Commit** | `0d198e0` — merge attributes to top-level for UI rendering |
+| **LP-1.3.8 Diagnosis** | `evidence/importer-mapping-recon/diagnosis-451-9103-blk1.md` |
 | **Post-fix Raw 451** | `evidence/importer-mapping-recon/product-451-9201-blk1-raw-postfix.json` |
 | **Post-fix Raw 211** | `evidence/importer-mapping-recon/product-211737-90h1-raw-postfix.json` |
 | Compare Raw vs API | `evidence/importer-mapping-recon/compare-raw-vs-api.md` |
@@ -188,6 +224,8 @@ None. All known issues resolved:
 | LP-1.3.3 fixes applied | ✅ |
 | LP-1.3.4 registry migration | ✅ |
 | **LP-1.3.6 product persistence fix** | ✅ |
+| **LP-1.3.7 core/inventory field merge** | ✅ |
+| **LP-1.3.8 attribute field merge** | ✅ |
 | **MPN visible on Product Page** | ✅ VERIFIED |
 | **RICS fields visible** | ✅ VERIFIED |
 | Client mappings sent to server | ✅ |
@@ -210,7 +248,10 @@ The LP-importer-mapping-recon phase has successfully delivered:
 - LP-1.3.3 server-side mappings persistence, SDK client mappings support, RICS fallback merge
 - **LP-1.3.4 registry migration** (cleared import_required except MPN)
 - **LP-1.3.6 product persistence fix** (MPN, RICS, and all attributes now preserved)
+- **LP-1.3.7 core/inventory field merging** (useProduct.ts merges core.* and inventory.* to top-level)
+- **LP-1.3.8 attribute field merging** (useProduct.ts merges attributes.* to top-level for UI rendering)
 - 10 new unit tests for `convertRowToProduct()` to prevent regression
+- 10 unit tests for field merging in `useProduct.ts`
 
 ### Verified Fix Results
 
@@ -218,6 +259,7 @@ The LP-importer-mapping-recon phase has successfully delivered:
 |------------|-----|-----------------|--------|
 | 451-9201-blk1 | ✅ 451-9201-BLK1 | 6 fields | ✅ FIXED |
 | 211737-90h1 | ✅ 211737-90H1 | 14 fields | ✅ FIXED |
+| 451-9103-blk1 | ✅ 451-9103-BLK1 | class, category, primary_color | ✅ LP-1.3.8 FIXED |
 
 Staging is live at https://ropi-aoss-staging.web.app with all changes deployed.
 
@@ -225,4 +267,4 @@ Staging is live at https://ropi-aoss-staging.web.app with all changes deployed.
 
 **Signed:** Homer  
 **Date:** 2025-12-28  
-**LP Version:** LP-importer-mapping-recon-1.3.6
+**LP Version:** LP-importer-mapping-recon-1.3.8
