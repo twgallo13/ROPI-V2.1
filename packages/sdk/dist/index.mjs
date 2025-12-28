@@ -1,6 +1,999 @@
 import { z } from 'zod';
 
 // src/validators/productValidator.ts
+
+// config/attributeRegistry.json
+var attributeRegistry_default = {
+  version: "1.1.4",
+  attributes: [
+    {
+      attribute_id: "sku",
+      label: "SKU",
+      external_header: "SKU",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Primary SKU / item id. Optional for import (MPN is primary identifier).",
+      status: "active"
+    },
+    {
+      attribute_id: "style_id",
+      label: "Style ID",
+      external_header: "Style ID",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "mpn",
+      label: "MPN",
+      external_header: "MPN",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: true,
+      ai_usage_notes: "Manufacturer part number. Required for import (LP-2.1.2).",
+      status: "active"
+    },
+    {
+      attribute_id: "gtin",
+      label: "GTIN/UPC",
+      external_header: "GTIN",
+      category: "identifiers",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Global Trade Item Number. Required for many export channels",
+      status: "active"
+    },
+    {
+      attribute_id: "name",
+      label: "Product Name",
+      external_header: "Name",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "slug",
+      label: "URL Slug",
+      external_header: "URL Slug",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Required for web export",
+      status: "active"
+    },
+    {
+      attribute_id: "brand",
+      label: "Brand",
+      external_header: "Brand",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "category",
+      label: "Category",
+      external_header: "Category",
+      category: "classification",
+      data_type: "select",
+      allowed_values: ["Footwear", "Apparel", "Accessories", "Athletic", "Casual", "Dress", "Boots", "Sandals", "Sneakers", "Slippers"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: true,
+      status: "active"
+    },
+    {
+      attribute_id: "class",
+      label: "Class",
+      external_header: "Class",
+      category: "classification",
+      data_type: "select",
+      allowed_values: ["Athletic", "Casual", "Formal", "Outdoor", "Performance", "Fashion", "Comfort", "Work", "Sport"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "department",
+      label: "Department",
+      external_header: "Department",
+      category: "classification",
+      data_type: "select",
+      allowed_values: ["Footwear", "Accessories", "Clothing"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: true,
+      status: "active"
+    },
+    {
+      attribute_id: "website",
+      label: "Websites (Multi-select)",
+      external_header: "Websites",
+      category: "sku_core",
+      data_type: "multiSelect",
+      allowed_values: ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "NOT FOR WEB"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Drives site-specific descriptions & AI",
+      status: "active"
+    },
+    {
+      attribute_id: "product_is_active",
+      label: "Product Is Active",
+      external_header: "Product Is Active",
+      category: "sku_core",
+      data_type: "boolean",
+      required_for_completion: true,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Internal only",
+      status: "active"
+    },
+    {
+      attribute_id: "status",
+      label: "Status",
+      external_header: "Status",
+      category: "sku_core",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "launch_date",
+      label: "Launch Date",
+      external_header: "Launch Date",
+      category: "lifecycle",
+      data_type: "date",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "kl_post_date",
+      label: "KL Post Date",
+      external_header: "KL Post Date",
+      category: "lifecycle",
+      data_type: "date",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "family_sizing",
+      label: "Family Sizing",
+      external_header: "Family Sizing",
+      category: "lifecycle",
+      data_type: "boolean",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Indicates if product is part of a family sizing collection",
+      status: "active"
+    },
+    {
+      attribute_id: "hype",
+      label: "HYPE",
+      external_header: "HYPE",
+      category: "lifecycle",
+      data_type: "boolean",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "first_received",
+      label: "First Received",
+      external_header: "First Received",
+      category: "lifecycle",
+      data_type: "date",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "last_received",
+      label: "Last Received",
+      external_header: "Last Received",
+      category: "lifecycle",
+      data_type: "date",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "height",
+      label: "Height",
+      external_header: "Height",
+      category: "dimensions",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "For shipping/ops only",
+      status: "active"
+    },
+    {
+      attribute_id: "length",
+      label: "Length",
+      external_header: "Length",
+      category: "dimensions",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "width",
+      label: "Width",
+      external_header: "Width",
+      category: "dimensions",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Package / dimension width (kept for shipping)",
+      status: "active"
+    },
+    {
+      attribute_id: "shoe_width",
+      label: "Shoe Width",
+      external_header: "Shoe Width",
+      category: "measurements",
+      data_type: "select",
+      allowed_values: ["Narrow", "Standard", "Wide", "Extra Wide"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Shoe width / fit width for footwear. Added to avoid collision with package 'width'.",
+      status: "active"
+    },
+    {
+      attribute_id: "weight",
+      label: "Weight (oz)",
+      external_header: "Weight",
+      category: "measurements",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Product weight in ounces. Used for shipping calculations.",
+      status: "active"
+    },
+    {
+      attribute_id: "gender",
+      label: "Gender",
+      external_header: "Gender",
+      category: "identity_demographic",
+      data_type: "select",
+      allowed_values: ["Men's", "Women's", "Unisex", "Boys", "Girls", "Kids"],
+      synonyms: ["sex", "target_gender"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: true,
+      ai_usage_notes: "Primary demographic for product targeting. Used in product descriptions and filtering.",
+      status: "active"
+    },
+    {
+      attribute_id: "age_group",
+      label: "Age Group",
+      external_header: "Age Group",
+      category: "identity_demographic",
+      data_type: "select",
+      allowed_values: ["Adult", "Grade-School", "Infant", "Kids", "Pre-School", "Toddler"],
+      synonyms: ["ageGroup", "age-group"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Used for Google Shopping feed and age-appropriate product descriptions.",
+      status: "active"
+    },
+    {
+      attribute_id: "primary_color",
+      label: "Primary Color",
+      external_header: "Primary Color",
+      category: "color",
+      data_type: "select",
+      allowed_values: ["Beige", "Black", "Blue", "Bronze", "Brown", "Clear", "Cream", "Cyan", "Floral", "Gold", "Gray", "Green", "Grey", "Metallic", "Multi Color", "Navy", "None", "Off-White", "Orange", "Pink", "Print", "Purple", "Red", "Silver", "Transparent", "Turquoise", "Wheat", "White", "Yellow"],
+      synonyms: ["color", "main_color", "colour"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: true,
+      ai_usage_notes: "Primary visible color for search and filtering. Use standardized color names.",
+      status: "active"
+    },
+    {
+      attribute_id: "descriptive_color",
+      label: "Descriptive Color",
+      external_header: "Descriptive Color",
+      category: "color",
+      data_type: "text",
+      synonyms: ["descriptiveColor"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Used for copy & AI (more descriptive color phrasing than primary_color).",
+      status: "active"
+    },
+    {
+      attribute_id: "material",
+      label: "Material(s)",
+      external_header: "Material",
+      category: "materials_construction",
+      data_type: "multiSelect",
+      allow_custom_values: true,
+      allowed_values: [
+        "Acrylic",
+        "Canvas",
+        "Cotton",
+        "Cotton-Blend",
+        "Cotton-Rich",
+        "Crocodile",
+        "Dacron",
+        "Denim",
+        "Down",
+        "Egyptian-Cotton",
+        "Fabric",
+        "Fabric-And-Leather",
+        "Faux-Fur",
+        "Fleece",
+        "Fur",
+        "Gore-Tex",
+        "Kevlar",
+        "Kidskin",
+        "Lambskin",
+        "Leather",
+        "Linen",
+        "Linen-Blend",
+        "Lizard",
+        "Lurex",
+        "Lycra",
+        "Lycra Blend",
+        "Mercerized-Cotton",
+        "Mesh",
+        "Merino-Wool",
+        "Microfiber",
+        "Microsuede",
+        "Mohair",
+        "Nappa-Leather",
+        "Neoprene",
+        "Nubuck",
+        "Nylon",
+        "Ostrich",
+        "Patent-Leather",
+        "Pima-Cotton",
+        "Plain Weave",
+        "Plastic",
+        "Pleather",
+        "Polartec-Fleece",
+        "Poly-Cotton",
+        "Poly-Rayon",
+        "Polyester",
+        "Polyester-Blend",
+        "Polypropylene",
+        "Polyurethane",
+        "Pony",
+        "Rayon",
+        "Rayon-Blend",
+        "Rubber",
+        "Satin",
+        "Sequin",
+        "Shearling",
+        "Sheepskin",
+        "Sherpa",
+        "Shetland",
+        "Silk",
+        "Silk-Blend",
+        "Snakeskin",
+        "Spandex",
+        "Straw",
+        "Suede",
+        "Synthetic",
+        "Tencel",
+        "Thinsulate",
+        "Ultrasuede",
+        "Urethane",
+        "Velcro",
+        "Velvet",
+        "Vinyl",
+        "Viscose",
+        "Viscose-Rayon",
+        "Watersnake",
+        "Wool",
+        "Wool-Blend",
+        "Worsted-Wool"
+      ],
+      synonyms: ["upper_material", "fabric"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: true,
+      ai_usage_notes: "Primary material for the product. Important for product descriptions and care instructions.",
+      status: "active"
+    },
+    {
+      attribute_id: "outsole_material",
+      label: "Outsole Material",
+      external_header: "Outsole Material",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["Cork", "Crepe", "Fabric", "Latex", "Leather", "Leather-and-Rubber", "Lug-sole", "Manmade", "Rubber", "Suede", "Vibram", "Wood"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Optional; used when outsole differs from upper.",
+      status: "deprecated"
+    },
+    {
+      attribute_id: "closure_type",
+      label: "Closure Type",
+      external_header: "Closure",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["Buckle", "Bungee", "Button", "Clasp", "Clip", "D-ring", "Drawstring", "Elastic", "Flap", "Hook-and-eye", "Hook-and-loop", "Kiss-lock", "Lace-up", "Lobster-claw", "Magnet", "No-closure", "Pull-on", "Self-tie", "Slip-on", "Snap", "Toggle", "Turn-lock", "Velcro", "Zip", "Zipper", "wrap around"],
+      synonyms: ["closure", "fastening"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "cut_type",
+      label: "Cut Type",
+      external_header: "Cut Type",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["Low", "Mid", "High"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "fit",
+      label: "Fit",
+      external_header: "Fit",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["Runs A Half Size Big", "Runs A Half Size Small", "Runs One Size Big", "Runs One Size Small", "True To Size"],
+      required_for_completion: true,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Drives copy and Smart Rules",
+      status: "active"
+    },
+    {
+      attribute_id: "heel_height",
+      label: "Heel Height",
+      external_header: "Heel Height",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ['1-2"', '2-3"', '3-4"', '5"+'],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "platform_height",
+      label: "Platform Height",
+      external_header: "Platform Height",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["Flat", 'Low 0-1"', "Medium 1-2'", 'High 2-3"', 'Ultra High 3-4"'],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "heel_type",
+      label: "Heel Type",
+      external_header: "Heel Type",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["Block Heel", "Cone Heel", "Flat", "Kitten Heel", "Stiletto", "Wedge Heel", "Platform"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "shoe_height_map",
+      label: "Shoe Height Map",
+      external_header: "Shoe Height Map",
+      category: "materials_construction",
+      data_type: "select",
+      allowed_values: ["above-the-knee", "ankle-high", "high-top", "knee-high", "low-top", "mid-calf", "mid-top", "thigh-high"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "made_in",
+      label: "Made In",
+      external_header: "Made In",
+      category: "compliance",
+      data_type: "text",
+      synonyms: ["country_of_origin"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Country where the product was manufactured. Required for some export channels.",
+      status: "active"
+    },
+    {
+      attribute_id: "league",
+      label: "League",
+      external_header: "League",
+      category: "sport_league",
+      data_type: "select",
+      allowed_values: ["MLB", "NBA", "NCAA", "NFL", "NHL"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "sports_team",
+      label: "Sports Team",
+      external_header: "Sports Team",
+      category: "sport_league",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Required when league is major",
+      status: "active"
+    },
+    {
+      attribute_id: "collection_name",
+      label: "Collection Name",
+      external_header: "Collection Name",
+      category: "product_flags",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Optional launch flag",
+      status: "active"
+    },
+    {
+      attribute_id: "fast_fashion",
+      label: "Fast Fashion",
+      external_header: "Fast Fashion",
+      category: "product_flags",
+      data_type: "boolean",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "tax_class",
+      label: "Tax Class",
+      external_header: "Tax Class",
+      category: "product_flags",
+      data_type: "select",
+      allowed_values: ["Taxable Goods", "None"],
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Required for export; default Taxable Goods",
+      status: "active"
+    },
+    {
+      attribute_id: "description_shiekh",
+      label: "Description \u2013 Shiekh.com",
+      external_header: "Description Shiekh",
+      category: "descriptions_sites",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Required if website includes shiekh.com",
+      status: "active"
+    },
+    {
+      attribute_id: "description_karmaloop",
+      label: "Description \u2013 Karmaloop",
+      external_header: "Description Karmaloop",
+      category: "descriptions_sites",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "Required if website includes Karmaloop",
+      status: "active"
+    },
+    {
+      attribute_id: "description_mltd",
+      label: "Description \u2013 MLTD",
+      external_header: "Description MLTD",
+      category: "descriptions_sites",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "description_sangremia",
+      label: "Description \u2013 Sangremia",
+      external_header: "Description Sangremia",
+      category: "descriptions_sites",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "meta_name",
+      label: "Meta Name",
+      external_header: "Meta Name",
+      category: "seo",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "meta_description",
+      label: "Meta Description",
+      external_header: "Meta Description",
+      category: "seo",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "keywords",
+      label: "Keywords",
+      external_header: "Keywords",
+      category: "seo",
+      data_type: "multiSelect",
+      allowed_values: [],
+      required_for_completion: false,
+      required_for_export: true,
+      import_required: false,
+      ai_usage_notes: "SEO keywords used for export",
+      status: "active"
+    },
+    {
+      attribute_id: "rics_long_desc",
+      label: "RICS Long Description",
+      external_header: "RICS Long Description",
+      category: "rics_reference",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      usage: "reference_only",
+      status: "active"
+    },
+    {
+      attribute_id: "rics_short_description",
+      label: "RICS Short Description",
+      external_header: "RICS Short Description",
+      category: "rics_reference",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      usage: "reference_only",
+      status: "active"
+    },
+    {
+      attribute_id: "media_status",
+      label: "Media Status",
+      external_header: "Media Status",
+      category: "launch_media",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Tracks image readiness",
+      status: "active"
+    },
+    {
+      attribute_id: "hide_image_date",
+      label: "Hide Image Date",
+      external_header: "Hide Image Date",
+      category: "launch_media",
+      data_type: "date",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "map",
+      label: "MAP",
+      external_header: "MAP",
+      category: "launch_media_pricing",
+      data_type: "boolean",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Minimum Advertised Price toggle - indicates if MAP pricing applies",
+      status: "active"
+    },
+    {
+      attribute_id: "scom_regular_price",
+      label: "SCOM Regular Price",
+      external_header: "SCOM Regular Price",
+      category: "launch_media_pricing",
+      data_type: "money",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "scom_sale_price",
+      label: "SCOM Sale Price",
+      external_header: "SCOM Sale Price",
+      category: "launch_media_pricing",
+      data_type: "money",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "promo",
+      label: "Promo",
+      external_header: "Promo",
+      category: "launch_media_pricing",
+      data_type: "select",
+      allowed_values: ["Allowed", "Disallowed"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "drawing",
+      label: "Drawing",
+      external_header: "Drawing",
+      category: "launch_media_pricing",
+      data_type: "select",
+      allowed_values: ["FCFS", "Store-only", "Web-only", "Store & Web", "Token set"],
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Indicates drawing/raffle release type for limited product launches",
+      status: "active"
+    },
+    {
+      attribute_id: "standard_shipping_override",
+      label: "Standard Shipping Override",
+      external_header: "Standard Shipping Override",
+      category: "launch_media_shipping",
+      data_type: "money",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "expedited_override_shipping",
+      label: "Expedited Override Shipping",
+      external_header: "Expedited Override Shipping",
+      category: "launch_media_shipping",
+      data_type: "money",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      status: "active"
+    },
+    {
+      attribute_id: "custom_message",
+      label: "Custom Message (Internal)",
+      external_header: "Custom Message",
+      category: "launch_media_message",
+      data_type: "longText",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      usage: "internal_only",
+      status: "active"
+    },
+    {
+      attribute_id: "total_inv",
+      label: "Total Inv",
+      external_header: "Total Inv",
+      category: "core_header_meta",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      usage: "display_only",
+      status: "active"
+    },
+    {
+      attribute_id: "warehouse_inv",
+      label: "WHS Inv",
+      external_header: "WHS Inv",
+      category: "core_header_meta",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      usage: "display_only",
+      status: "active"
+    },
+    {
+      attribute_id: "store_inv",
+      label: "Store Inv",
+      external_header: "Store Inv",
+      category: "core_header_meta",
+      data_type: "number",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      usage: "display_only",
+      status: "active"
+    },
+    {
+      attribute_id: "pattern",
+      label: "Pattern",
+      external_header: "Pattern",
+      category: "material_design",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Pattern type (solid, striped, floral, geometric, etc.)",
+      status: "active"
+    }
+  ]
+};
+
+// src/registry/index.ts
+function getAttributeRegistry() {
+  return attributeRegistry_default;
+}
+function getAttributes() {
+  return attributeRegistry_default.attributes;
+}
+function getAttributeById(attributeId) {
+  const normalizedId = attributeId.toLowerCase().replace(/[-\s]/g, "_");
+  return getAttributes().find((attr) => {
+    const attrNormalized = attr.attribute_id.toLowerCase().replace(/[-\s]/g, "_");
+    return attrNormalized === normalizedId;
+  });
+}
+function getAllowedValues(attributeId) {
+  const attr = getAttributeById(attributeId);
+  if (!attr || !attr.allowed_values || attr.allowed_values.length === 0) {
+    return void 0;
+  }
+  return attr.allowed_values;
+}
+function allowsCustomValues(attributeId) {
+  const attr = getAttributeById(attributeId);
+  return attr?.allow_custom_values === true;
+}
+function validateAttributeDomain(attributeId, value) {
+  const attr = getAttributeById(attributeId);
+  if (!attr) {
+    return {
+      valid: true,
+      attributeId,
+      value,
+      message: `Attribute '${attributeId}' not found in registry (skipping domain check)`
+    };
+  }
+  const allowedValues = attr.allowed_values;
+  if (!allowedValues || allowedValues.length === 0) {
+    return {
+      valid: true,
+      attributeId,
+      value
+    };
+  }
+  if (attr.allow_custom_values) {
+    return {
+      valid: true,
+      attributeId,
+      value,
+      allowedValues
+    };
+  }
+  if (value === null || value === void 0 || value === "") {
+    return {
+      valid: true,
+      // Empty values are allowed (required check is separate)
+      attributeId,
+      value,
+      allowedValues
+    };
+  }
+  if (Array.isArray(value)) {
+    const invalidValues = value.filter((v) => {
+      const strVal = String(v).trim();
+      return !allowedValues.some((av) => av.toLowerCase() === strVal.toLowerCase());
+    });
+    if (invalidValues.length > 0) {
+      return {
+        valid: false,
+        attributeId,
+        value,
+        allowedValues,
+        message: `Invalid values for '${attributeId}': [${invalidValues.join(", ")}]. Allowed: [${allowedValues.join(", ")}]`
+      };
+    }
+    return {
+      valid: true,
+      attributeId,
+      value,
+      allowedValues
+    };
+  }
+  const strValue = String(value).trim();
+  const isValid = allowedValues.some((av) => av.toLowerCase() === strValue.toLowerCase());
+  if (!isValid) {
+    return {
+      valid: false,
+      attributeId,
+      value: strValue,
+      allowedValues,
+      message: `Invalid value '${strValue}' for '${attributeId}'. Allowed: [${allowedValues.join(", ")}]`
+    };
+  }
+  return {
+    valid: true,
+    attributeId,
+    value: strValue,
+    allowedValues
+  };
+}
+function validateAttributeDomains(attributes) {
+  const results = [];
+  for (const [key, value] of Object.entries(attributes)) {
+    const result = validateAttributeDomain(key, value);
+    if (!result.valid) {
+      results.push(result);
+    }
+  }
+  return results;
+}
+function getRegistryVersion() {
+  return attributeRegistry_default.version;
+}
+
+// src/validators/productValidator.ts
 var ProductCoreSchema = z.object({
   sku: z.string().min(1, "SKU is required"),
   title: z.string().min(1, "Title is required"),
@@ -62,6 +1055,33 @@ function validateProduct(input) {
 }
 function safeValidateProduct(input) {
   return ProductSchema.safeParse(input);
+}
+function validateProductWithDomains(input) {
+  const schemaResult = ProductSchema.safeParse(input);
+  if (!schemaResult.success) {
+    return {
+      success: false,
+      schemaErrors: schemaResult.error,
+      domainErrors: []
+    };
+  }
+  const product = schemaResult.data;
+  const domainErrors = validateAttributeDomains(product.attributes || {});
+  if (domainErrors.length > 0) {
+    return {
+      success: false,
+      data: product,
+      domainErrors
+    };
+  }
+  return {
+    success: true,
+    data: product,
+    domainErrors: []
+  };
+}
+function validateAttributesOnly(attributes) {
+  return validateAttributeDomains(attributes);
 }
 var AttributeDataTypeSchema = z.enum([
   "string",
@@ -460,43 +1480,223 @@ function canProcessRow(validation) {
   return validation.isValid;
 }
 
-// src/normalization/importNormalizer.ts
-var DEFAULT_COLUMN_MAPPINGS = [
-  // Core fields — MPN is required (LP-2.1.0), SKU is optional
-  { sourceColumn: "MPN", targetField: "mpn", required: true, transform: "trim" },
-  { sourceColumn: "mpn", targetField: "mpn", required: true, transform: "trim" },
-  { sourceColumn: "Manufacturer Part Number", targetField: "mpn", required: true, transform: "trim" },
-  { sourceColumn: "SKU", targetField: "sku", required: false, transform: "trim" },
-  // LP-ATTR-1.3.1: Product Name maps to the registry attribute 'name' (not 'title').
-  // Make Product Name and Brand optional; the registry (import_required) is authoritative.
-  { sourceColumn: "Product Name", targetField: "name", required: false, transform: "trim" },
-  { sourceColumn: "Brand", targetField: "brand", required: false, transform: "trim" },
-  { sourceColumn: "Description", targetField: "description", transform: "trim" },
-  // Attributes
-  { sourceColumn: "Department", targetField: "department", transform: "trim" },
-  { sourceColumn: "Class", targetField: "class", transform: "trim" },
-  { sourceColumn: "Category", targetField: "category", transform: "trim" },
-  { sourceColumn: "Subcategory", targetField: "subcategory", transform: "trim" },
-  { sourceColumn: "Gender", targetField: "gender", transform: "lowercase" },
-  { sourceColumn: "Age Group", targetField: "ageGroup", transform: "trim" },
-  { sourceColumn: "Color", targetField: "color", transform: "trim" },
-  { sourceColumn: "Size", targetField: "size", transform: "trim" },
-  { sourceColumn: "Material", targetField: "material", transform: "trim" },
+// src/normalization/legacyToRegistryMap.ts
+var LEGACY_TO_REGISTRY = {
+  // ======================================================================
+  // SKU / Identifiers (category: sku_core, identifiers)
+  // ======================================================================
+  "mpn": "mpn",
+  "MPN": "mpn",
+  "manufacturerPartNumber": "mpn",
+  "sku": "sku",
+  "SKU": "sku",
+  "name": "name",
+  "productName": "name",
+  "title": "name",
+  // legacy alias
+  "brand": "brand",
+  "styleId": "style_id",
+  "style_id": "style_id",
+  "gtin": "gtin",
+  "upc": "gtin",
+  "slug": "slug",
+  // ======================================================================
+  // Colors (category: color)
+  // Registry: primary_color, descriptive_color
+  // ======================================================================
+  "color": "primary_color",
+  "primaryColor": "primary_color",
+  "primary_color": "primary_color",
+  "mainColor": "primary_color",
+  "main_color": "primary_color",
+  "descriptiveColor": "descriptive_color",
+  "descriptive_color": "descriptive_color",
+  // ======================================================================
+  // RICS Reference Fields (category: rics_reference)
+  // Note: Registry only has rics_long_desc, rics_short_description
+  // ricsCategory and ricsColor are not in registry - kept for legacy CSV import
+  // ======================================================================
+  "ricsLongDesc": "rics_long_desc",
+  "ricsLongDescription": "rics_long_desc",
+  "rics_long_desc": "rics_long_desc",
+  "ricsShortDesc": "rics_short_description",
+  "ricsShortDescription": "rics_short_description",
+  "rics_short_description": "rics_short_description",
+  // Legacy RICS fields not in registry - map to themselves (unmapped reference)
+  "ricsCategory": "rics_category",
+  "rics_category": "rics_category",
+  "ricsColor": "rics_color",
+  "rics_color": "rics_color",
+  // ======================================================================
+  // Classification (category: classification)
+  // ======================================================================
+  "category": "category",
+  "class": "class",
+  "department": "department",
+  "subcategory": "subcategory",
+  // ======================================================================
+  // Identity / Demographic (category: identity_demographic)
+  // ======================================================================
+  "gender": "gender",
+  "ageGroup": "age_group",
+  "age_group": "age_group",
+  // ======================================================================
+  // Materials & Construction (category: materials_construction)
+  // ======================================================================
+  "material": "material",
+  "closureType": "closure_type",
+  "closure_type": "closure_type",
+  "cutType": "cut_type",
+  "cut_type": "cut_type",
+  // ======================================================================
+  // Sizing / Measurements (category: measurements)
+  // ======================================================================
+  "size": "size",
+  "shoeWidth": "shoe_width",
+  "shoe_width": "shoe_width",
+  "weight": "weight",
+  "height": "height",
+  "width": "width",
+  "length": "length",
+  // ======================================================================
+  // Lifecycle / Dates (category: lifecycle)
+  // ======================================================================
+  "launchDate": "launch_date",
+  "launch_date": "launch_date",
+  "firstReceived": "first_received",
+  "first_received": "first_received",
+  "lastReceived": "last_received",
+  "last_received": "last_received",
+  // ======================================================================
   // Pricing
-  { sourceColumn: "MSRP", targetField: "msrp", transform: "number" },
-  { sourceColumn: "Cost", targetField: "cost", transform: "number" },
-  { sourceColumn: "Retail Price", targetField: "retailPrice", transform: "number" },
-  { sourceColumn: "Currency", targetField: "currency", transform: "uppercase", defaultValue: "USD" },
-  // Inventory
-  { sourceColumn: "Quantity", targetField: "quantity", transform: "number", defaultValue: 0 },
-  { sourceColumn: "Warehouse", targetField: "warehouse", transform: "trim" },
-  { sourceColumn: "Location", targetField: "location", transform: "trim" },
-  // Dates
-  { sourceColumn: "First Received", targetField: "firstReceived", transform: "date" },
-  { sourceColumn: "Launch Date", targetField: "launchDate", transform: "date" },
-  // Media (pipe-separated URLs)
-  { sourceColumn: "Images", targetField: "images", transform: "array" },
-  { sourceColumn: "Primary Image", targetField: "primaryImage", transform: "trim" }
+  // Note: msrp, cost, retailPrice kept as-is (not in registry as separate attributes)
+  // ======================================================================
+  "msrp": "msrp",
+  "cost": "cost",
+  "retailPrice": "retail_price",
+  "retail_price": "retail_price",
+  // ======================================================================
+  // Inventory / Logistics
+  // ======================================================================
+  "quantity": "quantity",
+  "warehouse": "warehouse",
+  "location": "location",
+  // ======================================================================
+  // Media
+  // ======================================================================
+  "images": "images",
+  "primaryImage": "primary_image",
+  "primary_image": "primary_image",
+  // ======================================================================
+  // Website / Assignment (category: sku_core)
+  // ======================================================================
+  "website": "website",
+  "websites": "website",
+  // ======================================================================
+  // Descriptions (category: copy)
+  // ======================================================================
+  "description": "description",
+  "shortDescription": "short_description",
+  "short_description": "short_description",
+  "longDescription": "long_description",
+  "long_description": "long_description"
+};
+var REGISTRY_TO_LEGACY = Object.entries(LEGACY_TO_REGISTRY).reduce((acc, [legacy, registry]) => {
+  if (!acc[registry]) {
+    acc[registry] = legacy;
+  }
+  return acc;
+}, {});
+
+// src/normalization/importNormalizer.ts
+function normalizeTargetFieldToRegistry(targetField) {
+  if (!targetField) return targetField;
+  const mapped = LEGACY_TO_REGISTRY[targetField];
+  if (mapped) {
+    return mapped;
+  }
+  return targetField;
+}
+function sourceColumnMatchesHeader(sourceColumn, header) {
+  const normalizedHeader = header.toLowerCase().trim();
+  if (Array.isArray(sourceColumn)) {
+    return sourceColumn.some((alias) => alias.toLowerCase().trim() === normalizedHeader);
+  }
+  return sourceColumn.toLowerCase().trim() === normalizedHeader;
+}
+var DEFAULT_COLUMN_MAPPINGS = [
+  // ======================================================================
+  // Core Identifiers (category: sku_core)
+  // MPN is required (LP-2.1.0), SKU is optional
+  // ======================================================================
+  { sourceColumn: ["MPN", "mpn", "Manufacturer Part Number"], targetField: "mpn", required: true, transform: "trim" },
+  { sourceColumn: ["SKU", "sku", "Style"], targetField: "sku", required: false, transform: "trim" },
+  { sourceColumn: ["Product Name", "Name", "name", "Title"], targetField: "name", required: false, transform: "trim" },
+  { sourceColumn: ["Brand", "brand"], targetField: "brand", required: false, transform: "trim" },
+  { sourceColumn: ["Description", "description"], targetField: "description", transform: "trim" },
+  { sourceColumn: ["Style ID", "styleId", "style_id"], targetField: "style_id", transform: "trim" },
+  { sourceColumn: ["GTIN", "gtin", "UPC", "upc"], targetField: "gtin", transform: "trim" },
+  // ======================================================================
+  // Classification (category: classification)
+  // ======================================================================
+  { sourceColumn: ["Department", "department"], targetField: "department", transform: "trim" },
+  { sourceColumn: ["Class", "class"], targetField: "class", transform: "trim" },
+  { sourceColumn: ["Category", "category"], targetField: "category", transform: "trim" },
+  { sourceColumn: ["Subcategory", "subcategory"], targetField: "subcategory", transform: "trim" },
+  // ======================================================================
+  // Identity / Demographic (category: identity_demographic)
+  // ======================================================================
+  { sourceColumn: ["Gender", "gender"], targetField: "gender", transform: "lowercase" },
+  { sourceColumn: ["Age Group", "ageGroup", "age_group"], targetField: "age_group", transform: "trim" },
+  // ======================================================================
+  // Colors (category: color)
+  // Registry: primary_color, descriptive_color
+  // ======================================================================
+  { sourceColumn: ["Color", "Primary Color", "color", "primary_color"], targetField: "primary_color", transform: "trim" },
+  { sourceColumn: ["Descriptive Color", "DescriptiveColor", "descriptive_color"], targetField: "descriptive_color", transform: "trim" },
+  // ======================================================================
+  // Materials & Construction (category: materials_construction)
+  // ======================================================================
+  { sourceColumn: ["Material", "material"], targetField: "material", transform: "trim" },
+  { sourceColumn: ["Closure Type", "closure", "closure_type"], targetField: "closure_type", transform: "trim" },
+  { sourceColumn: ["Cut Type", "cut_type"], targetField: "cut_type", transform: "trim" },
+  // ======================================================================
+  // Sizing / Measurements (category: measurements)
+  // ======================================================================
+  { sourceColumn: ["Size", "size"], targetField: "size", transform: "trim" },
+  { sourceColumn: ["Shoe Width", "shoe_width"], targetField: "shoe_width", transform: "trim" },
+  { sourceColumn: ["Weight", "weight"], targetField: "weight", transform: "number" },
+  // ======================================================================
+  // RICS Reference Fields (category: rics_reference)
+  // Note: rics_category and rics_color are reference fields (not in registry)
+  // ======================================================================
+  { sourceColumn: ["RICS Category", "rics_category", "ricsCategory"], targetField: "rics_category", transform: "trim" },
+  { sourceColumn: ["RICS Color", "rics_color", "ricsColor"], targetField: "rics_color", transform: "trim" },
+  { sourceColumn: ["RICS Long Description", "RICS Long Desc", "rics_long_desc"], targetField: "rics_long_desc", transform: "trim" },
+  { sourceColumn: ["RICS Short Description", "RICS Short Desc", "rics_short_description"], targetField: "rics_short_description", transform: "trim" },
+  // ======================================================================
+  // Pricing
+  // ======================================================================
+  { sourceColumn: ["MSRP", "msrp"], targetField: "msrp", transform: "number" },
+  { sourceColumn: ["Cost", "cost"], targetField: "cost", transform: "number" },
+  { sourceColumn: ["Retail Price", "retailPrice", "retail_price"], targetField: "retail_price", transform: "number" },
+  { sourceColumn: ["Currency", "currency"], targetField: "currency", transform: "uppercase", defaultValue: "USD" },
+  // ======================================================================
+  // Inventory / Logistics
+  // ======================================================================
+  { sourceColumn: ["Quantity", "Qty", "quantity"], targetField: "quantity", transform: "number", defaultValue: 0 },
+  { sourceColumn: ["Warehouse", "warehouse"], targetField: "warehouse", transform: "trim" },
+  { sourceColumn: ["Location", "location"], targetField: "location", transform: "trim" },
+  // ======================================================================
+  // Lifecycle / Dates (category: lifecycle)
+  // ======================================================================
+  { sourceColumn: ["First Received", "firstReceived", "first_received"], targetField: "first_received", transform: "date" },
+  { sourceColumn: ["Launch Date", "launchDate", "launch_date"], targetField: "launch_date", transform: "date" },
+  // ======================================================================
+  // Media
+  // ======================================================================
+  { sourceColumn: ["Images", "images", "image_urls"], targetField: "images", transform: "array" },
+  { sourceColumn: ["Primary Image", "primaryImage", "primary_image"], targetField: "primary_image", transform: "trim" }
 ];
 function applyTransform(value, transform) {
   if (value === null || value === void 0 || value === "") {
@@ -533,16 +1733,40 @@ function applyTransform(value, transform) {
       return strValue.trim();
   }
 }
+function findSourceValue(sourceColumns, sourceColumn) {
+  if (Array.isArray(sourceColumn)) {
+    for (const alias of sourceColumn) {
+      if (sourceColumns[alias] !== void 0) {
+        return sourceColumns[alias];
+      }
+      const key2 = Object.keys(sourceColumns).find(
+        (k) => k.toLowerCase().trim() === alias.toLowerCase().trim()
+      );
+      if (key2 && sourceColumns[key2] !== void 0) {
+        return sourceColumns[key2];
+      }
+    }
+    return void 0;
+  }
+  if (sourceColumns[sourceColumn] !== void 0) {
+    return sourceColumns[sourceColumn];
+  }
+  const key = Object.keys(sourceColumns).find(
+    (k) => k.toLowerCase().trim() === sourceColumn.toLowerCase().trim()
+  );
+  return key ? sourceColumns[key] : void 0;
+}
 function normalizeImportRow(sourceColumns, mappings = DEFAULT_COLUMN_MAPPINGS) {
   const normalized = {};
   for (const mapping of mappings) {
-    const sourceValue = sourceColumns[mapping.sourceColumn];
+    const sourceValue = findSourceValue(sourceColumns, mapping.sourceColumn);
     let normalizedValue = applyTransform(sourceValue, mapping.transform);
     if (normalizedValue === void 0 && mapping.defaultValue !== void 0) {
       normalizedValue = mapping.defaultValue;
     }
     if (normalizedValue !== void 0) {
-      normalized[mapping.targetField] = normalizedValue;
+      const canonicalTarget = normalizeTargetFieldToRegistry(mapping.targetField);
+      normalized[canonicalTarget] = normalizedValue;
     }
   }
   return normalized;
@@ -563,9 +1787,10 @@ function validateRequiredFields(normalized, mappings = DEFAULT_COLUMN_MAPPINGS) 
   const missingFields = /* @__PURE__ */ new Set();
   for (const mapping of mappings) {
     if (mapping.required) {
-      const value = normalized[mapping.targetField];
+      const canonicalTarget = normalizeTargetFieldToRegistry(mapping.targetField);
+      const value = normalized[canonicalTarget];
       if (value === void 0 || value === null || value === "") {
-        missingFields.add(mapping.targetField);
+        missingFields.add(canonicalTarget);
       }
     }
   }
@@ -1663,4 +2888,4 @@ function detectCollisions(ids) {
 // src/index.ts
 var SDK_VERSION = "0.6.0";
 
-export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ImportRowRawSchema, ImportRowSchema, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, detectCollisions, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, normalizeDataType, normalizeImportRow, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateProduct, toSnakeCase, validateAttributeDefinition, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateCoreProduct, validateCoreProductOrThrow, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateRequiredFields, wouldCollide };
+export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ImportRowRawSchema, ImportRowSchema, LEGACY_TO_REGISTRY, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, REGISTRY_TO_LEGACY, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getRegistryVersion, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, normalizeDataType, normalizeImportRow, normalizeTargetFieldToRegistry, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateProduct, sourceColumnMatchesHeader, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCoreProduct, validateCoreProductOrThrow, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRequiredFields, wouldCollide };

@@ -1,0 +1,11 @@
+diff --git a/packages/sdk/config/attributeRegistry.json b/packages/sdk/config/attributeRegistry.json
+index d61cadd..c0a4d60 100644
+--- a/packages/sdk/config/attributeRegistry.json
++++ b/packages/sdk/config/attributeRegistry.json
+@@ -1,5 +1,5 @@
+ {
+-  "version": "1.1.1",
++  "version": "1.1.2",
+   "attributes": [
+     {
+       "attribute_id": "sku",

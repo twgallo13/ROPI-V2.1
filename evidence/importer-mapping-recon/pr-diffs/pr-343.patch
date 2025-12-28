@@ -1,0 +1,851 @@
+diff --git a/LP-ATTR-1.3.1_ROOT_CAUSE_ANALYSIS.md b/LP-ATTR-1.3.1_ROOT_CAUSE_ANALYSIS.md
+new file mode 100644
+index 00000000..690a4617
+--- /dev/null
++++ b/LP-ATTR-1.3.1_ROOT_CAUSE_ANALYSIS.md
+@@ -0,0 +1,333 @@
++# LP-ATTR-1.3.1 Root Cause Analysis & Fix
++
++**Date:** 2025-12-24  
++**Issue:** "Product title is required" error on CSV preview despite correct mapping  
++**Status:** ✅ **FIXED** - PR #343
++
++---
++
++## Problem Statement
++
++User reported that CSV import preview showed "ERROR: [title] Product title is required" even though:
++- Mapping step correctly showed Product Name → `name` 
++- Registry has `import_required: false` for `name` attribute
++- LP-ATTR-1.3.1 SDK mapping was updated to use `name` (not `title`)
++
++---
++
++## Diagnostic Process
++
++### Step 1: Verify Client-Side Mapping ✅
++
++**Check:** SDK's `importNormalizer.ts` DEFAULT_COLUMN_MAPPINGS
++
++```typescript
++// packages/sdk/src/normalization/importNormalizer.ts
++{ sourceColumn: 'Product Name', targetField: 'name', required: false }
++```
++
++**Result:** ✅ Client correctly configured to map Product Name → `name`
++
++### Step 2: Verify UI Select Values ✅
++
++**Check:** Web UI `ImportMappingStep.tsx` select option values
++
++```tsx
++// packages/web/src/components/import/ImportMappingStep.tsx
++const AVAILABLE_FIELDS = DEFAULT_COLUMN_MAPPINGS.map((m: any) => ({
++  value: m.targetField,  // Uses 'name', not 'title'
++  label: m.targetField,
++  required: m.required || false,
++}));
++```
++
++**Result:** ✅ UI correctly sends `'name'` as the select value
++
++### Step 3: Verify Registry Definition ✅
++
++**Check:** Attribute Registry for `name` attribute
++
++```json
++{
++  "attribute_id": "name",
++  "label": "Product Name",
++  "import_required": false  // ← OPTIONAL
++}
++```
++
++**Result:** ✅ Registry correctly has `import_required: false`
++
++### Step 4: Check Server-Side Validator 🔍
++
++**Check:** API `attributeValidator.ts` SKIP_COLUMNS
++
++```typescript
++// packages/api/src/services/attributeValidator.ts
++const SKIP_COLUMNS = new Set([
++  'mpn', 'MPN', 'sku', 'SKU', 'title', 'name', 'Product Name',
++  // ...
++]);
++```
++
++**Finding:** `name` is in SKIP_COLUMNS, so server-side validator doesn't check it. This is intentional - core fields are validated separately.
++
++### Step 5: Search for Error Message ❌ ROOT CAUSE FOUND
++
++**Search:** `grep -r "Product title is required"`
++
++**Result:**
++```
++packages/sdk/src/validators/importValidator.ts:130:
++        'Product title is required'
++```
++
++**Root Cause Identified:** SDK's `importValidator.ts` still has:
++
++```typescript
++function validateTitle(title: string | undefined): ValidationIssue[] {
++  if (!title) {
++    return { code: 'MISSING_REQUIRED_FIELD', message: 'Product title is required' };
++  }
++  // ...
++}
++
++// Called in validateImportRow():
++const titleIssues = validateTitle(normalized.title);  // ← undefined!
++```
++
++---
++
++## Root Cause Analysis
++
++### The Problem
++
++1. **LP-ATTR-1.3.1 SDK mapping** correctly maps Product Name → `name`
++2. **SDK builds normalized row** with `{ mpn: '...', name: '...', ... }` 
++3. **But SDK validator still calls** `validateTitle(normalized.title)`
++4. **`normalized.title` is undefined** (because we're using `name` now)
++5. **Validator reports** "Product title is required" ❌
++
++### Why This Happened
++
++LP-ATTR-1.3.1 updated:
++- ✅ SDK mapping (`importNormalizer.ts`) - Product Name → `name`
++- ✅ Server validator (`attributeValidator.ts`) - Registry-driven
++- ❌ **SDK validator (`importValidator.ts`) - Still checked `title`**
++
++The SDK validator was overlooked in the LP-ATTR-1.3.1 implementation.
++
++---
++
++## The Fix (PR #343)
++
++### Changes Made
++
++#### 1. Renamed `validateTitle()` → `validateName()`
++
++**Before:**
++```typescript
++function validateTitle(title: string | undefined): ValidationIssue[] {
++  if (!title) {
++    return { code: 'MISSING_REQUIRED_FIELD', message: 'Product title is required' };
++  }
++  // ... length checks
++}
++```
++
++**After:**
++```typescript
++function validateName(name: string | undefined, title: string | undefined): ValidationIssue[] {
++  // LP-ATTR-1.3.1: name is optional per registry (import_required: false)
++  const productName = name || title;  // Check both for backward compat
++  if (!productName) {
++    return [];  // Optional - no error if missing
++  }
++  // ... length checks if present
++}
++```
++
++**Key changes:**
++- Accepts both `name` and `title` for backward compatibility
++- Made **optional** (no error if missing)
++- Still validates length if present (warning < 5 chars, error > 200 chars)
++
++#### 2. Updated `validateBrand()` to be Optional
++
++**Before:**
++```typescript
++function validateBrand(brand: string | undefined): ValidationIssue[] {
++  if (!brand) {
++    return { code: 'MISSING_REQUIRED_FIELD', message: 'Brand is required' };
++  }
++}
++```
++
++**After:**
++```typescript
++function validateBrand(brand: string | undefined): ValidationIssue[] {
++  // LP-ATTR-1.3.1: brand is optional per registry (import_required: false)
++  if (!brand) {
++    return [];  // Optional - no error if missing
++  }
++  // ... length check if present (max 100 chars)
++}
++```
++
++#### 3. Updated Validator Call
++
++**Before:**
++```typescript
++const titleIssues = validateTitle(normalized.title);
++```
++
++**After:**
++```typescript
++const nameIssues = validateName(normalized.name, normalized.title);
++```
++
++---
++
++## Verification
++
++### Unit Tests (10 new tests)
++
++```bash
++✓ packages/sdk/test/importValidator.lp-attr-1.3.1.test.ts (10 tests) 10ms
++```
++
++**Test Coverage:**
++1. ✅ MPN-only rows (no name, no brand) → VALID
++2. ✅ MPN + name (no brand) → VALID
++3. ✅ MPN + brand (no name) → VALID
++4. ✅ Name length validation (< 5 chars warning, > 200 chars error)
++5. ✅ Brand length validation (> 100 chars error)
++6. ✅ Legacy `title` field support (backward compatibility)
++7. ✅ Prefer `name` over `title` when both present
++8. ✅ No MISSING_REQUIRED_FIELD errors for name/brand
++9. ✅ MPN validation still works (MPN is only required field)
++10. ✅ All fields optional except MPN
++
++### Build Verification
++
++```bash
++✅ SDK build successful
++✅ API build successful
++✅ Web build successful
++```
++
++---
++
++## Impact Analysis
++
++### Before Fix (PR #342 only)
++
++```
++CSV Upload: MPN=TEST-123, Product Name=Test Product
++     ↓
++Client maps: { mpn: 'TEST-123', name: 'Test Product' }
++     ↓
++SDK validator checks: validateTitle(undefined)
++     ↓
++❌ ERROR: "Product title is required"
++     ↓
++Preview shows: RED X "ERROR: [title] Product title is required"
++```
++
++### After Fix (PR #343)
++
++```
++CSV Upload: MPN=TEST-123, Product Name=Test Product
++     ↓
++Client maps: { mpn: 'TEST-123', name: 'Test Product' }
++     ↓
++SDK validator checks: validateName('Test Product', undefined)
++     ↓
++✅ VALID: name is optional, validation passes
++     ↓
++Preview shows: GREEN ✓ Row valid
++```
++
++---
++
++## Registry Alignment Achieved
++
++| Layer | Component | `name` Required? | `brand` Required? | Status |
++|-------|-----------|------------------|-------------------|--------|
++| **Registry** | attributeRegistry.json | ❌ No (`import_required: false`) | ❌ No | ✅ |
++| **Server** | attributeValidator.ts | ❌ No (registry-driven) | ❌ No | ✅ (#340) |
++| **SDK Mapping** | importNormalizer.ts | ❌ No (`required: false`) | ❌ No | ✅ (#342) |
++| **SDK Validator** | importValidator.ts | ❌ No (optional) | ❌ No | ✅ (#343) |
++| **UI** | ImportMappingStep.tsx | ❌ No (uses SDK mappings) | ❌ No | ✅ (#342) |
++
++**Result:** All layers now agree - `name` and `brand` are optional, MPN is the only required field.
++
++---
++
++## LP-ATTR-1.3.1 Completion
++
++### Three-Part Implementation
++
++1. **PR #340 (LP-ATTR-1.3.0)** - Server-side registry validation
++   - ✅ Server respects `import_required` flags from registry
++   - ✅ 12 unit tests + 5 integration tests
++
++2. **PR #342 (LP-ATTR-1.3.1)** - SDK mapping sync + CORS fixes
++   - ✅ SDK maps Product Name → `name` (not `title`)
++   - ✅ SDK sets `required: false` for name and brand
++   - ✅ CORS headers on all response paths (error responses fixed)
++
++3. **PR #343 (LP-ATTR-1.3.1 Fix)** - SDK validator alignment
++   - ✅ SDK validator treats `name` and `brand` as optional
++   - ✅ Backward compatible with legacy `title` field
++   - ✅ 10 new unit tests
++
++---
++
++## Lessons Learned
++
++### What Went Right ✅
++
++1. **Systematic diagnostics** - Step-by-step verification identified exact root cause
++2. **User provided clear evidence** - Screenshots showed the exact error message
++3. **Comprehensive fix** - Updated validator + added tests + backward compatibility
++4. **Fast turnaround** - Root cause identified and fixed within hours
++
++### What Could Be Better 🔄
++
++1. **Initial implementation missed SDK validator** - LP-ATTR-1.3.1 updated SDK mapping but not SDK validator
++2. **E2E test gap** - No automated test for MPN-only CSV import through full pipeline
++3. **Component coupling** - Three separate layers (registry, server, SDK) need to stay in sync
++
++### Future Improvements 📋
++
++1. **Add E2E test:** Upload MPN-only CSV → verify preview shows green
++2. **Centralize validation logic:** Single source of truth for field requirements
++3. **Validation schema:** Consider schema-driven validation (e.g., Zod/Yup) that reads from registry
++4. **Deployment checklist:** Ensure all layers (registry, server, SDK, UI) are updated together
++
++---
++
++## Deployment Plan
++
++1. **Merge PR #343** → Triggers CI/CD
++2. **CI builds and deploys** all packages (SDK, API, Web)
++3. **Verify with sample CSV:**
++   - Upload `sample_without_name_brand.csv`
++   - Check mapping: Product Name → `name`
++   - Click preview
++   - **Expected:** GREEN ✓ for MPN-only rows
++4. **Monitor logs** for any validation issues
++
++---
++
++## Sign-Off
++
++**Root Cause:** SDK validator still checked `validateTitle(normalized.title)` which was undefined  
++**Fix:** Updated SDK validator to check `name` (and `title` for backward compat), made both optional  
++**Testing:** 10 unit tests, all passing  
++**Impact:** MPN-only CSV imports now work correctly  
++**Status:** ✅ **READY FOR MERGE AND DEPLOYMENT**
++
++**PR:** #343  
++**Branch:** `lp/ATTR-1.3.1-fix-validator-name-brand-optional`  
++**Commit:** `65c5cd1`
+diff --git a/logs/lp-attr-1.3.1-sdk-validator-fix-build.log b/logs/lp-attr-1.3.1-sdk-validator-fix-build.log
+new file mode 100644
+index 00000000..b9c1825f
+--- /dev/null
++++ b/logs/lp-attr-1.3.1-sdk-validator-fix-build.log
+@@ -0,0 +1,15 @@
++
++> @ropi-aoss/sdk@0.0.0 build /workspaces/ROPI-V2.1/packages/sdk
++> tsup
++
++CLI Building entry: src/index.ts
++CLI Using tsconfig: tsconfig.json
++CLI tsup v8.5.1
++CLI Using tsup config: /workspaces/ROPI-V2.1/packages/sdk/tsup.config.ts
++CLI Target: es2020
++CJS Build start
++ESM Build start
++CJS dist/index.js 56.80 KB
++CJS ⚡️ Build success in 406ms
++ESM dist/index.mjs 54.16 KB
++ESM ⚡️ Build success in 408ms
+diff --git a/logs/lp-attr-1.3.1-sdk-validator-tests.log b/logs/lp-attr-1.3.1-sdk-validator-tests.log
+new file mode 100644
+index 00000000..30bee9a5
+--- /dev/null
++++ b/logs/lp-attr-1.3.1-sdk-validator-tests.log
+@@ -0,0 +1,15 @@
++
++> @ropi-aoss/sdk@0.0.0 test /workspaces/ROPI-V2.1/packages/sdk
++> vitest run importValidator.lp-attr-1.3.1.test.ts
++
++[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
++
++ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/sdk
++
++ ✓ test/importValidator.lp-attr-1.3.1.test.ts  (10 tests) 10ms
++
++ Test Files  1 passed (1)
++      Tests  10 passed (10)
++   Start at  17:38:38
++   Duration  942ms (transform 161ms, setup 0ms, collect 160ms, tests 10ms, environment 0ms, prepare 443ms)
++
+diff --git a/logs/lp-attr-1.3.1-validator-fix-build-all.log b/logs/lp-attr-1.3.1-validator-fix-build-all.log
+new file mode 100644
+index 00000000..4cbd979b
+--- /dev/null
++++ b/logs/lp-attr-1.3.1-validator-fix-build-all.log
+@@ -0,0 +1,20 @@
++packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.21.1","pnpm":"10.26.1"})
++
++> @ropi-aoss/web@1.0.0 build /workspaces/ROPI-V2.1/packages/web
++> tsc && vite build
++
++vite v5.4.21 building for production...
++transforming...
++✓ 684 modules transformed.
++rendering chunks...
++computing gzip size...
++dist/index.html                     0.46 kB │ gzip:   0.29 kB
++dist/assets/index-Dnokfmns.css    166.94 kB │ gzip:  26.17 kB
++dist/assets/index-CzcWD_9z.js     390.85 kB │ gzip: 103.31 kB
++dist/assets/index-CkdSXZwu.js   1,118.12 kB │ gzip: 291.67 kB
++
++(!) Some chunks are larger than 500 kB after minification. Consider:
++- Using dynamic import() to code-split the application
++- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
++- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
++✓ built in 7.67s
+diff --git a/packages/sdk/dist/index.js b/packages/sdk/dist/index.js
+index 11f54ead..2fe03b63 100644
+--- a/packages/sdk/dist/index.js
++++ b/packages/sdk/dist/index.js
+@@ -192,38 +192,31 @@ function validateSKU(sku) {
+   }
+   return issues;
+ }
+-function validateTitle(title) {
++function validateName(name, title) {
+   const issues = [];
+-  if (!title) {
+-    issues.push(
+-      createIssue(
+-        "MISSING_REQUIRED_FIELD",
+-        "error",
+-        "title",
+-        "Product title is required"
+-      )
+-    );
++  const productName = name || title;
++  if (!productName) {
+     return issues;
+   }
+-  if (title.length < 5) {
++  if (productName.length < 5) {
+     issues.push(
+       createIssue(
+         "INVALID_VALUE",
+         "warning",
+-        "title",
+-        "Product title is very short (less than 5 characters)",
+-        title
++        name ? "name" : "title",
++        "Product name is very short (less than 5 characters)",
++        productName
+       )
+     );
+   }
+-  if (title.length > 200) {
++  if (productName.length > 200) {
+     issues.push(
+       createIssue(
+         "INVALID_VALUE",
+         "error",
+-        "title",
+-        "Product title is too long (max 200 characters)",
+-        title
++        name ? "name" : "title",
++        "Product name is too long (max 200 characters)",
++        productName
+       )
+     );
+   }
+@@ -232,12 +225,16 @@ function validateTitle(title) {
+ function validateBrand(brand) {
+   const issues = [];
+   if (!brand) {
++    return issues;
++  }
++  if (brand.length > 100) {
+     issues.push(
+       createIssue(
+-        "MISSING_REQUIRED_FIELD",
++        "INVALID_VALUE",
+         "error",
+         "brand",
+-        "Brand is required"
++        "Brand is too long (max 100 characters)",
++        brand
+       )
+     );
+   }
+@@ -432,7 +429,7 @@ function validateImportRow(normalized) {
+   const warnings = [];
+   const mpnIssues = validateMPN(normalized.mpn);
+   const skuIssues = validateSKU(normalized.sku);
+-  const titleIssues = validateTitle(normalized.title);
++  const nameIssues = validateName(normalized.name, normalized.title);
+   const brandIssues = validateBrand(normalized.brand);
+   const pricingIssues = validatePricing(normalized);
+   const inventoryIssues = validateInventory(normalized);
+@@ -441,7 +438,7 @@ function validateImportRow(normalized) {
+   const allIssues = [
+     ...mpnIssues,
+     ...skuIssues,
+-    ...titleIssues,
++    ...nameIssues,
+     ...brandIssues,
+     ...pricingIssues,
+     ...inventoryIssues,
+diff --git a/packages/sdk/dist/index.mjs b/packages/sdk/dist/index.mjs
+index 41e3af99..3f28b17d 100644
+--- a/packages/sdk/dist/index.mjs
++++ b/packages/sdk/dist/index.mjs
+@@ -190,38 +190,31 @@ function validateSKU(sku) {
+   }
+   return issues;
+ }
+-function validateTitle(title) {
++function validateName(name, title) {
+   const issues = [];
+-  if (!title) {
+-    issues.push(
+-      createIssue(
+-        "MISSING_REQUIRED_FIELD",
+-        "error",
+-        "title",
+-        "Product title is required"
+-      )
+-    );
++  const productName = name || title;
++  if (!productName) {
+     return issues;
+   }
+-  if (title.length < 5) {
++  if (productName.length < 5) {
+     issues.push(
+       createIssue(
+         "INVALID_VALUE",
+         "warning",
+-        "title",
+-        "Product title is very short (less than 5 characters)",
+-        title
++        name ? "name" : "title",
++        "Product name is very short (less than 5 characters)",
++        productName
+       )
+     );
+   }
+-  if (title.length > 200) {
++  if (productName.length > 200) {
+     issues.push(
+       createIssue(
+         "INVALID_VALUE",
+         "error",
+-        "title",
+-        "Product title is too long (max 200 characters)",
+-        title
++        name ? "name" : "title",
++        "Product name is too long (max 200 characters)",
++        productName
+       )
+     );
+   }
+@@ -230,12 +223,16 @@ function validateTitle(title) {
+ function validateBrand(brand) {
+   const issues = [];
+   if (!brand) {
++    return issues;
++  }
++  if (brand.length > 100) {
+     issues.push(
+       createIssue(
+-        "MISSING_REQUIRED_FIELD",
++        "INVALID_VALUE",
+         "error",
+         "brand",
+-        "Brand is required"
++        "Brand is too long (max 100 characters)",
++        brand
+       )
+     );
+   }
+@@ -430,7 +427,7 @@ function validateImportRow(normalized) {
+   const warnings = [];
+   const mpnIssues = validateMPN(normalized.mpn);
+   const skuIssues = validateSKU(normalized.sku);
+-  const titleIssues = validateTitle(normalized.title);
++  const nameIssues = validateName(normalized.name, normalized.title);
+   const brandIssues = validateBrand(normalized.brand);
+   const pricingIssues = validatePricing(normalized);
+   const inventoryIssues = validateInventory(normalized);
+@@ -439,7 +436,7 @@ function validateImportRow(normalized) {
+   const allIssues = [
+     ...mpnIssues,
+     ...skuIssues,
+-    ...titleIssues,
++    ...nameIssues,
+     ...brandIssues,
+     ...pricingIssues,
+     ...inventoryIssues,
+diff --git a/packages/sdk/src/validators/importValidator.ts b/packages/sdk/src/validators/importValidator.ts
+index 4e368452..046e8e2c 100644
+--- a/packages/sdk/src/validators/importValidator.ts
++++ b/packages/sdk/src/validators/importValidator.ts
+@@ -116,43 +116,40 @@ function validateSKU(sku: string | undefined): ValidationIssue[] {
+ }
+ 
+ /**
+- * Validate title
++ * Validate name (Product Name)
++ * LP-ATTR-1.3.1: name is optional per registry (import_required: false)
++ * Check both 'name' (canonical) and 'title' (legacy) for backward compatibility
+  */
+-function validateTitle(title: string | undefined): ValidationIssue[] {
++function validateName(name: string | undefined, title: string | undefined): ValidationIssue[] {
+   const issues: ValidationIssue[] = [];
+   
+-  if (!title) {
+-    issues.push(
+-      createIssue(
+-        'MISSING_REQUIRED_FIELD',
+-        'error',
+-        'title',
+-        'Product title is required'
+-      )
+-    );
+-    return issues;
++  // LP-ATTR-1.3.1: Product Name (name) is optional - no error if missing
++  const productName = name || title;
++  if (!productName) {
++    return issues; // Optional field
+   }
+   
+-  if (title.length < 5) {
++  // Validate format if present
++  if (productName.length < 5) {
+     issues.push(
+       createIssue(
+         'INVALID_VALUE',
+         'warning',
+-        'title',
+-        'Product title is very short (less than 5 characters)',
+-        title
++        name ? 'name' : 'title',
++        'Product name is very short (less than 5 characters)',
++        productName
+       )
+     );
+   }
+   
+-  if (title.length > 200) {
++  if (productName.length > 200) {
+     issues.push(
+       createIssue(
+         'INVALID_VALUE',
+         'error',
+-        'title',
+-        'Product title is too long (max 200 characters)',
+-        title
++        name ? 'name' : 'title',
++        'Product name is too long (max 200 characters)',
++        productName
+       )
+     );
+   }
+@@ -162,17 +159,26 @@ function validateTitle(title: string | undefined): ValidationIssue[] {
+ 
+ /**
+  * Validate brand
++ * LP-ATTR-1.3.1: brand is optional per registry (import_required: false)
+  */
+ function validateBrand(brand: string | undefined): ValidationIssue[] {
+   const issues: ValidationIssue[] = [];
+   
++  // LP-ATTR-1.3.1: Brand is optional - no error if missing
++  // Registry import_required: false is authoritative
+   if (!brand) {
++    return issues; // Optional field
++  }
++  
++  // Validate format if present
++  if (brand.length > 100) {
+     issues.push(
+       createIssue(
+-        'MISSING_REQUIRED_FIELD',
++        'INVALID_VALUE',
+         'error',
+         'brand',
+-        'Brand is required'
++        'Brand is too long (max 100 characters)',
++        brand
+       )
+     );
+   }
+@@ -420,7 +426,8 @@ export function validateImportRow(
+   // Validate core required fields (LP-2.1.0: MPN is now required)
+   const mpnIssues = validateMPN(normalized.mpn);
+   const skuIssues = validateSKU(normalized.sku); // Optional but validated if present
+-  const titleIssues = validateTitle(normalized.title);
++  // LP-ATTR-1.3.1: Check both 'name' (canonical) and 'title' (legacy)
++  const nameIssues = validateName(normalized.name, normalized.title);
+   const brandIssues = validateBrand(normalized.brand);
+   
+   // Validate optional fields
+@@ -433,7 +440,7 @@ export function validateImportRow(
+   const allIssues = [
+     ...mpnIssues,
+     ...skuIssues,
+-    ...titleIssues,
++    ...nameIssues,
+     ...brandIssues,
+     ...pricingIssues,
+     ...inventoryIssues,
+diff --git a/packages/sdk/test/importValidator.lp-attr-1.3.1.test.ts b/packages/sdk/test/importValidator.lp-attr-1.3.1.test.ts
+new file mode 100644
+index 00000000..d999429b
+--- /dev/null
++++ b/packages/sdk/test/importValidator.lp-attr-1.3.1.test.ts
+@@ -0,0 +1,143 @@
++/**
++ * LP-ATTR-1.3.1: Validator fix tests
++ * Verify that name and brand are optional (not required)
++ */
++
++import { describe, it, expect } from 'vitest';
++import { validateImportRow } from '../src/validators/importValidator';
++import type { ImportNormalizedFields } from '../src/schema/importEngine';
++
++describe('LP-ATTR-1.3.1: Import Validator - name and brand optional', () => {
++  it('should allow MPN-only rows (no name, no brand)', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++    };
++
++    const result = validateImportRow(normalized);
++
++    // No errors - MPN-only is valid
++    expect(result.errors).toEqual([]);
++    expect(result.warnings).toEqual([]);
++  });
++
++  it('should allow rows with MPN and name (no brand)', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      name: 'Test Product Name',
++    };
++
++    const result = validateImportRow(normalized);
++
++    expect(result.errors).toEqual([]);
++    expect(result.warnings).toEqual([]);
++  });
++
++  it('should allow rows with MPN and brand (no name)', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      brand: 'Test Brand',
++    };
++
++    const result = validateImportRow(normalized);
++
++    expect(result.errors).toEqual([]);
++    expect(result.warnings).toEqual([]);
++  });
++
++  it('should validate name length if present', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      name: 'ABC', // Too short (< 5 chars)
++    };
++
++    const result = validateImportRow(normalized);
++
++    expect(result.errors).toEqual([]);
++    expect(result.warnings).toHaveLength(1);
++    expect(result.warnings[0].field).toBe('name');
++    expect(result.warnings[0].message).toContain('very short');
++  });
++
++  it('should validate brand length if present', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      brand: 'A'.repeat(101), // Too long (> 100 chars)
++    };
++
++    const result = validateImportRow(normalized);
++
++    expect(result.errors).toHaveLength(1);
++    expect(result.errors[0].field).toBe('brand');
++    expect(result.errors[0].message).toContain('too long');
++  });
++
++  it('should check title (legacy) if name is not present', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      title: 'Legacy Product Title', // Using title instead of name
++    };
++
++    const result = validateImportRow(normalized);
++
++    // Should work with legacy title field
++    expect(result.errors).toEqual([]);
++    expect(result.warnings).toEqual([]);
++  });
++
++  it('should prefer name over title when both present', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      name: 'ABC', // Short name (triggers warning)
++      title: 'Long Enough Legacy Title',
++    };
++
++    const result = validateImportRow(normalized);
++
++    // Should validate 'name' and report warning on 'name' field (not 'title')
++    expect(result.warnings).toHaveLength(1);
++    expect(result.warnings[0].field).toBe('name');
++  });
++
++  it('should validate name max length if too long', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      name: 'A'.repeat(201), // Too long (> 200 chars)
++    };
++
++    const result = validateImportRow(normalized);
++
++    expect(result.errors).toHaveLength(1);
++    expect(result.errors[0].field).toBe('name');
++    expect(result.errors[0].code).toBe('INVALID_VALUE');
++    expect(result.errors[0].message).toContain('too long');
++  });
++
++  it('should NOT have MISSING_REQUIRED_FIELD errors for name or brand', () => {
++    const normalized: ImportNormalizedFields = {
++      mpn: 'TEST-MPN-123',
++      // No name, no brand, no title
++    };
++
++    const result = validateImportRow(normalized);
++
++    // No errors for missing name/brand - they are optional
++    const missingFieldErrors = result.errors.filter(
++      (e) => e.code === 'MISSING_REQUIRED_FIELD'
++    );
++    expect(missingFieldErrors).toEqual([]);
++  });
++
++  it('should still require MPN (MPN is the only required field)', () => {
++    const normalized: ImportNormalizedFields = {
++      name: 'Product Name',
++      brand: 'Brand Name',
++      // No MPN
++    };
++
++    const result = validateImportRow(normalized);
++
++    expect(result.errors).toHaveLength(1);
++    expect(result.errors[0].code).toBe('MISSING_REQUIRED_FIELD');
++    expect(result.errors[0].field).toBe('mpn');
++  });
++});

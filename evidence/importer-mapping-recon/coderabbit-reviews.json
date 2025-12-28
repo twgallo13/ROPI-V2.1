@@ -1,0 +1,119 @@
+{
+  "collectionTimestamp": "2025-12-28T04:30:00Z",
+  "coderabbitConfiguration": {
+    "status": "CONFIGURED",
+    "evidence": [
+      "CodeRabbit (coderabbitai[bot]) reviews found on multiple PRs",
+      "Review artifacts found in: codestop-coderabbit-pr-361.json, codestop-coderabbit-pr-362.json, codestop-coderabbit-pr-363.json",
+      "Review reports found in: docs/lisa/products-audit/LP-1.3.5/coderabbit-comments.json"
+    ]
+  },
+  "importerAttributeRelatedPRsReviewed": [
+    {
+      "prNumber": 365,
+      "title": "fix(import): Repair MPN parsing and add RICS mappings (LP-import-fix-1.0.0)",
+      "coderabbitReview": {
+        "status": "reviewed",
+        "submittedAt": "2025-12-27T22:06:00Z",
+        "actionableComments": 3,
+        "nitpickComments": 3,
+        "verdict": "COMMENTED",
+        "key_findings": [
+          "Test coverage suggestions for edge cases (whitespace, special chars in MPN)",
+          "Script configurability improvement suggestions",
+          "Documentation of duplicate variant handling in RICS mappings"
+        ]
+      }
+    },
+    {
+      "prNumber": 356,
+      "title": "[LP-0.4.3] Fix Attribute Pagination Limit",
+      "coderabbitReview": {
+        "status": "reviewed",
+        "submittedAt": "2025-12-26T19:33:34Z",
+        "actionableComments": 0,
+        "nitpickComments": 2,
+        "verdict": "LGTM",
+        "key_findings": [
+          "Pagination limits appropriately increased",
+          "Optional suggestion for true pagination vs high limits"
+        ]
+      }
+    },
+    {
+      "prNumber": 354,
+      "title": "[LP-0.4.2.1] Registry v1.1.2 - Attribute Definitions Verified",
+      "coderabbitReview": {
+        "status": "no_reviews_found",
+        "note": "No CodeRabbit reviews on this PR"
+      }
+    },
+    {
+      "prNumber": 353,
+      "title": "LP-0.4.1.1: Critical Stability Fixes & Attribute Alignment",
+      "coderabbitReview": {
+        "status": "no_reviews_found",
+        "note": "No CodeRabbit reviews on this PR"
+      }
+    },
+    {
+      "prNumber": 342,
+      "title": "LP-ATTR-1.3.1 — mapping sync: Product Name->name; title/brand optional",
+      "coderabbitReview": {
+        "status": "reviewed",
+        "submittedAt": "2025-12-24T10:56:46Z",
+        "actionableComments": 1,
+        "nitpickComments": 10,
+        "verdict": "COMMENTED",
+        "key_findings": [
+          "CORS wildcard fallback for undefined origin flagged",
+          "Redundant CORS header setting in catch blocks noted",
+          "Origin validation logic concerns raised"
+        ]
+      }
+    },
+    {
+      "prNumber": 341,
+      "title": "[LP-ATTR-1.3.3] ui: allow Attribute ID editing on create; uniqueness + auto-gen on save",
+      "coderabbitReview": {
+        "status": "reviewed",
+        "submittedAt": "2025-12-24T09:50:07Z",
+        "actionableComments": 2,
+        "nitpickComments": 4,
+        "verdict": "COMMENTED",
+        "key_findings": [
+          "Unbounded iteration safeguard suggested for ID generation",
+          "Normalization logic duplication noted",
+          "Async blur handler cleanup recommendation"
+        ]
+      }
+    }
+  ],
+  "existingArtifacts": [
+    {
+      "file": "codestop-coderabbit-pr-361.json",
+      "prNumber": 361,
+      "summary": "reviewed, 0 actionable, 1 nitpick"
+    },
+    {
+      "file": "codestop-coderabbit-pr-362.json",
+      "prNumber": 362,
+      "summary": "seed script changes"
+    },
+    {
+      "file": "codestop-coderabbit-pr-363.json",
+      "prNumber": 363,
+      "summary": "infrastructure/deploy changes"
+    },
+    {
+      "file": "docs/lisa/products-audit/LP-1.3.5/coderabbit-comments.json",
+      "prNumber": 350,
+      "summary": "6 actionable comments, 1 blocking, 5 nitpicks"
+    }
+  ],
+  "summary": {
+    "totalPRsWithCodeRabbitReviews": 6,
+    "blockingIssues": 0,
+    "status": "CODERABBIT_ACTIVE_AND_REVIEWING"
+  }
+}

@@ -1,0 +1,732 @@
+diff --git a/packages/sdk/config/attributeRegistry.json b/packages/sdk/config/attributeRegistry.json
+index 83ebaf4d..e78f13d9 100644
+--- a/packages/sdk/config/attributeRegistry.json
++++ b/packages/sdk/config/attributeRegistry.json
+@@ -124,7 +124,7 @@
+       "external_header": "Websites",
+       "category": "sku_core",
+       "data_type": "multiSelect",
+-      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "fbrkclothing.com", "Vnds.com", "Kazbah.com", "Tiltedsole.com", "NOT FOR WEB"],
++      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "NOT FOR WEB"],
+       "required_for_completion": true,
+       "required_for_export": true,
+       "import_required": false,
+diff --git a/packages/sdk/src/index.ts b/packages/sdk/src/index.ts
+index 0612fcb6..54a2e5f6 100644
+--- a/packages/sdk/src/index.ts
++++ b/packages/sdk/src/index.ts
+@@ -56,6 +56,8 @@ export type {
+ export {
+   validateProduct,
+   safeValidateProduct,
++  validateProductWithDomains,
++  validateAttributesOnly,
+   ProductSchema,
+   ProductCoreSchema,
+   ProductAttributesSchema,
+@@ -63,6 +65,7 @@ export {
+   ProductInventorySchema,
+   ProductMediaSchema,
+ } from './validators/productValidator';
++export type { ProductValidationResult } from './validators/productValidator';
+ 
+ export {
+   validateAttributeDefinition,
+@@ -203,6 +206,28 @@ export {
+   detectCollisions
+ } from './lib/stringUtils';
+ 
++// ============================================================================
++// Attribute Registry (LP-attr-enforce-2.1.0)
++// Runtime access to attributeRegistry.json for domain validation
++// ============================================================================
++
++export {
++  getAttributeRegistry,
++  getAttributes,
++  getAttributeById,
++  getAllowedValues,
++  allowsCustomValues,
++  validateAttributeDomain,
++  validateAttributeDomains,
++  getRegistryVersion,
++} from './registry';
++
++export type {
++  RegistryAttribute,
++  AttributeRegistryData,
++  DomainValidationResult,
++} from './registry';
++
+ // Version info
+ export const SDK_VERSION = '0.6.0';
+ 
+diff --git a/packages/sdk/src/registry/index.ts b/packages/sdk/src/registry/index.ts
+new file mode 100644
+index 00000000..5856a518
+--- /dev/null
++++ b/packages/sdk/src/registry/index.ts
+@@ -0,0 +1,238 @@
++/**
++ * Attribute Registry Loader
++ * LP-attr-enforce-2.1.0 — Phase 2 Domain Enforcement
++ * 
++ * Provides access to the canonical attribute registry for domain validation.
++ * Loads attributeRegistry.json at runtime and provides lookup utilities.
++ */
++
++import registryData from '../../config/attributeRegistry.json';
++
++// ============================================================================
++// Types
++// ============================================================================
++
++/**
++ * Attribute definition from the registry
++ */
++export interface RegistryAttribute {
++  attribute_id: string;
++  label: string;
++  external_header?: string;
++  category?: string;
++  data_type: 'text' | 'select' | 'multiSelect' | 'boolean' | 'number' | 'date' | 'currency' | 'json';
++  allowed_values?: string[];
++  allow_custom_values?: boolean;
++  synonyms?: string[] | Record<string, string>;
++  required_for_completion?: boolean;
++  required_for_export?: boolean;
++  import_required?: boolean;
++  import_strict?: boolean;
++  ai_usage_notes?: string;
++  status?: 'active' | 'deprecated' | 'disabled';
++}
++
++/**
++ * Full registry structure
++ */
++export interface AttributeRegistryData {
++  version: string;
++  attributes: RegistryAttribute[];
++}
++
++// ============================================================================
++// Registry Access
++// ============================================================================
++
++/**
++ * Get the full attribute registry
++ * @returns The complete registry data including version and all attributes
++ */
++export function getAttributeRegistry(): AttributeRegistryData {
++  return registryData as AttributeRegistryData;
++}
++
++/**
++ * Get the list of all attribute definitions
++ * @returns Array of attribute definitions
++ */
++export function getAttributes(): RegistryAttribute[] {
++  return (registryData as AttributeRegistryData).attributes;
++}
++
++/**
++ * Get a specific attribute definition by ID
++ * @param attributeId - The attribute_id to look up
++ * @returns The attribute definition or undefined if not found
++ */
++export function getAttributeById(attributeId: string): RegistryAttribute | undefined {
++  const normalizedId = attributeId.toLowerCase().replace(/[-\s]/g, '_');
++  return getAttributes().find(attr => {
++    const attrNormalized = attr.attribute_id.toLowerCase().replace(/[-\s]/g, '_');
++    return attrNormalized === normalizedId;
++  });
++}
++
++/**
++ * Get allowed values for an attribute
++ * @param attributeId - The attribute_id to look up
++ * @returns Array of allowed values, or undefined if attribute has no domain constraint
++ */
++export function getAllowedValues(attributeId: string): string[] | undefined {
++  const attr = getAttributeById(attributeId);
++  if (!attr || !attr.allowed_values || attr.allowed_values.length === 0) {
++    return undefined;
++  }
++  return attr.allowed_values;
++}
++
++/**
++ * Check if an attribute allows custom values beyond the allowed_values list
++ * @param attributeId - The attribute_id to check
++ * @returns true if custom values are allowed, false otherwise
++ */
++export function allowsCustomValues(attributeId: string): boolean {
++  const attr = getAttributeById(attributeId);
++  return attr?.allow_custom_values === true;
++}
++
++// ============================================================================
++// Domain Validation
++// ============================================================================
++
++/**
++ * Result of domain validation
++ */
++export interface DomainValidationResult {
++  valid: boolean;
++  attributeId: string;
++  value: unknown;
++  allowedValues?: string[];
++  message?: string;
++}
++
++/**
++ * Validate a value against an attribute's domain (allowed_values)
++ * 
++ * @param attributeId - The attribute_id to validate against
++ * @param value - The value to validate
++ * @returns Validation result with details
++ */
++export function validateAttributeDomain(attributeId: string, value: unknown): DomainValidationResult {
++  const attr = getAttributeById(attributeId);
++  
++  // If attribute not found in registry, pass through (unknown attributes are handled elsewhere)
++  if (!attr) {
++    return {
++      valid: true,
++      attributeId,
++      value,
++      message: `Attribute '${attributeId}' not found in registry (skipping domain check)`,
++    };
++  }
++  
++  // If no allowed_values defined, any value is valid
++  const allowedValues = attr.allowed_values;
++  if (!allowedValues || allowedValues.length === 0) {
++    return {
++      valid: true,
++      attributeId,
++      value,
++    };
++  }
++  
++  // If custom values are allowed, always valid
++  if (attr.allow_custom_values) {
++    return {
++      valid: true,
++      attributeId,
++      value,
++      allowedValues,
++    };
++  }
++  
++  // Handle null/undefined/empty
++  if (value === null || value === undefined || value === '') {
++    return {
++      valid: true, // Empty values are allowed (required check is separate)
++      attributeId,
++      value,
++      allowedValues,
++    };
++  }
++  
++  // Handle array values (multiSelect)
++  if (Array.isArray(value)) {
++    const invalidValues = value.filter(v => {
++      const strVal = String(v).trim();
++      return !allowedValues.some(av => av.toLowerCase() === strVal.toLowerCase());
++    });
++    
++    if (invalidValues.length > 0) {
++      return {
++        valid: false,
++        attributeId,
++        value,
++        allowedValues,
++        message: `Invalid values for '${attributeId}': [${invalidValues.join(', ')}]. Allowed: [${allowedValues.join(', ')}]`,
++      };
++    }
++    
++    return {
++      valid: true,
++      attributeId,
++      value,
++      allowedValues,
++    };
++  }
++  
++  // Handle single value (select/enum)
++  const strValue = String(value).trim();
++  
++  // Case-insensitive match
++  const isValid = allowedValues.some(av => av.toLowerCase() === strValue.toLowerCase());
++  
++  if (!isValid) {
++    return {
++      valid: false,
++      attributeId,
++      value: strValue,
++      allowedValues,
++      message: `Invalid value '${strValue}' for '${attributeId}'. Allowed: [${allowedValues.join(', ')}]`,
++    };
++  }
++  
++  return {
++    valid: true,
++    attributeId,
++    value: strValue,
++    allowedValues,
++  };
++}
++
++/**
++ * Validate multiple attributes at once
++ * 
++ * @param attributes - Object with attribute_id keys and values
++ * @returns Array of validation results (only invalid results included)
++ */
++export function validateAttributeDomains(attributes: Record<string, unknown>): DomainValidationResult[] {
++  const results: DomainValidationResult[] = [];
++  
++  for (const [key, value] of Object.entries(attributes)) {
++    const result = validateAttributeDomain(key, value);
++    if (!result.valid) {
++      results.push(result);
++    }
++  }
++  
++  return results;
++}
++
++/**
++ * Get the registry version
++ * @returns The version string from the registry
++ */
++export function getRegistryVersion(): string {
++  return (registryData as AttributeRegistryData).version;
++}
+diff --git a/packages/sdk/src/validators/productValidator.ts b/packages/sdk/src/validators/productValidator.ts
+index 41f1826e..449a7097 100644
+--- a/packages/sdk/src/validators/productValidator.ts
++++ b/packages/sdk/src/validators/productValidator.ts
+@@ -1,12 +1,15 @@
+ /**
+  * Product Validator
+  * Per AOSS Section 2.1 — Product Schema (JSON)
++ * LP-attr-enforce-2.1.0 — Phase 2: Registry-based domain validation
+  * 
+  * Runtime validation for product objects using zod.
++ * Integrates with attributeRegistry.json for domain enforcement.
+  */
+ 
+ import { z } from 'zod';
+ import type { Product, ProductCore, ProductAttributes, ProductPricing, ProductInventory, ProductMedia } from '../schema/product';
++import { validateAttributeDomains, DomainValidationResult } from '../registry';
+ 
+ /**
+  * ProductCore schema - required fields for product identification
+@@ -108,3 +111,70 @@ export function validateProduct(input: unknown): Product {
+ export function safeValidateProduct(input: unknown): z.SafeParseReturnType<unknown, Product> {
+   return ProductSchema.safeParse(input);
+ }
++
++// ============================================================================
++// Domain Validation (LP-attr-enforce-2.1.0)
++// ============================================================================
++
++/**
++ * Extended validation result including domain checks
++ */
++export interface ProductValidationResult {
++  success: boolean;
++  data?: Product;
++  schemaErrors?: z.ZodError;
++  domainErrors: DomainValidationResult[];
++}
++
++/**
++ * Validate product with full domain enforcement
++ * 
++ * Performs two-phase validation:
++ * 1. Zod schema validation (structure and types)
++ * 2. Domain validation (allowed_values from attributeRegistry)
++ * 
++ * @param input - Unvalidated input
++ * @returns Validation result with both schema and domain errors
++ */
++export function validateProductWithDomains(input: unknown): ProductValidationResult {
++  // Phase 1: Schema validation
++  const schemaResult = ProductSchema.safeParse(input);
++  
++  if (!schemaResult.success) {
++    return {
++      success: false,
++      schemaErrors: schemaResult.error,
++      domainErrors: [],
++    };
++  }
++  
++  // Phase 2: Domain validation on attributes
++  const product = schemaResult.data;
++  const domainErrors = validateAttributeDomains(product.attributes || {});
++  
++  if (domainErrors.length > 0) {
++    return {
++      success: false,
++      data: product,
++      domainErrors,
++    };
++  }
++  
++  return {
++    success: true,
++    data: product,
++    domainErrors: [],
++  };
++}
++
++/**
++ * Validate only the attributes object against domain constraints
++ * 
++ * Use this for quick validation of attribute values without full product validation.
++ * 
++ * @param attributes - Object with attribute_id keys and values
++ * @returns Array of domain validation errors (empty if all valid)
++ */
++export function validateAttributesOnly(attributes: Record<string, unknown>): DomainValidationResult[] {
++  return validateAttributeDomains(attributes);
++}
+diff --git a/packages/sdk/test/phase2_domain_validation.test.ts b/packages/sdk/test/phase2_domain_validation.test.ts
+new file mode 100644
+index 00000000..9936a095
+--- /dev/null
++++ b/packages/sdk/test/phase2_domain_validation.test.ts
+@@ -0,0 +1,328 @@
++/**
++ * Phase 2: Domain Validation Tests
++ * LP-attr-enforce-2.1.0
++ * 
++ * Tests for registry-based attribute domain validation.
++ */
++
++import { describe, it, expect } from 'vitest';
++import {
++  getAttributeRegistry,
++  getAttributeById,
++  getAllowedValues,
++  validateAttributeDomain,
++  validateAttributeDomains,
++  validateProductWithDomains,
++  validateAttributesOnly,
++  getRegistryVersion,
++} from '../src';
++
++// ============================================================================
++// Registry Loader Tests
++// ============================================================================
++
++describe('Registry Loader', () => {
++  it('should load the attribute registry', () => {
++    const registry = getAttributeRegistry();
++    expect(registry).toBeDefined();
++    expect(registry.version).toBeDefined();
++    expect(registry.attributes).toBeInstanceOf(Array);
++    expect(registry.attributes.length).toBeGreaterThan(0);
++  });
++
++  it('should return registry version', () => {
++    const version = getRegistryVersion();
++    expect(version).toBeDefined();
++    expect(typeof version).toBe('string');
++  });
++
++  it('should find attribute by ID', () => {
++    const gender = getAttributeById('gender');
++    expect(gender).toBeDefined();
++    expect(gender?.attribute_id).toBe('gender');
++    expect(gender?.data_type).toBe('select');
++  });
++
++  it('should normalize attribute ID lookup (case insensitive)', () => {
++    const gender1 = getAttributeById('gender');
++    const gender2 = getAttributeById('GENDER');
++    const gender3 = getAttributeById('Gender');
++    expect(gender1).toEqual(gender2);
++    expect(gender2).toEqual(gender3);
++  });
++
++  it('should get allowed values for gender', () => {
++    const values = getAllowedValues('gender');
++    expect(values).toBeInstanceOf(Array);
++    expect(values).toContain("Men's");
++    expect(values).toContain("Women's");
++    expect(values).toContain('Unisex');
++  });
++
++  it('should get allowed values for primary_color', () => {
++    const values = getAllowedValues('primary_color');
++    expect(values).toBeInstanceOf(Array);
++    expect(values).toContain('Black');
++    expect(values).toContain('White');
++    expect(values).toContain('Blue');
++  });
++
++  it('should return undefined for attribute without allowed_values', () => {
++    const values = getAllowedValues('sku');
++    expect(values).toBeUndefined();
++  });
++
++  it('should return undefined for non-existent attribute', () => {
++    const values = getAllowedValues('non_existent_attribute_xyz');
++    expect(values).toBeUndefined();
++  });
++});
++
++// ============================================================================
++// Single Attribute Domain Validation Tests
++// ============================================================================
++
++describe('validateAttributeDomain', () => {
++  describe('gender validation', () => {
++    it('should accept valid gender value: Men\'s', () => {
++      const result = validateAttributeDomain('gender', "Men's");
++      expect(result.valid).toBe(true);
++      expect(result.attributeId).toBe('gender');
++    });
++
++    it('should accept valid gender value: Women\'s', () => {
++      const result = validateAttributeDomain('gender', "Women's");
++      expect(result.valid).toBe(true);
++    });
++
++    it('should accept valid gender value: Unisex', () => {
++      const result = validateAttributeDomain('gender', 'Unisex');
++      expect(result.valid).toBe(true);
++    });
++
++    it('should reject invalid gender value', () => {
++      const result = validateAttributeDomain('gender', 'InvalidGender');
++      expect(result.valid).toBe(false);
++      expect(result.message).toContain('Invalid value');
++      expect(result.message).toContain('InvalidGender');
++      expect(result.allowedValues).toBeDefined();
++    });
++
++    it('should be case-insensitive for gender', () => {
++      const result1 = validateAttributeDomain('gender', "men's");
++      const result2 = validateAttributeDomain('gender', "WOMEN'S");
++      expect(result1.valid).toBe(true);
++      expect(result2.valid).toBe(true);
++    });
++  });
++
++  describe('primary_color validation', () => {
++    it('should accept valid color: Black', () => {
++      const result = validateAttributeDomain('primary_color', 'Black');
++      expect(result.valid).toBe(true);
++    });
++
++    it('should accept valid color: Multi Color', () => {
++      const result = validateAttributeDomain('primary_color', 'Multi Color');
++      expect(result.valid).toBe(true);
++    });
++
++    it('should reject invalid color', () => {
++      const result = validateAttributeDomain('primary_color', 'Chartreuse');
++      expect(result.valid).toBe(false);
++      expect(result.message).toContain('Invalid value');
++    });
++  });
++
++  describe('edge cases', () => {
++    it('should pass through empty string', () => {
++      const result = validateAttributeDomain('gender', '');
++      expect(result.valid).toBe(true);
++    });
++
++    it('should pass through null', () => {
++      const result = validateAttributeDomain('gender', null);
++      expect(result.valid).toBe(true);
++    });
++
++    it('should pass through undefined', () => {
++      const result = validateAttributeDomain('gender', undefined);
++      expect(result.valid).toBe(true);
++    });
++
++    it('should pass through unknown attributes', () => {
++      const result = validateAttributeDomain('custom_field_xyz', 'any value');
++      expect(result.valid).toBe(true);
++      expect(result.message).toContain('not found in registry');
++    });
++
++    it('should pass through attributes without allowed_values', () => {
++      const result = validateAttributeDomain('sku', 'ABC123');
++      expect(result.valid).toBe(true);
++    });
++  });
++
++  describe('multiSelect validation (CodeRabbit feedback)', () => {
++    it('should accept valid array of websites', () => {
++      const result = validateAttributeDomain('website', ['shiekh.com']);
++      expect(result.valid).toBe(true);
++    });
++
++    it('should accept multiple valid websites', () => {
++      const result = validateAttributeDomain('website', ['shiekh.com', 'mltd.com']);
++      expect(result.valid).toBe(true);
++    });
++
++    it('should reject array with invalid website', () => {
++      const result = validateAttributeDomain('website', ['shiekh.com', 'invalid.com']);
++      expect(result.valid).toBe(false);
++      expect(result.message).toContain('invalid.com');
++      expect(result.message).toContain('Invalid values');
++    });
++
++    it('should reject array with all invalid websites', () => {
++      const result = validateAttributeDomain('website', ['bad-site.com', 'another-bad.com']);
++      expect(result.valid).toBe(false);
++      expect(result.message).toContain('bad-site.com');
++      expect(result.message).toContain('another-bad.com');
++    });
++  });
++});
++
++// ============================================================================
++// Bulk Attribute Validation Tests
++// ============================================================================
++
++describe('validateAttributeDomains', () => {
++  it('should return empty array when all attributes are valid', () => {
++    const attributes = {
++      gender: "Men's",
++      primary_color: 'Black',
++    };
++    const errors = validateAttributeDomains(attributes);
++    expect(errors).toHaveLength(0);
++  });
++
++  it('should return errors for invalid attributes', () => {
++    const attributes = {
++      gender: 'InvalidGender',
++      primary_color: 'InvalidColor',
++    };
++    const errors = validateAttributeDomains(attributes);
++    expect(errors).toHaveLength(2);
++    expect(errors[0].valid).toBe(false);
++    expect(errors[1].valid).toBe(false);
++  });
++
++  it('should only return errors (not valid results)', () => {
++    const attributes = {
++      gender: "Men's", // valid
++      primary_color: 'InvalidColor', // invalid
++    };
++    const errors = validateAttributeDomains(attributes);
++    expect(errors).toHaveLength(1);
++    expect(errors[0].attributeId).toBe('primary_color');
++  });
++
++  it('should handle mixed valid, invalid, and unknown attributes', () => {
++    const attributes = {
++      gender: "Women's", // valid
++      primary_color: 'Chartreuse', // invalid
++      custom_field: 'anything', // unknown (valid)
++      sku: 'ABC123', // no domain (valid)
++    };
++    const errors = validateAttributeDomains(attributes);
++    expect(errors).toHaveLength(1);
++    expect(errors[0].attributeId).toBe('primary_color');
++  });
++});
++
++// ============================================================================
++// Product Validation with Domains Tests
++// ============================================================================
++
++describe('validateProductWithDomains', () => {
++  const validProduct = {
++    core: {
++      sku: 'TEST-001',
++      title: 'Test Product',
++      brand: 'Test Brand',
++      status: 'draft' as const,
++      createdAt: new Date().toISOString(),
++      updatedAt: new Date().toISOString(),
++    },
++    attributes: {
++      gender: "Men's",
++      primary_color: 'Black',
++      department: 'Footwear', // Valid value per registry
++    },
++  };
++
++  it('should validate product with valid attributes', () => {
++    const result = validateProductWithDomains(validProduct);
++    expect(result.success).toBe(true);
++    expect(result.data).toBeDefined();
++    expect(result.domainErrors).toHaveLength(0);
++  });
++
++  it('should fail schema validation for invalid product structure', () => {
++    const invalidProduct = {
++      core: {
++        // missing required fields
++      },
++      attributes: {},
++    };
++    const result = validateProductWithDomains(invalidProduct);
++    expect(result.success).toBe(false);
++    expect(result.schemaErrors).toBeDefined();
++  });
++
++  it('should fail domain validation for invalid attribute values', () => {
++    const productWithBadAttributes = {
++      ...validProduct,
++      attributes: {
++        gender: 'InvalidGender',
++        primary_color: 'Black',
++      },
++    };
++    const result = validateProductWithDomains(productWithBadAttributes);
++    expect(result.success).toBe(false);
++    expect(result.domainErrors).toHaveLength(1);
++    expect(result.domainErrors[0].attributeId).toBe('gender');
++  });
++
++  it('should report multiple domain errors', () => {
++    const productWithMultipleBadAttributes = {
++      ...validProduct,
++      attributes: {
++        gender: 'InvalidGender',
++        primary_color: 'InvalidColor',
++      },
++    };
++    const result = validateProductWithDomains(productWithMultipleBadAttributes);
++    expect(result.success).toBe(false);
++    expect(result.domainErrors.length).toBeGreaterThanOrEqual(2);
++  });
++});
++
++// ============================================================================
++// validateAttributesOnly Tests
++// ============================================================================
++
++describe('validateAttributesOnly', () => {
++  it('should validate attributes directly without full product', () => {
++    const errors = validateAttributesOnly({
++      gender: "Men's",
++      primary_color: 'Blue',
++    });
++    expect(errors).toHaveLength(0);
++  });
++
++  it('should return errors for invalid attributes', () => {
++    const errors = validateAttributesOnly({
++      gender: 'BadValue',
++    });
++    expect(errors).toHaveLength(1);
++    expect(errors[0].attributeId).toBe('gender');
++  });
++});

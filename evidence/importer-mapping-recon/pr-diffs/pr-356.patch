@@ -1,0 +1,31 @@
+diff --git a/packages/api/src/services/attributesService.ts b/packages/api/src/services/attributesService.ts
+index d9535e0a..1acf1133 100644
+--- a/packages/api/src/services/attributesService.ts
++++ b/packages/api/src/services/attributesService.ts
+@@ -26,9 +26,9 @@ import {
+ // Firestore collection paths
+ const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
+ 
+-// Default pagination limit
+-const DEFAULT_LIMIT = 50;
+-const MAX_LIMIT = 100;
++// Default pagination limit - LP-0.4.3: raised from 50 to 1000 to avoid truncation
++const DEFAULT_LIMIT = 1000;
++const MAX_LIMIT = 1000;
+ 
+ /**
+  * Service error with HTTP status code
+diff --git a/packages/web/src/hooks/useAttributes.ts b/packages/web/src/hooks/useAttributes.ts
+index 44d79c14..2f32258e 100644
+--- a/packages/web/src/hooks/useAttributes.ts
++++ b/packages/web/src/hooks/useAttributes.ts
+@@ -158,7 +158,8 @@ export function useAttributes() {
+     setError(null);
+     try {
+       const headers = await getAuthHeaders();
+-      const url = `${API_BASE}/api/admin/settings/attributes`;
++      // LP-0.4.3: Explicitly request limit=200 to ensure all attributes are fetched
++      const url = `${API_BASE}/api/admin/settings/attributes?limit=200`;
+       const body = await fetchJSON<ListResult>(url, {
+         method: 'GET',
+         headers,

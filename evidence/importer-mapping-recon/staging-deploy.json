@@ -1,0 +1,53 @@
+{
+  "collectionTimestamp": "2025-12-28T04:22:00Z",
+  "staging": {
+    "urls": [
+      "https://ropi-aoss-staging.web.app",
+      "https://ropi-aoss-staging.firebaseapp.com"
+    ],
+    "firebaseProject": "ropi-bccee",
+    "hostingTarget": "aoss-staging",
+    "deployBranch": "aoss-main"
+  },
+  "lastDeploy": {
+    "runId": 20548200322,
+    "sha": "fc2bac6ac3efa0cb7ab30e7ea2d17e94906851ae",
+    "startedAt": "2025-12-28T03:26:06Z",
+    "completedAt": "2025-12-28T03:30:01Z",
+    "conclusion": "success",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20548200322",
+    "jobSteps": [
+      {"name": "Checkout code", "status": "success"},
+      {"name": "Install dependencies", "status": "success"},
+      {"name": "Build SDK package", "status": "success"},
+      {"name": "Build packages/web", "status": "success"},
+      {"name": "Build packages/api", "status": "success"},
+      {"name": "Deploy to stable staging site", "status": "success"},
+      {"name": "Smoke check stable staging", "status": "success"}
+    ]
+  },
+  "smokeTestResults": {
+    "status": "PASSED",
+    "note": "Smoke check step completed successfully in deploy workflow",
+    "timestamp": "2025-12-28T03:29:58Z"
+  },
+  "e2eTestResults": {
+    "lastRun": {
+      "runId": 20546653052,
+      "status": "completed",
+      "conclusion": "success",
+      "branch": "feature/phase3-smart-rules",
+      "timestamp": "2025-12-28T00:58:31Z"
+    },
+    "note": "E2E tests passing on feature branches"
+  },
+  "apiEndpoints": {
+    "importCSV": "/api/importCSV",
+    "importDryRun": "/api/importDryRun",
+    "api": "/api/**"
+  },
+  "registryParity": {
+    "status": "NEEDS_VERIFICATION",
+    "note": "Staging registry should match packages/sdk/config/attributeRegistry.json - requires manual verification"
+  }
+}

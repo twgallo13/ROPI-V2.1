@@ -1,0 +1,3881 @@
+[
+  {
+    "number": 367,
+    "title": "feat(api): Phase 3 — Smart Rules Engine & Triggers (LP-smart-rules-3.1.0)",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "cleanup:required",
+      "state:merged",
+      "lp:smart-rules-3.1.0",
+      "type:feat"
+    ],
+    "mergeCommit": {
+      "oid": "d1eb4f0106213819a6f897ba304a2e80e199990d"
+    },
+    "headRefName": "feature/phase3-smart-rules",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-28T01:03:13Z",
+    "filesChanged": [
+      "packages/api/package.json",
+      "packages/api/src/functions/smartRules.ts",
+      "packages/api/src/index.ts",
+      "packages/api/src/lib/smartEngine.ts",
+      "packages/api/test/smartEngine.validation.test.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 366,
+    "title": "feat(sdk): Phase 2 — Registry-Based Domain Validation (LP-attr-enforce-2.1.0)",
+    "author": "twgallo13",
+    "labels": [
+      "enhancement",
+      "feature",
+      "sdk",
+      "cleanup:done",
+      "state:merged",
+      "lp:attr-enforce-2.1.0"
+    ],
+    "mergeCommit": {
+      "oid": "df49ce88cd2fa64e5a5e8ce9cb87d8ec830d81b3"
+    },
+    "headRefName": "feature/phase2-attribute-enforcement",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-27T22:48:12Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/sdk/src/index.ts",
+      "packages/sdk/src/registry/index.ts",
+      "packages/sdk/src/validators/productValidator.ts",
+      "packages/sdk/test/phase2_domain_validation.test.ts"
+    ]
+  },
+  {
+    "number": 365,
+    "title": "fix(import): Repair MPN parsing and add RICS mappings (LP-import-fix-1.0.0)",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "type:fix",
+      "state:merged",
+      "lp:import-fix-1.0.0"
+    ],
+    "mergeCommit": {
+      "oid": "7c6de3af9da55ff1c8645ed50e4a3dd64cd89fbf"
+    },
+    "headRefName": "feature/phase1-import-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-27T22:11:12Z",
+    "filesChanged": [
+      "LISA_LP-0.1.0_EVIDENCE_BUNDLE.md",
+      "codestop-coderabbit-pr-361.json",
+      "codestop-coderabbit-pr-362.json",
+      "codestop-coderabbit-pr-363.json",
+      "packages/api/firestore-debug.log",
+      "packages/api/src/services/importService.ts",
+      "packages/api/test/phase1_import_verification.test.ts",
+      "packages/sdk/src/normalization/importNormalizer.ts",
+      "scripts/diagnose-product-websites.js",
+      "scripts/test-websites-toggle.js"
+    ]
+  },
+  {
+    "number": 361,
+    "title": "fix(material+useProduct): multiSelect renderer + localStorage sanitizer (LP-0.1.1)",
+    "author": "twgallo13",
+    "labels": [
+      "state:approved",
+      "cleanup:done",
+      "state:in-progress",
+      "type:fix",
+      "state:merged",
+      "lp:0.1.1"
+    ],
+    "mergeCommit": {
+      "oid": "53940bc99e211ad45584b645ee14d1d08eb1387d"
+    },
+    "headRefName": "lisa/fix-material-and-localstorage-lp-0.1.1",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-27T13:18:16Z",
+    "filesChanged": [
+      "packages/web/src/components/product/ProductAttributesTab.css",
+      "packages/web/src/components/product/ProductAttributesTab.test.tsx",
+      "packages/web/src/components/product/ProductAttributesTab.tsx",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/hooks/useProduct.ts",
+      "packages/web/src/types/product.ts",
+      "packages/web/test/unit/ProductAttributesTab.multiSelect.spec.tsx"
+    ]
+  },
+  {
+    "number": 360,
+    "title": "fix(useProduct): LP-0.4.7 Ghost Killer - Hard Purge Fallbacks",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "7acfd0eb1534d861d6a078523e1583ece4865805"
+    },
+    "headRefName": "fix/pvs-0.4.7-hard-purge",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T21:32:04Z",
+    "filesChanged": [
+      "packages/web/src/hooks/useProduct.ts"
+    ]
+  },
+  {
+    "number": 359,
+    "title": "fix(mock): Remove shiekhshoes.com ghost defaults, bump registry v1.1.4",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "904ab6335887f3e94d5ca323d90b2e25ad1c5f52"
+    },
+    "headRefName": "fix/pvs-0.4.6-purge-defaults",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T21:05:09Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/web/src/data/mock-product.json"
+    ]
+  },
+  {
+    "number": 358,
+    "title": "[LP-0.4.5] Registry v1.1.3 - Material allow_custom_values",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "c7d3c4bd0cd21fd1e0f08ac4c289eaaf4308af6e"
+    },
+    "headRefName": "fix/pvs-0.4.5-ui-regressions",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T20:38:34Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json"
+    ]
+  },
+  {
+    "number": 357,
+    "title": "[LP-0.4.4] Fix Website Selector Crash",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "c3bc02a20f4a97adb36b7b4d512261e11f66c942"
+    },
+    "headRefName": "fix/website-selector-crash",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T20:04:07Z",
+    "filesChanged": [
+      "packages/web/src/components/product/DescriptionsTab.tsx"
+    ]
+  },
+  {
+    "number": 356,
+    "title": "[LP-0.4.3] Fix Attribute Pagination Limit",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "6a0cc9285876c86ae398c5db5db0c01854ac0a0a"
+    },
+    "headRefName": "fix/attribute-pagination-limit",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T19:39:47Z",
+    "filesChanged": [
+      "packages/api/src/services/attributesService.ts",
+      "packages/web/src/hooks/useAttributes.ts"
+    ]
+  },
+  {
+    "number": 355,
+    "title": "[CI-FIX] Stabilize SDK and E2E Tests",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "711777f532284aa7c940c59a0dab8ac568d95f44"
+    },
+    "headRefName": "fix/ci-test-stability",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T19:36:25Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "packages/api/src/endpoints/products.ts",
+      "packages/sdk/test/importNormalizer.test.ts",
+      "packages/sdk/test/importRowBuilder.test.ts",
+      "packages/sdk/test/importValidator.test.ts",
+      "packages/web/e2e/admin-attribute-crud.spec.ts",
+      "packages/web/e2e/attribute-create-edit.spec.ts"
+    ]
+  },
+  {
+    "number": 354,
+    "title": "[LP-0.4.2.1] Registry v1.1.2 - Attribute Definitions Verified",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "d84bfc11e01e9472b6af51adabded17b1724f771"
+    },
+    "headRefName": "fix/pvs-0.4.2-registry-final",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T18:34:08Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json"
+    ]
+  },
+  {
+    "number": 353,
+    "title": "LP-0.4.1.1: Critical Stability Fixes & Attribute Alignment",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "state:merged",
+      "lp:0.4.1"
+    ],
+    "mergeCommit": {
+      "oid": "85341adf8bff0f5c119ba7ebc68748a4bcf26beb"
+    },
+    "headRefName": "fix/pvs-0.4.1-editor-stability",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T11:53:03Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/web/src/components/product/LaunchMediaTab.tsx",
+      "packages/web/src/components/product/ProductHeader.tsx",
+      "packages/web/src/types/product.ts"
+    ]
+  },
+  {
+    "number": 352,
+    "title": "LP-0.4.0: ProductHeader Scaffolding with Tab 0 Metadata Fields",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "state:merged",
+      "lp:0.4.0"
+    ],
+    "mergeCommit": {
+      "oid": "0007c0e2293d64a437cb42ce2df179c990908124"
+    },
+    "headRefName": "feature/pvs-0.4.0-pdp-layout",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-26T11:07:11Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "docs/lisa/products-audit/LP-1.3.6/COMPLETION_SUMMARY.md",
+      "docs/lisa/products-audit/LP-1.3.6/diagnostics.md",
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/web/src/components/product/AIActionsTab.css",
+      "packages/web/src/components/product/AIActionsTab.tsx",
+      "packages/web/src/components/product/CoreInformationTab.tsx",
+      "packages/web/src/components/product/DescriptionsTab.css",
+      "packages/web/src/components/product/DescriptionsTab.tsx",
+      "packages/web/src/components/product/LaunchMediaTab.css",
+      "packages/web/src/components/product/LaunchMediaTab.tsx",
+      "packages/web/src/components/product/ProductAttributesTab.css",
+      "packages/web/src/components/product/ProductAttributesTab.tsx",
+      "packages/web/src/components/product/ProductHeader.css",
+      "packages/web/src/components/product/ProductHeader.tsx",
+      "packages/web/src/components/product/TechnicalTab.css",
+      "packages/web/src/components/product/TechnicalTab.tsx",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "packages/web/src/types/product.ts"
+    ]
+  },
+  {
+    "number": 351,
+    "title": "LP-1.3.6: Fix Department Filter Showing Gender Values",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.3.6/fix-department-filter",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-25T22:19:18Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "docs/lisa/products-audit/LP-1.3.6/COMPLETION_SUMMARY.md",
+      "docs/lisa/products-audit/LP-1.3.6/START.txt",
+      "docs/lisa/products-audit/LP-1.3.6/api-samples/firestore-department.txt",
+      "docs/lisa/products-audit/LP-1.3.6/api-samples/registry-department.json",
+      "docs/lisa/products-audit/LP-1.3.6/code-locations/code-locations.txt",
+      "docs/lisa/products-audit/LP-1.3.6/diagnostics.md",
+      "packages/web/src/pages/ProductsPage.tsx"
+    ]
+  },
+  {
+    "number": 350,
+    "title": "feat(products): LP-1.3.5 - Enhanced filters & pagination",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "type:fix",
+      "state:merged",
+      "lp:1.3.5"
+    ],
+    "mergeCommit": {
+      "oid": "d3d14e478e009c6eaa5000ab1476a19a775d1874"
+    },
+    "headRefName": "lisa/LP-1.3.5/products-filters-pagination",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-25T21:37:08Z",
+    "filesChanged": [
+      "docs/lisa/products-audit/LP-1.3.5/ci-and-coderabbit-report.md",
+      "docs/lisa/products-audit/LP-1.3.5/code-locations.txt",
+      "docs/lisa/products-audit/LP-1.3.5/coderabbit-comments.json",
+      "docs/lisa/products-audit/LP-1.3.5/coderabbit-summary.md",
+      "docs/lisa/products-audit/LP-1.3.5/diagnostics.md",
+      "docs/lisa/products-audit/LP-1.3.5/perf-report.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/api-build.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/build-output.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/ci-status.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/test-summary.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/useProducts-test.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/web-build.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-logs/web-test.txt",
+      "docs/lisa/products-audit/LP-1.3.5/pr-checks/ci-unrelated-failures.txt",
+      "docs/lisa/products-audit/LP-1.3.5/sample-product.json",
+      "packages/api/src/endpoints/products.ts",
+      "packages/web/src/components/common/Pagination.css",
+      "packages/web/src/components/common/Pagination.tsx",
+      "packages/web/src/components/products/BulkActionToolbar.css",
+      "packages/web/src/components/products/BulkActionToolbar.tsx",
+      "packages/web/src/components/products/ProductsTable.css",
+      "packages/web/src/components/products/ProductsTable.tsx",
+      "packages/web/src/components/products/index.ts",
+      "packages/web/src/hooks/useProducts.ts",
+      "packages/web/src/pages/ProductsPage.css",
+      "packages/web/src/pages/ProductsPage.tsx",
+      "reports/LP-1.3.4-COMPLETION-SUMMARY.md"
+    ]
+  },
+  {
+    "number": 349,
+    "title": "fix(api): avoid composite index requirement for filtered queries [LP-1.3.4]",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "e85777c6e78d3938a910efea7b1122501d13ca25"
+    },
+    "headRefName": "lisa/LP-1.3.4/products-list-no-index-required",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-25T02:50:59Z",
+    "filesChanged": [
+      "E2E_PASSWORD_FIX_GUIDE.md",
+      "LP-ATTR-1.3.3-MERGEPR341-COMPLETION.md",
+      "MANUAL_STEPS_E2E_PASSWORD.md",
+      "logs/LP-ATTR-1.3.3-MERGEPR341-FINAL-REPORT.json",
+      "logs/LP-ATTR-1.3.3-MERGEPR341-REPORT.json",
+      "logs/LP-ATTR-1.3.3-MERGEPR341-SUMMARY.md",
+      "logs/lp-attr-1.3.2-post-create.txt",
+      "logs/lp-attr-1.3.2-smoke-console.txt",
+      "logs/lp-attr-1.3.2-smoke-network.har",
+      "logs/lp-attr-1.3.2-smoke-results.json",
+      "logs/lp-attr-1.3.3-admin-token-debug.log",
+      "logs/lp-attr-1.3.3-admin-token.txt",
+      "logs/lp-attr-1.3.3-post-create-auto-corrected.txt",
+      "logs/lp-attr-1.3.3-post-create-auto.txt",
+      "logs/lp-attr-1.3.3-post-create-manual.txt",
+      "logs/lp-attr-1.3.3-post-delete-1.txt",
+      "logs/lp-attr-1.3.3-post-delete-2.txt",
+      "logs/lp-attr-1.3.3-postmerge-ci-list.json",
+      "logs/lp-attr-1.3.3-pr341-ci-final-list.json",
+      "logs/lp-attr-1.3.3-pr341-ci-list.json",
+      "logs/lp-attr-1.3.3-pr341-ci-progress.json",
+      "logs/lp-attr-1.3.3-pr341-e2e-failure.log",
+      "logs/lp-attr-1.3.3-pr341-merged-sha.txt",
+      "logs/lp-attr-1.3.3-pr341-rerun-20483065494.log",
+      "logs/lp-attr-1.3.3-pr341-rerun-20483065525.log",
+      "logs/lp-attr-1.3.3-pr341-rerun-20483065552.log",
+      "logs/lp-attr-1.3.3-pr341-rerun-20483090242.log",
+      "packages/api/src/endpoints/products.ts",
+      "reports/LP-ATTR-1.3.2-COMPLETION-SUMMARY.md",
+      "reports/LP-ATTR-1.3.2-DEPLOYMENT-SUMMARY.md",
+      "reports/LP-ATTR-1.3.2-MANUAL-SMOKE-TEST-GUIDE.md",
+      "reports/LP-ATTR-1.3.3-COMPLETION-SUMMARY.md",
+      "reports/lp-attr-1.3.2-deliverables.json",
+      "scripts/fix-admin-user.js",
+      "scripts/lp-attr-1.3.2-smoke-test.mjs",
+      "scripts/test-admin-credentials.js"
+    ]
+  },
+  {
+    "number": 348,
+    "title": "LP-1.3.3 — Products list: include all products (fix missing updatedAt)",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "type:fix",
+      "state:merged",
+      "lp:1.3.3"
+    ],
+    "mergeCommit": {
+      "oid": "2fbfbea57946a25eeaa37a40a3bf1d46aca14acb"
+    },
+    "headRefName": "lisa/LP-1.3.3/products-list-missing-docs-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-25T00:15:50Z",
+    "filesChanged": [
+      "packages/api/src/endpoints/products.ts"
+    ]
+  },
+  {
+    "number": 347,
+    "title": "LP-1.3.2 — Products list search & filter fixes",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "type:fix",
+      "state:merged",
+      "lp:1.3.2"
+    ],
+    "mergeCommit": {
+      "oid": "8e7a4bf19bcd53ea70bc53269459621e3bead763"
+    },
+    "headRefName": "lisa/LP-1.3.2/products-list-search-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-25T00:04:47Z",
+    "filesChanged": [
+      "firestore.indexes.json",
+      "packages/api/src/endpoints/products.ts"
+    ]
+  },
+  {
+    "number": 344,
+    "title": "LP-1.3.0 — Product Page Audit: artifacts + trivial fixes (image-fallback T1)",
+    "author": "twgallo13",
+    "labels": [
+      "cleanup:done",
+      "lp:1.3.0",
+      "type:fix",
+      "state:merged"
+    ],
+    "mergeCommit": {
+      "oid": "e93f1584e8582d88a4406c366bab6ed90cb3578c"
+    },
+    "headRefName": "lisa/LP-1.3.0/products-audit-implementation",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-24T22:45:56Z",
+    "filesChanged": [
+      "docs/lisa/products-audit/LP-1.3.0/00_inventory.md",
+      "docs/lisa/products-audit/LP-1.3.0/01_diagnostics.md",
+      "docs/lisa/products-audit/LP-1.3.0/02_staging-verification.md",
+      "docs/lisa/products-audit/LP-1.3.0/03_remediation-plan.md",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/build-api.txt",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/build-web.txt",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/staging/01_http-checks.txt",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/staging/02_t1-image-fallback-verification.txt",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/staging/03_ci-status.txt",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/staging/04_verification-summary.md",
+      "docs/lisa/products-audit/LP-1.3.0/04_evidence/test-useProducts.txt",
+      "packages/web/src/pages/ProductsPage.css",
+      "packages/web/src/pages/ProductsPage.tsx"
+    ]
+  },
+  {
+    "number": 343,
+    "title": "LP-ATTR-1.3.1: Fix SDK validator - name and brand optional",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "a8f777ac65a7e282dafc7165be9908712b238204"
+    },
+    "headRefName": "lp/ATTR-1.3.1-fix-validator-name-brand-optional",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-24T18:04:37Z",
+    "filesChanged": [
+      "LP-ATTR-1.3.1_ROOT_CAUSE_ANALYSIS.md",
+      "logs/lp-attr-1.3.1-sdk-validator-fix-build.log",
+      "logs/lp-attr-1.3.1-sdk-validator-tests.log",
+      "logs/lp-attr-1.3.1-validator-fix-build-all.log",
+      "packages/sdk/dist/index.js",
+      "packages/sdk/dist/index.mjs",
+      "packages/sdk/src/validators/importValidator.ts",
+      "packages/sdk/test/importValidator.lp-attr-1.3.1.test.ts"
+    ]
+  },
+  {
+    "number": 342,
+    "title": "LP-ATTR-1.3.1 — mapping sync: Product Name->name; title/brand optional",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "9a8858b6a437eb3fec7b8b7b17d7f1996610500e"
+    },
+    "headRefName": "lp/ATTR-1.3.1-mapping-cors-dryrun",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-24T11:04:42Z",
+    "filesChanged": [
+      "LP-ATTR-1.3.0_IMPLEMENTATION_SUMMARY.md",
+      "LP-ATTR-1.3.1-CORS-FIX-SUMMARY.md",
+      "LP-ATTR-1.3.1_COMPLETION_REPORT.md",
+      "LP-ATTR-1.3.1_IMPLEMENTATION_SUMMARY.md",
+      "LP-ATTR-1.3.1_VERIFICATION_CHECKLIST.md",
+      "logs/lp-attr-1.3.0-integration-tests.log",
+      "logs/lp-attr-1.3.0-unit-tests.log",
+      "logs/lp-attr-1.3.1-api-build.log",
+      "logs/lp-attr-1.3.1-build.log",
+      "logs/lp-attr-1.3.1-ci-failure.log",
+      "logs/lp-attr-1.3.1-cors-actual-functions.log",
+      "logs/lp-attr-1.3.1-cors-verification-prod.log",
+      "logs/lp-attr-1.3.1-deploy-all-functions.log",
+      "logs/lp-attr-1.3.1-deploy-cors-fix.log",
+      "logs/lp-attr-1.3.1-deploy-hosting.log",
+      "logs/lp-attr-1.3.1-import-post.txt",
+      "logs/lp-attr-1.3.1-preflight-dryrun.txt",
+      "logs/lp-attr-1.3.1-preflight.txt",
+      "logs/lp-attr-1.3.1-sdk-build.log",
+      "logs/lp-attr-1.3.1-web-build.log",
+      "packages/api/src/endpoints/import.ts",
+      "packages/api/test/attributeValidator.unit.test.ts",
+      "packages/sdk/dist/index.js",
+      "packages/sdk/dist/index.mjs",
+      "packages/sdk/src/normalization/importNormalizer.ts",
+      "reports/LP-ATTR-1.3.0-DELIVERABLES.json",
+      "reports/LP-ATTR-1.3.1-DELIVERABLES.json",
+      "sample_without_name_brand.csv",
+      "test-cors-actual-functions.sh",
+      "verify-cors-error-response.sh"
+    ]
+  },
+  {
+    "number": 341,
+    "title": "[LP-ATTR-1.3.3] ui: allow Attribute ID editing on create; uniqueness + auto-gen on save",
+    "author": "twgallo13",
+    "labels": [
+      "lp:ATTR-1.3.3"
+    ],
+    "mergeCommit": {
+      "oid": "db1b0a7b53acc38678d066ea6e523ca3063f536c"
+    },
+    "headRefName": "lp-attr-1.3.3-attribute-id-editable",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-24T09:50:07Z",
+    "filesChanged": [
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributesConsole.tsx",
+      "packages/web/test/unit/AttributeDetailPanel.create-id.test.tsx"
+    ]
+  },
+  {
+    "number": 340,
+    "title": "LP-ATTR-1.3.0-FIX-REGISTRY-VALIDATION — registry-driven import required validation",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lp/ATTR-1.3.0-fix-registry-validation",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-24T09:14:58Z",
+    "filesChanged": [
+      "packages/api/src/services/attributeValidator.ts",
+      "packages/api/src/services/productCommitService.ts",
+      "packages/api/test/attributeValidator.unit.test.ts",
+      "packages/api/test/importService.integration.test.ts",
+      "packages/sdk/src/normalization/importNormalizer.ts",
+      "packages/sdk/src/schema/importEngine.ts"
+    ]
+  },
+  {
+    "number": 339,
+    "title": "LP-ATTR-1.3.2: Fix JSON parse errors on DELETE 204 with parseResponseSafely",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lp-attr-1.3.2-parse-response-safely",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-24T08:44:36Z",
+    "filesChanged": [
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributesConsole.tsx",
+      "packages/web/test/useAttributes.test.tsx"
+    ]
+  },
+  {
+    "number": 338,
+    "title": "LP-ATTR-1.3.1: Clear selection after delete (success/failure)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "6ca7399bc6a5c38b07f4532505cc668dbacaf975"
+    },
+    "headRefName": "ATTR/LP-ATTR-1.3.1/delete-clear-selection",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-23T23:56:03Z",
+    "filesChanged": [
+      "packages/web/src/pages/Settings/AttributesConsole.tsx",
+      "packages/web/test/unit/AttributeConsole.shell.spec.tsx"
+    ]
+  },
+  {
+    "number": 337,
+    "title": "[LP-ATTR-1.2.2] Hide ValuesManager Save when no onSave; show parent Save toast",
+    "author": "twgallo13",
+    "labels": [
+      "lp:ATTR-1.2.2"
+    ],
+    "mergeCommit": {
+      "oid": "78a6ea713c7c9487ca7699c760c5ae4b2aeac270"
+    },
+    "headRefName": "lp/3.0.11-values-save-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-23T08:06:08Z",
+    "filesChanged": [
+      "logs/lp-attr-1.2.1/lp-attr-1.2.1-code-audit.json",
+      "packages/web/src/components/ValuesManager.tsx",
+      "packages/web/test/ValuesManager.noSaveButton.test.tsx"
+    ]
+  },
+  {
+    "number": 336,
+    "title": "feat(web): LP-3.0.11 - Audit & add defensive logging to attribute create/save flow",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lp/3.0.11-attribute-create-save-audit",
+    "baseRefName": "aoss-main",
+    "mergeable": "MERGEABLE",
+    "updatedAt": "2025-12-23T02:23:31Z",
+    "filesChanged": [
+      "logs/lp-3.0.11-capture-run.log",
+      "logs/lp-3.0.11-console.json",
+      "logs/lp-3.0.11-console.txt",
+      "logs/lp-3.0.11-network-full.json",
+      "logs/lp-3.0.11-network.json",
+      "logs/lp-3.0.11-summary.json",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "screenshots/lp-3.0.11-01-home.png",
+      "screenshots/lp-3.0.11-02-attributes-page.png",
+      "screenshots/lp-3.0.11-03-no-button.png",
+      "screenshots/lp-3.0.11-04-after-signin.png",
+      "screenshots/lp-3.0.11-05-final-state.png",
+      "screenshots/lp-3.0.11-error.png",
+      "scripts/lp-3.0.11-capture-save-flow.js"
+    ]
+  },
+  {
+    "number": 335,
+    "title": "feat(web): LP-ATTR-1.2.0 - MappingTab guard tests + E2E attribute CRUD",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "78f9ead330fcfbef95e690fdb343e312887e49be"
+    },
+    "headRefName": "lp-attr-1.2.0-ui-tests",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-23T01:56:05Z",
+    "filesChanged": [
+      "packages/web/e2e/attribute-create-edit.spec.ts",
+      "packages/web/src/components/__tests__/MappingTab.guard.spec.tsx"
+    ]
+  },
+  {
+    "number": 334,
+    "title": "LP-3.0.10 — auto-generate attribute_id and ensure uniqueness",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "d4ead17d7dec1fc13b111b4593e8e0ef5d52a286"
+    },
+    "headRefName": "lp/3.0.10-auto-id-uniqueness",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-22T10:31:34Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "packages/web/e2e/admin-attribute-crud.spec.ts",
+      "packages/web/e2e/auth.spec.ts",
+      "packages/web/playwright.config.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/src/styles/attributes.css"
+    ]
+  },
+  {
+    "number": 333,
+    "title": "[LP-ATTR-1.2.2] Fix attribute registry packaging + GCS fallback",
+    "author": "twgallo13",
+    "labels": [
+      "state:approved",
+      "cleanup:done",
+      "lp:ATTR-1.2.2"
+    ],
+    "mergeCommit": {
+      "oid": "d7d98f8f7b25aeac71673fed66e2226f5ca54f25"
+    },
+    "headRefName": "lp-1.2.2/fix-registry-packaging",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-22T23:57:45Z",
+    "filesChanged": [
+      ".github/workflows/api-integration-emulator.yml",
+      "firebase.json",
+      "packages/api/package.json",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/api/test/integration/attributes.emu.spec.ts",
+      "packages/api/test/integration/syncAttributeRegistry.emu.spec.ts",
+      "packages/api/test/productCommitService.test.ts",
+      "packages/api/vitest.config.emu.ts",
+      "packages/api/vitest.config.ts",
+      "packages/api/vitest.setup.emu.ts",
+      "packages/api/vitest.setup.ts",
+      "packages/api/vitest.setup.ts",
+      "packages/api/vitest.setup.unit.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 332,
+    "title": "LP-3.0.9 — ui: add id/name to attribute form fields & button types",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "3d0055a5b67b25386a0d2bea3fa3db737b62dbc3"
+    },
+    "headRefName": "lp/3.0.9-attribute-form-names",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-22T09:59:54Z",
+    "filesChanged": [
+      ".github/workflows/validate-pr-metadata.yml",
+      "packages/web/src/pages/Settings/AttributeManager.tsx"
+    ]
+  },
+  {
+    "number": 331,
+    "title": "LP-1.1.0: Protect pass-through fields and fix syncAttributeRegistry",
+    "author": "twgallo13",
+    "labels": [
+      "chore",
+      "bugfix",
+      "backend"
+    ],
+    "mergeCommit": {
+      "oid": "839811346627785b16609a8eca864fdfed7e629f"
+    },
+    "headRefName": "lp-1.1.0/protect-pass-through-clean",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-22T09:24:33Z",
+    "filesChanged": [
+      "LP-1.1.0_IMPLEMENTATION_COMPLETE.md",
+      "packages/api/package.json",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/syncAttributeRegistry.test.ts",
+      "packages/sdk/src/import/retailOps.ts",
+      "packages/sdk/test/retailOps.import.test.ts"
+    ]
+  },
+  {
+    "number": 330,
+    "title": "LP-1.1.0: Protect pass-through fields and fix syncAttributeRegistry",
+    "author": "twgallo13",
+    "labels": [
+      "chore",
+      "bugfix",
+      "backend"
+    ],
+    "mergeCommit": null,
+    "headRefName": "lp-1.1.0/protect-pass-through-and-sync-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-22T09:09:35Z",
+    "filesChanged": [
+      "LISA_FIREBASE_VERIFICATION_REPORT.md",
+      "LP-1.0.1_COMPLETE_VERIFICATION.md",
+      "LP-1.0.1_RUNTIME_VERIFICATION_RESULTS.md",
+      "docs/lisa/LP-0.8.0/HOMER_SUMMARY_LP-0.8.1.md",
+      "docs/lisa/LP-0.8.0/artifacts/conversion/conversion.har",
+      "docs/lisa/LP-0.8.0/artifacts/conversion/primary_color_top-values.json",
+      "docs/lisa/LP-0.8.0/artifacts/deploy-20389970423.json",
+      "docs/lisa/LP-0.8.0/artifacts/deploy-20389970423.log",
+      "docs/lisa/LP-0.8.0/artifacts/deploy-failure-build-web-app.error.txt",
+      "docs/lisa/LP-0.8.0/artifacts/deploy-failure-build-web-app.log",
+      "docs/lisa/LP-0.8.0/artifacts/deploy-run-info.txt",
+      "docs/lisa/LP-0.8.0/artifacts/pdp/14943667_pdp.png",
+      "docs/lisa/LP-0.8.0/artifacts/pdp/14943667_product_json.json",
+      "docs/lisa/LP-0.8.0/artifacts/pdp/pdp.har",
+      "docs/lisa/LP-0.8.0/artifacts/playwright-report.zip",
+      "docs/lisa/LP-0.8.0/artifacts/playwright-run.log",
+      "docs/lisa/LP-0.8.0/artifacts/values-cud/values-cud.har",
+      "docs/lisa/LP-0.8.0/artifacts/workflow-runs.json",
+      "docs/lisa/LP-1.1.final-summary.md",
+      "docs/lisa/observations/LP-1.2.2/HOMER_STARTING.md",
+      "docs/lisa/observations/LP-1.2.2/HOMER_STARTING.txt",
+      "docs/lisa/observations/LP-1.2.2/api_401_traces.txt",
+      "docs/lisa/observations/LP-1.2.2/api_function_logs.txt",
+      "docs/lisa/observations/LP-1.2.2/browser-console.afterfix.txt",
+      "docs/lisa/observations/LP-1.2.2/browser-console.txt",
+      "docs/lisa/observations/LP-1.2.2/code-review.txt",
+      "docs/lisa/observations/LP-1.2.2/curl-mpn-123.afterfix.json",
+      "docs/lisa/observations/LP-1.2.2/curl-mpn-123.response.json",
+      "docs/lisa/observations/LP-1.2.2/deploy-run-info.txt",
+      "docs/lisa/observations/LP-1.2.2/generate-admin-token.output.txt",
+      "docs/lisa/observations/LP-1.2.2/har/har.afterfix.har",
+      "docs/lisa/observations/LP-1.2.2/har/network-har.har",
+      "docs/lisa/observations/LP-1.2.2/mpn-lookup-success.png",
+      "docs/lisa/observations/LP-1.2.2/test-api.txt",
+      "docs/lisa/observations/LP-1.2.2/test-web.txt",
+      "docs/lisa/observations/LP-1.2.2/token_prefix.txt",
+      "docs/lisa/observations/LP-1.2.2/workflow-runs.json",
+      "firebase-debug.log",
+      "packages/api/package.json",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/syncAttributeRegistry.test.ts",
+      "packages/api/test/unit/auth.middleware.spec.ts",
+      "packages/sdk/src/import/retailOps.ts",
+      "packages/sdk/test/retailOps.import.test.ts",
+      "packages/web/src/components/__tests__/MobileMPNScanner.spec.tsx",
+      "packages/web/src/components/observations/MobileMPNScanner.tsx",
+      "packages/web/src/components/observations/__tests__/MobileMPNScanner.test.tsx",
+      "reports/product-attribute-verification.json",
+      "scripts/checkAttributes.js",
+      "scripts/verifyProductAttributes.js"
+    ]
+  },
+  {
+    "number": 329,
+    "title": "LP-3.0.8 — guard mapping fetches & prevent mapping 404; verify create via headless smoke",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "a04c0408f46b877b4e642697fb7269b8464c5d96"
+    },
+    "headRefName": "lp/3.0.8-mapping-guard",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-22T08:41:40Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "logs/lp-3.0.7-merge-create-attribute.txt",
+      "logs/lp-3.0.7-merge-import-post.txt",
+      "logs/lp-3.0.8-api-tests.log",
+      "logs/lp-3.0.8-console.json",
+      "logs/lp-3.0.8-create-curl.txt",
+      "logs/lp-3.0.8-deploy.log",
+      "logs/lp-3.0.8-network.json",
+      "logs/lp-3.0.8-summary.json",
+      "logs/lp-3.0.8-web-tests.log",
+      "package.json",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/MappingTab.tsx",
+      "packages/web/src/hooks/useMappings.ts",
+      "pnpm-lock.yaml",
+      "reports/attribute-inspections/lp-3.0.7-merge-import-dryrun.json",
+      "reports/product-snapshots/TP12224-LALBLCK-post-merge.json",
+      "screenshots/lp-3.0.8-attribute-create.png",
+      "screenshots/lp-3.0.8-initial.png",
+      "scripts/capture-attribute-create-har.js"
+    ]
+  },
+  {
+    "number": 328,
+    "title": "LP-3.0.7 — ui: defensive guards for product editor & api: import diagnostics + safe writes",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "7f9289d49389d2ae13bc7722f0c5820523154873"
+    },
+    "headRefName": "lp/3.0.7-ui-guards-import-diagnostics",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-22T07:22:57Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "logs/LP-3.0.4-COMPLETION.json",
+      "logs/lp-2.1.9-full-export-staging.stderr.log",
+      "logs/lp-2.1.9-load-canonical-apply.log",
+      "logs/lp-2.1.9.merge-deploy.log",
+      "logs/lp-3.0.4-aoss-main-sha.txt",
+      "logs/lp-3.0.4-api-logs-text.txt",
+      "logs/lp-3.0.4-api-logs.json",
+      "logs/lp-3.0.4-attribute-logs.json",
+      "logs/lp-3.0.4-fn-api-describe.json",
+      "logs/lp-3.0.4-fn-importCSV-describe.json",
+      "logs/lp-3.0.4-hosting-channels.txt",
+      "logs/lp-3.0.4-hosting-versions.txt",
+      "logs/lp-3.0.4-import-options.txt",
+      "logs/lp-3.0.4-import-post.txt",
+      "logs/lp-3.0.4-importCSV-logs.json",
+      "logs/lp-3.0.4-put-synonyms-array-objects.txt",
+      "logs/lp-3.0.4-put-synonyms-object.txt",
+      "logs/lp-3.0.6-api-deploy.log",
+      "logs/lp-3.0.6-create-attribute.txt",
+      "logs/lp-3.0.6-deliverables.json",
+      "logs/lp-3.0.6-firebase.json",
+      "logs/lp-3.0.6-firestore.rules",
+      "logs/lp-3.0.6-fn-api-describe.json",
+      "logs/lp-3.0.6-hosting-channels.txt",
+      "logs/lp-3.0.6-hosting-site.json",
+      "logs/lp-3.0.6-import-post.txt",
+      "logs/lp-3.0.6-mapping-get.txt",
+      "logs/lp-3.0.6-permission-errors.json",
+      "logs/lp-3.0.6-rewrites.json",
+      "logs/lp-3.0.6-theo-claims.json",
+      "logs/lp-3.0.7-api-tests.log",
+      "logs/lp-3.0.7-deploy.log",
+      "logs/lp-3.0.7-web-tests.log",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/endpoints/import.ts",
+      "packages/api/src/lib/attributeUtils.ts",
+      "packages/sdk/dist/index.js",
+      "packages/sdk/dist/index.mjs",
+      "packages/sdk/src/builders/importRowBuilder.ts",
+      "packages/sdk/src/schema/attribute.ts",
+      "packages/web/src/components/ErrorBoundary.tsx",
+      "packages/web/src/components/product/ExportReadinessPanel.tsx",
+      "packages/web/src/components/product/SmartSuggestionsPanel.tsx",
+      "packages/web/src/hooks/useProduct.ts",
+      "packages/web/src/lib/productUtils.ts",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "reports/LP-2.1.9-LOAD-CANONICAL-MAPS-COMPLETION.json",
+      "reports/attribute-inspections/2025-12-21/pre-canonical-snapshots.json",
+      "reports/attribute-inspections/canonical-value-synonyms.json",
+      "reports/attribute-inspections/lp-3.0.7-import-result.json",
+      "reports/exports/2025-12-21_224635Z/LP-2.1.9-FULL-EXPORT-STAGING-COMPLETION.json",
+      "reports/exports/2025-12-21_224635Z/export-summary.json",
+      "reports/exports/2025-12-21_224635Z/ro-export-staging-2025-12-21_224635Z.csv",
+      "reports/exports/2025-12-21_224635Z/ro-export-staging-sample-6.csv",
+      "reports/exports/2025-12-21_224635Z/staging-export-result.json",
+      "reports/exports/preview-dry-run-post-mapping.json",
+      "reports/exports/preview-dry-run.json",
+      "reports/exports/preview-export-result.json",
+      "reports/exports/preview-get.json",
+      "scripts/get-user-claims.js",
+      "scripts/load-canonical-synonyms.js"
+    ]
+  },
+  {
+    "number": 327,
+    "title": "LP-3.0.2 — ui(product): defensive guards for attributes.overall",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "565560de8d1178e6e5ae55f285ccb093ba94f556"
+    },
+    "headRefName": "lp/3.0.2-product-editor-guards",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T14:49:43Z",
+    "filesChanged": [
+      "HOMER_LP-3.0.2_AUDIT.txt",
+      "packages/web/src/components/product/CoreInformationTab.tsx",
+      "packages/web/src/components/product/DescriptionsTab.tsx",
+      "packages/web/src/components/product/LaunchMediaTab.tsx",
+      "packages/web/src/components/product/ProductHeader.tsx",
+      "packages/web/src/hooks/useProduct.ts",
+      "packages/web/src/lib/productUtils.ts",
+      "packages/web/test/ProductEditor.missingOverall.test.tsx",
+      "packages/web/test/ProductHeader.missingOverall.test.tsx",
+      "reports/console-capture-TP12224-LALBLCK.txt",
+      "reports/product-snapshots/14943667.json",
+      "reports/product-snapshots/207012-001.json",
+      "reports/product-snapshots/TP12224-LALBLCK.json",
+      "scripts/fetch-product-snapshot.js",
+      "scripts/fix-products-add-overall.js",
+      "scripts/list-sample-products.js"
+    ]
+  },
+  {
+    "number": 326,
+    "title": "feat(LP-3.0.1): Attribute update handler coercion and structured validation errors",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "059223529575a8b3bd28b58240d5bc88346aee31"
+    },
+    "headRefName": "lp/3.0.1-attribute-update-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T21:19:07Z",
+    "filesChanged": [
+      "HOMER_LP_3.0.1_ATTRIBUTE_UPDATE_FIX.md",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/test/admin.settings.attributeUpdate.test.ts",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/src/styles/attributes.css",
+      "packages/web/test/AttributeManager.saveError.test.tsx"
+    ]
+  },
+  {
+    "number": 325,
+    "title": "LP-3.0.0: Fix CORS preflight for importCSV and importDryRun Cloud Functions",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "caf53bd06810e384bed1c579008ec1fff4436592"
+    },
+    "headRefName": "lp/3.0.0-fix-import-cors",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T21:18:55Z",
+    "filesChanged": [
+      "HOMER_LP_3.0.0_IMPORT_CORS_AUDIT.md",
+      "packages/api/src/endpoints/import.ts",
+      "packages/api/src/index.ts",
+      "packages/api/test/import.cors.test.ts"
+    ]
+  },
+  {
+    "number": 324,
+    "title": "LP-2.1.9 — export: MPN primary key, export flags, canonical values, _meta provenance",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "0cfb4242c79634fce098d72b7549dde73796cc90"
+    },
+    "headRefName": "lp/2.1.9-export-pdp-alignment",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T22:22:00Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "HOMER_LP-2.1.9.1_AUDIT.txt",
+      "HOMER_LP-2.1.9_AUDIT.txt",
+      "HOMER_LP-2.1.9_EXPORT_VERIFICATION_REPORT.md",
+      "HOMER_LP-3.0.2.1_AUDIT.txt",
+      "logs/lp-2.1.9-deploy-functions.log",
+      "logs/lp-2.1.9.1-export.log",
+      "logs/lp-3.0.2.2-dryrun.log",
+      "package.json",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/export.ts",
+      "packages/api/src/index.ts",
+      "packages/api/src/services/exportService.ts",
+      "packages/api/test/exportService.integration.test.ts",
+      "packages/api/test/exportService.unit.test.ts",
+      "packages/sdk/dist/index.js",
+      "packages/sdk/dist/index.mjs",
+      "pnpm-lock.yaml",
+      "reports/console-capture-TP12224-LALBLCK-raw.txt",
+      "reports/exports/preview-dry-run-other-site.json",
+      "reports/exports/preview-dry-run.json",
+      "reports/exports/preview-export-result.json",
+      "reports/exports/preview-get.json",
+      "reports/exports/products/14943667.json",
+      "reports/exports/products/211116-001.json",
+      "reports/exports/products/4254T1035.json",
+      "reports/exports/ro-export-preview.csv",
+      "scripts/capture-console.js",
+      "scripts/get-admin-token.js",
+      "scripts/test-dryrun.js",
+      "scripts/verify-pilot-products.js"
+    ]
+  },
+  {
+    "number": 323,
+    "title": "LP-2.1.8 — server: validate imports against attribute registry (mpn required, types, allowed values, import flag)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "3d21c3fcbea738ecbbfe16565f3253b43be6ef48"
+    },
+    "headRefName": "lp/2.1.8-import-validation",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T12:46:31Z",
+    "filesChanged": [
+      "HOMER_LP-2.1.8_AUDIT.txt",
+      "packages/api/src/endpoints/import.ts",
+      "packages/api/src/services/attributeValidator.ts",
+      "packages/api/src/services/importService.ts",
+      "packages/api/test/fixtures/sample_import_mpn_validation.csv",
+      "packages/api/test/importService.integration.test.ts",
+      "packages/api/test/importValidation.unit.test.ts",
+      "tests/fixtures/sample_import_mpn_validation.csv"
+    ]
+  },
+  {
+    "number": 322,
+    "title": "[LP-ATTR-2.1.7] migrateProductsToAttributes & normalizeProductAttributeValues: per-key updates + attributes._meta provenance",
+    "author": "twgallo13",
+    "labels": [
+      "lp:ATTR-2.1.7"
+    ],
+    "mergeCommit": {
+      "oid": "960ff0bc3437648b53f934dd7d155c8c15561d90"
+    },
+    "headRefName": "lp/2.1.7-migration-per-key-meta",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-23T00:14:07Z",
+    "filesChanged": [
+      "HOMER_LP-2.1.7_AUDIT.txt",
+      "logs/lp-2.1.7-apply.log",
+      "logs/lp-2.1.7-dry-run.log",
+      "logs/lp-2.1.7-pilot-apply.log",
+      "packages/api/src/lib/attributeMeta.ts",
+      "packages/api/src/lib/index.ts",
+      "packages/api/src/tasks/migrateProductsToAttributes.ts",
+      "packages/api/src/tasks/normalizeProductAttributeValues.ts",
+      "packages/api/test/attributeMeta.test.ts",
+      "packages/api/test/migrateProductsToAttributes.test.ts",
+      "packages/api/test/normalizeProductAttributeValues.test.ts",
+      "reports/attribute-inspections/2025-12-21/migration-summary.json",
+      "reports/attribute-inspections/2025-12-21/pilot-apply-report.json",
+      "reports/attribute-inspections/2025-12-21/pre-sync-products-summary.json",
+      "reports/attribute-inspections/2025-12-21/pre-sync-products.json",
+      "reports/attribute-inspections/2025-12-21/pre-sync-products.tgz",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_123.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_14943667.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_14943678.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_207012-001.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_209473-1001.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_209516-1001.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_209516-6916.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_209710-6916.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_211116-001.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_212350-90H.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_4254T1035.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_4254T1036.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_482-BLK.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_7J236.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A13264F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14338F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14345F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14346F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14349F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14409F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14410F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14606F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14607F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A14609F.json",
+      "reports/attribute-inspections/2025-12-21/product-snapshots/product_A15143F.json",
+      "reports/attribute-inspections/2025-12-21/products-migration-audit.json"
+    ]
+  },
+  {
+    "number": 321,
+    "title": "LP-2.1.6: syncAttributeRegistry canonicalization",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "76c3043a5ec2470982e36551419a8260501af552"
+    },
+    "headRefName": "lp/2.1.6-sync-normalize",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T11:44:46Z",
+    "filesChanged": [
+      "HOMER_LP-2.1.6_AUDIT.txt",
+      "logs/lp-2.1.6-apply.log",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/sdk/src/index.ts",
+      "packages/sdk/src/lib/index.ts",
+      "packages/sdk/src/lib/stringUtils.ts",
+      "packages/sdk/test/stringUtils.test.ts",
+      "reports/attribute-inspections/2025-12-21/firestore-snapshots.json",
+      "reports/attribute-inspections/2025-12-21/sync-collisions.json",
+      "reports/attribute-inspections/2025-12-21/sync-dry-run.json"
+    ]
+  },
+  {
+    "number": 318,
+    "title": "[LP-ATTR-2.1.3] Attribute Usage Audit — 28 candidates for deletion",
+    "author": "twgallo13",
+    "labels": [
+      "lp:ATTR-2.1.3"
+    ],
+    "mergeCommit": {
+      "oid": "72ac95343ed14cb604ef7e094114543ad310982a"
+    },
+    "headRefName": "lp/2.1.3-attribute-audit",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-23T00:08:51Z",
+    "filesChanged": [
+      ".vscode/extensions.json",
+      "docs/Ropi Aoss/Admin UI Build Spec — Settings CRUD 2b845ee1ec5a81e58df8f9633b2e0e2b.md",
+      "docs/Ropi Aoss/Attribute Domain Rules — JSON (Section 2 3) 2b845ee1ec5a8056bc5cc7b29fce11df.md",
+      "docs/Ropi Aoss/Attribute Registry Normalization → Notion Canonica 2c545ee1ec5a813aaff4f3d053cb3f5a.md",
+      "docs/Ropi Aoss/Attribute Registry Normalization → Notion Canonica 2c545ee1ec5a8175bedef2fd6439b76f.md",
+      "docs/Ropi Aoss/Attribute Registry — Human & JSON 2b845ee1ec5a81228b07ca97964cd033.md",
+      "docs/Ropi Aoss/Attribute Validation Schema — JSON (Section 2 2) 2b845ee1ec5a805fba0ef665dfb17396.md",
+      "docs/Ropi Aoss/Export Manager — RetailOps CSV Workflow 73e34ec744234dc3a9ad043c36bdbdc6.md",
+      "docs/Ropi Aoss/Import Engine — Row Schema (Section 3 1) 2b845ee1ec5a81b4afa9d1375e153900.md",
+      "docs/Ropi Aoss/Import Normalization Rules (Section 3 2) 2b845ee1ec5a8113b7bbe413c23e9b47.md",
+      "docs/Ropi Aoss/Observations — Overview, purpose, workflow, and lo 2b845ee1ec5a81e1aeeae43318b38039.md",
+      "docs/Ropi Aoss/PR #161 Auto-Merged (AOSS_ENABLE_AUTOMERGE_v1 0) - 2bd45ee1ec5a81cfbac0e53d284f3f1a.md",
+      "docs/Ropi Aoss/PROMPT_015 AOSS_FIRESTORE_RULES_DEPLOY_v1 0 - 2025 2bd45ee1ec5a81aea67ae75aeee9a4a3.md",
+      "docs/Ropi Aoss/Product Completion Workflows 2ba45ee1ec5a80698690f9492961ed8b.md",
+      "docs/Ropi Aoss/Product Schema — JSON (Section 2 1) 2b845ee1ec5a811bb355ee431515f0c4.md",
+      "docs/Ropi Aoss/README.md",
+      "docs/Ropi Aoss/Repo Governance — Lisa (Repo Ops AI) PR & Branch R 2c245ee1ec5a807e9308ddaceebc7cc7.md",
+      "docs/Ropi Aoss/RetailOps CSV Field Mapping 348d1e671b7b407d984ec243a02981d1.md",
+      "docs/Ropi Aoss/Ropi AOSS 2b645ee1ec5a80e5b64fd04cea9e0d52.md",
+      "docs/Ropi Aoss/Section 1 — Navigation & Page Index eba3cfdc44fd49ef98c38b183642cc7b.md",
+      "docs/Ropi Aoss/Section 10 — CI CD, Testing, Release & Stability 2b845ee1ec5a80ccaf70e49777a2b677.md",
+      "docs/Ropi Aoss/Section 11 — Observability, Monitoring & Runbooks  2b845ee1ec5a80d482edcd9af5565e45.md",
+      "docs/Ropi Aoss/Section 12 — Migration, Staging & Cutover Plan 2b845ee1ec5a80658739f5ce9d768e11.md",
+      "docs/Ropi Aoss/Section 13 — Admin Console, Help & Training 2b845ee1ec5a80fd845cd4180814f782.md",
+      "docs/Ropi Aoss/Section 14 — Appendix, Change Log & Final Delivera 2b845ee1ec5a801ea453cd4578501b39.md",
+      "docs/Ropi Aoss/Section 4 Smart Rules 2b845ee1ec5a80e98270ea192ae29f97.md",
+      "docs/Ropi Aoss/Section 5 — AI Describe Engine 2b845ee1ec5a80ba8666e0f2d722b83f.md",
+      "docs/Ropi Aoss/Section 6 — API Contracts & Integration (AOSS v1 0 2b845ee1ec5a80c3baf0d2a9e415e0b5.md",
+      "docs/Ropi Aoss/Section 7 — Frontend & Launch Calendar 2b845ee1ec5a811d8d47ef14b3d0f46c.md",
+      "docs/Ropi Aoss/Section 8 — TypeScript Bindings, SDKs & Developer  2b845ee1ec5a800d9b47fbf27d531cd4.md",
+      "docs/Ropi Aoss/Section 9 — Firebase Implementation & Security 2b845ee1ec5a80ea8f5ecd0c08d31847.md",
+      "docs/Ropi Aoss/Workflow W1 — Observations Capture & Apply to Prod 2b845ee1ec5a81b5a4a6d3ea439ec277.md",
+      "docs/Ropi Aoss/canonicalRules.ts",
+      "docs/Ropi Aoss/index.ts",
+      "docs/Ropi Aoss/openapi.launch-calendar.yaml",
+      "docs/Ropi Aoss/package.json",
+      "docs/Ropi Aoss/ropi-attribute-registry.json",
+      "docs/Ropi Aoss/smartEngine.test.ts",
+      "docs/Ropi Aoss/smartEngine.ts",
+      "docs/Ropi Aoss/smartRulesFunctions.ts",
+      "docs/Ropi Aoss/tsconfig.json",
+      "docs/Ropi Aoss/types.ts",
+      "docs/Ropi Aoss/🚀 Ropi AOSS — Build Progress Log & Workflow State 2bd45ee1ec5a800da672f7dac3000966.md",
+      "docs/Ropi Aoss/🧩 Workflow W2 — Full Product Completion (One-Perso 2ba45ee1ec5a809cbc1fd8daebc3f147.md",
+      "logs/attribute-usage-report.csv",
+      "logs/candidate-deletions.csv",
+      "logs/lp-2.1-monorepo-build.log",
+      "logs/lp-2.1.1-dry-run.log",
+      "logs/lp-2.1.1-merge-dry-run.log",
+      "logs/lp-2.1.2-dry-run.log",
+      "logs/lp-2.1.2-firestore-after.log",
+      "logs/lp-2.1.2-firestore-before.log",
+      "logs/lp-2.1.3-audit.log",
+      "packages/api/src/tasks/auditAttributeUsage.ts",
+      "scripts/lp-2.0.2-sample-snapshots.mjs",
+      "scripts/lp-2.1.1-dry-run.mjs"
+    ]
+  },
+  {
+    "number": 317,
+    "title": "LP-2.1.2: Registry — require mpn for import",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "4e8b56f0f38605f4f713b7f8e6e51f62e9053cb1"
+    },
+    "headRefName": "lp/2.1.2-registry-json",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T09:40:31Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json"
+    ]
+  },
+  {
+    "number": 316,
+    "title": "LP-2.1.1: API — import validation requires mpn",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "94c29ada97242156d55c927dca28c9dff1a625db"
+    },
+    "headRefName": "lp/2.1.1-api-validate-mpn",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T09:33:18Z",
+    "filesChanged": [
+      "packages/api/src/services/importService.ts",
+      "packages/api/test/fixtures/sample-invalid-enums.csv",
+      "packages/api/test/fixtures/sample-missing-mpn.csv",
+      "packages/api/test/fixtures/sample-retailops.csv",
+      "packages/api/test/importService.test.ts"
+    ]
+  },
+  {
+    "number": 315,
+    "title": "LP-2.1.0: SDK — MPN-first import normalizer",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "b5336a0872d378722a632133e5588a9ac75989a6"
+    },
+    "headRefName": "lp/2.1.0-sdk-mpn-first",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T09:17:55Z",
+    "filesChanged": [
+      "packages/sdk/package.json",
+      "packages/sdk/scripts/dry-run-output-mixed.json",
+      "packages/sdk/scripts/dry-run-output-mpn-only.json",
+      "packages/sdk/scripts/import-dry-run.js",
+      "packages/sdk/scripts/sample-mixed.csv",
+      "packages/sdk/scripts/sample-mpn-only.csv",
+      "packages/sdk/src/builders/importRowBuilder.ts",
+      "packages/sdk/src/normalization/importNormalizer.ts",
+      "packages/sdk/src/schema/importEngine.ts",
+      "packages/sdk/src/validators/importValidator.ts",
+      "packages/sdk/test/importNormalizer.test.ts",
+      "packages/sdk/test/importRowBuilder.test.ts",
+      "packages/sdk/test/importValidator.test.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 312,
+    "title": "LP-2.0.3: Tasks — per-key updates and attribute provenance",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lp/2.0.3-provenance",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-21T08:00:30Z",
+    "filesChanged": [
+      "packages/api/esbuild.config.js",
+      "packages/api/src/tasks/migrateProductsToAttributes.ts",
+      "packages/api/src/tasks/normalizeProductAttributeValues.ts",
+      "scripts/lp-2.0.3-sample-snapshots.mjs"
+    ]
+  },
+  {
+    "number": 311,
+    "title": "LP-2.0.2: Sync — normalize data_type tokens & add definition_version",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lp/2.0.2-registry-normalize",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-21T07:56:25Z",
+    "filesChanged": [
+      "packages/api/esbuild.config.js",
+      "packages/api/src/tasks/syncAttributeRegistry.ts"
+    ]
+  },
+  {
+    "number": 309,
+    "title": "[LP-1.2.7] Add Scan & Capture CTA to Observations page",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.2.7/merge-and-verify-observations",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-21T06:32:02Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "docs/lisa/LP-0.8.0/HOMER_SUMMARY_LP-0.8.1.md",
+      "docs/lisa/observations/LP-1.2.6/iam/current-policy-after-grant.json",
+      "docs/lisa/observations/LP-1.2.7/HOMER_DONE_LP-1.2.7.md",
+      "docs/lisa/observations/LP-1.2.7/pr-checks/pr295-merge-dryrun.txt",
+      "docs/lisa/observations/LP-1.2.7/pr-checks/pr295-status.json",
+      "docs/lisa/observations/LP-1.2.7/pr-checks/pr296-status.json",
+      "packages/web/src/pages/ObservationsPage.tsx",
+      "scripts/verify-conversion-playwright.js",
+      "scripts/verify-pdp-playwright.js",
+      "scripts/verify-values-cud-playwright.js",
+      "tmp/test-firestore.js"
+    ]
+  },
+  {
+    "number": 308,
+    "title": "[LP-1.2.3] Fix MPN lookup 401 error - Add Authorization header",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "def22ab14da6e2c0db61cecc0b284aec6163778e"
+    },
+    "headRefName": "lisa/LP-1.2.3/verify-mpn-linkage-and-search",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T19:46:15Z",
+    "filesChanged": [
+      "docs/lisa/observations/LP-1.2.3/HOMER_DONE_LP-1.2.3.md",
+      "docs/lisa/observations/LP-1.2.3/layout/pr-lp-1.1.9.json",
+      "docs/lisa/observations/LP-1.2.3/layout/status-report.md",
+      "docs/lisa/observations/LP-1.2.3/mpn-401/auth-middleware.txt",
+      "docs/lisa/observations/LP-1.2.3/mpn-401/curl-no-auth.txt",
+      "docs/lisa/observations/LP-1.2.3/mpn-401/diagnosis.md",
+      "docs/lisa/observations/LP-1.2.3/mpn-401/products-endpoint.txt",
+      "docs/lisa/observations/LP-1.2.3/mpn-linkage/attribute-mpn.json",
+      "docs/lisa/observations/LP-1.2.3/mpn-linkage/canonical-mpn.json",
+      "docs/lisa/observations/LP-1.2.3/mpn-linkage/code-locations.txt",
+      "docs/lisa/observations/LP-1.2.3/search/analysis.md",
+      "packages/web/src/components/observations/MobileMPNScanner.tsx",
+      "packages/web/test/unit/MobileMPNScanner.spec.tsx"
+    ]
+  },
+  {
+    "number": 307,
+    "title": "LP-1.2.2: Diagnose/fix MPN 401 (auth header, logs, tests)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.2.2/mpn-401-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-20T06:13:05Z",
+    "filesChanged": [
+      "docs/lisa/observations/LP-1.2.2/README.md",
+      "docs/lisa/observations/LP-1.2.2/gh-secrets-list.txt",
+      "docs/lisa/observations/LP-1.2.2/repro-mpn-lookup.sh",
+      "packages/web/src/components/observations/MobileMPNScanner.tsx",
+      "packages/web/test/unit/MobileMPNScanner.auth.spec.tsx"
+    ]
+  },
+  {
+    "number": 306,
+    "title": "[LP-0.8.0] Merge PVS-0.3.3: Audit UI - timeline, diffs, revert",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "mergeCommit": {
+      "oid": "4856a4755f7d81a3819976e5ded12b90fc69a826"
+    },
+    "headRefName": "lisa/LP-0.8.0/292-rebase",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T03:40:44Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "backups/attributes-backup-2025-12-19-213445.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.3/README.md",
+      "docs/lisa/pr-attribute-triage-LP-0.8.0.md",
+      "firebase-debug.log",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/AuditTab.module.css",
+      "packages/web/src/components/AuditTab.tsx",
+      "packages/web/src/components/AuditTimeline.tsx",
+      "packages/web/src/components/DiffViewer.tsx",
+      "packages/web/src/components/ExportAuditButton.tsx",
+      "packages/web/src/components/RevertModal.tsx",
+      "packages/web/src/components/UsageSamplePanel.tsx",
+      "packages/web/src/components/__tests__/AuditTimeline.spec.tsx",
+      "packages/web/src/components/__tests__/DiffViewer.spec.tsx",
+      "packages/web/src/components/__tests__/RevertModal.spec.tsx",
+      "packages/web/src/hooks/__tests__/useAudit.spec.ts",
+      "packages/web/src/hooks/useAudit.ts",
+      "scripts/temp-get-token.js",
+      "tmp/backupAttributes.js",
+      "tmp/getAttributeSamples.js"
+    ]
+  },
+  {
+    "number": 305,
+    "title": "[LP-0.8.0] Merge PVS-0.2.9: Values Manager full CUD",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "mergeCommit": {
+      "oid": "da728291f1c91f319f29b22fefe9f9e5b338efa0"
+    },
+    "headRefName": "lisa/LP-0.8.0/288-rebase",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T02:45:08Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "packages/web/package.json",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/ValuesManager.module.css",
+      "packages/web/src/components/ValuesManager.tsx",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/test/unit/AttributeConsole.shell.spec.tsx",
+      "packages/web/test/unit/ValuesManager.spec.tsx",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 304,
+    "title": "[LP-0.8.0] PVS-0.2.2 Rebase: Normalize legacy attribute schema via Zod validation",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "mergeCommit": {
+      "oid": "2b9d55d9a89689f087f430d2167f844fa1b5eacd"
+    },
+    "headRefName": "lisa/LP-0.8.0/278-rebase",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T02:15:14Z",
+    "filesChanged": [
+      "packages/api/src/services/attributesService.ts"
+    ]
+  },
+  {
+    "number": 301,
+    "title": "LP-1.1.15: Error handling infrastructure and logging cleanup",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "00bcfcfb284e33120659b693c44ac4c28775e643"
+    },
+    "headRefName": "lisa/LP-1.1.15/error-handling-cleanup",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T01:32:18Z",
+    "filesChanged": [
+      "packages/web/src/components/common/ErrorBoundary.css",
+      "packages/web/src/components/common/ErrorBoundary.tsx",
+      "packages/web/src/contexts/Toast.css",
+      "packages/web/src/contexts/ToastContext.tsx",
+      "packages/web/src/services/observations.ts",
+      "packages/web/test/unit/ErrorHandling.spec.tsx"
+    ]
+  },
+  {
+    "number": 300,
+    "title": "LP-1.1.14: FieldPicker UX groups with visual distinction",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "65f87238dd96e7a3f5cb1cf19f427938e57b5a3f"
+    },
+    "headRefName": "lisa/LP-1.1.14/fieldpicker-ux-groups",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T01:44:29Z",
+    "filesChanged": [
+      "packages/web/src/components/product/FieldPicker.css",
+      "packages/web/src/components/product/FieldPicker.tsx",
+      "packages/web/test/unit/FieldPickerGroups.spec.tsx"
+    ]
+  },
+  {
+    "number": 299,
+    "title": "LP-1.1.13: Full CRUD + fieldLink validation",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.1.13/crud-fieldlink-validation",
+    "baseRefName": "aoss-main",
+    "mergeable": "MERGEABLE",
+    "updatedAt": "2025-12-20T00:58:05Z",
+    "filesChanged": [
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/observations.ts",
+      "packages/api/test/unit/observations.crud.spec.ts",
+      "packages/web/src/services/observations.ts"
+    ]
+  },
+  {
+    "number": 298,
+    "title": "LP-1.1.12: Make Observation Title optional",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.1.12/title-optional",
+    "baseRefName": "aoss-main",
+    "mergeable": "MERGEABLE",
+    "updatedAt": "2025-12-20T00:55:12Z",
+    "filesChanged": [
+      "packages/api/src/endpoints/observations.ts",
+      "packages/web/src/components/observations/MobileObservationCapture.tsx",
+      "packages/web/src/components/product/ObservationsPanel.tsx",
+      "packages/web/src/services/ObservationsSync.ts",
+      "packages/web/src/types/observation.ts",
+      "packages/web/test/unit/TitleOptional.spec.ts"
+    ]
+  },
+  {
+    "number": 297,
+    "title": "LP-1.1.11: Unify ObservationsPanel with mobile capture flow",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.1.11/unify-observations-panel",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-20T00:49:32Z",
+    "filesChanged": [
+      "packages/web/src/components/product/FieldPicker.css",
+      "packages/web/src/components/product/FieldPicker.tsx",
+      "packages/web/src/components/product/ObservationsPanel.test.tsx",
+      "packages/web/src/components/product/ObservationsPanel.tsx"
+    ]
+  },
+  {
+    "number": 296,
+    "title": "LP-1.1.10: MPN scan + product search autocomplete",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "67276219cff02e41e5c81bc40adf162dc31ebbec"
+    },
+    "headRefName": "lisa/LP-1.1.10/mpn-product-search",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T06:07:34Z",
+    "filesChanged": [
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/products.ts",
+      "packages/api/test/unit/products.searchMpn.spec.ts",
+      "packages/web/src/components/observations/MobileMPNScanner.css",
+      "packages/web/src/components/observations/MobileMPNScanner.tsx",
+      "packages/web/test/unit/ProductSearchMpn.spec.ts"
+    ]
+  },
+  {
+    "number": 295,
+    "title": "[LP-1.1.9] Observations route tests and verification",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "4b25706dd680e898eb8507ec9f31786608dd47d0"
+    },
+    "headRefName": "lisa/LP-1.1.9/observations-route",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-21T06:07:28Z",
+    "filesChanged": [
+      "packages/web/test/unit/ObservationsPage.spec.tsx"
+    ]
+  },
+  {
+    "number": 294,
+    "title": "[PVS-0.3.4] Fix Mapping API 500 errors - Firestore path correction",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "b2194bac94ded394b19ba20fa7aa0151d2e2c0a9"
+    },
+    "headRefName": "lisa/PVS-0.3.4/mapping-api-fix",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T21:36:00Z",
+    "filesChanged": [
+      "docs/lisa/attributes-console-audit/LP-0.3.6/VERIFICATION_REPORT.md",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/api-tests.log",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/get-attributes-list.json",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/get-global-mapping.json",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/get-primary_color-mapping.json",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/post-import-preview.json",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/put-test-alias.json",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/put-test-synonym.json",
+      "docs/lisa/attributes-console-audit/LP-0.3.6/run-api-tests.sh",
+      "docs/lisa/attributes-console-audit/PVS-0.3.1/README.md",
+      "docs/lisa/attributes-console-audit/PVS-0.3.4/COMPLETION_SUMMARY.md",
+      "docs/lisa/attributes-console-audit/PVS-0.3.4/api_function_logs.txt",
+      "docs/lisa/attributes-console-audit/PVS-0.3.4/responses/attr_mapping_resp.txt",
+      "docs/lisa/attributes-console-audit/PVS-0.3.4/responses/global_mapping_resp.txt",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/UI_VERIFICATION_STATUS.md",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/VERIFICATION_REPORT.md",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/api-tests.log",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/cloud-function-logs.txt",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/deploy-functions.log",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/get-attr-mapping-brand.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/get-attr-mapping-primary_color.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/get-global-mapping-after-put.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/get-global-mapping.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/put-global-mapping.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/put-invalid-canonical.json",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/run-api-tests.sh",
+      "docs/lisa/attributes-console-audit/PVS-0.3.5/token-generation.log",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/admin/mappings.ts",
+      "packages/api/src/services/auditService.ts",
+      "packages/api/src/services/mappingService.ts",
+      "packages/api/test/mappingService.spec.ts"
+    ]
+  },
+  {
+    "number": 293,
+    "title": "[LP-1.1.7] CI: Fix e2e workflow YAML & E2E: lean admin login helper",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.1.7/fix-e2e-yaml-and-lean-login",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-19T20:22:43Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "logs/e2e-admin-attribute-crud-lp-1.1.7.log",
+      "packages/web/e2e/admin-attribute-crud.spec.ts",
+      "packages/web/e2e/helpers/adminAuth.ts"
+    ]
+  },
+  {
+    "number": 292,
+    "title": "[PVS-0.3.3] Audit UI: timeline, diffs, revert, usage & export",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.3.3/audit-ui",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T03:32:10Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "docs/lisa/attributes-console-audit/PVS-0.3.3/README.md",
+      "firebase-debug.log",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/AuditTab.module.css",
+      "packages/web/src/components/AuditTab.tsx",
+      "packages/web/src/components/AuditTimeline.tsx",
+      "packages/web/src/components/DiffViewer.tsx",
+      "packages/web/src/components/ExportAuditButton.tsx",
+      "packages/web/src/components/RevertModal.tsx",
+      "packages/web/src/components/UsageSamplePanel.tsx",
+      "packages/web/src/components/__tests__/AuditTimeline.spec.tsx",
+      "packages/web/src/components/__tests__/DiffViewer.spec.tsx",
+      "packages/web/src/components/__tests__/RevertModal.spec.tsx",
+      "packages/web/src/hooks/__tests__/useAudit.spec.ts",
+      "packages/web/src/hooks/useAudit.ts"
+    ]
+  },
+  {
+    "number": 291,
+    "title": "[PVS-0.3.2] Mapping UI: alias editor, synonyms, per-source overrides, import preview, bulk import",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "7223b9628cb3d99389a2ad51ad8111d9ff5e94b2"
+    },
+    "headRefName": "lisa/PVS-0.3.2/mapping-ui",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T21:45:38Z",
+    "filesChanged": [
+      "docs/lisa/attributes-console-audit/PVS-0.3.2/README.md",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/src/services/auditService.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/api/test/auditService.spec.ts",
+      "packages/web/src/components/AliasTable.tsx",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/BulkAliasImportModal.tsx",
+      "packages/web/src/components/ImportPreviewEditor.tsx",
+      "packages/web/src/components/MappingTab.module.css",
+      "packages/web/src/components/MappingTab.tsx",
+      "packages/web/src/components/PerSourceOverrides.tsx",
+      "packages/web/src/components/SynonymsEditor.tsx",
+      "packages/web/src/components/__tests__/BulkAliasImportModal.spec.tsx",
+      "packages/web/src/components/__tests__/SynonymsEditor.spec.tsx",
+      "packages/web/src/hooks/__tests__/useMappings.spec.ts",
+      "packages/web/src/hooks/useMappings.ts",
+      "packages/web/src/pages/Settings/AttributesConsole.tsx"
+    ]
+  },
+  {
+    "number": 290,
+    "title": "[LP-1.1.5] Test: Fix API integration tests - emulator setup and vitest mock hoisting",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/LP-1.1.5/seed-test-batch",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-19T20:08:49Z",
+    "filesChanged": [
+      "firebase-test.json",
+      "firestore.test.rules",
+      "packages/api/src/services/productCommitService.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/api/test/integration/attributes.emu.spec.ts",
+      "packages/api/test/integration/syncAttributeRegistry.emu.spec.ts",
+      "packages/api/test/productCommitService.test.ts",
+      "packages/api/vitest.setup.ts"
+    ]
+  },
+  {
+    "number": 289,
+    "title": "[PVS-0.3.1] Mapping API: header aliases, value synonyms, per-source overrides",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.3.1/mapping-api",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-20T03:32:10Z",
+    "filesChanged": [
+      "docs/lisa/attributes-console-audit/PVS-0.3.1/README.md",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/admin/mappings.ts",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/src/services/auditService.ts",
+      "packages/api/src/services/mappingService.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/api/test/auditService.spec.ts",
+      "packages/api/test/mappingService.spec.ts"
+    ]
+  },
+  {
+    "number": 288,
+    "title": "[PVS-0.2.9] Values Manager: full CUD, bulk edit, reorder, synonyms (50+ ready)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.2.9/values-cud",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T03:32:10Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "packages/web/package.json",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/ValuesManager.module.css",
+      "packages/web/src/components/ValuesManager.tsx",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/test/unit/AttributeConsole.shell.spec.tsx",
+      "packages/web/test/unit/ValuesManager.spec.tsx",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 286,
+    "title": "[PVS-1.1.3] Fix: Firestore .count() emulator fallback (emulator-compatible)",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs"
+    ],
+    "mergeCommit": {
+      "oid": "41c12658ddcb6a0bb77d5ce38106e8c7c8eef5d5"
+    },
+    "headRefName": "lisa/LP-1.1.3/emulator-count-fallback",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T13:39:22Z",
+    "filesChanged": [
+      "packages/api/src/services/attributesService.ts"
+    ]
+  },
+  {
+    "number": 285,
+    "title": "[PVS-1.1.1] Mobile Observations Capture — /observations",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "frontend",
+      "api",
+      "lisa/pvs",
+      "area:observations"
+    ],
+    "mergeCommit": {
+      "oid": "211a357515416c9ef9a089a7bf1ec6191523fe19"
+    },
+    "headRefName": "lisa/LP-1.1.1/mobile-observation-capture",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T20:21:41Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/observations.ts",
+      "packages/api/src/endpoints/products.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/web/package.json",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/observations/AIAnalyzeChips.css",
+      "packages/web/src/components/observations/AIAnalyzeChips.tsx",
+      "packages/web/src/components/observations/MobileMPNScanner.css",
+      "packages/web/src/components/observations/MobileMPNScanner.tsx",
+      "packages/web/src/components/observations/MobileObservationCapture.css",
+      "packages/web/src/components/observations/MobileObservationCapture.tsx",
+      "packages/web/src/components/observations/ObservationImageUploader.css",
+      "packages/web/src/components/observations/ObservationImageUploader.tsx",
+      "packages/web/src/hooks/useObservationsSync.ts",
+      "packages/web/src/pages/ObservationsCapturePage.css",
+      "packages/web/src/pages/ObservationsCapturePage.tsx",
+      "packages/web/src/services/ObservationsSync.ts",
+      "packages/web/test/unit/MobileObservationCapture.spec.tsx",
+      "packages/web/test/unit/ObservationsSync.spec.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 284,
+    "title": "[PVS-0.2.7] Data type conversion flow: string → enum/multiSelect",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "e0c9885bad47a2ac6767b135f0346db7c1324cfa"
+    },
+    "headRefName": "lisa/PVS-0.2.7/data-type-conversion-flow",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T11:15:22Z",
+    "filesChanged": [
+      "docs/lisa/attributes-console-audit/PVS-0.2.7/DIAGNOSTIC_REPORT.md",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributesConsole.module.css",
+      "packages/web/src/pages/Settings/AttributesConsole.tsx",
+      "packages/web/test/unit/AttributeConsole.shell.spec.tsx"
+    ]
+  },
+  {
+    "number": 282,
+    "title": "[LP-1.0.2] Add data-field/name attributes to attribute and product inputs",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "area:observations"
+    ],
+    "mergeCommit": {
+      "oid": "8b36bc1ea666542aef2987019fb0457b961e7d7a"
+    },
+    "headRefName": "lisa/LP-1.0.2/data-field-attributes",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T11:19:07Z",
+    "filesChanged": [
+      "packages/web/src/components/product/CoreInformationTab.tsx",
+      "packages/web/src/components/product/ProductAttributesTab.tsx",
+      "packages/web/test/unit/AttributeInputDataField.spec.tsx",
+      "packages/web/test/unit/CoreInformationTabDataField.spec.tsx"
+    ]
+  },
+  {
+    "number": 281,
+    "title": "[LP-1.0.1] Implement observations field picker and normalization",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "area:observations"
+    ],
+    "mergeCommit": {
+      "oid": "97dca29f8da5c884ba343011408a2c145592d222"
+    },
+    "headRefName": "lisa/LP-1.0.1/observations-field-picker",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T11:18:40Z",
+    "filesChanged": [
+      "packages/api/test/unit/observations.validateFieldLink.spec.ts",
+      "packages/web/src/components/product/FieldPicker.css",
+      "packages/web/src/components/product/FieldPicker.tsx",
+      "packages/web/src/components/product/ObservationsPanel.tsx",
+      "packages/web/src/services/observations.ts",
+      "packages/web/src/types/fieldLink.ts",
+      "packages/web/src/types/observation.ts",
+      "packages/web/src/utils/normalizeFieldLink.ts",
+      "packages/web/test/FieldPicker.test.tsx",
+      "packages/web/test/normalizeFieldLink.test.ts"
+    ]
+  },
+  {
+    "number": 280,
+    "title": "[PVS-0.2.6] Diagnostics & fix: tabs hydration, placeholders, kebab delete",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "mergeCommit": {
+      "oid": "85421bde2b2150f1d6ebc8f0ed5ca34d87ba771a"
+    },
+    "headRefName": "lisa/PVS-0.2.6/diagnose-fix-tabs-delete",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T09:51:19Z",
+    "filesChanged": [
+      "docs/lisa/attributes-console-audit/PVS-0.2.6/DIAGNOSTIC_REPORT.md",
+      "docs/lisa/attributes-console-audit/PVS-0.2.6/age_group.json",
+      "docs/lisa/attributes-console-audit/PVS-0.2.6/console-dom.json",
+      "docs/lisa/attributes-console-audit/PVS-0.2.6/descriptive_gender.json",
+      "docs/lisa/attributes-console-audit/PVS-0.2.6/list.json",
+      "docs/lisa/attributes-console-audit/PVS-0.2.6/primary_color.json",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/AttributeHeader.tsx",
+      "packages/web/src/pages/Settings/AttributesConsole.module.css",
+      "packages/web/src/pages/Settings/AttributesConsole.tsx",
+      "packages/web/test/unit/AttributeConsole.shell.spec.tsx",
+      "packages/web/test/unit/AttributeHeader.spec.tsx"
+    ]
+  },
+  {
+    "number": 279,
+    "title": "[PVS-0.2.3] Attribute Console: master-detail UI shell + tabs scaffold",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "5ef2ffa36d22a208586b3389d6234a92fd703f19"
+    },
+    "headRefName": "lisa/PVS-0.2.3/attributes-console-shell",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-19T09:20:53Z",
+    "filesChanged": [
+      "docs/lisa/pvs-0.2.3/SCREENSHOTS.md",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/AttributeDetailPanel.tsx",
+      "packages/web/src/components/AttributeHeader.tsx",
+      "packages/web/src/components/AttributeListPanel.tsx",
+      "packages/web/src/components/AttributeTabs.tsx",
+      "packages/web/src/pages/Settings/AttributesConsole.module.css",
+      "packages/web/src/pages/Settings/AttributesConsole.tsx",
+      "packages/web/test/setup.ts",
+      "packages/web/test/unit/AttributeConsole.shell.spec.tsx",
+      "packages/web/test/unit/AttributeHeader.spec.tsx",
+      "packages/web/vitest.config.ts"
+    ]
+  },
+  {
+    "number": 278,
+    "title": "[PVS-0.2.2] Normalize legacy attribute schema on GET to prevent blank-on-load",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.2.2/normalize-attributes-get",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T02:15:18Z",
+    "filesChanged": [
+      "docs/lisa/attributes-console-audit/PVS-0.2.2/NOTES.md",
+      "logs/backup-attributes-2025-12-18-084630.log",
+      "logs/backup-attributes-2025-12-18-084642.log",
+      "logs/normalize-report-pre-apply-2025-12-18-084707.log",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/test/unit/attributeNormalization.spec.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "scripts/normalize-legacy-attributes.js"
+    ]
+  },
+  {
+    "number": 276,
+    "title": "[PVS-0.1.9] Wire importer → product editor → PDP using canonical attribute mapping + tests",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.1.9/wire-import-editor-pdp",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-20T03:32:10Z",
+    "filesChanged": [
+      "packages/api/src/importer/index.ts",
+      "packages/api/src/importer/normalizeHeaders.ts",
+      "packages/api/src/importer/normalizeValues.ts",
+      "packages/api/test/unit/importer.normalize.spec.ts",
+      "packages/web/src/components/import/CanonicalMappingStep.tsx",
+      "packages/web/src/components/product/AttributeFieldRenderer.css",
+      "packages/web/src/components/product/AttributeFieldRenderer.tsx",
+      "packages/web/src/components/product/PdpSectionRenderer.css",
+      "packages/web/src/components/product/PdpSectionRenderer.tsx",
+      "packages/web/test/AttributeFieldRenderer.test.tsx"
+    ]
+  },
+  {
+    "number": 272,
+    "title": "[PVS-0.1.5] Verify attribute update merge, add API test, document normalize dry-run",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.1.5/verify-normalize-tests",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-18T08:32:31Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/e2e-tests.yml",
+      ".github/workflows/validate-pr-metadata.yml",
+      "COMPLETION_SUMMARY.md",
+      "DEPLOYMENT_COMPLETION_REPORT.json",
+      "STAGING_DRY_RUN_REPORT.json",
+      "docs/lisa/PR_Lifecycle.md",
+      "docs/lisa/attribute-cleanup-plan.md",
+      "docs/lisa/branch-rename-execution.md",
+      "docs/lisa/branch-rename-proposals.md",
+      "docs/lisa/branching-and-commits.md",
+      "docs/lisa/cleanup-report.md",
+      "docs/lisa/normalize-dryrun-verification.md",
+      "docs/lisa/pr-description-pvs-0.1.0.md",
+      "docs/lisa/pvs-history.md",
+      "firebase.json",
+      "get-attribute.sh",
+      "get-attributes.sh",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/api/test/integration/update-attribute-merge.emu.spec.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/web/src/App.tsx",
+      "packages/web/src/config/nav.ts",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "scripts/branch_rename_proposals.py",
+      "scripts/execute_branch_copies.sh",
+      "scripts/execute_branch_copies_for_prs.py",
+      "scripts/generate-admin-token-rest.js",
+      "scripts/generate-admin-token.js",
+      "scripts/normalize-attributes.js",
+      "scripts/repo_inventory.py"
+    ]
+  },
+  {
+    "number": 271,
+    "title": "[PVS-0.1.4] Attributes: nav fix, editor fields, API validation, sync & migrate",
+    "author": "twgallo13",
+    "labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "mergeCommit": {
+      "oid": "38c1440582d6aabbedb6b0eea1f46ede5f8fcba1"
+    },
+    "headRefName": "lisa/PVS-0.1.4/attributes-fixes",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-18T08:59:01Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/validate-pr-metadata.yml",
+      "COMPLETION_SUMMARY.md",
+      "DEPLOYMENT_COMPLETION_REPORT.json",
+      "STAGING_DRY_RUN_REPORT.json",
+      "docs/lisa/PR_Lifecycle.md",
+      "docs/lisa/attribute-cleanup-plan.md",
+      "docs/lisa/branch-rename-execution.md",
+      "docs/lisa/branch-rename-proposals.md",
+      "docs/lisa/branching-and-commits.md",
+      "docs/lisa/cleanup-report.md",
+      "docs/lisa/pr-description-pvs-0.1.0.md",
+      "docs/lisa/pvs-history.md",
+      "firebase.json",
+      "get-attribute.sh",
+      "get-attributes.sh",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/config/nav.ts",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "scripts/branch_rename_proposals.py",
+      "scripts/execute_branch_copies.sh",
+      "scripts/execute_branch_copies_for_prs.py",
+      "scripts/generate-admin-token-rest.js",
+      "scripts/generate-admin-token.js",
+      "scripts/normalize-attributes.js",
+      "scripts/repo_inventory.py"
+    ]
+  },
+  {
+    "number": 270,
+    "title": "[PVS-0.1.3] Pilot: create lisa branches for nonconforming branches with PRs",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.1.3/execute-pr-branch-copies",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-18T08:22:04Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/e2e-tests.yml",
+      ".github/workflows/validate-pr-metadata.yml",
+      "COMPLETION_SUMMARY.md",
+      "DEPLOYMENT_COMPLETION_REPORT.json",
+      "STAGING_DRY_RUN_REPORT.json",
+      "docs/lisa/PR_Lifecycle.md",
+      "docs/lisa/attribute-cleanup-plan.md",
+      "docs/lisa/branch-rename-execution.md",
+      "docs/lisa/branch-rename-proposals.md",
+      "docs/lisa/branching-and-commits.md",
+      "docs/lisa/cleanup-report.md",
+      "docs/lisa/pr-description-pvs-0.1.0.md",
+      "docs/lisa/pvs-history.md",
+      "firebase.json",
+      "get-attribute.sh",
+      "get-attributes.sh",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "scripts/branch_rename_proposals.py",
+      "scripts/execute_branch_copies.sh",
+      "scripts/execute_branch_copies_for_prs.py",
+      "scripts/generate-admin-token-rest.js",
+      "scripts/generate-admin-token.js",
+      "scripts/repo_inventory.py"
+    ]
+  },
+  {
+    "number": 269,
+    "title": "[PVS-0.1.2] Branch rename proposals & non-destructive plan",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.1.2/rename-proposals",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-18T08:20:19Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/e2e-tests.yml",
+      ".github/workflows/validate-pr-metadata.yml",
+      "COMPLETION_SUMMARY.md",
+      "DEPLOYMENT_COMPLETION_REPORT.json",
+      "STAGING_DRY_RUN_REPORT.json",
+      "docs/lisa/PR_Lifecycle.md",
+      "docs/lisa/attribute-cleanup-plan.md",
+      "docs/lisa/branch-rename-proposals.md",
+      "docs/lisa/branching-and-commits.md",
+      "docs/lisa/cleanup-report.md",
+      "docs/lisa/pr-description-pvs-0.1.0.md",
+      "docs/lisa/pvs-history.md",
+      "firebase.json",
+      "get-attribute.sh",
+      "get-attributes.sh",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "scripts/branch_rename_proposals.py",
+      "scripts/execute_branch_copies.sh",
+      "scripts/generate-admin-token-rest.js",
+      "scripts/generate-admin-token.js",
+      "scripts/repo_inventory.py"
+    ]
+  },
+  {
+    "number": 268,
+    "title": "[PVS-0.1.1] Repo inventory & proposed cleanup plan",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.1.1/repo-inventory",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-18T08:16:50Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/e2e-tests.yml",
+      ".github/workflows/validate-pr-metadata.yml",
+      "COMPLETION_SUMMARY.md",
+      "DEPLOYMENT_COMPLETION_REPORT.json",
+      "STAGING_DRY_RUN_REPORT.json",
+      "docs/lisa/PR_Lifecycle.md",
+      "docs/lisa/attribute-cleanup-plan.md",
+      "docs/lisa/branching-and-commits.md",
+      "docs/lisa/cleanup-report.md",
+      "docs/lisa/pr-description-pvs-0.1.0.md",
+      "docs/lisa/pvs-history.md",
+      "firebase.json",
+      "get-attribute.sh",
+      "get-attributes.sh",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "scripts/generate-admin-token-rest.js",
+      "scripts/generate-admin-token.js",
+      "scripts/repo_inventory.py"
+    ]
+  },
+  {
+    "number": 267,
+    "title": "[PVS-0.1.0] Lisa governance: add PR template, docs, and PR metadata checks",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "lisa/PVS-0.1.0/setup-lisa-governance",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-18T08:11:23Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/e2e-tests.yml",
+      ".github/workflows/validate-pr-metadata.yml",
+      "COMPLETION_SUMMARY.md",
+      "DEPLOYMENT_COMPLETION_REPORT.json",
+      "STAGING_DRY_RUN_REPORT.json",
+      "docs/lisa/PR_Lifecycle.md",
+      "docs/lisa/attribute-cleanup-plan.md",
+      "docs/lisa/branching-and-commits.md",
+      "docs/lisa/pr-description-pvs-0.1.0.md",
+      "docs/lisa/pvs-history.md",
+      "firebase.json",
+      "get-attribute.sh",
+      "get-attributes.sh",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "scripts/generate-admin-token-rest.js",
+      "scripts/generate-admin-token.js"
+    ]
+  },
+  {
+    "number": 266,
+    "title": "test: add global firebase-admin auth mock (skip in emulator)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "92640caf4a36623ea5856d9acd83a99be056e05f"
+    },
+    "headRefName": "fix/global-firebase-admin-mock-20251216",
+    "baseRefName": "chore/canonical-map-finalize-20251211",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-16T07:39:35Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/api/test/ensure-mock.test.ts",
+      "packages/api/vitest.config.ts",
+      "packages/api/vitest.setup.ts"
+    ]
+  },
+  {
+    "number": 265,
+    "title": "fix(attributes): fix registry data for tests (pr261)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "fix/pr261-attr-data-20251216",
+    "baseRefName": "chore/canonical-map-finalize-20251211",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-16T07:46:46Z",
+    "filesChanged": [
+      "packages/sdk/config/attributeRegistry.json"
+    ]
+  },
+  {
+    "number": 264,
+    "title": "test: fix firebase-admin mock for admin-users tests (pr261)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "fix/pr261-test-mock-20251216",
+    "baseRefName": "chore/canonical-map-finalize-20251211",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-16T07:46:45Z",
+    "filesChanged": [
+      "packages/api/test/admin-users-enhanced.test.ts"
+    ]
+  },
+  {
+    "number": 263,
+    "title": "fix(tests): emulator auth, user handlers, sync registry (PR #261 test fixes)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "4d7cc166b43df5c0b048f549286fa86815380bf1"
+    },
+    "headRefName": "fix/pr261-tests-20251211",
+    "baseRefName": "chore/canonical-map-finalize-20251211",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-16T00:28:35Z",
+    "filesChanged": [
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts"
+    ]
+  },
+  {
+    "number": 262,
+    "title": "revert: revert regression commit 27f41da (user management regression)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "revert/27f41da-20251211",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-11T20:50:36Z",
+    "filesChanged": [
+      ".github/workflows/api-integration-emulator.yml",
+      "packages/api/src/constants/roles.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/api/test/roles.unit.test.ts",
+      "packages/web/src/pages/Settings/UsersManager.tsx",
+      "scripts/repair-failing-user-profiles.js"
+    ]
+  },
+  {
+    "number": 261,
+    "title": "chore(attributes): finalize canonical map + registry defaults (2025-12-11)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "fea39f7d3345ce6115eec3aaddfe8db7bd410872"
+    },
+    "headRefName": "chore/canonical-map-finalize-20251211",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-16T07:46:46Z",
+    "filesChanged": [
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/e2e-tests.yml",
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/admin-users-enhanced.test.ts",
+      "packages/api/test/ensure-mock.test.ts",
+      "packages/api/vitest.config.ts",
+      "packages/api/vitest.setup.ts",
+      "packages/sdk/config/attributeRegistry.json"
+    ]
+  },
+  {
+    "number": 260,
+    "title": "fix(attributes): handle delete 404, autoscroll created item, modal edit UI",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "771a884e2d168ba3302da29cb67495b8990f826d"
+    },
+    "headRefName": "chore/attributes-ui-fixes-20251211",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-11T11:28:19Z",
+    "filesChanged": [
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/lib/notifications.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/src/styles/attributes.css"
+    ]
+  },
+  {
+    "number": 259,
+    "title": "chore(attributes): propose canonicalAttributeMap.approved.json for unknowns (2025-12-11)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "388718cae3124677b7643a83f2c4fd4cf2c4af16"
+    },
+    "headRefName": "chore/canonical-attribute-map-approval-20251211",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-11T19:49:49Z",
+    "filesChanged": [
+      "packages/sdk/config/canonicalAttributeMap.approved.json",
+      "reports/attribute-inspections/2025-12-10/canonicalAttributeMap.approval_notes.json"
+    ]
+  },
+  {
+    "number": 258,
+    "title": "feat(attributes): Attribute Manager improvements (normalize IDs, allowed_values, synonyms, usage)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "b436df29ccff269438672d8aec271b81dcc1537a"
+    },
+    "headRefName": "feature/attributes-registry-ui-improvements",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-11T11:49:49Z",
+    "filesChanged": [
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/lib/stringUtils.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx"
+    ]
+  },
+  {
+    "number": 255,
+    "title": "chore(reports): add attributes audit 20251210",
+    "author": "twgallo13",
+    "labels": [
+      "audit",
+      "attributes",
+      "staging",
+      "published"
+    ],
+    "mergeCommit": {
+      "oid": "4480758f9e5ade569cb10b1c216e89fcf6a928c6"
+    },
+    "headRefName": "chore/add-attributes-audit-20251210T072352Z",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-11T01:10:45Z",
+    "filesChanged": [
+      "BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json",
+      "CHANGES.md",
+      "packages/sdk/config/attributeRegistry.json",
+      "reports/attributes-audit/attributes-audit-20251210T072352Z.tgz",
+      "schemas/attribute-registry.json",
+      "schemas/attribute-registry.legacy.json"
+    ]
+  },
+  {
+    "number": 254,
+    "title": "feat(cli,api): RetailOps import/export CLI and API preview endpoint (aoss.v0.7.0)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "2e67f0914c99d55fc7567c5fd59a6ba160d3d1b3"
+    },
+    "headRefName": "feature/cli-api/retailops-pipeline",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T07:10:38Z",
+    "filesChanged": [
+      "STAGING_VERIFICATION_V0.8.1.md",
+      "SUMMARY_MERGE_STAGING_VERIFICATION_v0.8.1.md",
+      "packages/api/package.json",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/retailopsImportPreview.ts",
+      "packages/api/test/endpoints/retailopsImportPreview.test.ts",
+      "packages/cli/README.md",
+      "packages/cli/package.json",
+      "packages/cli/src/commands/retailopsExport.ts",
+      "packages/cli/src/commands/retailopsImport.ts",
+      "packages/cli/src/index.ts",
+      "packages/cli/test/retailops.cli.test.ts",
+      "packages/cli/tsconfig.tsbuildinfo",
+      "packages/web/src/hooks/useUserProfile.ts",
+      "packages/web/src/hooks/useUsers.ts",
+      "pnpm-lock.yaml",
+      "staging-verification-tests.mjs"
+    ]
+  },
+  {
+    "number": 252,
+    "title": "fix(ci): Use esbuild for API tasks in staging-verify",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "89014f9b3d0f4c31aeb03d57621d28dde994f752"
+    },
+    "headRefName": "chore/staging-verify-workflow-2025-12-10",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T05:21:32Z",
+    "filesChanged": [
+      ".github/workflows/staging-verify.yml",
+      "packages/api/build-tasks.js"
+    ]
+  },
+  {
+    "number": 249,
+    "title": "Chore(schema): Normalize attribute-registry to Notion (snake_case) — add full registry",
+    "author": "twgallo13",
+    "labels": [
+      "staging-failed",
+      "staging-ready-with-fixes"
+    ],
+    "mergeCommit": {
+      "oid": "6ab828e7d3b79333bf7442af821b12f8483dcced"
+    },
+    "headRefName": "chore/normalize-attribute-registry-notion-2025-12-09",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T07:53:19Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "BUILD_ROPI_AOSS_v1/02-schema/attribute-registry.json",
+      "CHANGES.md",
+      "packages/sdk/config/attributeRegistry.json",
+      "schemas/attribute-registry.json",
+      "schemas/attribute-registry.legacy.json"
+    ]
+  },
+  {
+    "number": 248,
+    "title": "feat(web): ConfirmModal component for user delete/disable (aoss.v0.8.0 - Part B)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "4ac8b1f43dae25d214b9581b11a2c81c3bc8b936"
+    },
+    "headRefName": "feat/web/confirm-modal-user-delete",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T05:01:18Z",
+    "filesChanged": [
+      "packages/web/src/components/common/ConfirmModal.css",
+      "packages/web/src/components/common/ConfirmModal.tsx",
+      "packages/web/src/pages/Settings/UsersManager.tsx"
+    ]
+  },
+  {
+    "number": 247,
+    "title": "fix(web): apiFetch accept 204 No Content responses (aoss.v0.8.0 - Part A)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "240b13b105dfbc9c9441d9a7b772d106cfb05f92"
+    },
+    "headRefName": "fix/api-fetch-accept-204",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T05:01:18Z",
+    "filesChanged": [
+      "packages/web/src/lib/apiFetch.ts",
+      "packages/web/test/apiFetch.test.ts"
+    ]
+  },
+  {
+    "number": 246,
+    "title": "feat(products): Production-scale list enhancements",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "p1-high",
+      "Area: frontend",
+      "Area: api"
+    ],
+    "mergeCommit": {
+      "oid": "7f44c368f86d9027331348e2948fb77039ae2719"
+    },
+    "headRefName": "feature/products-list-enhancements",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T03:30:35Z",
+    "filesChanged": [
+      "firestore.indexes.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/products.ts",
+      "packages/api/test/integration/products.filters.spec.ts",
+      "packages/web/e2e/products-list.spec.ts",
+      "packages/web/src/hooks/__tests__/useProducts.spec.ts",
+      "packages/web/src/hooks/useProducts.ts",
+      "packages/web/src/pages/ProductsPage.css",
+      "packages/web/src/pages/ProductsPage.tsx"
+    ]
+  },
+  {
+    "number": 244,
+    "title": "fix(products): Update route paths from /app/products to /products",
+    "author": "twgallo13",
+    "labels": [
+      "bugfix",
+      "frontend",
+      "p2-medium"
+    ],
+    "mergeCommit": {
+      "oid": "5551f84130b58e04f2b073017dafe1c1736b58e2"
+    },
+    "headRefName": "fix/products-route-paths",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-10T01:54:45Z",
+    "filesChanged": [
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/web/e2e/observations.spec.ts",
+      "packages/web/e2e/products-list.spec.ts",
+      "packages/web/src/components/product/ProductAttributesTab.test.tsx",
+      "packages/web/src/components/product/ProductAttributesTab.tsx",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "packages/web/src/pages/ProductsPage.tsx",
+      "scripts/ensure-profile-docs.js",
+      "scripts/find-missing-profiles.js"
+    ]
+  },
+  {
+    "number": 242,
+    "title": "test: Verify Auth Emulator in CI",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "test/auth-emulator-verification",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T22:46:10Z",
+    "filesChanged": [
+      "packages/api/README.md"
+    ]
+  },
+  {
+    "number": 241,
+    "title": "feat(products): Implement Products List Page (AOSS) + useProducts Hook",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "frontend",
+      "backend",
+      "p1-high"
+    ],
+    "mergeCommit": {
+      "oid": "e14ef53b7caa4cb52b32f287928d3edd79c3e55a"
+    },
+    "headRefName": "feature/products-list-aoss",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T22:21:50Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      ".github/workflows/api-integration-emulator.yml",
+      ".github/workflows/deploy-preview.yml",
+      ".github/workflows/e2e-tests.yml",
+      "HOMER_ATTRIBUTE_RECONCILIATION_v1.0_SUMMARY.md",
+      "HOMER_FINAL_DIAGNOSIS.md",
+      "HOMER_FINAL_PRODUCT_EDITOR_FIX.md",
+      "HOMER_PRODUCTS_LIST_v1.0_COMPLETION_SUMMARY.md",
+      "HOMER_PROMPT_020_APIFETCH_SUMMARY.md",
+      "HOMER_STAGING_VERIFICATION_AND_HANDOFF.md",
+      "deploy-final.txt",
+      "deploy-fix-output.txt",
+      "deploy-output.txt",
+      "deployed-bundle-new.js",
+      "deployed-bundle.js",
+      "firestore-debug.log",
+      "packages/api/package.json",
+      "packages/api/src/admin/reconcileAttributes.ts",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/__tests__/products.integration.test.ts",
+      "packages/api/src/endpoints/products.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/vitest.config.ts",
+      "packages/sdk/src/normalizers/attributes.ts",
+      "packages/web/e2e/products-list.spec.ts",
+      "packages/web/src/hooks/__tests__/useProducts.spec.ts",
+      "packages/web/src/hooks/useProducts.ts",
+      "packages/web/src/pages/ProductsPage.css",
+      "packages/web/src/pages/ProductsPage.tsx",
+      "pnpm-lock.yaml",
+      "reports/user_claims_migration_2025-12-09T15-49-30.csv",
+      "reports/user_claims_migration_2025-12-09T16-01-54.csv",
+      "reports/user_claims_migration_2025-12-09T16-04-11.csv",
+      "reports/user_claims_migration_staging.csv",
+      "scripts/distinctProductAttributeValues.js",
+      "staging-verification-logs/verification_20251209_154438.log",
+      "test-api-auth.sh"
+    ]
+  },
+  {
+    "number": 240,
+    "title": "fix(api): use req.params.listId in lists handlers",
+    "author": "twgallo13",
+    "labels": [
+      "bugfix"
+    ],
+    "mergeCommit": null,
+    "headRefName": "fix/lists-param-name",
+    "baseRefName": "aoss-main",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-10T03:26:36Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "BROWSER_TESTING_INSTRUCTIONS.md",
+      "HOMER_FINAL_SUMMARY_LIST_ENDPOINT.md",
+      "HOMER_PRODUCT_EDITOR_DEBUG_SUMMARY.md",
+      "HOMER_PRODUCT_EDITOR_DEPLOY_SUMMARY.md",
+      "HOMER_SESSION_SUMMARY_USER_MANAGEMENT.md",
+      "HOMER_USER_MANAGEMENT_FINAL_REPORT_2025-12-09.md",
+      "HOMER_USER_MANAGEMENT_v1.0_COMPLETION_SUMMARY.md",
+      "MANUAL_VERIFICATION_CHECKLIST.md",
+      "TECH_DEBT_TEST_INFRASTRUCTURE.md",
+      "USERS_ROLES_PROFILE_COMPLETION_SUMMARY.md",
+      "USER_MANAGEMENT_VERIFICATION_REPORT.md",
+      "api-tests-verification.txt",
+      "check-product-14943667.js",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/constants/roles.ts",
+      "packages/api/src/endpoints/admin/lists.ts",
+      "packages/api/src/endpoints/admin/permissions.ts",
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/endpoints/users/me.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/test/roles.unit.test.ts",
+      "packages/api/test/users-profile.unit.test.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/layout/TopBar.tsx",
+      "packages/web/src/hooks/useUserProfile.ts",
+      "packages/web/src/pages/Settings/PermissionsPage.css",
+      "packages/web/src/pages/Settings/PermissionsPage.tsx",
+      "packages/web/src/pages/Settings/ProfilePage.css",
+      "packages/web/src/pages/Settings/ProfilePage.tsx",
+      "packages/web/src/pages/Settings/index.tsx",
+      "scripts/migrate-user-claims.ts",
+      "test-output-api-final.txt",
+      "test-output-web-final.txt"
+    ]
+  },
+  {
+    "number": 239,
+    "title": "fix: Remove silent '123' fallback and add debug logs to Product Editor",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "e5dedc905ce63f401142a55fe84d5cf85ce478b4"
+    },
+    "headRefName": "fix/product-editor-missing-id-debug",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T13:05:08Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      "HOMER_FINAL_SUMMARY_LIST_ENDPOINT.md",
+      "HOMER_SESSION_SUMMARY_USER_MANAGEMENT.md",
+      "HOMER_USER_MANAGEMENT_FINAL_REPORT_2025-12-09.md",
+      "HOMER_USER_MANAGEMENT_v1.0_COMPLETION_SUMMARY.md",
+      "MANUAL_VERIFICATION_CHECKLIST.md",
+      "TECH_DEBT_TEST_INFRASTRUCTURE.md",
+      "USER_MANAGEMENT_VERIFICATION_REPORT.md",
+      "api-tests-verification.txt",
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/web/src/hooks/useProduct.ts",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "test-output-api-final.txt",
+      "test-output-web-final.txt"
+    ]
+  },
+  {
+    "number": 238,
+    "title": "fix: Canonical Roles & User Profile Management",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "54b05cd3957239f9590126174ffcf146fe35d547"
+    },
+    "headRefName": "fix/users-roles-profile",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T14:03:01Z",
+    "filesChanged": [
+      "BROWSER_TESTING_INSTRUCTIONS.md",
+      "HOMER_PRODUCT_EDITOR_DEBUG_SUMMARY.md",
+      "HOMER_PRODUCT_EDITOR_DEPLOY_SUMMARY.md",
+      "HOMER_ROPI_ROLES_COMPLETION_SUMMARY.md",
+      "LISTS_PARAM_FIX_COMPLETION_SUMMARY.md",
+      "STAGING_MIGRATION_VERIFICATION_v2.0.md",
+      "USERS_ROLES_PROFILE_COMPLETION_SUMMARY.md",
+      "check-product-14943667.js",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/constants/roles.ts",
+      "packages/api/src/endpoints/admin/lists.ts",
+      "packages/api/src/endpoints/admin/permissions.ts",
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/endpoints/users/me.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/test/roles.unit.test.ts",
+      "packages/api/test/users-profile.unit.test.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/layout/TopBar.tsx",
+      "packages/web/src/hooks/useUserProfile.ts",
+      "packages/web/src/pages/Settings/PermissionsPage.css",
+      "packages/web/src/pages/Settings/PermissionsPage.tsx",
+      "packages/web/src/pages/Settings/ProfilePage.css",
+      "packages/web/src/pages/Settings/ProfilePage.tsx",
+      "packages/web/src/pages/Settings/index.tsx",
+      "scripts/migrate-user-claims.ts"
+    ]
+  },
+  {
+    "number": 237,
+    "title": "feat: User Management System - Full CRUD for Admin Users",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "api",
+      "p1-high"
+    ],
+    "mergeCommit": {
+      "oid": "b2fdb16be6c5a8e9d0c030cbf9baf732ef1c721c"
+    },
+    "headRefName": "feature/users-admin",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T11:36:31Z",
+    "filesChanged": [
+      "HOMER_ATTRIBUTE_INVENTORY_v1.0_SUMMARY.md",
+      "docs/USER_MANAGEMENT.md",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/endpoints/admin/users.test.ts",
+      "packages/api/src/endpoints/admin/users.ts",
+      "packages/api/src/services/listsService.ts",
+      "packages/web/e2e/admin-user-crud.spec.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/hooks/useUsers.test.ts",
+      "packages/web/src/hooks/useUsers.ts",
+      "packages/web/src/pages/ImportBatchDetailPage.tsx",
+      "packages/web/src/pages/Settings/UsersManager.css",
+      "packages/web/src/pages/Settings/UsersManager.tsx",
+      "packages/web/test/ImportBatchDetailPage.test.tsx",
+      "packages/web/test/useAttributes.test.tsx",
+      "reports/attribute_registry_export.csv",
+      "reports/duplicate_candidates.csv",
+      "reports/duplicate_map.csv",
+      "reports/inventory_summary.md",
+      "reports/lists_export.csv",
+      "reports/product_attribute_usage.csv",
+      "scripts/attribute-inventory.js"
+    ]
+  },
+  {
+    "number": 236,
+    "title": "fix(web): include Firebase ID token (Authorization) in admin API calls",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "d6b026664d47c358bb4f33d2585421caf777ee23"
+    },
+    "headRefName": "fix/admin-auth-headers",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T06:42:28Z",
+    "filesChanged": [
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/lib/authHeaders.ts"
+    ]
+  },
+  {
+    "number": 235,
+    "title": "fix(api): mount api router + hosting rewrites; defensive client JSON checks",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "b225e7f0803d4e8f0e0a04dddca1680bb44c86ea"
+    },
+    "headRefName": "fix/api-hosting-rewrites-and-attributes",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T05:44:40Z",
+    "filesChanged": [
+      "firebase.json",
+      "packages/api/src/apiApp.ts",
+      "packages/api/src/index.ts",
+      "packages/web/src/hooks/useAttributes.ts"
+    ]
+  },
+  {
+    "number": 234,
+    "title": "feat(product): wire attributes — AttributeManager, Product Editor, migration",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "cf381fdc6e407b2ea7374da2949abe95471fc1a9"
+    },
+    "headRefName": "feature/product-attribute-import-sync-v1-0-0",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-09T00:49:07Z",
+    "filesChanged": [
+      "package.json",
+      "packages/api/package.json",
+      "packages/api/src/endpoints/products.ts",
+      "packages/api/src/index.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/src/services/productCommitService.ts",
+      "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "packages/api/test/integration/syncAttributeRegistry.emu.spec.ts",
+      "packages/sdk/config/attributeRegistry.json",
+      "packages/sdk/src/schema/attribute.ts",
+      "packages/web/e2e/product-attributes.spec.ts",
+      "packages/web/src/components/product/ProductAttributesTab.tsx",
+      "packages/web/src/hooks/useAttributeRegistry.ts",
+      "packages/web/src/hooks/useAttributes.ts",
+      "packages/web/src/hooks/useProduct.test.ts",
+      "packages/web/src/hooks/useProduct.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/test/useAttributes.test.tsx",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 227,
+    "title": "chore(test/ui): add testids + harden AttributeManager E2E (Lisa v0.2.0)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "b20bc30aba80c154b159eee93830f2d7c66247e2"
+    },
+    "headRefName": "fix/attribute-testids",
+    "baseRefName": "feature/admin/settings-frontend",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-08T19:26:21Z",
+    "filesChanged": [
+      "packages/web/e2e/admin-attribute-crud.spec.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx"
+    ]
+  },
+  {
+    "number": 225,
+    "title": "chore(ui): register /settings/attributes route → AttributeManager (Lisa v0.2.0)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "cf590cab710ea1091cd955a08c35858908717e57"
+    },
+    "headRefName": "fix/settings-attributes-route",
+    "baseRefName": "feature/admin/settings-frontend",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-08T00:36:40Z",
+    "filesChanged": [
+      "packages/web/src/App.tsx"
+    ]
+  },
+  {
+    "number": 224,
+    "title": "chore(test): add data-testid for New Attribute & harden E2E (Lisa v0.2.0)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "a1f2f1fd4bb3b253fc8410b33820f0496e057d67"
+    },
+    "headRefName": "fix/testid-new-attribute-v2",
+    "baseRefName": "feature/admin/settings-frontend",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-08T00:17:36Z",
+    "filesChanged": [
+      "packages/web/e2e/admin-attribute-crud.spec.ts",
+      "packages/web/src/pages/Settings/AttributeManager.tsx"
+    ]
+  },
+  {
+    "number": 221,
+    "title": "feat(admin/ui): Settings UI + AttributeManager + E2E (Lisa v0.2.0)",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "frontend",
+      "p1-high",
+      "admin"
+    ],
+    "mergeCommit": {
+      "oid": "41ebdba6bc5703dc5ba4e315b002b35c7baf1117"
+    },
+    "headRefName": "feature/admin/settings-frontend",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-08T19:26:12Z",
+    "filesChanged": [
+      "docs/admin-settings-frontend.md",
+      "packages/web/e2e/admin-attribute-crud.spec.ts",
+      "packages/web/playwright.config.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/pages/Settings/AttributeManager.tsx",
+      "packages/web/src/pages/Settings/Settings.css",
+      "packages/web/src/pages/Settings/index.tsx"
+    ]
+  },
+  {
+    "number": 220,
+    "title": "feat(admin): SmartRules & AITemplate persistence skeleton (Lisa v0.2.0-rc2)",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "api",
+      "p1-high",
+      "admin"
+    ],
+    "mergeCommit": null,
+    "headRefName": "feature/admin/settings-smartrules",
+    "baseRefName": "aoss-main",
+    "mergeable": "MERGEABLE",
+    "updatedAt": "2025-12-07T20:52:01Z",
+    "filesChanged": [
+      "docs/admin-settings-smartrules.md",
+      "packages/api/src/endpoints/admin/settings.smartrules.ts",
+      "packages/api/src/services/aiTemplateService.ts",
+      "packages/api/src/services/smartRulesService.ts",
+      "packages/api/test/integration/smartRules.emu.spec.ts",
+      "packages/api/test/smartRule.service.spec.ts"
+    ]
+  },
+  {
+    "number": 218,
+    "title": "feat(admin): Attributes persistence & API (Lisa v0.2.0-rc)",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "api",
+      "p1-high",
+      "admin"
+    ],
+    "mergeCommit": {
+      "oid": "6a89fc13a165a2d70da6490941f9dd26fa2f851e"
+    },
+    "headRefName": "feature/admin/settings-backend",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-07T20:41:01Z",
+    "filesChanged": [
+      "firestore.rules",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/schemas/aiTemplateSchema.ts",
+      "packages/api/src/schemas/attributeSchema.ts",
+      "packages/api/src/schemas/smartRuleSchema.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/api/test/integration/attributes.emu.spec.ts",
+      "packages/sdk/src/index.ts"
+    ]
+  },
+  {
+    "number": 215,
+    "title": "feat(admin): Attributes persistence & API (Lisa v0.2.0-rc)",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "p1-high",
+      "admin"
+    ],
+    "mergeCommit": null,
+    "headRefName": "feature/admin/settings-backend",
+    "baseRefName": "feature/admin/settings-crud",
+    "mergeable": "CONFLICTING",
+    "updatedAt": "2025-12-07T19:59:41Z",
+    "filesChanged": [
+      "firestore.rules",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/services/attributesService.ts",
+      "packages/api/test/attributes.service.spec.ts",
+      "packages/api/test/integration/attributes.emu.spec.ts"
+    ]
+  },
+  {
+    "number": 214,
+    "title": "feat(admin): Settings CRUD — Attributes/SmartRules/AITemplate",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "p1-high",
+      "admin"
+    ],
+    "mergeCommit": {
+      "oid": "f5b4a30a62b4b566563dc8e9be1cfad3772b03ff"
+    },
+    "headRefName": "feature/admin/settings-crud",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-07T19:59:41Z",
+    "filesChanged": [
+      "docs/admin-settings-design.md",
+      "docs/admin-settings-progress.md",
+      "docs/settings_mapping.csv",
+      "packages/api/src/endpoints/admin/settings.ts",
+      "packages/api/src/schemas/aiTemplateSchema.ts",
+      "packages/api/src/schemas/attributeSchema.ts",
+      "packages/api/src/schemas/smartRuleSchema.ts",
+      "packages/sdk/src/schema/aiTemplate.ts",
+      "packages/sdk/src/schema/attribute.ts",
+      "packages/sdk/src/schema/index.ts",
+      "packages/sdk/src/schema/smartRule.ts",
+      "packages/sdk/test/attribute.schema.test.ts"
+    ]
+  },
+  {
+    "number": 191,
+    "title": "chore(integration): merge aoss-staging-integration to aoss-main",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "785801450fab5e51b39b4f027885e2280bb19e94"
+    },
+    "headRefName": "aoss-staging-integration",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-07T03:21:18Z",
+    "filesChanged": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/deploy-preview.yml",
+      ".github/workflows/validate-pr.yml",
+      ".gitignore",
+      "CONTRIBUTING.md",
+      "E2E_INVESTIGATION_REPORT.md",
+      "README.md",
+      "check-existing-doc.mjs",
+      "docs/DEV-SETUP.md",
+      "docs/ENV.md",
+      "docs/WORKFLOW.md",
+      "e2e-artifacts-run-19986365614.zip",
+      "e2e-report/data/06bb0917e85bd36e8a85f32b0df5a1acdb7718f6.png",
+      "e2e-report/data/0a1e934d642c35492ec731fe627872b5ed33e9af.webm",
+      "e2e-report/data/134f649d7482a23adfc595b13a6128d68d60a4e2.zip",
+      "e2e-report/data/25bc97ae4866796903f10ee4649450568ff0f25d.webm",
+      "e2e-report/data/39bc9745e1250756b95d8f03efd1411edaaad77e.zip",
+      "e2e-report/data/584d3f482aa5913cf0985ce59b4b60a9e03944c5.webm",
+      "e2e-report/data/74ac81794a1a1fdd29207c7c1da66349ce8db1e2.webm",
+      "e2e-report/data/991f3c1e5a24c276b2096efc3007433526a2cc09.png",
+      "e2e-report/data/c6106863677b74dcfe28716c14f296404a6ff996.md",
+      "e2e-report/data/e041442e3c6ed5f61375fde5dcf1cc80d94f6b09.webm",
+      "e2e-report/data/e7c97c08a64d4c5230545bc6a9c685d8f5d1c785.md",
+      "e2e-report/data/f755159cceca08e8cf3a585569be6926b1b86a22.webm",
+      "e2e-report/index.html",
+      "e2e-report/trace/assets/codeMirrorModule-Bucv2d7q.js",
+      "e2e-report/trace/assets/defaultSettingsView-BEpdCv1S.js",
+      "e2e-report/trace/codeMirrorModule.C3UTv-Ge.css",
+      "e2e-report/trace/codicon.DCmgc-ay.ttf",
+      "e2e-report/trace/defaultSettingsView.ConWv5KN.css",
+      "e2e-report/trace/index.BxQ34UMZ.js",
+      "e2e-report/trace/index.C4Y3Aw8n.css",
+      "e2e-report/trace/index.html",
+      "e2e-report/trace/manifest.webmanifest",
+      "e2e-report/trace/playwright-logo.svg",
+      "e2e-report/trace/snapshot.html",
+      "e2e-report/trace/sw.bundle.js",
+      "e2e-report/trace/uiMode.BWTwXl41.js",
+      "e2e-report/trace/uiMode.Btcz36p_.css",
+      "e2e-report/trace/uiMode.html",
+      "e2e-report/trace/xtermModule.DYP7pi_n.css",
+      "firestore-debug.log",
+      "packages/web/e2e/auth.spec.ts",
+      "packages/web/e2e/helpers.ts",
+      "packages/web/e2e/launch-calendar.spec.ts",
+      "packages/web/e2e/observations.spec.ts",
+      "packages/web/playwright-report/index.html",
+      "packages/web/src/components/Auth/EmailVerificationBanner.tsx",
+      "packages/web/src/components/Auth/SignInModal.tsx",
+      "packages/web/src/components/layout/TopBar.tsx",
+      "packages/web/src/hooks/useLaunchSignup.ts",
+      "packages/web/src/pages/LaunchCalendarPage.tsx",
+      "packages/web/src/pages/ObservationsPage.tsx",
+      "packages/web/src/services/observations.ts",
+      "packages/web/test-results/.last-run.json",
+      "pnpm-lock.yaml",
+      "scripts/check-e2e-users.js",
+      "scripts/list-seed-data.js",
+      "test-launchsignup-rules.mjs",
+      "test-production-rules.js",
+      "test-production-rules.mjs",
+      "test-server-timestamp.mjs"
+    ]
+  },
+  {
+    "number": 188,
+    "title": "feat(sdk): RetailOps CSV Import to CoreProduct (aoss.v0.6.0)",
+    "author": "twgallo13",
+    "labels": [
+      "feature",
+      "sdk",
+      "p1-high"
+    ],
+    "mergeCommit": {
+      "oid": "1555ed0136b1f4f0a11927c7f67de173a178a192"
+    },
+    "headRefName": "feature/import/retailops-to-coreproduct",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-06T02:11:05Z",
+    "filesChanged": [
+      ".github/workflows/deploy-preview.yml",
+      ".github/workflows/e2e-tests.yml",
+      "packages/sdk/package.json",
+      "packages/sdk/src/export/retailOps.ts",
+      "packages/sdk/src/import/retailOps.ts",
+      "packages/sdk/src/index.ts",
+      "packages/sdk/src/schemas/coreProduct.ts",
+      "packages/sdk/src/schemas/importRow.ts",
+      "packages/sdk/test/coreProduct.schema.test.ts",
+      "packages/sdk/test/importRow.schema.test.ts",
+      "packages/sdk/test/retailOps.export.test.ts",
+      "packages/sdk/test/retailOps.import.test.ts",
+      "packages/sdk/tsconfig.dts.json",
+      "packages/sdk/tsconfig.json",
+      "packages/sdk/tsconfig.tsbuildinfo",
+      "packages/sdk/tsup.config.ts",
+      "schemas/import-row.schema.json",
+      "schemas/product.schema.json",
+      "schemas/retailops-export-mapping.json",
+      "scripts/create-e2e-test-users.js"
+    ]
+  },
+  {
+    "number": 174,
+    "title": "PROMPT_019A_vC — Import → products → W2 integration",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "53155f20e370e045c1b254ee0f3e493ab6d2674f"
+    },
+    "headRefName": "feature/import-w2-export-bridge_PROMPT_019A_vC",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T08:55:59Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "PROMPT_018B_v1.2_AUDIT.txt",
+      "PROMPT_018C_vB_AUDIT.txt",
+      "PROMPT_018C_vC_AUDIT.txt",
+      "PROMPT_019A_vA_AUDIT.txt",
+      "PROMPT_019A_vB_AUDIT.txt",
+      "PROMPT_019A_vC_AUDIT.txt",
+      "docs/DEPLOYMENT.md",
+      "firebase.json",
+      "firestore-debug.log",
+      "firestore.rules",
+      "packages/api/package.json",
+      "packages/api/src/endpoints/import.ts",
+      "packages/api/src/endpoints/processImportBatch.ts",
+      "packages/api/src/index.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/services/importService.ts",
+      "packages/api/src/services/productCommitService.ts",
+      "packages/api/test/fixtures/sample-retailops.csv",
+      "packages/api/test/importService.test.ts",
+      "packages/api/test/productCommitService.test.ts",
+      "packages/api/tsconfig.json",
+      "packages/api/vitest.config.ts",
+      "packages/sdk/package.json",
+      "packages/sdk/src/builders/importRowBuilder.ts",
+      "packages/sdk/src/index.ts",
+      "packages/sdk/src/normalization/importNormalizer.ts",
+      "packages/sdk/src/schema/importEngine.ts",
+      "packages/sdk/src/schema/product.ts",
+      "packages/sdk/src/validators/importValidator.ts",
+      "packages/sdk/test/importNormalizer.test.ts",
+      "packages/sdk/test/importRowBuilder.test.ts",
+      "packages/sdk/test/importValidator.test.ts",
+      "packages/sdk/tsconfig.json",
+      "packages/sdk/tsconfig.tsbuildinfo",
+      "packages/web/.env.e2e.example",
+      "packages/web/e2e/auth.spec.ts",
+      "packages/web/e2e/helpers.ts",
+      "packages/web/e2e/launch-calendar.spec.ts",
+      "packages/web/e2e/observations.spec.ts",
+      "packages/web/package.json",
+      "packages/web/playwright.config.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/import/ImportConfirmStep.css",
+      "packages/web/src/components/import/ImportConfirmStep.tsx",
+      "packages/web/src/components/import/ImportHistoryTable.css",
+      "packages/web/src/components/import/ImportHistoryTable.tsx",
+      "packages/web/src/components/import/ImportMappingStep.css",
+      "packages/web/src/components/import/ImportMappingStep.tsx",
+      "packages/web/src/components/import/ImportPreviewStep.css",
+      "packages/web/src/components/import/ImportPreviewStep.tsx",
+      "packages/web/src/components/import/ImportUploadStep.css",
+      "packages/web/src/components/import/ImportUploadStep.tsx",
+      "packages/web/src/contexts/AuthProvider.tsx",
+      "packages/web/src/hooks/useLaunchSignup.ts",
+      "packages/web/src/main.tsx",
+      "packages/web/src/monitoring/sentry.ts",
+      "packages/web/src/pages/ImportBatchDetailPage.css",
+      "packages/web/src/pages/ImportBatchDetailPage.tsx",
+      "packages/web/src/pages/ImportManagerPage.css",
+      "packages/web/src/pages/ImportManagerPage.tsx",
+      "packages/web/src/vite-env.d.ts",
+      "packages/web/test/ImportBatchDetailPage.test.tsx",
+      "packages/web/vitest.config.ts",
+      "pnpm-lock.yaml",
+      "rollback/rollback.sh",
+      "test-output-api.txt",
+      "test-output-sdk.txt",
+      "test-output-web.txt"
+    ]
+  },
+  {
+    "number": 173,
+    "title": "fix(ci): 018C conflict & e2e cleanup",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": null,
+    "headRefName": "fix/018c_conflict_hotfix",
+    "baseRefName": "ci/e2e-monitoring_PROMPT_018C_vC",
+    "mergeable": "MERGEABLE",
+    "updatedAt": "2025-12-03T06:05:23Z",
+    "filesChanged": [
+      "PROMPT_018C_vC_AUDIT.txt",
+      "packages/web/e2e/auth.spec.ts"
+    ]
+  },
+  {
+    "number": 172,
+    "title": "PROMPT_019A_vB — Import Manager UI & mapping preview",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "373587d84378fb197dd0ac0ea627d24c8720a789"
+    },
+    "headRefName": "feature/import-manager-ui_PROMPT_019A_vB",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T08:55:59Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "PROMPT_018B_v1.2_AUDIT.txt",
+      "PROMPT_018C_vB_AUDIT.txt",
+      "PROMPT_018C_vC_AUDIT.txt",
+      "PROMPT_019A_vA_AUDIT.txt",
+      "docs/DEPLOYMENT.md",
+      "firebase.json",
+      "firestore.rules",
+      "packages/api/package.json",
+      "packages/api/src/endpoints/import.ts",
+      "packages/api/src/index.ts",
+      "packages/api/src/middleware/auth.ts",
+      "packages/api/src/services/importService.ts",
+      "packages/api/test/fixtures/sample-retailops.csv",
+      "packages/api/test/importService.test.ts",
+      "packages/api/tsconfig.json",
+      "packages/api/vitest.config.ts",
+      "packages/sdk/package.json",
+      "packages/sdk/src/builders/importRowBuilder.ts",
+      "packages/sdk/src/index.ts",
+      "packages/sdk/src/normalization/importNormalizer.ts",
+      "packages/sdk/src/schema/importEngine.ts",
+      "packages/sdk/src/validators/importValidator.ts",
+      "packages/sdk/test/importNormalizer.test.ts",
+      "packages/sdk/test/importRowBuilder.test.ts",
+      "packages/sdk/test/importValidator.test.ts",
+      "packages/sdk/tsconfig.json",
+      "packages/sdk/tsconfig.tsbuildinfo",
+      "packages/web/.env.e2e.example",
+      "packages/web/e2e/auth.spec.ts",
+      "packages/web/e2e/helpers.ts",
+      "packages/web/e2e/launch-calendar.spec.ts",
+      "packages/web/e2e/observations.spec.ts",
+      "packages/web/package.json",
+      "packages/web/playwright.config.ts",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/import/ImportConfirmStep.css",
+      "packages/web/src/components/import/ImportConfirmStep.tsx",
+      "packages/web/src/components/import/ImportHistoryTable.css",
+      "packages/web/src/components/import/ImportHistoryTable.tsx",
+      "packages/web/src/components/import/ImportMappingStep.css",
+      "packages/web/src/components/import/ImportMappingStep.tsx",
+      "packages/web/src/components/import/ImportPreviewStep.css",
+      "packages/web/src/components/import/ImportPreviewStep.tsx",
+      "packages/web/src/components/import/ImportUploadStep.css",
+      "packages/web/src/components/import/ImportUploadStep.tsx",
+      "packages/web/src/contexts/AuthProvider.tsx",
+      "packages/web/src/hooks/useLaunchSignup.ts",
+      "packages/web/src/main.tsx",
+      "packages/web/src/monitoring/sentry.ts",
+      "packages/web/src/pages/ImportBatchDetailPage.css",
+      "packages/web/src/pages/ImportBatchDetailPage.tsx",
+      "packages/web/src/pages/ImportManagerPage.css",
+      "packages/web/src/pages/ImportManagerPage.tsx",
+      "packages/web/src/vite-env.d.ts",
+      "packages/web/vitest.config.ts",
+      "pnpm-lock.yaml",
+      "rollback/rollback.sh"
+    ]
+  },
+  {
+    "number": 171,
+    "title": "PROMPT_018C_vC — E2E Tests, CI Hardening, Monitoring & Rollout Infrastructure",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "b21bc7659cd6d71ab1474bb82c1d04615914d802"
+    },
+    "headRefName": "ci/e2e-monitoring_PROMPT_018C_vC",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T08:55:59Z",
+    "filesChanged": [
+      ".github/workflows/e2e-tests.yml",
+      "PROMPT_018B_v1.2_AUDIT.txt",
+      "PROMPT_018C_vB_AUDIT.txt",
+      "PROMPT_018C_vC_AUDIT.txt",
+      "docs/DEPLOYMENT.md",
+      "packages/web/.env.e2e.example",
+      "packages/web/e2e/auth.spec.ts",
+      "packages/web/e2e/helpers.ts",
+      "packages/web/e2e/launch-calendar.spec.ts",
+      "packages/web/e2e/observations.spec.ts",
+      "packages/web/package.json",
+      "packages/web/playwright.config.ts",
+      "packages/web/src/contexts/AuthProvider.tsx",
+      "packages/web/src/hooks/useLaunchSignup.ts",
+      "packages/web/src/main.tsx",
+      "packages/web/src/monitoring/sentry.ts",
+      "packages/web/src/vite-env.d.ts",
+      "packages/web/vitest.config.ts",
+      "pnpm-lock.yaml",
+      "rollback/rollback.sh"
+    ]
+  },
+  {
+    "number": 170,
+    "title": "PROMPT_018C_vB — IAM, email verification, launchSignups",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "c1a84d0d9147552f1d8ab20d73faa589c610c0d5"
+    },
+    "headRefName": "feature/aoss-iam-launchsignup_PROMPT_018C_vB",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T01:48:09Z",
+    "filesChanged": [
+      "firestore.rules",
+      "packages/web/src/components/Auth/EmailVerificationBanner.css",
+      "packages/web/src/components/Auth/EmailVerificationBanner.tsx",
+      "packages/web/src/components/layout/AppLayout.tsx",
+      "packages/web/src/contexts/AuthProvider.tsx",
+      "packages/web/src/hooks/useLaunchSignup.ts",
+      "packages/web/src/pages/LaunchCalendarPage.tsx",
+      "packages/web/src/utils/envPolicy.ts",
+      "packages/web/src/vite-env.d.ts",
+      "packages/web/test/auth.customClaims.test.tsx",
+      "packages/web/test/envPolicy.test.ts",
+      "scripts/set-admin-custom-claim.js"
+    ]
+  },
+  {
+    "number": 169,
+    "title": "PROMPT_018C_vA — Build output alignment & CI hardening",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "0ab4cffd2047f59720435ec74a21a73959b76a1d"
+    },
+    "headRefName": "fix/build-output_PROMPT_018C_vA",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T01:48:27Z",
+    "filesChanged": [
+      ".github/workflows/deploy-preview.yml",
+      ".github/workflows/deploy-staging.yml",
+      "PROMPT_018C_vA_AUDIT.txt",
+      "packages/web/vite.config.ts"
+    ]
+  },
+  {
+    "number": 168,
+    "title": "ui: make Observations panel responsive & sticky Add button (PROMPT_018B_v1.5)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "306ea766802f251c80f830be4d307c860d9e948e"
+    },
+    "headRefName": "fix/observations-panel-css_PROMPT_018B_v1.5",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T01:00:09Z",
+    "filesChanged": [
+      "packages/web/src/components/product/ObservationsPanel.css",
+      "packages/web/src/pages/ProductEditorPage.css"
+    ]
+  },
+  {
+    "number": 163,
+    "title": "AOSS_AUTH_UI_GOOGLE_EMAIL_v1.0 (PROMPT_018B)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "785fe8fdb3bea508257a51290190fd22df4f6616"
+    },
+    "headRefName": "feature/aoss-auth-ui-v1-0",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-03T00:37:31Z",
+    "filesChanged": [
+      ".firebase/hosting.cGFja2FnZXMvd2ViL2Rpc3Q.cache",
+      ".github/workflows/deploy-preview.yml",
+      "HOMER_PROMPT_016_ARTIFACTS/sample_products.json",
+      "HOMER_PROMPT_016_AUDIT.txt",
+      "HOMER_PROMPT_016_REPO_AUDIT.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_bundle_after.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_bundle_before.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_bundle_config_after.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_bundle_headers_after.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_bundle_headers_before.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_index_after.html",
+      "HOMER_PROMPT_017B_ARTIFACTS/aoss_index_before.html",
+      "HOMER_PROMPT_017B_ARTIFACTS/bccee_bundle.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/bccee_index.html",
+      "HOMER_PROMPT_017B_ARTIFACTS/firebase_deploy_output.json",
+      "HOMER_PROMPT_017B_ARTIFACTS/firebase_deploy_output.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/full_headers.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/new_bundle.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/new_bundle_config.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/pnpm_build.log",
+      "HOMER_PROMPT_017B_ARTIFACTS/pnpm_build_output.txt",
+      "HOMER_PROMPT_017B_ARTIFACTS/pnpm_install.log",
+      "HOMER_PROMPT_017B_ARTIFACTS/pnpm_install_output.txt",
+      "HOMER_PROMPT_017B_REDEPLOY_AUDIT.txt",
+      "HOMER_PROMPT_017_ARTIFACTS/ropi-bccee_firestore_rules.txt",
+      "HOMER_PROMPT_017_ARTIFACTS/verification.txt",
+      "HOMER_PROMPT_017_DIAGNOSE.txt",
+      "HOMER_PROMPT_017_FIX_AUDIT.txt",
+      "HOMER_PROMPT_018B_AUDIT.txt",
+      "PROMPT_018B_v1.1_AUDIT.txt",
+      "firestore.rules",
+      "packages/web/src/components/Auth/SignInModal.css",
+      "packages/web/src/components/Auth/SignInModal.tsx",
+      "packages/web/src/components/layout/TopBar.css",
+      "packages/web/src/components/layout/TopBar.tsx",
+      "packages/web/src/components/product/ObservationsPanel.css",
+      "packages/web/src/components/product/ObservationsPanel.test.tsx",
+      "packages/web/src/components/product/ObservationsPanel.tsx",
+      "packages/web/src/contexts/AuthProvider.tsx",
+      "packages/web/src/hooks/useAuth.ts",
+      "packages/web/src/hooks/useLaunchSignup.ts",
+      "packages/web/src/main.tsx",
+      "packages/web/src/pages/LaunchCalendarPage.tsx",
+      "packages/web/test/smoke.product-editor-observations.test.tsx",
+      "preview-fix-v1.1.patch",
+      "scripts/seed-admin-allowlist.js",
+      "scripts/seed-products-rest.js",
+      "scripts/seed-products.js",
+      "scripts/update-notion-prompt016.js",
+      "scripts/update-notion-prompt017.js"
+    ]
+  },
+  {
+    "number": 160,
+    "title": "AOSS_OBSERVATIONS_WIRE_PRODUCT_EDITOR_v1.0 — Wire Product Editor ObservationsPanel to Firestore",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "737e5dc165030a7e35eed56951f2c5a848537639"
+    },
+    "headRefName": "feature/aoss-observations-wire-product-editor-v1-0",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-02T14:13:24Z",
+    "filesChanged": [
+      "packages/web/src/components/product/ObservationsPanel.css",
+      "packages/web/src/components/product/ObservationsPanel.test.tsx",
+      "packages/web/src/components/product/ObservationsPanel.tsx",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "packages/web/test/smoke.product-editor-observations.test.tsx"
+    ]
+  },
+  {
+    "number": 159,
+    "title": "AOSS_OBSERVATIONS_FIRESTORE_v1.0 — Wire Observations to Firestore",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "0baafa69373d84527cfe66e96744882b6ac8aaca"
+    },
+    "headRefName": "feature/aoss-observations-firestore-v1-0",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-02T13:49:22Z",
+    "filesChanged": [
+      "HOMER_AOSS_OBSERVATIONS_FIRESTORE_v1.0_ARTIFACTS/files-list.txt",
+      "HOMER_AOSS_OBSERVATIONS_FIRESTORE_v1.0_ARTIFACTS/sample-observation.json",
+      "HOMER_AOSS_OBSERVATIONS_FIRESTORE_v1.0_ARTIFACTS/test-results.txt",
+      "HOMER_AOSS_OBSERVATIONS_FIRESTORE_v1.0_AUDIT.txt",
+      "firestore.indexes.json",
+      "firestore.rules",
+      "packages/web/package.json",
+      "packages/web/src/contexts/UserContext.tsx",
+      "packages/web/src/firebaseConfig.ts",
+      "packages/web/src/main.tsx",
+      "packages/web/src/pages/ObservationsPage.tsx",
+      "packages/web/src/services/observations.test.ts",
+      "packages/web/src/services/observations.ts",
+      "packages/web/src/types/observation.ts",
+      "packages/web/src/vite-env.d.ts",
+      "packages/web/test/smoke.observations.test.tsx",
+      "pnpm-lock.yaml",
+      "storage.rules"
+    ]
+  },
+  {
+    "number": 158,
+    "title": "AOSS_PRODUCT_EDITOR_LAYOUT_v1.1 — Product Editor detailed layout & sidebar interactions",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "5e872422dd7aff9f1972410bde3f3ab62f332a90"
+    },
+    "headRefName": "feature/aoss-product-editor-layout-v1-1",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-02T13:26:27Z",
+    "filesChanged": [
+      "HOMER_AOSS_FRONTEND_NAV_v1.0_AUDIT.txt",
+      "HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/files-list.txt",
+      "HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/routes.txt",
+      "HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_ARTIFACTS/test-results.txt",
+      "HOMER_AOSS_PRODUCT_EDITOR_LAYOUT_v1.1_AUDIT.txt",
+      "HOMER_PROMPT_010_REPORT.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/deploy-run-19859371000.log",
+      "HOMER_PROMPT_011_ARTIFACTS/deploy-staging.yml.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/firebase.json.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/firebaserc.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/index.html.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/smoke_home.html",
+      "HOMER_PROMPT_011_ARTIFACTS/smoke_home_route.html",
+      "HOMER_PROMPT_011_ARTIFACTS/smoke_products.html",
+      "HOMER_PROMPT_011_ARTIFACTS/vite.config.ts.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/web-directory-listing.txt",
+      "HOMER_PROMPT_011_ARTIFACTS/web-package.json.txt",
+      "HOMER_PROMPT_011_DEPLOY_FIX.txt",
+      "PROMPT_011_notion_entry.md",
+      "packages/web/package.json",
+      "packages/web/src/components/product/AIActionsTab.css",
+      "packages/web/src/components/product/AIActionsTab.tsx",
+      "packages/web/src/components/product/CoreInformationTab.css",
+      "packages/web/src/components/product/CoreInformationTab.tsx",
+      "packages/web/src/components/product/DescriptionsTab.css",
+      "packages/web/src/components/product/DescriptionsTab.tsx",
+      "packages/web/src/components/product/ExportReadinessPanel.css",
+      "packages/web/src/components/product/ExportReadinessPanel.tsx",
+      "packages/web/src/components/product/LaunchMediaTab.css",
+      "packages/web/src/components/product/LaunchMediaTab.tsx",
+      "packages/web/src/components/product/ObservationsPanel.css",
+      "packages/web/src/components/product/ObservationsPanel.tsx",
+      "packages/web/src/components/product/ProductAttributesTab.css",
+      "packages/web/src/components/product/ProductAttributesTab.tsx",
+      "packages/web/src/components/product/ProductHeader.css",
+      "packages/web/src/components/product/ProductHeader.tsx",
+      "packages/web/src/components/product/SmartSuggestionsPanel.css",
+      "packages/web/src/components/product/SmartSuggestionsPanel.tsx",
+      "packages/web/src/data/mock-product.json",
+      "packages/web/src/hooks/useProduct.test.ts",
+      "packages/web/src/hooks/useProduct.ts",
+      "packages/web/src/pages/ProductEditorPage.css",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "packages/web/src/types/product.ts",
+      "packages/web/tsconfig.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 154,
+    "title": "AOSS_FRONTEND_NAV_v1.0 - Implement App Shell & Navigation Skeleton",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "ddc2d69972defa01175e045930bb9d2ccf765056"
+    },
+    "headRefName": "feature/aoss-frontend-nav-v1-0",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-02T12:54:12Z",
+    "filesChanged": [
+      ".github/workflows/deploy-preview.yml",
+      "HOMER_vNEXT_FINAL_AUDIT.txt",
+      "package.json",
+      "packages/web/index.html",
+      "packages/web/package.json",
+      "packages/web/src/App.tsx",
+      "packages/web/src/components/common/PageLayout.css",
+      "packages/web/src/components/common/PageLayout.tsx",
+      "packages/web/src/components/layout/AppLayout.css",
+      "packages/web/src/components/layout/AppLayout.tsx",
+      "packages/web/src/components/layout/Sidebar.css",
+      "packages/web/src/components/layout/Sidebar.tsx",
+      "packages/web/src/components/layout/TopBar.css",
+      "packages/web/src/components/layout/TopBar.tsx",
+      "packages/web/src/config/nav.ts",
+      "packages/web/src/index.css",
+      "packages/web/src/main.tsx",
+      "packages/web/src/pages/AttributesPage.tsx",
+      "packages/web/src/pages/ExportPage.tsx",
+      "packages/web/src/pages/HomePage.tsx",
+      "packages/web/src/pages/ImportPage.tsx",
+      "packages/web/src/pages/LaunchCalendarPage.tsx",
+      "packages/web/src/pages/ObservationsPage.tsx",
+      "packages/web/src/pages/ProductEditorPage.css",
+      "packages/web/src/pages/ProductEditorPage.tsx",
+      "packages/web/src/pages/ProductsPage.tsx",
+      "packages/web/src/pages/SettingsPage.css",
+      "packages/web/src/pages/SettingsPage.tsx",
+      "packages/web/src/pages/SmartRulesPage.tsx",
+      "packages/web/src/pages/settings/SettingsSubPage.tsx",
+      "packages/web/test/nav.test.ts",
+      "packages/web/tsconfig.json",
+      "packages/web/tsconfig.node.json",
+      "packages/web/vite.config.ts",
+      "packages/web/vitest.config.ts",
+      "pnpm-lock.yaml",
+      "scripts/notion-bootstrap.js"
+    ]
+  },
+  {
+    "number": 145,
+    "title": "feat: AOSS SDK models & validators (v0.3.0)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "00883759d77b08774b2171b437af143c61296f6b"
+    },
+    "headRefName": "feature/aoss-sdk-models-v0-3-0",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-02T08:56:58Z",
+    "filesChanged": [
+      "README.md",
+      "packages/sdk/package.json",
+      "packages/sdk/src/index.ts",
+      "packages/sdk/src/schema/attribute.ts",
+      "packages/sdk/src/schema/domainRules.ts",
+      "packages/sdk/src/schema/product.ts",
+      "packages/sdk/src/validators/attributeValidator.ts",
+      "packages/sdk/src/validators/productValidator.ts",
+      "packages/sdk/test/productValidator.test.ts",
+      "packages/sdk/tsconfig.json",
+      "packages/sdk/vitest.config.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  {
+    "number": 142,
+    "title": "feat: AOSS monorepo scaffold (v0.1.0)",
+    "author": "twgallo13",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "3707e17e69e2ef6413f97dc4a6ff891f0d49512b"
+    },
+    "headRefName": "feature/aoss-monorepo-scaffold-v0-1-0-v2",
+    "baseRefName": "aoss-main",
+    "mergeable": "UNKNOWN",
+    "updatedAt": "2025-12-02T07:45:28Z",
+    "filesChanged": [
+      ".eslintrc.json",
+      ".prettierrc",
+      "README.md",
+      "package.json",
+      "packages/api/package.json",
+      "packages/cli/package.json",
+      "packages/sdk/package.json",
+      "packages/web/package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "scripts/seed.js",
+      "tsconfig.base.json"
+    ]
+  }
+]
