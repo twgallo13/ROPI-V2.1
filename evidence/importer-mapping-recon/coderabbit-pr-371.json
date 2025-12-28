@@ -1,0 +1,44 @@
+{
+  "pr_number": 371,
+  "title": "LP-importer-mapping-recon-1.3.0 — tests, CI & staging deployment for import mapping changes",
+  "author": "twgallo13",
+  "branch": "lp/importer-mapping-recon/1.3.0-tests-ci-staging",
+  "state": "open",
+  "labels": ["state:in-progress", "lp:importer-mapping-recon-1.3.0", "type:infra", "cleanup:required", "blocked:coderabbit-review"],
+  "collected_at": "2025-01-10T00:00:00Z",
+  "coderabbit_summary": {
+    "status": "reviewed",
+    "actionable_comments": 0,
+    "nitpick_comments": 0,
+    "verdict": "LGTM",
+    "summary_by_coderabbit": "* **New CI Workflow** - importer-mapping-recon-ci.yml with setup → test → dryrun → e2e jobs - Triggers on PRs touching packages/sdk, api, web\n* **Scripts** - ci-dryrun.js: Deterministic dry-run wrapper for CI - validate-dryrun-report.js: Validation script for attribute mapping errors\n* **Tests** - validateImportRows.test.ts: 4 integration tests"
+  },
+  "changes": [
+    {
+      "file": ".github/workflows/importer-mapping-recon-ci.yml",
+      "type": "added",
+      "summary": "NEW - CI workflow with 4 jobs"
+    },
+    {
+      "file": "packages/sdk/scripts/ci-dryrun.js",
+      "type": "added",
+      "summary": "NEW - Deterministic dry-run wrapper for CI"
+    },
+    {
+      "file": "packages/api/scripts/validate-dryrun-report.js",
+      "type": "added",
+      "summary": "NEW - Validation script for CI"
+    },
+    {
+      "file": "packages/api/test/validateImportRows.test.ts",
+      "type": "added",
+      "summary": "NEW - 4 integration tests"
+    },
+    {
+      "file": "packages/sdk/package.json",
+      "type": "modified",
+      "summary": "Added minimist dependency"
+    }
+  ],
+  "comments": []
+}
