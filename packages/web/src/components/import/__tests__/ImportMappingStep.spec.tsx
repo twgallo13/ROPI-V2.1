@@ -27,7 +27,7 @@ vi.mock('../../../services/attributesService', () => ({
   listAttributes: vi.fn(),
   buildImporterColumns: vi.fn((attr: Attribute) => {
     const cols = [attr.attribute_id, attr.label.toLowerCase().replace(/\s+/g, '_')];
-    if (attr.importer_columns) cols.push(...attr.importer_columns);
+    if (attr.importerColumns) cols.push(...attr.importerColumns);
     return cols;
   }),
 }));
@@ -39,28 +39,28 @@ const MOCK_ATTRIBUTES: Attribute[] = [
     label: 'SKU',
     data_type: 'string',
     import_required: true,
-    importer_columns: ['product_sku', 'item_sku'],
+    importerColumns: ['product_sku', 'item_sku'],
   },
   {
     attribute_id: 'title',
     label: 'Product Title',
     data_type: 'string',
     import_required: true,
-    importer_columns: ['name', 'product_name'],
+    importerColumns: ['name', 'product_name'],
   },
   {
     attribute_id: 'description',
     label: 'Description',
     data_type: 'text',
     import_required: false,
-    importer_columns: ['product_description'],
+    importerColumns: ['product_description'],
   },
   {
     attribute_id: 'price',
     label: 'Price',
     data_type: 'currency',
     import_required: true,
-    importer_columns: ['retail_price', 'unit_price'],
+    importerColumns: ['retail_price', 'unit_price'],
   },
   {
     attribute_id: 'brand_ref',
@@ -68,7 +68,7 @@ const MOCK_ATTRIBUTES: Attribute[] = [
     data_type: 'string',
     usage: 'reference_only',
     import_required: false,
-    importer_columns: ['brand'],
+    importerColumns: ['brand'],
   },
   {
     attribute_id: 'category',
@@ -76,7 +76,7 @@ const MOCK_ATTRIBUTES: Attribute[] = [
     data_type: 'taxonomy',
     import_required: false,
     allowed_values: ['Electronics', 'Clothing', 'Home'],
-    importer_columns: ['product_category'],
+    importerColumns: ['product_category'],
   },
 ];
 
@@ -199,7 +199,7 @@ describe('ImportMappingStep', () => {
       expect(screen.queryByText(/loading mapping options/i)).not.toBeInTheDocument();
     });
 
-    // 'product_sku' is in SKU's importer_columns, should auto-map
+    // 'product_sku' is in SKU's importerColumns, should auto-map
     const select = screen.getByRole('combobox') as HTMLSelectElement;
     expect(select.value).toBe('sku');
   });
