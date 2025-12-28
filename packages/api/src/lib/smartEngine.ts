@@ -17,7 +17,7 @@
  * - Domain validation against attribute registry (LP-smart-rules-3.1.0)
  */
 
-import Handlebars from 'handlebars';
+import * as Handlebars from 'handlebars';
 import type { AttributeDefinition } from '../services/attributeValidator';
 
 // =============================================================================
@@ -452,7 +452,7 @@ export function isAllowedTargetField(field: string): boolean {
   if (ALLOWED_TARGET_FIELDS.has(field)) return true;
   
   // Check if it starts with an allowed prefix (for nested attributes)
-  for (const allowed of ALLOWED_TARGET_FIELDS) {
+  for (const allowed of Array.from(ALLOWED_TARGET_FIELDS)) {
     if (field.startsWith(allowed + '.')) return true;
   }
   
@@ -1011,7 +1011,7 @@ export class SmartRulesEngine {
     const conflicts: Conflict[] = [];
     
     // Find fields with multiple different values
-    for (const [field, fieldSuggestions] of fieldMap) {
+    for (const [field, fieldSuggestions] of Array.from(fieldMap.entries())) {
       if (fieldSuggestions.length <= 1) continue;
       
       // Check if values are different

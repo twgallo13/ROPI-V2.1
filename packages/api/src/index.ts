@@ -167,3 +167,10 @@ export const updateProductAttributes = functions.https.onRequest(async (req, res
   
   await patchProductAttributesHandler(req, res);
 });
+
+// ============================================================================
+// Firestore Triggers — Smart Rules
+// LP-smart-rules-3.1.1
+// Per AOSS Section 4 — Smart Rules & W1/W2 Workflows
+// ============================================================================
+export { onProductWrite, onSmartRuleUpdate } from './functions/smartRules';
