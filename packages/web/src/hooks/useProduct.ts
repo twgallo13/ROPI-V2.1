@@ -74,12 +74,36 @@ const INVENTORY_FIELD_KEYS = [
 ];
 
 /**
- * Merge core fields from nested core object to top-level for UI compatibility.
+ * Attribute fields that should be merged from nested attributes object to top-level.
+ * LP-1.3.8: Import engine writes to product.attributes.*, but CoreInformationTab reads product.*
+ * These are the classification/taxonomy fields used by CoreInformationTab and other UI components.
+ */
+const ATTRIBUTE_FIELDS_TO_TOP_LEVEL = [
+  // CoreInformationTab fields
+  'department', 'class', 'category', 'subcategory',
+  'gender', 'age_group', 'ageGroup',
+  // ProductAttributesTab fields (also accessed at top-level by some components)
+  'primary_color', 'primaryColor', 'descriptive_color', 'descriptiveColor',
+  'secondary_color', 'secondaryColor',
+  'material', 'materials', 'fit', 'cut_type', 'closure_type',
+  'league', 'sports_team', 'collection_name',
+  // Fast Fashion fields
+  'fast_fashion', 'heel_height', 'platform_height', 'heel_type', 'shoe_height_map',
+  // LaunchMediaTab fields
+  'hype', 'kl_post_date', 'promo', 'product_is_active',
+  // TechnicalTab fields
+  'gtin', 'tax_class', 'height', 'length', 'width', 'weight',
+];
+
+/**
+ * Merge core, inventory, and attribute fields from nested objects to top-level for UI compatibility.
  * LP-1.3.7: Import engine writes product.core.mpn, but ProductHeader reads product.mpn
+ * LP-1.3.8: Import engine writes product.attributes.class, but CoreInformationTab reads product.class
  */
 function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<string, unknown> {
   const core = docData.core as Record<string, unknown> | undefined;
   const inventory = docData.inventory as Record<string, unknown> | undefined;
+  const attributes = docData.attributes as Record<string, unknown> | undefined;
   
   const merged = { ...docData };
   
@@ -98,6 +122,15 @@ function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<str
     for (const key of INVENTORY_FIELD_KEYS) {
       if ((merged[key] === undefined || merged[key] === null) && inventory[key] !== undefined && inventory[key] !== null) {
         merged[key] = inventory[key];
+      }
+    }
+  }
+  
+  // LP-1.3.8: Merge attribute fields to top-level
+  if (attributes && typeof attributes === 'object') {
+    for (const key of ATTRIBUTE_FIELDS_TO_TOP_LEVEL) {
+      if ((merged[key] === undefined || merged[key] === null) && attributes[key] !== undefined && attributes[key] !== null) {
+        merged[key] = attributes[key];
       }
     }
   }

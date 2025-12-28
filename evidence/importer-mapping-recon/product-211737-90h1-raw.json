@@ -1,0 +1,99 @@
+{
+  "_docId": "211737-90h1",
+  "_capturedAt": "2025-12-28T21:56:28.526Z",
+  "_note": "LP-1.3.8 investigation - raw Firestore doc",
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "roUploadDate": null,
+  "exportReadiness": {
+    "overall": 0,
+    "byWebsite": {}
+  },
+  "department": "Footwear",
+  "quantity": 0,
+  "mpn": "211737-90H1",
+  "media": {
+    "gallery": []
+  },
+  "title": "4bfae23e-6bc2-4d87-9391-b324010c2a0a",
+  "descriptions": {},
+  "createdAt": "2025-12-28T20:33:29.222Z",
+  "smartSuggestions": [],
+  "observations": [],
+  "websites": [],
+  "id": "211737-90h1",
+  "sku": "SHK3037625",
+  "brand": "Crocs",
+  "firstReceived": "2025-12-26T00:00:00.000Z",
+  "status": "draft",
+  "updatedAt": "2025-12-28T21:03:45.547Z",
+  "core": {
+    "createdAt": "2025-12-28T20:33:29.222Z",
+    "sku": "SHK3037625",
+    "brand": "Crocs",
+    "status": "draft",
+    "mpn": "211737-90H1",
+    "title": "4bfae23e-6bc2-4d87-9391-b324010c2a0a",
+    "lastReceived": "12/18/2025",
+    "firstReceived": "12/26/2025",
+    "updatedAt": "2025-12-28T21:45:16.375Z"
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2025-12-28T21:45:13.337Z",
+    "normalizedAt": "2025-12-28T21:45:16.375Z",
+    "validatedAt": "2025-12-28T21:45:16.375Z"
+  },
+  "attributes": {
+    "gender": "Men's",
+    "material": "Pholyester",
+    "category": "Slides",
+    "department": "Footwear",
+    "class": "Sandle",
+    "rics_color": "Multi",
+    "rics_long_desc": "REALTREE APX ALL TERRAIN CLOG",
+    "rics_short_description": "REALTREE APX ALL TER",
+    "age_group": "Adults",
+    "currency": "USD",
+    "rics_category": "Mens||Footwear||Sandal||Athletic",
+    "ageGroup": "Adults",
+    "primary_color": "Green",
+    "descriptive_color": "Green Croc",
+    "mpn": "211737-90H1",
+    "brand": "Crocs",
+    "media_status": "sdfsdfgdf-23rcwsdf34-sdf34r-",
+    "website": "shiekh.com",
+    "keywords": "Geen crocidial",
+    "tax_class": "Taxable Goods",
+    "league": "MLB",
+    "sports_team": "Los Angeles Dodge",
+    "fit": "True to Size",
+    "promo": "Allowed",
+    "product_is_active": "TRUE",
+    "fast_fashion": "TRUE",
+    "hype": "FALSE",
+    "kl_post_date": "12/30/2025",
+    "collection_name": "crocy-123"
+  },
+  "inventory": {
+    "quantity": 0,
+    "store_inv": 88,
+    "warehouse_inv": 12
+  },
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0,
+    "map": null
+  },
+  "dimensions": {
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0
+  }
+}
