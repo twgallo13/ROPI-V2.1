@@ -1,0 +1,158 @@
+{
+  "collectionTimestamp": "2025-12-28T04:20:00Z",
+  "repository": "twgallo13/ROPI-V2.1",
+  "workflows": [
+    {
+      "name": "Deploy AOSS Staging",
+      "id": 212118351,
+      "state": "active",
+      "relevance": "primary-deploy",
+      "lastRun": {
+        "runId": 20548200322,
+        "status": "completed",
+        "conclusion": "success",
+        "branch": "aoss-main",
+        "updatedAt": "2025-12-28T03:30:01Z",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20548200322"
+      }
+    },
+    {
+      "name": "Deploy pre-check",
+      "id": 212065685,
+      "state": "active",
+      "relevance": "primary-ci",
+      "lastRun": {
+        "runId": 20548200306,
+        "status": "completed",
+        "conclusion": "success",
+        "branch": "aoss-main",
+        "updatedAt": "2025-12-28T03:26:15Z",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20548200306"
+      }
+    },
+    {
+      "name": "E2E Tests",
+      "id": 212434667,
+      "state": "active",
+      "relevance": "primary-e2e",
+      "lastRun": {
+        "runId": 20546653052,
+        "status": "completed",
+        "conclusion": "success",
+        "branch": "feature/phase3-smart-rules",
+        "updatedAt": "2025-12-28T00:58:31Z",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20546653052"
+      }
+    },
+    {
+      "name": "API Integration Tests (Emulator)",
+      "id": 213782865,
+      "state": "active",
+      "relevance": "primary-api-tests",
+      "lastRun": {
+        "runId": 20546653057,
+        "status": "completed",
+        "conclusion": "failure",
+        "branch": "feature/phase3-smart-rules",
+        "updatedAt": "2025-12-28T00:57:57Z",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20546653057",
+        "note": "Recent failures on feature branches - investigate"
+      }
+    },
+    {
+      "name": "Deploy AOSS PR Preview",
+      "id": 212107345,
+      "state": "active",
+      "relevance": "preview-deploy",
+      "lastRun": {
+        "runId": 20546653055,
+        "status": "completed",
+        "conclusion": "success",
+        "branch": "feature/phase3-smart-rules",
+        "updatedAt": "2025-12-28T00:58:11Z",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20546653055"
+      }
+    },
+    {
+      "name": "Staging Verify (Normalization / Import / Export / E2E)",
+      "id": 214568188,
+      "state": "active",
+      "relevance": "staging-verify-import",
+      "lastRun": "not_queried"
+    },
+    {
+      "name": "Validate LP Staging Checklist",
+      "id": 217720003,
+      "state": "active",
+      "relevance": "lp-governance",
+      "lastRun": "not_queried"
+    },
+    {
+      "name": "Copilot code review",
+      "id": 205941216,
+      "state": "active",
+      "relevance": "code-review"
+    },
+    {
+      "name": "Copilot coding agent",
+      "id": 207469916,
+      "state": "active",
+      "relevance": "code-review"
+    },
+    {
+      "name": "CI - Test GCP Service Account",
+      "id": 212144312,
+      "state": "active",
+      "relevance": "gcp-auth"
+    },
+    {
+      "name": "Setup E2E Test Users",
+      "id": 214512732,
+      "state": "active",
+      "relevance": "test-setup"
+    },
+    {
+      "name": "Ops — Set Admin Custom Claim",
+      "id": 212761403,
+      "state": "active",
+      "relevance": "ops"
+    },
+    {
+      "name": "PR Monitor & Auto-Merge (AOSS_PR_MONITOR_v1.0)",
+      "id": 212206623,
+      "state": "disabled_manually",
+      "relevance": "pr-automation",
+      "note": "Disabled"
+    },
+    {
+      "name": "Validate PR",
+      "id": 213525034,
+      "state": "disabled_manually",
+      "relevance": "pr-validation",
+      "note": "Disabled"
+    },
+    {
+      "name": "PR Governance — LP ID in Title + Label Match",
+      "id": 216968503,
+      "state": "disabled_manually",
+      "relevance": "pr-governance",
+      "note": "Disabled"
+    }
+  ],
+  "recentRunsSummary": {
+    "lastDeployToStaging": {
+      "runId": 20548200322,
+      "status": "success",
+      "branch": "aoss-main",
+      "timestamp": "2025-12-28T03:30:01Z"
+    },
+    "lastE2EPass": {
+      "runId": 20546653052,
+      "status": "success",
+      "branch": "feature/phase3-smart-rules",
+      "timestamp": "2025-12-28T00:58:31Z"
+    },
+    "apiTestsStatus": "FAILURES_ON_FEATURE_BRANCHES",
+    "note": "API integration tests showing failures on feature branches (phase2, phase3) but main deploys are succeeding"
+  }
+}

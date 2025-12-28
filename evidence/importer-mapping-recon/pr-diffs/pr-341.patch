@@ -1,0 +1,658 @@
+diff --git a/packages/web/src/components/AttributeDetailPanel.tsx b/packages/web/src/components/AttributeDetailPanel.tsx
+index 43982eb8..eb5bd7d2 100644
+--- a/packages/web/src/components/AttributeDetailPanel.tsx
++++ b/packages/web/src/components/AttributeDetailPanel.tsx
+@@ -7,6 +7,8 @@
+ 
+ import { useState, useCallback, useEffect, useMemo } from 'react';
+ import type { Attribute } from '../hooks/useAttributes';
++import { attributeIdExists } from '../hooks/useAttributes';
++import { toSnakeCase } from '../lib/stringUtils';
+ import AttributeHeader from './AttributeHeader';
+ import AttributeTabs, { type TabId } from './AttributeTabs';
+ import MappingTab from './MappingTab';
+@@ -23,6 +25,7 @@ export interface AttributeDetailPanelProps {
+   formData: Partial<Attribute>;
+   isDirty: boolean;
+   saving: boolean;
++  isCreating?: boolean;  // LP-ATTR-1.3.3: Flag for create mode
+   onFormChange: (data: Partial<Attribute>) => void;
+   onCancel: () => void;
+   onSync: () => void;
+@@ -35,10 +38,63 @@ export interface AttributeDetailPanelProps {
+ function OverviewTab({
+   formData,
+   onChange,
++  isCreating,
+ }: {
+   formData: Partial<Attribute>;
+   onChange: (data: Partial<Attribute>) => void;
++  isCreating?: boolean;
+ }) {
++  // LP-ATTR-1.3.3: Determine if we're in create mode
++  // Check both isCreating prop and if attribute_id is the dummy value 'new_attribute'
++  const isCreateMode = isCreating || formData.attribute_id === 'new_attribute' || !formData.attribute_id;
++  const isIdReadOnly = !isCreateMode;
++
++  // LP-ATTR-1.3.3: State for ID validation
++  const [idError, setIdError] = useState<string | null>(null);
++  const [checkingId, setCheckingId] = useState(false);
++
++  // LP-ATTR-1.3.3: Normalize ID to snake_case
++  const normalizeId = (input: string): string => {
++    // Remove leading/trailing whitespace
++    let normalized = input.trim();
++    // Convert to snake_case using existing utility
++    normalized = toSnakeCase(normalized);
++    // Ensure it doesn't start with a digit (prepend 'attr_' if needed)
++    if (normalized && /^\d/.test(normalized)) {
++      normalized = `attr_${normalized}`;
++    }
++    return normalized;
++  };
++
++  // LP-ATTR-1.3.3: Check ID uniqueness on blur
++  const handleIdBlur = useCallback(async () => {
++    const id = formData.attribute_id?.trim();
++    if (!id || isIdReadOnly) return;
++
++    setCheckingId(true);
++    setIdError(null);
++
++    try {
++      const exists = await attributeIdExists(id);
++      if (exists) {
++        setIdError('This Attribute ID already exists. Please choose a unique ID.');
++      }
++    } catch (err) {
++      console.error('Error checking attribute ID:', err);
++      setIdError('Unable to verify ID uniqueness. Please try again.');
++    } finally {
++      setCheckingId(false);
++    }
++  }, [formData.attribute_id, isIdReadOnly]);
++
++  // LP-ATTR-1.3.3: Handle ID input changes with normalization
++  const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
++    const rawValue = e.target.value;
++    const normalized = normalizeId(rawValue);
++    onChange({ ...formData, attribute_id: normalized });
++    setIdError(null); // Clear error on change
++  };
++
+   return (
+     <div className={styles.tabPanel} data-testid="tab-panel-overview">
+       <div className={styles.card}>
+@@ -61,17 +117,37 @@ function OverviewTab({
+ 
+           <div className={styles.formRow}>
+             <label className={styles.formLabel} htmlFor="attr-id">
+-              Attribute ID
++              Attribute ID {isCreateMode && '*'}
+             </label>
+             <input
+               id="attr-id"
+               type="text"
+               className={styles.formInput}
+               value={formData.attribute_id || ''}
+-              disabled
++              onChange={handleIdChange}
++              onBlur={handleIdBlur}
++              disabled={isIdReadOnly}
++              placeholder={isCreateMode ? "Leave blank to auto-generate from Label" : ""}
+               data-testid="form-id"
+             />
+-            <p className={styles.formHelp}>Canonical identifier (read-only after creation)</p>
++            {isIdReadOnly && (
++              <p className={styles.formHelp}>Canonical identifier (read-only after creation)</p>
++            )}
++            {isCreateMode && !idError && (
++              <p className={styles.formHelp}>
++                Unique identifier in snake_case. Leave blank to auto-generate.
++              </p>
++            )}
++            {checkingId && (
++              <p className={styles.formHelp} style={{ color: '#666' }}>
++                Checking availability...
++              </p>
++            )}
++            {idError && (
++              <p className={styles.formHelp} style={{ color: '#c62828' }}>
++                {idError}
++              </p>
++            )}
+           </div>
+ 
+           <div className={styles.formRowInline}>
+@@ -461,6 +537,7 @@ export default function AttributeDetailPanel({
+   formData,
+   isDirty,
+   saving,
++  isCreating,
+   onFormChange,
+   onCancel,
+   onSync,
+@@ -498,7 +575,7 @@ export default function AttributeDetailPanel({
+   const renderTabContent = () => {
+     switch (activeTab) {
+       case 'overview':
+-        return <OverviewTab formData={formData} onChange={onFormChange} />;
++        return <OverviewTab formData={formData} onChange={onFormChange} isCreating={isCreating} />;
+       case 'values':
+         return <ValuesTab formData={formData} onChange={onFormChange} />;
+       case 'behavior':
+diff --git a/packages/web/src/hooks/useAttributes.ts b/packages/web/src/hooks/useAttributes.ts
+index 68ebe91a..44d79c14 100644
+--- a/packages/web/src/hooks/useAttributes.ts
++++ b/packages/web/src/hooks/useAttributes.ts
+@@ -103,6 +103,29 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
+   }
+ }
+ 
++/**
++ * Check if an attribute_id already exists in the system.
++ * Makes a GET request to /api/admin/settings/attributes/:id
++ * Returns true if the attribute exists (200), false if not (404).
++ * Throws on network or unexpected errors.
++ */
++async function attributeIdExists(attributeId: string): Promise<boolean> {
++  const headers = await getAuthHeaders();
++  const url = `${API_BASE}/settings/attributes/${encodeURIComponent(attributeId)}`;
++  
++  try {
++    const res = await fetch(url, { headers });
++    if (res.ok) return true; // 200 = exists
++    if (res.status === 404) return false; // not found
++    // Unexpected status
++    throw new Error(`Unexpected status ${res.status} checking attribute ID existence`);
++  } catch (err) {
++    // Network error or other fetch failure
++    if (err instanceof Error) throw err;
++    throw new Error('Failed to check attribute ID existence');
++  }
++}
++
+ /**
+  * Hook to manage product attributes via the admin API.
+  * 
+@@ -408,4 +431,5 @@ export function useAttributes() {
+   };
+ }
+ 
++export { attributeIdExists };
+ export default useAttributes;
+diff --git a/packages/web/src/pages/Settings/AttributesConsole.tsx b/packages/web/src/pages/Settings/AttributesConsole.tsx
+index fd19f0cb..d228383e 100644
+--- a/packages/web/src/pages/Settings/AttributesConsole.tsx
++++ b/packages/web/src/pages/Settings/AttributesConsole.tsx
+@@ -10,8 +10,9 @@
+  */
+ 
+ import { useState, useCallback, useMemo, useEffect } from 'react';
+-import { useAttributes, type Attribute } from '../../hooks/useAttributes';
++import { useAttributes, type Attribute, attributeIdExists } from '../../hooks/useAttributes';
+ import { toastError, toastSuccess } from '../../lib/notifications';
++import { toSnakeCase } from '../../lib/stringUtils';
+ import AttributeListPanel from '../../components/AttributeListPanel';
+ import AttributeDetailPanel from '../../components/AttributeDetailPanel';
+ import styles from './AttributesConsole.module.css';
+@@ -495,13 +496,42 @@ export default function AttributesConsole() {
+   const handleSave = useCallback(async () => {
+     setSaving(true);
+     try {
++      // LP-ATTR-1.3.3: Auto-generate attribute_id if blank in create mode
++      let finalFormData = { ...formData };
++      if (isCreating && !finalFormData.attribute_id?.trim()) {
++        if (!finalFormData.label?.trim()) {
++          toastError('Label is required.');
++          setSaving(false);
++          return;
++        }
++        
++        // Generate base ID from label
++        let baseId = toSnakeCase(finalFormData.label.trim());
++        // Ensure it doesn't start with a digit
++        if (/^\d/.test(baseId)) {
++          baseId = `attr_${baseId}`;
++        }
++        
++        // Check uniqueness and add suffix if needed
++        let candidateId = baseId;
++        let suffix = 2;
++        while (await attributeIdExists(candidateId)) {
++          candidateId = `${baseId}_${suffix}`;
++          suffix++;
++        }
++        
++        finalFormData.attribute_id = candidateId;
++        // Update form state with generated ID
++        setFormData(finalFormData);
++      }
++
+       // Validation
+-      if (!formData.attribute_id?.trim()) {
++      if (!finalFormData.attribute_id?.trim()) {
+         toastError('Attribute ID is required.');
+         setSaving(false);
+         return;
+       }
+-      if (!formData.label?.trim()) {
++      if (!finalFormData.label?.trim()) {
+         toastError('Label is required.');
+         setSaving(false);
+         return;
+@@ -509,13 +539,13 @@ export default function AttributesConsole() {
+ 
+       // Check for conversion to enum/multiSelect without values
+       const isConvertingToSelect = 
+-        (formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
++        (finalFormData.data_type === 'enum' || finalFormData.data_type === 'multiSelect') &&
+         originalDataType !== 'enum' && originalDataType !== 'multiSelect' &&
+-        (!formData.allowed_values || formData.allowed_values.length === 0);
++        (!finalFormData.allowed_values || finalFormData.allowed_values.length === 0);
+       
+       if (isConvertingToSelect) {
+         // Open conversion modal instead of blocking
+-        setConversionTargetType(formData.data_type as 'enum' | 'multiSelect');
++        setConversionTargetType(finalFormData.data_type as 'enum' | 'multiSelect');
+         setShowConversionModal(true);
+         setSaving(false);
+         return;
+@@ -523,8 +553,8 @@ export default function AttributesConsole() {
+ 
+       // Check for existing enum/multiSelect without values (not a conversion)
+       if (
+-        (formData.data_type === 'enum' || formData.data_type === 'multiSelect') &&
+-        (!formData.allowed_values || formData.allowed_values.length === 0)
++        (finalFormData.data_type === 'enum' || finalFormData.data_type === 'multiSelect') &&
++        (!finalFormData.allowed_values || finalFormData.allowed_values.length === 0)
+       ) {
+         toastError('Allowed values are required for enum/multi-select.');
+         setSaving(false);
+@@ -534,14 +564,14 @@ export default function AttributesConsole() {
+       if (isCreating) {
+         // Create new attribute
+         const created = await createAttribute(
+-          formData as Omit<Attribute, 'createdAt' | 'updatedAt'>
++          finalFormData as Omit<Attribute, 'createdAt' | 'updatedAt'>
+         );
+         setSelectedId(created.attribute_id);
+         setIsCreating(false);
+         toastSuccess(`Created attribute '${created.attribute_id}'`);
+       } else if (selectedId) {
+         // Update existing attribute
+-        await updateAttribute(selectedId, formData);
++        await updateAttribute(selectedId, finalFormData);
+         toastSuccess(`Updated attribute '${selectedId}'`);
+       }
+ 
+@@ -689,6 +719,7 @@ export default function AttributesConsole() {
+         formData={formData}
+         isDirty={isDirty}
+         saving={saving}
++        isCreating={isCreating}
+         onFormChange={handleFormChange}
+         onCancel={handleCancel}
+         onSync={handleSync}
+diff --git a/packages/web/test/unit/AttributeDetailPanel.create-id.test.tsx b/packages/web/test/unit/AttributeDetailPanel.create-id.test.tsx
+new file mode 100644
+index 00000000..11749f76
+--- /dev/null
++++ b/packages/web/test/unit/AttributeDetailPanel.create-id.test.tsx
+@@ -0,0 +1,356 @@
++/**
++ * LP-ATTR-1.3.3: Tests for editable Attribute ID on create with uniqueness validation
++ */
++
++import { describe, it, expect, vi, beforeEach } from 'vitest';
++import { render, screen, fireEvent, waitFor } from '@testing-library/react';
++import { MemoryRouter } from 'react-router-dom';
++import AttributeDetailPanel from '../../src/components/AttributeDetailPanel';
++import * as useAttributesModule from '../../src/hooks/useAttributes';
++import type { Attribute } from '../../src/hooks/useAttributes';
++
++// Mock the attributeIdExists function
++vi.mock('../../src/hooks/useAttributes', async () => {
++  const actual = await vi.importActual('../../src/hooks/useAttributes');
++  return {
++    ...actual,
++    attributeIdExists: vi.fn(),
++  };
++});
++
++const mockAttributes: Attribute[] = [
++  {
++    attribute_id: 'color',
++    label: 'Color',
++    data_type: 'string',
++    status: 'active',
++  } as Attribute,
++];
++
++describe('AttributeDetailPanel - LP-ATTR-1.3.3: Editable ID on Create', () => {
++  beforeEach(() => {
++    vi.clearAllMocks();
++  });
++
++  it('should show editable ID field when creating new attribute (no attribute_id)', () => {
++    const formData: Partial<Attribute> = {
++      label: 'Test Attribute',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    // Create a dummy attribute like AttributesConsole does
++    const dummyAttribute = {
++      attribute_id: 'new_attribute',
++      ...formData,
++    } as Attribute;
++
++    render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={dummyAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={vi.fn()}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    expect(idInput).not.toBeDisabled();
++    expect(idInput.placeholder).toContain('auto-generate');
++  });
++
++  it('should show read-only ID field when editing existing attribute', () => {
++    const existingAttribute: Attribute = {
++      attribute_id: 'color',
++      label: 'Color',
++      data_type: 'string',
++      status: 'active',
++    } as Attribute;
++
++    const formData: Partial<Attribute> = {
++      attribute_id: 'color',
++      label: 'Color',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={existingAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          onFormChange={vi.fn()}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    expect(idInput).toBeDisabled();
++    expect(screen.getByText(/read-only after creation/i)).toBeInTheDocument();
++  });
++
++  it('should normalize ID input to snake_case', async () => {
++    const formData: Partial<Attribute> = {
++      label: 'Test Attribute',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    const dummyAttribute = {
++      attribute_id: 'new_attribute',
++      ...formData,
++    } as Attribute;
++
++    const mockOnChange = vi.fn();
++
++    render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={dummyAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={mockOnChange}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    
++    // Type "Product Name" and expect "product_name"
++    fireEvent.change(idInput, { target: { value: 'Product Name' } });
++    
++    await waitFor(() => {
++      expect(mockOnChange).toHaveBeenCalledWith(
++        expect.objectContaining({
++          attribute_id: 'product_name',
++        })
++      );
++    });
++  });
++
++  it('should prepend "attr_" if ID starts with a digit', async () => {
++    const formData: Partial<Attribute> = {
++      label: 'Test Attribute',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    const dummyAttribute = {
++      attribute_id: 'new_attribute',
++      ...formData,
++    } as Attribute;
++
++    const mockOnChange = vi.fn();
++
++    render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={dummyAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={mockOnChange}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    
++    // Type "123abc" and expect "attr_123abc"
++    fireEvent.change(idInput, { target: { value: '123abc' } });
++    
++    await waitFor(() => {
++      expect(mockOnChange).toHaveBeenCalledWith(
++        expect.objectContaining({
++          attribute_id: 'attr_123abc',
++        })
++      );
++    });
++  });
++
++  it('should check ID uniqueness on blur and show error if duplicate', async () => {
++    // Mock attributeIdExists to return true (ID exists)
++    vi.mocked(useAttributesModule.attributeIdExists).mockResolvedValue(true);
++
++    const formData: Partial<Attribute> = {
++      attribute_id: 'existing_id',
++      label: 'Test Attribute',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    const dummyAttribute = {
++      ...formData,
++    } as Attribute;
++
++    render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={dummyAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={vi.fn()}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    
++    // Trigger blur to check uniqueness
++    fireEvent.blur(idInput);
++    
++    await waitFor(() => {
++      expect(useAttributesModule.attributeIdExists).toHaveBeenCalledWith('existing_id');
++      expect(screen.getByText(/already exists/i)).toBeInTheDocument();
++    });
++  });
++
++  it('should not show error if ID is unique', async () => {
++    // Mock attributeIdExists to return false (ID is unique)
++    vi.mocked(useAttributesModule.attributeIdExists).mockResolvedValue(false);
++
++    const formData: Partial<Attribute> = {
++      attribute_id: 'unique_id',
++      label: 'Test Attribute',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    const dummyAttribute = {
++      ...formData,
++    } as Attribute;
++
++    render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={dummyAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={vi.fn()}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    
++    // Trigger blur to check uniqueness
++    fireEvent.blur(idInput);
++    
++    await waitFor(() => {
++      expect(useAttributesModule.attributeIdExists).toHaveBeenCalledWith('unique_id');
++    });
++
++    // Should not show error message
++    expect(screen.queryByText(/already exists/i)).not.toBeInTheDocument();
++  });
++
++  it('should clear error message when user types in ID field', async () => {
++    // Mock attributeIdExists to return true initially
++    vi.mocked(useAttributesModule.attributeIdExists).mockResolvedValue(true);
++
++    const formData: Partial<Attribute> = {
++      attribute_id: 'existing_id',
++      label: 'Test Attribute',
++      data_type: 'string',
++      status: 'active',
++    };
++
++    const dummyAttribute = {
++      ...formData,
++    } as Attribute;
++
++    const mockOnChange = vi.fn((newData) => {
++      formData.attribute_id = newData.attribute_id;
++    });
++
++    const { rerender } = render(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={dummyAttribute}
++          attributes={mockAttributes}
++          formData={formData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={mockOnChange}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    const idInput = screen.getByTestId('form-id') as HTMLInputElement;
++    
++    // Trigger blur to show error
++    fireEvent.blur(idInput);
++    
++    await waitFor(() => {
++      expect(screen.getByText(/already exists/i)).toBeInTheDocument();
++    });
++
++    // Now type in the field - error should clear
++    fireEvent.change(idInput, { target: { value: 'new_id' } });
++    
++    // Re-render with updated formData
++    const updatedFormData = { ...formData, attribute_id: 'new_id' };
++    rerender(
++      <MemoryRouter>
++        <AttributeDetailPanel
++          attribute={{ ...dummyAttribute, attribute_id: 'new_id' } as Attribute}
++          attributes={mockAttributes}
++          formData={updatedFormData}
++          isDirty={false}
++          saving={false}
++          isCreating={true}
++          onFormChange={mockOnChange}
++          onCancel={vi.fn()}
++          onSync={vi.fn()}
++          onSave={vi.fn()}
++        />
++      </MemoryRouter>
++    );
++
++    // Error should be cleared (though we may need to wait for re-render)
++    await waitFor(() => {
++      expect(screen.queryByText(/already exists/i)).not.toBeInTheDocument();
++    });
++  });
++});

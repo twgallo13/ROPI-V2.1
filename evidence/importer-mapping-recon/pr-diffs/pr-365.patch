@@ -1,0 +1,735 @@
+diff --git a/LISA_LP-0.1.0_EVIDENCE_BUNDLE.md b/LISA_LP-0.1.0_EVIDENCE_BUNDLE.md
+new file mode 100644
+index 00000000..5885ca19
+--- /dev/null
++++ b/LISA_LP-0.1.0_EVIDENCE_BUNDLE.md
+@@ -0,0 +1,176 @@
++# LP-0.1.0: Phase Readiness Gate — Evidence Bundle
++
++**Generated**: 2025-12-26 ~22:30 UTC  
++**Branch**: `aoss-main` (commit `7acfd0e`)  
++**Governance Tag**: Lisa LP-0.1.0
++
++---
++
++## Task 1: Branch & PR Discovery ✅
++
++### Key Branches
++| Branch | Commit | Description |
++|--------|--------|-------------|
++| `aoss-main` | `7acfd0eb1534d861d6a078523e1583ece4865805` | Current HEAD |
++| `archive/main` | `de7dc9c93e8ed120ed950d32264ad45b1d72a3e7` | Archive of old main |
++
++### Relevant PRs (Touching Target Files)
++
++| PR | Title | Status | Files |
++|----|-------|--------|-------|
++| **#360** | LP-0.4.7: Ghost Killer - Hard Purge Fallbacks | ✅ Merged | `useProduct.ts` |
++| **#359** | LP-0.4.6: Remove shiekhshoes.com ghost defaults | ✅ Merged | `mock-product.json`, `attributeRegistry.json` |
++| **#358** | LP-0.4.5: Registry v1.1.3 - Material allow_custom_values | ✅ Merged | `attributeRegistry.json` |
++| **#353** | LP-0.4.1.1: Critical Stability Fixes | ✅ Merged | `ProductHeader.tsx`, `attributeRegistry.json` |
++| **#352** | LP-0.4.0: ProductHeader Scaffolding | ✅ Merged | `ProductHeader.tsx` |
++| **#327** | LP-3.0.2: Defensive guards for attributes.overall | ✅ Merged | `useProduct.ts`, `ProductHeader.tsx` |
++| **#282** | LP-1.0.2: Add data-field attributes | ✅ Merged | `ProductAttributesTab.tsx`, `CoreInformationTab.tsx` |
++| **#234** | Wire attributes - AttributeManager, Product Editor | ✅ Merged | `useProduct.ts`, `ProductAttributesTab.tsx` |
++
++---
++
++## Task 2: Staging Deploy Metadata ✅
++
++### Last 3 Commits (Deploy Candidates)
++```
++7acfd0e LP-0.4.7 Ghost Killer - Hard Purge Fallbacks (#360)
++904ab63 LP-0.4.6 Remove shiekhshoes.com ghost defaults (#359)
++c7d3c4b LP-0.4.5 Registry v1.1.3 - Material allow_custom_values (#358)
++```
++
++### Firebase Hosting Configuration
++```json
++{
++  "target": "aoss-staging",
++  "public": "packages/web/dist",
++  "rewrites": [
++    { "source": "/api/importCSV", "function": "importCSV" },
++    { "source": "/api/**", "function": "api" },
++    { "source": "**", "destination": "/index.html" }
++  ]
++}
++```
++
++### Current Deployed Bundle
++- **Filename**: `index-BccJIa6d.js`
++- **Site URL**: https://ropi-aoss-staging.web.app
++- **Last Manual Deploy**: LP-0.4.8 (2025-12-26 21:41:24 UTC)
++- **Deploy Method**: `firebase deploy --only hosting:aoss-staging`
++
++---
++
++## Task 3: Firestore Search for shiekhshoes.com ⚠️
++
++**Status**: Cannot query Firestore without Firebase Admin credentials in this environment.
++
++**Mitigation**: Live bundle verification confirms no `shiekhshoes` string present (see Task 4).
++
++---
++
++## Task 4: Staging Hosting String Search ✅
++
++### curl Test Results
++```bash
++curl -s https://ropi-aoss-staging.web.app/assets/index-BccJIa6d.js | grep -o "shiekhshoes" | wc -l
++# Result: 0 ✅ — No ghost values in live bundle
++```
++
++**Verdict**: `shiekhshoes.com` **NOT PRESENT** in deployed JavaScript bundle.
++
++---
++
++## Task 5: Repository Grep for shiekhshoes.com ✅
++
++```bash
++git grep -n "shiekhshoes.com" -- packages scripts docs
++```
++
++### Results (4 matches)
++| File | Line | Type | Action Required |
++|------|------|------|-----------------|
++| `packages/web/src/components/product/ProductHeader.tsx` | 12 | **Comment only** | ✅ Safe (documentation) |
++| `packages/web/test/unit/CoreInformationTabDataField.spec.tsx` | 152 | **Test fixture** | ⚠️ Review - test mock |
++| `scripts/seed-test-products.js` | 65 | **Seed data** | ⚠️ LP-0.1.2 fix needed |
++| `scripts/seed-test-products.js` | 150 | **Seed data** | ⚠️ LP-0.1.2 fix needed |
++
++### Analysis
++1. **ProductHeader.tsx line 12**: JSDoc comment explaining ghost value debugging — **SAFE**
++2. **CoreInformationTabDataField.spec.tsx line 152**: Test selector for checkbox — **REVIEW**
++3. **seed-test-products.js lines 65, 150**: Test products include `shiekhshoes.com` — **LP-0.1.2 FIX**
++
++---
++
++## Task 6: Seed Script Execution Status ⚠️
++
++### File Location
++- **Path**: `scripts/seed-test-products.js`
++- **Size**: 6,868 bytes
++- **Last Modified**: 2024-12-24 09:25
++
++### Ghost Value Present in Seed Data
++```javascript
++// Line 65
++websites: ['shiekh.com', 'shiekhshoes.com'],
++
++// Line 150  
++websites: ['shiekh.com', 'shiekhshoes.com'],
++```
++
++### Recommendation
++**LP-0.1.2** must update `seed-test-products.js` to:
++1. Remove `shiekhshoes.com` from test product websites arrays
++2. Or gate behind `--include-legacy-sites` flag
++
++---
++
++## Task 7: API Endpoint Sanity Check ✅
++
++### Request
++```bash
++curl -s "https://ropi-aoss-staging.web.app/api/admin/settings/lists"
++```
++
++### Response
++```json
++{"error":"Unauthorized","message":"Valid authentication token required"}
++```
++
++### Verdict
++- **API Routing**: ✅ Working (returns JSON, not HTML)
++- **Auth Gate**: ✅ Working (401 without token)
++- **Endpoint Available**: ✅ Confirmed
++
++---
++
++## Evidence Summary
++
++| Task | Status | Notes |
++|------|--------|-------|
++| 1. Branch & PR Discovery | ✅ PASS | 8 relevant PRs documented |
++| 2. Deploy Metadata | ✅ PASS | Bundle `index-BccJIa6d.js` confirmed |
++| 3. Firestore Search | ⚠️ SKIP | No Firebase credentials in env |
++| 4. Staging String Search | ✅ PASS | 0 matches for `shiekhshoes` |
++| 5. Repo Grep | ✅ PASS | 4 matches documented, 2 need LP-0.1.2 fix |
++| 6. Seed Script Status | ⚠️ WARN | Contains ghost values, needs LP-0.1.2 |
++| 7. API Sanity Check | ✅ PASS | Returns JSON with proper auth gate |
++
++---
++
++## Phase Gate Decision
++
++**LP-0.1.0 Evidence Collection**: ✅ **COMPLETE**
++
++### Blocking Issues for LP-0.1.1/LP-0.1.2
++1. ⚠️ `scripts/seed-test-products.js` contains `shiekhshoes.com` (LP-0.1.2)
++2. ⚠️ Test file `CoreInformationTabDataField.spec.tsx` references ghost site (review)
++
++### Ready for Next Phase
++- **LP-0.1.1**: Material multiSelect UI fix — READY
++- **LP-0.1.2**: Seed script cleanup — READY (addressed by this audit)
++- **LP-0.1.3**: Deploy workflow verification — READY
++- **LP-0.1.4**: Firestore cleanup (if needed) — PENDING Task 3 manual check
++
++---
++
++**Signed**: Lisa LP-0.1.0 Agent  
++**Commit Reference**: `7acfd0e`
+diff --git a/codestop-coderabbit-pr-361.json b/codestop-coderabbit-pr-361.json
+new file mode 100644
+index 00000000..c3603279
+--- /dev/null
++++ b/codestop-coderabbit-pr-361.json
+@@ -0,0 +1,58 @@
++{
++  "pr_number": 361,
++  "pr_title": "fix(material+useProduct): multiSelect renderer + localStorage sanitizer (LP-0.1.1)",
++  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/361",
++  "coderabbit_review_summary": {
++    "status": "reviewed",
++    "review_profile": "CHILL",
++    "files_reviewed": 6,
++    "actionable_comments": 0,
++    "nitpick_comments": 1,
++    "additional_comments": 5
++  },
++  "counts": {
++    "errors": 0,
++    "warnings": 0,
++    "suggestions": 1
++  },
++  "findings": [
++    {
++      "type": "nitpick",
++      "severity": "suggestion",
++      "file": "packages/web/src/hooks/useProduct.ts",
++      "line": "130-142",
++      "title": "Consider type-safe approach for the debug marker",
++      "description": "The `__source = 'localStorage'` marker is added for debugging but `Product` doesn't include this field. The `as Product` cast on line 142 suppresses the type error, which could lead to unexpected behavior if this property is accessed elsewhere.",
++      "suggested_fixes": [
++        "Option 1: Use an intersection type for the debug marker",
++        "Option 2: Remove the marker after logging (if not needed in state)",
++        "Option 3: Keep the current approach but document the limitation"
++      ]
++    }
++  ],
++  "positive_feedback": [
++    {
++      "file": "packages/web/src/components/product/ProductAttributesTab.css",
++      "comment": "LGTM! Clean multi-select styling."
++    },
++    {
++      "file": "packages/web/src/hooks/useAttributes.ts",
++      "comment": "LGTM! Type extension supports custom values in multi-select."
++    },
++    {
++      "file": "packages/web/src/components/product/ProductAttributesTab.tsx",
++      "comment": "LGTM! Well-implemented multi-select with custom value support."
++    },
++    {
++      "file": "packages/web/test/unit/ProductAttributesTab.multiSelect.spec.tsx",
++      "comment": "Excellent test coverage for multi-select functionality!"
++    },
++    {
++      "file": "packages/web/src/components/product/ProductAttributesTab.test.tsx",
++      "comment": "LGTM! Tests updated to align with registry-driven attributes."
++    }
++  ],
++  "blocking_status": false,
++  "blocking_reason": null,
++  "coderabbit_label": "CodeRabbit clean (1 nitpick suggestion only)"
++}
+diff --git a/codestop-coderabbit-pr-362.json b/codestop-coderabbit-pr-362.json
+new file mode 100644
+index 00000000..9c112cf7
+--- /dev/null
++++ b/codestop-coderabbit-pr-362.json
+@@ -0,0 +1,48 @@
++{
++  "pr_number": 362,
++  "pr_title": "chore(seed): gate shiekhshoes.com behind SEED_INCLUDE_TEST_SITES (LP-0.1.2)",
++  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/362",
++  "coderabbit_review_summary": {
++    "status": "reviewed",
++    "review_profile": "CHILL",
++    "files_reviewed": 1,
++    "actionable_comments": 1,
++    "nitpick_comments": 0,
++    "additional_comments": 2
++  },
++  "counts": {
++    "errors": 0,
++    "warnings": 1,
++    "suggestions": 0
++  },
++  "findings": [
++    {
++      "type": "actionable",
++      "severity": "potential_issue",
++      "file": "scripts/seed-test-products.js",
++      "line": 71,
++      "title": "Verify consistent gating and descriptions coverage",
++      "description": "Two products (001 and 003) now use `testWebsites`, but product-002 (line 115) still uses a hard-coded array. Additionally, when `includeTestSites=true`, products 001 and 003 will be assigned to both `shiekh.com` and `shiekhshoes.com`, but their `descriptions` objects only contain entries for `shiekh.com`.",
++      "questions": [
++        "1. Is the exclusion of product-002 from the gating intentional, or should it also use `testWebsites` for consistency?",
++        "2. Does the system handle products assigned to websites that lack corresponding description entries? This could cause validation failures or display issues."
++      ],
++      "requires_adjudication": true
++    }
++  ],
++  "positive_feedback": [
++    {
++      "file": "scripts/seed-test-products.js",
++      "lines": "27-28",
++      "comment": "LGTM! Clear startup logging."
++    },
++    {
++      "file": "scripts/seed-test-products.js",
++      "lines": "55-58",
++      "comment": "LGTM! Gating logic is correct."
++    }
++  ],
++  "blocking_status": true,
++  "blocking_reason": "1 actionable comment requiring Lisa adjudication",
++  "coderabbit_label": "blocked:coderabbit-review"
++}
+diff --git a/codestop-coderabbit-pr-363.json b/codestop-coderabbit-pr-363.json
+new file mode 100644
+index 00000000..96bab3da
+--- /dev/null
++++ b/codestop-coderabbit-pr-363.json
+@@ -0,0 +1,57 @@
++{
++  "pr_number": 363,
++  "pr_title": "infra(deploy): remove || true tolerance, add fail-fast, add Cache-Control header (LP-0.1.3)",
++  "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/363",
++  "coderabbit_review_summary": {
++    "status": "reviewed",
++    "review_profile": "CHILL",
++    "files_reviewed": 2,
++    "actionable_comments": 0,
++    "nitpick_comments": 1,
++    "additional_comments": 3
++  },
++  "counts": {
++    "errors": 0,
++    "warnings": 1,
++    "suggestions": 1
++  },
++  "findings": [
++    {
++      "type": "nitpick",
++      "severity": "suggestion",
++      "file": ".github/workflows/deploy-staging.yml",
++      "line": "119-127",
++      "title": "Consider adding timeouts for Firebase deploy commands",
++      "description": "While the fail-fast approach is excellent, consider adding timeout protection to prevent hung deploys from blocking the workflow indefinitely. GitHub Actions has a default job timeout of 360 minutes.",
++      "suggested_fix": "Wrap critical deploy commands with `timeout 10m` or `timeout 15m`"
++    },
++    {
++      "type": "verification_request",
++      "severity": "warning",
++      "file": "firebase.json",
++      "line": "30-49",
++      "title": "Verify that the build system hashes entry point JS/CSS files, not just chunks",
++      "description": "Vite's default configuration hashes dependency chunks (e.g., `main-abc123.js`) but does NOT hash entry files (e.g., `index.js`). Your firebase.json pattern `**/*.@(js|css)` catches both hashed and unhashed files. If entry files aren't hashed, applying immutable cache with 1-year max-age will prevent users from receiving updates.",
++      "suggested_fixes": [
++        "Configure Vite to hash all files including entry points by setting `entryFileNames` in `build.rollupOptions.output`",
++        "Separate your cache headers to only apply immutable cache to versioned chunks (e.g., `**/*-[hash].js`)"
++      ],
++      "requires_verification": true
++    }
++  ],
++  "positive_feedback": [
++    {
++      "file": ".github/workflows/deploy-staging.yml",
++      "lines": "119-120",
++      "comment": "LGTM: Preview channel now fails fast."
++    },
++    {
++      "file": ".github/workflows/deploy-staging.yml",
++      "line": "124",
++      "comment": "LGTM: Functions deploy now fails fast."
++    }
++  ],
++  "blocking_status": true,
++  "blocking_reason": "1 verification request requiring confirmation of Vite hash behavior",
++  "coderabbit_label": "blocked:coderabbit-review"
++}
+diff --git a/packages/api/firestore-debug.log b/packages/api/firestore-debug.log
+new file mode 100644
+index 00000000..d594ee49
+--- /dev/null
++++ b/packages/api/firestore-debug.log
+@@ -0,0 +1,27 @@
++WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
++WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/home/codespace/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar)
++WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
++WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
++WARNING: A restricted method in java.lang.System has been called
++WARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/home/codespace/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar)
++WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
++WARNING: Restricted methods will be blocked in a future release unless native access is enabled
++
++Dec 26, 2025 8:35:28 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
++INFO: Started WebSocket server on ws://127.0.0.1:9150
++API endpoint: http://127.0.0.1:8080
++If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
++
++   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
++
++If you are running a Firestore in Datastore Mode project, run:
++
++   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080
++
++Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
++Dev App Server is now running.
++
++Dec 26, 2025 8:35:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
++INFO: Detected HTTP/2 connection.
++*** shutting down gRPC server since JVM is shutting down
++*** server shut down
+diff --git a/packages/api/src/services/importService.ts b/packages/api/src/services/importService.ts
+index 69599527..738dce5f 100644
+--- a/packages/api/src/services/importService.ts
++++ b/packages/api/src/services/importService.ts
+@@ -76,7 +76,7 @@ export function parseCSV(csvContent: string): ImportSourceColumns[] {
+   const result = Papa.parse<ImportSourceColumns>(csvContent, {
+     header: true,
+     skipEmptyLines: true,
+-    dynamicTyping: true, // Convert numbers automatically
++    dynamicTyping: false, // LP-0.2.1: Keep all values as strings to preserve MPN/SKU identifiers
+     transformHeader: (header: string) => header.trim(),
+   });
+   
+diff --git a/packages/api/test/phase1_import_verification.test.ts b/packages/api/test/phase1_import_verification.test.ts
+new file mode 100644
+index 00000000..049b0d8f
+--- /dev/null
++++ b/packages/api/test/phase1_import_verification.test.ts
+@@ -0,0 +1,104 @@
++/**
++ * Phase 1 Import Verification Tests
++ * 
++ * LP-0.2.0: RICS field mappings
++ * LP-0.2.1: MPN string preservation fix
++ * 
++ * Validates:
++ * 1. MPN values remain strings (not converted to numbers)
++ * 2. RICS Category and RICS Color are correctly mapped
++ */
++
++import { describe, it, expect } from 'vitest';
++import { parseCSV } from '../src/services/importService';
++import { normalizeImportRow, DEFAULT_COLUMN_MAPPINGS } from '@ropi-aoss/sdk';
++
++describe('Phase 1 Import Verification', () => {
++  describe('MPN String Preservation (LP-0.2.1)', () => {
++    it('should preserve numeric MPN as string, not number', () => {
++      const csvContent = `MPN,RICS Category,RICS Color
++3,Footwear,Black/Red`;
++
++      const parsed = parseCSV(csvContent);
++      
++      // Verify we got one row
++      expect(parsed).toHaveLength(1);
++      
++      // Critical: MPN must be string "3", not number 3
++      expect(parsed[0]['MPN']).toBe('3');
++      expect(typeof parsed[0]['MPN']).toBe('string');
++      
++      // Ensure it's NOT a number
++      expect(parsed[0]['MPN']).not.toBe(3);
++    });
++
++    it('should preserve alphanumeric MPN as string', () => {
++      const csvContent = `MPN,SKU
++14943667,SKU-001
++207012-001,SKU-002`;
++
++      const parsed = parseCSV(csvContent);
++      
++      expect(parsed).toHaveLength(2);
++      expect(parsed[0]['MPN']).toBe('14943667');
++      expect(typeof parsed[0]['MPN']).toBe('string');
++      expect(parsed[1]['MPN']).toBe('207012-001');
++      expect(typeof parsed[1]['MPN']).toBe('string');
++    });
++  });
++
++  describe('RICS Field Mappings (LP-0.2.0)', () => {
++    it('should map RICS Category to ricsCategory', () => {
++      const csvContent = `MPN,RICS Category,RICS Color
++3,Footwear,Black/Red`;
++
++      const parsed = parseCSV(csvContent);
++      const normalized = normalizeImportRow(parsed[0], DEFAULT_COLUMN_MAPPINGS);
++      
++      // Verify RICS Category is mapped to ricsCategory
++      expect(normalized.ricsCategory).toBe('Footwear');
++    });
++
++    it('should map RICS Color to ricsColor', () => {
++      const csvContent = `MPN,RICS Category,RICS Color
++3,Footwear,Black/Red`;
++
++      const parsed = parseCSV(csvContent);
++      const normalized = normalizeImportRow(parsed[0], DEFAULT_COLUMN_MAPPINGS);
++      
++      // Verify RICS Color is mapped to ricsColor
++      expect(normalized.ricsColor).toBe('Black/Red');
++    });
++
++    it('should map snake_case rics_category and rics_color', () => {
++      const csvContent = `MPN,rics_category,rics_color
++ABC-123,Apparel,Navy Blue`;
++
++      const parsed = parseCSV(csvContent);
++      const normalized = normalizeImportRow(parsed[0], DEFAULT_COLUMN_MAPPINGS);
++      
++      expect(normalized.ricsCategory).toBe('Apparel');
++      expect(normalized.ricsColor).toBe('Navy Blue');
++    });
++  });
++
++  describe('Combined MPN + RICS Validation', () => {
++    it('should correctly parse and normalize all fields from CSV', () => {
++      const csvContent = `MPN,RICS Category,RICS Color
++3,Footwear,Black/Red`;
++
++      // Step 1: Parse CSV
++      const parsed = parseCSV(csvContent);
++      
++      // Step 2: Normalize
++      const normalized = normalizeImportRow(parsed[0], DEFAULT_COLUMN_MAPPINGS);
++      
++      // Assertions
++      expect(parsed[0]['MPN']).toBe('3');
++      expect(typeof parsed[0]['MPN']).toBe('string');
++      expect(normalized.mpn).toBe('3');
++      expect(normalized.ricsCategory).toBe('Footwear');
++      expect(normalized.ricsColor).toBe('Black/Red');
++    });
++  });
++});
+diff --git a/packages/sdk/src/normalization/importNormalizer.ts b/packages/sdk/src/normalization/importNormalizer.ts
+index 8b56f9f3..426d96a9 100644
+--- a/packages/sdk/src/normalization/importNormalizer.ts
++++ b/packages/sdk/src/normalization/importNormalizer.ts
+@@ -37,6 +37,12 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
+   { sourceColumn: 'Size', targetField: 'size', transform: 'trim' },
+   { sourceColumn: 'Material', targetField: 'material', transform: 'trim' },
+   
++  // LP-0.2.0: RICS field mappings
++  { sourceColumn: 'RICS Category', targetField: 'ricsCategory', transform: 'trim' },
++  { sourceColumn: 'RICS Color', targetField: 'ricsColor', transform: 'trim' },
++  { sourceColumn: 'rics_category', targetField: 'ricsCategory', transform: 'trim' },
++  { sourceColumn: 'rics_color', targetField: 'ricsColor', transform: 'trim' },
++  
+   // Pricing
+   { sourceColumn: 'MSRP', targetField: 'msrp', transform: 'number' },
+   { sourceColumn: 'Cost', targetField: 'cost', transform: 'number' },
+diff --git a/scripts/diagnose-product-websites.js b/scripts/diagnose-product-websites.js
+new file mode 100644
+index 00000000..cd6772af
+--- /dev/null
++++ b/scripts/diagnose-product-websites.js
+@@ -0,0 +1,102 @@
++#!/usr/bin/env node
++/**
++ * Diagnose Product Websites Field
++ * 
++ * Checks the current state of websites and attributes.website for a product
++ * to help debug checkbox toggle issues.
++ */
++
++const admin = require('firebase-admin');
++const fs = require('fs');
++
++// Initialize Firebase Admin
++if (!admin.apps.length) {
++  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
++  const credBase64 = process.env.GCP_SA_KEY_BASE64;
++  
++  if (credPath && fs.existsSync(credPath)) {
++    const serviceAccount = JSON.parse(fs.readFileSync(credPath, 'utf8'));
++    admin.initializeApp({
++      credential: admin.credential.cert(serviceAccount),
++    });
++  } else if (credBase64) {
++    const serviceAccount = JSON.parse(Buffer.from(credBase64, 'base64').toString('utf8'));
++    admin.initializeApp({
++      credential: admin.credential.cert(serviceAccount),
++    });
++  } else {
++    console.error('❌ No credentials found');
++    process.exit(1);
++  }
++}
++
++const db = admin.firestore();
++
++async function diagnoseProduct(productId) {
++  console.log(`\n🔍 Diagnosing product: ${productId}\n`);
++  
++  try {
++    const doc = await db.collection('products').doc(productId).get();
++    
++    if (!doc.exists) {
++      console.log(`❌ Product ${productId} not found`);
++      return;
++    }
++    
++    const data = doc.data();
++    
++    console.log('─────────────────────────────────────');
++    console.log('📦 PRODUCT WEBSITES DIAGNOSIS');
++    console.log('─────────────────────────────────────');
++    console.log(`ID: ${doc.id}`);
++    console.log(`Name: ${data.name || 'N/A'}`);
++    console.log('');
++    console.log('📍 websites (top-level):');
++    console.log(`   Type: ${typeof data.websites}`);
++    console.log(`   IsArray: ${Array.isArray(data.websites)}`);
++    console.log(`   Value: ${JSON.stringify(data.websites)}`);
++    console.log('');
++    console.log('📍 attributes.website:');
++    console.log(`   Type: ${typeof data.attributes?.website}`);
++    console.log(`   IsArray: ${Array.isArray(data.attributes?.website)}`);
++    console.log(`   Value: ${JSON.stringify(data.attributes?.website)}`);
++    console.log('');
++    console.log('📍 meta.cleanup (if exists):');
++    console.log(`   Value: ${JSON.stringify(data.meta?.cleanup, null, 2)}`);
++    console.log('');
++    console.log('📍 exportReadiness:');
++    console.log(`   Overall: ${data.exportReadiness?.overall}`);
++    console.log(`   byWebsite keys: ${Object.keys(data.exportReadiness?.byWebsite || {}).join(', ')}`);
++    console.log('─────────────────────────────────────');
++    
++    // Check for mismatches
++    const topLevel = data.websites || [];
++    const attrLevel = data.attributes?.website || [];
++    
++    if (JSON.stringify(topLevel) !== JSON.stringify(attrLevel)) {
++      console.log('\n⚠️  MISMATCH DETECTED:');
++      console.log(`   websites:            ${JSON.stringify(topLevel)}`);
++      console.log(`   attributes.website:  ${JSON.stringify(attrLevel)}`);
++    } else {
++      console.log('\n✅ websites and attributes.website are in sync');
++    }
++    
++  } catch (error) {
++    console.error('❌ Error:', error.message);
++  }
++}
++
++// Get product ID from command line or use default test products
++const productIds = process.argv.slice(2);
++if (productIds.length === 0) {
++  // Check common test products
++  Promise.all([
++    diagnoseProduct('test-product-001'),
++    diagnoseProduct('test-product-002'),
++    diagnoseProduct('test-product-003'),
++    diagnoseProduct('123'),
++    diagnoseProduct('14943667'),
++  ]).then(() => process.exit(0));
++} else {
++  Promise.all(productIds.map(id => diagnoseProduct(id))).then(() => process.exit(0));
++}
+diff --git a/scripts/test-websites-toggle.js b/scripts/test-websites-toggle.js
+new file mode 100644
+index 00000000..f445c458
+--- /dev/null
++++ b/scripts/test-websites-toggle.js
+@@ -0,0 +1,85 @@
++#!/usr/bin/env node
++/**
++ * Test Websites Toggle
++ * 
++ * Simulates what the UI updateFields does and verifies the write succeeds.
++ */
++
++const admin = require('firebase-admin');
++const fs = require('fs');
++
++// Initialize Firebase Admin
++if (!admin.apps.length) {
++  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
++  const credBase64 = process.env.GCP_SA_KEY_BASE64;
++  
++  if (credPath && fs.existsSync(credPath)) {
++    const serviceAccount = JSON.parse(fs.readFileSync(credPath, 'utf8'));
++    admin.initializeApp({
++      credential: admin.credential.cert(serviceAccount),
++    });
++  } else if (credBase64) {
++    const serviceAccount = JSON.parse(Buffer.from(credBase64, 'base64').toString('utf8'));
++    admin.initializeApp({
++      credential: admin.credential.cert(serviceAccount),
++    });
++  } else {
++    console.error('❌ No credentials found');
++    process.exit(1);
++  }
++}
++
++const db = admin.firestore();
++
++async function testToggle() {
++  const productId = '123';
++  const ref = db.collection('products').doc(productId);
++  
++  console.log('\n🧪 TEST: Simulating checkbox toggle');
++  console.log('─────────────────────────────────────');
++  
++  // Step 1: Read current state
++  console.log('\n1️⃣ Reading current state...');
++  const before = await ref.get();
++  const beforeData = before.data();
++  console.log('   websites:', JSON.stringify(beforeData.websites));
++  console.log('   attributes.website:', JSON.stringify(beforeData.attributes?.website));
++  
++  // Step 2: Simulate removing "Karmaloop.com" from the list
++  const currentSites = beforeData.websites || [];
++  const newSites = currentSites.filter(s => s !== 'Karmaloop.com');
++  console.log('\n2️⃣ New value (removing Karmaloop.com):', JSON.stringify(newSites));
++  
++  // Step 3: Perform the update (same as updateFields in useProduct)
++  console.log('\n3️⃣ Calling updateDoc with both fields...');
++  await ref.update({
++    websites: newSites,
++    'attributes.website': newSites,
++  });
++  console.log('   ✅ Update complete');
++  
++  // Step 4: Verify the write
++  console.log('\n4️⃣ Verifying write...');
++  const after = await ref.get();
++  const afterData = after.data();
++  console.log('   websites:', JSON.stringify(afterData.websites));
++  console.log('   attributes.website:', JSON.stringify(afterData.attributes?.website));
++  
++  // Step 5: Restore the original value
++  console.log('\n5️⃣ Restoring original value...');
++  await ref.update({
++    websites: currentSites,
++    'attributes.website': currentSites,
++  });
++  const restored = await ref.get();
++  console.log('   websites:', JSON.stringify(restored.data().websites));
++  console.log('   attributes.website:', JSON.stringify(restored.data().attributes?.website));
++  
++  console.log('\n✅ Test complete - Firestore writes work correctly');
++  console.log('─────────────────────────────────────');
++}
++
++testToggle().then(() => process.exit(0)).catch(e => {
++  console.error('❌ Test failed:', e);
++  process.exit(1);
++});

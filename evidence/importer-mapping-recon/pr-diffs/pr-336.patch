@@ -1,0 +1,1072 @@
+diff --git a/logs/lp-3.0.11-capture-run.log b/logs/lp-3.0.11-capture-run.log
+new file mode 100644
+index 00000000..99b6733a
+--- /dev/null
++++ b/logs/lp-3.0.11-capture-run.log
+@@ -0,0 +1,32 @@
++LP-3.0.11 Attribute Create/Save Flow Capture
++=============================================
++
++1. Getting admin token...
++   Token obtained (length: 968)
++
++2. Launching headless browser...
++3. Setting authorization headers...
++4. Navigating to staging...
++5. Setting Firebase auth token...
++6. Navigating to /settings/attributes...
++7. Looking for New Attribute button...
++   New Attribute button not found - checking if sign-in required...
++   Found sign-in trigger, attempting sign-in...
++   ERROR: Still cannot find New Attribute button
++
++12. Saving artifacts...
++    ✓ logs/lp-3.0.11-network.json
++    ✓ logs/lp-3.0.11-network-full.json
++    ✓ logs/lp-3.0.11-console.json
++    ✓ logs/lp-3.0.11-console.txt
++
++13. Analysis Summary:
++    Total network events: 30
++    Attribute API calls: 4
++    POST requests: 0
++    PUT requests: 0
++    Console errors: 4
++    Console warnings: 0
++    ✓ logs/lp-3.0.11-summary.json
++
++14. Closing browser...
+diff --git a/logs/lp-3.0.11-console.json b/logs/lp-3.0.11-console.json
+new file mode 100644
+index 00000000..fab89691
+--- /dev/null
++++ b/logs/lp-3.0.11-console.json
+@@ -0,0 +1,130 @@
++[
++  {
++    "type": "log",
++    "text": "✅ Firebase initialized successfully",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 904
++    },
++    "timestamp": "2025-12-23T02:14:52.550Z"
++  },
++  {
++    "type": "warn",
++    "text": "Sentry DSN not configured - error monitoring disabled",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 12009
++    },
++    "timestamp": "2025-12-23T02:14:52.554Z"
++  },
++  {
++    "type": "log",
++    "text": "🔐 Auth state changed: No user",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 13569
++    },
++    "timestamp": "2025-12-23T02:14:52.622Z"
++  },
++  {
++    "type": "log",
++    "text": "✅ Firebase initialized successfully",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 904
++    },
++    "timestamp": "2025-12-23T02:14:53.540Z"
++  },
++  {
++    "type": "warn",
++    "text": "Sentry DSN not configured - error monitoring disabled",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 12009
++    },
++    "timestamp": "2025-12-23T02:14:53.543Z"
++  },
++  {
++    "type": "log",
++    "text": "🔐 Auth state changed: No user",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 13569
++    },
++    "timestamp": "2025-12-23T02:14:53.580Z"
++  },
++  {
++    "type": "error",
++    "text": "Failed to load resource: the server responded with a status of 401 ()",
++    "location": {
++      "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8"
++    },
++    "timestamp": "2025-12-23T02:14:59.522Z"
++  },
++  {
++    "type": "error",
++    "text": "❌ Email sign-in failed: JSHandle@error",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 14809
++    },
++    "timestamp": "2025-12-23T02:14:59.522Z"
++  },
++  {
++    "type": "error",
++    "text": "[Auth Error] Firebase: Error (auth/request-had-invalid-authentication-credentials.-expected-oauth-2-access-token,-login-cookie-or-other-valid-authentication-credential.-see-https://developers.google.com/identity/sign-in/web/devconsole-project.). JSHandle@object",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 12180
++    },
++    "timestamp": "2025-12-23T02:14:59.523Z"
++  },
++  {
++    "type": "error",
++    "text": "Error fetching attributes: NotAuthenticated: User not signed in. Please sign in to access admin features.",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 54610
++    },
++    "timestamp": "2025-12-23T02:15:01.550Z"
++  },
++  {
++    "type": "log",
++    "text": "✅ Firebase initialized successfully",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 904
++    },
++    "timestamp": "2025-12-23T02:15:04.579Z"
++  },
++  {
++    "type": "warn",
++    "text": "Sentry DSN not configured - error monitoring disabled",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 12009
++    },
++    "timestamp": "2025-12-23T02:15:04.583Z"
++  },
++  {
++    "type": "log",
++    "text": "🔐 Auth state changed: No user",
++    "location": {
++      "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++      "lineNumber": 3544,
++      "columnNumber": 13569
++    },
++    "timestamp": "2025-12-23T02:15:04.606Z"
++  }
++]
+\ No newline at end of file
+diff --git a/logs/lp-3.0.11-console.txt b/logs/lp-3.0.11-console.txt
+new file mode 100644
+index 00000000..f43cbaf6
+--- /dev/null
++++ b/logs/lp-3.0.11-console.txt
+@@ -0,0 +1,13 @@
++[2025-12-23T02:14:52.550Z] [log] ✅ Firebase initialized successfully
++[2025-12-23T02:14:52.554Z] [warn] Sentry DSN not configured - error monitoring disabled
++[2025-12-23T02:14:52.622Z] [log] 🔐 Auth state changed: No user
++[2025-12-23T02:14:53.540Z] [log] ✅ Firebase initialized successfully
++[2025-12-23T02:14:53.543Z] [warn] Sentry DSN not configured - error monitoring disabled
++[2025-12-23T02:14:53.580Z] [log] 🔐 Auth state changed: No user
++[2025-12-23T02:14:59.522Z] [error] Failed to load resource: the server responded with a status of 401 ()
++[2025-12-23T02:14:59.522Z] [error] ❌ Email sign-in failed: JSHandle@error
++[2025-12-23T02:14:59.523Z] [error] [Auth Error] Firebase: Error (auth/request-had-invalid-authentication-credentials.-expected-oauth-2-access-token,-login-cookie-or-other-valid-authentication-credential.-see-https://developers.google.com/identity/sign-in/web/devconsole-project.). JSHandle@object
++[2025-12-23T02:15:01.550Z] [error] Error fetching attributes: NotAuthenticated: User not signed in. Please sign in to access admin features.
++[2025-12-23T02:15:04.579Z] [log] ✅ Firebase initialized successfully
++[2025-12-23T02:15:04.583Z] [warn] Sentry DSN not configured - error monitoring disabled
++[2025-12-23T02:15:04.606Z] [log] 🔐 Auth state changed: No user
+\ No newline at end of file
+diff --git a/logs/lp-3.0.11-network-full.json b/logs/lp-3.0.11-network-full.json
+new file mode 100644
+index 00000000..cd09fd6a
+--- /dev/null
++++ b/logs/lp-3.0.11-network-full.json
+@@ -0,0 +1,327 @@
++[
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/",
++    "method": "GET",
++    "headers": {
++      "accept-language": "en-US,en;q=0.9",
++      "upgrade-insecure-requests": "1",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "sec-ch-ua-platform": "\"Linux\""
++    },
++    "timestamp": "2025-12-23T02:14:52.372Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:52.464Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++    "method": "GET",
++    "headers": {
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:14:52.470Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
++    "method": "GET",
++    "headers": {
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:14:52.470Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:52.481Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:52.519Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "method": "GET",
++    "headers": {
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/home",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "sec-ch-ua-mobile": "?0"
++    },
++    "timestamp": "2025-12-23T02:14:52.611Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "method": "GET",
++    "headers": {
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/home",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "sec-ch-ua-mobile": "?0"
++    },
++    "timestamp": "2025-12-23T02:14:52.617Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:52.630Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:52.631Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "method": "GET",
++    "headers": {
++      "accept-language": "en-US,en;q=0.9",
++      "upgrade-insecure-requests": "1",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "sec-ch-ua-platform": "\"Linux\""
++    },
++    "timestamp": "2025-12-23T02:14:53.515Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:53.528Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++    "method": "GET",
++    "headers": {
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:14:53.537Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:53.537Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
++    "method": "GET",
++    "headers": {
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:14:53.538Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:53.538Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "method": "GET",
++    "headers": {
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "sec-ch-ua-mobile": "?0"
++    },
++    "timestamp": "2025-12-23T02:14:53.575Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:53.575Z"
++  },
++  {
++    "type": "request",
++    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
++    "method": "OPTIONS",
++    "headers": {
++      "accept": "*/*",
++      "access-control-request-headers": "authorization,content-type,x-client-version,x-firebase-client,x-firebase-gmpid",
++      "access-control-request-method": "POST",
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-fetch-mode": "cors",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:14:59.395Z"
++  },
++  {
++    "type": "request",
++    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
++    "method": "POST",
++    "headers": {
++      "x-firebase-client": "eyJ2ZXJzaW9uIjoyLCJoZWFydGJlYXRzIjpbeyJhZ2VudCI6ImZpcmUtY29yZS8wLjE0LjYgZmlyZS1jb3JlLWVzbTIwMjAvMC4xNC42IGZpcmUtanMvIGZpcmUtYXV0aC8xLjEyLjAgZmlyZS1hdXRoLWVzbTIwMjAvMS4xMi4wIGZpcmUtZnN0LzQuOS4zIGZpcmUtZnN0LWVzbTIwMjAvNC45LjMgZmlyZS1qcy1hbGwtYXBwLzEyLjcuMCBmaXJlLWdjcy8wLjE0LjAgZmlyZS1nY3MtZXNtMjAyMC8wLjE0LjAiLCJkYXRlcyI6WyIyMDI1LTEyLTIzIl19XX0",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "x-firebase-gmpid": "1:892791174441:web:2ea5843a253b167d12b338",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "x-client-version": "Chrome/JsCore/12.6.0/FirebaseCore-web",
++      "content-type": "application/json"
++    },
++    "postData": "{\"returnSecureToken\":true,\"email\":\"theo@shiekh.com\",\"password\":\"test\",\"clientType\":\"CLIENT_TYPE_WEB\"}",
++    "timestamp": "2025-12-23T02:14:59.395Z"
++  },
++  {
++    "type": "response",
++    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:59.455Z"
++  },
++  {
++    "type": "response",
++    "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
++    "status": 401,
++    "timestamp": "2025-12-23T02:14:59.521Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "method": "GET",
++    "headers": {
++      "accept-language": "en-US,en;q=0.9",
++      "upgrade-insecure-requests": "1",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "sec-ch-ua-platform": "\"Linux\""
++    },
++    "timestamp": "2025-12-23T02:15:04.566Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "status": 200,
++    "timestamp": "2025-12-23T02:15:04.567Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++    "method": "GET",
++    "headers": {
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:15:04.575Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-CKH2wyY1.js",
++    "status": 200,
++    "timestamp": "2025-12-23T02:15:04.575Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
++    "method": "GET",
++    "headers": {
++      "origin": "https://ropi-aoss-staging.web.app",
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36"
++    },
++    "timestamp": "2025-12-23T02:15:04.576Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/assets/index-Dnokfmns.css",
++    "status": 200,
++    "timestamp": "2025-12-23T02:15:04.576Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "method": "GET",
++    "headers": {
++      "sec-ch-ua-platform": "\"Linux\"",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "referer": "https://ropi-aoss-staging.web.app/settings/attributes",
++      "accept-language": "en-US,en;q=0.9",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "sec-ch-ua-mobile": "?0"
++    },
++    "timestamp": "2025-12-23T02:15:04.602Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/vite.svg",
++    "status": 200,
++    "timestamp": "2025-12-23T02:15:04.604Z"
++  }
++]
+\ No newline at end of file
+diff --git a/logs/lp-3.0.11-network.json b/logs/lp-3.0.11-network.json
+new file mode 100644
+index 00000000..5554f952
+--- /dev/null
++++ b/logs/lp-3.0.11-network.json
+@@ -0,0 +1,44 @@
++[
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "method": "GET",
++    "headers": {
++      "accept-language": "en-US,en;q=0.9",
++      "upgrade-insecure-requests": "1",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "sec-ch-ua-platform": "\"Linux\""
++    },
++    "timestamp": "2025-12-23T02:14:53.515Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "status": 200,
++    "timestamp": "2025-12-23T02:14:53.528Z"
++  },
++  {
++    "type": "request",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "method": "GET",
++    "headers": {
++      "accept-language": "en-US,en;q=0.9",
++      "upgrade-insecure-requests": "1",
++      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
++      "authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4OGQ1YTM3OWI3OGJkZjFlNTBhNDA5MTEzZjJiMGM3NWU0NTJlNDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGhlbyAoQWRtaW4gRTJFKSIsInJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcm9waS1iY2NlZSIsImF1ZCI6InJvcGktYmNjZWUiLCJhdXRoX3RpbWUiOjE3NjY0NTYwOTEsInVzZXJfaWQiOiJ6bUFuOGtLVEUzWlczZk0zODZkOHRpV1c5N1UyIiwic3ViIjoiem1BbjhrS1RFM1pXM2ZNMzg2ZDh0aVdXOTdVMiIsImlhdCI6MTc2NjQ1NjA5MiwiZXhwIjoxNzY2NDU5NjkyLCJlbWFpbCI6InRoZW9Ac2hpZWtoLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRoZW9Ac2hpZWtoLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6ImN1c3RvbSJ9fQ.g_tAh24QFqBeL4Mq95F4akQZwQOoyuYmHULMu2DydWf7wiq0gBMl5ZiegPauunp5yHt45XaIIUrtHoQdEEa2IK8Dl_C6A1MizQybhgiKQq5ylS0OuUffmJZOPPjHUYEfKMz0vcIre2Hin1WCFjne-JEhpvZdT77OHrUgLxKldXL2oNyNJyyfwzWIcOHKI9CVR6JYInbuLMvEnohfl17dOmQjZY5C0YyZCs4hROETGmcLaD5_1GqCeLYFGCQoFHJOYCN3TteXuCvjcA602UV9bqrYWeqIbxrHCjPNUXPDU0b6SnN-CDE2t4I0ElFtDv17UlwdjnP5Wnb84PapWr0Zaw",
++      "sec-ch-ua": "\"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
++      "sec-ch-ua-mobile": "?0",
++      "sec-ch-ua-platform": "\"Linux\""
++    },
++    "timestamp": "2025-12-23T02:15:04.566Z"
++  },
++  {
++    "type": "response",
++    "url": "https://ropi-aoss-staging.web.app/settings/attributes",
++    "status": 200,
++    "timestamp": "2025-12-23T02:15:04.567Z"
++  }
++]
+\ No newline at end of file
+diff --git a/logs/lp-3.0.11-summary.json b/logs/lp-3.0.11-summary.json
+new file mode 100644
+index 00000000..b0a74ac3
+--- /dev/null
++++ b/logs/lp-3.0.11-summary.json
+@@ -0,0 +1,11 @@
++{
++  "timestamp": "2025-12-23T02:15:08.223Z",
++  "totalNetworkEvents": 30,
++  "attributeApiCalls": 4,
++  "postRequests": 0,
++  "putRequests": 0,
++  "consoleErrors": 4,
++  "consoleWarnings": 0,
++  "postDetails": [],
++  "status": "NO_POST_FOUND"
++}
+\ No newline at end of file
+diff --git a/packages/web/src/hooks/useAttributes.ts b/packages/web/src/hooks/useAttributes.ts
+index 68ebe91a..7cc29369 100644
+--- a/packages/web/src/hooks/useAttributes.ts
++++ b/packages/web/src/hooks/useAttributes.ts
+@@ -196,9 +196,12 @@ export function useAttributes() {
+   /**
+    * Create a new attribute.
+    * Pins the item to localStorage so it survives page refresh until server returns it.
++   * LP-3.0.11: Added defensive logging
+    */
+   const createAttribute = async (data: Omit<Attribute, 'createdAt' | 'updatedAt'>): Promise<Attribute> => {
++    console.debug('[useAttributes] createAttribute called', { data });
+     const headers = await getAuthHeaders();
++    console.debug('[useAttributes] Got auth headers, calling POST');
+     const url = `${API_BASE}/api/admin/settings/attributes`;
+ 
+     // POST to server: this returns the created attribute
+@@ -208,6 +211,7 @@ export function useAttributes() {
+       credentials: 'include',
+       body: JSON.stringify(data),
+     });
++    console.debug('[useAttributes] createAttribute POST response:', created);
+ 
+     // Pin to localStorage so it survives page refresh
+     setPinnedMap((prev) => {
+diff --git a/packages/web/src/pages/Settings/AttributeManager.tsx b/packages/web/src/pages/Settings/AttributeManager.tsx
+index 3bc48e45..38a22db6 100644
+--- a/packages/web/src/pages/Settings/AttributeManager.tsx
++++ b/packages/web/src/pages/Settings/AttributeManager.tsx
+@@ -100,7 +100,9 @@ export default function AttributeManager() {
+   const [saveDetails, setSaveDetails] = useState<Array<{ path: string; message: string }> | null>(null);
+ 
+   // LP-3.0.10: Auto-generate attribute_id from label when blank, ensure uniqueness
++  // LP-3.0.11: Added defensive logging to diagnose save issues
+   const handleSave = async () => {
++    console.debug('[AttributeManager] handleSave started', { editingId, formData });
+     setFormError(null);
+     setSaveDetails(null);
+     setFieldErrors({});
+@@ -110,6 +112,7 @@ export default function AttributeManager() {
+       // Basic label check
+       const label = (formData.label || '').trim();
+       if (!label) {
++        console.warn('[AttributeManager] Save aborted: label is empty');
+         setFieldError('label', 'Label is required.');
+         setSaving(false);
+         return;
+@@ -122,7 +125,9 @@ export default function AttributeManager() {
+       if (!rawId) {
+         // Derive from label
+         const baseId = toSnakeCase(label);
++        console.debug('[AttributeManager] Auto-generated ID from label:', { label, baseId });
+         if (!baseId) {
++          console.warn('[AttributeManager] Save aborted: could not derive ID from label');
+           setFormError('Could not derive Attribute ID; please enter one manually.');
+           setSaving(false);
+           return;
+@@ -158,8 +163,10 @@ export default function AttributeManager() {
+ 
+       if (editingId) {
+         // LP-3.0.1: Handle structured response from updateAttribute
++        console.debug('[AttributeManager] Calling updateAttribute', { editingId, formData });
+         const result = await updateAttribute(editingId, formData);
+         if (!result?.ok) {
++          console.error('[AttributeManager] updateAttribute failed:', result);
+           setFormError(result.error || 'Save failed');
+           setSaveDetails(result.details || null);
+           if (result.details) {
+@@ -168,16 +175,20 @@ export default function AttributeManager() {
+           toastError(result.error || 'Failed to update attribute');
+           return;
+         }
++        console.debug('[AttributeManager] updateAttribute succeeded:', result);
+         toastSuccess(`Updated attribute '${editingId}'`);
+       } else {
+         const toCreate = { ...formData, attribute_id: normalizedId } as Omit<Attribute, 'createdAt' | 'updatedAt'>;
++        console.debug('[AttributeManager] Calling createAttribute', { toCreate });
+         const created = await createAttribute(toCreate);
++        console.debug('[AttributeManager] createAttribute succeeded:', created);
+         setRecentlyCreatedId(created.attribute_id);
+         toastSuccess(`Created attribute '${created.attribute_id}'`);
+       }
+ 
+       handleCancel();
+     } catch (err: unknown) {
++      console.error('[AttributeManager] handleSave error:', err);
+       const message = err instanceof Error ? err.message : 'Failed to save attribute';
+       setFormError(message);
+       toastError(message);
+diff --git a/screenshots/lp-3.0.11-01-home.png b/screenshots/lp-3.0.11-01-home.png
+new file mode 100644
+index 00000000..beb00744
+Binary files /dev/null and b/screenshots/lp-3.0.11-01-home.png differ
+diff --git a/screenshots/lp-3.0.11-02-attributes-page.png b/screenshots/lp-3.0.11-02-attributes-page.png
+new file mode 100644
+index 00000000..d22146b0
+Binary files /dev/null and b/screenshots/lp-3.0.11-02-attributes-page.png differ
+diff --git a/screenshots/lp-3.0.11-03-no-button.png b/screenshots/lp-3.0.11-03-no-button.png
+new file mode 100644
+index 00000000..d6b2a2fd
+Binary files /dev/null and b/screenshots/lp-3.0.11-03-no-button.png differ
+diff --git a/screenshots/lp-3.0.11-04-after-signin.png b/screenshots/lp-3.0.11-04-after-signin.png
+new file mode 100644
+index 00000000..9efb7375
+Binary files /dev/null and b/screenshots/lp-3.0.11-04-after-signin.png differ
+diff --git a/screenshots/lp-3.0.11-05-final-state.png b/screenshots/lp-3.0.11-05-final-state.png
+new file mode 100644
+index 00000000..d22146b0
+Binary files /dev/null and b/screenshots/lp-3.0.11-05-final-state.png differ
+diff --git a/screenshots/lp-3.0.11-error.png b/screenshots/lp-3.0.11-error.png
+new file mode 100644
+index 00000000..fcfe7a5e
+Binary files /dev/null and b/screenshots/lp-3.0.11-error.png differ
+diff --git a/scripts/lp-3.0.11-capture-save-flow.js b/scripts/lp-3.0.11-capture-save-flow.js
+new file mode 100644
+index 00000000..0443e9c0
+--- /dev/null
++++ b/scripts/lp-3.0.11-capture-save-flow.js
+@@ -0,0 +1,355 @@
++#!/usr/bin/env node
++/**
++ * LP-3.0.11: Capture network/console during Attribute Manager Save click
++ * 
++ * This script:
++ * 1. Opens staging in headless Chrome
++ * 2. Signs in as admin
++ * 3. Navigates to /settings/attributes
++ * 4. Opens "New Attribute" form
++ * 5. Fills label field (leaves ID blank to test auto-generation)
++ * 6. Clicks Save
++ * 7. Captures all network requests and console logs
++ * 
++ * Run: node scripts/lp-3.0.11-capture-save-flow.js
++ */
++
++const puppeteer = require('puppeteer');
++const fs = require('fs');
++const path = require('path');
++const { execSync } = require('child_process');
++
++const STAGING_URL = 'https://ropi-aoss-staging.web.app';
++
++async function getAdminToken() {
++  try {
++    const token = execSync('node scripts/get-admin-token.js 2>/dev/null', {
++      encoding: 'utf8',
++      cwd: path.resolve(__dirname, '..')
++    }).trim();
++    return token;
++  } catch (e) {
++    console.error('Failed to get admin token:', e.message);
++    return null;
++  }
++}
++
++async function main() {
++  console.log('LP-3.0.11 Attribute Create/Save Flow Capture');
++  console.log('=============================================\n');
++
++  // Get admin token
++  console.log('1. Getting admin token...');
++  const token = await getAdminToken();
++  if (!token) {
++    console.error('ERROR: Could not obtain admin token');
++    process.exit(1);
++  }
++  console.log(`   Token obtained (length: ${token.length})\n`);
++
++  // Launch browser
++  console.log('2. Launching headless browser...');
++  const browser = await puppeteer.launch({
++    headless: 'new',
++    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
++  });
++
++  const context = await browser.createBrowserContext();
++  const page = await context.newPage();
++
++  // Set viewport
++  await page.setViewport({ width: 1920, height: 1080 });
++
++  // Capture ALL console messages
++  const consoleMsgs = [];
++  page.on('console', msg => {
++    consoleMsgs.push({
++      type: msg.type(),
++      text: msg.text(),
++      location: msg.location(),
++      timestamp: new Date().toISOString()
++    });
++  });
++
++  // Capture page errors
++  page.on('pageerror', error => {
++    consoleMsgs.push({
++      type: 'pageerror',
++      text: `Page Error: ${error.message}`,
++      stack: error.stack,
++      timestamp: new Date().toISOString()
++    });
++  });
++
++  // Capture ALL network requests/responses
++  const network = [];
++  
++  page.on('request', req => {
++    network.push({
++      type: 'request',
++      url: req.url(),
++      method: req.method(),
++      headers: req.headers(),
++      postData: req.postData(),
++      timestamp: new Date().toISOString()
++    });
++  });
++
++  page.on('response', async resp => {
++    try {
++      const url = resp.url();
++      // Only capture API responses in detail
++      if (url.includes('/api/')) {
++        let body = '<not-read>';
++        try {
++          body = await resp.text();
++        } catch {}
++        network.push({
++          type: 'response',
++          url: url,
++          status: resp.status(),
++          headers: resp.headers(),
++          body: body,
++          timestamp: new Date().toISOString()
++        });
++      } else {
++        network.push({
++          type: 'response',
++          url: url,
++          status: resp.status(),
++          timestamp: new Date().toISOString()
++        });
++      }
++    } catch {}
++  });
++
++  page.on('requestfailed', req => {
++    network.push({
++      type: 'requestfailed',
++      url: req.url(),
++      method: req.method(),
++      failure: req.failure()?.errorText,
++      timestamp: new Date().toISOString()
++    });
++  });
++
++  try {
++    // Set authorization header for all requests
++    console.log('3. Setting authorization headers...');
++    await page.setExtraHTTPHeaders({
++      'Authorization': `Bearer ${token}`
++    });
++
++    // Navigate to home first (for Firebase auth)
++    console.log('4. Navigating to staging...');
++    await page.goto(STAGING_URL, { waitUntil: 'networkidle2', timeout: 60000 });
++    await page.screenshot({ path: 'screenshots/lp-3.0.11-01-home.png' });
++
++    // Inject token into localStorage for Firebase auth
++    console.log('5. Setting Firebase auth token...');
++    await page.evaluate((tok) => {
++      // Store token for potential auth usage
++      localStorage.setItem('firebase:authUser:AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8:[DEFAULT]', JSON.stringify({
++        uid: 'zmAn8kKTE3ZW3fM386d8tiWW97U2',
++        email: 'theo@shiekh.com',
++        stsTokenManager: {
++          accessToken: tok
++        }
++      }));
++    }, token);
++
++    // Navigate to attributes page
++    console.log('6. Navigating to /settings/attributes...');
++    await page.goto(`${STAGING_URL}/settings/attributes`, { waitUntil: 'networkidle2', timeout: 60000 });
++    await new Promise(r => setTimeout(r, 3000));
++    await page.screenshot({ path: 'screenshots/lp-3.0.11-02-attributes-page.png' });
++
++    // Look for New Attribute button
++    console.log('7. Looking for New Attribute button...');
++    const newBtnSelector = '[data-testid="new-attribute-button"]';
++    const newBtn = await page.$(newBtnSelector);
++    
++    if (!newBtn) {
++      console.log('   New Attribute button not found - checking if sign-in required...');
++      await page.screenshot({ path: 'screenshots/lp-3.0.11-03-no-button.png' });
++      
++      // Try to sign in via UI
++      const signInTrigger = await page.$('[data-testid="signin-trigger"]');
++      if (signInTrigger) {
++        console.log('   Found sign-in trigger, attempting sign-in...');
++        await signInTrigger.click();
++        await new Promise(r => setTimeout(r, 2000));
++        
++        // Fill email/password from env
++        const emailInput = await page.$('[data-testid="email-input"]');
++        const pwdInput = await page.$('[data-testid="password-input"]');
++        if (emailInput && pwdInput) {
++          await emailInput.type('theo@shiekh.com');
++          await pwdInput.type(process.env.VITE_E2E_ADMIN_PASSWORD || 'test');
++          const submitBtn = await page.$('[data-testid="signin-submit"]');
++          if (submitBtn) {
++            await submitBtn.click();
++            await new Promise(r => setTimeout(r, 5000));
++          }
++        }
++        await page.screenshot({ path: 'screenshots/lp-3.0.11-04-after-signin.png' });
++        
++        // Navigate to attributes again
++        await page.goto(`${STAGING_URL}/settings/attributes`, { waitUntil: 'networkidle2', timeout: 60000 });
++        await new Promise(r => setTimeout(r, 3000));
++      }
++    }
++
++    // Try again to find button
++    const newBtnRetry = await page.$(newBtnSelector);
++    if (!newBtnRetry) {
++      console.log('   ERROR: Still cannot find New Attribute button');
++      await page.screenshot({ path: 'screenshots/lp-3.0.11-05-final-state.png' });
++    } else {
++      console.log('   Found New Attribute button, clicking...');
++      await newBtnRetry.click();
++      await new Promise(r => setTimeout(r, 2000));
++      await page.screenshot({ path: 'screenshots/lp-3.0.11-06-new-attr-modal.png' });
++
++      // Fill label field (leave ID blank)
++      console.log('8. Filling label field...');
++      const labelInput = await page.$('[data-testid="attribute-label-input"]');
++      if (labelInput) {
++        await labelInput.type(`LP3011 Test Attr ${Date.now()}`);
++        await new Promise(r => setTimeout(r, 500));
++      }
++
++      // Select data type
++      const dataTypeSelect = await page.$('[data-testid="data-type-select"]');
++      if (dataTypeSelect) {
++        await dataTypeSelect.select('string');
++      }
++
++      // Fill category
++      const categoryInput = await page.$('[data-testid="category-input"]');
++      if (categoryInput) {
++        await categoryInput.type('testing');
++      }
++
++      await page.screenshot({ path: 'screenshots/lp-3.0.11-07-form-filled.png' });
++
++      // Clear network/console before Save to focus on save flow
++      console.log('9. Clearing logs before Save...');
++      const preSaveNetworkCount = network.length;
++      const preSaveConsoleCount = consoleMsgs.length;
++
++      // Click Save
++      console.log('10. Clicking Save button...');
++      const saveBtn = await page.$('[data-testid="save-attribute-button"]');
++      if (saveBtn) {
++        await saveBtn.click();
++        console.log('    Save clicked, waiting for response...');
++        await new Promise(r => setTimeout(r, 5000));
++      } else {
++        console.log('    ERROR: Save button not found');
++      }
++
++      await page.screenshot({ path: 'screenshots/lp-3.0.11-08-after-save.png' });
++
++      // Capture final state
++      console.log('11. Capturing final state...');
++      await new Promise(r => setTimeout(r, 2000));
++      await page.screenshot({ path: 'screenshots/lp-3.0.11-09-final.png' });
++    }
++
++    // Save artifacts
++    console.log('\n12. Saving artifacts...');
++    
++    // Filter network to just post-save and attribute-related
++    const saveNetwork = network.slice(Math.max(0, network.length - 50));
++    const attributeNetwork = network.filter(n => 
++      n.url && (n.url.includes('/attributes') || n.url.includes('/mapping'))
++    );
++
++    fs.writeFileSync(
++      path.join(__dirname, '../logs/lp-3.0.11-network.json'),
++      JSON.stringify(attributeNetwork, null, 2)
++    );
++    console.log('    ✓ logs/lp-3.0.11-network.json');
++
++    fs.writeFileSync(
++      path.join(__dirname, '../logs/lp-3.0.11-network-full.json'),
++      JSON.stringify(network, null, 2)
++    );
++    console.log('    ✓ logs/lp-3.0.11-network-full.json');
++
++    fs.writeFileSync(
++      path.join(__dirname, '../logs/lp-3.0.11-console.json'),
++      JSON.stringify(consoleMsgs, null, 2)
++    );
++    console.log('    ✓ logs/lp-3.0.11-console.json');
++
++    // Console txt format
++    const consoleTxt = consoleMsgs.map(m => 
++      `[${m.timestamp}] [${m.type}] ${m.text}`
++    ).join('\n');
++    fs.writeFileSync(
++      path.join(__dirname, '../logs/lp-3.0.11-console.txt'),
++      consoleTxt
++    );
++    console.log('    ✓ logs/lp-3.0.11-console.txt');
++
++    // Summary
++    const postRequests = attributeNetwork.filter(n => n.method === 'POST');
++    const putRequests = attributeNetwork.filter(n => n.method === 'PUT');
++    const responses = attributeNetwork.filter(n => n.type === 'response');
++    const errors = consoleMsgs.filter(m => m.type === 'error' || m.type === 'pageerror');
++    const warnings = consoleMsgs.filter(m => m.type === 'warning');
++
++    console.log('\n13. Analysis Summary:');
++    console.log(`    Total network events: ${network.length}`);
++    console.log(`    Attribute API calls: ${attributeNetwork.length}`);
++    console.log(`    POST requests: ${postRequests.length}`);
++    console.log(`    PUT requests: ${putRequests.length}`);
++    console.log(`    Console errors: ${errors.length}`);
++    console.log(`    Console warnings: ${warnings.length}`);
++
++    if (postRequests.length > 0) {
++      console.log('\n    POST requests found:');
++      postRequests.forEach(p => {
++        console.log(`      ${p.method} ${p.url}`);
++        if (p.headers?.authorization) {
++          console.log(`        Auth header: present (${p.headers.authorization.substring(0, 20)}...)`);
++        } else {
++          console.log(`        Auth header: MISSING`);
++        }
++      });
++    }
++
++    const summary = {
++      timestamp: new Date().toISOString(),
++      totalNetworkEvents: network.length,
++      attributeApiCalls: attributeNetwork.length,
++      postRequests: postRequests.length,
++      putRequests: putRequests.length,
++      consoleErrors: errors.length,
++      consoleWarnings: warnings.length,
++      postDetails: postRequests.map(p => ({
++        url: p.url,
++        hasAuthHeader: !!p.headers?.authorization,
++        postData: p.postData
++      })),
++      status: postRequests.length > 0 ? 'POST_ATTEMPTED' : 'NO_POST_FOUND'
++    };
++
++    fs.writeFileSync(
++      path.join(__dirname, '../logs/lp-3.0.11-summary.json'),
++      JSON.stringify(summary, null, 2)
++    );
++    console.log('    ✓ logs/lp-3.0.11-summary.json');
++
++  } catch (error) {
++    console.error('Error during capture:', error);
++    await page.screenshot({ path: 'screenshots/lp-3.0.11-error.png' });
++  } finally {
++    console.log('\n14. Closing browser...');
++    await browser.close();
++  }
++}
++
++main().catch(console.error);
