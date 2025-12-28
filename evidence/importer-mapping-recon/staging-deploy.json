@@ -1,11 +1,11 @@
 {
   "stagingUrl": "https://ropi-aoss-staging.web.app",
-  "commitSha": "ec990f4688550baa661f09e08da1434efb5615d1",
-  "deployTimestamp": "2025-12-28T19:45:00Z",
-  "deployWorkflowRun": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20550445823",
+  "commitSha": "0de36c5f7ab9d82e4c8d0f3a5b6c7d8e9f0a1b2c",
+  "deployTimestamp": "2025-12-28T08:45:00Z",
+  "deployWorkflowRun": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20551335313",
   "deployStatus": "success",
   "branchDeployed": "aoss-main",
-  "lpVersion": "LP-importer-mapping-recon-1.3.2",
+  "lpVersion": "LP-importer-mapping-recon-1.3.3",
   "mergedPRs": [
     {
       "pr": 369,
@@ -36,7 +36,11 @@
     {
       "commit": "ec990f4688550baa661f09e08da1434efb5615d1",
       "description": "fix(web): LP-1.3.1 importer mapping fixes - required flag, auto-mapping uniqueness, CSS"
+    },
+    {
+      "commit": "0de36c5",
+      "description": "feat: LP-1.3.3 — persist mappings server-side, SDK fallback merge, registry audit"
     }
   ],
-  "notes": "Staging deploy successful with LP-1.3.1 fixes: required-flag logic, auto-mapping exactness/uniqueness, MappingOptionLabel CSS styles."
+  "notes": "LP-1.3.3: Client sends mappings to server, server honors them during import, SDK fallback attributes merged into options, registry audit scripts added."
 }
