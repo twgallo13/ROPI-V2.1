@@ -1,0 +1,53 @@
+{
+  "_docId": "451-9103-blk1",
+  "_capturedAt": "2025-12-28T21:24:46.738Z",
+  "data": {
+    "roUploadBatchId": null,
+    "statusFlags": {
+      "uploaded_to_ro": false,
+      "ready_for_export": false,
+      "validation_status": "valid"
+    },
+    "roUploadDate": null,
+    "core": {
+      "createdAt": "2025-12-28T20:33:29.427Z",
+      "sku": "SHK3054050",
+      "brand": "ICE CREAM/ROC",
+      "status": "draft",
+      "mpn": "451-9103-BLK1",
+      "title": "b359bd97-d460-4082-9707-b3bc01653c38",
+      "firstReceived": "2025-12-26T00:00:00.000Z",
+      "updatedAt": "2025-12-28T21:03:45.283Z"
+    },
+    "_meta": {
+      "source": "csv",
+      "importedAt": "2025-12-28T21:03:43.019Z",
+      "normalizedAt": "2025-12-28T21:03:45.283Z",
+      "validatedAt": "2025-12-28T21:03:45.283Z"
+    },
+    "inventory": {
+      "quantity": 0
+    },
+    "exportReadiness": {
+      "overall": 0,
+      "byWebsite": {}
+    },
+    "smartSuggestions": [],
+    "observations": [],
+    "websites": [],
+    "attributes": {
+      "rics_color": "BLACK",
+      "rics_long_desc": "running sweatpants",
+      "rics_short_description": "running sweatpants",
+      "currency": "USD",
+      "rics_category": "Apparel||Mens||Pants||Casual",
+      "department": "Footwear"
+    },
+    "media": {
+      "gallery": []
+    },
+    "id": "451-9103-blk1",
+    "descriptions": {},
+    "department": ""
+  }
+}

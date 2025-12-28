@@ -54,6 +54,58 @@ function mergeTopLevelAttributesToAttributesMap(docData: Record<string, unknown>
 }
 
 /**
+ * Core fields that should be merged from nested core object to top-level.
+ * LP-1.3.7: Import engine writes to product.core.*, but ProductHeader expects product.*
+ */
+const CORE_FIELD_KEYS = [
+  'mpn', 'sku', 'brand', 'title', 'name', 'status', 'description',
+  'styleId', 'style_id', 'firstReceived', 'first_received', 
+  'lastReceived', 'last_received', 'launchDate', 'launch_date',
+  'createdAt', 'updatedAt',
+];
+
+/**
+ * Inventory fields that should be merged from nested inventory object to top-level.
+ * LP-1.3.7: Import engine writes to product.inventory.*, but ProductHeader expects product.*
+ */
+const INVENTORY_FIELD_KEYS = [
+  'quantity', 'warehouse_inv', 'store_inv', 'whs_inv', 'total_inv',
+  'warehouse', 'location',
+];
+
+/**
+ * Merge core fields from nested core object to top-level for UI compatibility.
+ * LP-1.3.7: Import engine writes product.core.mpn, but ProductHeader reads product.mpn
+ */
+function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<string, unknown> {
+  const core = docData.core as Record<string, unknown> | undefined;
+  const inventory = docData.inventory as Record<string, unknown> | undefined;
+  
+  const merged = { ...docData };
+  
+  // Merge core fields
+  if (core && typeof core === 'object') {
+    for (const key of CORE_FIELD_KEYS) {
+      // Only merge if top-level is undefined/null and core has the value
+      if ((merged[key] === undefined || merged[key] === null) && core[key] !== undefined && core[key] !== null) {
+        merged[key] = core[key];
+      }
+    }
+  }
+  
+  // Merge inventory fields
+  if (inventory && typeof inventory === 'object') {
+    for (const key of INVENTORY_FIELD_KEYS) {
+      if ((merged[key] === undefined || merged[key] === null) && inventory[key] !== undefined && inventory[key] !== null) {
+        merged[key] = inventory[key];
+      }
+    }
+  }
+
+  return merged;
+}
+
+/**
  * useProduct Hook
  * 
  * Manages product data with Firestore persistence (when available) 
@@ -107,11 +159,14 @@ export function useProduct(productId: string) {
               const docData = snap.data();
               console.debug(`[useProduct] Product data received, keys:`, Object.keys(docData).slice(0, 10));
               
+              // LP-1.3.7: Merge core fields to top-level for UI compatibility
+              const withCoreFields = mergeCoreFieldsToTopLevel(docData);
+              
               // Merge top-level attribute keys into attributes map for compatibility
-              const mergedAttributes = mergeTopLevelAttributesToAttributesMap(docData);
+              const mergedAttributes = mergeTopLevelAttributesToAttributesMap(withCoreFields);
               const productWithMergedAttrs = {
                 id: snap.id,
-                ...docData,
+                ...withCoreFields,
                 attributes: mergedAttributes,
               } as Product;
               setProduct(productWithMergedAttrs);
