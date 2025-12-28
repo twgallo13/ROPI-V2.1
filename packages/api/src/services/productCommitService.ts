@@ -45,53 +45,120 @@ export interface BatchProcessResult {
 }
 
 /**
+ * Fields that belong in specific product sections (not attributes)
+ * LP-1.3.6: Explicit mapping for known field types
+ */
+const CORE_FIELDS = new Set(['sku', 'title', 'brand', 'description', 'mpn', 'style_id', 'name', 'status']);
+const PRICING_FIELDS = new Set(['msrp', 'cost', 'retailPrice', 'scom_regular_price', 'scom_sale_price', 'map']);
+const INVENTORY_FIELDS = new Set(['quantity', 'warehouse', 'location', 'warehouse_inv', 'store_inv', 'whs_inv']);
+const MEDIA_FIELDS = new Set(['primaryImage', 'images']);
+const DATE_FIELDS = new Set(['firstReceived', 'first_received', 'lastReceived', 'last_received', 'launchDate', 'launch_date']);
+const META_FIELDS = new Set(['source', 'importedAt', 'normalizedAt', 'validatedAt']);
+const DIMENSION_FIELDS = new Set(['height', 'width', 'length', 'weight']);
+
+/**
  * Convert ImportEngineRow to Product document
+ * LP-1.3.6: Preserve all normalized fields - don't discard unmapped data
  * 
  * @param row - Import engine row with normalized fields
  * @returns Product document ready for Firestore
  */
-function convertRowToProduct(row: ImportEngineRow): Product {
+export function convertRowToProduct(row: ImportEngineRow): Product {
   const { normalized, validation, meta } = row;
   const now = new Date().toISOString();
 
-  // Build core fields (filter out undefined values)
+  // Build core fields - LP-1.3.6: Include MPN as primary identifier (LP-2.1.0)
   const core: ProductCore = {
     sku: normalized.sku || '',
-    title: normalized.title || '',
+    title: normalized.title || normalized.name || '',
     brand: normalized.brand || '',
+    ...(normalized.mpn && { mpn: normalized.mpn }),
+    ...(normalized.style_id && { styleId: normalized.style_id }),
     ...(normalized.description && { description: normalized.description }),
+    ...(normalized.first_received && { firstReceived: normalized.first_received }),
+    ...(normalized.firstReceived && { firstReceived: normalized.firstReceived }),
+    ...(normalized.last_received && { lastReceived: normalized.last_received }),
+    ...(normalized.lastReceived && { lastReceived: normalized.lastReceived }),
+    ...(normalized.launch_date && { launchDate: normalized.launch_date }),
+    ...(normalized.launchDate && { launchDate: normalized.launchDate }),
     status: 'draft', // New imports start as drafts
     createdAt: now,
     updatedAt: now,
   };
 
-  // Build attributes (filter out undefined values)
+  // Build attributes - LP-1.3.6: Include all attribute fields including RICS
   const attributes: ProductAttributes = {};
+  
+  // Standard attributes
   if (normalized.department) attributes.department = normalized.department;
   if (normalized.class) attributes.class = normalized.class;
   if (normalized.category) attributes.category = normalized.category;
   if (normalized.subcategory) attributes.subcategory = normalized.subcategory;
   if (normalized.gender) attributes.gender = normalized.gender;
   if (normalized.ageGroup) attributes.ageGroup = normalized.ageGroup;
+  if (normalized.age_group) attributes.ageGroup = normalized.age_group;
   if (normalized.color) attributes.color = normalized.color;
   if (normalized.size) attributes.size = normalized.size;
   if (normalized.material) attributes.material = normalized.material;
-
-  // Build pricing (filter out undefined values)
-  let pricing: ProductPricing | undefined = undefined;
-  if (normalized.msrp || normalized.cost || normalized.retailPrice) {
-    pricing = { currency: 'USD' };
-    if (normalized.msrp) pricing.msrp = normalized.msrp;
-    if (normalized.cost) pricing.cost = normalized.cost;
-    if (normalized.retailPrice) pricing.retailPrice = normalized.retailPrice;
+  
+  // RICS fields - LP-1.3.6: Preserve reference data
+  if (normalized.rics_color) attributes.rics_color = normalized.rics_color;
+  if (normalized.rics_category) attributes.rics_category = normalized.rics_category;
+  if (normalized.rics_short_description) attributes.rics_short_description = normalized.rics_short_description;
+  if (normalized.rics_long_desc) attributes.rics_long_desc = normalized.rics_long_desc;
+  
+  // LP-1.3.6: Capture ALL remaining normalized fields as attributes
+  // This ensures no imported data is silently discarded
+  const reservedFields = new Set([
+    ...CORE_FIELDS, ...PRICING_FIELDS, ...INVENTORY_FIELDS, 
+    ...MEDIA_FIELDS, ...DATE_FIELDS, ...META_FIELDS, ...DIMENSION_FIELDS
+  ]);
+  
+  for (const [key, value] of Object.entries(normalized)) {
+    if (value !== undefined && value !== null && value !== '' && !reservedFields.has(key)) {
+      // Only add if not already set (standard attributes take precedence)
+      if (!(key in attributes)) {
+        attributes[key] = value;
+      }
+    }
   }
 
-  // Build inventory (filter out undefined values)
+  // Build pricing (filter out undefined values) - LP-1.3.6: Include SCOM prices
+  let pricing: ProductPricing | undefined = undefined;
+  const hasAnyPricing = normalized.msrp || normalized.cost || normalized.retailPrice || 
+                        normalized.scom_regular_price || normalized.scom_sale_price || normalized.map;
+  if (hasAnyPricing) {
+    pricing = { currency: 'USD' };
+    if (normalized.msrp) pricing.msrp = Number(normalized.msrp);
+    if (normalized.cost) pricing.cost = Number(normalized.cost);
+    if (normalized.retailPrice) pricing.retailPrice = Number(normalized.retailPrice);
+    if (normalized.scom_regular_price) (pricing as any).scom_regular_price = Number(normalized.scom_regular_price);
+    if (normalized.scom_sale_price) (pricing as any).scom_sale_price = Number(normalized.scom_sale_price);
+    if (normalized.map) (pricing as any).map = Number(normalized.map);
+  }
+
+  // Build inventory (filter out undefined values) - LP-1.3.6: Include warehouse/store inv
   let inventory: ProductInventory | undefined = undefined;
-  if (normalized.quantity !== undefined) {
-    inventory = { quantity: normalized.quantity };
+  const hasAnyInventory = normalized.quantity !== undefined || normalized.warehouse_inv || 
+                          normalized.store_inv || normalized.whs_inv || normalized.warehouse;
+  if (hasAnyInventory) {
+    inventory = {};
+    if (normalized.quantity !== undefined) inventory.quantity = Number(normalized.quantity);
     if (normalized.warehouse) inventory.warehouse = normalized.warehouse;
     if (normalized.location) inventory.location = normalized.location;
+    if (normalized.warehouse_inv) (inventory as any).warehouse_inv = Number(normalized.warehouse_inv);
+    if (normalized.store_inv) (inventory as any).store_inv = Number(normalized.store_inv);
+    if (normalized.whs_inv) (inventory as any).whs_inv = Number(normalized.whs_inv);
+  }
+  
+  // Build dimensions if present
+  let dimensions: any = undefined;
+  if (normalized.height || normalized.width || normalized.length || normalized.weight) {
+    dimensions = {};
+    if (normalized.height) dimensions.height = Number(normalized.height);
+    if (normalized.width) dimensions.width = Number(normalized.width);
+    if (normalized.length) dimensions.length = Number(normalized.length);
+    if (normalized.weight) dimensions.weight = Number(normalized.weight);
   }
 
   // Build media (filter out undefined values)
@@ -114,11 +181,13 @@ function convertRowToProduct(row: ImportEngineRow): Product {
   };
 
   // Build complete product (only include defined optional fields)
+  // LP-1.3.6: Include all sections that have data
   const product: Product = {
     core,
     attributes,
     ...(pricing && { pricing }),
     ...(inventory && { inventory }),
+    ...(dimensions && { dimensions }),
     ...(media && { media }),
     statusFlags,
     roUploadBatchId: null,

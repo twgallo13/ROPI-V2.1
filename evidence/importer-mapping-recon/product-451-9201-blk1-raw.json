@@ -1,0 +1,33 @@
+{
+  "docId": "451-9201-blk1",
+  "data": {
+    "core": {
+      "createdAt": "2025-12-28T20:33:28.932Z",
+      "sku": "SHK3054058",
+      "title": "",
+      "brand": "ICE CREAM/ROC",
+      "status": "draft",
+      "updatedAt": "2025-12-28T20:33:28.932Z"
+    },
+    "roUploadBatchId": null,
+    "statusFlags": {
+      "uploaded_to_ro": false,
+      "ready_for_export": false,
+      "validation_status": "valid"
+    },
+    "_meta": {
+      "importedAt": "2025-12-28T20:33:26.506Z",
+      "normalizedAt": "2025-12-28T20:33:28.932Z",
+      "source": "csv",
+      "validatedAt": "2025-12-28T20:33:28.932Z"
+    },
+    "roUploadDate": null,
+    "exportReadiness": {
+      "overall": 0,
+      "byWebsite": {}
+    },
+    "attributes": {
+      "fast_fashion": true
+    }
+  }
+}
