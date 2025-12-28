@@ -6,7 +6,7 @@
  * against the attribute registry domain constraints.
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import SmartRulesEngine, {
   validateGeneratedValue,
   type SmartRule,

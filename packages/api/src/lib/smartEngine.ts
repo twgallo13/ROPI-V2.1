@@ -939,7 +939,9 @@ export class SmartRulesEngine {
         // Determine if auto-apply is allowed
         const currentValue = deepGet(product, rule.action.targetField);
         const userEdited = isUserEdited(product, rule.action.targetField);
-        const previouslyApplied = product._appliedRules?.[rule.action.targetField];
+        // Use normalized key (dots -> underscores) to match storage format
+        const appliedRulesKey = rule.action.targetField.replace(/\./g, '_');
+        const previouslyApplied = product._appliedRules?.[appliedRulesKey];
         
         let canAutoApply = false;
         if (

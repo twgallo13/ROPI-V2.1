@@ -31,9 +31,15 @@ const PRODUCTS_COLLECTION = 'products';
 const SMART_RULES_SETTINGS = 'settings/smartRules/rules';
 
 /**
- * Flag field to prevent trigger loops
+ * Timestamp field to prevent trigger loops (ms since epoch)
+ * Skip execution if this timestamp is in the future
  */
-const SKIP_FLAG = '_skipSmartRules';
+const SKIP_UNTIL_FIELD = '_smartRulesSkipUntil';
+
+/**
+ * Skip window duration in milliseconds (10 seconds)
+ */
+const SKIP_WINDOW_MS = 10000;
 
 /**
  * Maximum rules to load per evaluation
@@ -87,6 +93,7 @@ async function loadActiveRules(): Promise<SmartRule[]> {
     return rules;
   } catch (error) {
     logger.error('Error loading Smart Rules:', error);
+    console.error('[SmartRules] Failed to load active rules:', error);
     return [];
   }
 }
@@ -104,7 +111,8 @@ async function writeSuggestionsToProduct(
   result: EngineResult
 ): Promise<void> {
   const updates: Record<string, unknown> = {
-    [SKIP_FLAG]: true, // Prevent trigger loop
+    // Set skip-until timestamp to prevent trigger loops (10s window)
+    [SKIP_UNTIL_FIELD]: Date.now() + SKIP_WINDOW_MS,
     _smartRulesRanAt: admin.firestore.FieldValue.serverTimestamp(),
   };
   
@@ -168,17 +176,7 @@ async function writeSuggestionsToProduct(
   }
   
   await productRef.update(updates);
-  
-  // Clear skip flag after short delay to allow for next legitimate update
-  setTimeout(async () => {
-    try {
-      await productRef.update({
-        [SKIP_FLAG]: admin.firestore.FieldValue.delete(),
-      });
-    } catch {
-      // Ignore - document may have been deleted
-    }
-  }, 2000);
+  // Skip-until timestamp auto-expires - no async cleanup needed
 }
 
 // ============================================================================
@@ -222,9 +220,11 @@ export const onProductWrite = onDocumentWritten(
       return null;
     }
     
-    // Skip if flag is set (prevents trigger loops)
-    if (productData[SKIP_FLAG]) {
-      logger.debug(`Skipping Smart Rules for ${mpn} (skip flag set)`);
+    // Skip if within the skip window (prevents trigger loops)
+    const skipUntil = productData[SKIP_UNTIL_FIELD] as number | undefined;
+    if (skipUntil && skipUntil > Date.now()) {
+      const remainingMs = skipUntil - Date.now();
+      logger.debug(`Skipping Smart Rules for ${mpn} (skip window active, ${remainingMs}ms remaining)`);
       return null;
     }
     
