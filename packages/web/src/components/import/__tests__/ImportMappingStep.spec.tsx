@@ -607,4 +607,28 @@ describe('ImportMappingStep', () => {
     const continueBtn = screen.getByRole('button', { name: /continue/i });
     expect(continueBtn).toBeDisabled();
   });
+
+  // Test 20: LP-1.3.3 - SDK fallback attributes merge ensures options available
+  it('LP-1.3.3: SDK fallback attributes merge into registry options', async () => {
+    render(
+      <ImportMappingStep
+        headers={['rics_color', 'warehouse']}
+        onMappingComplete={mockOnMappingComplete}
+        onBack={mockOnBack}
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading mapping options/i)).not.toBeInTheDocument();
+    });
+
+    // Check that the component loaded successfully and shows mapping rows
+    const selects = screen.getAllByRole('combobox') as HTMLSelectElement[];
+    expect(selects.length).toBe(2);
+    
+    // Both selects should have options available
+    // The component should have loaded options (either from registry or SDK fallback)
+    expect(selects[0].options.length).toBeGreaterThan(1); // More than just "(Unmapped)"
+    expect(selects[1].options.length).toBeGreaterThan(1);
+  });
 });

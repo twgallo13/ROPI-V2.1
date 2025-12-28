@@ -129,6 +129,50 @@ export function ImportMappingStep({ headers, onMappingComplete, onBack }: Import
   const [loadingAttrs, setLoadingAttrs] = useState<boolean>(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
+  /**
+   * LP-1.3.3: Merge SDK fallback attributes into registry options
+   * Ensures RICS and Warehouse fields appear even if not in registry
+   */
+  function mergeSDKFallbackAttributes(registryOptions: AttributeOption[]): AttributeOption[] {
+    const registryIds = new Set(registryOptions.map(o => o.value));
+    const merged = [...registryOptions];
+    
+    for (const m of DEFAULT_COLUMN_MAPPINGS) {
+      const key = (m as any).targetField;
+      if (!registryIds.has(key)) {
+        // Create option from SDK mapping for missing fields (RICS, warehouse, etc.)
+        const srcs = Array.isArray((m as any).sourceColumn)
+          ? (m as any).sourceColumn.map(String)
+          : [String((m as any).sourceColumn)];
+        const label = srcs[0] || key;
+        
+        // Determine usage based on field naming convention
+        const isRics = key.startsWith('rics_') || key.toLowerCase().includes('rics');
+        const usage = isRics ? 'reference_only' : undefined;
+        
+        const opt: AttributeOption = {
+          value: key,
+          attributeId: key,
+          friendlyLabel: isRics ? `${label} (reference only)` : label,
+          importerColumns: srcs,
+          usage,
+          required: !!(m as any).required,
+        };
+        merged.push(opt);
+        registryIds.add(key);
+      }
+    }
+    
+    // Re-sort: required first, non-reference_only first, then alphabetically
+    return merged.sort((a, b) => {
+      if (a.required !== b.required) return a.required ? -1 : 1;
+      if ((a.usage === 'reference_only') !== (b.usage === 'reference_only')) {
+        return a.usage === 'reference_only' ? 1 : -1;
+      }
+      return a.friendlyLabel.localeCompare(b.friendlyLabel);
+    });
+  }
+
   // LP-1.2.0: Load attributes from registry on mount
   useEffect(() => {
     let mounted = true;
@@ -139,7 +183,9 @@ export function ImportMappingStep({ headers, onMappingComplete, onBack }: Import
         if (!mounted) return;
         
         const options = buildRegistryOptions(attrs);
-        setFieldOptions(options);
+        // LP-1.3.3: Merge SDK fallback attributes (RICS, warehouse, etc.)
+        const mergedOptions = mergeSDKFallbackAttributes(options);
+        setFieldOptions(mergedOptions);
         setFetchError(null);
       } catch (err: any) {
         console.error('Failed to fetch attributes from registry:', err);

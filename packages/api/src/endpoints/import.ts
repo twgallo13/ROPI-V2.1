@@ -70,20 +70,23 @@ const corsHandler = cors({
 
 /**
  * Parse multipart/form-data upload
- * Extracts CSV file content from request
+ * Extracts CSV file content and form fields from request
  * 
  * LP-3.0.6: Fixed for 2nd Gen Cloud Functions (Cloud Run)
  * Uses rawBody buffer instead of req.pipe() since Cloud Run pre-buffers the body
+ * LP-1.3.3: Also captures form fields (e.g., mappings JSON)
  */
 async function parseUpload(req: ExpressRequest): Promise<{
   csvContent: string;
   fileName: string;
+  fields: Record<string, string>;
 }> {
   return new Promise((resolve, reject) => {
     const busboy = Busboy({ headers: req.headers });
     let csvContent = '';
     let fileName = 'unknown.csv';
     let fileReceived = false;
+    const formFields: Record<string, string> = {};
 
     busboy.on('file', (fieldName: string, file: NodeJS.ReadableStream, info: { filename: string }) => {
       fileName = info.filename;
@@ -100,13 +103,18 @@ async function parseUpload(req: ExpressRequest): Promise<{
       });
     });
 
+    // LP-1.3.3: Capture non-file fields such as 'mappings'
+    busboy.on('field', (fieldname: string, val: string) => {
+      formFields[fieldname] = val;
+    });
+
     busboy.on('finish', () => {
       if (!fileReceived) {
         reject(new Error('No file uploaded'));
       } else if (!csvContent) {
         reject(new Error('Empty file uploaded'));
       } else {
-        resolve({ csvContent, fileName });
+        resolve({ csvContent, fileName, fields: formFields });
       }
     });
 
@@ -164,14 +172,26 @@ async function importHandler(req: AuthenticatedRequest, res: ExpressResponse): P
       return;
     }
 
-    // Parse upload
-    const { csvContent, fileName } = await parseUpload(req);
+    // Parse upload (captures fields including mappings)
+    const { csvContent, fileName, fields } = await parseUpload(req);
 
-    // Process CSV import
+    // LP-1.3.3: Extract mappings JSON (optional) — client sends user-selected mappings
+    let clientMappings: Record<string, string> | undefined = undefined;
+    if (fields && fields.mappings) {
+      try {
+        clientMappings = JSON.parse(fields.mappings);
+        console.log('Received client mappings:', Object.keys(clientMappings || {}).length, 'mappings');
+      } catch (err) {
+        console.warn('Invalid mappings JSON provided by client, using defaults', err);
+      }
+    }
+
+    // Process CSV import and pass client mappings (if provided)
     const result = await processCSVImport(
       csvContent,
       fileName,
-      req.auth.uid
+      req.auth.uid,
+      { mappings: clientMappings }
     );
 
     // Return success response

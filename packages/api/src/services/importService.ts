@@ -35,12 +35,15 @@ export { BatchValidationResult, ValidatorRowResult };
 
 /**
  * LP-2.1.1: Import validation options
+ * LP-1.3.3: Added mappings for client-provided column mappings
  */
 export interface ImportValidationOptions {
   /** If true, only validate - don't persist to Firestore */
   dryRun?: boolean;
   /** If true, fail the entire batch on any blocking error */
   strictMode?: boolean;
+  /** LP-1.3.3: Client-provided column mappings (csvHeader → attributeId) */
+  mappings?: Record<string, string>;
 }
 
 /**
@@ -381,7 +384,7 @@ export async function validateCSVImport(
  * @param csvContent - CSV file content
  * @param fileName - Original file name
  * @param userId - User ID who initiated import
- * @param options - Validation options (dryRun, strictMode)
+ * @param options - Validation options (dryRun, strictMode, mappings)
  * @returns Import batch with summary
  */
 export async function processCSVImport(
@@ -396,7 +399,7 @@ export async function processCSVImport(
   warningCount: number;
   validationResult?: ImportValidationResult;
 }> {
-  const { dryRun = false, strictMode = false } = options;
+  const { dryRun = false, strictMode = false, mappings: clientMappings } = options;
   
   // Generate batch ID
   const batchId = uuidv4();
@@ -405,8 +408,9 @@ export async function processCSVImport(
     // Parse CSV
     const csvData = parseCSV(csvContent);
     
-    // Build import rows with normalization and validation
-    const rows = buildImportRows(csvData, batchId, userId);
+    // LP-1.3.3: Build import rows with client mappings if provided
+    // buildImportRows accepts optional mappings parameter
+    const rows = buildImportRows(csvData, batchId, userId, clientMappings);
     
     // LP-2.1.1: Run validation layer (MPN required, attribute registry checks)
     const validationResult = await validateImportRows(rows);

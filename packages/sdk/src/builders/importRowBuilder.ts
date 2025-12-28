@@ -105,21 +105,48 @@ export function buildImportRow(
 }
 
 /**
+ * LP-1.3.3: Convert client mappings object to ColumnMapping array
+ * Client sends { csvHeader: attributeId } object; we convert to ColumnMapping[] format
+ */
+function convertClientMappings(clientMappings: Record<string, string>): ColumnMapping[] {
+  return Object.entries(clientMappings).map(([sourceColumn, targetField]) => ({
+    sourceColumn,
+    targetField,
+    transform: 'trim' as const,
+  }));
+}
+
+/**
  * Build multiple import rows from CSV data
  * 
  * @param csvData - Array of CSV rows (each row is an object with column names as keys)
  * @param batchId - Import batch ID
  * @param userId - User ID who initiated import
- * @param mappings - Optional column mappings (defaults to DEFAULT_COLUMN_MAPPINGS)
+ * @param mappingsOrClientMappings - Optional column mappings: either ColumnMapping[] or client Record<string,string>
  * @returns Array of Import Engine Rows (skipped rows are excluded)
+ * 
+ * LP-1.3.3: Now accepts client mappings as Record<string, string> (csvHeader → attributeId)
+ * and converts them to ColumnMapping[] format for normalization.
  */
 export function buildImportRows(
   csvData: Record<string, string | number | null>[],
   batchId: string,
   userId: string,
-  mappings?: ColumnMapping[]
+  mappingsOrClientMappings?: ColumnMapping[] | Record<string, string>
 ): ImportEngineRow[] {
   const rows: ImportEngineRow[] = [];
+  
+  // LP-1.3.3: Determine mappings format and convert if necessary
+  let mappings: ColumnMapping[] | undefined;
+  if (mappingsOrClientMappings) {
+    if (Array.isArray(mappingsOrClientMappings)) {
+      // Already in ColumnMapping[] format
+      mappings = mappingsOrClientMappings;
+    } else if (typeof mappingsOrClientMappings === 'object' && Object.keys(mappingsOrClientMappings).length > 0) {
+      // Client format Record<string, string> — convert to ColumnMapping[]
+      mappings = convertClientMappings(mappingsOrClientMappings);
+    }
+  }
   
   for (let i = 0; i < csvData.length; i++) {
     const lineNumber = i + 2; // +2 because line 1 is header and array is 0-indexed

@@ -65,9 +65,12 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
       // Prepare form data
       const formData = new FormData();
       formData.append('file', file);
-
-      // TODO: Send mappings with the file (currently backend uses DEFAULT_COLUMN_MAPPINGS)
-      // In future, backend should accept custom mappings in the request
+      // LP-1.3.3: Send the user-selected mappings with the upload so the server
+      // normalizes using the UI mapping (not DEFAULT_COLUMN_MAPPINGS).
+      // mappings is provided as a prop to this component (object: { csvHeader: attributeId })
+      if (mappings && Object.keys(mappings).length > 0) {
+        formData.append('mappings', JSON.stringify(mappings));
+      }
 
       // Call import API
       // LP-ATTR-1.3.1.1: Use relative URL to leverage hosting rewrites (/api/** → api function)

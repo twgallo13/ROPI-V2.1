@@ -162,5 +162,86 @@ describe('Import Row Builder', () => {
 
       expect(rows).toHaveLength(0);
     });
-  });
+
+    /**
+     * LP-1.3.3: Test client mappings support
+     */
+    describe('LP-1.3.3: client mappings support', () => {
+      it('should use client mappings when provided as Record<string, string>', () => {
+        const csvData = [
+          {
+            'Custom MPN Col': 'MPN-CUSTOM-001',
+            'Custom Brand Col': 'Custom Brand',
+            'Custom Name Col': 'Custom Product',
+          },
+        ];
+
+        // Client provides mappings as { csvHeader: attributeId }
+        const clientMappings = {
+          'Custom MPN Col': 'mpn',
+          'Custom Brand Col': 'brand',
+          'Custom Name Col': 'name',
+        };
+
+        const rows = buildImportRows(csvData, 'batch-123', 'user-456', clientMappings);
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].normalized.mpn).toBe('MPN-CUSTOM-001');
+        expect(rows[0].normalized.brand).toBe('Custom Brand');
+        expect(rows[0].normalized.name).toBe('Custom Product');
+        expect(rows[0].validation.isValid).toBe(true);
+      });
+
+      it('should fall back to DEFAULT_COLUMN_MAPPINGS when no client mappings provided', () => {
+        const csvData = [
+          {
+            'MPN': 'MPN-DEFAULT-001',
+            'Brand': 'Default Brand',
+            'Product Name': 'Default Product',
+          },
+        ];
+
+        // No client mappings — should use SDK defaults
+        const rows = buildImportRows(csvData, 'batch-123', 'user-456');
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].normalized.mpn).toBe('MPN-DEFAULT-001');
+        expect(rows[0].normalized.brand).toBe('Default Brand');
+        expect(rows[0].normalized.name).toBe('Default Product');
+      });
+
+      it('should handle empty client mappings object', () => {
+        const csvData = [
+          {
+            'MPN': 'MPN-EMPTY-001',
+            'Brand': 'Empty Brand',
+          },
+        ];
+
+        // Empty object — should use SDK defaults
+        const rows = buildImportRows(csvData, 'batch-123', 'user-456', {});
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].normalized.mpn).toBe('MPN-EMPTY-001');
+      });
+
+      it('should handle partial client mappings (unmapped columns ignored)', () => {
+        const csvData = [
+          {
+            'My MPN': 'MPN-PARTIAL-001',
+            'Unmapped Col': 'Should be ignored',
+          },
+        ];
+
+        const clientMappings = {
+          'My MPN': 'mpn',
+          // 'Unmapped Col' not in mappings
+        };
+
+        const rows = buildImportRows(csvData, 'batch-123', 'user-456', clientMappings);
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].normalized.mpn).toBe('MPN-PARTIAL-001');
+      });
+    });  });
 });
