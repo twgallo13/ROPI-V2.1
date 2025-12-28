@@ -1,0 +1,97 @@
+=== Product 211737-90h1-8 ===
+name: undefined
+title: undefined
+material: undefined isArray: false
+website: undefined isArray: false
+age_group: undefined
+class: undefined
+category: undefined
+gender: undefined
+department: undefined
+
+--- attributes sub-object ---
+attributes.material: ["Polyester"]
+attributes.website: ["shiekh.com"]
+attributes.age_group: Adult
+attributes.class: Casual
+attributes.category: Athletic
+
+--- Full Document JSON ---
+{
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "inventory": {
+    "store_inv": 88,
+    "warehouse_inv": 12
+  },
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0,
+    "map": null
+  },
+  "dimensions": {
+    "length": 4,
+    "width": 4,
+    "weight": 4,
+    "height": 4
+  },
+  "core": {
+    "createdAt": "2025-12-28T23:01:48.400Z",
+    "lastReceived": "12/18/2025",
+    "mpn": "211737-90H1-8",
+    "sku": "SHK3037625",
+    "title": "4bfae23e-6bc2-4d87-9391-b324010c2a0a",
+    "brand": "Crocs",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2025-12-28T23:07:32.524Z"
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2025-12-28T23:07:30.204Z",
+    "normalizedAt": "2025-12-28T23:07:32.524Z",
+    "validatedAt": "2025-12-28T23:07:32.524Z"
+  },
+  "attributes": {
+    "rics_color": "Multi",
+    "media_status": "sdfsdfgdf-23rcwsdf34-sdf34r-",
+    "gender": "Men's",
+    "keywords": "Geen crocidial",
+    "sports_team": "Los Angeles Dodgers",
+    "descriptive_color": "Green Croc",
+    "fit": "True to Size",
+    "promo": "Allowed",
+    "rics_long_desc": "REALTREE APX ALL TERRAIN CLOG",
+    "fast_fashion": "TRUE",
+    "kl_post_date": "12/30/2025",
+    "rics_category": "Mens||Footwear||Sandal||Athletic",
+    "department": "Footwear",
+    "platform_height": "1-2\"",
+    "rics_short_description": "REALTREE APX ALL TER",
+    "tax_class": "Taxable Goods",
+    "league": "MLB",
+    "heel_height": "Flat",
+    "primary_color": "Green",
+    "product_is_active": "TRUE",
+    "hype": "FALSE",
+    "collection_name": "All Star",
+    "heel_type": "Flat",
+    "shoe_height_map": "high-top",
+    "website": [
+      "shiekh.com"
+    ],
+    "material": [
+      "Polyester"
+    ],
+    "age_group": "Adult",
+    "ageGroup": "Adult",
+    "class": "Casual",
+    "category": "Athletic"
+  }
+}
