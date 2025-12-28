@@ -72,6 +72,23 @@ function getAttributeValue(product: Product, attributeKey: string): unknown {
 }
 
 /**
+ * LP-1.4.0: Ensure a value is an array for multiSelect rendering
+ * Coerces string values to single-element arrays defensively.
+ */
+function ensureArrayForMultiSelect(value: unknown): unknown[] {
+  if (value === undefined || value === null || value === '') return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    // Split if contains delimiters, otherwise wrap as single item
+    if (value.includes('|') || value.includes(',') || value.includes(';')) {
+      return value.split(/[|,;]/).map(s => s.trim()).filter(s => s.length > 0);
+    }
+    return [value];
+  }
+  return [value];
+}
+
+/**
  * Renders the appropriate input control based on attribute data_type
  */
 function AttributeInput({
@@ -84,7 +101,10 @@ function AttributeInput({
   onChange: (value: unknown) => void;
 }) {
   const stringValue = typeof value === 'string' ? value : '';
-  const arrayValue = Array.isArray(value) ? value : [];
+  // LP-1.4.0: Use defensive array conversion for multiSelect fields
+  const arrayValue = attr.data_type === 'multiSelect' 
+    ? ensureArrayForMultiSelect(value) as string[]
+    : (Array.isArray(value) ? value : []);
   // Canonical field key for scroll-to-field targeting (LP-1.0.2)
   const fieldKey = `attributes.${attr.attribute_id}`;
 
