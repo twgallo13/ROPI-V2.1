@@ -1,0 +1,91 @@
+{
+  "_version": "1.0.0",
+  "_description": "LP-importer-mapping-recon-1.4.0: Explicit typo corrections and canonicalization mappings for CSV imports. All lookups are case-insensitive. Values map to canonical Attribute Registry allowed_values.",
+  
+  "material": {
+    "pholyester": "Polyester",
+    "polyster": "Polyester",
+    "ployester": "Polyester",
+    "polester": "Polyester",
+    "lether": "Leather",
+    "leater": "Leather",
+    "canvass": "Canvas",
+    "suade": "Suede",
+    "syntetic": "Synthetic"
+  },
+  
+  "age_group": {
+    "adults": "Adult",
+    "adult's": "Adult",
+    "adlut": "Adult",
+    "kids": "Kids",
+    "kid": "Kids",
+    "children": "Kids",
+    "toddlers": "Toddler",
+    "infants": "Infant",
+    "baby": "Infant",
+    "babies": "Infant",
+    "pre-school": "Pre-School",
+    "preschool": "Pre-School",
+    "grade school": "Grade-School",
+    "gradeschool": "Grade-School",
+    "grade-school": "Grade-School"
+  },
+  
+  "class": {
+    "sandle": "Casual",
+    "sandal": "Casual",
+    "sandals": "Casual",
+    "sneaker": "Athletic",
+    "sneakers": "Athletic",
+    "boot": "Outdoor",
+    "boots": "Outdoor",
+    "slipper": "Comfort",
+    "slippers": "Comfort",
+    "slide": "Casual",
+    "slides": "Casual",
+    "atheletic": "Athletic",
+    "athelete": "Athletic",
+    "athetic": "Athletic",
+    "cassual": "Casual",
+    "casuall": "Casual"
+  },
+  
+  "category": {
+    "slides": "Sandals",
+    "slide": "Sandals",
+    "sandle": "Sandals",
+    "sandal": "Sandals",
+    "sneaker": "Sneakers",
+    "boot": "Boots",
+    "slipper": "Slippers",
+    "footware": "Footwear",
+    "apperal": "Apparel",
+    "accessory": "Accessories"
+  },
+  
+  "gender": {
+    "male": "men's",
+    "m": "men's",
+    "men": "men's",
+    "man": "men's",
+    "mens": "men's",
+    "female": "women's",
+    "f": "women's",
+    "women": "women's",
+    "woman": "women's",
+    "womens": "women's",
+    "unisex": "unisex",
+    "u": "unisex",
+    "boy": "boys",
+    "girl": "girls"
+  },
+  
+  "department": {
+    "footware": "Footwear",
+    "shoes": "Footwear",
+    "clothing": "Clothing",
+    "clothes": "Clothing",
+    "accessory": "Accessories"
+  }
+}

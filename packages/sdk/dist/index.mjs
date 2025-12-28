@@ -1608,7 +1608,122 @@ var REGISTRY_TO_LEGACY = Object.entries(LEGACY_TO_REGISTRY).reduce((acc, [legacy
   return acc;
 }, {});
 
+// config/import-corrections.json
+var import_corrections_default = {
+  _version: "1.0.0",
+  _description: "LP-importer-mapping-recon-1.4.0: Explicit typo corrections and canonicalization mappings for CSV imports. All lookups are case-insensitive. Values map to canonical Attribute Registry allowed_values.",
+  material: {
+    pholyester: "Polyester",
+    polyster: "Polyester",
+    ployester: "Polyester",
+    polester: "Polyester",
+    lether: "Leather",
+    leater: "Leather",
+    canvass: "Canvas",
+    suade: "Suede",
+    syntetic: "Synthetic"
+  },
+  age_group: {
+    adults: "Adult",
+    "adult's": "Adult",
+    adlut: "Adult",
+    kids: "Kids",
+    kid: "Kids",
+    children: "Kids",
+    toddlers: "Toddler",
+    infants: "Infant",
+    baby: "Infant",
+    babies: "Infant",
+    "pre-school": "Pre-School",
+    preschool: "Pre-School",
+    "grade school": "Grade-School",
+    gradeschool: "Grade-School",
+    "grade-school": "Grade-School"
+  },
+  class: {
+    sandle: "Casual",
+    sandal: "Casual",
+    sandals: "Casual",
+    sneaker: "Athletic",
+    sneakers: "Athletic",
+    boot: "Outdoor",
+    boots: "Outdoor",
+    slipper: "Comfort",
+    slippers: "Comfort",
+    slide: "Casual",
+    slides: "Casual",
+    atheletic: "Athletic",
+    athelete: "Athletic",
+    athetic: "Athletic",
+    cassual: "Casual",
+    casuall: "Casual"
+  },
+  category: {
+    slides: "Sandals",
+    slide: "Sandals",
+    sandle: "Sandals",
+    sandal: "Sandals",
+    sneaker: "Sneakers",
+    boot: "Boots",
+    slipper: "Slippers",
+    footware: "Footwear",
+    apperal: "Apparel",
+    accessory: "Accessories"
+  },
+  gender: {
+    male: "men's",
+    m: "men's",
+    men: "men's",
+    man: "men's",
+    mens: "men's",
+    female: "women's",
+    f: "women's",
+    women: "women's",
+    woman: "women's",
+    womens: "women's",
+    unisex: "unisex",
+    u: "unisex",
+    boy: "boys",
+    girl: "girls"
+  },
+  department: {
+    footware: "Footwear",
+    shoes: "Footwear",
+    clothing: "Clothing",
+    clothes: "Clothing",
+    accessory: "Accessories"
+  }
+};
+
 // src/normalization/importNormalizer.ts
+var IMPORT_CORRECTIONS = import_corrections_default;
+var MULTI_SELECT_FIELDS = ["material", "website", "websites", "features", "images"];
+function canonicalizeValue(value, targetField) {
+  if (!value || typeof value !== "string") return value;
+  const corrections = IMPORT_CORRECTIONS[targetField];
+  if (!corrections) return value;
+  const lowerValue = value.toLowerCase().trim();
+  const canonical = corrections[lowerValue];
+  if (canonical) {
+    console.debug(`[LP-1.4.0] Canonicalized ${targetField}: "${value}" \u2192 "${canonical}"`);
+    return canonical;
+  }
+  return value;
+}
+function toMultiSelectArray(value) {
+  if (value === void 0 || value === null || value === "") return [];
+  if (Array.isArray(value)) {
+    return value.map((v) => String(v).trim()).filter((v) => v.length > 0);
+  }
+  const strValue = String(value);
+  if (strValue.includes("|") || strValue.includes(",") || strValue.includes(";")) {
+    return strValue.split(/[|,;]/).map((s) => s.trim()).filter((s) => s.length > 0);
+  }
+  return [strValue.trim()];
+}
+function isMultiSelectField(targetField) {
+  return MULTI_SELECT_FIELDS.includes(targetField.toLowerCase());
+}
 function normalizeTargetFieldToRegistry(targetField) {
   if (!targetField) return targetField;
   const mapped = LEGACY_TO_REGISTRY[targetField];
@@ -1644,6 +1759,11 @@ var DEFAULT_COLUMN_MAPPINGS = [
   { sourceColumn: ["Category", "category"], targetField: "category", transform: "trim" },
   { sourceColumn: ["Subcategory", "subcategory"], targetField: "subcategory", transform: "trim" },
   // ======================================================================
+  // Site Assignment (category: sku_core - multiSelect)
+  // LP-1.4.0: website is multiSelect, will be converted to array
+  // ======================================================================
+  { sourceColumn: ["Website", "website", "Websites", "websites", "Site"], targetField: "website", transform: "trim" },
+  // ======================================================================
   // Identity / Demographic (category: identity_demographic)
   // ======================================================================
   { sourceColumn: ["Gender", "gender"], targetField: "gender", transform: "lowercase" },
@@ -1656,10 +1776,19 @@ var DEFAULT_COLUMN_MAPPINGS = [
   { sourceColumn: ["Descriptive Color", "DescriptiveColor", "descriptive_color"], targetField: "descriptive_color", transform: "trim" },
   // ======================================================================
   // Materials & Construction (category: materials_construction)
+  // LP-1.4.0: material is multiSelect, will be converted to array
   // ======================================================================
-  { sourceColumn: ["Material", "material"], targetField: "material", transform: "trim" },
+  { sourceColumn: ["Material", "material", "Materials"], targetField: "material", transform: "trim" },
   { sourceColumn: ["Closure Type", "closure", "closure_type"], targetField: "closure_type", transform: "trim" },
   { sourceColumn: ["Cut Type", "cut_type"], targetField: "cut_type", transform: "trim" },
+  { sourceColumn: ["Fit", "fit"], targetField: "fit", transform: "trim" },
+  // ======================================================================
+  // Sports & Collections (category: classification)
+  // LP-1.4.0: Added sports_team and collection_name mappings
+  // ======================================================================
+  { sourceColumn: ["Sports Team", "sports_team", "Team"], targetField: "sports_team", transform: "trim" },
+  { sourceColumn: ["Collection Name", "collection_name", "Collection"], targetField: "collection_name", transform: "trim" },
+  { sourceColumn: ["League", "league"], targetField: "league", transform: "trim" },
   // ======================================================================
   // Sizing / Measurements (category: measurements)
   // ======================================================================
@@ -1766,6 +1895,13 @@ function normalizeImportRow(sourceColumns, mappings = DEFAULT_COLUMN_MAPPINGS) {
     }
     if (normalizedValue !== void 0) {
       const canonicalTarget = normalizeTargetFieldToRegistry(mapping.targetField);
+      if (typeof normalizedValue === "string") {
+        normalizedValue = canonicalizeValue(normalizedValue, canonicalTarget);
+      }
+      if (isMultiSelectField(canonicalTarget)) {
+        const arrayValue = toMultiSelectArray(normalizedValue);
+        normalizedValue = arrayValue.map((item) => canonicalizeValue(item, canonicalTarget));
+      }
       normalized[canonicalTarget] = normalizedValue;
     }
   }

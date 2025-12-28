@@ -2,6 +2,7 @@
  * Import Normalization Rules
  * Per AOSS Section 3.2 — Import Normalization Rules
  * LP-importer-mapping-recon-1.1.0: Canonicalize mappings to registry attribute IDs
+ * LP-importer-mapping-recon-1.4.0: Add value canonicalization and multiSelect array typing
  * 
  * Transforms raw RetailOps CSV data into normalized product fields.
  * Uses canonical Attribute Registry IDs for all targetField values.
@@ -9,6 +10,80 @@
 
 import type { ImportSourceColumns, ImportNormalizedFields, ColumnMapping } from '../schema/importEngine';
 import { LEGACY_TO_REGISTRY } from './legacyToRegistryMap';
+import importCorrections from '../../config/import-corrections.json';
+
+/**
+ * LP-1.4.0: Import corrections lookup table (loaded from import-corrections.json)
+ * Maps typos/variants to canonical values on a per-attribute basis.
+ * All lookups are case-insensitive.
+ */
+const IMPORT_CORRECTIONS: Record<string, Record<string, string>> = importCorrections as Record<string, Record<string, string>>;
+
+/**
+ * LP-1.4.0: Fields that should always be stored as arrays (multiSelect in registry)
+ */
+const MULTI_SELECT_FIELDS = ['material', 'website', 'websites', 'features', 'images'];
+
+/**
+ * LP-1.4.0: Apply canonicalization to a value using the corrections table
+ * Performs case-insensitive lookup and returns the canonical value if found.
+ * 
+ * @param value - The raw value to canonicalize
+ * @param targetField - The attribute ID to look up corrections for
+ * @returns Canonicalized value or original if no correction found
+ */
+export function canonicalizeValue(value: string, targetField: string): string {
+  if (!value || typeof value !== 'string') return value;
+  
+  const corrections = IMPORT_CORRECTIONS[targetField];
+  if (!corrections) return value;
+  
+  // Case-insensitive lookup
+  const lowerValue = value.toLowerCase().trim();
+  const canonical = corrections[lowerValue];
+  
+  if (canonical) {
+    // Log the correction for audit trail
+    console.debug(`[LP-1.4.0] Canonicalized ${targetField}: "${value}" → "${canonical}"`);
+    return canonical;
+  }
+  
+  return value;
+}
+
+/**
+ * LP-1.4.0: Convert a value to an array for multiSelect fields
+ * Splits strings by common delimiters (|, ,, ;) or wraps single values.
+ * 
+ * @param value - The value to convert
+ * @returns Array of values
+ */
+export function toMultiSelectArray(value: string | string[] | undefined): string[] {
+  if (value === undefined || value === null || value === '') return [];
+  
+  if (Array.isArray(value)) {
+    return value.map(v => String(v).trim()).filter(v => v.length > 0);
+  }
+  
+  const strValue = String(value);
+  // Check for delimiters
+  if (strValue.includes('|') || strValue.includes(',') || strValue.includes(';')) {
+    return strValue
+      .split(/[|,;]/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+  }
+  
+  // Single value - wrap in array
+  return [strValue.trim()];
+}
+
+/**
+ * LP-1.4.0: Check if a field should be stored as an array
+ */
+export function isMultiSelectField(targetField: string): boolean {
+  return MULTI_SELECT_FIELDS.includes(targetField.toLowerCase());
+}
 
 /**
  * Helper to normalize a targetField to its canonical registry attribute_id.
@@ -85,6 +160,12 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   { sourceColumn: ['Subcategory', 'subcategory'], targetField: 'subcategory', transform: 'trim' },
   
   // ======================================================================
+  // Site Assignment (category: sku_core - multiSelect)
+  // LP-1.4.0: website is multiSelect, will be converted to array
+  // ======================================================================
+  { sourceColumn: ['Website', 'website', 'Websites', 'websites', 'Site'], targetField: 'website', transform: 'trim' },
+  
+  // ======================================================================
   // Identity / Demographic (category: identity_demographic)
   // ======================================================================
   { sourceColumn: ['Gender', 'gender'], targetField: 'gender', transform: 'lowercase' },
@@ -99,10 +180,20 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   
   // ======================================================================
   // Materials & Construction (category: materials_construction)
+  // LP-1.4.0: material is multiSelect, will be converted to array
   // ======================================================================
-  { sourceColumn: ['Material', 'material'], targetField: 'material', transform: 'trim' },
+  { sourceColumn: ['Material', 'material', 'Materials'], targetField: 'material', transform: 'trim' },
   { sourceColumn: ['Closure Type', 'closure', 'closure_type'], targetField: 'closure_type', transform: 'trim' },
   { sourceColumn: ['Cut Type', 'cut_type'], targetField: 'cut_type', transform: 'trim' },
+  { sourceColumn: ['Fit', 'fit'], targetField: 'fit', transform: 'trim' },
+  
+  // ======================================================================
+  // Sports & Collections (category: classification)
+  // LP-1.4.0: Added sports_team and collection_name mappings
+  // ======================================================================
+  { sourceColumn: ['Sports Team', 'sports_team', 'Team'], targetField: 'sports_team', transform: 'trim' },
+  { sourceColumn: ['Collection Name', 'collection_name', 'Collection'], targetField: 'collection_name', transform: 'trim' },
+  { sourceColumn: ['League', 'league'], targetField: 'league', transform: 'trim' },
   
   // ======================================================================
   // Sizing / Measurements (category: measurements)
@@ -248,6 +339,7 @@ function findSourceValue(
 /**
  * Normalize a single row from RetailOps CSV
  * LP-importer-mapping-recon-1.1.0: Use canonical registry IDs for all targetField values
+ * LP-importer-mapping-recon-1.4.0: Apply value canonicalization and multiSelect array typing
  * 
  * @param sourceColumns - Raw CSV columns
  * @param mappings - Column mapping configuration (defaults to DEFAULT_COLUMN_MAPPINGS)
@@ -275,6 +367,19 @@ export function normalizeImportRow(
     // LP-1.1.0: Ensure targetField is canonical registry attribute_id
     if (normalizedValue !== undefined) {
       const canonicalTarget = normalizeTargetFieldToRegistry(mapping.targetField);
+      
+      // LP-1.4.0: Apply value canonicalization for string values
+      if (typeof normalizedValue === 'string') {
+        normalizedValue = canonicalizeValue(normalizedValue, canonicalTarget);
+      }
+      
+      // LP-1.4.0: Convert multiSelect fields to arrays
+      if (isMultiSelectField(canonicalTarget)) {
+        const arrayValue = toMultiSelectArray(normalizedValue as string | string[]);
+        // Canonicalize each item in the array
+        normalizedValue = arrayValue.map(item => canonicalizeValue(item, canonicalTarget));
+      }
+      
       normalized[canonicalTarget] = normalizedValue;
     }
   }

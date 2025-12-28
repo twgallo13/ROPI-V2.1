@@ -77,11 +77,14 @@ const INVENTORY_FIELD_KEYS = [
  * Attribute fields that should be merged from nested attributes object to top-level.
  * LP-1.3.8: Import engine writes to product.attributes.*, but CoreInformationTab reads product.*
  * These are the classification/taxonomy fields used by CoreInformationTab and other UI components.
+ * LP-1.4.0: Added website field for site assignment
  */
 const ATTRIBUTE_FIELDS_TO_TOP_LEVEL = [
   // CoreInformationTab fields
   'department', 'class', 'category', 'subcategory',
   'gender', 'age_group', 'ageGroup',
+  // Site assignment (multiSelect - LP-1.4.0)
+  'website', 'websites',
   // ProductAttributesTab fields (also accessed at top-level by some components)
   'primary_color', 'primaryColor', 'descriptive_color', 'descriptiveColor',
   'secondary_color', 'secondaryColor',
@@ -96,9 +99,32 @@ const ATTRIBUTE_FIELDS_TO_TOP_LEVEL = [
 ];
 
 /**
+ * LP-1.4.0: Fields that should always be arrays (multiSelect in registry)
+ */
+const MULTI_SELECT_FIELDS = ['website', 'websites', 'material', 'materials', 'features'];
+
+/**
+ * LP-1.4.0: Ensure a value is an array for multiSelect fields
+ * Coerces string values to single-element arrays.
+ */
+function ensureArray(value: unknown): unknown[] {
+  if (value === undefined || value === null || value === '') return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    // Split if contains delimiters, otherwise wrap as single item
+    if (value.includes('|') || value.includes(',') || value.includes(';')) {
+      return value.split(/[|,;]/).map(s => s.trim()).filter(s => s.length > 0);
+    }
+    return [value];
+  }
+  return [value];
+}
+
+/**
  * Merge core, inventory, and attribute fields from nested objects to top-level for UI compatibility.
  * LP-1.3.7: Import engine writes product.core.mpn, but ProductHeader reads product.mpn
  * LP-1.3.8: Import engine writes product.attributes.class, but CoreInformationTab reads product.class
+ * LP-1.4.0: Ensure name is populated from title, coerce multiSelect fields to arrays
  */
 function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<string, unknown> {
   const core = docData.core as Record<string, unknown> | undefined;
@@ -131,6 +157,31 @@ function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<str
     for (const key of ATTRIBUTE_FIELDS_TO_TOP_LEVEL) {
       if ((merged[key] === undefined || merged[key] === null) && attributes[key] !== undefined && attributes[key] !== null) {
         merged[key] = attributes[key];
+      }
+    }
+  }
+  
+  // LP-1.4.0: Ensure name is populated from title if missing
+  if (!merged.name && merged.title) {
+    merged.name = merged.title;
+  }
+  if (!merged.name && core?.title) {
+    merged.name = core.title;
+  }
+  
+  // LP-1.4.0: Coerce multiSelect fields to arrays
+  for (const field of MULTI_SELECT_FIELDS) {
+    if (merged[field] !== undefined && merged[field] !== null && !Array.isArray(merged[field])) {
+      merged[field] = ensureArray(merged[field]);
+    }
+  }
+  
+  // LP-1.4.0: Also ensure attributes.website is an array if present
+  if (merged.attributes && typeof merged.attributes === 'object') {
+    const attrs = merged.attributes as Record<string, unknown>;
+    for (const field of MULTI_SELECT_FIELDS) {
+      if (attrs[field] !== undefined && attrs[field] !== null && !Array.isArray(attrs[field])) {
+        attrs[field] = ensureArray(attrs[field]);
       }
     }
   }

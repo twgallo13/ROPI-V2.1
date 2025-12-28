@@ -21,6 +21,8 @@ const INVENTORY_FIELD_KEYS = [
 const ATTRIBUTE_FIELDS_TO_TOP_LEVEL = [
   'department', 'class', 'category', 'subcategory',
   'gender', 'age_group', 'ageGroup',
+  // LP-1.4.0: Added website field
+  'website', 'websites',
   'primary_color', 'primaryColor', 'descriptive_color', 'descriptiveColor',
   'secondary_color', 'secondaryColor',
   'material', 'materials', 'fit', 'cut_type', 'closure_type',
@@ -307,5 +309,232 @@ describe('mergeCoreFieldsToTopLevel', () => {
 
     expect(result.department).toBe('Apparel'); // Preserved
     expect(result.class).toBe('Shoes'); // Merged
+  });
+});
+/**
+ * LP-1.4.0: Tests for name population and multiSelect array coercion
+ */
+describe('LP-1.4.0: name population and multiSelect coercion', () => {
+  // Add MULTI_SELECT_FIELDS constant for LP-1.4.0 tests
+  const MULTI_SELECT_FIELDS = ['website', 'websites', 'material', 'materials', 'features'];
+
+  function ensureArray(value: unknown): unknown[] {
+    if (value === undefined || value === null || value === '') return [];
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string') {
+      if (value.includes('|') || value.includes(',') || value.includes(';')) {
+        return value.split(/[|,;]/).map(s => s.trim()).filter(s => s.length > 0);
+      }
+      return [value];
+    }
+    return [value];
+  }
+
+  function mergeCoreFieldsToTopLevelWithLP140(docData: Record<string, unknown>): Record<string, unknown> {
+    const core = docData.core as Record<string, unknown> | undefined;
+    const inventory = docData.inventory as Record<string, unknown> | undefined;
+    const attributes = docData.attributes as Record<string, unknown> | undefined;
+    
+    const merged = { ...docData };
+    
+    // Merge core fields
+    if (core && typeof core === 'object') {
+      for (const key of CORE_FIELD_KEYS) {
+        if ((merged[key] === undefined || merged[key] === null) && core[key] !== undefined && core[key] !== null) {
+          merged[key] = core[key];
+        }
+      }
+    }
+    
+    // Merge inventory fields
+    if (inventory && typeof inventory === 'object') {
+      for (const key of INVENTORY_FIELD_KEYS) {
+        if ((merged[key] === undefined || merged[key] === null) && inventory[key] !== undefined && inventory[key] !== null) {
+          merged[key] = inventory[key];
+        }
+      }
+    }
+    
+    // LP-1.3.8: Merge attribute fields to top-level
+    if (attributes && typeof attributes === 'object') {
+      for (const key of ATTRIBUTE_FIELDS_TO_TOP_LEVEL) {
+        if ((merged[key] === undefined || merged[key] === null) && attributes[key] !== undefined && attributes[key] !== null) {
+          merged[key] = attributes[key];
+        }
+      }
+    }
+    
+    // LP-1.4.0: Ensure name is populated from title if missing
+    if (!merged.name && merged.title) {
+      merged.name = merged.title;
+    }
+    if (!merged.name && core?.title) {
+      merged.name = core.title;
+    }
+    
+    // LP-1.4.0: Coerce multiSelect fields to arrays
+    for (const field of MULTI_SELECT_FIELDS) {
+      if (merged[field] !== undefined && merged[field] !== null && !Array.isArray(merged[field])) {
+        merged[field] = ensureArray(merged[field]);
+      }
+    }
+    
+    // LP-1.4.0: Also ensure attributes.website is an array if present
+    if (merged.attributes && typeof merged.attributes === 'object') {
+      const attrs = merged.attributes as Record<string, unknown>;
+      for (const field of MULTI_SELECT_FIELDS) {
+        if (attrs[field] !== undefined && attrs[field] !== null && !Array.isArray(attrs[field])) {
+          attrs[field] = ensureArray(attrs[field]);
+        }
+      }
+    }
+
+    return merged;
+  }
+
+  it('should populate name from title when name is missing', () => {
+    const docData = {
+      id: 'test-product',
+      title: 'Product Title From Title Field',
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.name).toBe('Product Title From Title Field');
+  });
+
+  it('should populate name from core.title when name and top-level title are missing', () => {
+    const docData = {
+      id: 'test-product',
+      core: {
+        title: 'Product Title From Core',
+      },
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.name).toBe('Product Title From Core');
+  });
+
+  it('should not overwrite existing name', () => {
+    const docData = {
+      id: 'test-product',
+      name: 'Existing Name',
+      title: 'Different Title',
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.name).toBe('Existing Name');
+  });
+
+  it('should coerce website string to array', () => {
+    const docData = {
+      id: 'test-product',
+      website: 'shiekh.com',
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.website).toEqual(['shiekh.com']);
+  });
+
+  it('should coerce material string to array', () => {
+    const docData = {
+      id: 'test-product',
+      material: 'Polyester',
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.material).toEqual(['Polyester']);
+  });
+
+  it('should split pipe-delimited website values', () => {
+    const docData = {
+      id: 'test-product',
+      website: 'shiekh.com|karmaloop.com',
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.website).toEqual(['shiekh.com', 'karmaloop.com']);
+  });
+
+  it('should coerce attributes.website string to array', () => {
+    const docData = {
+      id: 'test-product',
+      attributes: {
+        website: 'shiekh.com',
+      },
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect((result.attributes as Record<string, unknown>).website).toEqual(['shiekh.com']);
+  });
+
+  it('should leave existing arrays unchanged', () => {
+    const docData = {
+      id: 'test-product',
+      website: ['shiekh.com', 'karmaloop.com'],
+      material: ['Cotton', 'Polyester'],
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    expect(result.website).toEqual(['shiekh.com', 'karmaloop.com']);
+    expect(result.material).toEqual(['Cotton', 'Polyester']);
+  });
+
+  it('should handle the exact 211737-90h1-8 Firestore structure with LP-1.4.0 fixes', () => {
+    const docData = {
+      id: '211737-90h1-8',
+      core: {
+        mpn: '211737-90H1-8',
+        sku: 'SHK3037625-8',
+        title: 'Crocs Realtree APX All Terrain Clog',
+        brand: 'Crocs',
+        status: 'draft',
+      },
+      attributes: {
+        department: 'Footwear',
+        class: 'Sandle',
+        category: 'Slides',
+        gender: "Men's",
+        age_group: 'Adults',
+        primary_color: 'Green',
+        descriptive_color: 'Green Croc',
+        material: 'Pholyester', // String, should be coerced to array
+        website: 'shiekh.com', // String, should be coerced to array
+        fit: 'True to Size',
+        sports_team: 'Los Angeles Dodgers',
+        collection_name: 'Spring 2025',
+      },
+      inventory: {
+        warehouse_inv: 12,
+        store_inv: 88,
+      },
+    };
+
+    const result = mergeCoreFieldsToTopLevelWithLP140(docData);
+
+    // Name should be populated from core.title
+    expect(result.name).toBe('Crocs Realtree APX All Terrain Clog');
+    
+    // MultiSelect fields should be arrays
+    expect(result.material).toEqual(['Pholyester']);
+    expect(result.website).toEqual(['shiekh.com']);
+    
+    // attributes.* should also be arrays
+    const attrs = result.attributes as Record<string, unknown>;
+    expect(attrs.material).toEqual(['Pholyester']);
+    expect(attrs.website).toEqual(['shiekh.com']);
+    
+    // Other fields should be merged normally
+    expect(result.mpn).toBe('211737-90H1-8');
+    expect(result.department).toBe('Footwear');
+    expect(result.class).toBe('Sandle');
+    expect(result.sports_team).toBe('Los Angeles Dodgers');
   });
 });
