@@ -157,10 +157,11 @@ export interface ImportBatch {
 /**
  * CSV column mapping configuration
  * Maps RetailOps CSV columns to normalized field names
+ * LP-importer-mapping-recon-1.1.0: sourceColumn can be string or array of aliases
  */
 export interface ColumnMapping {
-  sourceColumn: string; // CSV column name
-  targetField: string; // Normalized field name
+  sourceColumn: string | string[]; // CSV column name(s) - string or array of aliases
+  targetField: string; // Normalized field name (canonical Attribute Registry ID)
   transform?: 'trim' | 'uppercase' | 'lowercase' | 'number' | 'date' | 'array';
   required?: boolean;
   defaultValue?: string | number;
