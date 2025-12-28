@@ -1,6 +1,6 @@
 # Phase Completion — LP-importer-mapping-recon
 
-**LP:** LP-importer-mapping-recon-2.1.0 (Final Phase)  
+**LP:** LP-importer-mapping-recon-1.3.2 (Final Phase)  
 **Completed:** 2025-12-28  
 **By:** Homer  
 
@@ -8,7 +8,7 @@
 
 ## Summary
 
-The LP-importer-mapping-recon phase is **complete**. All four PRs have been merged to `aoss-main`, deployed to staging, and verified via dry-run smoke tests.
+The LP-importer-mapping-recon phase is **complete**. All four PRs have been merged to `aoss-main`, LP-1.3.1 fixes applied, deployed to staging, and verified via dry-run smoke tests.
 
 ---
 
@@ -21,7 +21,22 @@ The LP-importer-mapping-recon phase is **complete**. All four PRs have been merg
 | 3 | [#370](https://github.com/twgallo13/ROPI-V2.1/pull/370) | LP-1.2.0 — UI: registry-driven mapping | `1f9cd20` | 2025-12-28T06:23:55Z |
 | 4 | [#371](https://github.com/twgallo13/ROPI-V2.1/pull/371) | LP-1.3.0 — tests, CI & staging | `e4fa5c1` | 2025-12-28T06:29:42Z |
 
-**Post-merge fix:** `65f1bf2` — fix(web): correct property name in ImportMappingStep tests
+**Post-merge fixes:**
+- `65f1bf2` — fix(web): correct property name in ImportMappingStep tests
+- `ec990f4` — fix(web): LP-1.3.1 importer mapping fixes
+
+---
+
+## LP-1.3.1 Fixes (Commit `ec990f4`)
+
+| Fix | Description |
+|-----|-------------|
+| Required-flag logic | Only `import_required` blocks imports (not `required_for_completion`) |
+| Auto-mapping exactness | Only auto-assign exact `importerColumns` matches |
+| Auto-mapping uniqueness | Each target attribute mapped at most once |
+| Disabled options | Already-mapped attributes disabled in select dropdowns |
+| CSS styling | MappingOptionLabel uses CSS classes instead of inline styles |
+| Unit tests | 5 new LP-1.3.1 tests added (19 total tests pass) |
 
 ---
 
@@ -41,9 +56,9 @@ The LP-importer-mapping-recon phase is **complete**. All four PRs have been merg
 | Property | Value |
 |----------|-------|
 | **Staging URL** | https://ropi-aoss-staging.web.app |
-| **Commit SHA** | `65f1bf268edb2b4c8dd96e518cacc1b43be4fcd2` |
-| **Deploy Time** | 2025-12-28T06:35:00Z |
-| **Deploy Workflow** | [Run #20550057937](https://github.com/twgallo13/ROPI-V2.1/actions/runs/20550057937) |
+| **Commit SHA** | `ec990f4688550baa661f09e08da1434efb5615d1` |
+| **Deploy Time** | 2025-12-28T19:45:00Z |
+| **Deploy Workflow** | [Run #20550445823](https://github.com/twgallo13/ROPI-V2.1/actions/runs/20550445823) |
 | **Status** | ✅ Success |
 
 ---
@@ -62,10 +77,11 @@ Both dry-runs passed validation with **no ATTRIBUTE_NOT_FOUND or unmapped attrib
 ### UI Verification (Manual)
 
 See `staging-screenshots-README.md` for manual verification checklist:
-- [ ] descriptive.primaryColor appears as distinct option
-- [ ] RICS fields show (reference only) indicator
-- [ ] MPN appears exactly once
-- [ ] Autosuggest works for "Color" → descriptive.primaryColor
+- [ ] descriptive.primaryColor and descriptive_color appear as two distinct choices
+- [ ] RICS Color, RICS Long Description, RICS Short Description show `(reference only)` indicator
+- [ ] MPN appears exactly once in mapping options (no duplicates)
+- [ ] Autosuggest for "Color" shows `descriptive.primaryColor` as top choice
+- [ ] Already-mapped attributes are disabled in select dropdowns
 
 ---
 
@@ -98,6 +114,7 @@ See `staging-screenshots-README.md` for manual verification checklist:
 | Merge log present | ✅ |
 | Staging deployed | ✅ |
 | Dry-run validation passed | ✅ |
+| LP-1.3.1 fixes applied | ✅ |
 | Phase completion doc published | ✅ |
 
 ---
@@ -110,11 +127,13 @@ The LP-importer-mapping-recon phase has successfully delivered:
 - SDK canonicalization of mappings to registry attribute IDs
 - UI deduplication of mapping options
 - Registry-driven mapping options with autosuggest
+- LP-1.3.1 importer fixes (required-flag logic, auto-mapping exactness/uniqueness)
 - CI infrastructure for importer validation
 
-Staging is live at https://ropi-aoss-staging.web.app with all changes deployed.
+Staging is live at https://ropi-aoss-staging.web.app with all changes deployed (commit `ec990f4`).
 
 ---
 
 **Signed:** Homer  
-**Date:** 2025-12-28
+**Date:** 2025-12-28  
+**LP Version:** LP-importer-mapping-recon-1.3.2

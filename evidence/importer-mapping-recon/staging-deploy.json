@@ -1,10 +1,11 @@
 {
   "stagingUrl": "https://ropi-aoss-staging.web.app",
-  "commitSha": "65f1bf268edb2b4c8dd96e518cacc1b43be4fcd2",
-  "deployTimestamp": "2025-12-28T06:35:00Z",
-  "deployWorkflowRun": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20550057937",
+  "commitSha": "ec990f4688550baa661f09e08da1434efb5615d1",
+  "deployTimestamp": "2025-12-28T19:45:00Z",
+  "deployWorkflowRun": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20550445823",
   "deployStatus": "success",
   "branchDeployed": "aoss-main",
+  "lpVersion": "LP-importer-mapping-recon-1.3.2",
   "mergedPRs": [
     {
       "pr": 369,
@@ -31,7 +32,11 @@
     {
       "commit": "65f1bf268edb2b4c8dd96e518cacc1b43be4fcd2",
       "description": "fix(web): correct property name in ImportMappingStep tests"
+    },
+    {
+      "commit": "ec990f4688550baa661f09e08da1434efb5615d1",
+      "description": "fix(web): LP-1.3.1 importer mapping fixes - required flag, auto-mapping uniqueness, CSS"
     }
   ],
-  "notes": "Staging deploy successful after fixing importer_columns → importerColumns in test fixtures."
+  "notes": "Staging deploy successful with LP-1.3.1 fixes: required-flag logic, auto-mapping exactness/uniqueness, MappingOptionLabel CSS styles."
 }
