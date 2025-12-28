@@ -1,0 +1,12 @@
+
+🔍 Validating: evidence/importer-mapping-recon/staging-dryrun-mpn-post-migration.json
+   Source: packages/sdk/scripts/sample-mpn-only.csv
+   Timestamp: 2025-12-28T12:01:36.416Z
+
+📊 Summary:
+   Total rows: 5
+   Valid rows: 5
+   Invalid rows: N/A
+   Total issues: N/A
+
+✅ VALIDATION PASSED: No attribute mapping errors found

@@ -1,0 +1,12 @@
+
+🔍 Validating: evidence/importer-mapping-recon/staging-dryrun-mixed-post-migration.json
+   Source: packages/sdk/scripts/sample-mixed.csv
+   Timestamp: 2025-12-28T12:01:40.253Z
+
+📊 Summary:
+   Total rows: 7
+   Valid rows: 4
+   Invalid rows: 3
+   Total issues: 3
+
+✅ VALIDATION PASSED: No attribute mapping errors found
