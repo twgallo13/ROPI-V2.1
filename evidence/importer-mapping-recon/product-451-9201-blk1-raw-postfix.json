@@ -1,0 +1,43 @@
+{
+  "_docId": "451-9201-blk1",
+  "_capturedAt": "2025-12-28T21:15:34.180Z",
+  "_note": "POST-FIX: LP-1.3.6 deployed, showing MPN and RICS fields preserved",
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "roUploadDate": null,
+  "exportReadiness": {
+    "overall": 0,
+    "byWebsite": {}
+  },
+  "core": {
+    "createdAt": "2025-12-28T20:33:28.932Z",
+    "sku": "SHK3054058",
+    "brand": "ICE CREAM/ROC",
+    "status": "draft",
+    "mpn": "451-9201-BLK1",
+    "title": "1df585bf-d341-4c0b-887d-b3bc0165f3c2",
+    "firstReceived": "2025-12-26T00:00:00.000Z",
+    "updatedAt": "2025-12-28T21:03:45.722Z"
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2025-12-28T21:03:43.021Z",
+    "normalizedAt": "2025-12-28T21:03:45.722Z",
+    "validatedAt": "2025-12-28T21:03:45.722Z"
+  },
+  "attributes": {
+    "fast_fashion": true,
+    "rics_color": "BLACK",
+    "rics_long_desc": "oprea ss tee",
+    "rics_short_description": "oprea ss tee",
+    "currency": "USD",
+    "rics_category": "Apparel||Mens||Tops||T-short sleeve"
+  },
+  "inventory": {
+    "quantity": 0
+  }
+}

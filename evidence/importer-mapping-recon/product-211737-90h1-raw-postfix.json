@@ -1,0 +1,47 @@
+{
+  "_docId": "211737-90h1",
+  "_capturedAt": "2025-12-28T21:15:34.276Z",
+  "_note": "POST-FIX: LP-1.3.6 deployed, showing MPN and RICS fields preserved",
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "roUploadDate": null,
+  "core": {
+    "createdAt": "2025-12-28T20:33:29.222Z",
+    "sku": "SHK3037625",
+    "brand": "Crocs",
+    "status": "draft",
+    "mpn": "211737-90H1",
+    "title": "4bfae23e-6bc2-4d87-9391-b324010c2a0a",
+    "firstReceived": "2025-12-26T00:00:00.000Z",
+    "updatedAt": "2025-12-28T21:03:45.547Z"
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2025-12-28T21:03:43.017Z",
+    "normalizedAt": "2025-12-28T21:03:45.547Z",
+    "validatedAt": "2025-12-28T21:03:45.547Z"
+  },
+  "attributes": {
+    "gender": "Men's",
+    "material": "Pholyester",
+    "category": "Slides",
+    "department": "Footwear",
+    "class": "Sandle",
+    "rics_color": "Multi",
+    "rics_long_desc": "REALTREE APX ALL TERRAIN CLOG",
+    "rics_short_description": "REALTREE APX ALL TER",
+    "age_group": "Adults",
+    "currency": "USD",
+    "rics_category": "Mens||Footwear||Sandal||Athletic",
+    "ageGroup": "Adults",
+    "primary_color": "Green",
+    "descriptive_color": "Green Croc"
+  },
+  "inventory": {
+    "quantity": 0
+  }
+}
