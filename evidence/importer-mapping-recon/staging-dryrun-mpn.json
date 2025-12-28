@@ -1,0 +1,158 @@
+{
+  "timestamp": "2025-12-28T06:35:57.390Z",
+  "source": "packages/sdk/scripts/sample-mpn-only.csv",
+  "summary": {
+    "totalRows": 5,
+    "validRows": 5,
+    "invalidRows": 0,
+    "totalIssues": 0
+  },
+  "rows": [
+    {
+      "lineNumber": 2,
+      "source": {
+        "MPN": "NK-AIR-MAX-270",
+        "Product Name": "Nike Air Max 270 - Black",
+        "Brand": "Nike",
+        "Description": "Premium running sneaker with Air Max cushioning",
+        "MSRP": "159.99",
+        "Quantity": "25"
+      },
+      "normalized": {
+        "mpn": "NK-AIR-MAX-270",
+        "name": "Nike Air Max 270 - Black",
+        "brand": "Nike",
+        "description": "Premium running sneaker with Air Max cushioning",
+        "msrp": 159.99,
+        "currency": "USD",
+        "quantity": 25
+      },
+      "productId": "nk-air-max-270",
+      "issues": [],
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": false,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 3,
+      "source": {
+        "MPN": "NK-JORDAN-1",
+        "Product Name": "Jordan Retro 1 High - White",
+        "Brand": "Jordan",
+        "Description": "Classic basketball shoe with iconic design",
+        "MSRP": "180.00",
+        "Quantity": "15"
+      },
+      "normalized": {
+        "mpn": "NK-JORDAN-1",
+        "name": "Jordan Retro 1 High - White",
+        "brand": "Jordan",
+        "description": "Classic basketball shoe with iconic design",
+        "msrp": 180,
+        "currency": "USD",
+        "quantity": 15
+      },
+      "productId": "nk-jordan-1",
+      "issues": [],
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": false,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 4,
+      "source": {
+        "MPN": "ADIDAS-UB-21",
+        "Product Name": "Adidas Ultraboost 21 - Grey",
+        "Brand": "Adidas",
+        "Description": "High-performance running shoe",
+        "MSRP": "190.00",
+        "Quantity": "30"
+      },
+      "normalized": {
+        "mpn": "ADIDAS-UB-21",
+        "name": "Adidas Ultraboost 21 - Grey",
+        "brand": "Adidas",
+        "description": "High-performance running shoe",
+        "msrp": 190,
+        "currency": "USD",
+        "quantity": 30
+      },
+      "productId": "adidas-ub-21",
+      "issues": [],
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": false,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 5,
+      "source": {
+        "MPN": "NB-574-CLASSIC",
+        "Product Name": "New Balance 574 Classic - Navy",
+        "Brand": "New Balance",
+        "Description": "Retro lifestyle sneaker",
+        "MSRP": "89.99",
+        "Quantity": "40"
+      },
+      "normalized": {
+        "mpn": "NB-574-CLASSIC",
+        "name": "New Balance 574 Classic - Navy",
+        "brand": "New Balance",
+        "description": "Retro lifestyle sneaker",
+        "msrp": 89.99,
+        "currency": "USD",
+        "quantity": 40
+      },
+      "productId": "nb-574-classic",
+      "issues": [],
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": false,
+        "productIdSource": "mpn"
+      }
+    },
+    {
+      "lineNumber": 6,
+      "source": {
+        "MPN": "PUMA-RS-X",
+        "Product Name": "Puma RS-X - Multi",
+        "Brand": "Puma",
+        "Description": "Bold chunky sneaker with retro vibe",
+        "MSRP": "120.00",
+        "Quantity": "20"
+      },
+      "normalized": {
+        "mpn": "PUMA-RS-X",
+        "name": "Puma RS-X - Multi",
+        "brand": "Puma",
+        "description": "Bold chunky sneaker with retro vibe",
+        "msrp": 120,
+        "currency": "USD",
+        "quantity": 20
+      },
+      "productId": "puma-rs-x",
+      "issues": [],
+      "validation": {
+        "isValid": true,
+        "missingRequired": [],
+        "hasMpn": true,
+        "hasSku": false,
+        "productIdSource": "mpn"
+      }
+    }
+  ],
+  "errors": []
+}
