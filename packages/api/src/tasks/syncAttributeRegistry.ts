@@ -27,7 +27,7 @@ interface AttributeDefinition {
   label: string;
   external_header?: string;
   category?: string;
-  data_type: 'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date';
+  data_type: 'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date' | 'select' | 'text' | 'longText' | 'money';
   allowed_values?: string[];
   synonyms?: string[];
   required_for_completion?: boolean;
@@ -36,6 +36,25 @@ interface AttributeDefinition {
   ai_usage_notes?: string;
   status?: 'active' | 'deprecated' | 'hidden';
   source?: 'notion' | 'derived' | 'json';
+}
+
+/**
+ * LP-test-fix-1.0: Normalize data_type from registry format to schema format
+ * 
+ * Registry format → Schema format mappings:
+ * - text → string
+ * - longText → string  
+ * - select → enum
+ * - money → currency
+ */
+function normalizeDataType(dataType: string): AttributeDefinition['data_type'] {
+  const mapping: Record<string, AttributeDefinition['data_type']> = {
+    'text': 'string',
+    'longText': 'string',
+    'select': 'enum',
+    'money': 'currency',
+  };
+  return mapping[dataType] || (dataType as AttributeDefinition['data_type']);
 }
 
 interface SyncResult {
@@ -138,7 +157,12 @@ async function loadRegistryFromFile(): Promise<AttributeDefinition[] | null> {
     }
 
     console.log(`✅ Loaded ${attributes.length} attributes from ${REGISTRY_JSON_PATH}`);
-    return attributes.map(attr => ({ ...attr, source: 'json' as const }));
+    // LP-test-fix-1.0: Normalize data_type values when loading from JSON
+    return attributes.map(attr => ({ 
+      ...attr, 
+      data_type: normalizeDataType(attr.data_type),
+      source: 'json' as const 
+    }));
   } catch (error) {
     console.error('❌ Error loading registry from file:', error);
     return null;

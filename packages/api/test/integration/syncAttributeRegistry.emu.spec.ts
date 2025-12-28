@@ -83,7 +83,8 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
       const genderAttr = await getAttribute('gender');
       expect(genderAttr).toBeDefined();
       expect(genderAttr.label).toBe('Gender');
-      expect(genderAttr.data_type).toBe('select');
+      // LP-test-fix-1.0: data_type is normalized from 'select' to 'enum' during sync
+      expect(genderAttr.data_type).toBe('enum');
       expect(genderAttr.required_for_completion).toBe(true);
       expect(genderAttr.allowed_values).toContain("Men's");
       expect(genderAttr.allowed_values).toContain("Women's");
@@ -94,7 +95,8 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
 
       const primaryColorAttr = await getAttribute('primary_color');
       expect(primaryColorAttr).toBeDefined();
-      expect(primaryColorAttr.data_type).toBe('select');
+      // LP-test-fix-1.0: data_type is normalized from 'select' to 'enum' during sync
+      expect(primaryColorAttr.data_type).toBe('enum');
       expect(primaryColorAttr.required_for_completion).toBe(true);
     });
 
@@ -143,9 +145,9 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
     it('should handle different data types correctly', async () => {
       await runSyncAttributeRegistry();
 
-      // Check boolean type
-      const waterproofAttr = await getAttribute('waterproof');
-      expect(waterproofAttr.data_type).toBe('boolean');
+      // Check boolean type (using product_is_active which exists in registry)
+      const isActiveAttr = await getAttribute('product_is_active');
+      expect(isActiveAttr.data_type).toBe('boolean');
 
       // Check multiSelect type (using material instead of occasion which doesn't exist)
       const materialAttr = await getAttribute('material');
