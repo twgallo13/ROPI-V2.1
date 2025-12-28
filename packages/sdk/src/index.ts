@@ -92,7 +92,16 @@ export {
   isEmptyRow,
   validateRequiredFields,
   DEFAULT_COLUMN_MAPPINGS,
+  // LP-importer-mapping-recon-1.1.0: Canonical registry ID helpers
+  normalizeTargetFieldToRegistry,
+  sourceColumnMatchesHeader,
 } from './normalization/importNormalizer';
+
+// LP-importer-mapping-recon-1.1.0: Export legacy-to-registry translation map
+export {
+  LEGACY_TO_REGISTRY,
+  REGISTRY_TO_LEGACY,
+} from './normalization/legacyToRegistryMap';
 
 // Export import row builder
 export {
