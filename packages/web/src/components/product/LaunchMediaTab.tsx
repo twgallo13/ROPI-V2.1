@@ -249,8 +249,8 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
             <span className="form-hint">Drawing/raffle release status</span>
           </div>
 
-          <div className="form-field">
-            <label className="form-label checkbox-field-label">
+          <div className="checkbox-group-row">
+            <label className="checkbox-inline">
               <input
                 type="checkbox"
                 checked={hypeValue}
@@ -260,30 +260,8 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               />
               <span>{hypeAttr?.label ?? 'HYPE'}</span>
             </label>
-            <span className="form-hint">Mark as high-demand/limited release product</span>
-          </div>
 
-          <div className="form-field">
-            <label className="form-label checkbox-field-label">
-              <input
-                type="checkbox"
-                checked={familySizingValue}
-                onChange={(e) => onUpdate('family_sizing', e.target.checked)}
-                data-field="product.family_sizing"
-                name="product.family_sizing"
-              />
-              <span>{familySizingAttr?.label ?? 'Family Sizing'}</span>
-            </label>
-            <span className="form-hint">Available in family sizes</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="form-section">
-        <h3 className="form-section-title">Pricing</h3>
-        <div className="form-grid">
-          <div className="form-field">
-            <label className="form-label checkbox-field-label">
+            <label className="checkbox-inline">
               <input
                 type="checkbox"
                 checked={Boolean(mapValue)}
@@ -293,11 +271,8 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               />
               <span>{mapAttr?.label ?? 'MAP'}</span>
             </label>
-            <span className="form-hint">Minimum Advertised Price applies</span>
-          </div>
 
-          <div className="form-field">
-            <label className="form-label checkbox-field-label">
+            <label className="checkbox-inline">
               <input
                 type="checkbox"
                 checked={promoValue}
@@ -307,8 +282,24 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               />
               <span>{promoAttr?.label ?? 'Promo Allowed'}</span>
             </label>
-            <span className="form-hint">Check to allow promotional pricing (unchecked = disallowed)</span>
+
+            <label className="checkbox-inline">
+              <input
+                type="checkbox"
+                checked={familySizingValue}
+                onChange={(e) => onUpdate('family_sizing', e.target.checked)}
+                data-field="product.family_sizing"
+                name="product.family_sizing"
+              />
+              <span>{familySizingAttr?.label ?? 'Family Sizing'}</span>
+            </label>
           </div>
+        </div>
+      </div>
+
+      <div className="form-section">
+        <h3 className="form-section-title">Pricing</h3>
+        <div className="form-grid">
 
           <div className="form-field">
             <label className="form-label">

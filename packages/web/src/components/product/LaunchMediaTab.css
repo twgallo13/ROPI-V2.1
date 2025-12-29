@@ -79,6 +79,38 @@
   margin-top: 0.25rem;
 }
 
+/* Checkbox group row for inline checkboxes */
+.checkbox-group-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0.75rem 0;
+}
+
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: var(--font-size-base, 0.875rem);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.checkbox-inline input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Responsive: stack on mobile if needed */
+@media (max-width: 640px) {
+  .checkbox-group-row {
+    gap: 1rem;
+  }
+}
+
 /* ============================================
    MEDIA UPLOAD AREA
    ============================================ */
