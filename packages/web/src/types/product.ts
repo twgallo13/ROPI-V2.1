@@ -147,8 +147,8 @@ export interface Product {
   drawing?: string;
   /** MAP - Minimum Advertised Price toggle (boolean) */
   map?: boolean;
-  /** Promo status (Allowed/Disallowed) */
-  promo?: string;
+  /** Promo allowed (true=allowed, false=disallowed) */
+  promo?: boolean;
   /** SCOM Regular Price */
   scom_regular_price?: string;
   /** SCOM Sale Price */

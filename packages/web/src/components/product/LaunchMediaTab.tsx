@@ -18,7 +18,7 @@ import './LaunchMediaTab.css';
  *   - drawing: Drawing type (FCFS, Store-only, Web-only, Store & Web, Token set)
  * - Pricing:
  *   - map: MAP toggle (boolean)
- *   - promo: Promo status (Allowed/Disallowed)
+ *   - promo: Promo allowed (boolean - true=allowed, false=disallowed)
  *   - scom_regular_price: SCOM regular price
  *   - scom_sale_price: SCOM sale price
  * - Shipping Overrides:
@@ -70,7 +70,6 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   
   // Get allowed values from registry
   const drawingOptions = drawingAttr?.allowed_values ?? ['FCFS', 'Store-only', 'Web-only', 'Store & Web', 'Token set'];
-  const promoOptions = promoAttr?.allowed_values ?? ['Allowed', 'Disallowed'];
   
   // LP-0.4.1.1: media_status is read-only from external workflow, not computed locally
   // LP-1.4.2: Defensive fallback for unknown media_status values
@@ -154,7 +153,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const mapValue = product.map ?? 
                    (product.attributes?.map as unknown as boolean) ?? false;
   const promoValue = product.promo ?? 
-                     (product.attributes?.promo as string) ?? '';
+                     (product.attributes?.promo as unknown as boolean) ?? false;
   // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
   // Note: Product type has top-level fields, but Firestore may store in pricing object
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -298,21 +297,17 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
           </div>
 
           <div className="form-field">
-            <label className="form-label">
-              {promoAttr?.label ?? 'Promo'}
+            <label className="form-label checkbox-field-label">
+              <input
+                type="checkbox"
+                checked={promoValue}
+                onChange={(e) => onUpdate('promo', e.target.checked)}
+                data-field="product.promo"
+                name="product.promo"
+              />
+              <span>{promoAttr?.label ?? 'Promo Allowed'}</span>
             </label>
-            <select
-              className="form-select"
-              value={promoValue}
-              onChange={(e) => onUpdate('promo', e.target.value)}
-              data-field="product.promo"
-              name="product.promo"
-            >
-              <option value="">Select...</option>
-              {promoOptions.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
+            <span className="form-hint">Check to allow promotional pricing (unchecked = disallowed)</span>
           </div>
 
           <div className="form-field">
