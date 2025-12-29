@@ -7,6 +7,7 @@ on:
       - 'packages/api/**'
       - 'packages/web/**'
       - '.github/workflows/importer-mapping-recon-ci.yml'
+  workflow_dispatch:  # Allow manual triggering for testing
 
 # Reusable configuration
 env:
