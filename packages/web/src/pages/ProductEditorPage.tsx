@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useProduct } from '../hooks/useProduct';
+import { isFirebaseAvailable } from '../firebaseConfig';
 import ProductHeader from '../components/product/ProductHeader';
 import CoreInformationTab from '../components/product/CoreInformationTab';
 import ProductAttributesTab from '../components/product/ProductAttributesTab';
@@ -75,10 +76,18 @@ function ProductEditorPage() {
     setSearchParams({ tab });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (product) {
-      saveProduct(product);
-      alert('Product saved to localStorage!');
+      const success = await saveProduct(product);
+      // LP-1.4.6.4: Accurate save feedback based on actual persistence target
+      const target = isFirebaseAvailable() ? 'Firestore' : 'localStorage';
+      if (success) {
+        console.log(`[ProductEditorPage] Product ${product.id} saved to ${target}`);
+        alert(`Product saved to ${target}`);
+      } else {
+        console.error(`[ProductEditorPage] Failed to save product ${product.id} to ${target}`);
+        alert(`Failed to save product to ${target}. Check console for details.`);
+      }
     }
   };
 
