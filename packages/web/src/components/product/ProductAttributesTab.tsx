@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { Product } from '../../types/product';
 import { useAttributeRegistry, type Attribute } from '../../hooks/useAttributeRegistry';
+import { formatForDateInput } from '../../utils/dateUtils';
 import './ProductAttributesTab.css';
 
 /**
@@ -202,11 +203,14 @@ function AttributeInput({
       );
 
     case 'date':
+      // LP-1.4.6.4: Use formatForDateInput to ensure YYYY-MM-DD format for <input type="date">
+      const formattedDateValue = formatForDateInput(stringValue) ?? '';
+      console.debug('LP-1.4.6.4 bind date', { key: attr.attribute_id, raw: stringValue, inputValue: formattedDateValue });
       return (
         <input
           type="date"
           className="form-input"
-          value={stringValue}
+          value={formattedDateValue}
           onChange={(e) => onChange(e.target.value)}
           data-testid={`attr-input-${attr.attribute_id}`}
           data-field={fieldKey}

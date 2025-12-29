@@ -1,5 +1,6 @@
 import type { Product } from '../../types/product';
 import { useAttributeRegistry } from '../../hooks/useAttributeRegistry';
+import { formatForDateInput } from '../../utils/dateUtils';
 import './LaunchMediaTab.css';
 
 /**
@@ -131,12 +132,23 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                     (product.attributes?.hype as unknown as boolean) ?? false;
   const familySizingValue = product.family_sizing ?? 
                             (product.attributes?.family_sizing as unknown as boolean) ?? false;
-  const launchDateValue = product.launch_date ?? 
-                          product.launchDate ?? '';
-  const klPostDateValue = product.kl_post_date ?? 
-                          (product.attributes?.kl_post_date as string) ?? '';
-  const hideImageDateValue = product.hide_image_date ?? 
-                             (product.attributes?.hide_image_date as string) ?? '';
+  // LP-1.4.6.4: Use formatForDateInput to ensure YYYY-MM-DD format for <input type="date">
+  // Prefer attributes.* (normalized ISO) over top-level (vendor format)
+  const launchDateRaw = (product.attributes?.launch_date as string) ?? 
+                        product.launch_date ?? 
+                        product.launchDate ?? '';
+  const launchDateValue = formatForDateInput(launchDateRaw) ?? '';
+  console.debug('LP-1.4.6.4 bind date', { key: 'launch_date', raw: launchDateRaw, inputValue: launchDateValue });
+
+  const klPostDateRaw = (product.attributes?.kl_post_date as string) ?? 
+                        product.kl_post_date ?? '';
+  const klPostDateValue = formatForDateInput(klPostDateRaw) ?? '';
+  console.debug('LP-1.4.6.4 bind date', { key: 'kl_post_date', raw: klPostDateRaw, inputValue: klPostDateValue });
+
+  const hideImageDateRaw = (product.attributes?.hide_image_date as string) ??
+                           product.hide_image_date ?? '';
+  const hideImageDateValue = formatForDateInput(hideImageDateRaw) ?? '';
+  console.debug('LP-1.4.6.4 bind date', { key: 'hide_image_date', raw: hideImageDateRaw, inputValue: hideImageDateValue });
   const drawingValue = product.drawing ?? 
                        (product.attributes?.drawing as string) ?? '';
   const mapValue = product.map ?? 
