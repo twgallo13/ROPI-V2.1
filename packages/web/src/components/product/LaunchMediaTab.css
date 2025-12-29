@@ -79,12 +79,26 @@
   margin-top: 0.25rem;
 }
 
-/* Checkbox group row for inline checkboxes */
-.checkbox-group-row {
+/* 3-column pricing and options grid */
+.pricing-options-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.checkbox-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  padding-right: 1.5rem;
+  border-right: 1px solid var(--color-border, #e5e7eb);
+}
+
+.price-column {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  padding: 0.75rem 0;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .checkbox-inline {
@@ -104,10 +118,25 @@
   flex-shrink: 0;
 }
 
-/* Responsive: stack on mobile if needed */
+/* Responsive: stack columns on tablets and mobile */
+@media (max-width: 1024px) {
+  .pricing-options-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .checkbox-column {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    padding-right: 0;
+    padding-bottom: 1rem;
+  }
+}
+
 @media (max-width: 640px) {
-  .checkbox-group-row {
-    gap: 1rem;
+  .checkbox-column {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 }
 

@@ -272,6 +272,19 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                 data-field="product.hype"
                 name="product.hype"
               />
+      <div className="form-section">
+        <h3 className="form-section-title">Pricing & Options</h3>
+        <div className="pricing-options-grid">
+          {/* Column 1: Checkboxes */}
+          <div className="checkbox-column">
+            <label className="checkbox-inline">
+              <input
+                type="checkbox"
+                checked={hypeValue}
+                onChange={(e) => onUpdate('hype', e.target.checked)}
+                data-field="product.hype"
+                name="product.hype"
+              />
               <span>{hypeAttr?.label ?? 'HYPE'}</span>
             </label>
 
@@ -294,7 +307,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                 data-field="product.promo"
                 name="product.promo"
               />
-              <span>{promoAttr?.label ?? 'Promo Allowed'}</span>
+              <span>{promoAttr?.label ?? 'Promo'}</span>
             </label>
 
             <label className="checkbox-inline">
@@ -308,66 +321,82 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               <span>{familySizingAttr?.label ?? 'Family Sizing'}</span>
             </label>
           </div>
+
+          {/* Column 2: SCOM Pricing */}
+          <div className="price-column">
+            <div className="form-field">
+              <label className="form-label">
+                {scomRegularPriceAttr?.label ?? 'SCOM Regular Price'}
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={scomRegularPriceValue}
+                onChange={(e) => onUpdate('scom_regular_price', e.target.value)}
+                data-field="product.scom_regular_price"
+                name="product.scom_regular_price"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">
+                {scomSalePriceAttr?.label ?? 'SCOM Sale Price'}
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={scomSalePriceValue}
+                onChange={(e) => onUpdate('scom_sale_price', e.target.value)}
+                data-field="product.scom_sale_price"
+                name="product.scom_sale_price"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          {/* Column 3: Shipping */}
+          <div className="price-column">
+            <div className="form-field">
+              <label className="form-label">
+                {standardShippingAttr?.label ?? 'Standard Shipping'}
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={standardShippingValue}
+                onChange={(e) => onUpdate('standard_shipping_override', e.target.value)}
+                data-field="product.standard_shipping_override"
+                name="product.standard_shipping_override"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">
+                {expeditedShippingAttr?.label ?? 'Expedited Shipping'}
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={expeditedShippingValue}
+                onChange={(e) => onUpdate('expedited_override_shipping', e.target.value)}
+                data-field="product.expedited_override_shipping"
+                name="product.expedited_override_shipping"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="form-section">
-        <h3 className="form-section-title">Pricing</h3>
-        <div className="form-grid">
-          <div className="form-field">
-            <label className="form-label">
-              {scomRegularPriceAttr?.label ?? 'SCOM Regular Price'}
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              className="form-input"
-              value={scomRegularPriceValue}
-              onChange={(e) => onUpdate('scom_regular_price', e.target.value)}
-              data-field="product.scom_regular_price"
-              name="product.scom_regular_price"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div className="form-field">
-            <label className="form-label">
-              {scomSalePriceAttr?.label ?? 'SCOM Sale Price'}
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              className="form-input"
-              value={scomSalePriceValue}
-              onChange={(e) => onUpdate('scom_sale_price', e.target.value)}
-              data-field="product.scom_sale_price"
-              name="product.scom_sale_price"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div className="form-field">
-            <label className="form-label">
-              {standardShippingAttr?.label ?? 'Standard Shipping'}
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              className="form-input"
-              value={standardShippingValue}
-              onChange={(e) => onUpdate('standard_shipping_override', e.target.value)}
-              data-field="product.standard_shipping_override"
-              name="product.standard_shipping_override"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div className="form-field">
-            <label className="form-label">
-              {expeditedShippingAttr?.label ?? 'Expedited Shipping'}
             </label>
             <input
               type="number"
