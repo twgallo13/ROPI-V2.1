@@ -98,7 +98,7 @@ Firestore: settings/attributes/keys/{attributeId}
 1. **Load Registry** — Reads `attributeRegistry.json` from SDK package
 2. **Validate** — Ensures all attributes have required fields
 3. **Upsert to Firestore** — Writes/updates each attribute to `settings/attributes/keys/{attributeId}`
-4. **Write Metadata** — Updates `settings/attributes/meta` with:
+4. **Write Metadata** — Updates `settings/attributesMeta` with:
    - `registry_version` — Version from JSON file
    - `lastSyncedAt` — ISO timestamp
    - `lastSyncedBy` — Actor (system, admin email, etc.)
@@ -206,7 +206,7 @@ function ProductEditor() {
 
 6. **Verify**
    - Check Firestore: `settings/attributes/keys/new_field` exists
-   - Check Firestore: `settings/attributes/meta.registry_version` matches JSON
+   - Check Firestore: `settings/attributesMeta.registry_version` matches JSON
    - Open Product Editor and verify new field appears
 
 ## Validation Rules
@@ -278,7 +278,7 @@ match /settings/attributes/keys/{attributeId} {
 }
 ```
 
-### `settings/attributes/meta`
+### `settings/attributesMeta`
 
 ```javascript
 {
@@ -322,7 +322,7 @@ The registry uses semantic versioning:
 
 4. **Check Firestore meta:**
    - Open Firebase Console
-   - Navigate to Firestore → `settings/attributes/meta`
+   - Navigate to Firestore → `settings/attributesMeta`
    - Verify `registry_version` matches local file
 
 ### Attributes not appearing in UI
