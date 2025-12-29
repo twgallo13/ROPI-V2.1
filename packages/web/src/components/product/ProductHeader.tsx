@@ -55,22 +55,6 @@ const mediaStatusConfig: Record<string, { icon: string; label: string; className
 };
 
 /**
- * Format date for display
- */
-function formatDate(dateStr?: string): string {
-  if (!dateStr) return '—';
-  try {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
-    return '—';
-  }
-}
-
-/**
  * Format number with commas
  */
 function formatNumber(num?: number): string {
@@ -86,10 +70,11 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
   const isActive = product.product_is_active ?? false;
 
   // LP-1.4.6.7: Fallback to attributes.last_received when core field is absent
-  const rawLastFromAttributes = product?.attributes?.last_received;
-  const rawLastFromCore = product?.last_received;
-  const rawLast = rawLastFromAttributes ?? rawLastFromCore;
-  const lastDisplay = formatForDisplayYYYYMMDD(rawLast) ?? '—';
+  // Handle potential string array from attributes (take first element if array)
+  const attrLast = product?.attributes?.last_received;
+  const attrLastStr = typeof attrLast === 'string' ? attrLast : Array.isArray(attrLast) ? attrLast[0] : undefined;
+  const rawLastStr = attrLastStr || product?.last_received;
+  const lastDisplay = formatForDisplayYYYYMMDD(rawLastStr) ?? '—';
 
   return (
     <header className="product-header" role="banner" aria-label="Product Header">
