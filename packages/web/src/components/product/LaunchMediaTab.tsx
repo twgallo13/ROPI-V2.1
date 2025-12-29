@@ -155,46 +155,20 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const promoValue = product.promo ?? 
                      (product.attributes?.promo as unknown as boolean) ?? false;
   
-  // Helper functions for currency formatting
-  const formatCurrency = (value: string | number | undefined): string => {
-    if (!value) return '';
-    const numStr = String(value).replace(/[^0-9.]/g, '');
-    const num = parseFloat(numStr);
-    return isNaN(num) ? '' : `$${num.toFixed(2)}`;
-  };
-
-  const parseCurrency = (value: string): string => {
-    const cleaned = value.replace(/[^0-9.]/g, '');
-    return cleaned;
-  };
-
-  const handleCurrencyChange = (field: string, value: string) => {
-    const cleaned = parseCurrency(value);
-    onUpdate(field, cleaned);
-  };
-
   // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
   // Note: Product type has top-level fields, but Firestore may store in pricing object
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pricingObj = (product as any).pricing as Record<string, unknown> | undefined;
-  const scomRegularPriceValue = formatCurrency(
-    (pricingObj?.scom_regular_price as string | number) ??
-    product.scom_regular_price ??
-    (product.attributes?.scom_regular_price as string)
-  );
-  const scomSalePriceValue = formatCurrency(
-    (pricingObj?.scom_sale_price as string | number) ??
-    product.scom_sale_price ??
-    (product.attributes?.scom_sale_price as string)
-  );
-  const standardShippingValue = formatCurrency(
-    product.standard_shipping_override ?? 
-    (product.attributes?.standard_shipping_override as string)
-  );
-  const expeditedShippingValue = formatCurrency(
-    product.expedited_override_shipping ?? 
-    (product.attributes?.expedited_override_shipping as string)
-  );
+  const scomRegularPriceValue = (pricingObj?.scom_regular_price as string | number) ??
+                                product.scom_regular_price ??
+                                (product.attributes?.scom_regular_price as string) ?? '';
+  const scomSalePriceValue = (pricingObj?.scom_sale_price as string | number) ??
+                             product.scom_sale_price ??
+                             (product.attributes?.scom_sale_price as string) ?? '';
+  const standardShippingValue = product.standard_shipping_override ?? 
+                                (product.attributes?.standard_shipping_override as string) ?? '';
+  const expeditedShippingValue = product.expedited_override_shipping ?? 
+                                 (product.attributes?.expedited_override_shipping as string) ?? '';
   const customMessageValue = product.custom_message ?? 
                              (product.attributes?.custom_message as string) ?? '';
 
@@ -333,13 +307,15 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               {scomRegularPriceAttr?.label ?? 'SCOM Regular Price'}
             </label>
             <input
-              type="text"
+              type="number"
+              step="0.01"
+              min="0"
               className="form-input"
               value={scomRegularPriceValue}
-              onChange={(e) => handleCurrencyChange('scom_regular_price', e.target.value)}
+              onChange={(e) => onUpdate('scom_regular_price', e.target.value)}
               data-field="product.scom_regular_price"
               name="product.scom_regular_price"
-              placeholder="$0.00"
+              placeholder="0.00"
             />
           </div>
 
@@ -348,13 +324,15 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               {scomSalePriceAttr?.label ?? 'SCOM Sale Price'}
             </label>
             <input
-              type="text"
+              type="number"
+              step="0.01"
+              min="0"
               className="form-input"
               value={scomSalePriceValue}
-              onChange={(e) => handleCurrencyChange('scom_sale_price', e.target.value)}
+              onChange={(e) => onUpdate('scom_sale_price', e.target.value)}
               data-field="product.scom_sale_price"
               name="product.scom_sale_price"
-              placeholder="$0.00"
+              placeholder="0.00"
             />
           </div>
         </div>
@@ -368,13 +346,15 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               {standardShippingAttr?.label ?? 'Standard Shipping Override'}
             </label>
             <input
-              type="text"
+              type="number"
+              step="0.01"
+              min="0"
               className="form-input"
               value={standardShippingValue}
-              onChange={(e) => handleCurrencyChange('standard_shipping_override', e.target.value)}
+              onChange={(e) => onUpdate('standard_shipping_override', e.target.value)}
               data-field="product.standard_shipping_override"
               name="product.standard_shipping_override"
-              placeholder="$0.00"
+              placeholder="0.00"
             />
           </div>
 
@@ -383,13 +363,15 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               {expeditedShippingAttr?.label ?? 'Expedited Shipping Override'}
             </label>
             <input
-              type="text"
+              type="number"
+              step="0.01"
+              min="0"
               className="form-input"
               value={expeditedShippingValue}
-              onChange={(e) => handleCurrencyChange('expedited_override_shipping', e.target.value)}
+              onChange={(e) => onUpdate('expedited_override_shipping', e.target.value)}
               data-field="product.expedited_override_shipping"
               name="product.expedited_override_shipping"
-              placeholder="$0.00"
+              placeholder="0.00"
             />
           </div>
         </div>
