@@ -101,10 +101,25 @@ export async function signInWithEmail(
   // Submit form
   await page.locator('[data-testid="signin-submit"]').click();
   
-  // LP-1.4.6.6: Wait for success message first (confirms Firebase auth completed)
-  // This appears before the modal closes and indicates auth succeeded server-side
+  // LP-1.4.6.6: Wait for auth response (either success or error)
+  // This helps diagnose auth failures on preview URLs
   const successAlert = page.locator('.signin-alert-success');
-  await successAlert.waitFor({ state: 'visible', timeout: 15000 });
+  const errorAlert = page.locator('.signin-alert-error');
+  
+  // Wait for either outcome with extended timeout for preview URLs
+  const outcome = await Promise.race([
+    successAlert.waitFor({ state: 'visible', timeout: 20000 }).then(() => 'success'),
+    errorAlert.waitFor({ state: 'visible', timeout: 20000 }).then(() => 'error'),
+  ]).catch(() => 'timeout');
+  
+  if (outcome === 'error') {
+    const errorMessage = await errorAlert.textContent();
+    throw new Error(`Sign-in failed with error: ${errorMessage}`);
+  }
+  
+  if (outcome === 'timeout') {
+    throw new Error('Sign-in timed out - no success or error message appeared');
+  }
   
   // Wait for modal to close (it auto-closes after 500ms delay on success)
   await modal.waitFor({ state: 'hidden', timeout: 5000 });
