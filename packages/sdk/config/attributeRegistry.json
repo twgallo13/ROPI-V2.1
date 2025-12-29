@@ -1,5 +1,5 @@
 {
-  "version": "1.1.4",
+  "version": "1.0.3",
   "attributes": [
     {
       "attribute_id": "sku",
@@ -112,7 +112,7 @@
       "external_header": "Department",
       "category": "classification",
       "data_type": "select",
-      "allowed_values": ["Footwear", "Accessories", "Clothing"],
+      "allowed_values": ["Mens", "Womens", "Kids", "Unisex", "Boys", "Girls"],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
@@ -124,7 +124,7 @@
       "external_header": "Websites",
       "category": "sku_core",
       "data_type": "multiSelect",
-      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "NOT FOR WEB"],
+      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "fbrkclothing.com", "Vnds.com", "Kazbah.com", "Tiltedsole.com", "NOT FOR WEB"],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
@@ -182,10 +182,11 @@
       "external_header": "Family Sizing",
       "category": "lifecycle",
       "data_type": "boolean",
+      "aliases": ["family_sharing"],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "ai_usage_notes": "Indicates if product is part of a family sizing collection",
+      "ai_usage_notes": "LP-product-ordering-import-completeness-0.1.0: Changed to boolean. Coercion: true='true'|'1'|'yes'|'y'|'on'|'allowed'; false='false'|'0'|'no'|'n'|'off'|'not allowed'|'disallowed' (case-insensitive).",
       "status": "active"
     },
     {
@@ -342,7 +343,6 @@
       "external_header": "Material",
       "category": "materials_construction",
       "data_type": "multiSelect",
-      "allow_custom_values": true,
       "allowed_values": [
         "Acrylic", "Canvas", "Cotton", "Cotton-Blend", "Cotton-Rich", "Crocodile", "Dacron", "Denim",
         "Down", "Egyptian-Cotton", "Fabric", "Fabric-And-Leather", "Faux-Fur", "Fleece", "Fur", "Gore-Tex",
@@ -373,7 +373,7 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Optional; used when outsole differs from upper.",
-      "status": "deprecated"
+      "status": "active"
     },
     {
       "attribute_id": "closure_type",
@@ -667,11 +667,10 @@
       "label": "MAP",
       "external_header": "MAP",
       "category": "launch_media_pricing",
-      "data_type": "boolean",
+      "data_type": "money",
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "ai_usage_notes": "Minimum Advertised Price toggle - indicates if MAP pricing applies",
       "status": "active"
     },
     {
@@ -701,24 +700,11 @@
       "label": "Promo",
       "external_header": "Promo",
       "category": "launch_media_pricing",
-      "data_type": "select",
-      "allowed_values": ["Allowed", "Disallowed"],
+      "data_type": "boolean",
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
-    },
-    {
-      "attribute_id": "drawing",
-      "label": "Drawing",
-      "external_header": "Drawing",
-      "category": "launch_media_pricing",
-      "data_type": "select",
-      "allowed_values": ["FCFS", "Store-only", "Web-only", "Store & Web", "Token set"],
-      "required_for_completion": false,
-      "required_for_export": false,
-      "import_required": false,
-      "ai_usage_notes": "Indicates drawing/raffle release type for limited product launches",
+      "ai_usage_notes": "LP-product-ordering-import-completeness-0.1.0: Changed to boolean. Coercion: true='true'|'1'|'yes'|'y'|'on'|'allowed' (Allowed→true); false='false'|'0'|'no'|'n'|'off'|'not allowed'|'disallowed' (Not Allowed→false, case-insensitive).",
       "status": "active"
     },
     {
@@ -801,6 +787,30 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Pattern type (solid, striped, floral, geometric, etc.)",
+      "status": "active"
+    },
+    {
+      "attribute_id": "sustainable",
+      "label": "Sustainable",
+      "external_header": "Sustainable",
+      "category": "attributes",
+      "data_type": "boolean",
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Indicates if product meets sustainability standards",
+      "status": "active"
+    },
+    {
+      "attribute_id": "waterproof",
+      "label": "Waterproof",
+      "external_header": "Waterproof",
+      "category": "material_performance",
+      "data_type": "boolean",
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "ai_usage_notes": "Indicates if product is waterproof",
       "status": "active"
     }
   ]
