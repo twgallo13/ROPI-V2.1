@@ -157,12 +157,13 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   
   // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
   // Note: Product type has top-level fields, but Firestore may store in pricing object
-  // Sanitize price/currency values to handle invalid formats (e.g., "03", "-0.01")
-  const sanitizePrice = (value: unknown): string => {
-    if (!value) return '';
+  // Sanitize price/currency values to handle invalid formats (e.g., "03", "-0.01", ".")
+  const sanitizePrice = (value: unknown): number | '' => {
+    if (value === null || value === undefined || value === '') return '';
     const str = String(value).trim();
+    if (str === '.' || str === '') return '';
     const num = parseFloat(str);
-    return isNaN(num) || num < 0 ? '' : String(num);
+    return isNaN(num) || num < 0 ? '' : num;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
