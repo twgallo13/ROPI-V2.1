@@ -143,9 +143,15 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                    (product.attributes?.map as unknown as boolean) ?? false;
   const promoValue = product.promo ?? 
                      (product.attributes?.promo as string) ?? '';
-  const scomRegularPriceValue = product.scom_regular_price ?? 
+  // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
+  // Note: Product type has top-level fields, but Firestore may store in pricing object
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pricingObj = (product as any).pricing as Record<string, unknown> | undefined;
+  const scomRegularPriceValue = (pricingObj?.scom_regular_price as string | number) ??
+                                product.scom_regular_price ??
                                 (product.attributes?.scom_regular_price as string) ?? '';
-  const scomSalePriceValue = product.scom_sale_price ?? 
+  const scomSalePriceValue = (pricingObj?.scom_sale_price as string | number) ??
+                             product.scom_sale_price ??
                              (product.attributes?.scom_sale_price as string) ?? '';
   const standardShippingValue = product.standard_shipping_override ?? 
                                 (product.attributes?.standard_shipping_override as string) ?? '';

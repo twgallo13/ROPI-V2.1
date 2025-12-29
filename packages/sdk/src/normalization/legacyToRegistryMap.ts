@@ -81,6 +81,14 @@ export const LEGACY_TO_REGISTRY: Record<string, string> = {
   'closure_type': 'closure_type',
   'cutType': 'cut_type',
   'cut_type': 'cut_type',
+  // LP-1.4.3 aliases
+  'heelHeight': 'heel_height',
+  'heel_height': 'heel_height',
+  'platformHeight': 'platform_height',
+  'platform_height': 'platform_height',
+  'hideImageUntilDate': 'hide_image_date',
+  'hide_image_date': 'hide_image_date',
+  'drawing': 'drawing',
 
   // ======================================================================
   // Sizing / Measurements (category: measurements)
