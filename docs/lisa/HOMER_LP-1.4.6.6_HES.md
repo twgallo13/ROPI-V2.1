@@ -37,59 +37,79 @@ at helpers.ts:100
 
 ## 2. Root Cause Analysis
 
-### Candidate Causes
+### ✅ Root Cause Identified
 
-1. **Preview auth redirect not completing** — Firebase Auth may not redirect/refresh properly on ephemeral PR preview URLs (`https://ropi-aoss-staging--pr-XXX-*.web.app`).
+**Async Auth State Propagation Timing Issue**
 
-2. **Selector mismatch** — The `[data-testid="user-menu-trigger"]` selector may not exist or may have a different name in the deployed build.
+The `signInWithEmail()` helper in `helpers.ts` was waiting for `[data-testid="user-menu-trigger"]` immediately after form submission, but Firebase auth state propagation is asynchronous:
 
-3. **CI credential sync issue** — GitHub Actions secrets may have different passwords than the test accounts configured in Firebase Auth.
+```
+Timeline:
+1. signInWithEmail() submits form
+2. Firebase signInWithEmailAndPassword() resolves → Auth completes server-side
+3. SignInModal shows success message, schedules modal close (500ms)
+4. helpers.ts IMMEDIATELY waits for user-menu-trigger → PROBLEM
+5. onAuthStateChanged() fires asynchronously → Sets currentUser
+6. AuthProvider updates state → loading=false, currentUser set
+7. TopBar re-renders → user-menu-trigger appears
+```
 
-### Investigation Tasks
+**On PR preview URLs, step 5-7 take longer due to:**
+- Cold start latency on ephemeral Firebase Hosting URLs
+- Network latency to Firebase Auth servers
+- No cached auth state
 
-- [ ] Check if `data-testid="user-menu-trigger"` exists in `UserMenu.tsx` or equivalent component
-- [ ] Verify Firebase Auth authorized domains include PR preview URL pattern
-- [ ] Compare CI secrets with Firebase Auth user passwords
-- [ ] Test sign-in flow manually on a PR preview URL
-- [ ] Check if auth state persistence works on preview domains
+The 15s timeout in step 4 expired before steps 5-7 completed.
+
+### Code Locations
+
+| Component | Location | Issue |
+|-----------|----------|-------|
+| `signInWithEmail()` | [helpers.ts#L100](packages/web/e2e/helpers.ts#L100) | Waited for user-menu-trigger immediately after submit |
+| `TopBar` | [TopBar.tsx#L68](packages/web/src/components/layout/TopBar.tsx#L68) | Shows user-menu only when `currentUser` is set AND `loading=false` |
+| `AuthProvider` | [AuthProvider.tsx#L111](packages/web/src/contexts/AuthProvider.tsx#L111) | `onAuthStateChanged` callback is async |
+| `SignInModal` | [SignInModal.tsx#L112](packages/web/src/components/Auth/SignInModal.tsx#L112) | Shows success message before modal closes |
 
 ---
 
-## 3. Proposed Fixes
+## 3. Implemented Fix
 
-### Fix 1: Verify and Update User Menu Test ID
+### Fix: Proper Auth State Sequencing
 
-Check the actual test ID in the codebase and update `helpers.ts` if needed.
+Updated `packages/web/e2e/helpers.ts` `signInWithEmail()` function to properly sequence the async auth flow:
 
 ```typescript
-// helpers.ts line 100 - current
-await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 15000 });
+// LP-1.4.6.6: Wait for success message first (confirms Firebase auth completed)
+const successAlert = page.locator('.signin-alert-success');
+await successAlert.waitFor({ state: 'visible', timeout: 15000 });
 
-// If selector changed, update to match actual component
+// Wait for modal to close (it auto-closes after 500ms delay on success)
+await modal.waitFor({ state: 'hidden', timeout: 5000 });
+
+// LP-1.4.6.6: Wait for TopBar loading state to clear
+const loadingIndicator = page.locator('.topbar-loading');
+await loadingIndicator.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {
+  // Loading indicator may already be hidden - that's OK
+});
+
+// LP-1.4.6.6: Now wait for user menu with extended timeout
+await page.locator('[data-testid="user-menu-trigger"]').waitFor({ 
+  state: 'visible', 
+  timeout: 20000 
+});
 ```
 
-### Fix 2: Add Preview URL to Firebase Auth Authorized Domains
+**Key Changes:**
+1. Wait for success message first (confirms Firebase auth completed server-side)
+2. Wait for modal to close (confirms app acknowledged success)
+3. Handle TopBar loading state gracefully
+4. Extended timeout for user-menu-trigger from 15s to 20s
 
-Ensure Firebase Auth accepts the PR preview URL pattern:
-- `ropi-aoss-staging--pr-*.web.app`
-- Or use wildcard if supported
+### Commit
 
-### Fix 3: Sync CI Credentials
-
-Reset Firebase Auth passwords for test users and update GitHub Actions secrets:
-- `VITE_E2E_ADMIN_PASSWORD`
-- `VITE_E2E_USER_PASSWORD`
-- `VITE_E2E_UNVERIFIED_PASSWORD`
-
-### Fix 4: Add Auth State Check Before Selector Wait
-
-Add explicit wait for auth state to settle before checking for user menu:
-
-```typescript
-// Wait for Firebase auth to complete
-await page.waitForFunction(() => {
-  return window.__firebaseAuth?.currentUser !== undefined;
-}, { timeout: 10000 });
+```
+fix(e2e): improve auth state sync for PR preview URLs
+6d892ed
 ```
 
 ---
@@ -130,11 +150,16 @@ If fixes cause new issues:
 | PR | Description | Status |
 |----|-------------|--------|
 | #383 | LP-1.4.6.5 Production Rollout (docs-only, E2E skipped) | MERGED |
-| TBD | LP-1.4.6.6 E2E Auth Fix | IN PROGRESS |
+| #384 | LP-1.4.6.6 E2E Auth Fix | IN PROGRESS |
+
+### Commits
+
+- `6d892ed` — fix(e2e): improve auth state sync for PR preview URLs
 
 ### Workflow Runs
 
 - Failing E2E run: https://github.com/twgallo13/ROPI-V2.1/actions/runs/20569480914
+- Fix verification: (pending CI)
 
 ---
 
