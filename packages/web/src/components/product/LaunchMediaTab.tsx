@@ -157,13 +157,27 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   
   // LP-1.4.3: Prefer direct product fields for SCOM prices (consistent with shipping overrides)
   // Note: Removed pricing object lookup to fix editing issues - write path was mismatched
-  // Sanitize price/currency values to handle invalid formats (e.g., "03", "-0.01", ".")
-  const sanitizePrice = (value: unknown): number | '' => {
+  // Sanitize price/currency values to handle invalid formats and clamp to 2 decimals
+  const sanitizePrice = (value: unknown): string => {
     if (value === null || value === undefined || value === '') return '';
-    const str = String(value).trim();
-    if (str === '.' || str === '') return '';
-    const num = parseFloat(str);
-    return isNaN(num) || num < 0 ? '' : num;
+    const cleaned = String(value).replace(/[^0-9.]/g, '');
+    if (!cleaned || cleaned === '.') return '';
+    const [intPart, decPart = ''] = cleaned.split('.');
+    const trimmedDec = decPart.slice(0, 2);
+    return trimmedDec ? `${intPart}.${trimmedDec}` : intPart;
+  };
+
+  const formatPriceInput = (raw: string): string => {
+    const cleaned = raw.replace(/[^0-9.]/g, '');
+    if (!cleaned || cleaned === '.') return '';
+    const [intPart, decPart = ''] = cleaned.split('.');
+    const trimmedDec = decPart.slice(0, 2);
+    return trimmedDec ? `${intPart}.${trimmedDec}` : intPart;
+  };
+
+  const handlePriceChange = (field: string, rawValue: string) => {
+    const formatted = formatPriceInput(rawValue);
+    onUpdate(field, formatted);
   };
 
   const scomRegularPriceValue = sanitizePrice(
@@ -262,16 +276,9 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
             </select>
             <span className="form-hint">Drawing/raffle release status</span>
           </div>
+        </div>
+      </div>
 
-          <div className="checkbox-group-row">
-            <label className="checkbox-inline">
-              <input
-                type="checkbox"
-                checked={hypeValue}
-                onChange={(e) => onUpdate('hype', e.target.checked)}
-                data-field="product.hype"
-                name="product.hype"
-              />
       <div className="form-section">
         <h3 className="form-section-title">Pricing & Options</h3>
         <div className="pricing-options-grid">
@@ -334,7 +341,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                 min="0"
                 className="form-input"
                 value={scomRegularPriceValue}
-                onChange={(e) => onUpdate('scom_regular_price', e.target.value)}
+                onChange={(e) => handlePriceChange('scom_regular_price', e.target.value)}
                 data-field="product.scom_regular_price"
                 name="product.scom_regular_price"
                 placeholder="0.00"
@@ -351,7 +358,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                 min="0"
                 className="form-input"
                 value={scomSalePriceValue}
-                onChange={(e) => onUpdate('scom_sale_price', e.target.value)}
+                onChange={(e) => handlePriceChange('scom_sale_price', e.target.value)}
                 data-field="product.scom_sale_price"
                 name="product.scom_sale_price"
                 placeholder="0.00"
@@ -371,7 +378,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                 min="0"
                 className="form-input"
                 value={standardShippingValue}
-                onChange={(e) => onUpdate('standard_shipping_override', e.target.value)}
+                onChange={(e) => handlePriceChange('standard_shipping_override', e.target.value)}
                 data-field="product.standard_shipping_override"
                 name="product.standard_shipping_override"
                 placeholder="0.00"
@@ -388,27 +395,12 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
                 min="0"
                 className="form-input"
                 value={expeditedShippingValue}
-                onChange={(e) => onUpdate('expedited_override_shipping', e.target.value)}
+                onChange={(e) => handlePriceChange('expedited_override_shipping', e.target.value)}
                 data-field="product.expedited_override_shipping"
                 name="product.expedited_override_shipping"
                 placeholder="0.00"
               />
             </div>
-          </div>
-        </div>
-      </div>
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              className="form-input"
-              value={expeditedShippingValue}
-              onChange={(e) => onUpdate('expedited_override_shipping', e.target.value)}
-              data-field="product.expedited_override_shipping"
-              name="product.expedited_override_shipping"
-              placeholder="0.00"
-            />
           </div>
         </div>
       </div>
