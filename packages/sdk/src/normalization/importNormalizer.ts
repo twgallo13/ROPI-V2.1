@@ -251,8 +251,9 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
 
 /**
  * Apply transformation to a value based on transform type
+ * LP-1.4.6: Exported for unit testing; date transform tolerant of MM/DD/YY, M/D/YYYY, YYYY-MM-DD
  */
-function applyTransform(
+export function applyTransform(
   value: string | number | null | undefined,
   transform?: ColumnMapping['transform']
 ): string | number | string[] | undefined {
@@ -280,16 +281,44 @@ function applyTransform(
     }
     
     case 'date': {
-      // Try to parse various date formats
-      try {
-        const date = new Date(strValue);
-        if (isNaN(date.getTime())) {
-          return undefined;
-        }
-        return date.toISOString();
-      } catch {
-        return undefined;
+      // LP-1.4.6: Tolerant date parsing - accepts YYYY-MM-DD, MM/DD/YY, M/D/YYYY, MM-DD-YYYY
+      // Normalizes all accepted values to canonical YYYY-MM-DD strings
+      const s = strValue.trim();
+
+      // 1) Accept ISO YYYY-MM-DD directly
+      const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoMatch) {
+        const [, y, m, d] = isoMatch;
+        return `${y}-${m}-${d}`;
       }
+
+      // 2) Accept M/D/YY, MM/DD/YY, M/D/YYYY, MM-DD-YYYY etc.
+      //    Normalize to YYYY-MM-DD. Two-digit year heuristic:
+      //    70-99 -> 1970-1999, 00-69 -> 2000-2069
+      const mdy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+      if (mdy) {
+        let [, mm, dd, yy] = mdy;
+        mm = mm.padStart(2, '0');
+        dd = dd.padStart(2, '0');
+        if (yy.length === 2) {
+          const n = parseInt(yy, 10);
+          const full = n >= 70 ? 1900 + n : 2000 + n;
+          yy = String(full);
+        }
+        return `${yy}-${mm}-${dd}`;
+      }
+
+      // 3) Final fallback to Date parser (covers other browser/node parseable formats)
+      const parsed = new Date(s);
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear();
+        const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+        const dd = String(parsed.getDate()).padStart(2, '0');
+        return `${y}-${mm}-${dd}`;
+      }
+
+      // Unparseable
+      return undefined;
     }
     
     case 'array': {
