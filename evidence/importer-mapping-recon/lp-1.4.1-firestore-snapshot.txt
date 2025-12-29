@@ -1,0 +1,84 @@
+
+=== Product 211737-90h1-8 ===
+{
+  "core": {
+    "createdAt": "2025-12-29T00:47:27.531Z",
+    "lastReceived": "12/18/2025",
+    "mpn": "211737-90H1-8",
+    "sku": "SHK3037625",
+    "title": "4bfae23e-6bc2-4d87-9391-b324010c2a0a",
+    "brand": "Crocs",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2025-12-29T00:47:27.531Z"
+  },
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "_meta": {
+    "importedAt": "2025-12-29T00:47:24.522Z",
+    "normalizedAt": "2025-12-29T00:47:27.531Z",
+    "source": "csv",
+    "validatedAt": "2025-12-29T00:47:27.531Z"
+  },
+  "attributes": {
+    "closure_type": "Mid",
+    "heel_type": "Flat",
+    "rics_color": "Multi",
+    "media_status": "sdfsdfgdf-23rcwsdf34-sdf34r-",
+    "gender": "Men's",
+    "keywords": "Geen crocidial",
+    "sports_team": "Los Angeles Dodgers",
+    "descriptive_color": "Green Croc",
+    "fit": "True to Size",
+    "promo": "Allowed",
+    "rics_long_desc": "REALTREE APX ALL TERRAIN CLOG",
+    "shoe_height_map": "high-top",
+    "fast_fashion": "TRUE",
+    "kl_post_date": "12/30/2025",
+    "rics_category": "Mens||Footwear||Sandal||Athletic",
+    "department": "Footwear",
+    "class": "Casual",
+    "platform_height": "1-2\"",
+    "website": [
+      "shiekh.com"
+    ],
+    "rics_short_description": "REALTREE APX ALL TER",
+    "age_group": "Adult",
+    "tax_class": "Taxable Goods",
+    "league": "MLB",
+    "ageGroup": "Adult",
+    "heel_height": "Flat",
+    "primary_color": "Green",
+    "product_is_active": "TRUE",
+    "material": [
+      "Polyester"
+    ],
+    "hype": "FALSE",
+    "category": "Athletic",
+    "collection_name": "All Star"
+  },
+  "inventory": {
+    "store_inv": 88,
+    "warehouse_inv": 12
+  },
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0,
+    "map": null
+  },
+  "dimensions": {
+    "length": 4,
+    "width": 4,
+    "weight": 4,
+    "height": 4
+  }
+}
+
+=== Product 451-9204-BLK18 ===
+NOT FOUND

@@ -72,8 +72,9 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const promoOptions = promoAttr?.allowed_values ?? ['Allowed', 'Disallowed'];
   
   // LP-0.4.1.1: media_status is read-only from external workflow, not computed locally
-  const mediaStatus = product.media_status ?? 'missing';
-  const statusDisplay = mediaStatusConfig[mediaStatus];
+  // LP-1.4.2: Defensive fallback for unknown media_status values
+  const mediaStatusKey = product.media_status ?? 'missing';
+  const statusDisplay = mediaStatusConfig[mediaStatusKey as keyof typeof mediaStatusConfig] || mediaStatusConfig['missing'];
 
   /**
    * LP-0.4.1.1: Sanitized image upload handler
