@@ -1,0 +1,68 @@
+======================================================================
+STEP 3E: PILOT APPLY - BOOLEAN ATTRIBUTE MIGRATION (100 products)
+======================================================================
+
+📦 Building API package...
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v22.21.1","pnpm":"10.26.1"})
+
+> @ropi-aoss/api@0.0.0 build /workspaces/ROPI-V2.1/packages/api
+> node esbuild.config.js
+
+
+  dist/index.js      2.2mb ⚠️
+  dist/index.js.map  3.9mb
+
+⚡ Done in 355ms
+
+> @ropi-aoss/api@0.0.0 postbuild /workspaces/ROPI-V2.1/packages/api
+> mkdir -p dist/config && cp -f ../sdk/config/attributeRegistry.json dist/config/attributeRegistry.json || true
+
+
+🔄 Running pilot apply (limit: 100 products)...
+
+
+🔧 Boolean Attribute Migration
+   LP: LP-product-ordering-import-completeness-0.1.0
+   Mode: APPLY
+   Force Admin: NO
+   Target Attributes: family_sizing, family_sharing, promo
+   Report Dir: /workspaces/ROPI-V2.1/reports/normalize-booleans/2025-12-29T12-08-40
+
+📦 Fetching products...
+   Found 10 products
+
+✅ 123: 1 change(s)
+✅ 211737-90h1-8: 2 change(s)
+✅ 211737-90h1-8a: 2 change(s)
+✅ 211737-90h1-8ab: 2 change(s)
+✅ 451-9204-blk18: 1 change(s)
+✅ 451-9204-blk18a: 2 change(s)
+
+📊 Migration Summary
+   Mode: APPLY
+   Total Products: 10
+   Processed: 10
+   Updated: 6
+   Changes: 10
+   Skipped (admin-canonical): 0
+   Warnings: 0
+   Errors: 0
+
+   Summary: /workspaces/ROPI-V2.1/reports/normalize-booleans/2025-12-29T12-08-40/summary.json
+
+✅ Migration complete. 6 products updated.
+
+
+======================================================================
+✅ PILOT APPLY SUCCESSFUL!
+
+📊 Results:
+   - Migrated up to 100 products with boolean attributes
+
+
+📋 Next steps:
+   1. Visit staging: https://ropi-aoss-staging.web.app
+   2. Verify boolean attributes display as checkboxes
+   3. Validate product ordering with boolean filters
+
+======================================================================

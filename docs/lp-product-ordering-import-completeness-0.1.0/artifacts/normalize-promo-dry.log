@@ -1,0 +1,7 @@
+Service account JSON missing project_id; falling back to applicationDefault
+Current values:
+ attributes.promo: "Allowed"
+ core.promo: true
+ attributes._meta.promo: undefined
+Planned change: { from: 'Allowed', to: true }
+Dry-run complete. Run with --apply to make the change.

@@ -1,0 +1,17 @@
+Service account JSON missing project_id; falling back to applicationDefault
+Current values:
+ attributes.promo: "Allowed"
+ core.promo: true
+ attributes._meta.promo: undefined
+Planned change: { from: 'Allowed', to: true }
+Applied updates to 211737-90h1-8ab {
+  'attributes.promo': true,
+  'attributes._meta.promo': {
+    actor: 'system:migrator',
+    source: 'migration',
+    method: 'normalizeBooleanAttributes',
+    ts: '2025-12-29T13:25:14.541Z',
+    canonical: false,
+    note: 'Normalized promo to boolean'
+  }
+}

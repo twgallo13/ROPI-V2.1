@@ -1,0 +1,32 @@
+
+🔧 Boolean Attribute Migration
+   LP: LP-product-ordering-import-completeness-0.1.0
+   Mode: DRY-RUN
+   Force Admin: NO
+   Target Attributes: family_sizing, family_sharing, promo
+   Report Dir: /workspaces/ROPI-V2.1/reports/normalize-booleans/2025-12-29T09-00-25
+
+📦 Fetching products...
+   Found 9 products
+
+✅ 123: 1 change(s)
+✅ 211737-90h1-8: 2 change(s)
+✅ 211737-90h1-8a: 1 change(s)
+✅ 451-9204-blk18: 1 change(s)
+✅ 451-9204-blk18a: 1 change(s)
+
+📊 Migration Summary
+   Mode: DRY-RUN
+   Total Products: 9
+   Processed: 9
+   Updated: 5
+   Changes: 6
+   Skipped (admin-canonical): 0
+   Warnings: 0
+   Errors: 0
+
+   Summary: /workspaces/ROPI-V2.1/reports/normalize-booleans/2025-12-29T09-00-25/summary.json
+
+✅ DRY-RUN complete. No changes applied.
+   To apply changes, run with --apply
+
