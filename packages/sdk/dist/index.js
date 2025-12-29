@@ -1550,6 +1550,14 @@ var LEGACY_TO_REGISTRY = {
   "closure_type": "closure_type",
   "cutType": "cut_type",
   "cut_type": "cut_type",
+  // LP-1.4.3 aliases
+  "heelHeight": "heel_height",
+  "heel_height": "heel_height",
+  "platformHeight": "platform_height",
+  "platform_height": "platform_height",
+  "hideImageUntilDate": "hide_image_date",
+  "hide_image_date": "hide_image_date",
+  "drawing": "drawing",
   // ======================================================================
   // Sizing / Measurements (category: measurements)
   // ======================================================================
@@ -1784,6 +1792,16 @@ var DEFAULT_COLUMN_MAPPINGS = [
   { sourceColumn: ["Closure Type", "closure", "closure_type"], targetField: "closure_type", transform: "trim" },
   { sourceColumn: ["Cut Type", "cut_type"], targetField: "cut_type", transform: "trim" },
   { sourceColumn: ["Fit", "fit"], targetField: "fit", transform: "trim" },
+  // ======================================================================
+  // Additional fields added in LP-1.4.3
+  // ======================================================================
+  { sourceColumn: ["Drawing", "drawing"], targetField: "drawing", transform: "trim" },
+  { sourceColumn: ["Hide Image Until Date", "Hide Image Date", "hide_image_until_date", "hide_image_date"], targetField: "hide_image_date", transform: "date" },
+  { sourceColumn: ["Heel Height", "heelHeight", "heel_height"], targetField: "heel_height", transform: "trim" },
+  { sourceColumn: ["Platform Height", "platformHeight", "platform_height"], targetField: "platform_height", transform: "trim" },
+  // SCOM Pricing (RetailOps)
+  { sourceColumn: ["SCOM Regular Price", "scom_regular_price"], targetField: "scom_regular_price", transform: "number" },
+  { sourceColumn: ["SCOM Sale Price", "scom_sale_price"], targetField: "scom_sale_price", transform: "number" },
   // ======================================================================
   // Sports & Collections (category: classification)
   // LP-1.4.0: Added sports_team and collection_name mappings
