@@ -10,6 +10,10 @@ import {
 } from 'firebase/firestore';
 import mockProductData from '../data/mock-product.json';
 
+// LP-1.4.1: Helper functions for case conversion
+const toCamel = (s: string) => s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+const toSnake = (s: string) => s.replace(/([A-Z])/g, (m) => `_${m.toLowerCase()}`);
+
 /**
  * Registry attribute keys for compatibility mapping.
  * These are the canonical attribute keys from attributeRegistry.json.
@@ -190,6 +194,95 @@ function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<str
 }
 
 /**
+ * LP-1.4.1: Pick attribute value with case-insensitive key lookup
+ * Tries exact key, snake_case, camelCase, and lowercase variants
+ */
+function pickAttributeValue(attributes: Record<string, unknown> | undefined, key: string): unknown {
+  if (!attributes) return undefined;
+  if (attributes[key] !== undefined && attributes[key] !== null && attributes[key] !== '') return attributes[key];
+  const snake = toSnake(key);
+  if (attributes[snake] !== undefined && attributes[snake] !== null && attributes[snake] !== '') return attributes[snake];
+  const camel = toCamel(key);
+  if (attributes[camel] !== undefined && attributes[camel] !== null && attributes[camel] !== '') return attributes[camel];
+  const lower = key.toLowerCase();
+  if (attributes[lower] !== undefined && attributes[lower] !== null && attributes[lower] !== '') return attributes[lower];
+  return undefined;
+}
+
+/**
+ * LP-1.4.1: Extended list of attribute fields to merge to top-level
+ * Includes all fields needed by Product Page components
+ */
+const LP_1_4_1_ATTRIBUTE_FIELDS = [
+  'department', 'class', 'category', 'age_group', 'ageGroup', 'gender',
+  'primary_color', 'descriptive_color', 'descriptiveColor', 'secondary_color',
+  'material', 'fit', 'fast_fashion', 'currency', 'rics_color', 'rics_category',
+  'rics_short_description', 'rics_long_desc', 'collection_name', 'collectionName',
+  'sports_team', 'website', 'media_status', 'mediaStatus', 'style_id', 'styleId',
+  'platform_height', 'platformHeight', 'heel_height', 'heelHeight', 'cut_type', 'cutType',
+  'closure_type', 'closureType'
+];
+
+/**
+ * LP-1.4.1: Merge attributes and dimensions into top-level fields for Product Page rendering
+ * Supports both snake_case and camelCase keys for UI compatibility
+ * @param product - Product object with attributes and dimensions
+ * @returns Product with merged top-level fields
+ */
+export function mergeFieldsToTopLevel(product: Record<string, unknown>): Record<string, unknown> {
+  if (!product) return product;
+  const attrs = (product.attributes || {}) as Record<string, unknown>;
+  
+  // Merge attribute fields to top-level (both camelCase and snake_case)
+  // Skip 'website' here - it's handled specially below for array normalization
+  for (const canonical of LP_1_4_1_ATTRIBUTE_FIELDS) {
+    if (canonical === 'website') continue; // Handle website separately
+    const val = pickAttributeValue(attrs, canonical);
+    if (val === undefined) continue;
+    const camel = toCamel(canonical);
+    const snake = toSnake(canonical);
+    if (product[camel] === undefined || product[camel] === null || product[camel] === '') {
+      product[camel] = val;
+    }
+    if (product[snake] === undefined || product[snake] === null || product[snake] === '') {
+      product[snake] = val;
+    }
+  }
+  
+  // Merge dimensions to top-level
+  if (product.dimensions && typeof product.dimensions === 'object') {
+    const dims = ['height', 'length', 'width', 'weight'];
+    const dimensions = product.dimensions as Record<string, unknown>;
+    dims.forEach(d => {
+      const v = dimensions[d];
+      if (v !== undefined && v !== null && v !== '') {
+        if (product[d] === undefined || product[d] === null || product[d] === 0) {
+          product[d] = v;
+        }
+      }
+    });
+  }
+  
+  // LP-1.4.1: Normalize website to arrays (always)
+  const websiteVal = pickAttributeValue(attrs, 'website') || product.website;
+  if (websiteVal !== undefined && websiteVal !== null && websiteVal !== '') {
+    const arr = Array.isArray(websiteVal) 
+      ? websiteVal 
+      : String(websiteVal).split(',').map(s => s.trim()).filter(Boolean);
+    product.website = arr;
+    product.websites = arr;
+  }
+  
+  // Provide media_status fallback from attributes
+  const mediaVal = pickAttributeValue(attrs, 'media_status') || pickAttributeValue(attrs, 'mediaStatus');
+  if (mediaVal !== undefined && (!product.media_status || product.media_status === '')) {
+    product.media_status = mediaVal;
+  }
+  
+  return product;
+}
+
+/**
  * useProduct Hook
  * 
  * Manages product data with Firestore persistence (when available) 
@@ -246,11 +339,14 @@ export function useProduct(productId: string) {
               // LP-1.3.7: Merge core fields to top-level for UI compatibility
               const withCoreFields = mergeCoreFieldsToTopLevel(docData);
               
+              // LP-1.4.1: Merge attributes and dimensions to top-level for Product Page rendering
+              const withTopLevelFields = mergeFieldsToTopLevel(withCoreFields);
+              
               // Merge top-level attribute keys into attributes map for compatibility
-              const mergedAttributes = mergeTopLevelAttributesToAttributesMap(withCoreFields);
+              const mergedAttributes = mergeTopLevelAttributesToAttributesMap(withTopLevelFields);
               const productWithMergedAttrs = {
                 id: snap.id,
-                ...withCoreFields,
+                ...withTopLevelFields,
                 attributes: mergedAttributes,
               } as Product;
               setProduct(productWithMergedAttrs);
