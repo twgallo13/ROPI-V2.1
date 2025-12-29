@@ -128,6 +128,111 @@ firebase deploy --only hosting:aoss-staging --project ropi-bccee
 - [ ] Email verification banner appears for unverified users
 - [ ] Admin users have correct permissions
 - [ ] No console errors or warnings
+
+---
+
+## Google Service Account — creation & provisioning
+
+### Option A — Grant *full* project access (Owner)
+> Use this if you want the service account to have full access to Firebase, Cloud, Storage, and everything in the project.
+
+1. Create the service account:
+```bash
+PROJECT=<GCP_PROJECT_ID>
+gcloud iam service-accounts create ropi-deploy-sa \
+  --project="$PROJECT" \
+  --display-name="ROPI deploy & admin service account"
+```
+
+2. Grant Owner role (full access):
+```bash
+gcloud projects add-iam-policy-binding "$PROJECT" \
+  --member="serviceAccount:ropi-deploy-sa@$PROJECT.iam.gserviceaccount.com" \
+  --role="roles/owner"
+```
+
+3. Create & download a JSON key:
+```bash
+gcloud iam service-accounts keys create ropi-deploy-sa-key.json \
+  --iam-account=ropi-deploy-sa@$PROJECT.iam.gserviceaccount.com \
+  --project="$PROJECT"
+```
+
+4. Add to GitHub (Base64) — required by workflows:
+```bash
+cat ropi-deploy-sa-key.json | base64 | tr -d '\n' > ropi-deploy-sa-key.json.b64
+# Copy contents and add to repo's GitHub Actions Secrets as GCP_SA_KEY_BASE64
+```
+
+5. GitHub Actions usage (example snippet):
+```yaml
+env:
+  GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
+steps:
+  - name: Restore GCP service account key
+    run: |
+      echo "$GCP_SA_KEY_BASE64" | base64 -d > /tmp/gcp-sa.json
+  - name: Authenticate gcloud
+    run: gcloud auth activate-service-account --key-file=/tmp/gcp-sa.json
+```
+
+### Option B — Least-privilege (recommended for production)
+
+Grant a set of roles rather than Owner. Typical required roles for CI/CD and the app:
+
+* `roles/firebase.admin` (Firebase Admin)
+* `roles/cloudfunctions.admin` (Manage Cloud Functions)
+* `roles/storage.admin` (Cloud Storage admin)
+* `roles/firestore.admin` (Firestore admin)
+* `roles/cloudbuild.builds.editor` (If Cloud Build used)
+* `roles/iam.serviceAccountUser` (to run deployments)
+* `roles/logging.logWriter` and `roles/monitoring.metricWriter`
+
+To grant multiple roles:
+```bash
+ROPI_SA=ropi-deploy-sa@$PROJECT.iam.gserviceaccount.com
+
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/firebase.admin"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/cloudfunctions.admin"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/storage.admin"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/firestore.admin"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/cloudbuild.builds.editor"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/iam.serviceAccountUser"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/logging.logWriter"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$ROPI_SA" --role="roles/monitoring.metricWriter"
+```
+
+### GitHub Actions / workflows
+
+* Ensure workflows that perform deploys read `GCP_SA_KEY_BASE64` and authenticate prior to any `gcloud` or `firebase` CLI operations.
+* Example action step shown above. For staging/production deploy workflows, verify `GCP_SA_KEY_BASE64` appears under `env` or `secrets`.
+
+### Tie to attribute registry & Firestore
+
+* Document the sync path: `packages/sdk/config/attributeRegistry.json` is canonical. The deployment or sync process must sync the registry to Firestore at `settings/attributes/keys/{attributeId}`. The service account must be able to write to Firestore.
+
+### Verification Checklist
+
+After creating the service account and adding the secret, verify:
+
+1. Service account exists:
+```bash
+gcloud iam service-accounts describe ropi-deploy-sa@$PROJECT.iam.gserviceaccount.com --project="$PROJECT"
+```
+
+2. Roles assigned (Option A - Owner):
+```bash
+gcloud projects get-iam-policy "$PROJECT" --flatten="bindings[].members" --format='table(bindings.role)' --filter="bindings.members:serviceAccount:ropi-deploy-sa@$PROJECT.iam.gserviceaccount.com"
+```
+
+3. GitHub secret exists:
+   - Navigate to repository Settings → Secrets and variables → Actions → Environment secrets (staging)
+   - Verify `GCP_SA_KEY_BASE64` is present
+
+4. Deploy workflow authenticates successfully:
+   - Trigger a staging deploy
+   - Check logs for `gcloud auth activate-service-account` success
+   - Verify deploy completes without authentication errors
 - [ ] Sentry error monitoring active
 - [ ] E2E tests passing
 
