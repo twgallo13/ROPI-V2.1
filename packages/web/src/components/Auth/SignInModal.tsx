@@ -45,8 +45,6 @@ function SignInModal({ isOpen, onClose, onSuccess }: SignInModalProps) {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  if (!isOpen) return null;
-
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       handleClose();
@@ -138,7 +136,12 @@ function SignInModal({ isOpen, onClose, onSuccess }: SignInModalProps) {
   };
 
   return (
-    <div className="signin-modal-overlay" onClick={handleOverlayClick} data-testid="signin-modal">
+    <div 
+      className="signin-modal-overlay" 
+      onClick={handleOverlayClick} 
+      data-testid="signin-modal"
+      style={{ display: isOpen ? 'flex' : 'none' }}
+    >
       <div className="signin-modal">
         <button
           className="signin-modal-close"
