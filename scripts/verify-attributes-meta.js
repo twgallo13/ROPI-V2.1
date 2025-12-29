@@ -35,7 +35,7 @@ const db = admin.firestore();
   }
   
   const meta = metaSnap.data();
-  console.log('settings/attributes/meta:', JSON.stringify(meta, null, 2));
+  console.log('settings/attributesMeta:', JSON.stringify(meta, null, 2));
 
   // Read local registry version
   const registryPath = path.resolve(__dirname, '../packages/sdk/config/attributeRegistry.json');
