@@ -157,18 +157,34 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   
   // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
   // Note: Product type has top-level fields, but Firestore may store in pricing object
+  // Sanitize price/currency values to handle invalid formats (e.g., "03", "-0.01")
+  const sanitizePrice = (value: unknown): string => {
+    if (!value) return '';
+    const str = String(value).trim();
+    const num = parseFloat(str);
+    return isNaN(num) || num < 0 ? '' : String(num);
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pricingObj = (product as any).pricing as Record<string, unknown> | undefined;
-  const scomRegularPriceValue = (pricingObj?.scom_regular_price as string | number) ??
-                                product.scom_regular_price ??
-                                (product.attributes?.scom_regular_price as string) ?? '';
-  const scomSalePriceValue = (pricingObj?.scom_sale_price as string | number) ??
-                             product.scom_sale_price ??
-                             (product.attributes?.scom_sale_price as string) ?? '';
-  const standardShippingValue = product.standard_shipping_override ?? 
-                                (product.attributes?.standard_shipping_override as string) ?? '';
-  const expeditedShippingValue = product.expedited_override_shipping ?? 
-                                 (product.attributes?.expedited_override_shipping as string) ?? '';
+  const scomRegularPriceValue = sanitizePrice(
+    (pricingObj?.scom_regular_price as string | number) ??
+    product.scom_regular_price ??
+    (product.attributes?.scom_regular_price as string)
+  );
+  const scomSalePriceValue = sanitizePrice(
+    (pricingObj?.scom_sale_price as string | number) ??
+    product.scom_sale_price ??
+    (product.attributes?.scom_sale_price as string)
+  );
+  const standardShippingValue = sanitizePrice(
+    product.standard_shipping_override ?? 
+    (product.attributes?.standard_shipping_override as string)
+  );
+  const expeditedShippingValue = sanitizePrice(
+    product.expedited_override_shipping ?? 
+    (product.attributes?.expedited_override_shipping as string)
+  );
   const customMessageValue = product.custom_message ?? 
                              (product.attributes?.custom_message as string) ?? '';
 
