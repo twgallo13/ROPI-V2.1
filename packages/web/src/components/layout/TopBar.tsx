@@ -12,8 +12,14 @@ import './TopBar.css';
  * - Shows "Sign In" button when currentUser == null
  * - Shows user avatar/dropdown when authenticated
  * - Dropdown menu: Display name, Profile (placeholder), Sign out
+ * 
+ * LP-product-ordering-import-completeness-0.1.0: Added hamburger menu for mobile sidebar toggle
  */
-function TopBar() {
+interface TopBarProps {
+  onToggleSidebar?: () => void;
+}
+
+function TopBar({ onToggleSidebar }: TopBarProps) {
   const { currentUser, isAdmin, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const [showSignInModal, setShowSignInModal] = useState(false);
@@ -40,6 +46,18 @@ function TopBar() {
     <>
       <header className="topbar">
         <div className="topbar-left">
+          {/* Hamburger menu for mobile — LP-product-ordering-import-completeness-0.1.0 */}
+          <button
+            className="topbar-hamburger"
+            onClick={onToggleSidebar}
+            aria-label="Toggle navigation menu"
+            data-testid="hamburger-menu"
+          >
+            <span className="topbar-hamburger-line"></span>
+            <span className="topbar-hamburger-line"></span>
+            <span className="topbar-hamburger-line"></span>
+          </button>
+          
           <h1 className="topbar-title">ROPI AOSS</h1>
           <span className="topbar-badge topbar-badge-staging">Staging</span>
         </div>
