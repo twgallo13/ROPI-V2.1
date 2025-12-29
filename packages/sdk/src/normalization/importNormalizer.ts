@@ -256,7 +256,7 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
 export function applyTransform(
   value: string | number | null | undefined,
   transform?: ColumnMapping['transform']
-): string | number | string[] | undefined {
+): string | number | string[] | boolean | undefined {
   if (value === null || value === undefined || value === '') {
     return undefined;
   }
@@ -272,6 +272,23 @@ export function applyTransform(
     
     case 'lowercase':
       return strValue.trim().toLowerCase();
+    
+    case 'boolean': {
+      // LP-product-ordering-import-completeness-0.1.0: Boolean coercion
+      // Deterministic rules per Lisa directive
+      const normalized = strValue.trim().toLowerCase();
+      const trueValues = ['true', '1', 'yes', 'y', 'on', 'allowed'];
+      const falseValues = ['false', '0', 'no', 'n', 'off', 'not allowed', 'disallowed'];
+      
+      if (trueValues.includes(normalized)) {
+        return true;
+      }
+      if (falseValues.includes(normalized)) {
+        return false;
+      }
+      // Invalid value — caller should mark as issue
+      return undefined;
+    }
     
     case 'number': {
       // Remove currency symbols, commas, etc.
