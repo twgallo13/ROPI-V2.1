@@ -171,6 +171,79 @@ This approach:
 - [x] 51 unit tests pass for dateUtils
 - [x] TypeScript compiles without errors
 
+## Staging Verification Results
+
+**PR #380**: Merged to aoss-main (commit `d58880275ec21f00318d14bce47ebc6f696d8540`)  
+**Staging Deploy**: Workflow run 20567718222 — completed (2m17s)  
+**Staging URL**: https://ropi-aoss-staging.web.app
+
+### Unauthenticated Browser Verification (Playwright)
+
+Playwright v1.57.0 headless browser test against staging.
+
+| Product | Date Fields | Console Errors | Result |
+|---------|------------|----------------|--------|
+| 211737-90h1-8 | launch_date, kl_post_date, hide_image_date, first_received, last_received | 0 | ✅ PASS |
+| 451-9204-blk18a | kl_post_date, hide_image_date | 0 | ✅ PASS |
+| 211737-90h1-8a | kl_post_date, hide_image_date | 0 | ✅ PASS |
+
+**Debug logs observed:** `LP-1.4.6.4 bind date { key: 'launch_date', raw: '...', inputValue: '2026-01-09' }`  
+**No `does not conform to yyyy-MM-dd` console errors detected.**
+
+### Server-Side Firestore Evidence
+
+Firestore Admin SDK dump of test products confirms:
+- `attributes.*` date fields contain normalized ISO timestamps (e.g., `2026-01-09T00:00:00.000Z`)
+- `core.*` date fields contain vendor formats (e.g., `12/18/2025`, `1/9/2026`)
+- Top-level date fields duplicate core.* (vendor format)
+- `_meta` entries present with LP-1.4.6.2 normalization metadata
+
+**Sample `_meta` entry:**
+```json
+"_meta": {
+  "last_received": {
+    "method": "normalizeProductDates",
+    "definition_version": "1.1.4",
+    "note": "LP-1.4.6.2 single-product normalization",
+    "canonical": false,
+    "source": "migration",
+    "actor": "system:migrator",
+    "ts": "2025-12-29T06:26:12.657Z"
+  }
+}
+```
+
+### Header Date Rendering Analysis
+
+ProductHeader component reads `product.last_received` (line 151):
+```tsx
+{formatDate(product.last_received)}
+```
+
+Data flow:
+1. Firestore stores `core.lastReceived` = `12/18/2025` (vendor format)
+2. `useProduct` hook merges `core.lastReceived` → `product.last_received` via `CORE_FIELD_KEYS`
+3. ProductHeader's `formatDate()` converts to display format (`Dec 18, 2025`)
+
+**Header dates render correctly** because `formatDate()` calls `new Date(dateStr).toLocaleDateString()`, which accepts vendor formats. No LP-1.4.6.4 fix required for header dates.
+
+### Authenticated Save Verification
+
+🚫 **Not possible** — No editor Firebase Auth credentials available for automated verification.
+
+**Server-side evidence as alternative:**
+- Firestore documents show proper `_meta` entries for date fields
+- `statusFlags.validation_status: "valid"` confirms data integrity
+- Timestamps show `normalizedAt`, `validatedAt` after import
+
+### Admin Protection Verification
+
+ProductsPage analysis confirms admin-editable flags (product_is_active, hype) are **read-only** in Product Editor UI:
+- `product_is_active` displays as badge in ProductHeader (line 138-147) — no edit control
+- `hype` checkbox in LaunchMediaTab has `disabled={true}` (confirmed in code)
+
+No editable controls for admin-protected fields in staging UI.
+
 ## Rollback Plan
 
 If issues arise, revert the three component changes and remove dateUtils:
