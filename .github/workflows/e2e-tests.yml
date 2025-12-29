@@ -34,7 +34,7 @@ jobs:
     env:
       # Credentials
       VITE_E2E_ADMIN_EMAIL: ${{ contains(inputs.base_url, 'emulator') && 'test-admin@example.com' || 'theo@shiekh.com' }}
-      VITE_E2E_USER_EMAIL: ${{ contains(inputs.base_url, 'emulator') && 'test-user@example.com' || 'user@shiekh.com' }}
+      VITE_E2E_USER_EMAIL: ${{ contains(inputs.base_url, 'emulator') && 'test-user@example.com' || 'e2e-user@shiekh.com' }}
       VITE_E2E_UNVERIFIED_EMAIL: ${{ contains(inputs.base_url, 'emulator') && 'test-unverified@example.com' || 'unverified@shiekh.com' }}
       VITE_E2E_ADMIN_PASSWORD: ${{ contains(inputs.base_url, 'emulator') && 'test-password-123' || secrets.E2E_ADMIN_PASSWORD }}
       VITE_E2E_USER_PASSWORD: ${{ contains(inputs.base_url, 'emulator') && 'test-password-123' || secrets.E2E_USER_PASSWORD }}
