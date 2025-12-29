@@ -78,6 +78,12 @@ gh workflow run deploy-staging.yml --repo twgallo13/ROPI-V2.1
 | [docs/ENV.md](docs/ENV.md) | Environment variables & secrets setup |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Branch naming, PR rules & workflow policy |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment procedures |
+| [AI_BOOTSTRAP.md](AI_BOOTSTRAP.md) | One-page AI bootstrap + orientation (required for any AI session) |
+| [GOVERNANCE.md](GOVERNANCE.md) | Canonical repository governance and phase rules |
 
 **New to the project?** Start with [CONTRIBUTING.md](CONTRIBUTING.md) for a step-by-step guide.
+
+## Orientation (quick)
+
+If you need to orient quickly, open **AI_BOOTSTRAP.md** (one page, pointer-only) and **GOVERNANCE.md** (authoritative). These files are the canonical entry points for new humans and AI sessions. Follow the "How to resume work in a new chat" steps in AI_BOOTSTRAP.md before performing any actions.
 
