@@ -69,7 +69,12 @@ export const TEST_USERS = {
  * 2. Wait for modal to appear
  * 3. Fill email and password fields
  * 4. Submit the form
- * 5. Wait for modal to close and user menu to appear
+ * 5. Wait for success message (confirms Firebase auth completed)
+ * 6. Wait for modal to close
+ * 7. Wait for auth state to propagate (loading clears, user-menu appears)
+ * 
+ * LP-1.4.6.6: Enhanced waiting logic to handle async auth state propagation
+ * on PR preview URLs where latency may be higher.
  */
 export async function signInWithEmail(
   page: Page,
@@ -96,11 +101,24 @@ export async function signInWithEmail(
   // Submit form
   await page.locator('[data-testid="signin-submit"]').click();
   
-  // Wait for user menu to appear (indicates successful sign-in)
-  await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 15000 });
+  // LP-1.4.6.6: Wait for success message first (confirms Firebase auth completed)
+  // This appears before the modal closes and indicates auth succeeded server-side
+  const successAlert = page.locator('.signin-alert-success');
+  await successAlert.waitFor({ state: 'visible', timeout: 15000 });
   
   // Wait for modal to close (it auto-closes after 500ms delay on success)
   await modal.waitFor({ state: 'hidden', timeout: 5000 });
+  
+  // LP-1.4.6.6: Wait for TopBar loading state to clear
+  // TopBar shows "Loading..." while auth state propagates via onAuthStateChanged
+  const loadingIndicator = page.locator('.topbar-loading');
+  await loadingIndicator.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {
+    // Loading indicator may already be hidden or never shown - that's OK
+  });
+  
+  // LP-1.4.6.6: Now wait for user menu to appear with extended timeout
+  // This confirms the full auth state has propagated to the UI
+  await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 20000 });
 }
 
 /**
