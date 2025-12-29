@@ -39,78 +39,79 @@ at helpers.ts:100
 
 ### ✅ Root Cause Identified
 
-**Async Auth State Propagation Timing Issue**
+**Invalid Firebase Auth Credentials in GitHub Secrets**
 
-The `signInWithEmail()` helper in `helpers.ts` was waiting for `[data-testid="user-menu-trigger"]` immediately after form submission, but Firebase auth state propagation is asynchronous:
+After improving error diagnostics, the actual error is now visible:
 
 ```
-Timeline:
-1. signInWithEmail() submits form
-2. Firebase signInWithEmailAndPassword() resolves → Auth completes server-side
-3. SignInModal shows success message, schedules modal close (500ms)
-4. helpers.ts IMMEDIATELY waits for user-menu-trigger → PROBLEM
-5. onAuthStateChanged() fires asynchronously → Sets currentUser
-6. AuthProvider updates state → loading=false, currentUser set
-7. TopBar re-renders → user-menu-trigger appears
+Error: Sign-in failed with error: Firebase: Error (auth/invalid-credential).
 ```
 
-**On PR preview URLs, step 5-7 take longer due to:**
-- Cold start latency on ephemeral Firebase Hosting URLs
-- Network latency to Firebase Auth servers
-- No cached auth state
+This means the passwords stored in GitHub Actions secrets do not match the passwords in Firebase Auth for the test users:
+- `E2E_ADMIN_PASSWORD` → `theo@shiekh.com`
+- `E2E_USER_PASSWORD` → `user@shiekh.com`
 
-The 15s timeout in step 4 expired before steps 5-7 completed.
+The original "timeout" errors were a symptom of the sign-in failing (no success message ever appeared because auth failed).
 
-### Code Locations
+### Timeline Analysis
 
-| Component | Location | Issue |
-|-----------|----------|-------|
-| `signInWithEmail()` | [helpers.ts#L100](packages/web/e2e/helpers.ts#L100) | Waited for user-menu-trigger immediately after submit |
-| `TopBar` | [TopBar.tsx#L68](packages/web/src/components/layout/TopBar.tsx#L68) | Shows user-menu only when `currentUser` is set AND `loading=false` |
-| `AuthProvider` | [AuthProvider.tsx#L111](packages/web/src/contexts/AuthProvider.tsx#L111) | `onAuthStateChanged` callback is async |
-| `SignInModal` | [SignInModal.tsx#L112](packages/web/src/components/Auth/SignInModal.tsx#L112) | Shows success message before modal closes |
+```
+1. signInWithEmail() submits form with credentials from GitHub secrets
+2. Firebase Auth rejects: auth/invalid-credential
+3. SignInModal shows ERROR message (not success)
+4. Original code waited only for success message → Timeout
+5. User-menu-trigger never appears because user is not authenticated
+```
+
+### Configuration Mismatch
+
+| Component | Value | Status |
+|-----------|-------|--------|
+| `VITE_E2E_ADMIN_EMAIL` | `theo@shiekh.com` | ✅ Hardcoded in workflow |
+| `VITE_E2E_USER_EMAIL` | `user@shiekh.com` | ✅ Hardcoded in workflow |
+| `E2E_ADMIN_PASSWORD` | `secrets.E2E_ADMIN_PASSWORD` | ❌ Invalid |
+| `E2E_USER_PASSWORD` | `secrets.E2E_USER_PASSWORD` | ❌ Invalid |
 
 ---
 
-## 3. Implemented Fix
+## 3. Implemented Fixes
 
-### Fix: Proper Auth State Sequencing
+### Fix 1: Improved Error Diagnostics (Complete)
 
-Updated `packages/web/e2e/helpers.ts` `signInWithEmail()` function to properly sequence the async auth flow:
+Updated `packages/web/e2e/helpers.ts` to capture and report the actual auth error:
 
 ```typescript
-// LP-1.4.6.6: Wait for success message first (confirms Firebase auth completed)
-const successAlert = page.locator('.signin-alert-success');
-await successAlert.waitFor({ state: 'visible', timeout: 15000 });
+// Wait for either outcome with extended timeout
+const outcome = await Promise.race([
+  successAlert.waitFor({ state: 'visible', timeout: 20000 }).then(() => 'success'),
+  errorAlert.waitFor({ state: 'visible', timeout: 20000 }).then(() => 'error'),
+]).catch(() => 'timeout');
 
-// Wait for modal to close (it auto-closes after 500ms delay on success)
-await modal.waitFor({ state: 'hidden', timeout: 5000 });
-
-// LP-1.4.6.6: Wait for TopBar loading state to clear
-const loadingIndicator = page.locator('.topbar-loading');
-await loadingIndicator.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {
-  // Loading indicator may already be hidden - that's OK
-});
-
-// LP-1.4.6.6: Now wait for user menu with extended timeout
-await page.locator('[data-testid="user-menu-trigger"]').waitFor({ 
-  state: 'visible', 
-  timeout: 20000 
-});
+if (outcome === 'error') {
+  const errorMessage = await errorAlert.textContent();
+  throw new Error(`Sign-in failed with error: ${errorMessage}`);
+}
 ```
 
-**Key Changes:**
-1. Wait for success message first (confirms Firebase auth completed server-side)
-2. Wait for modal to close (confirms app acknowledged success)
-3. Handle TopBar loading state gracefully
-4. Extended timeout for user-menu-trigger from 15s to 20s
+### Fix 2: Credential Sync Required (Manual)
 
-### Commit
+**Action Required by Repository Owner:**
 
-```
-fix(e2e): improve auth state sync for PR preview URLs
-6d892ed
-```
+1. Reset passwords for E2E test users in Firebase Auth Console:
+   - `theo@shiekh.com` (admin)
+   - `user@shiekh.com` (regular user)
+   - `unverified@shiekh.com` (unverified user)
+
+2. Update GitHub Actions secrets with new passwords:
+   - `E2E_ADMIN_PASSWORD`
+   - `E2E_USER_PASSWORD`
+   - `E2E_UNVERIFIED_PASSWORD`
+
+### Commits
+
+- `6d892ed` — fix(e2e): improve auth state sync for PR preview URLs
+- `1fe0fda` — docs: update HES with root cause analysis
+- `1521dc4` — fix(e2e): improve auth error diagnostics
 
 ---
 
@@ -136,8 +137,11 @@ If fixes cause new issues:
 
 ## 6. Acceptance Criteria
 
+- [x] Improved error diagnostics show actual auth failure reason
+- [x] Error message clearly shows `auth/invalid-credential`
+- [ ] Firebase Auth passwords reset for test users (manual step)
+- [ ] GitHub secrets updated with new passwords (manual step)
 - [ ] Both E2E auth smoke tests pass on PR preview
-- [ ] No timeout errors on `user-menu-trigger` selector
 - [ ] CI workflow completes with success status
 - [ ] CodeRabbit approves changes
 
@@ -150,20 +154,41 @@ If fixes cause new issues:
 | PR | Description | Status |
 |----|-------------|--------|
 | #383 | LP-1.4.6.5 Production Rollout (docs-only, E2E skipped) | MERGED |
-| #384 | LP-1.4.6.6 E2E Auth Fix | IN PROGRESS |
+| #384 | LP-1.4.6.6 E2E Auth Fix | IN PROGRESS — Awaiting credential sync |
 
 ### Commits
 
 - `6d892ed` — fix(e2e): improve auth state sync for PR preview URLs
+- `1fe0fda` — docs: update HES with root cause analysis
+- `1521dc4` — fix(e2e): improve auth error diagnostics
 
 ### Workflow Runs
 
-- Failing E2E run: https://github.com/twgallo13/ROPI-V2.1/actions/runs/20569480914
-- Fix verification: (pending CI)
+- Original failing run: https://github.com/twgallo13/ROPI-V2.1/actions/runs/20569480914
+- Diagnostic run: https://github.com/twgallo13/ROPI-V2.1/actions/runs/20570363549
+  - Revealed: `Firebase: Error (auth/invalid-credential)`
 
 ---
 
-## 8. Contacts
+## 8. Next Steps (Manual)
+
+**Repository Owner Action Required:**
+
+1. **Firebase Console** → Authentication → Users
+   - Find `theo@shiekh.com` and reset password
+   - Find `user@shiekh.com` and reset password
+   - Find `unverified@shiekh.com` and reset password
+
+2. **GitHub Repository Settings** → Secrets and variables → Actions
+   - Update `E2E_ADMIN_PASSWORD` with new password for `theo@shiekh.com`
+   - Update `E2E_USER_PASSWORD` with new password for `user@shiekh.com`
+   - Update `E2E_UNVERIFIED_PASSWORD` with new password for `unverified@shiekh.com`
+
+3. **Re-run E2E tests** on PR #384 to verify fix
+
+---
+
+## 9. Contacts
 
 - **Homer:** Execution Agent
 - **Lisa:** Repository Governance AI & DVA
