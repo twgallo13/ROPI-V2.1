@@ -155,8 +155,8 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const promoValue = product.promo ?? 
                      (product.attributes?.promo as unknown as boolean) ?? false;
   
-  // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
-  // Note: Product type has top-level fields, but Firestore may store in pricing object
+  // LP-1.4.3: Prefer direct product fields for SCOM prices (consistent with shipping overrides)
+  // Note: Removed pricing object lookup to fix editing issues - write path was mismatched
   // Sanitize price/currency values to handle invalid formats (e.g., "03", "-0.01", ".")
   const sanitizePrice = (value: unknown): number | '' => {
     if (value === null || value === undefined || value === '') return '';
@@ -166,15 +166,11 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
     return isNaN(num) || num < 0 ? '' : num;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pricingObj = (product as any).pricing as Record<string, unknown> | undefined;
   const scomRegularPriceValue = sanitizePrice(
-    (pricingObj?.scom_regular_price as string | number) ??
     product.scom_regular_price ??
     (product.attributes?.scom_regular_price as string)
   );
   const scomSalePriceValue = sanitizePrice(
-    (pricingObj?.scom_sale_price as string | number) ??
     product.scom_sale_price ??
     (product.attributes?.scom_sale_price as string)
   );
