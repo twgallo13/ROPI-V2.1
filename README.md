@@ -50,6 +50,30 @@ const result = validateProduct(productData);
 
 **Note:** The behavior and data shapes are NOT defined in this repository but in the Ropi AOSS Notion space (Sections 1–14). This repository only implements what the Notion spec describes.
 
+## Attribute Registry — canonical source of truth
+
+**Location (canonical):** [`packages/sdk/config/attributeRegistry.json`](packages/sdk/config/attributeRegistry.json)
+
+**Firestore target:** `settings/attributes/keys/{attributeId}`
+
+**Purpose:** All imports, validations, UI forms, and export contracts validate attribute keys & types against this registry.
+
+The attribute registry defines 800+ product attributes with their:
+- `attribute_id` — Unique identifier (e.g., "sku", "brand", "color")
+- `label` — Human-readable name
+- `data_type` — Type (text, number, enum, currency, multiSelect, date, boolean, json)
+- `required_for_completion` — Must be filled to mark product complete
+- `required_for_export` — Must be present to export
+- `import_required` — Must be in import CSV
+- `allowed_values` — For enum types
+- `category` — Attribute grouping (sku_core, identifiers, pricing, etc.)
+
+**Sync requirement:** The deployment/sync job (run by the service account) must ensure the registry JSON is synced into Firestore on deploy. The sync script is located at `packages/api/src/tasks/syncAttributeRegistry.ts`.
+
+**Version:** See [`packages/sdk/config/attributeRegistry.json`](packages/sdk/config/attributeRegistry.json) for current version.
+
+For detailed documentation, see [docs/ATTRIBUTE-REGISTRY.md](docs/ATTRIBUTE-REGISTRY.md).
+
 ## Staging Environment
 
 **Stable Staging URL**: https://ropi-aoss-staging.web.app
@@ -68,6 +92,24 @@ You can manually trigger the staging deployment:
 # Or via CLI:
 gh workflow run deploy-staging.yml --repo twgallo13/ROPI-V2.1
 ```
+
+## Google Service Account (CI / CD / Admin)
+
+**Canonical statement:** the project uses a Google Service Account for CI/CD and system administration.
+The service account **must** have full programmatic access to Firebase, Cloud Functions, Firestore, Cloud Storage, and related GCP services used by the project.
+
+**Recommended name:** `ropi-deploy-sa@<GCP_PROJECT>.iam.gserviceaccount.com`
+
+**Purpose:**
+- Run CI/CD deploys (Cloud Functions, Hosting)
+- Sync attribute registry to Firestore
+- Read/write Firestore and Cloud Storage during imports and API operations
+- Manage infrastructure (deploys, runtime IAM usage by functions)
+
+**How to create & provision:**
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed commands (example below). After creation, store the service account JSON key as a GitHub secret named `GCP_SA_KEY_BASE64` (base64 of the key file). The GitHub Actions workflows expect `GCP_SA_KEY_BASE64`.
+
+**Security note:** granting project-wide Owner is simple but broad. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for a least-privilege role set recommended for production.
 
 ## Developer Documentation
 
