@@ -314,7 +314,6 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
       <div className="form-section">
         <h3 className="form-section-title">Pricing</h3>
         <div className="form-grid">
-
           <div className="form-field">
             <label className="form-label">
               {scomRegularPriceAttr?.label ?? 'SCOM Regular Price'}
@@ -348,15 +347,10 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
               placeholder="0.00"
             />
           </div>
-        </div>
-      </div>
 
-      <div className="form-section">
-        <h3 className="form-section-title">Shipping Overrides</h3>
-        <div className="form-grid">
           <div className="form-field">
             <label className="form-label">
-              {standardShippingAttr?.label ?? 'Standard Shipping Override'}
+              {standardShippingAttr?.label ?? 'Standard Shipping'}
             </label>
             <input
               type="number"
@@ -373,7 +367,7 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
 
           <div className="form-field">
             <label className="form-label">
-              {expeditedShippingAttr?.label ?? 'Expedited Shipping Override'}
+              {expeditedShippingAttr?.label ?? 'Expedited Shipping'}
             </label>
             <input
               type="number"
