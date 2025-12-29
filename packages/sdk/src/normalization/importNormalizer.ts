@@ -196,6 +196,11 @@ export const DEFAULT_COLUMN_MAPPINGS: ColumnMapping[] = [
   // SCOM Pricing (RetailOps)
   { sourceColumn: ['SCOM Regular Price', 'scom_regular_price'], targetField: 'scom_regular_price', transform: 'number' },
   { sourceColumn: ['SCOM Sale Price', 'scom_sale_price'], targetField: 'scom_sale_price', transform: 'number' },
+  // LP-1.4.5: Shipping Overrides (canonical pricing.shipping.*)
+  { sourceColumn: ['Standard Shipping Override', 'standard_shipping_override'], targetField: 'standard_shipping_override', transform: 'number' },
+  { sourceColumn: ['Expedited Shipping Override', 'expedited_override_shipping', 'expedited_shipping_override'], targetField: 'expedited_override_shipping', transform: 'number' },
+  // KL Post Date (LaunchMediaTab)
+  { sourceColumn: ['KL Post Date', 'kl_post_date', 'klPostDate'], targetField: 'kl_post_date', transform: 'date' },
   
   // ======================================================================
   // Sports & Collections (category: classification)
