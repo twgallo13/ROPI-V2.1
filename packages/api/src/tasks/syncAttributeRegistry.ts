@@ -290,6 +290,22 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
 
   console.log(`\n📋 Syncing ${registry.length} attributes to Firestore...\n`);
 
+  // LP-service-account-ropi-deploy-1.0.0: Read registry version for meta writes
+  let registryVersion = 'unknown';
+  try {
+    const rawReg = fs.readFileSync(REGISTRY_JSON_PATH, 'utf-8');
+    const parsedReg = JSON.parse(rawReg);
+    if (parsedReg && typeof parsedReg === 'object' && 'version' in parsedReg) {
+      registryVersion = (parsedReg as { version?: string }).version || registryVersion;
+    }
+  } catch (err) {
+    console.warn('⚠️ Could not parse registry version from file:', err);
+  }
+  // Derive resolved source from first attribute, fallback to 'json'
+  const resolvedSource = (Array.isArray(registry) && registry[0] && registry[0].source) 
+    ? registry[0].source 
+    : 'json';
+
   // Process each attribute
   for (const attr of registry) {
     // Ensure we write to settings/attributes/keys/{attribute_id}
@@ -311,25 +327,29 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
         result.attributes.push(attr.attribute_id);
         continue;
       }
+
+      // LP-service-account-ropi-deploy-1.0.0: Build payload with sync metadata & definition_version
+      const payload = {
+        ...attr,
+        definition_version: registryVersion,
+        updatedBy: 'system',
+        updatedAt: now,
+        syncedAt: now,
+        syncedBy: process.env.SYNC_CALLER || 'system',
+      };
       
       if (existingDoc.exists) {
         // Update existing attribute (merge to preserve any local customizations)
-        await docRef.set({
-          ...attr,
-          updatedBy: 'system',
-          updatedAt: now,
-        }, { merge: true });
+        await docRef.set(payload, { merge: true });
         
         result.updated++;
         console.log(`  ↻ Updated: ${attr.attribute_id}`);
       } else {
-        // Create new attribute
+        // Create new attribute (include createdBy/createdAt)
         await docRef.set({
-          ...attr,
+          ...payload,
           createdBy: 'system',
           createdAt: now,
-          updatedBy: 'system',
-          updatedAt: now,
         });
         
         result.created++;
@@ -351,6 +371,32 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
   console.log(`   Updated: ${result.updated}`);
   console.log(`   Errors:  ${result.errors.length}`);
   console.log('─────────────────────────────────────\n');
+
+  // LP-service-account-ropi-deploy-1.0.0: Write global metadata if not a dry-run
+  try {
+    if (!dryRun) {
+      // Use collection('settings').doc('attributes').collection('meta').doc('sync')
+      // or simpler: settings/attributesMeta as a top-level doc
+      const metaRef = db.collection('settings').doc('attributesMeta');
+      const now = new Date().toISOString();
+      await metaRef.set({
+        registry_version: registryVersion,
+        registry_source: resolvedSource,
+        git_sha: process.env.GIT_SHA || null,
+        lastSyncedAt: now,
+        lastSyncedBy: process.env.SYNC_CALLER || 'system',
+        totalAttributes: registry.length,
+        dryRun: false,
+      }, { merge: true });
+      console.log('✅ Wrote settings/attributesMeta');
+    } else {
+      console.log('ℹ️ Dry-run; skipping write of settings/attributesMeta');
+    }
+  } catch (metaErr) {
+    const metaMsg = metaErr instanceof Error ? metaErr.message : String(metaErr);
+    console.error('❌ Failed to write settings/attributesMeta:', metaMsg);
+    result.errors.push(`Failed to write attributes meta: ${metaMsg}`);
+  }
 
   return result;
 }
