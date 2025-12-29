@@ -1,4 +1,5 @@
 import type { Product } from '../../types/product';
+import { formatForDisplayYYYYMMDD } from '../../utils/dateUtils';
 import './ProductHeader.css';
 
 /**
@@ -84,6 +85,12 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
   const mediaStatus = mediaStatusConfig[mediaStatusKey] || mediaStatusConfig['missing'];
   const isActive = product.product_is_active ?? false;
 
+  // LP-1.4.6.7: Fallback to attributes.last_received when core field is absent
+  const rawLastFromAttributes = product?.attributes?.last_received;
+  const rawLastFromCore = product?.last_received;
+  const rawLast = rawLastFromAttributes ?? rawLastFromCore;
+  const lastDisplay = formatForDisplayYYYYMMDD(rawLast) ?? '—';
+
   return (
     <header className="product-header" role="banner" aria-label="Product Header">
       {/* Navigation Row */}
@@ -147,8 +154,8 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
         {/* Last Received Date */}
         <div className="product-header__field">
           <span className="product-header__label">Last Received</span>
-          <span className="product-header__value">
-            {formatDate(product.last_received)}
+          <span className="product-header__value" data-testid="header-last-received">
+            {lastDisplay}
           </span>
         </div>
 

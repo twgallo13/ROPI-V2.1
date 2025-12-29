@@ -175,3 +175,34 @@ export function formatForDisplay(
     day: 'numeric',
   });
 }
+
+/**
+ * Format a date for concise display in headers (YYYY-MM-DD format).
+ * 
+ * LP-1.4.6.7: Deterministic formatter for product header date fields.
+ * Accepts vendor formats (MM/DD/YYYY) and ISO timestamps, returns YYYY-MM-DD
+ * for consistent UI display. Uses UTC to avoid timezone ambiguity.
+ * 
+ * @param input - Date string in vendor or ISO format
+ * @returns Date string in YYYY-MM-DD format, or undefined if unparseable
+ * 
+ * @example
+ * formatForDisplayYYYYMMDD('2025-12-18T00:00:00.000Z') // '2025-12-18'
+ * formatForDisplayYYYYMMDD('12/18/2025')               // '2025-12-18'
+ * formatForDisplayYYYYMMDD('12/18/25')                 // '2025-12-18'
+ * formatForDisplayYYYYMMDD(undefined)                  // undefined
+ */
+export function formatForDisplayYYYYMMDD(input: string | undefined | null): string | undefined {
+  if (!input) return undefined;
+  
+  // Parse to ISO first (handles vendor and ISO formats)
+  const iso = parseToIsoDateString(input);
+  if (!iso) return undefined;
+  
+  // Extract YYYY-MM-DD from ISO timestamp (UTC-based)
+  const dt = new Date(iso);
+  const yyyy = dt.getUTCFullYear();
+  const mm = String(dt.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(dt.getUTCDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
