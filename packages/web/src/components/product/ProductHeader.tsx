@@ -79,7 +79,9 @@ function formatNumber(num?: number): string {
 
 function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProps) {
   const status = statusConfig[product.status] || statusConfig['draft'];
-  const mediaStatus = mediaStatusConfig[product.media_status ?? 'missing'];
+  // LP-1.4.2: Defensive fallback for unknown media_status values
+  const mediaStatusKey = product.media_status ?? 'missing';
+  const mediaStatus = mediaStatusConfig[mediaStatusKey] || mediaStatusConfig['missing'];
   const isActive = product.product_is_active ?? false;
 
   return (
