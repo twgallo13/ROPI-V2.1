@@ -230,3 +230,36 @@
   color: var(--color-text-secondary);
   margin: 0.5rem 0 0 0;
 }
+
+/* ============================================
+   LP-1.4.5: Currency Input with Prefix
+   ============================================ */
+.input-with-prefix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-with-prefix .form-input {
+  padding-left: 1.75rem;
+}
+
+/* Prevent spinner buttons on number inputs for cleaner currency display */
+.input-with-prefix input[type="number"]::-webkit-inner-spin-button,
+.input-with-prefix input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-with-prefix input[type="number"] {
+  -moz-appearance: textfield;
+}

@@ -36,6 +36,12 @@ export interface AttributeRegistryResult {
 }
 
 /**
+ * LP-1.4.5: Helper functions for case conversion (tolerant lookup)
+ */
+const toSnakeCase = (s: string) => s.replace(/([A-Z])/g, (m) => `_${m.toLowerCase()}`).replace(/^_/, '');
+const toCamelCase = (s: string) => s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+
+/**
  * Hook to access the attribute registry for the product editor.
  * Provides read-only access to attribute definitions.
  * 
@@ -44,8 +50,51 @@ export interface AttributeRegistryResult {
 export function useAttributeRegistry(): AttributeRegistryResult {
   const { attributes, loading, error, refresh } = useAttributes();
 
+  /**
+   * LP-1.4.5: Tolerant attribute lookup that tries multiple naming conventions.
+   * Tries: exact match → snake_case → camelCase → lowercase → synonyms
+   * This prevents UI omissions when registry uses different naming than code.
+   */
   const getAttributeById = useMemo(
-    () => (id: string) => attributes.find(a => a.attribute_id === id),
+    () => (id: string): Attribute | undefined => {
+      if (!id) return undefined;
+      
+      // 1. Try exact match
+      let found = attributes.find(a => a.attribute_id === id);
+      if (found) return found;
+      
+      // 2. Try snake_case variant
+      const snakeVariant = toSnakeCase(id);
+      if (snakeVariant !== id) {
+        found = attributes.find(a => a.attribute_id === snakeVariant);
+        if (found) return found;
+      }
+      
+      // 3. Try camelCase variant
+      const camelVariant = toCamelCase(id);
+      if (camelVariant !== id) {
+        found = attributes.find(a => a.attribute_id === camelVariant);
+        if (found) return found;
+      }
+      
+      // 4. Try lowercase variant (case-insensitive)
+      const lowerId = id.toLowerCase();
+      found = attributes.find(a => a.attribute_id.toLowerCase() === lowerId);
+      if (found) return found;
+      
+      // 5. Try synonyms lookup (if attributes have synonyms defined)
+      found = attributes.find(a => {
+        if (!a.synonyms) return false;
+        if (Array.isArray(a.synonyms)) {
+          return a.synonyms.some(s => s.toLowerCase() === lowerId);
+        }
+        // Record<string, string[]> format
+        return Object.keys(a.synonyms).some(k => k.toLowerCase() === lowerId);
+      });
+      if (found) return found;
+      
+      return undefined;
+    },
     [attributes]
   );
 

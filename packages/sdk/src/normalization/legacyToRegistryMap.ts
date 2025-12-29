@@ -148,6 +148,29 @@ export const LEGACY_TO_REGISTRY: Record<string, string> = {
   'short_description': 'short_description',
   'longDescription': 'long_description',
   'long_description': 'long_description',
+
+  // ======================================================================
+  // Shipping Overrides (LP-1.4.5)
+  // ======================================================================
+  'standardShippingOverride': 'standard_shipping_override',
+  'expeditedShippingOverride': 'expedited_override_shipping',
+  'standard_shipping_override': 'standard_shipping_override',
+  'expedited_override_shipping': 'expedited_override_shipping',
+  'expedited_shipping_override': 'expedited_override_shipping',
+
+  // ======================================================================
+  // SCOM Pricing (LP-1.4.5)
+  // ======================================================================
+  'scomRegularPrice': 'scom_regular_price',
+  'scom_regular_price': 'scom_regular_price',
+  'scomSalePrice': 'scom_sale_price',
+  'scom_sale_price': 'scom_sale_price',
+
+  // ======================================================================
+  // KL Post Date (LP-1.4.5)
+  // ======================================================================
+  'klPostDate': 'kl_post_date',
+  'kl_post_date': 'kl_post_date',
 };
 
 /**

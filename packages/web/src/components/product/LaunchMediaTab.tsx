@@ -155,21 +155,56 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
   const promoValue = product.promo ?? 
                      (product.attributes?.promo as unknown as boolean) ?? false;
   // LP-1.4.3: Prefer pricing.scom_* (canonical place from Firestore). Fallback to previous shapes for compatibility.
+  // LP-1.4.5: Also handle pricing.shipping.* for shipping overrides
   // Note: Product type has top-level fields, but Firestore may store in pricing object
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pricingObj = (product as any).pricing as Record<string, unknown> | undefined;
-  const scomRegularPriceValue = (pricingObj?.scom_regular_price as string | number) ??
+  const pricingObj = product.pricing;
+  const scomRegularPriceValue = pricingObj?.scom_regular_price ??
                                 product.scom_regular_price ??
-                                (product.attributes?.scom_regular_price as string) ?? '';
-  const scomSalePriceValue = (pricingObj?.scom_sale_price as string | number) ??
+                                (product.attributes?.scom_regular_price as string | number) ?? '';
+  const scomSalePriceValue = pricingObj?.scom_sale_price ??
                              product.scom_sale_price ??
-                             (product.attributes?.scom_sale_price as string) ?? '';
-  const standardShippingValue = product.standard_shipping_override ?? 
-                                (product.attributes?.standard_shipping_override as string) ?? '';
-  const expeditedShippingValue = product.expedited_override_shipping ?? 
-                                 (product.attributes?.expedited_override_shipping as string) ?? '';
+                             (product.attributes?.scom_sale_price as string | number) ?? '';
+  // LP-1.4.5: Shipping overrides - prefer canonical pricing.shipping.*, fallback to top-level
+  const standardShippingValue = pricingObj?.shipping?.standard_override ?? 
+                                product.standard_shipping_override ?? 
+                                (product.attributes?.standard_shipping_override as string | number) ?? '';
+  const expeditedShippingValue = pricingObj?.shipping?.expedited_override ?? 
+                                 product.expedited_override_shipping ?? 
+                                 (product.attributes?.expedited_override_shipping as string | number) ?? '';
   const customMessageValue = product.custom_message ?? 
                              (product.attributes?.custom_message as string) ?? '';
+
+  /**
+   * LP-1.4.5: Handle SCOM price change with numeric conversion
+   * Writes to canonical pricing.scom_* path
+   */
+  const handleScomRegularPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const numVal = val === '' ? '' : Number(val);
+    onUpdate('pricing.scom_regular_price', numVal);
+  };
+
+  const handleScomSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const numVal = val === '' ? '' : Number(val);
+    onUpdate('pricing.scom_sale_price', numVal);
+  };
+
+  /**
+   * LP-1.4.5: Handle shipping override change with numeric conversion
+   * Writes to canonical pricing.shipping.* path
+   */
+  const handleStandardShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const numVal = val === '' ? '' : Number(val);
+    onUpdate('pricing.shipping.standard_override', numVal);
+  };
+
+  const handleExpeditedShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const numVal = val === '' ? '' : Number(val);
+    onUpdate('pricing.shipping.expedited_override', numVal);
+  };
 
   return (
     <div className="editor-tab-content">
@@ -314,32 +349,40 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
             <label className="form-label">
               {scomRegularPriceAttr?.label ?? 'SCOM Regular Price'}
             </label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-input"
-              value={scomRegularPriceValue}
-              onChange={(e) => onUpdate('scom_regular_price', e.target.value)}
-              data-field="product.scom_regular_price"
-              name="product.scom_regular_price"
-              placeholder="0.00"
-            />
+            <div className="input-with-prefix">
+              <span className="input-prefix">$</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={scomRegularPriceValue}
+                onChange={handleScomRegularPriceChange}
+                data-field="pricing.scom_regular_price"
+                name="pricing.scom_regular_price"
+                placeholder="0.00"
+              />
+            </div>
           </div>
 
           <div className="form-field">
             <label className="form-label">
               {scomSalePriceAttr?.label ?? 'SCOM Sale Price'}
             </label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-input"
-              value={scomSalePriceValue}
-              onChange={(e) => onUpdate('scom_sale_price', e.target.value)}
-              data-field="product.scom_sale_price"
-              name="product.scom_sale_price"
-              placeholder="0.00"
-            />
+            <div className="input-with-prefix">
+              <span className="input-prefix">$</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={scomSalePriceValue}
+                onChange={handleScomSalePriceChange}
+                data-field="pricing.scom_sale_price"
+                name="pricing.scom_sale_price"
+                placeholder="0.00"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -351,32 +394,40 @@ function LaunchMediaTab({ product, onUpdate }: LaunchMediaTabProps) {
             <label className="form-label">
               {standardShippingAttr?.label ?? 'Standard Shipping Override'}
             </label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-input"
-              value={standardShippingValue}
-              onChange={(e) => onUpdate('standard_shipping_override', e.target.value)}
-              data-field="product.standard_shipping_override"
-              name="product.standard_shipping_override"
-              placeholder="0.00"
-            />
+            <div className="input-with-prefix">
+              <span className="input-prefix">$</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={standardShippingValue}
+                onChange={handleStandardShippingChange}
+                data-field="pricing.shipping.standard_override"
+                name="pricing.shipping.standard_override"
+                placeholder="0.00"
+              />
+            </div>
           </div>
 
           <div className="form-field">
             <label className="form-label">
               {expeditedShippingAttr?.label ?? 'Expedited Shipping Override'}
             </label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-input"
-              value={expeditedShippingValue}
-              onChange={(e) => onUpdate('expedited_override_shipping', e.target.value)}
-              data-field="product.expedited_override_shipping"
-              name="product.expedited_override_shipping"
-              placeholder="0.00"
-            />
+            <div className="input-with-prefix">
+              <span className="input-prefix">$</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-input"
+                value={expeditedShippingValue}
+                onChange={handleExpeditedShippingChange}
+                data-field="pricing.shipping.expedited_override"
+                name="pricing.shipping.expedited_override"
+                placeholder="0.00"
+              />
+            </div>
           </div>
         </div>
       </div>

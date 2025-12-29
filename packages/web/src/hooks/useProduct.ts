@@ -129,11 +129,13 @@ function ensureArray(value: unknown): unknown[] {
  * LP-1.3.7: Import engine writes product.core.mpn, but ProductHeader reads product.mpn
  * LP-1.3.8: Import engine writes product.attributes.class, but CoreInformationTab reads product.class
  * LP-1.4.0: Ensure name is populated from title, coerce multiSelect fields to arrays
+ * LP-1.4.5: Merge pricing.shipping.* to top-level shipping override fields for backward compatibility
  */
 function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<string, unknown> {
   const core = docData.core as Record<string, unknown> | undefined;
   const inventory = docData.inventory as Record<string, unknown> | undefined;
   const attributes = docData.attributes as Record<string, unknown> | undefined;
+  const pricing = docData.pricing as Record<string, unknown> | undefined;
   
   const merged = { ...docData };
   
@@ -161,6 +163,28 @@ function mergeCoreFieldsToTopLevel(docData: Record<string, unknown>): Record<str
     for (const key of ATTRIBUTE_FIELDS_TO_TOP_LEVEL) {
       if ((merged[key] === undefined || merged[key] === null) && attributes[key] !== undefined && attributes[key] !== null) {
         merged[key] = attributes[key];
+      }
+    }
+  }
+  
+  // LP-1.4.5: Merge pricing fields to top-level for backward compatibility
+  if (pricing && typeof pricing === 'object') {
+    // SCOM prices
+    if ((merged.scom_regular_price === undefined || merged.scom_regular_price === null) && pricing.scom_regular_price !== undefined) {
+      merged.scom_regular_price = pricing.scom_regular_price;
+    }
+    if ((merged.scom_sale_price === undefined || merged.scom_sale_price === null) && pricing.scom_sale_price !== undefined) {
+      merged.scom_sale_price = pricing.scom_sale_price;
+    }
+    
+    // LP-1.4.5: Shipping overrides from pricing.shipping.*
+    const shipping = pricing.shipping as Record<string, unknown> | undefined;
+    if (shipping && typeof shipping === 'object') {
+      if ((merged.standard_shipping_override === undefined || merged.standard_shipping_override === null) && shipping.standard_override !== undefined) {
+        merged.standard_shipping_override = shipping.standard_override;
+      }
+      if ((merged.expedited_override_shipping === undefined || merged.expedited_override_shipping === null) && shipping.expedited_override !== undefined) {
+        merged.expedited_override_shipping = shipping.expedited_override;
       }
     }
   }
@@ -277,6 +301,29 @@ export function mergeFieldsToTopLevel(product: Record<string, unknown>): Record<
   const mediaVal = pickAttributeValue(attrs, 'media_status') || pickAttributeValue(attrs, 'mediaStatus');
   if (mediaVal !== undefined && (!product.media_status || product.media_status === '')) {
     product.media_status = mediaVal;
+  }
+  
+  // LP-1.4.5: Merge pricing fields to top-level for backward compatibility
+  const pricing = product.pricing as Record<string, unknown> | undefined;
+  if (pricing && typeof pricing === 'object') {
+    // SCOM prices
+    if ((product.scom_regular_price === undefined || product.scom_regular_price === null) && pricing.scom_regular_price !== undefined) {
+      product.scom_regular_price = pricing.scom_regular_price;
+    }
+    if ((product.scom_sale_price === undefined || product.scom_sale_price === null) && pricing.scom_sale_price !== undefined) {
+      product.scom_sale_price = pricing.scom_sale_price;
+    }
+    
+    // LP-1.4.5: Shipping overrides from pricing.shipping.*
+    const shipping = pricing.shipping as Record<string, unknown> | undefined;
+    if (shipping && typeof shipping === 'object') {
+      if ((product.standard_shipping_override === undefined || product.standard_shipping_override === null) && shipping.standard_override !== undefined) {
+        product.standard_shipping_override = shipping.standard_override;
+      }
+      if ((product.expedited_override_shipping === undefined || product.expedited_override_shipping === null) && shipping.expedited_override !== undefined) {
+        product.expedited_override_shipping = shipping.expedited_override;
+      }
+    }
   }
   
   return product;

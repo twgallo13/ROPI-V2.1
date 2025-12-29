@@ -47,9 +47,10 @@ export interface BatchProcessResult {
 /**
  * Fields that belong in specific product sections (not attributes)
  * LP-1.3.6: Explicit mapping for known field types
+ * LP-1.4.5: Added shipping override fields to PRICING_FIELDS
  */
 const CORE_FIELDS = new Set(['sku', 'title', 'brand', 'description', 'mpn', 'style_id', 'name', 'status']);
-const PRICING_FIELDS = new Set(['msrp', 'cost', 'retailPrice', 'scom_regular_price', 'scom_sale_price', 'map']);
+const PRICING_FIELDS = new Set(['msrp', 'cost', 'retailPrice', 'scom_regular_price', 'scom_sale_price', 'map', 'standard_shipping_override', 'expedited_override_shipping']);
 const INVENTORY_FIELDS = new Set(['quantity', 'warehouse', 'location', 'warehouse_inv', 'store_inv', 'whs_inv']);
 const MEDIA_FIELDS = new Set(['primaryImage', 'images']);
 const DATE_FIELDS = new Set(['firstReceived', 'first_received', 'lastReceived', 'last_received', 'launchDate', 'launch_date']);
@@ -124,9 +125,11 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
   }
 
   // Build pricing (filter out undefined values) - LP-1.3.6: Include SCOM prices
+  // LP-1.4.5: Canonical pricing structure with shipping overrides in pricing.shipping.*
   let pricing: ProductPricing | undefined = undefined;
   const hasAnyPricing = normalized.msrp || normalized.cost || normalized.retailPrice || 
-                        normalized.scom_regular_price || normalized.scom_sale_price || normalized.map;
+                        normalized.scom_regular_price || normalized.scom_sale_price || normalized.map ||
+                        normalized.standard_shipping_override || normalized.expedited_override_shipping;
   if (hasAnyPricing) {
     pricing = { currency: 'USD' };
     if (normalized.msrp) pricing.msrp = Number(normalized.msrp);
@@ -135,6 +138,19 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
     if (normalized.scom_regular_price) (pricing as any).scom_regular_price = Number(normalized.scom_regular_price);
     if (normalized.scom_sale_price) (pricing as any).scom_sale_price = Number(normalized.scom_sale_price);
     if (normalized.map) (pricing as any).map = Number(normalized.map);
+    
+    // LP-1.4.5: Shipping overrides in canonical pricing.shipping.* location
+    const hasShippingOverrides = normalized.standard_shipping_override !== undefined || 
+                                 normalized.expedited_override_shipping !== undefined;
+    if (hasShippingOverrides) {
+      (pricing as any).shipping = {};
+      if (normalized.standard_shipping_override !== undefined) {
+        (pricing as any).shipping.standard_override = Number(normalized.standard_shipping_override);
+      }
+      if (normalized.expedited_override_shipping !== undefined) {
+        (pricing as any).shipping.expedited_override = Number(normalized.expedited_override_shipping);
+      }
+    }
   }
 
   // Build inventory (filter out undefined values) - LP-1.3.6: Include warehouse/store inv
@@ -182,6 +198,7 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
 
   // Build complete product (only include defined optional fields)
   // LP-1.3.6: Include all sections that have data
+  // LP-1.4.5: Add top-level mirroring for shipping overrides during migration period
   const product: Product = {
     core,
     attributes,
@@ -199,6 +216,15 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
       validatedAt: now,
     },
   };
+
+  // LP-1.4.5: Mirror shipping overrides to top-level during migration for backward compatibility
+  // These will be removed in a later cleanup LP after migration is verified
+  if (normalized.standard_shipping_override !== undefined) {
+    (product as any).standard_shipping_override = Number(normalized.standard_shipping_override);
+  }
+  if (normalized.expedited_override_shipping !== undefined) {
+    (product as any).expedited_override_shipping = Number(normalized.expedited_override_shipping);
+  }
 
   return product;
 }

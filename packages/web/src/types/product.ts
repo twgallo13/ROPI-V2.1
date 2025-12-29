@@ -24,6 +24,28 @@ export interface ProductAttributes {
   [key: string]: string | string[];
 }
 
+/**
+ * LP-1.4.5: Shipping overrides stored in pricing.shipping.*
+ */
+export interface ProductShipping {
+  standard_override?: number;
+  expedited_override?: number;
+}
+
+/**
+ * LP-1.4.5: Pricing object with canonical fields
+ */
+export interface ProductPricing {
+  currency?: string;
+  msrp?: number;
+  cost?: number;
+  retailPrice?: number;
+  scom_regular_price?: number;
+  scom_sale_price?: number;
+  map?: number;
+  shipping?: ProductShipping;
+}
+
 export interface WebsiteDescription {
   main: string;
   seoTitle: string;
@@ -109,6 +131,9 @@ export interface Product {
   observations: Observation[];
   smartSuggestions: SmartSuggestion[];
   aiHistory: AIHistoryEntry[];
+  
+  /** LP-1.4.5: Canonical pricing object with SCOM prices and shipping overrides */
+  pricing?: ProductPricing;
   
   // LP-0.4.0: Tab 0 (Product Header) fields - Read-only metadata
   /** MPN - Manufacturer Part Number (required for export) */
