@@ -9,6 +9,11 @@
 
 import { Page, expect } from '@playwright/test';
 
+// Default timeouts tuned for CI preview environments
+const E2E_AUTH_TIMEOUT = 30_000; // 30s
+const E2E_MODAL_TIMEOUT = 10_000; // 10s
+const E2E_DEFAULT_TIMEOUT = 15_000; // 15s
+
 /**
  * Test user credentials for E2E tests
  * Configured via environment variables for flexibility across environments
@@ -76,9 +81,11 @@ export async function signInWithEmail(
   email: string,
   password: string
 ) {
-  // Navigate to home page
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
+  // Navigate to preview URL if provided (CI), else root
+  const baseUrl = process.env.PREVIEW_URL || '/';
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+  // Give the preview some extra time to settle in CI
+  await page.waitForLoadState('networkidle', { timeout: E2E_AUTH_TIMEOUT });
   
   // Click the Sign In button in TopBar to open modal
   const signInTrigger = page.locator('[data-testid="signin-trigger"]');
@@ -87,7 +94,7 @@ export async function signInWithEmail(
   
   // Wait for modal to appear
   const modal = page.locator('[data-testid="signin-modal"]');
-  await modal.waitFor({ state: 'visible', timeout: 5000 });
+  await modal.waitFor({ state: 'visible', timeout: E2E_MODAL_TIMEOUT });
   
   // Fill in email/password using data-testid selectors
   await page.locator('[data-testid="email-input"]').fill(email);
@@ -95,12 +102,32 @@ export async function signInWithEmail(
   
   // Submit form
   await page.locator('[data-testid="signin-submit"]').click();
-  
-  // Wait for user menu to appear (indicates successful sign-in)
-  await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: 15000 });
-  
-  // Wait for modal to close (it auto-closes after 500ms delay on success)
-  await modal.waitFor({ state: 'hidden', timeout: 5000 });
+
+  // First, wait for the modal to close (UI unlock), then for auth to settle
+  await modal.waitFor({ state: 'hidden', timeout: E2E_MODAL_TIMEOUT });
+
+  // Wait for Firebase auth state to be written to localStorage (generic check)
+  await page.waitForFunction(
+    () => {
+      try {
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const key = window.localStorage.key(i) || '';
+          if (key.startsWith('firebase:authUser:') || key.startsWith('firebase:authToken:')) {
+            const v = window.localStorage.getItem(key);
+            if (v && v.length > 0) return true;
+          }
+        }
+      } catch (_) {}
+      return false;
+    },
+    { timeout: E2E_AUTH_TIMEOUT }
+  );
+
+  // Give the app a moment to render the TopBar user menu after auth state is ready
+  await page.waitForLoadState('networkidle', { timeout: E2E_DEFAULT_TIMEOUT });
+
+  // Finally, wait for user menu to appear (indicates successful sign-in)
+  await page.locator('[data-testid="user-menu-trigger"]').waitFor({ state: 'visible', timeout: E2E_AUTH_TIMEOUT });
 }
 
 /**
