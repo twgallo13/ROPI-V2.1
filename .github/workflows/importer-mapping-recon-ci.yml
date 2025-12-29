@@ -8,84 +8,99 @@ on:
       - 'packages/web/**'
       - '.github/workflows/importer-mapping-recon-ci.yml'
 
+# Reusable configuration
+env:
+  NODE_VERSION: '20'
+
 jobs:
-  setup:
+  test:
+    name: Unit Tests
     runs-on: ubuntu-latest
-    outputs:
-      node-version: '18'
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Cache node modules
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Cache pnpm store
         uses: actions/cache@v4
         with:
-          path: |
-            **/node_modules
-            ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            ${{ runner.os }}-pnpm-store-
 
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Build SDK (required for tests)
         run: pnpm --filter @ropi-aoss/sdk build
+
       - name: Run unit tests (SDK)
         run: pnpm --filter @ropi-aoss/sdk test -- --run
+
       - name: Run unit tests (API)
         run: pnpm --filter @ropi-aoss/api test -- --run || echo "API tests skipped or failed"
+
       - name: Run unit tests (Web)
         run: pnpm --filter @ropi-aoss/web test -- --run
 
   dryrun:
+    name: Import Dry-Run Validation
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
-          version: 8
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Build SDK
         run: pnpm --filter @ropi-aoss/sdk build
+
       - name: Create artifacts directory
         run: mkdir -p artifacts
+
       - name: Run SDK dry-run (MPN-only)
         run: |
           node packages/sdk/scripts/ci-dryrun.js --csv packages/sdk/scripts/sample-mpn-only.csv --out artifacts/dryrun-sample-mpn-only.json
+
       - name: Run SDK dry-run (Mixed)
         run: |
           node packages/sdk/scripts/ci-dryrun.js --csv packages/sdk/scripts/sample-mixed.csv --out artifacts/dryrun-sample-mixed.json
+
       - name: Validate dry-run reports (no missing attribute)
         run: |
           node packages/api/scripts/validate-dryrun-report.js artifacts/dryrun-sample-mpn-only.json || (echo "MPN dryrun errors" && exit 1)
           node packages/api/scripts/validate-dryrun-report.js artifacts/dryrun-sample-mixed.json || (echo "Mixed dryrun errors" && exit 1)
+
       - name: Upload dry-run artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -93,21 +108,27 @@ jobs:
           path: artifacts/*.json
 
   e2e:
+    name: E2E Tests
     needs: dryrun
     if: github.event.pull_request != null
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Run web e2e (if configured)
         run: |
           # If Playwright is configured, run it here
