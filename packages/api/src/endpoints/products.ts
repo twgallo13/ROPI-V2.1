@@ -504,6 +504,298 @@ export async function getProductByMpnHandler(req: Request, res: Response) {
 }
 
 /**
+ * POST /products/:productId/suggestions
+ * 
+ * LP-obs-studio-cleanup-1.4.0: Generate suggestions from observations.
+ * Analyzes recent observations and tags to suggest attribute values.
+ * 
+ * Request body:
+ * - autoResolve: boolean (default false) - Auto-apply high-confidence suggestions
+ * 
+ * Returns:
+ * - suggestions: Array of { attributeId, currentValue, suggestedValue, confidence, rationale }
+ * - meta: { observationsCount, tagsCount, generatedAt }
+ */
+export async function generateSuggestionsHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    const productId = req.params.productId;
+    const autoResolve = req.body?.autoResolve === true;
+    
+    if (!productId) {
+      res.status(400).json({ 
+        error: 'MISSING_PRODUCT_ID', 
+        message: 'Product ID is required' 
+      });
+      return;
+    }
+
+    const db = admin.firestore();
+
+    try {
+      // Fetch product
+      const productDoc = await db.collection('products').doc(productId).get();
+      if (!productDoc.exists) {
+        res.status(404).json({ 
+          error: 'PRODUCT_NOT_FOUND', 
+          message: `Product '${productId}' not found` 
+        });
+        return;
+      }
+
+      const productData = productDoc.data()!;
+      const productMpn = productData.mpn || productId;
+
+      // Fetch recent observations for this product (last 10)
+      const obsSnapshot = await db
+        .collection('observations')
+        .where('product_mpn', '==', productMpn)
+        .orderBy('createdAt', 'desc')
+        .limit(10)
+        .get();
+
+      const observations = obsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Collect all tags from observations
+      const allTags: string[] = [];
+      for (const obs of observations) {
+        const tags = (obs as Record<string, unknown>).tags;
+        if (Array.isArray(tags)) {
+          allTags.push(...tags);
+        }
+      }
+
+      // Count unique tags
+      const tagCounts = new Map<string, number>();
+      for (const tag of allTags) {
+        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+      }
+
+      // Generate suggestions based on tag patterns
+      // This is a heuristic approach - tags often indicate missing or incorrect attributes
+      const suggestions: Array<{
+        id: string;
+        attributeId: string;
+        currentValue: unknown;
+        suggestedValue: unknown;
+        confidence: number;
+        rationale: string;
+        source: 'observation-tags';
+      }> = [];
+
+      const attributes = productData.attributes || {};
+      let suggestionIndex = 0;
+
+      // Tag-to-attribute mapping heuristics
+      const tagPatterns: Array<{
+        pattern: RegExp;
+        attributeId: string;
+        extractor: (tag: string) => unknown;
+        rationale: (tag: string, count: number) => string;
+      }> = [
+        {
+          pattern: /^color[:\-_]?(.+)$/i,
+          attributeId: 'color_primary',
+          extractor: (tag) => tag.replace(/^color[:\-_]?/i, '').trim(),
+          rationale: (tag, count) => `Tag "${tag}" appeared ${count} time(s) in observations`,
+        },
+        {
+          pattern: /^material[:\-_]?(.+)$/i,
+          attributeId: 'material_primary',
+          extractor: (tag) => tag.replace(/^material[:\-_]?/i, '').trim(),
+          rationale: (tag, count) => `Tag "${tag}" appeared ${count} time(s) in observations`,
+        },
+        {
+          pattern: /^size[:\-_]?(.+)$/i,
+          attributeId: 'size_display',
+          extractor: (tag) => tag.replace(/^size[:\-_]?/i, '').trim(),
+          rationale: (tag, count) => `Tag "${tag}" appeared ${count} time(s) in observations`,
+        },
+        {
+          pattern: /^style[:\-_]?(.+)$/i,
+          attributeId: 'style_type',
+          extractor: (tag) => tag.replace(/^style[:\-_]?/i, '').trim(),
+          rationale: (tag, count) => `Tag "${tag}" appeared ${count} time(s) in observations`,
+        },
+        {
+          pattern: /^gender[:\-_]?(.+)$/i,
+          attributeId: 'gender',
+          extractor: (tag) => tag.replace(/^gender[:\-_]?/i, '').trim(),
+          rationale: (tag, count) => `Tag "${tag}" appeared ${count} time(s) in observations`,
+        },
+      ];
+
+      for (const [tag, count] of tagCounts.entries()) {
+        for (const { pattern, attributeId, extractor, rationale } of tagPatterns) {
+          if (pattern.test(tag)) {
+            const suggestedValue = extractor(tag);
+            const currentValue = attributes[attributeId];
+            
+            // Only suggest if different from current value
+            if (suggestedValue !== currentValue) {
+              // Confidence based on tag frequency
+              const confidence = Math.min(50 + count * 15, 95);
+              
+              suggestions.push({
+                id: `obs-sug-${++suggestionIndex}`,
+                attributeId,
+                currentValue: currentValue ?? null,
+                suggestedValue,
+                confidence,
+                rationale: rationale(tag, count),
+                source: 'observation-tags',
+              });
+            }
+            break; // Only match first pattern per tag
+          }
+        }
+      }
+
+      // Sort by confidence descending, limit to 5
+      suggestions.sort((a, b) => b.confidence - a.confidence);
+      const topSuggestions = suggestions.slice(0, 5);
+
+      // Auto-resolve high-confidence suggestions if enabled
+      const autoApplied: string[] = [];
+      if (autoResolve) {
+        const authReq = req as AuthenticatedRequest;
+        const actor = authReq.auth?.uid || 'system';
+        const now = new Date().toISOString();
+        const updates: Record<string, unknown> = {
+          updatedBy: actor,
+          updatedAt: now,
+        };
+
+        for (const suggestion of topSuggestions) {
+          if (suggestion.confidence >= 85) {
+            updates[`attributes.${suggestion.attributeId}`] = suggestion.suggestedValue;
+            autoApplied.push(suggestion.id);
+          }
+        }
+
+        if (autoApplied.length > 0) {
+          await productDoc.ref.update(updates);
+        }
+      }
+
+      res.status(200).json({
+        suggestions: topSuggestions.map(s => ({
+          ...s,
+          applied: autoApplied.includes(s.id),
+        })),
+        meta: {
+          observationsCount: observations.length,
+          tagsCount: allTags.length,
+          uniqueTagsCount: tagCounts.size,
+          autoAppliedCount: autoApplied.length,
+          generatedAt: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      console.error('Error generating suggestions:', error);
+      res.status(500).json({ 
+        error: 'INTERNAL_ERROR', 
+        message: 'Failed to generate suggestions' 
+      });
+    }
+  });
+}
+
+/**
+ * POST /products/:productId/apply-suggestion
+ * 
+ * LP-obs-studio-cleanup-1.4.0: Apply a specific suggestion to a product.
+ * 
+ * Request body:
+ * - suggestionId: string
+ * - attributeId: string
+ * - value: unknown
+ * - rationale: string (optional, for audit)
+ */
+export async function applySuggestionHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    const productId = req.params.productId;
+    const { suggestionId, attributeId, value, rationale } = req.body || {};
+    
+    if (!productId) {
+      res.status(400).json({ 
+        error: 'MISSING_PRODUCT_ID', 
+        message: 'Product ID is required' 
+      });
+      return;
+    }
+
+    if (!attributeId || value === undefined) {
+      res.status(400).json({ 
+        error: 'MISSING_FIELDS', 
+        message: 'attributeId and value are required' 
+      });
+      return;
+    }
+
+    const db = admin.firestore();
+
+    try {
+      const productRef = db.collection('products').doc(productId);
+      const productDoc = await productRef.get();
+      
+      if (!productDoc.exists) {
+        res.status(404).json({ 
+          error: 'PRODUCT_NOT_FOUND', 
+          message: `Product '${productId}' not found` 
+        });
+        return;
+      }
+
+      const authReq = req as AuthenticatedRequest;
+      const actor = authReq.auth?.uid || 'system';
+      const now = new Date().toISOString();
+
+      // Apply the suggestion
+      await productRef.update({
+        [`attributes.${attributeId}`]: value,
+        updatedBy: actor,
+        updatedAt: now,
+        // Track applied suggestion in activity log
+        _activityLog: admin.firestore.FieldValue.arrayUnion({
+          actor,
+          action: 'apply_suggestion',
+          timestamp: now,
+          details: {
+            suggestionId,
+            attributeId,
+            value,
+            rationale: rationale || 'User applied observation-based suggestion',
+          },
+        }),
+      });
+
+      // Fetch and return updated product
+      const updatedDoc = await productRef.get();
+      res.status(200).json({
+        id: updatedDoc.id,
+        ...updatedDoc.data(),
+        _appliedSuggestion: {
+          suggestionId,
+          attributeId,
+          value,
+          appliedAt: now,
+          appliedBy: actor,
+        },
+      });
+    } catch (error) {
+      console.error('Error applying suggestion:', error);
+      res.status(500).json({ 
+        error: 'INTERNAL_ERROR', 
+        message: 'Failed to apply suggestion' 
+      });
+    }
+  });
+}
+
+/**
  * GET /products/search-mpn
  * 
  * LP-1.1.10: Search products by partial MPN match.
