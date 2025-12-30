@@ -41,6 +41,10 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
   const [showFieldPicker, setShowFieldPicker] = useState(false);
   const [images, setImages] = useState<ImageFile[]>([]);
   
+  // LP-obs-studio-cleanup-1.0.0: Tags state
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
+  
   // AI analysis state
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
 
@@ -59,6 +63,8 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
     setSeverity('medium');
     setFieldLink(null);
     setImages([]);
+    setTags([]);
+    setTagInput('');
   }, []);
 
   // Handle images change from uploader
@@ -76,6 +82,25 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
       }
       return suggestionText;
     });
+  }, []);
+
+  // LP-obs-studio-cleanup-1.0.0: Tag input handlers
+  const handleTagInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase();
+      if (newTag && !tags.includes(newTag)) {
+        setTags(prev => [...prev, newTag]);
+      }
+      setTagInput('');
+    } else if (e.key === 'Backspace' && tagInput === '' && tags.length > 0) {
+      // Remove last tag when backspace on empty input
+      setTags(prev => prev.slice(0, -1));
+    }
+  }, [tagInput, tags]);
+
+  const handleRemoveTag = useCallback((tagToRemove: string) => {
+    setTags(prev => prev.filter(t => t !== tagToRemove));
   }, []);
 
   // Handle save and continue
@@ -105,6 +130,7 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
         description: description.trim() || undefined,
         severity,
         images: imageUrls,
+        tags: tags.length > 0 ? tags : undefined,
         fieldLink: fieldLink ? {
           type: fieldLink.type,
           fieldPath: fieldLink.key,
@@ -113,16 +139,23 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
         source: 'mobile_capture',
       });
 
-      // Show success and reset form
+      // LP-obs-studio-cleanup-1.0.0: Finish & Next flow
+      // Show success, clear ALL state including product, and open scanner for next item
       setSuccessMessage('Observation saved!');
       setObservationText('');
       setDescription('');
       setSeverity('medium');
       setFieldLink(null);
       setImages([]);
-
-      // Clear success message after delay
-      setTimeout(() => setSuccessMessage(null), 2000);
+      setTags([]);
+      setTagInput('');
+      setSelectedProduct(null);
+      
+      // Open scanner for next product (Finish & Next)
+      setTimeout(() => {
+        setShowScanner(true);
+        setSuccessMessage(null);
+      }, 1000);
       
       // Try to sync if online
       if (isOnline) {
@@ -143,6 +176,8 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
     setSeverity('medium');
     setFieldLink(null);
     setImages([]);
+    setTags([]);
+    setTagInput('');
     setErrorMessage(null);
   }, []);
 
@@ -250,6 +285,41 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
             />
             <p className="field-help">
               Enter tags or short notes (comma-separated for multiple)
+            </p>
+          </section>
+
+          {/* LP-obs-studio-cleanup-1.0.0: Tags Input */}
+          <section className="capture-section">
+            <label htmlFor="tags-input" className="section-title">
+              Tags <span className="optional">(optional)</span>
+            </label>
+            <div className="tags-input-container">
+              {tags.map((tag) => (
+                <span key={tag} className="tag-chip">
+                  {tag}
+                  <button
+                    type="button"
+                    className="tag-remove-btn"
+                    onClick={() => handleRemoveTag(tag)}
+                    aria-label={`Remove tag ${tag}`}
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              <input
+                id="tags-input"
+                type="text"
+                className="tag-input"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagInputKeyDown}
+                placeholder={tags.length === 0 ? "e.g., hidden pocket, runs small" : "Add another tag..."}
+                autoComplete="off"
+              />
+            </div>
+            <p className="field-help">
+              Press Enter or comma to add a tag. Backspace removes last tag.
             </p>
           </section>
 
@@ -383,7 +453,7 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
               onClick={handleSave}
               disabled={saving || !observationText.trim()}
             >
-              {saving ? 'Saving...' : 'Save & Continue'}
+              {saving ? 'Saving...' : 'Finish & Next'}
             </button>
             <button
               className="clear-btn secondary"
