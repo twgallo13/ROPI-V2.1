@@ -23,6 +23,7 @@ import {
   collection,
   addDoc,
   updateDoc,
+  deleteDoc,
   doc,
   query,
   where,
@@ -363,6 +364,33 @@ export async function resolveObservation(
       : obs
   );
   saveToLocalStorage(productId, updated);
+}
+
+/**
+ * Delete an observation
+ * 
+ * LP-1.1.13: Full CRUD support.
+ * Deletes from Firestore or localStorage depending on availability.
+ */
+export async function deleteObservation(
+  observationId: string,
+  productId: string
+): Promise<void> {
+  if (isFirebaseAvailable() && db && !observationId.startsWith('local_')) {
+    try {
+      const docRef = doc(db, COLLECTION_NAME, observationId);
+      await deleteDoc(docRef);
+      return;
+    } catch (error) {
+      console.error('Failed to delete observation from Firestore:', error);
+      console.warn('Falling back to localStorage');
+    }
+  }
+  
+  // Fallback to localStorage
+  const observations = loadFromLocalStorage(productId);
+  const filtered = observations.filter((obs) => obs.id !== observationId);
+  saveToLocalStorage(productId, filtered);
 }
 
 /**

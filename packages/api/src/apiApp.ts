@@ -61,12 +61,13 @@ import {
   getProductByMpnHandler,
 } from './endpoints/products';
 
-// Observations handlers (LP-1.1.1)
+// Observations handlers (LP-1.1.1, LP-1.1.13)
 import {
   createObservationHandler,
   listObservationsHandler,
   getObservationHandler,
   updateObservationHandler,
+  deleteObservationHandler,
   analyzeImageHandler,
   analyzeImageStandaloneHandler,
 } from './endpoints/observations';
@@ -185,13 +186,14 @@ api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);
 
 /**
- * Observations endpoints (LP-1.1.1)
+ * Observations endpoints (LP-1.1.1, LP-1.1.13)
  */
 api.get('/observations', listObservationsHandler);
 api.post('/observations', createObservationHandler);
 api.post('/observations/analyze-image', analyzeImageStandaloneHandler);
 api.get('/observations/:id', getObservationHandler);
 api.patch('/observations/:id', updateObservationHandler);
+api.delete('/observations/:id', deleteObservationHandler); // LP-1.1.13
 api.post('/observations/:id/analyze-image', analyzeImageHandler);
 
 /**

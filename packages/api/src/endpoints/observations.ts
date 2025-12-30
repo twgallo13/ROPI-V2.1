@@ -383,6 +383,72 @@ export async function updateObservationHandler(req: Request, res: Response) {
 }
 
 /**
+ * DELETE /api/observations/:id
+ * 
+ * LP-1.1.13: Delete an observation.
+ * Requires authentication. Only the creator or an admin can delete.
+ */
+export async function deleteObservationHandler(req: Request, res: Response) {
+  await requireAuth(req, res, async () => {
+    const authReq = req as AuthenticatedRequest;
+    const observationId = req.params.id;
+
+    if (!observationId) {
+      res.status(400).json({
+        error: 'MISSING_ID',
+        message: 'Observation ID is required',
+      });
+      return;
+    }
+
+    const db = admin.firestore();
+
+    try {
+      const docRef = db.collection('observations').doc(observationId);
+      const doc = await docRef.get();
+
+      if (!doc.exists) {
+        res.status(404).json({
+          error: 'NOT_FOUND',
+          message: `Observation '${observationId}' not found`,
+        });
+        return;
+      }
+
+      const obsData = doc.data();
+      const isCreator = obsData?.createdBy?.uid === authReq.auth?.uid;
+      const isAdmin = authReq.auth?.role === 'admin';
+
+      if (!isCreator && !isAdmin) {
+        res.status(403).json({
+          error: 'FORBIDDEN',
+          message: 'Only the creator or an admin can delete this observation',
+        });
+        return;
+      }
+
+      await docRef.delete();
+
+      res.status(200).json({
+        success: true,
+        message: `Observation '${observationId}' deleted`,
+        deletedAt: new Date().toISOString(),
+        deletedBy: {
+          uid: authReq.auth?.uid || 'unknown',
+          name: authReq.auth?.name || authReq.auth?.email || 'Unknown User',
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting observation:', error);
+      res.status(500).json({
+        error: 'INTERNAL_ERROR',
+        message: 'Failed to delete observation',
+      });
+    }
+  });
+}
+
+/**
  * POST /api/observations/analyze-image
  * 
  * AI image analysis endpoint (dev stub) - standalone version.
