@@ -70,6 +70,7 @@ import {
   updateObservationHandler,
   analyzeImageHandler,
   analyzeImageStandaloneHandler,
+  removeObservationTagHandler,
 } from './endpoints/observations';
 
 // Import / batch / sync
@@ -195,6 +196,7 @@ api.post('/observations', createObservationHandler);
 api.post('/observations/analyze-image', analyzeImageStandaloneHandler);
 api.get('/observations/:id', getObservationHandler);
 api.patch('/observations/:id', updateObservationHandler);
+api.post('/observations/:id/tags/remove', removeObservationTagHandler);
 api.post('/observations/:id/analyze-image', analyzeImageHandler);
 
 /**

@@ -252,6 +252,8 @@ export async function syncIfOnline(apiBaseUrl: string = '/api'): Promise<void> {
 export function registerAutoSync(apiBaseUrl: string = '/api'): () => void {
   const handler = () => {
     syncIfOnline(apiBaseUrl);
+    // LP-obs-studio-cleanup-1.2.1: Also flush tag removals when coming online
+    flushTagRemovalQueue(apiBaseUrl);
   };
   
   window.addEventListener('online', handler);
@@ -262,6 +264,186 @@ export function registerAutoSync(apiBaseUrl: string = '/api'): () => void {
   };
 }
 
+// ============================================================================
+// LP-obs-studio-cleanup-1.2.1: Tag Removal Queue
+// Lightweight queue using localStorage for background tag removal with retry
+// ============================================================================
+
+interface PendingTagRemoval {
+  id: string;
+  observationId: string;
+  tag: string;
+  status: 'pending' | 'syncing' | 'failed';
+  retryCount: number;
+  createdAt: number;
+}
+
+const TAG_REMOVAL_QUEUE_KEY = 'ropi-tag-removal-queue';
+
+// Callbacks for UI notification
+let onTagRemovalFailed: ((removal: PendingTagRemoval) => void) | null = null;
+
+/**
+ * Set callback for tag removal failure (to show undo toast)
+ */
+export function setTagRemovalFailedCallback(
+  callback: ((removal: PendingTagRemoval) => void) | null
+): void {
+  onTagRemovalFailed = callback;
+}
+
+/**
+ * Get all pending tag removals from localStorage
+ */
+function getTagRemovalQueue(): PendingTagRemoval[] {
+  try {
+    const data = localStorage.getItem(TAG_REMOVAL_QUEUE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Save tag removal queue to localStorage
+ */
+function saveTagRemovalQueue(queue: PendingTagRemoval[]): void {
+  localStorage.setItem(TAG_REMOVAL_QUEUE_KEY, JSON.stringify(queue));
+}
+
+/**
+ * Enqueue a tag removal for background processing
+ */
+export function enqueueTagRemoval(observationId: string, tag: string): string {
+  const queue = getTagRemovalQueue();
+  const removal: PendingTagRemoval = {
+    id: `tagrem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    observationId,
+    tag,
+    status: 'pending',
+    retryCount: 0,
+    createdAt: Date.now(),
+  };
+  queue.push(removal);
+  saveTagRemovalQueue(queue);
+  
+  // Trigger immediate flush if online
+  if (navigator.onLine) {
+    flushTagRemovalQueue();
+  }
+  
+  return removal.id;
+}
+
+/**
+ * Cancel a pending tag removal (for undo)
+ */
+export function cancelTagRemoval(removalId: string): boolean {
+  const queue = getTagRemovalQueue();
+  const index = queue.findIndex(r => r.id === removalId);
+  if (index >= 0) {
+    queue.splice(index, 1);
+    saveTagRemovalQueue(queue);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Process a single tag removal
+ */
+async function processTagRemoval(
+  removal: PendingTagRemoval,
+  apiBaseUrl: string
+): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `${apiBaseUrl}/observations/${removal.observationId}/tags/remove`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ tag: removal.tag }),
+      }
+    );
+    
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || `Server error: ${response.status}`);
+    }
+    
+    return true;
+  } catch (err) {
+    console.error(`Failed to remove tag from observation ${removal.observationId}:`, err);
+    return false;
+  }
+}
+
+/**
+ * Flush pending tag removals with retry logic
+ */
+export async function flushTagRemovalQueue(
+  apiBaseUrl: string = '/api'
+): Promise<{ processed: number; failed: number }> {
+  const queue = getTagRemovalQueue();
+  const pending = queue.filter(r => r.status !== 'failed' || r.retryCount < 2);
+  
+  let processed = 0;
+  let failed = 0;
+  
+  for (const removal of pending) {
+    // Skip if max retries reached
+    if (removal.retryCount >= 2) {
+      removal.status = 'failed';
+      failed++;
+      // Notify UI about failure
+      if (onTagRemovalFailed) {
+        onTagRemovalFailed(removal);
+      }
+      continue;
+    }
+    
+    removal.status = 'syncing';
+    saveTagRemovalQueue(queue);
+    
+    const success = await processTagRemoval(removal, apiBaseUrl);
+    
+    if (success) {
+      // Remove from queue on success
+      const idx = queue.findIndex(r => r.id === removal.id);
+      if (idx >= 0) queue.splice(idx, 1);
+      saveTagRemovalQueue(queue);
+      processed++;
+    } else {
+      removal.status = 'pending';
+      removal.retryCount++;
+      saveTagRemovalQueue(queue);
+      
+      // If this was the last retry, notify UI
+      if (removal.retryCount >= 2) {
+        removal.status = 'failed';
+        saveTagRemovalQueue(queue);
+        failed++;
+        if (onTagRemovalFailed) {
+          onTagRemovalFailed(removal);
+        }
+      } else {
+        // Schedule retry with backoff (1s, 2s)
+        const delay = removal.retryCount * 1000;
+        setTimeout(() => {
+          if (navigator.onLine) {
+            flushTagRemovalQueue(apiBaseUrl);
+          }
+        }, delay);
+      }
+    }
+  }
+  
+  return { processed, failed };
+}
+
 /**
  * Export for testing
  */
@@ -270,4 +452,6 @@ export const __testing = {
   generateId,
   DB_NAME,
   DB_VERSION,
+  getTagRemovalQueue,
+  saveTagRemovalQueue,
 };
