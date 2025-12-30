@@ -383,6 +383,89 @@ export async function updateObservationHandler(req: Request, res: Response) {
 }
 
 /**
+ * POST /api/observations/:id/tags/remove
+ * 
+ * LP-obs-studio-cleanup-1.2.1: Remove a tag from an observation using arrayRemove.
+ * Used by optimistic UI delete with background sync.
+ * 
+ * Only the creator or an admin can remove tags from an observation.
+ */
+export async function removeObservationTagHandler(req: Request, res: Response) {
+  await requireAuth(req, res, async () => {
+    const authReq = req as AuthenticatedRequest;
+    const observationId = req.params.id;
+    const { tag } = req.body;
+
+    if (!observationId) {
+      res.status(400).json({
+        error: 'MISSING_OBSERVATION_ID',
+        message: 'Observation ID is required',
+      });
+      return;
+    }
+
+    if (!tag || typeof tag !== 'string') {
+      res.status(400).json({
+        error: 'INVALID_TAG',
+        message: 'tag must be a non-empty string',
+      });
+      return;
+    }
+
+    const db = admin.firestore();
+
+    try {
+      const docRef = db.collection('observations').doc(observationId);
+      const doc = await docRef.get();
+
+      if (!doc.exists) {
+        res.status(404).json({
+          error: 'NOT_FOUND',
+          message: `Observation '${observationId}' not found`,
+        });
+        return;
+      }
+
+      const data = doc.data();
+      const creatorUid = data?.createdBy?.uid;
+      const callerUid = authReq.auth?.uid;
+      const isAdmin = authReq.auth?.admin === true;
+
+      // Only creator or admin can remove tags
+      if (creatorUid !== callerUid && !isAdmin) {
+        res.status(403).json({
+          error: 'FORBIDDEN',
+          message: 'Only the observation creator or an admin can remove tags',
+        });
+        return;
+      }
+
+      // Use arrayRemove to atomically remove the tag
+      await docRef.update({
+        tags: admin.firestore.FieldValue.arrayRemove(tag),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedBy: {
+          uid: callerUid || 'unknown',
+          name: authReq.auth?.name || authReq.auth?.email || 'Unknown User',
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        observationId,
+        removedTag: tag,
+      });
+    } catch (error) {
+      console.error('Error removing tag from observation:', error);
+      res.status(500).json({
+        error: 'INTERNAL_ERROR',
+        message: 'Failed to remove tag from observation',
+      });
+    }
+  });
+}
+
+/**
  * POST /api/observations/analyze-image
  * 
  * AI image analysis endpoint (dev stub) - standalone version.
