@@ -39,6 +39,7 @@ interface CreateObservationInput {
   fieldLink?: FieldLink | null;
   source?: string;
   severity?: 'low' | 'medium' | 'high';
+  tags?: string[];
 }
 
 /**
@@ -134,6 +135,24 @@ export async function createObservationHandler(req: Request, res: Response) {
       return;
     }
 
+    // Validate tags if provided (must be array of strings)
+    if (body.tags !== undefined) {
+      if (!Array.isArray(body.tags)) {
+        res.status(400).json({
+          error: 'INVALID_TAGS',
+          message: 'tags must be an array of strings',
+        });
+        return;
+      }
+      if (!body.tags.every((tag: unknown) => typeof tag === 'string')) {
+        res.status(400).json({
+          error: 'INVALID_TAGS',
+          message: 'all tags must be strings',
+        });
+        return;
+      }
+    }
+
     const db = admin.firestore();
     const now = admin.firestore.FieldValue.serverTimestamp();
 
@@ -161,6 +180,7 @@ export async function createObservationHandler(req: Request, res: Response) {
         status: 'open',
         fieldLink: body.fieldLink || null,
         images: body.images || [],
+        tags: body.tags || [],
         source: body.source || 'mobile',
         createdBy: {
           uid: authReq.auth?.uid || 'unknown',

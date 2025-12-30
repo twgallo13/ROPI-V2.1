@@ -27,6 +27,7 @@ export interface PendingObservation {
   description?: string;
   severity: 'low' | 'medium' | 'high';
   images: string[]; // URLs
+  tags?: string[]; // LP-obs-studio-cleanup-1.0.0: user-entered tags
   fieldLink?: {
     type: string;
     fieldPath: string;
@@ -181,6 +182,7 @@ async function syncObservation(
         description: obs.description,
         severity: obs.severity,
         images: obs.images,
+        tags: obs.tags || [],
         fieldLink: obs.fieldLink,
         source: obs.source,
       }),
