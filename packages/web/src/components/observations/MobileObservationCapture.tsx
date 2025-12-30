@@ -15,6 +15,7 @@ import ObservationImageUploader, { ImageFile } from './ObservationImageUploader'
 import AIAnalyzeChips from './AIAnalyzeChips';
 import FieldPicker from '../product/FieldPicker';
 import { useObservationsSync } from '../../hooks/useObservationsSync';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import type { FieldLink } from '../../types/fieldLink';
 import './MobileObservationCapture.css';
 
@@ -28,6 +29,9 @@ type Severity = 'low' | 'medium' | 'high';
 function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCaptureProps) {
   // Offline sync hook
   const { pendingCount, isOnline, isSyncing, addObservation, syncNow } = useObservationsSync({ apiBaseUrl });
+  
+  // LP-obs-studio-cleanup-1.3.0: Mobile detection for raw-first experience
+  const isMobile = useIsMobile();
   
   // Product selection state
   const [selectedProduct, setSelectedProduct] = useState<ScannedProduct | null>(null);
@@ -188,19 +192,19 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
 
   return (
     <div className="mobile-observation-capture">
-      {/* Offline/Sync Status Banner */}
+      {/* LP-obs-studio-cleanup-1.3.0: Sync Status Banner - only show when offline or pending > 0 */}
       {(!isOnline || pendingCount > 0) && (
         <div className={`sync-banner ${isOnline ? 'pending' : 'offline'}`}>
           {!isOnline ? (
             <span>📴 Offline - observations will sync when online</span>
           ) : isSyncing ? (
             <span>🔄 Syncing {pendingCount} observation(s)...</span>
-          ) : (
+          ) : pendingCount > 0 ? (
             <span>
               📤 {pendingCount} pending observation(s)
               <button className="sync-now-btn" onClick={syncNow}>Sync Now</button>
             </span>
-          )}
+          ) : null}
         </div>
       )}
 
@@ -338,58 +342,62 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
             />
           </section>
 
-          {/* Severity */}
-          <section className="capture-section">
-            <span className="section-title">Severity</span>
-            <div className="severity-options" role="radiogroup" aria-label="Severity level">
-              {(['low', 'medium', 'high'] as Severity[]).map((level) => (
-                <button
-                  key={level}
-                  className={`severity-btn ${severity === level ? 'active' : ''} ${level}`}
-                  onClick={() => setSeverity(level)}
-                  role="radio"
-                  aria-checked={severity === level}
-                >
-                  {level.charAt(0).toUpperCase() + level.slice(1)}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* Field Link (collapsed by default) */}
-          <section className="capture-section">
-            <button 
-              className="collapsible-header"
-              onClick={() => setShowFieldPicker(!showFieldPicker)}
-              aria-expanded={showFieldPicker}
-            >
-              <span className="section-title">
-                Link to Field <span className="optional">(optional)</span>
-              </span>
-              <span className={`chevron ${showFieldPicker ? 'open' : ''}`}>▼</span>
-            </button>
-            
-            {showFieldPicker && (
-              <div className="field-picker-container">
-                <FieldPicker
-                  value={fieldLink}
-                  onChange={setFieldLink}
-                />
-                {fieldLink && (
-                  <div className="selected-field">
-                    Selected: <code>{fieldLink.key}</code>
-                    <button 
-                      className="clear-field-btn"
-                      onClick={() => setFieldLink(null)}
-                      aria-label="Clear field link"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                )}
+          {/* LP-obs-studio-cleanup-1.3.0: Severity - hidden on mobile for raw-first experience */}
+          {!isMobile && (
+            <section className="capture-section">
+              <span className="section-title">Severity</span>
+              <div className="severity-options" role="radiogroup" aria-label="Severity level">
+                {(['low', 'medium', 'high'] as Severity[]).map((level) => (
+                  <button
+                    key={level}
+                    className={`severity-btn ${severity === level ? 'active' : ''} ${level}`}
+                    onClick={() => setSeverity(level)}
+                    role="radio"
+                    aria-checked={severity === level}
+                  >
+                    {level.charAt(0).toUpperCase() + level.slice(1)}
+                  </button>
+                ))}
               </div>
-            )}
-          </section>
+            </section>
+          )}
+
+          {/* LP-obs-studio-cleanup-1.3.0: Field Link - hidden on mobile for raw-first experience */}
+          {!isMobile && (
+            <section className="capture-section">
+              <button 
+                className="collapsible-header"
+                onClick={() => setShowFieldPicker(!showFieldPicker)}
+                aria-expanded={showFieldPicker}
+              >
+                <span className="section-title">
+                  Link to Field <span className="optional">(optional)</span>
+                </span>
+                <span className={`chevron ${showFieldPicker ? 'open' : ''}`}>▼</span>
+              </button>
+              
+              {showFieldPicker && (
+                <div className="field-picker-container">
+                  <FieldPicker
+                    value={fieldLink}
+                    onChange={setFieldLink}
+                  />
+                  {fieldLink && (
+                    <div className="selected-field">
+                      Selected: <code>{fieldLink.key}</code>
+                      <button 
+                        className="clear-field-btn"
+                        onClick={() => setFieldLink(null)}
+                        aria-label="Clear field link"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+          )}
 
           {/* Images */}
           <section className="capture-section">

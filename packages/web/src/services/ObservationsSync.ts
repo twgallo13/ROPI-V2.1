@@ -238,6 +238,28 @@ export async function flushQueue(
 }
 
 /**
+ * LP-obs-studio-cleanup-1.3.0: Flush on demand for a specific observation
+ * Attempts immediate persistence when online. Used for background persist after tag add/remove.
+ */
+export async function flushOnDemandForObservation(
+  observationId: string,
+  apiBaseUrl: string = '/api'
+): Promise<boolean> {
+  if (!navigator.onLine) {
+    return false;
+  }
+  
+  const database = await initDB();
+  const obs = await database.get('pendingObservations', observationId);
+  
+  if (!obs || obs.status === 'synced') {
+    return true; // Nothing to sync or already synced
+  }
+  
+  return syncObservation(obs, apiBaseUrl);
+}
+
+/**
  * Check online status and sync if online
  */
 export async function syncIfOnline(apiBaseUrl: string = '/api'): Promise<void> {
