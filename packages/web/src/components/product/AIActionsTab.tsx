@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { Product, AIHistoryEntry } from '../../types/product';
+import { useSuggestions } from '../../hooks/useSuggestions';
 import './AIActionsTab.css';
 
 /**
@@ -60,12 +61,63 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     message: '',
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [autoResolve, setAutoResolve] = useState(false);
+
+  // LP-obs-studio-cleanup-1.4.0: Suggestions from observations
+  const {
+    suggestions,
+    meta: suggestionsMeta,
+    loading: suggestionsLoading,
+    error: suggestionsError,
+    generateSuggestions,
+    applySuggestion,
+    clearSuggestions,
+  } = useSuggestions();
 
   // Get selected template details
   const templateDetails = useMemo(() => 
     AUDIENCE_TEMPLATES.find(t => t.id === selectedTemplate),
     [selectedTemplate]
   );
+
+  // LP-obs-studio-cleanup-1.4.0: Request suggestions from observations
+  const handleRequestSuggestions = async () => {
+    if (!product?.id) return;
+    const result = await generateSuggestions(product.id, autoResolve);
+    if (result && result.meta.autoAppliedCount > 0) {
+      // Notify user of auto-applied suggestions
+      const newEntry: AIHistoryEntry = {
+        id: `ai-${Date.now()}`,
+        action: 'auto_apply_suggestions',
+        timestamp: new Date().toISOString(),
+        result: `Auto-applied ${result.meta.autoAppliedCount} high-confidence suggestions from ${result.meta.observationsCount} observations`,
+        confidence: 95,
+      };
+      const newHistory = [...(product.aiHistory ?? []), newEntry];
+      onUpdate('aiHistory', newHistory);
+    }
+  };
+
+  // LP-obs-studio-cleanup-1.4.0: Apply a single suggestion
+  const handleApplySuggestion = async (suggestion: typeof suggestions[0]) => {
+    if (!product?.id) return;
+    const success = await applySuggestion(product.id, suggestion);
+    if (success) {
+      // Update local state via onUpdate
+      onUpdate(`attributes.${suggestion.attributeId}`, suggestion.suggestedValue);
+      
+      // Add to AI history
+      const newEntry: AIHistoryEntry = {
+        id: `ai-${Date.now()}`,
+        action: 'apply_suggestion',
+        timestamp: new Date().toISOString(),
+        result: `Applied suggestion for "${suggestion.attributeId}": ${suggestion.rationale}`,
+        confidence: suggestion.confidence,
+      };
+      const newHistory = [...(product.aiHistory ?? []), newEntry];
+      onUpdate('aiHistory', newHistory);
+    }
+  };
 
   // Simulate async describe job - LP-0.4.2.2: Wire to Tab 6 fields
   const handleGenerateDescriptions = async () => {
@@ -259,6 +311,107 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
             </div>
           )}
         </div>
+
+        {/* LP-obs-studio-cleanup-1.4.0: Observation Context Footnote */}
+        {suggestionsMeta && (
+          <div className="observation-context-footnote">
+            <span className="footnote-icon">💡</span>
+            <span className="footnote-text">
+              Generated using <strong>{suggestionsMeta.observationsCount}</strong> observations 
+              and <strong>{suggestionsMeta.tagsCount}</strong> tags
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* LP-obs-studio-cleanup-1.4.0: Observation-Based Suggestions */}
+      <div className="form-section observation-suggestions-section">
+        <div className="section-header-with-actions">
+          <h3 className="form-section-title">Observation Suggestions</h3>
+          <div className="section-actions">
+            <label className="auto-resolve-toggle" title="Automatically apply suggestions with 85%+ confidence">
+              <input 
+                type="checkbox" 
+                checked={autoResolve}
+                onChange={(e) => setAutoResolve(e.target.checked)}
+              />
+              <span>Auto-resolve</span>
+            </label>
+            <button 
+              className="request-suggestions-button"
+              onClick={handleRequestSuggestions}
+              disabled={suggestionsLoading || !product?.id}
+            >
+              {suggestionsLoading ? '⏳' : '🔍'} Request Suggestions
+            </button>
+          </div>
+        </div>
+        <p className="form-section-description">
+          Analyze recent observations and tags to suggest attribute values.
+        </p>
+
+        {suggestionsError && (
+          <div className="suggestions-error">
+            <span className="error-icon">⚠️</span>
+            <span>{suggestionsError}</span>
+          </div>
+        )}
+
+        {suggestions.length > 0 ? (
+          <div className="suggestions-list">
+            {suggestions.map((suggestion) => (
+              <div 
+                key={suggestion.id} 
+                className={`suggestion-card ${suggestion.applied ? 'suggestion-applied' : ''}`}
+              >
+                <div className="suggestion-header">
+                  <span className="suggestion-field">{formatFieldName(suggestion.attributeId)}</span>
+                  <span className={`suggestion-confidence ${getConfidenceClass(suggestion.confidence)}`}>
+                    {suggestion.confidence}%
+                  </span>
+                </div>
+                <div className="suggestion-values">
+                  {suggestion.currentValue !== null && (
+                    <div className="suggestion-current">
+                      <span className="value-label">Current:</span>
+                      <span className="value-text">{String(suggestion.currentValue)}</span>
+                    </div>
+                  )}
+                  <div className="suggestion-proposed">
+                    <span className="value-label">Suggested:</span>
+                    <span className="value-text">{String(suggestion.suggestedValue)}</span>
+                  </div>
+                </div>
+                <p className="suggestion-rationale">{suggestion.rationale}</p>
+                <div className="suggestion-actions">
+                  {suggestion.applied ? (
+                    <span className="suggestion-applied-badge">✓ Applied</span>
+                  ) : (
+                    <button 
+                      className="apply-suggestion-button"
+                      onClick={() => handleApplySuggestion(suggestion)}
+                      disabled={suggestionsLoading}
+                    >
+                      Apply
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+            {suggestions.length > 0 && (
+              <button 
+                className="clear-suggestions-button"
+                onClick={clearSuggestions}
+              >
+                Clear Suggestions
+              </button>
+            )}
+          </div>
+        ) : (
+          <p className="suggestions-empty">
+            No suggestions available. Click "Request Suggestions" to analyze observations.
+          </p>
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -447,6 +600,19 @@ function generateMetaDescription(product: Product, tone: string): string {
   }
   
   return description;
+}
+
+// LP-obs-studio-cleanup-1.4.0: Helper functions for suggestions display
+function formatFieldName(field: string): string {
+  return field
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, l => l.toUpperCase());
+}
+
+function getConfidenceClass(confidence: number): string {
+  if (confidence >= 85) return 'confidence-high';
+  if (confidence >= 65) return 'confidence-medium';
+  return 'confidence-low';
 }
 
 export default AIActionsTab;

@@ -60,6 +60,8 @@ import {
   listProductsHandler,
   getProductByMpnHandler,
   searchProductsByMpnHandler,
+  generateSuggestionsHandler,
+  applySuggestionHandler,
 } from './endpoints/products';
 
 // Observations handlers (LP-1.1.1)
@@ -187,6 +189,9 @@ api.get('/products/search-mpn', searchProductsByMpnHandler);
 api.get('/products/by-mpn/:mpn', getProductByMpnHandler);
 api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);
+// LP-obs-studio-cleanup-1.4.0: Observation-based suggestions endpoints
+api.post('/products/:productId/suggestions', generateSuggestionsHandler);
+api.post('/products/:productId/apply-suggestion', applySuggestionHandler);
 
 /**
  * Observations endpoints (LP-1.1.1)
