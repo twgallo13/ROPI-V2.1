@@ -1,0 +1,201 @@
+# Code Citations
+
+## License: MIT
+https://github.com/Wandalen/wTools/blob/582d617cc1163b52f8ba778845b345c877c32f72/module/move/willbe/template/deploy/Makefile.hbs
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: unknown
+https://github.com/bergquist/dotfiles/blob/529939198020d1024c747d94abf152bb413f081d/bin/install.sh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: MIT
+https://github.com/bricker/dotfiles/blob/32b67c9bdfe71026eb1659cdc73b61caa7feaf6e/installers/clis
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: unknown
+https://github.com/rochaporto/dotfiles/blob/d860a5ac2e7d2b9714a93050e1fbb748b37fe5ac/INSTALL.md
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: unknown
+https://github.com/benhinchley/dotfiles/blob/24fa4494e25926999444c01a881f8d8718f3cb4e/install-linux.zsh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: MIT
+https://github.com/Wandalen/wTools/blob/582d617cc1163b52f8ba778845b345c877c32f72/module/move/willbe/template/deploy/Makefile.hbs
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update &&
+```
+
+
+## License: unknown
+https://github.com/bergquist/dotfiles/blob/529939198020d1024c747d94abf152bb413f081d/bin/install.sh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update &&
+```
+
+
+## License: MIT
+https://github.com/bricker/dotfiles/blob/32b67c9bdfe71026eb1659cdc73b61caa7feaf6e/installers/clis
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update &&
+```
+
+
+## License: unknown
+https://github.com/rochaporto/dotfiles/blob/d860a5ac2e7d2b9714a93050e1fbb748b37fe5ac/INSTALL.md
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update &&
+```
+
+
+## License: unknown
+https://github.com/benhinchley/dotfiles/blob/24fa4494e25926999444c01a881f8d8718f3cb4e/install-linux.zsh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update &&
+```
+
+
+## License: unknown
+https://github.com/rochaporto/dotfiles/blob/d860a5ac2e7d2b9714a93050e1fbb748b37fe5ac/INSTALL.md
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -
+```
+
+
+## License: unknown
+https://github.com/benhinchley/dotfiles/blob/24fa4494e25926999444c01a881f8d8718f3cb4e/install-linux.zsh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -
+```
+
+
+## License: MIT
+https://github.com/Wandalen/wTools/blob/582d617cc1163b52f8ba778845b345c877c32f72/module/move/willbe/template/deploy/Makefile.hbs
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -
+```
+
+
+## License: unknown
+https://github.com/bergquist/dotfiles/blob/529939198020d1024c747d94abf152bb413f081d/bin/install.sh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -
+```
+
+
+## License: MIT
+https://github.com/bricker/dotfiles/blob/32b67c9bdfe71026eb1659cdc73b61caa7feaf6e/installers/clis
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -
+```
+
+
+## License: unknown
+https://github.com/bergquist/dotfiles/blob/529939198020d1024c747d94abf152bb413f081d/bin/install.sh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: MIT
+https://github.com/bricker/dotfiles/blob/32b67c9bdfe71026eb1659cdc73b61caa7feaf6e/installers/clis
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: unknown
+https://github.com/rochaporto/dotfiles/blob/d860a5ac2e7d2b9714a93050e1fbb748b37fe5ac/INSTALL.md
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: unknown
+https://github.com/benhinchley/dotfiles/blob/24fa4494e25926999444c01a881f8d8718f3cb4e/install-linux.zsh
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+
+
+## License: MIT
+https://github.com/Wandalen/wTools/blob/582d617cc1163b52f8ba778845b345c877c32f72/module/move/willbe/template/deploy/Makefile.hbs
+
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update && sudo apt-get install -y google-cloud-
+```
+

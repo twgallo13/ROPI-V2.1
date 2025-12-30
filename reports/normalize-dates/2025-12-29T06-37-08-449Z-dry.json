@@ -1,0 +1,65 @@
+{
+  "lp": "LP-1.4.6-normalize-dates",
+  "mode": "dry-run",
+  "timestamp": "2025-12-29T06:37:08.449Z",
+  "limitApplied": 100,
+  "forceAdmin": false,
+  "dateKeysChecked": [
+    "hide_image_date",
+    "launch_date",
+    "first_received",
+    "last_received",
+    "kl_post_date"
+  ],
+  "stats": {
+    "processed": 5,
+    "productsNormalized": 4,
+    "attributesNormalized": 5,
+    "skippedAlreadyIso": 4,
+    "skippedAdminProtected": 0,
+    "skippedUnparseable": 0,
+    "errors": 0
+  },
+  "samples": [
+    {
+      "productId": "123",
+      "changes": {
+        "kl_post_date": {
+          "from": "2025-12-27",
+          "to": "2025-12-27T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "productId": "211737-90h1-8",
+      "changes": {
+        "kl_post_date": {
+          "from": "12/30/2025",
+          "to": "2025-12-30T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "productId": "451-9201-blk18",
+      "changes": {
+        "launch_date": {
+          "from": "2025-12-29",
+          "to": "2025-12-29T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "productId": "451-9204-blk18",
+      "changes": {
+        "hide_image_date": {
+          "from": "1/15/2026",
+          "to": "2026-01-15T00:00:00.000Z"
+        },
+        "kl_post_date": {
+          "from": "12/30/2025",
+          "to": "2025-12-30T00:00:00.000Z"
+        }
+      }
+    }
+  ]
+}
