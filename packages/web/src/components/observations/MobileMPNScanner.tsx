@@ -112,14 +112,17 @@ export default function MobileMPNScanner({
   }, [apiBaseUrl]);
 
   // LP-1.1.10: Search products by partial MPN
+  // LP-obs-studio-cleanup-1.1.0: Add auth headers for search endpoint
   const searchProducts = useCallback(async (query: string): Promise<ScannedProduct[]> => {
     const cleanQuery = query.trim();
     if (cleanQuery.length < 2) return [];
     
     try {
+      // LP-obs-studio-cleanup-1.1.0: Get auth headers with Bearer token
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${apiBaseUrl}/products/search-mpn?q=${encodeURIComponent(cleanQuery)}&limit=10`,
-        { credentials: 'include' }
+        { headers }
       );
       
       if (!response.ok) {

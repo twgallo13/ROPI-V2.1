@@ -443,12 +443,35 @@ export async function getProductByMpnHandler(req: Request, res: Response) {
     const db = admin.firestore();
 
     try {
-      // Query products by MPN
-      const snapshot = await db
+      // LP-obs-studio-cleanup-1.1.0: Case-insensitive MPN lookup
+      // Try uppercase-normalized MPN first (most common storage format)
+      const normalizedMpn = mpn.toUpperCase();
+      let snapshot = await db
         .collection('products')
-        .where('mpn', '==', mpn)
+        .where('mpn', '==', normalizedMpn)
         .limit(1)
         .get();
+
+      // Fallback: try original case if normalized fails (for legacy data)
+      if (snapshot.empty && mpn !== normalizedMpn) {
+        snapshot = await db
+          .collection('products')
+          .where('mpn', '==', mpn)
+          .limit(1)
+          .get();
+      }
+
+      // Fallback: try lowercase (edge case for mixed-case data)
+      if (snapshot.empty) {
+        const lowercaseMpn = mpn.toLowerCase();
+        if (lowercaseMpn !== mpn && lowercaseMpn !== normalizedMpn) {
+          snapshot = await db
+            .collection('products')
+            .where('mpn', '==', lowercaseMpn)
+            .limit(1)
+            .get();
+        }
+      }
 
       if (snapshot.empty) {
         res.status(404).json({ 
