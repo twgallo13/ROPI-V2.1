@@ -690,3 +690,62 @@
   margin: 1rem 0 0 0;
   font-style: italic;
 }
+
+/* ============================================
+   LP-obs-studio-cleanup-1.6.6: PRODUCT OBSERVATION SECTION
+   ============================================ */
+.product-observation-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #e0e4ff;
+}
+
+.product-observation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.product-observation-title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.add-observation-link {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-primary, #667eea);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.add-observation-link:hover {
+  color: var(--color-primary-dark, #5a67d8);
+  text-decoration: underline;
+}
+
+.product-observation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.product-obs-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #e0e7ff;
+  color: #3730a3;
+  border-radius: 16px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+}
+
+.no-observation-hint {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin: 0;
+}

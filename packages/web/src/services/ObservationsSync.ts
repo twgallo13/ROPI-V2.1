@@ -20,12 +20,14 @@ interface ObservationsDB extends DBSchema {
 }
 
 // Pending observation structure
+// LP-obs-studio-cleanup-1.6.6: Support both legacy and simplified tags-only observations
 export interface PendingObservation {
   id: string;
   product_mpn: string;
-  text: string;
+  productId?: string; // LP-1.6.6: Product document ID for direct product.observation update
+  text?: string; // LP-1.6.6: Made optional for tags-only mode
   description?: string;
-  severity: 'low' | 'medium' | 'high';
+  severity?: 'low' | 'medium' | 'high'; // LP-1.6.6: Made optional for tags-only mode
   images: string[]; // URLs
   tags?: string[]; // LP-obs-studio-cleanup-1.0.0: user-entered tags
   fieldLink?: {
@@ -162,6 +164,7 @@ export async function clearSynced(): Promise<number> {
 
 /**
  * Sync a single observation to the server
+ * LP-obs-studio-cleanup-1.6.6: Support both legacy and product-level observation endpoints
  */
 async function syncObservation(
   obs: PendingObservation,
@@ -170,6 +173,34 @@ async function syncObservation(
   try {
     await updateStatus(obs.id, 'syncing');
     
+    // LP-obs-studio-cleanup-1.6.6: Use product-level endpoint when productId is present
+    if (obs.productId && obs.tags && obs.tags.length > 0) {
+      const response = await fetch(`${apiBaseUrl}/products/${obs.productId}/observation`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          tags: obs.tags,
+          images: obs.images || [],
+          source: obs.source === 'mobile_capture' ? 'mobile' : 'desktop',
+          action: 'add', // Merge tags rather than replace
+        }),
+      });
+      
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || `Server error: ${response.status}`);
+      }
+      
+      // Mark as synced and remove from queue
+      await updateStatus(obs.id, 'synced');
+      await removeFromQueue(obs.id);
+      return true;
+    }
+    
+    // Legacy: Use standalone observations collection endpoint
     const response = await fetch(`${apiBaseUrl}/observations`, {
       method: 'POST',
       headers: {
@@ -178,9 +209,9 @@ async function syncObservation(
       credentials: 'include',
       body: JSON.stringify({
         product_mpn: obs.product_mpn,
-        text: obs.text,
+        text: obs.text || (obs.tags?.join(', ') || ''), // Fallback to tags as text
         description: obs.description,
-        severity: obs.severity,
+        severity: obs.severity || 'medium', // Default severity for legacy
         images: obs.images,
         tags: obs.tags || [],
         fieldLink: obs.fieldLink,

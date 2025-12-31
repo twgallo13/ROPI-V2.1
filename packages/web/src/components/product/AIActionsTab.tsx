@@ -600,6 +600,32 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
             </span>
           </div>
         )}
+
+        {/* LP-obs-studio-cleanup-1.6.6: Product Observation Tags */}
+        <div className="product-observation-section">
+          <div className="product-observation-header">
+            <h4 className="product-observation-title">📋 Product Observation Tags</h4>
+            <a 
+              href={`/observations?mpn=${product.mpn || product.sku}`}
+              className="add-observation-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              + Add Observation
+            </a>
+          </div>
+          {(product as unknown as { observation?: { tags?: string[] } }).observation?.tags?.length ? (
+            <div className="product-observation-tags">
+              {((product as unknown as { observation?: { tags?: string[] } }).observation?.tags || []).map((tag: string) => (
+                <span key={tag} className="product-obs-tag">{tag}</span>
+              ))}
+            </div>
+          ) : (
+            <p className="no-observation-hint">
+              No observation tags yet. Add tags to improve AI-generated descriptions.
+            </p>
+          )}
+        </div>
       </div>
 
       {/* LP-obs-studio-cleanup-1.6.5: Target Panels */}
