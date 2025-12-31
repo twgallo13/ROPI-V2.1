@@ -70,6 +70,14 @@
   }
 }
 
+/* LP-obs-studio-cleanup-1.7.0: Upload progress text */
+.upload-progress-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  margin-top: 0.25rem;
+}
+
 /* Error state */
 .error-icon {
   font-size: 1.25rem;

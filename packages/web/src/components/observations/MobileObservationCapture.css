@@ -34,6 +34,23 @@
   border: 1px solid #b8daff;
 }
 
+/* LP-obs-studio-cleanup-1.7.0: Sync error state */
+.sync-banner.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.sync-banner.error .sync-now-btn {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.sync-banner.error .sync-now-btn:hover {
+  background: #dc3545;
+  color: white;
+}
+
 .sync-now-btn {
   margin-left: 0.5rem;
   padding: 0.25rem 0.75rem;

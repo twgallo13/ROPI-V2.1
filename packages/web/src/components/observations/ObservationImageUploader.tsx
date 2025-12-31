@@ -2,13 +2,34 @@
  * ObservationImageUploader Component
  * 
  * LP-1.1.1: Image capture and upload for observations.
+ * LP-obs-studio-cleanup-1.7.0: Resumable uploads with progress, telemetry, and robust error handling.
  * Supports camera capture and file selection with preview.
  */
 
 import { useState, useRef, useCallback } from 'react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { storage, isStorageAvailable } from '../../firebaseConfig';
 import './ObservationImageUploader.css';
+
+// LP-obs-studio-cleanup-1.7.0: Telemetry
+type TelemetryEvent = {
+  name: string;
+  data?: Record<string, unknown>;
+};
+
+let telemetryCallback: ((event: TelemetryEvent) => void) | null = null;
+
+export function setUploadTelemetryCallback(
+  callback: ((event: TelemetryEvent) => void) | null
+): void {
+  telemetryCallback = callback;
+}
+
+function emitTelemetry(name: string, data?: Record<string, unknown>): void {
+  if (telemetryCallback) {
+    telemetryCallback({ name, data });
+  }
+}
 
 export interface ImageFile {
   id: string;
@@ -79,48 +100,138 @@ export default function ObservationImageUploader({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  // LP-obs-studio-cleanup-1.7.0: Track active uploads for cancellation
+  const activeUploadsRef = useRef<Map<string, UploadTask>>(new Map());
 
-  // Upload single image to Firebase Storage
-  const uploadImage = useCallback(async (imageFile: ImageFile): Promise<ImageFile> => {
+  // LP-obs-studio-cleanup-1.7.0: Upload single image with resumable upload and progress
+  const uploadImage = useCallback(async (
+    imageFile: ImageFile,
+    onProgress?: (progress: number) => void
+  ): Promise<ImageFile> => {
     if (!imageFile.file) {
       return { ...imageFile, status: 'error', error: 'No file to upload' };
     }
 
     // Check if storage is available
     if (!isStorageAvailable() || !storage) {
+      emitTelemetry('upload.error', { 
+        imageId: imageFile.id, 
+        error: 'storage_unavailable',
+        productMpn 
+      });
       return { ...imageFile, status: 'error', error: 'Firebase Storage not available' };
     }
 
-    try {
-      // Create storage path
-      const timestamp = Date.now();
-      const sanitizedMpn = productMpn.replace(/[^a-zA-Z0-9-_]/g, '_');
-      const storagePath = `observations/${sanitizedMpn}/${timestamp}_${imageFile.file.name}`;
-      const storageRef = ref(storage, storagePath);
-      
-      // Upload file
-      const snapshot = await uploadBytes(storageRef, imageFile.file);
-      
-      // Get download URL
-      const downloadUrl = await getDownloadURL(snapshot.ref);
-      
-      return {
-        ...imageFile,
-        url: downloadUrl,
-        status: 'uploaded',
-        progress: 100,
-      };
-    } catch (err) {
-      console.error('Upload error:', err);
-      return {
-        ...imageFile,
-        status: 'error',
-        error: err instanceof Error ? err.message : 'Upload failed',
-      };
-    }
+    const fileSize = imageFile.file.size;
+    emitTelemetry('upload.start', { 
+      imageId: imageFile.id, 
+      productMpn, 
+      fileSize,
+      fileName: imageFile.file.name,
+    });
+
+    return new Promise((resolve) => {
+      try {
+        // Create storage path
+        const timestamp = Date.now();
+        const sanitizedMpn = productMpn.replace(/[^a-zA-Z0-9-_]/g, '_');
+        const storagePath = `observations/${sanitizedMpn}/${timestamp}_${imageFile.file!.name}`;
+        const storageRef = ref(storage!, storagePath);
+        
+        // LP-obs-studio-cleanup-1.7.0: Use resumable upload with progress tracking
+        const uploadTask = uploadBytesResumable(storageRef, imageFile.file!);
+        
+        // Store reference for potential cancellation
+        activeUploadsRef.current.set(imageFile.id, uploadTask);
+        
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // Progress callback
+            const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            emitTelemetry('upload.progress', { 
+              imageId: imageFile.id, 
+              productMpn, 
+              percent,
+              bytesTransferred: snapshot.bytesTransferred,
+              totalBytes: snapshot.totalBytes,
+            });
+            if (onProgress) {
+              onProgress(percent);
+            }
+          },
+          (error) => {
+            // Error callback
+            console.error('Upload error:', error);
+            activeUploadsRef.current.delete(imageFile.id);
+            
+            emitTelemetry('upload.error', { 
+              imageId: imageFile.id, 
+              productMpn,
+              error: error.code || error.message,
+            });
+            
+            resolve({
+              ...imageFile,
+              status: 'error',
+              error: error.message || 'Upload failed',
+            });
+          },
+          async () => {
+            // Success callback
+            try {
+              const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              activeUploadsRef.current.delete(imageFile.id);
+              
+              emitTelemetry('upload.complete', { 
+                imageId: imageFile.id, 
+                productMpn,
+                url: downloadUrl,
+                fileSize,
+              });
+              
+              resolve({
+                ...imageFile,
+                url: downloadUrl,
+                status: 'uploaded',
+                progress: 100,
+              });
+            } catch (urlError) {
+              console.error('Get download URL error:', urlError);
+              activeUploadsRef.current.delete(imageFile.id);
+              
+              emitTelemetry('upload.error', { 
+                imageId: imageFile.id, 
+                productMpn,
+                error: 'get_url_failed',
+              });
+              
+              resolve({
+                ...imageFile,
+                status: 'error',
+                error: 'Failed to get download URL',
+              });
+            }
+          }
+        );
+      } catch (err) {
+        console.error('Upload setup error:', err);
+        emitTelemetry('upload.error', { 
+          imageId: imageFile.id, 
+          productMpn,
+          error: err instanceof Error ? err.message : 'setup_failed',
+        });
+        resolve({
+          ...imageFile,
+          status: 'error',
+          error: err instanceof Error ? err.message : 'Upload failed',
+        });
+      }
+    });
   }, [productMpn]);
 
   // Handle file selection
+  // LP-obs-studio-cleanup-1.7.0: Enhanced with progress tracking per image
   const handleFileSelect = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     
@@ -143,22 +254,33 @@ export default function ObservationImageUploader({
             file,
             url: '',
             thumbnail,
-            status: 'pending' as const,
+            status: 'uploading' as const, // LP-1.7.0: Start as uploading for progress display
+            progress: 0,
           };
         })
       );
       
-      // Add pending images to state
-      const updatedImages = [...images, ...newImages];
-      onImagesChange(updatedImages);
+      // Add uploading images to state
+      let currentImages = [...images, ...newImages];
+      onImagesChange(currentImages);
       
-      // Upload images
-      const uploadedImages = await Promise.all(
-        newImages.map(img => uploadImage(img))
+      // LP-obs-studio-cleanup-1.7.0: Upload images with progress callbacks
+      const uploadPromises = newImages.map(img => 
+        uploadImage(img, (progress) => {
+          // Update progress in state
+          currentImages = currentImages.map(existingImg => 
+            existingImg.id === img.id 
+              ? { ...existingImg, progress } 
+              : existingImg
+          );
+          onImagesChange([...currentImages]);
+        })
       );
       
-      // Update with uploaded URLs
-      const finalImages = updatedImages.map(img => {
+      const uploadedImages = await Promise.all(uploadPromises);
+      
+      // Update with final upload results
+      const finalImages = currentImages.map(img => {
         const uploaded = uploadedImages.find(u => u.id === img.id);
         return uploaded || img;
       });
@@ -166,13 +288,26 @@ export default function ObservationImageUploader({
       onImagesChange(finalImages);
     } catch (err) {
       console.error('File processing error:', err);
+      emitTelemetry('upload.batch_error', { 
+        productMpn, 
+        error: err instanceof Error ? err.message : 'unknown',
+        fileCount: filesToProcess.length,
+      });
     } finally {
       setIsUploading(false);
     }
   }, [images, maxImages, onImagesChange, uploadImage]);
 
   // Remove image
+  // LP-obs-studio-cleanup-1.7.0: Also cancel active uploads when removing
   const handleRemoveImage = useCallback((imageId: string) => {
+    // Cancel any active upload
+    const activeUpload = activeUploadsRef.current.get(imageId);
+    if (activeUpload) {
+      activeUpload.cancel();
+      activeUploadsRef.current.delete(imageId);
+    }
+    
     const updatedImages = images.filter(img => img.id !== imageId);
     onImagesChange(updatedImages);
   }, [images, onImagesChange]);
@@ -182,13 +317,25 @@ export default function ObservationImageUploader({
     const imageToRetry = images.find(img => img.id === imageId);
     if (!imageToRetry || !imageToRetry.file) return;
     
+    // Mark as uploading with 0 progress
+    const updatedImages = images.map(img =>
+      img.id === imageId ? { ...img, status: 'uploading' as const, progress: 0, error: undefined } : img
+    );
+    onImagesChange(updatedImages);
+    
     setIsUploading(true);
     try {
-      const uploaded = await uploadImage(imageToRetry);
-      const updatedImages = images.map(img =>
+      const uploaded = await uploadImage(imageToRetry, (progress) => {
+        // Update progress during retry
+        const progressImages = images.map(img =>
+          img.id === imageId ? { ...img, progress } : img
+        );
+        onImagesChange(progressImages);
+      });
+      const finalImages = images.map(img =>
         img.id === imageId ? uploaded : img
       );
-      onImagesChange(updatedImages);
+      onImagesChange(finalImages);
     } finally {
       setIsUploading(false);
     }
@@ -205,10 +352,13 @@ export default function ObservationImageUploader({
           <div key={image.id} className={`image-item ${image.status}`}>
             <img src={image.thumbnail} alt="Observation" className="image-preview" />
             
-            {/* Status overlay */}
+            {/* Status overlay - LP-obs-studio-cleanup-1.7.0: Show progress percentage */}
             {image.status === 'uploading' && (
               <div className="image-overlay uploading">
                 <div className="upload-spinner" />
+                {typeof image.progress === 'number' && image.progress < 100 && (
+                  <span className="upload-progress-text">{image.progress}%</span>
+                )}
               </div>
             )}
             
