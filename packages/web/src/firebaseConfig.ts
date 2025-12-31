@@ -21,7 +21,7 @@ const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyDummy_ReplaceInProduction',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'ropi-bccee.firebaseapp.com',
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'ropi-bccee',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'ropi-bccee.appspot.com',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'ropi-bccee.firebasestorage.app',
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
   appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
 };
