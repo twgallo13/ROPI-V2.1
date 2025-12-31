@@ -1,19 +1,37 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import type { Product, AIHistoryEntry } from '../../types/product';
 import { useSuggestions } from '../../hooks/useSuggestions';
+import TargetAccordion, { type TargetResult, type Candidate, type SEOData } from './TargetAccordion';
+import aiDescribeClient, { 
+  aggregateObservations, 
+  getDefaultTargets,
+  type DescribeRequest,
+} from '../../services/AIDescribeClient';
 import './AIActionsTab.css';
 
 /**
- * AI Actions / Power Workspace — LP-0.4.2
+ * AIActionsTab Component
+ * 
+ * LP-obs-studio-cleanup-1.6.5: Refactored to per-target aggregated model.
  * 
  * Tab 5: Describe Engine Controls and AI Power Features
  * 
- * Features (per LP-0.4.2):
- * - Audience Template Selector (loads from /app/settings/ai-templates)
+ * Features:
+ * - Audience Template Selector
  * - Tone Preset Overrides
- * - "Generate Descriptions" primary action button
- * - Progress status for async Describe jobs
- * - AI History log
+ * - Targets row with selectable target cards
+ * - Per-target accordion panels with candidates
+ * - Aggregated observations per target
+ * - SEO generation per target
+ * - Apply/Edit/Try Again controls
+ * - Show contributing observations
+ * - Auto-resolve mode for suggestions
+ * 
+ * Changes from LP-1.4.0:
+ * - Removed per-observation candidate display
+ * - Added TargetAccordion per target website
+ * - Describe API now returns one result per target
+ * - SEO included per target
  * 
  * References:
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
@@ -45,6 +63,9 @@ const TONE_PRESETS = [
 // Job status type
 type JobStatus = 'idle' | 'preparing' | 'generating' | 'complete' | 'error';
 
+// Target status type
+type TargetStatus = 'idle' | 'generating' | 'complete' | 'error';
+
 interface JobProgress {
   status: JobStatus;
   progress: number;
@@ -55,13 +76,20 @@ interface JobProgress {
 function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<string>('streetwear');
   const [selectedTone, setSelectedTone] = useState<string>('professional');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [autoResolve, setAutoResolve] = useState(false);
+  
+  // LP-obs-studio-cleanup-1.6.5: Per-target state
+  const [selectedTargets, setSelectedTargets] = useState<string[]>(getDefaultTargets());
+  const [targetResults, setTargetResults] = useState<Map<string, TargetResult>>(new Map());
+  const [expandedTarget, setExpandedTarget] = useState<string | null>(null);
+  const [targetStatuses, setTargetStatuses] = useState<Map<string, TargetStatus>>(new Map());
+  
   const [jobProgress, setJobProgress] = useState<JobProgress>({
     status: 'idle',
     progress: 0,
     message: '',
   });
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [autoResolve, setAutoResolve] = useState(false);
 
   // LP-obs-studio-cleanup-1.4.0: Suggestions from observations
   const {
@@ -119,67 +147,283 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     }
   };
 
-  // Simulate async describe job - LP-0.4.2.2: Wire to Tab 6 fields
+  // Collect observations for the product
+  const observations = useMemo(() => {
+    // In production, this would come from the observations service
+    const productObs = (product as unknown as { observations?: Array<{ id: string; text?: string; tags?: string[] }> }).observations || [];
+    return productObs;
+  }, [product]);
+
+  // Aggregate observations data
+  const aggregatedData = useMemo(() => {
+    return aggregateObservations(observations);
+  }, [observations]);
+
+  // LP-obs-studio-cleanup-1.6.5: Generate descriptions for all selected targets
   const handleGenerateDescriptions = async () => {
-    if (jobProgress.status !== 'idle') return;
+    if (jobProgress.status !== 'idle' || !product?.id) return;
 
     const startTime = Date.now();
     
     // Phase 1: Preparing
     setJobProgress({ status: 'preparing', progress: 10, message: 'Analyzing product attributes...', startTime });
-    await new Promise(resolve => setTimeout(resolve, 800));
     
-    // Phase 2: Generating site descriptions
-    setJobProgress({ status: 'generating', progress: 30, message: 'Generating descriptions for Shiekh...', startTime });
-    await new Promise(resolve => setTimeout(resolve, 600));
-    
-    // LP-0.4.2.2: Generate and update Shiekh description
-    const shiekhDesc = generateSiteDescription('shiekh', product, selectedTone, templateDetails);
-    onUpdate('description_shiekh', shiekhDesc);
-    
-    setJobProgress({ status: 'generating', progress: 50, message: 'Generating descriptions for Karmaloop...', startTime });
-    await new Promise(resolve => setTimeout(resolve, 600));
-    
-    // LP-0.4.2.2: Generate and update Karmaloop description
-    const karmaloopDesc = generateSiteDescription('karmaloop', product, selectedTone, templateDetails);
-    onUpdate('description_karmaloop', karmaloopDesc);
-    
-    // LP-0.4.2.2: Generate and update MLTD description
-    const mltdDesc = generateSiteDescription('mltd', product, selectedTone, templateDetails);
-    onUpdate('description_mltd', mltdDesc);
-    
-    setJobProgress({ status: 'generating', progress: 70, message: 'Generating SEO metadata...', startTime });
-    await new Promise(resolve => setTimeout(resolve, 600));
-    
-    // LP-0.4.2.2: Generate and update SEO fields
-    const metaName = generateMetaTitle(product);
-    const metaDesc = generateMetaDescription(product, selectedTone);
-    onUpdate('meta_name', metaName);
-    onUpdate('meta_description', metaDesc);
-    
-    setJobProgress({ status: 'generating', progress: 90, message: 'Finalizing outputs...', startTime });
-    await new Promise(resolve => setTimeout(resolve, 400));
-    
-    // Phase 3: Complete
-    setJobProgress({ status: 'complete', progress: 100, message: 'Descriptions generated successfully!', startTime });
+    // Set all targets to generating
+    const newStatuses = new Map<string, TargetStatus>();
+    selectedTargets.forEach(t => newStatuses.set(t, 'generating'));
+    setTargetStatuses(newStatuses);
 
-    // Add to AI history
-    const newEntry: AIHistoryEntry = {
-      id: `ai-${Date.now()}`,
-      action: 'generate_descriptions',
-      timestamp: new Date().toISOString(),
-      result: `Generated descriptions using "${templateDetails?.name}" template with "${selectedTone}" tone`,
-      confidence: Math.floor(Math.random() * 15) + 85, // 85-100
-    };
-    
-    const newHistory = [...(product.aiHistory ?? []), newEntry];
-    onUpdate('aiHistory', newHistory);
+    try {
+      // Build the describe request
+      const request: DescribeRequest = {
+        targets: selectedTargets,
+        audience: templateDetails?.name || 'Streetwear Enthusiast',
+        tone: selectedTone,
+        observations: aggregatedData.observationInputs,
+        attributes: product.attributes || {},
+        images: product.media?.gallery?.map((url: string) => ({ url })) || [],
+        options: { candidates: 3, aggregate: true },
+      };
+
+      setJobProgress({ status: 'generating', progress: 30, message: 'Generating descriptions...', startTime });
+
+      // Call the aggregated describe API
+      const response = await aiDescribeClient.describe(product.id, request);
+
+      setJobProgress({ status: 'generating', progress: 70, message: 'Processing results...', startTime });
+
+      // Update target results
+      const newResults = new Map<string, TargetResult>();
+      const finalStatuses = new Map<string, TargetStatus>();
+      
+      for (const result of response.results) {
+        const resultWithObs: TargetResult = {
+          ...result,
+          status: 'complete',
+          contributingObservations: observations.map(obs => ({
+            id: obs.id,
+            text: obs.text || '',
+            tags: obs.tags || [],
+          })),
+        };
+        newResults.set(result.target, resultWithObs);
+        finalStatuses.set(result.target, 'complete');
+      }
+
+      setTargetResults(newResults);
+      setTargetStatuses(finalStatuses);
+
+      // Expand first target if none expanded
+      if (!expandedTarget && selectedTargets.length > 0) {
+        setExpandedTarget(selectedTargets[0]);
+      }
+
+      setJobProgress({ status: 'complete', progress: 100, message: 'Descriptions generated successfully!', startTime });
+
+      // Add to AI history
+      const newEntry: AIHistoryEntry = {
+        id: `ai-${Date.now()}`,
+        action: 'generate_descriptions',
+        timestamp: new Date().toISOString(),
+        result: `Generated descriptions for ${selectedTargets.length} targets using "${templateDetails?.name}" template with "${selectedTone}" tone`,
+        confidence: Math.floor(Math.random() * 15) + 85,
+      };
+      
+      const newHistory = [...(product.aiHistory ?? []), newEntry];
+      onUpdate('aiHistory', newHistory);
+
+    } catch (error) {
+      console.error('Error generating descriptions:', error);
+      setJobProgress({ status: 'error', progress: 0, message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`, startTime });
+      
+      const errorStatuses = new Map<string, TargetStatus>();
+      selectedTargets.forEach(t => errorStatuses.set(t, 'error'));
+      setTargetStatuses(errorStatuses);
+    }
 
     // Reset after delay
     setTimeout(() => {
       setJobProgress({ status: 'idle', progress: 0, message: '' });
     }, 3000);
   };
+
+  // LP-obs-studio-cleanup-1.6.5: Apply candidate for a target
+  const handleApplyCandidate = useCallback(async (targetId: string, candidate: Candidate) => {
+    if (!product?.id) return;
+
+    try {
+      await aiDescribeClient.apply(product.id, {
+        target: targetId,
+        action: 'description',
+        payload: {
+          candidateId: candidate.id,
+          text: candidate.text,
+        },
+      });
+
+      // Update the product description for this target
+      const descFieldMap: Record<string, string> = {
+        'shiekh.com': 'description_shiekh',
+        'shiekh': 'description_shiekh',
+        'karmaloop': 'description_karmaloop',
+        'karmaloop.com': 'description_karmaloop',
+        'mltd': 'description_mltd',
+        'mltd.com': 'description_mltd',
+      };
+
+      const descField = descFieldMap[targetId];
+      if (descField) {
+        onUpdate(descField, candidate.text);
+      }
+
+      // Add to AI history
+      const newEntry: AIHistoryEntry = {
+        id: `ai-${Date.now()}`,
+        action: 'apply_description',
+        timestamp: new Date().toISOString(),
+        result: `Applied description for ${targetId}: ${candidate.text.substring(0, 50)}...`,
+        confidence: 90,
+      };
+      
+      const newHistory = [...(product.aiHistory ?? []), newEntry];
+      onUpdate('aiHistory', newHistory);
+
+    } catch (error) {
+      console.error('Error applying candidate:', error);
+    }
+  }, [product, onUpdate]);
+
+  // LP-obs-studio-cleanup-1.6.5: Edit candidate inline
+  const handleEditCandidate = useCallback((targetId: string, candidate: Candidate, newText: string) => {
+    setTargetResults(prev => {
+      const newResults = new Map(prev);
+      const result = newResults.get(targetId);
+      if (result) {
+        const updatedCandidates = result.candidates.map(c =>
+          c.id === candidate.id ? { ...c, text: newText } : c
+        );
+        newResults.set(targetId, { ...result, candidates: updatedCandidates });
+      }
+      return newResults;
+    });
+  }, []);
+
+  // LP-obs-studio-cleanup-1.6.5: Regenerate for a specific target
+  const handleTryAgain = useCallback(async (targetId: string) => {
+    if (!product?.id) return;
+
+    setTargetStatuses(prev => {
+      const newStatuses = new Map(prev);
+      newStatuses.set(targetId, 'generating');
+      return newStatuses;
+    });
+
+    try {
+      const request: DescribeRequest = {
+        targets: [targetId],
+        audience: templateDetails?.name || 'Streetwear Enthusiast',
+        tone: selectedTone,
+        observations: aggregatedData.observationInputs,
+        attributes: product.attributes || {},
+        options: { candidates: 3, aggregate: true },
+      };
+
+      const response = await aiDescribeClient.describe(product.id, request);
+
+      if (response.results.length > 0) {
+        const result = response.results[0];
+        setTargetResults(prev => {
+          const newResults = new Map(prev);
+          newResults.set(targetId, {
+            ...result,
+            status: 'complete',
+            contributingObservations: observations.map(obs => ({
+              id: obs.id,
+              text: obs.text || '',
+              tags: obs.tags || [],
+            })),
+          });
+          return newResults;
+        });
+      }
+
+      setTargetStatuses(prev => {
+        const newStatuses = new Map(prev);
+        newStatuses.set(targetId, 'complete');
+        return newStatuses;
+      });
+
+    } catch (error) {
+      console.error('Error regenerating:', error);
+      setTargetStatuses(prev => {
+        const newStatuses = new Map(prev);
+        newStatuses.set(targetId, 'error');
+        return newStatuses;
+      });
+    }
+  }, [product, templateDetails, selectedTone, aggregatedData, observations]);
+
+  // LP-obs-studio-cleanup-1.6.5: Apply SEO for a target
+  const handleApplySEO = useCallback(async (targetId: string, seo: SEOData) => {
+    if (!product?.id) return;
+
+    try {
+      await aiDescribeClient.apply(product.id, {
+        target: targetId,
+        action: 'seo',
+        payload: { seo },
+      });
+
+      // Update product SEO fields
+      onUpdate('meta_name', seo.title);
+      if (seo.bullets.length > 0) {
+        onUpdate('meta_description', seo.bullets.join(' '));
+      }
+
+      // Add to AI history
+      const newEntry: AIHistoryEntry = {
+        id: `ai-${Date.now()}`,
+        action: 'apply_seo',
+        timestamp: new Date().toISOString(),
+        result: `Applied SEO for ${targetId}: ${seo.title}`,
+        confidence: 90,
+      };
+      
+      const newHistory = [...(product.aiHistory ?? []), newEntry];
+      onUpdate('aiHistory', newHistory);
+
+    } catch (error) {
+      console.error('Error applying SEO:', error);
+    }
+  }, [product, onUpdate]);
+
+  // LP-obs-studio-cleanup-1.6.5: Edit SEO inline
+  const handleEditSEO = useCallback((targetId: string, seo: SEOData) => {
+    setTargetResults(prev => {
+      const newResults = new Map(prev);
+      const result = newResults.get(targetId);
+      if (result) {
+        newResults.set(targetId, { ...result, seo });
+      }
+      return newResults;
+    });
+  }, []);
+
+  // LP-obs-studio-cleanup-1.6.5: Regenerate SEO for a target
+  const handleTryAgainSEO = useCallback(async (targetId: string) => {
+    await handleTryAgain(targetId);
+  }, [handleTryAgain]);
+
+  // Toggle target selection
+  const handleToggleTarget = useCallback((target: string) => {
+    setSelectedTargets(prev => {
+      if (prev.includes(target)) {
+        return prev.filter(t => t !== target);
+      } else {
+        return [...prev, target];
+      }
+    });
+  }, []);
 
   const handleQuickAction = (action: string) => {
     const newEntry: AIHistoryEntry = {
@@ -245,6 +489,36 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
           </div>
         </div>
 
+        {/* LP-obs-studio-cleanup-1.6.5: Target Websites Selection */}
+        <div className="targets-selector">
+          <label className="form-label">Target Websites</label>
+          <div className="targets-row">
+            {getDefaultTargets().map((target) => {
+              const isSelected = selectedTargets.includes(target);
+              const status = targetStatuses.get(target) || 'idle';
+              const result = targetResults.get(target);
+              const tagCount = result?.meta.tagsCount || aggregatedData.uniqueTags.length;
+              
+              return (
+                <button
+                  key={target}
+                  className={`target-chip ${isSelected ? 'target-chip-selected' : ''}`}
+                  onClick={() => handleToggleTarget(target)}
+                >
+                  <span className="target-chip-status">
+                    {status === 'generating' && '🔄'}
+                    {status === 'complete' && '✅'}
+                    {status === 'error' && '❌'}
+                    {status === 'idle' && '⚪'}
+                  </span>
+                  <span className="target-chip-name">{target}</span>
+                  <span className="target-chip-count">{tagCount} tags</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Advanced Options Toggle */}
         <button 
           className="advanced-toggle"
@@ -284,9 +558,13 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
             <button 
               className="generate-button"
               onClick={handleGenerateDescriptions}
+              disabled={selectedTargets.length === 0}
             >
               <span className="generate-icon">🚀</span>
               Generate Descriptions
+              {selectedTargets.length > 0 && (
+                <span className="generate-target-count">({selectedTargets.length} targets)</span>
+              )}
             </button>
           ) : (
             <div className="job-progress">
@@ -298,7 +576,7 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
                   {jobProgress.status === 'error' && '⚠️'}
                   {' '}{jobProgress.message}
                 </span>
-                {jobProgress.status !== 'complete' && (
+                {jobProgress.status !== 'complete' && jobProgress.status !== 'error' && (
                   <span className="progress-time">{elapsedTime}s</span>
                 )}
               </div>
@@ -312,17 +590,46 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
           )}
         </div>
 
-        {/* LP-obs-studio-cleanup-1.4.0: Observation Context Footnote */}
-        {suggestionsMeta && (
+        {/* LP-obs-studio-cleanup-1.6.5: Observation Context Footnote */}
+        {(suggestionsMeta || observations.length > 0) && (
           <div className="observation-context-footnote">
             <span className="footnote-icon">💡</span>
             <span className="footnote-text">
-              Generated using <strong>{suggestionsMeta.observationsCount}</strong> observations 
-              and <strong>{suggestionsMeta.tagsCount}</strong> tags
+              Using <strong>{observations.length}</strong> observations 
+              and <strong>{aggregatedData.uniqueTags.length}</strong> unique tags
             </span>
           </div>
         )}
       </div>
+
+      {/* LP-obs-studio-cleanup-1.6.5: Target Panels */}
+      {targetResults.size > 0 && (
+        <div className="form-section target-panels-section">
+          <h3 className="form-section-title">Generated Results</h3>
+          <div className="target-panels">
+            {selectedTargets.map((target) => {
+              const result = targetResults.get(target);
+              if (!result) return null;
+
+              return (
+                <TargetAccordion
+                  key={target}
+                  result={result}
+                  isExpanded={expandedTarget === target}
+                  onToggle={() => setExpandedTarget(expandedTarget === target ? null : target)}
+                  onApplyCandidate={handleApplyCandidate}
+                  onEditCandidate={handleEditCandidate}
+                  onTryAgain={handleTryAgain}
+                  onApplySEO={handleApplySEO}
+                  onEditSEO={handleEditSEO}
+                  onTryAgainSEO={handleTryAgainSEO}
+                  disabled={jobProgress.status !== 'idle' && jobProgress.status !== 'complete'}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* LP-obs-studio-cleanup-1.4.0: Observation-Based Suggestions */}
       <div className="form-section observation-suggestions-section">
@@ -491,115 +798,6 @@ function formatAction(action: string): string {
 function formatTime(timestamp: string): string {
   const date = new Date(timestamp);
   return date.toLocaleString();
-}
-
-// LP-0.4.2.2: Description generation helpers
-// These simulate AI-generated content; in production, would call real AI service
-
-interface TemplateInfo {
-  id: string;
-  name: string;
-  description: string;
-}
-
-// Helper to safely get attribute value from product
-function getProductAttr(product: Product, key: string): string {
-  // Check top-level first, then attributes object
-  const topLevel = (product as unknown as Record<string, unknown>)[key];
-  if (typeof topLevel === 'string') return topLevel;
-  
-  const attrValue = product.attributes?.[key];
-  if (typeof attrValue === 'string') return attrValue;
-  if (Array.isArray(attrValue)) return attrValue.join(', ');
-  
-  return '';
-}
-
-function generateSiteDescription(
-  site: 'shiekh' | 'karmaloop' | 'mltd', 
-  product: Product, 
-  tone: string,
-  template?: TemplateInfo
-): string {
-  const productName = (product.name ?? getProductAttr(product, 'name')) || 'Product';
-  const brandName = product.brand ?? getProductAttr(product, 'brand_name');
-  const color = getProductAttr(product, 'color');
-  const material = getProductAttr(product, 'materials');
-  
-  const audienceStyle = template?.name ?? 'Streetwear Enthusiast';
-  
-  // Site-specific variations
-  const siteIntros: Record<string, string> = {
-    shiekh: `Step up your sneaker game with the ${productName}`,
-    karmaloop: `Level up your streetwear rotation with the ${productName}`,
-    mltd: `Elevate your style with the ${productName}`,
-  };
-  
-  const toneModifiers: Record<string, string> = {
-    professional: 'Crafted with premium quality,',
-    enthusiastic: 'Get ready to turn heads!',
-    minimalist: 'Clean. Simple. Essential.',
-    technical: 'Engineered for performance,',
-    storytelling: 'Every step tells a story.',
-  };
-  
-  const intro = siteIntros[site] || siteIntros.shiekh;
-  const modifier = toneModifiers[tone] || toneModifiers.professional;
-  
-  let description = `${intro}`;
-  if (brandName) description += ` from ${brandName}`;
-  description += `. ${modifier}`;
-  if (color) description += ` Available in ${color}.`;
-  if (material) description += ` Made with ${material}.`;
-  description += ` Perfect for the ${audienceStyle.toLowerCase()} lifestyle.`;
-  description += ` [AI-Generated: ${template?.id ?? 'default'} template, ${tone} tone]`;
-  
-  return description;
-}
-
-function generateMetaTitle(product: Product): string {
-  const productName = (product.name ?? getProductAttr(product, 'name')) || 'Product';
-  const brandName = product.brand ?? getProductAttr(product, 'brand_name');
-  
-  let title = productName;
-  if (brandName) title = `${brandName} ${productName}`;
-  title += ' | Shop Now';
-  
-  // SEO best practice: keep under 60 chars
-  if (title.length > 60) {
-    title = title.substring(0, 57) + '...';
-  }
-  
-  return title;
-}
-
-function generateMetaDescription(product: Product, tone: string): string {
-  const productName = (product.name ?? getProductAttr(product, 'name')) || 'Product';
-  const brandName = product.brand ?? getProductAttr(product, 'brand_name');
-  const color = getProductAttr(product, 'color');
-  
-  // Use tone to vary the CTA style
-  const ctaVariants: Record<string, string> = {
-    professional: 'Shop now.',
-    enthusiastic: 'Grab yours today!',
-    minimalist: 'Shop.',
-    technical: 'Order now.',
-    storytelling: 'Start your journey.',
-  };
-  const cta = ctaVariants[tone] || ctaVariants.professional;
-  
-  let description = `Shop the ${productName}`;
-  if (brandName) description += ` by ${brandName}`;
-  description += `. `;
-  if (color) description += `Available in ${color}. `;
-  description += `Free shipping on orders over $75. ${cta}`;
-  
-  // SEO best practice: keep under 160 chars
-  if (description.length > 160) {
-    description = description.substring(0, 157) + '...';
-  }
-  
-  return description;
 }
 
 // LP-obs-studio-cleanup-1.4.0: Helper functions for suggestions display

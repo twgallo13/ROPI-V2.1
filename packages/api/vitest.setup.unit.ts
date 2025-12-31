@@ -2,6 +2,11 @@
  * Vitest setup for UNIT tests only (with mocks).
  * This file should be used when running tests WITHOUT the Firebase Emulator.
  */
+
+// Enable emulator mode for auth middleware BEFORE any imports
+// This must be set first so auth.ts evaluates IS_EMULATOR as true
+process.env.NODE_ENV = 'test_emulator';
+
 import { vi } from 'vitest';
 
 console.log('[vitest.setup.unit] Loading unit test setup with mocks');

@@ -203,8 +203,89 @@
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
 }
 
+.generate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 .generate-icon {
   font-size: 1.25rem;
+}
+
+.generate-target-count {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* ============================================
+   LP-obs-studio-cleanup-1.6.5: TARGET SELECTOR
+   ============================================ */
+.targets-selector {
+  margin-bottom: 1.5rem;
+}
+
+.targets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.target-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.target-chip:hover {
+  border-color: var(--color-primary);
+  background: #f8f9ff;
+}
+
+.target-chip-selected {
+  border-color: var(--color-primary);
+  background: #eef1ff;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.target-chip-status {
+  font-size: 0.75rem;
+}
+
+.target-chip-name {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.target-chip-count {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary);
+  background: var(--color-background-alt, #f0f0f0);
+  padding: 0.125rem 0.375rem;
+  border-radius: 8px;
+}
+
+/* ============================================
+   LP-obs-studio-cleanup-1.6.5: TARGET PANELS SECTION
+   ============================================ */
+.target-panels-section {
+  margin-top: 1rem;
+}
+
+.target-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 /* Progress Indicator */

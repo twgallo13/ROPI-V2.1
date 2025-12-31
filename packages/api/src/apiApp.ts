@@ -64,6 +64,12 @@ import {
   applySuggestionHandler,
 } from './endpoints/products';
 
+// LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe handlers
+import {
+  describeHandler,
+  applyHandler,
+} from './endpoints/describe';
+
 // Observations handlers (LP-1.1.1)
 import {
   createObservationHandler,
@@ -192,6 +198,9 @@ api.patch('/products/:productId/attributes', patchProductAttributesHandler);
 // LP-obs-studio-cleanup-1.4.0: Observation-based suggestions endpoints
 api.post('/products/:productId/suggestions', generateSuggestionsHandler);
 api.post('/products/:productId/apply-suggestion', applySuggestionHandler);
+// LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe endpoints
+api.post('/products/:productId/describe', describeHandler);
+api.post('/products/:productId/apply', applyHandler);
 
 /**
  * Observations endpoints (LP-1.1.1)
