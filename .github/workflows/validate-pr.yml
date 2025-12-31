@@ -22,6 +22,7 @@ jobs:
         id: validate-title
         run: |
           PR_TITLE="${{ github.event.pull_request.title }}"
+          BRANCH_NAME="${{ github.head_ref }}"
           
           echo "Checking PR title..."
           
@@ -37,8 +38,37 @@ jobs:
             exit 1
           fi
           
-          echo "✅ PR title is valid: $PR_TITLE"
-          echo "title_valid=true" >> $GITHUB_OUTPUT
+          # Check if this is an LP branch and validate LP title format
+          if [[ "$BRANCH_NAME" =~ ^lp/[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            # Extract version from branch name
+            LP_VERSION=$(echo "$BRANCH_NAME" | sed 's/^lp\/\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/')
+            echo "LP branch detected. Version: $LP_VERSION"
+            
+            # PR title must start with LP-X.X.X:
+            if [[ "$PR_TITLE" =~ ^LP-[0-9]+\.[0-9]+\.[0-9]+: ]]; then
+              TITLE_VERSION=$(echo "$PR_TITLE" | sed 's/^LP-\([0-9]*\.[0-9]*\.[0-9]*\):.*/\1/')
+              if [ "$TITLE_VERSION" != "$LP_VERSION" ]; then
+                echo "❌ ERROR: LP PR title version ($TITLE_VERSION) must match branch version ($LP_VERSION)"
+                echo "   Branch: $BRANCH_NAME"
+                echo "   Expected title format: LP-$LP_VERSION: Description"
+                echo "title_valid=false" >> $GITHUB_OUTPUT
+                exit 1
+              fi
+              echo "✅ LP PR title is valid: $PR_TITLE"
+              echo "title_valid=true" >> $GITHUB_OUTPUT
+              echo "is_lp_pr=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ ERROR: LP branch PRs must have title starting with 'LP-X.X.X:'"
+              echo "   Expected format: LP-$LP_VERSION: Description"
+              echo "   Current title: $PR_TITLE"
+              echo "title_valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "✅ PR title is valid: $PR_TITLE"
+            echo "title_valid=true" >> $GITHUB_OUTPUT
+            echo "is_lp_pr=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Validate Branch Name
         id: validate-branch
@@ -46,29 +76,36 @@ jobs:
           BRANCH_NAME="${{ github.head_ref }}"
           echo "Checking branch name: $BRANCH_NAME"
 
-          # Allow feature/, fix/, hotfix/, chore/, docs/, ci/ branches OR the special integration branch
-          if [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|chore|docs|ci)/ ]]; then
+          # Allow feature/, fix/, hotfix/, chore/, docs/, ci/, lp/ branches OR the special integration branch
+          if [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|chore|docs|ci|lp)/ ]]; then
             # valid branch prefix OK
             :
           elif [[ "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
             # allow our special integration branch for staged merges
             :
           else
-            echo "❌ ERROR: Branch name must start with 'feature/', 'fix/', 'hotfix/', 'chore/', 'docs/', 'ci/' or be 'aoss-staging-integration'"
+            echo "❌ ERROR: Branch name must start with 'feature/', 'fix/', 'hotfix/', 'chore/', 'docs/', 'ci/', 'lp/' or be 'aoss-staging-integration'"
             echo "   Current branch: $BRANCH_NAME"
             echo "   Expected pattern: <type>/<slug> OR aoss-staging-integration"
-            echo "   Examples: feature/auth-login, fix/e2e-tests, hotfix/critical-bug"
+            echo "   Examples: feature/auth-login, fix/e2e-tests, lp/2.0.1-firestore-lockdown"
             echo "branch_valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
 
           # Validate characters for typed branches or exact integration name
-          if [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|chore|docs|ci)/[a-z0-9/-]+$ || "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
+          # LP branches use format lp/X.X.X-description (with dots in version)
+          if [[ "$BRANCH_NAME" =~ ^lp/[0-9]+\.[0-9]+\.[0-9]+-[a-z0-9/-]+$ ]]; then
+            echo "✅ LP branch name is valid: $BRANCH_NAME"
+            echo "branch_valid=true" >> $GITHUB_OUTPUT
+            echo "is_lp_branch=true" >> $GITHUB_OUTPUT
+          elif [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|chore|docs|ci)/[a-z0-9/-]+$ || "$BRANCH_NAME" == "aoss-staging-integration" ]]; then
             echo "✅ Branch name is valid: $BRANCH_NAME"
             echo "branch_valid=true" >> $GITHUB_OUTPUT
+            echo "is_lp_branch=false" >> $GITHUB_OUTPUT
           else
             echo "❌ ERROR: Branch name contains invalid characters"
             echo "   Allowed: lowercase letters, numbers, hyphens, forward slashes (or exact 'aoss-staging-integration')"
+            echo "   LP format: lp/X.X.X-description (e.g., lp/2.0.1-firestore-lockdown)"
             echo "   Current branch: $BRANCH_NAME"
             echo "branch_valid=false" >> $GITHUB_OUTPUT
             exit 1

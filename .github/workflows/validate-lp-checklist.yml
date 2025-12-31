@@ -1,0 +1,189 @@
+name: Validate LP Staging Checklist
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+    branches:
+      - aoss-main
+
+jobs:
+  validate-lp-checklist:
+    name: Validate LP Staging Checklist
+    runs-on: ubuntu-latest
+    # Only run for LP branches
+    if: startsWith(github.head_ref, 'lp/')
+    permissions:
+      contents: read
+      pull-requests: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate LP Staging Checklist
+        id: validate-checklist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "=========================================="
+          echo "  LP Staging Checklist Validation"
+          echo "=========================================="
+          echo ""
+          
+          BRANCH_NAME="${{ github.head_ref }}"
+          PR_BODY="${{ github.event.pull_request.body }}"
+          
+          # Extract LP version from branch
+          LP_VERSION=$(echo "$BRANCH_NAME" | sed 's/^lp\/\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/')
+          echo "LP Version: $LP_VERSION"
+          echo "Branch: $BRANCH_NAME"
+          echo ""
+          
+          # Initialize validation flags
+          CHECKLIST_VALID=true
+          WARNINGS=""
+          ERRORS=""
+          
+          # Check 1: Firestore Backup (required for firestore/db changes)
+          echo "Checking for Firestore backup evidence..."
+          if echo "$PR_BODY" | grep -qiE 'gs://ropi-aoss-backups/lp-'; then
+            echo "✅ Firestore backup path found"
+          else
+            # Check if this is a firestore-related change
+            CHANGED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq '.files[].path' 2>/dev/null || echo "")
+            if echo "$CHANGED_FILES" | grep -qE 'firestore\.(rules|indexes)|\.ts.*firestore|tasks/.*\.ts'; then
+              WARNINGS="${WARNINGS}\n⚠️  Firestore backup path not found - required for DB/Firestore changes"
+            else
+              echo "ℹ️  Firestore backup not required (no DB changes detected)"
+            fi
+          fi
+          
+          # Check 2: CI Pass (required)
+          echo "Checking for CI pass evidence..."
+          if echo "$PR_BODY" | grep -qiE 'CI Pass|CI.*(pass|green|✅)|github.com/.*actions/runs'; then
+            echo "✅ CI pass evidence found"
+          else
+            WARNINGS="${WARNINGS}\n⚠️  CI pass evidence not found in PR body"
+          fi
+          
+          # Check 3: Deploy Logs (required for deploy changes)
+          echo "Checking for deploy logs..."
+          if echo "$PR_BODY" | grep -qiE 'Deploy complete|firebase deploy|✔.*Deploy|Deploying to'; then
+            echo "✅ Deploy logs found"
+          else
+            CHANGED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq '.files[].path' 2>/dev/null || echo "")
+            if echo "$CHANGED_FILES" | grep -qE 'firestore\.(rules|indexes)|firebase\.json|functions/'; then
+              WARNINGS="${WARNINGS}\n⚠️  Deploy logs not found - required for Firebase changes"
+            else
+              echo "ℹ️  Deploy logs not required (no deploy-triggering changes detected)"
+            fi
+          fi
+          
+          # Check 4: Test Results (required)
+          echo "Checking for test results..."
+          if echo "$PR_BODY" | grep -qiE 'Test.*:.*PASS|PASS.*FAIL|validation.*pass|✅.*test|test.*✅'; then
+            echo "✅ Test results found"
+          else
+            WARNINGS="${WARNINGS}\n⚠️  Test results not clearly documented in PR body"
+          fi
+          
+          # Check 5: Migration/Normalization Dry-run (required for migration tasks)
+          echo "Checking for dry-run evidence..."
+          if echo "$PR_BODY" | grep -qiE 'dry-run|--dry-run|DRY_RUN|dry.run'; then
+            echo "✅ Dry-run evidence found"
+          else
+            CHANGED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq '.files[].path' 2>/dev/null || echo "")
+            if echo "$CHANGED_FILES" | grep -qE 'migrate|normalize|sync.*Registry|tasks/'; then
+              WARNINGS="${WARNINGS}\n⚠️  Dry-run evidence not found - required for migration/normalization tasks"
+            else
+              echo "ℹ️  Dry-run not required (no migration/normalization tasks detected)"
+            fi
+          fi
+          
+          # Check 6: Completed checklist items
+          echo "Checking for completed checklist items..."
+          CHECKED_ITEMS=$(echo "$PR_BODY" | grep -c '\[x\]' || echo "0")
+          UNCHECKED_ITEMS=$(echo "$PR_BODY" | grep -c '\[ \]' || echo "0")
+          echo "  Checked items: $CHECKED_ITEMS"
+          echo "  Unchecked items: $UNCHECKED_ITEMS"
+          
+          if [ "$UNCHECKED_ITEMS" -gt 0 ]; then
+            WARNINGS="${WARNINGS}\n⚠️  $UNCHECKED_ITEMS unchecked checklist items remain"
+          fi
+          
+          # Check 7: Final Sign-off
+          echo "Checking for final sign-off..."
+          if echo "$PR_BODY" | grep -qiE 'Ready for merge|sign-off|completed by|✅.*All.*pass'; then
+            echo "✅ Final sign-off evidence found"
+          else
+            WARNINGS="${WARNINGS}\n⚠️  Final sign-off section not clearly completed"
+          fi
+          
+          # Output summary
+          echo ""
+          echo "=========================================="
+          echo "  Validation Summary"
+          echo "=========================================="
+          
+          if [ -n "$ERRORS" ]; then
+            echo -e "\n❌ ERRORS:$ERRORS"
+            CHECKLIST_VALID=false
+          fi
+          
+          if [ -n "$WARNINGS" ]; then
+            echo -e "\n⚠️  WARNINGS:$WARNINGS"
+            echo ""
+            echo "Note: Warnings don't block merge but should be addressed."
+          fi
+          
+          if [ "$CHECKLIST_VALID" = true ]; then
+            echo ""
+            echo "✅ LP Staging Checklist validation passed"
+            echo ""
+            echo "Recommendations:"
+            echo "  1. Ensure all [ ] items are checked before merge"
+            echo "  2. Include GCS backup path for any Firestore changes"
+            echo "  3. Include deploy logs for any Firebase changes"
+            echo "  4. Clearly mark test results as PASS/FAIL"
+          else
+            echo ""
+            echo "❌ LP Staging Checklist validation failed"
+            echo ""
+            echo "Please fix the errors above before merging."
+            exit 1
+          fi
+
+      - name: Check LP Labels
+        id: validate-labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Checking for LP label..."
+          
+          LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name' 2>/dev/null || echo "")
+          
+          # Check for LP version label (LP-2.0.x format)
+          if echo "$LABELS" | grep -qE '^LP-[0-9]+\.[0-9]+\.x$'; then
+            echo "✅ LP version label found"
+          else
+            echo "⚠️  No LP version label found (e.g., LP-2.0.x)"
+            echo "   Please add the appropriate LP version label"
+          fi
+          
+          echo ""
+          echo "Current labels: $LABELS"
+
+      - name: Validation Complete
+        if: always()
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "  LP Staging Checklist Check Complete"
+          echo "=========================================="
+          echo ""
+          echo "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          echo "Branch: ${{ github.head_ref }}"
+          echo ""
+          echo "For LP PRs, ensure the staging checklist in the PR body is complete."
+          echo "See .github/STAGING_CHECKLIST.md for the template."
+          echo ""
