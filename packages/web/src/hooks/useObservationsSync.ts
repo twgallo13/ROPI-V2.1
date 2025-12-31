@@ -2,6 +2,7 @@
  * useObservationsSync Hook
  * 
  * LP-1.1.1: React hook for observation sync state management.
+ * LP-obs-studio-cleanup-1.7.0: Added sync error state and failed count tracking.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -21,12 +22,15 @@ interface UseObservationsSyncOptions {
 
 interface UseObservationsSyncResult {
   pendingCount: number;
+  failedCount: number; // LP-1.7.0: Count of failed syncs
   isOnline: boolean;
   isSyncing: boolean;
+  lastSyncError: string | null; // LP-1.7.0: Last sync error message
   pendingObservations: PendingObservation[];
   addObservation: (obs: Omit<PendingObservation, 'id' | 'status' | 'retryCount' | 'createdAt' | 'updatedAt'>) => Promise<PendingObservation>;
   syncNow: () => Promise<{ synced: number; failed: number }>;
   refreshPending: () => Promise<void>;
+  clearSyncError: () => void; // LP-1.7.0: Clear error state
 }
 
 export function useObservationsSync(
@@ -35,9 +39,11 @@ export function useObservationsSync(
   const { apiBaseUrl = '/api', autoSync = true } = options;
   
   const [pendingCount, setPendingCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
   const [pendingObservations, setPendingObservations] = useState<PendingObservation[]>([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncError, setLastSyncError] = useState<string | null>(null);
 
   // Refresh pending count and list
   const refreshPending = useCallback(async () => {
@@ -45,6 +51,14 @@ export function useObservationsSync(
     const observations = await getAllPending();
     setPendingCount(count);
     setPendingObservations(observations);
+    // LP-1.7.0: Track failed observations
+    const failed = observations.filter(o => o.status === 'error').length;
+    setFailedCount(failed);
+  }, []);
+
+  // Clear sync error
+  const clearSyncError = useCallback(() => {
+    setLastSyncError(null);
   }, []);
 
   // Add observation to queue
@@ -64,10 +78,19 @@ export function useObservationsSync(
     }
     
     setIsSyncing(true);
+    setLastSyncError(null);
     try {
       const result = await flushQueue(apiBaseUrl);
       await refreshPending();
+      // LP-1.7.0: Set error message if there were failures
+      if (result.failed > 0) {
+        setLastSyncError(`${result.failed} observation(s) failed to sync`);
+      }
       return result;
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Sync failed';
+      setLastSyncError(errorMsg);
+      return { synced: 0, failed: 0 };
     } finally {
       setIsSyncing(false);
     }
@@ -105,12 +128,15 @@ export function useObservationsSync(
 
   return {
     pendingCount,
+    failedCount,
     isOnline,
     isSyncing,
+    lastSyncError,
     pendingObservations,
     addObservation,
     syncNow,
     refreshPending,
+    clearSyncError,
   };
 }
 

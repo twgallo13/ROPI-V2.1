@@ -27,8 +27,17 @@ interface MobileObservationCaptureProps {
 }
 
 function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCaptureProps) {
-  // Offline sync hook
-  const { pendingCount, isOnline, isSyncing, addObservation, syncNow } = useObservationsSync({ apiBaseUrl });
+  // Offline sync hook - LP-1.7.0: Added failedCount and lastSyncError
+  const { 
+    pendingCount, 
+    failedCount, 
+    isOnline, 
+    isSyncing, 
+    lastSyncError,
+    addObservation, 
+    syncNow,
+    clearSyncError,
+  } = useObservationsSync({ apiBaseUrl });
   
   // Product selection state
   const [selectedProduct, setSelectedProduct] = useState<ScannedProduct | null>(null);
@@ -160,11 +169,21 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
 
   return (
     <div className="mobile-observation-capture">
-      {/* LP-obs-studio-cleanup-1.3.0: Sync Status Banner - only show when offline or pending > 0 */}
-      {(!isOnline || pendingCount > 0) && (
-        <div className={`sync-banner ${isOnline ? 'pending' : 'offline'}`}>
+      {/* LP-obs-studio-cleanup-1.7.0: Enhanced Sync Status Banner with error state */}
+      {(!isOnline || pendingCount > 0 || lastSyncError || failedCount > 0) && (
+        <div className={`sync-banner ${!isOnline ? 'offline' : lastSyncError || failedCount > 0 ? 'error' : 'pending'}`}>
           {!isOnline ? (
             <span>📴 Offline - observations will sync when online</span>
+          ) : lastSyncError ? (
+            <span>
+              ⚠️ {lastSyncError}
+              <button className="sync-now-btn" onClick={() => { clearSyncError(); syncNow(); }}>Retry</button>
+            </span>
+          ) : failedCount > 0 ? (
+            <span>
+              ⚠️ {failedCount} sync failed - 
+              <button className="sync-now-btn" onClick={syncNow}>Retry</button>
+            </span>
           ) : isSyncing ? (
             <span>🔄 Syncing {pendingCount} observation(s)...</span>
           ) : pendingCount > 0 ? (

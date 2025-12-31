@@ -1,0 +1,25 @@
+[
+  {
+    "origin": [
+      "https://ropi-aoss-staging.web.app",
+      "https://ropi-aoss-staging--aoss-main-staging-66cwdo2b.web.app",
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ],
+    "method": ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"],
+    "responseHeader": [
+      "Content-Type",
+      "Authorization",
+      "X-Goog-Upload-Protocol",
+      "X-Goog-Upload-Command",
+      "X-Goog-Upload-Offset",
+      "X-Goog-Upload-Header-Content-Length",
+      "X-Goog-Upload-Content-Type",
+      "X-Goog-Resumable",
+      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Methods",
+      "Access-Control-Allow-Headers"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

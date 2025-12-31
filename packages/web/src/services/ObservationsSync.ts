@@ -2,10 +2,40 @@
  * ObservationsSync Service
  * 
  * LP-1.1.1: IndexedDB-based offline queue for observations.
+ * LP-obs-studio-cleanup-1.7.0: Auth token propagation, retry/backoff, telemetry.
  * Uses idb library for IndexedDB wrapper.
  */
 
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { authFetch, setTelemetryEmitter } from './authFetch';
+
+// ============================================================================
+// LP-obs-studio-cleanup-1.7.0: Telemetry
+// ============================================================================
+
+type TelemetryEvent = {
+  name: string;
+  data?: Record<string, unknown>;
+};
+
+let telemetryCallback: ((event: TelemetryEvent) => void) | null = null;
+
+/**
+ * Set telemetry callback for sync events
+ */
+export function setSyncTelemetryCallback(
+  callback: ((event: TelemetryEvent) => void) | null
+): void {
+  telemetryCallback = callback;
+  // Also set for authFetch
+  setTelemetryEmitter(callback);
+}
+
+function emitTelemetry(name: string, data?: Record<string, unknown>): void {
+  if (telemetryCallback) {
+    telemetryCallback({ name, data });
+  }
+}
 
 // Database schema
 interface ObservationsDB extends DBSchema {
@@ -165,6 +195,7 @@ export async function clearSynced(): Promise<number> {
 /**
  * Sync a single observation to the server
  * LP-obs-studio-cleanup-1.6.6: Support both legacy and product-level observation endpoints
+ * LP-obs-studio-cleanup-1.7.0: Use authFetch with retry/refresh logic
  */
 async function syncObservation(
   obs: PendingObservation,
@@ -172,15 +203,20 @@ async function syncObservation(
 ): Promise<boolean> {
   try {
     await updateStatus(obs.id, 'syncing');
+    emitTelemetry('obs.sync.started', { 
+      observationId: obs.id, 
+      productId: obs.productId,
+      tagsCount: obs.tags?.length || 0,
+    });
     
     // LP-obs-studio-cleanup-1.6.6: Use product-level endpoint when productId is present
+    // LP-obs-studio-cleanup-1.7.0: Use authFetch with automatic token refresh
     if (obs.productId && obs.tags && obs.tags.length > 0) {
-      const response = await fetch(`${apiBaseUrl}/products/${obs.productId}/observation`, {
+      const response = await authFetch(`${apiBaseUrl}/products/${obs.productId}/observation`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({
           tags: obs.tags,
           images: obs.images || [],
@@ -191,22 +227,33 @@ async function syncObservation(
       
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || `Server error: ${response.status}`);
+        const errorMsg = data.error || `Server error: ${response.status}`;
+        emitTelemetry('obs.sync.fail', { 
+          observationId: obs.id, 
+          productId: obs.productId,
+          errorKind: response.status === 401 ? 'auth' : 'server',
+          status: response.status,
+        });
+        throw new Error(errorMsg);
       }
       
       // Mark as synced and remove from queue
       await updateStatus(obs.id, 'synced');
       await removeFromQueue(obs.id);
+      emitTelemetry('obs.sync.success', { 
+        observationId: obs.id, 
+        productId: obs.productId,
+      });
       return true;
     }
     
     // Legacy: Use standalone observations collection endpoint
-    const response = await fetch(`${apiBaseUrl}/observations`, {
+    // LP-obs-studio-cleanup-1.7.0: Use authFetch
+    const response = await authFetch(`${apiBaseUrl}/observations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
       body: JSON.stringify({
         product_mpn: obs.product_mpn,
         text: obs.text || (obs.tags?.join(', ') || ''), // Fallback to tags as text
@@ -221,12 +268,23 @@ async function syncObservation(
     
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      throw new Error(data.error || `Server error: ${response.status}`);
+      const errorMsg = data.error || `Server error: ${response.status}`;
+      emitTelemetry('obs.sync.fail', { 
+        observationId: obs.id, 
+        productMpn: obs.product_mpn,
+        errorKind: response.status === 401 ? 'auth' : 'server',
+        status: response.status,
+      });
+      throw new Error(errorMsg);
     }
     
     // Mark as synced and remove from queue
     await updateStatus(obs.id, 'synced');
     await removeFromQueue(obs.id);
+    emitTelemetry('obs.sync.success', { 
+      observationId: obs.id, 
+      productMpn: obs.product_mpn,
+    });
     return true;
   } catch (err) {
     console.error(`Failed to sync observation ${obs.id}:`, err);
@@ -241,18 +299,30 @@ async function syncObservation(
 
 /**
  * Flush all pending observations to server
+ * LP-obs-studio-cleanup-1.7.0: Added telemetry and improved error handling
  * Returns { synced, failed } counts
  */
 export async function flushQueue(
   apiBaseUrl: string = '/api'
 ): Promise<{ synced: number; failed: number }> {
   const pending = await getAllPending();
+  
+  if (pending.length === 0) {
+    return { synced: 0, failed: 0 };
+  }
+  
+  emitTelemetry('obs.sync.queue_flush_started', { queueLength: pending.length });
+  
   let synced = 0;
   let failed = 0;
   
   for (const obs of pending) {
     // Skip observations with too many retries
     if (obs.retryCount >= 3) {
+      emitTelemetry('obs.sync.max_retries_exceeded', { 
+        observationId: obs.id,
+        retryCount: obs.retryCount,
+      });
       failed++;
       continue;
     }
@@ -264,6 +334,8 @@ export async function flushQueue(
       failed++;
     }
   }
+  
+  emitTelemetry('obs.sync.queue_flush_completed', { synced, failed });
   
   return { synced, failed };
 }
@@ -404,20 +476,20 @@ export function cancelTagRemoval(removalId: string): boolean {
 
 /**
  * Process a single tag removal
+ * LP-obs-studio-cleanup-1.7.0: Use authFetch with automatic token refresh
  */
 async function processTagRemoval(
   removal: PendingTagRemoval,
   apiBaseUrl: string
 ): Promise<boolean> {
   try {
-    const response = await fetch(
+    const response = await authFetch(
       `${apiBaseUrl}/observations/${removal.observationId}/tags/remove`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ tag: removal.tag }),
       }
     );
