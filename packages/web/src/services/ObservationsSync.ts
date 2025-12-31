@@ -20,10 +20,12 @@ interface ObservationsDB extends DBSchema {
 }
 
 // Pending observation structure
+// LP-1.1.12: Made text optional - description is the primary content
 export interface PendingObservation {
   id: string;
   product_mpn: string;
-  text: string;
+  /** LP-1.1.12: Title/text is now optional */
+  text?: string;
   description?: string;
   severity: 'low' | 'medium' | 'high';
   images: string[]; // URLs

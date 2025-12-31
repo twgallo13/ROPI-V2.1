@@ -98,14 +98,16 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   };
 
   const handleSubmit = async () => {
-    if (!newObsTitle || !newObsBody || !currentUser) return;
+    // LP-1.1.12: Title is optional, only body is required
+    if (!newObsBody || !currentUser) return;
 
     setIsSubmitting(true);
 
     try {
       await addObservation({
         productId,
-        title: newObsTitle,
+        // LP-1.1.12: Title is optional
+        ...(newObsTitle.trim() && { title: newObsTitle.trim() }),
         body: newObsBody,
         severity: newObsSeverity,
         fieldLink: newObsFieldLink,
@@ -288,7 +290,8 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
                 </div>
               )}
               
-              <h5 className="observation-title">{obs.title}</h5>
+              {/* LP-1.1.12: Title is optional */}
+              {obs.title && <h5 className="observation-title">{obs.title}</h5>}
               <p className="observation-description">{obs.body}</p>
               
               {(obs.fieldLink || obs.linkedField) && (
@@ -335,7 +338,8 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
             
             <div className="modal-content">
               <div className="modal-field">
-                <label className="modal-label">Title *</label>
+                {/* LP-1.1.12: Title is now optional */}
+                <label className="modal-label">Title (optional)</label>
                 <input
                   type="text"
                   className="modal-input"
@@ -416,7 +420,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
               <button
                 className="modal-button modal-button-primary"
                 onClick={handleSubmit}
-                disabled={!newObsTitle || !newObsBody || isSubmitting}
+                disabled={!newObsBody || isSubmitting}
               >
                 {isSubmitting ? 'Adding...' : 'Add Observation'}
               </button>

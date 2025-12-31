@@ -33,7 +33,8 @@ interface FieldLink {
 
 interface CreateObservationInput {
   product_mpn: string;
-  text: string;
+  /** LP-1.1.12: Text is now optional */
+  text?: string;
   description?: string;
   images?: Array<{ url: string; thumb?: string; width?: number; height?: number }>;
   fieldLink?: FieldLink | null;
@@ -105,10 +106,12 @@ export async function createObservationHandler(req: Request, res: Response) {
       return;
     }
 
-    if (!body.text || typeof body.text !== 'string' || body.text.trim().length === 0) {
+    // LP-1.1.12: Text is optional, but need at least text or description
+    if ((!body.text || body.text.trim().length === 0) && 
+        (!body.description || body.description.trim().length === 0)) {
       res.status(400).json({
-        error: 'MISSING_TEXT',
-        message: 'text is required and must be a non-empty string',
+        error: 'MISSING_CONTENT',
+        message: 'At least one of text or description is required',
       });
       return;
     }

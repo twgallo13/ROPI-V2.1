@@ -114,8 +114,9 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
       return;
     }
 
-    if (!observationText.trim()) {
-      setErrorMessage('Please enter an observation');
+    // LP-1.1.12: Text (title) is optional, require description if no text
+    if (!observationText.trim() && !description.trim()) {
+      setErrorMessage('Please enter an observation or description');
       return;
     }
 
@@ -130,7 +131,8 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
       
       await addObservation({
         product_mpn: selectedProduct.product_mpn,
-        text: observationText.trim(),
+        // LP-1.1.12: Text is optional
+        ...(observationText.trim() && { text: observationText.trim() }),
         description: description.trim() || undefined,
         severity,
         images: imageUrls,
