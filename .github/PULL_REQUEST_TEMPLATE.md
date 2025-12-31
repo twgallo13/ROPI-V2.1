@@ -1,79 +1,91 @@
-<!-- PR Template: Lisa-controlled PR -->
+<!-- PR Template: LP-controlled PR -->
 
-### PVS Tag
-PVS-<MAJOR.MINOR.PATCH>
+## LP Version ID
+LP-<MAJOR.MINOR.PATCH>
 
-### Task Goal
-(One sentence)
-
-### Exact actions performed
-- File A changed
-- File B added
-- Script X run (local dry-run)
-
-### Files changed / diff summary
-(Short bullets or list)
-
-### References
-- Issues: #xxx
-- Docs: docs/lisa/xxx.md
-- Prior PRs: #123
-
-### Expected Outputs / Artifacts
-(What should exist after merge: e.g., routes fixed, UI changes)
-
-### Acceptance Criteria
-- [ ] PR title begins with `PVS-<MAJOR.MINOR.PATCH>`
-- [ ] Branch name: `lisa/PVS-.../<short>`
-- [ ] Commit messages include PVS tag
-- [ ] CI checks green
-- [ ] Manual test steps performed & pass
-
-### Testing Instructions
-1. Step 1
-2. Step 2
-
-### Merge Strategy
-Squash / Rebase / Merge Commit — (chosen by Lisa)
-
-### Reviewer checklist (for Lisa)
-- [ ] Meets PR template
-- [ ] Tests pass
-- [ ] Code style / lint
-- [ ] Schema validated
-
-- [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs`
-- [ ] **Area label**: `frontend` | `backend` | `infra` | `api` | `sdk`
-- [ ] **Priority label**: `p0-critical` | `p1-high` | `p2-medium` | `p3-low`
-
-## Pre-Merge Checklist
-
-- [ ] PR targets `aoss-main` branch
-- [ ] Branch follows naming convention: `feature/<slug>`
-- [ ] CI checks pass
-- [ ] Code review approved
-- [ ] **Branch will be deleted after merge**
+<!-- Example: LP-2.0.1, LP-2.0.2 -->
 
 ---
 
-## Summary Back to Lisa
+## Objective
+<!-- One sentence describing what this PR accomplishes -->
 
-<!-- REQUIRED: Provide a summary for Lisa that includes: -->
-<!-- - What was accomplished -->
-<!-- - Any deviations from the original task -->
-<!-- - Any follow-up items or blockers -->
-<!-- - Confirmation of completion -->
+---
 
-**Status:** 
+## Files Changed
+<!-- List of files changed with brief description -->
+- `path/to/file.ts` — Description of change
+- `path/to/other.ts` — Description of change
 
-**What was done:**
+---
 
+## Notion References
+<!-- Links to relevant Notion docs -->
+- [Reference Name](https://www.notion.so/...)
 
+---
 
-**Deviations or issues:**
+## Staging Validation Checklist
+<!-- Link to staging checklist and evidence -->
 
+See [STAGING_CHECKLIST.md](.github/STAGING_CHECKLIST.md) for required items.
 
+### Required Evidence (paste links/logs below)
+- [ ] **Firestore Backup ID (GCS path):** `gs://...`
+- [ ] **CI Pass Link:** [CI Run](#)
+- [ ] **Firebase Deploy Logs:** (paste or link)
+- [ ] **Validation Test Results:**
+  - [ ] Test A: _description_ — PASS/FAIL
+  - [ ] Test B: _description_ — PASS/FAIL
+  - [ ] Test C: _description_ — PASS/FAIL
 
-**Follow-up items:**
+---
+
+## Exact Actions Performed
+<!-- Detailed list of what was done -->
+- [ ] Action 1
+- [ ] Action 2
+- [ ] Action 3
+
+---
+
+## Testing Instructions
+1. Step 1
+2. Step 2
+3. Step 3
+
+---
+
+## Acceptance Criteria
+- [ ] PR title begins with `LP-<MAJOR.MINOR.PATCH>`
+- [ ] Branch name: `lp/<version>-<short-desc>`
+- [ ] Commit messages include LP tag
+- [ ] CI checks green
+- [ ] Staging validation evidence provided
+- [ ] Manual test steps performed & pass
+
+---
+
+## Merge Strategy
+<!-- Choose one: Squash / Rebase / Merge Commit -->
+Squash merge (default for feature branches)
+
+---
+
+## Reviewer Checklist
+- [ ] PR follows LP template
+- [ ] Tests pass
+- [ ] Code style / lint checks pass
+- [ ] Staging evidence complete
+- [ ] No breaking changes or remediation plan provided
+
+---
+
+## Labels
+<!-- Apply relevant labels -->
+- [ ] `LP-2.0.x` (version series)
+- [ ] Type: `feature` | `bugfix` | `hotfix` | `chore` | `docs` | `security`
+- [ ] Area: `frontend` | `backend` | `infra` | `api` | `sdk` | `firestore`
+- [ ] Status: `staging` | `ready-for-review` | `blocked`
 
 
