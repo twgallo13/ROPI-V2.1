@@ -1,0 +1,76 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-obs-studio-cleanup-1.6.5",
+  "branch": "obs-studio-cleanup/LP-1.6.5",
+  "mergeCommitSha": "35b4338025330d0b90bac12c390676a5a34f3665",
+  "prNumber": 398,
+  "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/398",
+  "deployRunId": "20617995669",
+  "deployRunUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20617995669",
+  "e2eRunId": "20617904704",
+  "e2eRunUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20617904704",
+  "mergedAt": "2025-12-31T11:23:00Z",
+  "deployedAt": "2025-12-31T11:27:00Z",
+  "verification": {
+    "describe_per_target": {
+      "status": "PASS",
+      "evidence": "3 targets → 3 results with unique candidates per target"
+    },
+    "meta_counts_correct": {
+      "status": "PASS",
+      "evidence": "Each result includes meta.observationsCount=1 and meta.tagsCount=2"
+    },
+    "ui_no_per_observation_candidates": {
+      "status": "PASS",
+      "evidence": "E2E test verifies absence of [data-testid='observation-candidate-group']"
+    },
+    "e2e_multi_target": {
+      "status": "PASS",
+      "evidence": "5 new E2E tests for LP-1.6.5 all passing"
+    },
+    "attribute_registry_unchanged": {
+      "status": "PASS",
+      "evidence": "No changes to attribute registry files"
+    },
+    "activity_log_on_apply": {
+      "status": "PASS",
+      "evidence": "_activityLog entry verified with appliedBy, target, type, payload, timestamp"
+    },
+    "seo_fields_updated": {
+      "status": "PASS",
+      "evidence": "meta_name and meta_description updated after SEO apply"
+    }
+  },
+  "stagingTests": {
+    "describeEndpoint": {
+      "url": "POST https://ropi-aoss-staging.web.app/api/products/211737-90h1-8/describe",
+      "status": 200,
+      "resultsCount": 3
+    },
+    "applyEndpoint": {
+      "url": "POST https://ropi-aoss-staging.web.app/api/products/211737-90h1-8/apply",
+      "status": 200,
+      "success": true
+    }
+  },
+  "sampleDescribeResponse": {
+    "target": "shiekh.com",
+    "candidatesCount": 2,
+    "seo": {
+      "title": "Nike Test Sneaker | Shop Now",
+      "bulletsCount": 6
+    },
+    "meta": {
+      "observationsCount": 1,
+      "tagsCount": 2
+    }
+  },
+  "sampleActivityLogEntry": {
+    "appliedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "productId": "211737-90h1-8",
+    "target": "shiekh.com",
+    "type": "description",
+    "timestamp": "2025-12-31T11:27:28.649Z"
+  }
+}
