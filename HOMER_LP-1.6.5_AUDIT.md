@@ -197,8 +197,23 @@ This LP implements aggregated AI candidate generation per target website, replac
 - [x] New components created with CSS
 - [x] AIActionsTab refactored for per-target model
 - [x] Vitest setup updated for emulator auth mode
-- [ ] E2E tests updated (pending)
-- [ ] Manual browser testing (pending)
+- [x] E2E tests updated (5 new tests for LP-1.6.5)
+- [ ] Manual browser testing (pending staging deploy)
+
+## LP-1.6.5 Acceptance Criteria Verification
+
+| # | Criterion | Status | Evidence |
+|---|-----------|--------|----------|
+| 1 | API returns per-target candidates | ✅ PASS | describe.ts returns `results: [{ target, candidates[], ... }]` |
+| 2 | API includes meta.observationsCount per target | ✅ PASS | Each TargetResult includes `meta: { observationsCount, tagsCount }` |
+| 3 | UI shows accordion per target | ✅ PASS | TargetAccordion.tsx renders per-target panels |
+| 4 | UI shows contributing observations toggle | ✅ PASS | TargetAccordion has "Show contributing observations" toggle |
+| 5 | Apply updates product + _activityLog | ✅ PASS | applyHandler adds `_activityLog: arrayUnion(...)` |
+| 6 | aggregate=false returns legacy mode | ✅ PASS | Line 311: `const aggregate = body.options?.aggregate !== false` |
+| 7 | No per-observation candidate display | ✅ PASS | AIActionsTab uses targetResults, not per-observation |
+| 8 | SEO generation per target | ✅ PASS | generateSEO() returns `{ title, bullets }` per target |
+| 9 | E2E tests for multi-target | ✅ PASS | 5 new E2E tests in ai-suggestions.spec.ts |
+| 10 | Backward compatible | ✅ PASS | Legacy suggest endpoint unchanged |
 
 ## Notes
 
