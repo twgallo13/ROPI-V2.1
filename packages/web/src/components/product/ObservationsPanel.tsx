@@ -1,40 +1,28 @@
-import { useState, useEffect } from 'react';
-import type { Observation, ObservationSeverity } from '../../types/observation';
-import type { FieldLink } from '../../types/fieldLink';
-import { listenToObservations, addObservation, resolveObservation, syncLocalToFirestore } from '../../services/observations';
+import { useState, useEffect, useCallback } from 'react';
+import type { Observation } from '../../types/observation';
+import { listenToObservations, resolveObservation, syncLocalToFirestore } from '../../services/observations';
 import { useAuth } from '@/hooks/useAuth';
 import { isFirebaseAvailable } from '../../firebaseConfig';
 import SignInModal from '@/components/Auth/SignInModal';
-import FieldPicker from './FieldPicker';
 import { fieldLinkToDisplayString, legacyLinkedFieldToFieldLink } from '../../utils/normalizeFieldLink';
 import './ObservationsPanel.css';
 
 /**
  * Observations Panel - Product Editor Sidebar
  * 
- * Displays real-time observations from Firestore with add/resolve functionality.
- * Falls back to localStorage when Firebase is unavailable.
+ * LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation model.
+ * Displays existing observations and allows adding product-level tags.
  * 
  * Features:
  * - Real-time observation updates via Firestore listener
- * - Image upload with Firebase Storage or data URL fallback
+ * - Simplified tags-only add modal (no title/description/severity/linkedField)
+ * - Product-level observation stored on product.observation
  * - Offline mode banner with sync retry
- * - Scroll-to-field linking with highlight animation
- * - Permission checks for resolve action (creator or admin only)
- * - Auth integration: Sign-in banner when unauthenticated
- * 
- * Auth Integration (PROMPT_018B):
- * - Replace useUser() with useAuth()
- * - Use Firebase Auth user.uid for createdBy field
- * - Compute canResolve: currentUser.uid === observation.createdBy OR isAdmin
- * - Show banner when !currentUser: "Sign in to use live Observations..."
- * - Remove localStorage fallback (always use Firestore)
+ * - Permission checks for resolve action
  * 
  * References:
  * - Workflow W1 — Observations Capture & Apply: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
- * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
- * - AOSS_OBSERVATIONS_FIRESTORE_v1.0 Implementation
- * - PROMPT_018B Spec: See HOMER_PROMPT_018B_AUDIT.txt
+ * - LP-obs-studio-cleanup-1.6.6: Collapse observations into product-level
  */
 
 interface ObservationsPanelProps {
@@ -50,12 +38,10 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Form state
-  const [newObsTitle, setNewObsTitle] = useState('');
-  const [newObsBody, setNewObsBody] = useState('');
-  const [newObsSeverity, setNewObsSeverity] = useState<ObservationSeverity>('medium');
-  const [newObsFieldLink, setNewObsFieldLink] = useState<FieldLink | null>(null);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  // LP-obs-studio-cleanup-1.6.6: Simplified tags-only form state
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
+  const [, setImageFiles] = useState<File[]>([]); // Keep for handleImageUpload
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const openObservations = observations.filter(obs => obs.status === 'open');
@@ -97,29 +83,54 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     });
   };
 
+  // LP-obs-studio-cleanup-1.6.6: Tag input handlers
+  const handleTagInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase();
+      if (newTag && !tags.includes(newTag)) {
+        setTags(prev => [...prev, newTag]);
+      }
+      setTagInput('');
+    } else if (e.key === 'Backspace' && tagInput === '' && tags.length > 0) {
+      setTags(prev => prev.slice(0, -1));
+    }
+  }, [tagInput, tags]);
+
+  const handleRemoveTag = useCallback((tagToRemove: string) => {
+    setTags(prev => prev.filter(t => t !== tagToRemove));
+  }, []);
+
+  // LP-obs-studio-cleanup-1.6.6: Simplified submit - uses product observation endpoint
   const handleSubmit = async () => {
-    if (!newObsTitle || !newObsBody || !currentUser) return;
+    if (tags.length === 0 || !currentUser) return;
 
     setIsSubmitting(true);
 
     try {
-      await addObservation({
-        productId,
-        title: newObsTitle,
-        body: newObsBody,
-        severity: newObsSeverity,
-        fieldLink: newObsFieldLink,
-        createdBy: {
-          uid: currentUser.uid,
-          name: currentUser.displayName || currentUser.email || 'Anonymous',
+      // Call the new product observation endpoint
+      const response = await fetch(`/api/products/${productId}/observation`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      }, imageFiles);
+        credentials: 'include',
+        body: JSON.stringify({
+          tags,
+          images: imagePreviews, // Use data URLs for now, could upload to storage
+          source: 'desktop',
+          action: 'add',
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || `Server error: ${response.status}`);
+      }
 
       // Reset form
-      setNewObsTitle('');
-      setNewObsBody('');
-      setNewObsSeverity('medium');
-      setNewObsFieldLink(null);
+      setTags([]);
+      setTagInput('');
       setImageFiles([]);
       setImagePreviews([]);
       setShowModal(false);
@@ -323,11 +334,12 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
         onClose={() => setShowSignInModal(false)}
       />
 
+      {/* LP-obs-studio-cleanup-1.6.6: Simplified tags-only modal */}
       {showModal && currentUser && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3 className="modal-title">Add Observation</h3>
+              <h3 className="modal-title">Add Observation Tags</h3>
               <button className="modal-close" onClick={() => setShowModal(false)} disabled={isSubmitting}>
                 ×
               </button>
@@ -335,55 +347,39 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
             
             <div className="modal-content">
               <div className="modal-field">
-                <label className="modal-label">Title *</label>
-                <input
-                  type="text"
-                  className="modal-input"
-                  value={newObsTitle}
-                  onChange={(e) => setNewObsTitle(e.target.value)}
-                  placeholder="Brief observation title"
-                  disabled={isSubmitting}
-                />
+                <label className="modal-label">Tags *</label>
+                <div className="tags-input-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', minHeight: '42px' }}>
+                  {tags.map((tag) => (
+                    <span key={tag} className="tag-chip" style={{ display: 'inline-flex', alignItems: 'center', background: '#e0e0e0', borderRadius: '16px', padding: '4px 8px', fontSize: '14px' }}>
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(tag)}
+                        style={{ marginLeft: '4px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                        aria-label={`Remove tag ${tag}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    type="text"
+                    className="tag-input"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={handleTagInputKeyDown}
+                    placeholder={tags.length === 0 ? "e.g., hidden pocket, runs small" : "Add another tag..."}
+                    disabled={isSubmitting}
+                    style={{ flex: 1, minWidth: '150px', border: 'none', outline: 'none', padding: '4px' }}
+                  />
+                </div>
+                <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                  Press Enter or comma to add a tag
+                </p>
               </div>
               
               <div className="modal-field">
-                <label className="modal-label">Description *</label>
-                <textarea
-                  className="modal-textarea"
-                  rows={4}
-                  value={newObsBody}
-                  onChange={(e) => setNewObsBody(e.target.value)}
-                  placeholder="Detailed observation description"
-                  disabled={isSubmitting}
-                />
-              </div>
-              
-              <div className="modal-field">
-                <label className="modal-label">Severity</label>
-                <select
-                  className="modal-input"
-                  value={newObsSeverity}
-                  onChange={(e) => setNewObsSeverity(e.target.value as ObservationSeverity)}
-                  disabled={isSubmitting}
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
-              
-              <div className="modal-field">
-                <label className="modal-label">Linked Field (optional)</label>
-                <FieldPicker
-                  value={newObsFieldLink}
-                  onChange={setNewObsFieldLink}
-                  disabled={isSubmitting}
-                  placeholder="Select or type a field..."
-                />
-              </div>
-              
-              <div className="modal-field">
-                <label className="modal-label">Images (optional, multiple allowed)</label>
+                <label className="modal-label">Images (optional)</label>
                 {imagePreviews.length > 0 && (
                   <div className="modal-image-previews">
                     {imagePreviews.map((preview, idx) => (
@@ -416,7 +412,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
               <button
                 className="modal-button modal-button-primary"
                 onClick={handleSubmit}
-                disabled={!newObsTitle || !newObsBody || isSubmitting}
+                disabled={tags.length === 0 || isSubmitting}
               >
                 {isSubmitting ? 'Adding...' : 'Add Observation'}
               </button>

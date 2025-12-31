@@ -1,53 +1,43 @@
 /**
  * Mobile Observation Capture Component
  * 
- * LP-1.1.1: Main UI for mobile observation capture workflow.
- * Includes MPN selection/scanning, observation entry, image capture,
- * and AI analysis integration.
+ * LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation capture.
+ * Captures product-level observation tags and stores directly on product document.
+ * 
+ * Workflow:
+ * 1. Scan/select product by MPN
+ * 2. Add observation tags (quick keywords)
+ * 3. Optionally capture images
+ * 4. Save to product.observation
  * 
  * References:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+ * - LP-obs-studio-cleanup-1.6.6: Collapse observations into product-level
  */
 
 import { useState, useCallback } from 'react';
 import MobileMPNScanner, { ScannedProduct } from './MobileMPNScanner';
 import ObservationImageUploader, { ImageFile } from './ObservationImageUploader';
 import AIAnalyzeChips from './AIAnalyzeChips';
-import FieldPicker from '../product/FieldPicker';
 import { useObservationsSync } from '../../hooks/useObservationsSync';
-import { useIsMobile } from '../../hooks/useIsMobile';
-import type { FieldLink } from '../../types/fieldLink';
 import './MobileObservationCapture.css';
 
 interface MobileObservationCaptureProps {
-  // Optional props - component manages its own state
   apiBaseUrl?: string;
 }
-
-type Severity = 'low' | 'medium' | 'high';
 
 function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCaptureProps) {
   // Offline sync hook
   const { pendingCount, isOnline, isSyncing, addObservation, syncNow } = useObservationsSync({ apiBaseUrl });
   
-  // LP-obs-studio-cleanup-1.3.0: Mobile detection for raw-first experience
-  const isMobile = useIsMobile();
-  
   // Product selection state
   const [selectedProduct, setSelectedProduct] = useState<ScannedProduct | null>(null);
   const [showScanner, setShowScanner] = useState(false);
 
-  // Observation form state
-  const [observationText, setObservationText] = useState('');
-  const [description, setDescription] = useState('');
-  const [severity, setSeverity] = useState<Severity>('medium');
-  const [fieldLink, setFieldLink] = useState<FieldLink | null>(null);
-  const [showFieldPicker, setShowFieldPicker] = useState(false);
-  const [images, setImages] = useState<ImageFile[]>([]);
-  
-  // LP-obs-studio-cleanup-1.0.0: Tags state
+  // LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
+  const [images, setImages] = useState<ImageFile[]>([]);
   
   // AI analysis state
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
@@ -62,10 +52,6 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
     setSelectedProduct(product);
     setShowScanner(false);
     // Clear previous observation data when switching products
-    setObservationText('');
-    setDescription('');
-    setSeverity('medium');
-    setFieldLink(null);
     setImages([]);
     setTags([]);
     setTagInput('');
@@ -76,17 +62,13 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
     setImages(newImages);
   }, []);
 
-  // Handle AI suggestion acceptance
+  // Handle AI suggestion acceptance - add as tag
   const handleAcceptSuggestion = useCallback((suggestionText: string) => {
-    // Add to observation text
-    setObservationText(prev => {
-      const trimmed = prev.trim();
-      if (trimmed) {
-        return `${trimmed}, ${suggestionText}`;
-      }
-      return suggestionText;
-    });
-  }, []);
+    const newTag = suggestionText.trim().toLowerCase();
+    if (newTag && !tags.includes(newTag)) {
+      setTags(prev => [...prev, newTag]);
+    }
+  }, [tags]);
 
   // LP-obs-studio-cleanup-1.0.0: Tag input handlers
   const handleTagInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -114,8 +96,8 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
       return;
     }
 
-    if (!observationText.trim()) {
-      setErrorMessage('Please enter an observation');
+    if (tags.length === 0) {
+      setErrorMessage('Please add at least one tag');
       return;
     }
 
@@ -128,28 +110,18 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
         .filter(img => img.status === 'uploaded' && img.url)
         .map(img => img.url);
       
+      // LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation
       await addObservation({
         product_mpn: selectedProduct.product_mpn,
-        text: observationText.trim(),
-        description: description.trim() || undefined,
-        severity,
+        productId: selectedProduct.id, // Include product ID for new endpoint
+        tags,
         images: imageUrls,
-        tags: tags.length > 0 ? tags : undefined,
-        fieldLink: fieldLink ? {
-          type: fieldLink.type,
-          fieldPath: fieldLink.key,
-          displayName: fieldLink.key.split('.').pop() || fieldLink.key,
-        } : undefined,
         source: 'mobile_capture',
       });
 
       // LP-obs-studio-cleanup-1.0.0: Finish & Next flow
       // Show success, clear ALL state including product, and open scanner for next item
       setSuccessMessage('Observation saved!');
-      setObservationText('');
-      setDescription('');
-      setSeverity('medium');
-      setFieldLink(null);
       setImages([]);
       setTags([]);
       setTagInput('');
@@ -170,15 +142,11 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
     } finally {
       setSaving(false);
     }
-  }, [selectedProduct, observationText, description, severity, fieldLink, images, addObservation, isOnline, syncNow]);
+  }, [selectedProduct, tags, images, addObservation, isOnline, syncNow]);
 
   // Handle clear/reset
   const handleClear = useCallback(() => {
     setSelectedProduct(null);
-    setObservationText('');
-    setDescription('');
-    setSeverity('medium');
-    setFieldLink(null);
     setImages([]);
     setTags([]);
     setTagInput('');
@@ -273,29 +241,10 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
       {/* Observation Form (only show if product selected) */}
       {selectedProduct && (
         <>
-          {/* Observation Text */}
-          <section className="capture-section">
-            <label htmlFor="observation-text" className="section-title">
-              Observation <span className="required">*</span>
-            </label>
-            <input
-              id="observation-text"
-              type="text"
-              className="observation-input"
-              value={observationText}
-              onChange={(e) => setObservationText(e.target.value)}
-              placeholder="e.g., hidden pocket, zipper detail..."
-              autoComplete="off"
-            />
-            <p className="field-help">
-              Enter tags or short notes (comma-separated for multiple)
-            </p>
-          </section>
-
-          {/* LP-obs-studio-cleanup-1.0.0: Tags Input */}
+          {/* LP-obs-studio-cleanup-1.6.6: Tags-only Input */}
           <section className="capture-section">
             <label htmlFor="tags-input" className="section-title">
-              Tags <span className="optional">(optional)</span>
+              Observation Tags <span className="required">*</span>
             </label>
             <div className="tags-input-container">
               {tags.map((tag) => (
@@ -327,81 +276,9 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
             </p>
           </section>
 
-          {/* Description (optional) */}
-          <section className="capture-section">
-            <label htmlFor="description" className="section-title">
-              Description <span className="optional">(optional)</span>
-            </label>
-            <textarea
-              id="description"
-              className="description-input"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add more details..."
-              rows={3}
-            />
-          </section>
-
-          {/* LP-obs-studio-cleanup-1.3.0: Severity - hidden on mobile for raw-first experience */}
-          {!isMobile && (
-            <section className="capture-section">
-              <span className="section-title">Severity</span>
-              <div className="severity-options" role="radiogroup" aria-label="Severity level">
-                {(['low', 'medium', 'high'] as Severity[]).map((level) => (
-                  <button
-                    key={level}
-                    className={`severity-btn ${severity === level ? 'active' : ''} ${level}`}
-                    onClick={() => setSeverity(level)}
-                    role="radio"
-                    aria-checked={severity === level}
-                  >
-                    {level.charAt(0).toUpperCase() + level.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* LP-obs-studio-cleanup-1.3.0: Field Link - hidden on mobile for raw-first experience */}
-          {!isMobile && (
-            <section className="capture-section">
-              <button 
-                className="collapsible-header"
-                onClick={() => setShowFieldPicker(!showFieldPicker)}
-                aria-expanded={showFieldPicker}
-              >
-                <span className="section-title">
-                  Link to Field <span className="optional">(optional)</span>
-                </span>
-                <span className={`chevron ${showFieldPicker ? 'open' : ''}`}>▼</span>
-              </button>
-              
-              {showFieldPicker && (
-                <div className="field-picker-container">
-                  <FieldPicker
-                    value={fieldLink}
-                    onChange={setFieldLink}
-                  />
-                  {fieldLink && (
-                    <div className="selected-field">
-                      Selected: <code>{fieldLink.key}</code>
-                      <button 
-                        className="clear-field-btn"
-                        onClick={() => setFieldLink(null)}
-                        aria-label="Clear field link"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </section>
-          )}
-
           {/* Images */}
           <section className="capture-section">
-            <span className="section-title">Images</span>
+            <span className="section-title">Images <span className="optional">(optional)</span></span>
             <ObservationImageUploader
               images={images}
               onImagesChange={handleImagesChange}
@@ -459,7 +336,7 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
             <button
               className="save-btn primary"
               onClick={handleSave}
-              disabled={saving || !observationText.trim()}
+              disabled={saving || tags.length === 0}
             >
               {saving ? 'Saving...' : 'Finish & Next'}
             </button>
