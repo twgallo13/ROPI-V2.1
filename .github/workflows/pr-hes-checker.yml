@@ -1,0 +1,30 @@
+# LP-observations-consolidation-1.5.0: HES Checker
+# Validates that PRs include a valid Homer Execution Summary (HES) JSON
+
+name: pr-hes-checker
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  hes-check:
+    name: Validate HES JSON
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run HES Checker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: node .github/scripts/pr-hes-checker.js
