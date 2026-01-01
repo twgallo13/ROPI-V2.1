@@ -1,0 +1,182 @@
+name: E2E Smoke Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'packages/web/src/components/observations/**'
+      - 'packages/web/src/pages/Observations*'
+      - 'packages/web/e2e/**'
+      - 'packages/api/src/**/observation*'
+      - '.github/workflows/e2e-smoke.yml'
+  push:
+    branches:
+      - aoss-main
+    paths:
+      - 'packages/web/src/components/observations/**'
+      - 'packages/web/e2e/**'
+  schedule:
+    # Nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Base URL to test against (default: staging)'
+        required: false
+        default: ''
+
+jobs:
+  e2e-smoke:
+    name: E2E Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+
+    env:
+      VITE_E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL || 'theo@shiekh.com' }}
+      VITE_E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL || 'e2e-user@shiekh.com' }}
+      VITE_E2E_UNVERIFIED_EMAIL: ${{ secrets.E2E_UNVERIFIED_EMAIL || 'unverified@shiekh.com' }}
+      VITE_E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+      VITE_E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      VITE_E2E_UNVERIFIED_PASSWORD: ${{ secrets.E2E_UNVERIFIED_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: cd packages/web && npx playwright install --with-deps chromium
+
+      - name: Determine test URL
+        id: test-url
+        run: |
+          if [ -n "${{ inputs.base_url }}" ]; then
+            TEST_URL="${{ inputs.base_url }}"
+          else
+            TEST_URL="https://ropi-aoss-staging.web.app"
+          fi
+          echo "base_url=${TEST_URL}" >> $GITHUB_OUTPUT
+          echo "Testing against: ${TEST_URL}"
+
+      - name: Wait for site to be ready
+        run: |
+          TEST_URL="${{ steps.test-url.outputs.base_url }}"
+          echo "Checking: ${TEST_URL}"
+          max_attempts=6
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f -s -o /dev/null "${TEST_URL}"; then
+              echo "✅ Site is ready"
+              exit 0
+            fi
+            echo "Waiting for site..."
+            sleep 5
+            attempt=$((attempt+1))
+          done
+          echo "::warning::Site might not be ready, attempting tests anyway"
+
+      - name: Run Smoke Tests
+        id: smoke-tests
+        env:
+          BASE_URL: ${{ steps.test-url.outputs.base_url }}
+          CI: true
+        run: |
+          cd packages/web
+          
+          echo "🚀 Running @smoke tagged E2E tests"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Target URL: ${BASE_URL}"
+          
+          # Run only @smoke tagged tests with max 3 failures
+          npx playwright test --grep "@smoke" --max-failures=3 --reporter=list,html 2>&1 | tee smoke-test-output.log
+          
+          # Capture exit code
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=${EXIT_CODE}" >> $GITHUB_OUTPUT
+          
+          exit $EXIT_CODE
+        continue-on-error: false
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-smoke-report-${{ github.run_id }}
+          path: |
+            packages/web/playwright-report/
+            packages/web/test-results/
+            packages/web/smoke-test-output.log
+          retention-days: 14
+
+      - name: Upload Test Traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-${{ github.run_id }}
+          path: packages/web/test-results/**/*.zip
+          retention-days: 7
+
+      - name: Comment on PR (Success)
+        if: success() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ✅ E2E Smoke Tests Passed
+            
+            **Target:** ${{ steps.test-url.outputs.base_url }}
+            **Run ID:** ${{ github.run_id }}
+            
+            [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Download Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)
+
+      - name: Comment on PR (Failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ❌ E2E Smoke Tests Failed
+            
+            **Target:** ${{ steps.test-url.outputs.base_url }}
+            **Run ID:** ${{ github.run_id }}
+            
+            Please review the test failures and traces.
+            
+            [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Download Traces](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)
+            
+            **Common issues:**
+            - Test user credentials expired
+            - Staging deployment not up to date
+            - Flaky locators need updating
+            
+            See [E2E Runbook](docs/observations-e2e-runbook.md) for triage steps.
+
+      - name: Report status
+        if: always()
+        run: |
+          echo "## E2E Smoke Test Summary"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Status: ${{ job.status }}"
+          echo "URL: ${{ steps.test-url.outputs.base_url }}"
+          echo "Artifacts: playwright-smoke-report-${{ github.run_id }}"

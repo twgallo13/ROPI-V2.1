@@ -82,6 +82,7 @@ Absence of evidence = non-verifiable = phase hold.
 - Deploy SA and GitHub secret `GCP_SA_KEY_BASE64` present  
 - LP label applied and PR body includes HES or HES placeholder  
 - `deploy-precheck` & `e2e` tests required
+- `e2e-smoke` tests required for changes touching observations code (LP-1.6.0)
 
 ## PR Template (reference)
 Add the following to `.github/PULL_REQUEST_TEMPLATE.md` (example):

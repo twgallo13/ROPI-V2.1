@@ -1,0 +1,166 @@
+# Cloud Monitoring Alert Policy: API 401/5xx Spike
+#
+# LP-observations-consolidation-1.6.0
+#
+# This policy alerts when:
+# - 401 (Unauthorized) errors exceed 2% of requests in 10 minutes
+# - 5xx (Server Error) responses exceed 2% of requests in 10 minutes
+# - OR absolute count > 10 errors per minute
+#
+# Deploy with: bash scripts/deploy-monitoring.sh --policy-file monitoring/alerting/alert-401-spike.yaml
+#
+# Documentation: https://cloud.google.com/monitoring/alerts/policies-in-json
+
+# GCP Alert Policy Definition
+apiVersion: monitoring.googleapis.com/v1
+kind: AlertPolicy
+metadata:
+  name: api-error-spike-alert
+  labels:
+    environment: staging
+    team: observations
+    lp: observations-consolidation-1.6.0
+spec:
+  displayName: "API Error Spike (401/5xx)"
+  documentation:
+    content: |
+      ## API Error Spike Alert
+      
+      This alert fires when the API experiences an elevated rate of authentication
+      failures (401) or server errors (5xx).
+      
+      ### Thresholds
+      - 401 errors: >2% of total requests over 10 minutes
+      - 5xx errors: >2% of total requests over 10 minutes
+      - OR: >10 errors per minute (absolute)
+      
+      ### Investigation Steps
+      1. Check Cloud Logging for recent 401/5xx entries
+      2. Verify Firebase Auth service status
+      3. Check recent deployments for breaking changes
+      4. Review service account credentials expiry
+      
+      ### Runbook
+      See: docs/observations-e2e-runbook.md#api-error-triage
+      
+      ### Escalation
+      - Slack: #ropi-alerts
+      - On-call: Check PagerDuty rotation
+    mimeType: text/markdown
+    subject: "API Error Spike Detected"
+  
+  # Conditions
+  conditions:
+    # Condition 1: 401 Unauthorized rate
+    - displayName: "401 Unauthorized Error Rate"
+      conditionThreshold:
+        filter: |
+          resource.type="cloud_run_revision"
+          AND metric.type="run.googleapis.com/request_count"
+          AND metric.labels.response_code="401"
+        comparison: COMPARISON_GT
+        thresholdValue: 0.02  # 2%
+        duration: 600s  # 10 minutes
+        aggregations:
+          - alignmentPeriod: 60s
+            perSeriesAligner: ALIGN_RATE
+            crossSeriesReducer: REDUCE_SUM
+            groupByFields:
+              - resource.label.service_name
+        trigger:
+          count: 1
+    
+    # Condition 2: 5xx Server Error rate
+    - displayName: "5xx Server Error Rate"
+      conditionThreshold:
+        filter: |
+          resource.type="cloud_run_revision"
+          AND metric.type="run.googleapis.com/request_count"
+          AND metric.labels.response_code_class="5xx"
+        comparison: COMPARISON_GT
+        thresholdValue: 0.02  # 2%
+        duration: 600s  # 10 minutes
+        aggregations:
+          - alignmentPeriod: 60s
+            perSeriesAligner: ALIGN_RATE
+            crossSeriesReducer: REDUCE_SUM
+            groupByFields:
+              - resource.label.service_name
+        trigger:
+          count: 1
+    
+    # Condition 3: Absolute error count spike
+    - displayName: "High Absolute Error Count"
+      conditionThreshold:
+        filter: |
+          resource.type="cloud_run_revision"
+          AND metric.type="run.googleapis.com/request_count"
+          AND (metric.labels.response_code="401" OR metric.labels.response_code_class="5xx")
+        comparison: COMPARISON_GT
+        thresholdValue: 10  # 10 errors per minute
+        duration: 300s  # 5 minutes
+        aggregations:
+          - alignmentPeriod: 60s
+            perSeriesAligner: ALIGN_RATE
+            crossSeriesReducer: REDUCE_SUM
+        trigger:
+          count: 1
+
+  combiner: OR  # Alert if ANY condition fires
+  
+  # Notification channels (configure in GCP Console)
+  notificationChannels:
+    # Placeholder - replace with actual channel IDs after creation
+    # - projects/ropi-bccee/notificationChannels/SLACK_CHANNEL_ID
+    # - projects/ropi-bccee/notificationChannels/EMAIL_CHANNEL_ID
+    []
+  
+  # Alert policy settings
+  alertStrategy:
+    autoClose: 604800s  # Auto-close after 7 days if not acknowledged
+    notificationRateLimit:
+      period: 300s  # Rate limit notifications to 1 per 5 minutes
+  
+  enabled: true
+  
+  # User labels for filtering
+  userLabels:
+    severity: warning
+    component: api
+    subsystem: observations
+
+---
+# Alternative: Datadog Monitor Definition
+# Uncomment if using Datadog instead of GCP Monitoring
+
+# type: metric alert
+# query: |
+#   sum(last_10m):avg:http.requests{status_code:401,service:ropi-api}.as_rate() / 
+#   avg:http.requests{service:ropi-api}.as_rate() * 100 > 2
+# name: "API 401 Error Rate > 2%"
+# message: |
+#   API authentication error rate exceeded threshold.
+#   
+#   {{#is_alert}}
+#   🚨 401 error rate is {{value}}% over the last 10 minutes.
+#   
+#   **Investigation:**
+#   1. Check recent deployments
+#   2. Verify Firebase Auth status
+#   3. Review Cloud Logging
+#   {{/is_alert}}
+#   
+#   @slack-ropi-alerts
+# tags:
+#   - env:staging
+#   - service:ropi-api
+#   - lp:observations-consolidation-1.6.0
+# priority: 2
+# options:
+#   thresholds:
+#     critical: 2
+#     warning: 1
+#   notify_no_data: false
+#   renotify_interval: 30
+#   escalation_message: "Alert still firing after 30 minutes"
+#   include_tags: true
