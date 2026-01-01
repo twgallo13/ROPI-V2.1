@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
-import { resolveObservation, syncLocalToFirestore, addObservation } from '../services/observations';
+import { syncLocalToFirestore } from '../services/observations';
+import { authFetch } from '../services/authFetch';
 import { Observation, ObservationSeverity, ObservationStatus, ObservationCreator } from '../types/observation';
 import { listProductObservations, ProductObservation, useProductObservationSRoT } from '../services/productObservations';
 import { useAuth } from '../hooks/useAuth';
@@ -109,11 +110,19 @@ function ObservationsPage() {
     }
   }
 
+  // Resolve a legacy observation (kept for migration). Note: legacy write paths
+  // may be disabled — this branch exists only for the migration window.
   async function handleResolve(obs: Observation) {
     try {
-      await resolveObservation(obs.id, obs.productId, user);
-      
-      // Update local state optimistically
+      // If we are using SRoT and the observation represents product-level tags,
+      // prefer clearing tags via the product SRoT (deterministic).
+      if (useSRoT && obs.productId) {
+        await handleResolveProductObservation(obs.productId);
+        return;
+      }
+      // Legacy path (may be deprecated)
+      const { resolveObservation: legacyResolve } = await import('../services/observations');
+      await legacyResolve(obs.id, obs.productId, user);
       setObservations((prev) =>
         prev.map((o) =>
           o.id === obs.id
@@ -123,6 +132,23 @@ function ObservationsPage() {
       );
     } catch (err) {
       alert('Failed to resolve observation: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    }
+  }
+
+  // SRoT resolve: clear product observation (deterministic)
+  async function handleResolveProductObservation(productId: string) {
+    try {
+      const resp = await authFetch(`/api/products/${productId}/observation`, {
+        method: 'DELETE',
+      });
+      if (!resp.ok) {
+        const data = await resp.json().catch(() => ({}));
+        throw new Error(data.message || `Server error: ${resp.status}`);
+      }
+      // Reload SRoT observations
+      await loadObservations();
+    } catch (err) {
+      alert('Failed to resolve product observation: ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   }
 
@@ -161,13 +187,42 @@ function ObservationsPage() {
 
     setIsSubmitting(true);
     try {
-      await addObservation({
-        productId: newObservation.productId,
-        title: newObservation.title,
-        body: newObservation.description,
-        severity: newObservation.severity,
-        createdBy: user,
-      });
+      // If SRoT is enabled, create a product.observation entry (deterministic)
+      if (useSRoT) {
+        // Map legacy fields to tags in a deterministic way:
+        // - include the title as a note tag and severity as a tag
+        const tags = [
+          `note:${newObservation.title}`,
+          `severity:${newObservation.severity}`,
+        ];
+        if (newObservation.description) {
+          tags.push(`desc:${newObservation.description.substring(0, 200)}`);
+        }
+        const resp = await authFetch(`/api/products/${newObservation.productId}/observation`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'add',
+            tags,
+            images: [],
+            source: 'observations-page',
+          }),
+        });
+        if (!resp.ok) {
+          const data = await resp.json().catch(() => ({}));
+          throw new Error(data.message || `Server error: ${resp.status}`);
+        }
+      } else {
+        // Legacy fallback (kept for migration only)
+        const { addObservation: legacyAdd } = await import('../services/observations');
+        await legacyAdd({
+          productId: newObservation.productId,
+          title: newObservation.title,
+          body: newObservation.description,
+          severity: newObservation.severity,
+          createdBy: user,
+        });
+      }
       
       // Reset form and close modal
       setNewObservation({
