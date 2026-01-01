@@ -1,19 +1,84 @@
-// node scripts/verify-attributes-meta.js <path-to-service-account-json>
+#!/usr/bin/env node
+/**
+ * Verify Attributes Meta Script
+ * 
+ * LP-observations-consolidation-1.5.0: Phase readiness check
+ * 
+ * Verifies that Firestore settings/attributesMeta.registry_version
+ * matches the local attributeRegistry.json version.
+ * 
+ * Usage:
+ *   node scripts/verify-attributes-meta.js <service-account-json>
+ *   node scripts/verify-attributes-meta.js --project <project-id>
+ *   node scripts/verify-attributes-meta.js --skip-firestore
+ * 
+ * Environment:
+ *   GOOGLE_APPLICATION_CREDENTIALS - Path to service account JSON
+ */
+
 const admin = require('firebase-admin');
 const fs = require('fs');
 const path = require('path');
 
-if (process.argv.length < 3) {
-  console.error('Usage: node scripts/verify-attributes-meta.js <service-account-json>');
+// Parse arguments
+const args = process.argv.slice(2);
+const skipFirestore = args.includes('--skip-firestore');
+const projectIdx = args.indexOf('--project');
+const projectId = projectIdx !== -1 ? args[projectIdx + 1] : null;
+
+// Find service account file
+let keyFile = null;
+if (!skipFirestore) {
+  // Check for explicit path argument
+  const explicitPath = args.find(a => a.endsWith('.json') && !a.startsWith('--'));
+  if (explicitPath) {
+    keyFile = explicitPath;
+  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    keyFile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  } else if (fs.existsSync('./service-account.json')) {
+    keyFile = './service-account.json';
+  }
+}
+
+// Read local registry version first
+const registryPath = path.resolve(__dirname, '../packages/sdk/config/attributeRegistry.json');
+let localRegistry;
+let verLocal;
+
+try {
+  localRegistry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  verLocal = localRegistry.version;
+  console.log('📦 Local attributeRegistry.json version:', verLocal);
+} catch (err) {
+  console.error('❌ Failed to read local attributeRegistry.json:', err.message);
   process.exit(2);
 }
 
-const keyFile = process.argv[2];
+if (skipFirestore) {
+  console.log('\n⚠️ Skipping Firestore verification (--skip-firestore flag)');
+  console.log('✅ Local registry version verified:', verLocal);
+  process.exit(0);
+}
+
+if (!keyFile) {
+  console.error('❌ No service account credentials found.');
+  console.error('   Provide a path to service account JSON, set GOOGLE_APPLICATION_CREDENTIALS,');
+  console.error('   or use --skip-firestore to skip Firestore verification.');
+  process.exit(2);
+}
+
+console.log('🔑 Using service account:', keyFile);
+
 const key = JSON.parse(fs.readFileSync(keyFile, 'utf8'));
-admin.initializeApp({ credential: admin.credential.cert(key) });
+admin.initializeApp({ 
+  credential: admin.credential.cert(key),
+  projectId: projectId || key.project_id
+});
 const db = admin.firestore();
 
 (async () => {
+  console.log('\n🔍 Checking Firestore settings/attributesMeta...');
+  
   // LP-service-account-ropi-deploy-1.0.0: Check correct path settings/attributesMeta
   const metaRef = db.collection('settings').doc('attributesMeta');
   const metaSnap = await metaRef.get();
@@ -35,18 +100,14 @@ const db = admin.firestore();
   }
   
   const meta = metaSnap.data();
-  console.log('settings/attributesMeta:', JSON.stringify(meta, null, 2));
+  console.log('📄 settings/attributesMeta:', JSON.stringify(meta, null, 2));
 
-  // Read local registry version
-  const registryPath = path.resolve(__dirname, '../packages/sdk/config/attributeRegistry.json');
-  const localRegistry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
-  const verLocal = localRegistry.version;
-  console.log('Local attributeRegistry.json version:', verLocal);
+  console.log('\n📦 Local attributeRegistry.json version:', verLocal);
   
   if (meta.registry_version === verLocal) {
-    console.log('OK: registry_version matches local file.');
+    console.log('✅ OK: registry_version matches local file.');
   } else {
-    console.warn('MISMATCH: registry_version (' + meta.registry_version + ') != local file version (' + verLocal + ')');
+    console.error('❌ MISMATCH: registry_version (' + meta.registry_version + ') != local file version (' + verLocal + ')');
     process.exit(1);
   }
 

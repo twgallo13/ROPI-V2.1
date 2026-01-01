@@ -1,4 +1,10 @@
 <!-- PR Template: Lisa-controlled PR -->
+<!-- LP-observations-consolidation-1.5.0: Updated with LP requirements -->
+
+LP: LP-<PhaseSlug>-<SemVer>
+PhaseSlug: <phase-slug>
+
+---
 
 ### PVS Tag
 PVS-<MAJOR.MINOR.PATCH>
@@ -22,10 +28,16 @@ PVS-<MAJOR.MINOR.PATCH>
 ### Expected Outputs / Artifacts
 (What should exist after merge: e.g., routes fixed, UI changes)
 
+## Phase Readiness
+<!-- Required: Attach Phase Readiness Declaration or link to phase documentation -->
+- [ ] Phase readiness check passed
+- [ ] Firestore meta version matches registry
+
 ### Acceptance Criteria
-- [ ] PR title begins with `PVS-<MAJOR.MINOR.PATCH>`
-- [ ] Branch name: `lisa/PVS-.../<short>`
-- [ ] Commit messages include PVS tag
+- [ ] PR title begins with `LP: LP-<PhaseSlug>-<SemVer>` or `PVS-<MAJOR.MINOR.PATCH>`
+- [ ] PR has label `lp:<phaseSlug>-<semver>`
+- [ ] Branch name follows convention
+- [ ] Commit messages include LP/PVS tag
 - [ ] CI checks green
 - [ ] Manual test steps performed & pass
 
@@ -42,17 +54,35 @@ Squash / Rebase / Merge Commit — (chosen by Lisa)
 - [ ] Code style / lint
 - [ ] Schema validated
 
-- [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs`
+- [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs` | `infra`
 - [ ] **Area label**: `frontend` | `backend` | `infra` | `api` | `sdk`
 - [ ] **Priority label**: `p0-critical` | `p1-high` | `p2-medium` | `p3-low`
+- [ ] **LP label**: `lp:<phaseSlug>-<semver>`
 
 ## Pre-Merge Checklist
 
 - [ ] PR targets `aoss-main` branch
-- [ ] Branch follows naming convention: `feature/<slug>`
-- [ ] CI checks pass
+- [ ] Branch follows naming convention: `feature/<slug>` or `fix/<slug>`
+- [ ] CI checks pass (lp-lint, pr-hes-checker, phase-readiness-check)
 - [ ] Code review approved
+- [ ] HES JSON posted (for Homer-executed LPs)
 - [ ] **Branch will be deleted after merge**
+
+---
+
+## HES (Homer Execution Summary)
+<!-- After execution, Homer will paste HES JSON here or in a comment -->
+<!-- Required for merge - must include: from, to, lp, actions, outcome -->
+
+```json
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-<PhaseSlug>-<SemVer>",
+  "actions": [],
+  "outcome": "PENDING"
+}
+```
 
 ---
 
