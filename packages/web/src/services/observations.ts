@@ -410,6 +410,80 @@ export function listenToObservations(
 }
 
 /**
+ * Product observation structure (SRoT on product document)
+ * LP-observations-consolidation-1.0.0: Canonical source of truth for product-scoped observations
+ * LP-observations-consolidation-1.1.0: Added for mobile/desktop parity hydration
+ */
+export interface ProductObservation {
+  tags: string[];
+  images: string[];
+  updatedAt: string | null;
+  updatedBy: string | null;
+  source?: string;
+}
+
+/**
+ * Listen to real-time updates for product-level observation (SRoT)
+ * LP-observations-consolidation-1.0.0: Subscribes to product.observation field
+ * LP-observations-consolidation-1.1.0: Used by mobile capture for rehydration on product select
+ * 
+ * This is the canonical listener for product-scoped observation data.
+ * UIs should use this instead of listenToObservations() for product-specific displays.
+ * 
+ * @param productId - The product document ID
+ * @param onUpdate - Callback when observation data changes
+ * @returns Unsubscribe function
+ */
+export function listenToProductObservation(
+  productId: string,
+  onUpdate: (observation: ProductObservation) => void
+): Unsubscribe {
+  const emptyObservation: ProductObservation = {
+    tags: [],
+    images: [],
+    updatedAt: null,
+    updatedBy: null,
+  };
+
+  if (isFirebaseAvailable() && db) {
+    try {
+      const productRef = doc(db, 'products', productId);
+      
+      return onSnapshot(
+        productRef,
+        (docSnapshot) => {
+          if (!docSnapshot.exists()) {
+            onUpdate(emptyObservation);
+            return;
+          }
+
+          const data = docSnapshot.data();
+          const observation = data?.observation || emptyObservation;
+          
+          onUpdate({
+            tags: observation.tags || [],
+            images: observation.images || [],
+            updatedAt: observation.updatedAt || null,
+            updatedBy: observation.updatedBy || null,
+            source: observation.source,
+          });
+        },
+        (error) => {
+          console.error('Error listening to product observation:', error);
+          onUpdate(emptyObservation);
+        }
+      );
+    } catch (error) {
+      console.error('Failed to set up product observation listener:', error);
+    }
+  }
+  
+  // Fallback: Return empty observation and no-op unsubscribe
+  onUpdate(emptyObservation);
+  return () => {};
+}
+
+/**
  * Sync local observations to Firestore
  * Used when connectivity is restored
  * 

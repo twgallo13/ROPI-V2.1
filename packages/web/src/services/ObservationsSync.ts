@@ -300,6 +300,7 @@ async function syncObservation(
 /**
  * Flush all pending observations to server
  * LP-obs-studio-cleanup-1.7.0: Added telemetry and improved error handling
+ * LP-observations-consolidation-1.1.0: Added flush_attempt, flush_success, flush_failure events
  * Returns { synced, failed } counts
  */
 export async function flushQueue(
@@ -311,6 +312,8 @@ export async function flushQueue(
     return { synced: 0, failed: 0 };
   }
   
+  // LP-1.1.0: Emit flush_attempt at start
+  emitTelemetry('obs.sync.flush_attempt', { queueLength: pending.length });
   emitTelemetry('obs.sync.queue_flush_started', { queueLength: pending.length });
   
   let synced = 0;
@@ -333,6 +336,13 @@ export async function flushQueue(
     } else {
       failed++;
     }
+  }
+  
+  // LP-1.1.0: Emit flush_success or flush_failure based on outcome
+  if (failed === 0 && synced > 0) {
+    emitTelemetry('obs.sync.flush_success', { synced, failed, total: pending.length });
+  } else if (failed > 0) {
+    emitTelemetry('obs.sync.flush_failure', { synced, failed, total: pending.length });
   }
   
   emitTelemetry('obs.sync.queue_flush_completed', { synced, failed });
@@ -580,3 +590,40 @@ export const __testing = {
   getTagRemovalQueue,
   saveTagRemovalQueue,
 };
+
+/**
+ * LP-observations-consolidation-1.1.0: Test hook to force flush queue
+ * Used by E2E tests to verify offline sync behavior.
+ * 
+ * @param apiBaseUrl - API base URL for sync
+ * @returns Promise<{ synced, failed }> counts from flush operation
+ */
+export async function forceFlushForTest(
+  apiBaseUrl: string = '/api'
+): Promise<{ synced: number; failed: number }> {
+  emitTelemetry('obs.sync.force_flush_test_called');
+  return flushQueue(apiBaseUrl);
+}
+
+/**
+ * LP-observations-consolidation-1.1.0: Get pending count by status for E2E tests
+ */
+export async function getQueueStatusForTest(): Promise<{
+  pending: number;
+  syncing: number;
+  error: number;
+  synced: number;
+}> {
+  const database = await initDB();
+  const pending = await database.getAllFromIndex('pendingObservations', 'by-status', 'pending');
+  const syncing = await database.getAllFromIndex('pendingObservations', 'by-status', 'syncing');
+  const error = await database.getAllFromIndex('pendingObservations', 'by-status', 'error');
+  const synced = await database.getAllFromIndex('pendingObservations', 'by-status', 'synced');
+  
+  return {
+    pending: pending.length,
+    syncing: syncing.length,
+    error: error.length,
+    synced: synced.length,
+  };
+}

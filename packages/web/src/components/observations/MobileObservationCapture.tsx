@@ -2,24 +2,29 @@
  * Mobile Observation Capture Component
  * 
  * LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation capture.
+ * LP-observations-consolidation-1.1.0: Mobile/Desktop parity - hydrate from product.observation SRoT
+ * 
  * Captures product-level observation tags and stores directly on product document.
  * 
  * Workflow:
  * 1. Scan/select product by MPN
- * 2. Add observation tags (quick keywords)
- * 3. Optionally capture images
- * 4. Save to product.observation
+ * 2. Hydrate existing tags/images from product.observation (SRoT)
+ * 3. Add/edit observation tags (quick keywords)
+ * 4. Optionally capture images
+ * 5. Save to product.observation
  * 
  * References:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - LP-obs-studio-cleanup-1.6.6: Collapse observations into product-level
+ * - LP-observations-consolidation-1.1.0: Mobile/Desktop parity
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import MobileMPNScanner, { ScannedProduct } from './MobileMPNScanner';
 import ObservationImageUploader, { ImageFile } from './ObservationImageUploader';
 import AIAnalyzeChips from './AIAnalyzeChips';
 import { useObservationsSync } from '../../hooks/useObservationsSync';
+import { listenToProductObservation, ProductObservation } from '../../services/observations';
 import './MobileObservationCapture.css';
 
 interface MobileObservationCaptureProps {
@@ -60,11 +65,45 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
   const handleProductSelect = useCallback((product: ScannedProduct) => {
     setSelectedProduct(product);
     setShowScanner(false);
-    // Clear previous observation data when switching products
-    setImages([]);
-    setTags([]);
+    // LP-1.1.0: Don't clear data here - let the useEffect hydrate from SRoT
+    // Tags and images will be set from product.observation listener
     setTagInput('');
   }, []);
+
+  // LP-observations-consolidation-1.1.0: Hydrate tags/images from product.observation (SRoT)
+  // This ensures mobile/desktop parity - UI state is driven by canonical SRoT
+  useEffect(() => {
+    if (!selectedProduct?.id) {
+      // No product selected, reset state
+      setTags([]);
+      setImages([]);
+      return;
+    }
+
+    // Subscribe to product.observation for real-time updates
+    const unsubscribe = listenToProductObservation(selectedProduct.id, (observation: ProductObservation) => {
+      // Hydrate tags from SRoT
+      setTags(observation.tags || []);
+      
+      // Hydrate images - convert URLs to ImageFile objects with 'uploaded' status
+      if (observation.images && observation.images.length > 0) {
+        const hydratedImages: ImageFile[] = observation.images.map((url, index) => ({
+          id: `hydrated-${index}-${Date.now()}`,
+          file: undefined, // Already uploaded, no local file
+          url,
+          thumbnail: url, // Use full URL as thumbnail for hydrated images
+          status: 'uploaded' as const,
+        }));
+        setImages(hydratedImages);
+      } else {
+        setImages([]);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [selectedProduct?.id]);
 
   // Handle images change from uploader
   const handleImagesChange = useCallback((newImages: ImageFile[]) => {
