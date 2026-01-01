@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { isFirebaseAvailable } from '../../firebaseConfig';
 import SignInModal from '@/components/Auth/SignInModal';
 import { fieldLinkToDisplayString, legacyLinkedFieldToFieldLink } from '../../utils/normalizeFieldLink';
+import { authFetch } from '../../services/authFetch';
 import './ObservationsPanel.css';
 
 /**
@@ -102,19 +103,19 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
   }, []);
 
   // LP-obs-studio-cleanup-1.6.6: Simplified submit - uses product observation endpoint
+  // LP-1.7.1: Use authFetch for proper Authorization header
   const handleSubmit = async () => {
     if (tags.length === 0 || !currentUser) return;
 
     setIsSubmitting(true);
 
     try {
-      // Call the new product observation endpoint
-      const response = await fetch(`/api/products/${productId}/observation`, {
+      // Call the new product observation endpoint with authFetch
+      const response = await authFetch(`/api/products/${productId}/observation`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({
           tags,
           images: imagePreviews, // Use data URLs for now, could upload to storage

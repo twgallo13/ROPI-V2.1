@@ -2,9 +2,11 @@
  * AIAnalyzeChips Component
  * 
  * LP-1.1.1: Display AI-suggested observation text as selectable chips.
+ * LP-1.7.1: Fixed 401 by using authFetch with automatic token refresh.
  */
 
 import { useState, useCallback } from 'react';
+import { authFetch } from '../../services/authFetch';
 import './AIAnalyzeChips.css';
 
 export interface AISuggestion {
@@ -44,12 +46,12 @@ export default function AIAnalyzeChips({
     try {
       // Use the first image for analysis (MVP scope)
       // In the future, this could analyze multiple images
-      const response = await fetch(`${apiBaseUrl}/observations/analyze-image`, {
+      // LP-1.7.1: Use authFetch for automatic token attachment and refresh on 401
+      const response = await authFetch(`${apiBaseUrl}/observations/analyze-image`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({
           imageUrl: imageUrls[0],
         }),
