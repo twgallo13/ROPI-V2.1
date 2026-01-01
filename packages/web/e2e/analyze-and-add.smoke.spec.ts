@@ -54,7 +54,7 @@ async function navigateToProduct(page: Page, mpn: string): Promise<string | null
   } catch {
     // Fallback: try products list
     await page.goto('/products');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Look for the product row directly (no search needed if visible)
     const productRow = page.locator(`text="${mpn}"`).first();
@@ -83,7 +83,7 @@ test.describe('@smoke LP-1.6.0: AI Analyze Flow', () => {
 
     // Navigate to AI Actions tab
     await page.goto(`/products/${productId}?tab=ai`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Wait for either the AI Actions tab content OR product page to load
     const aiTabLoaded = await page.waitForSelector(
@@ -111,7 +111,7 @@ test.describe('@smoke LP-1.6.0: AI Analyze Flow', () => {
     test.skip(!productId, 'Test product not found');
 
     await page.goto(`/products/${productId}?tab=ai`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check if AI tab is available
     const aiTabLoaded = await page.locator('text=/describe engine|ai actions|suggestions/i').first().isVisible({ timeout: 5000 }).catch(() => false);
@@ -150,7 +150,7 @@ test.describe('@smoke LP-1.6.0: AI Analyze Flow', () => {
     test.skip(!productId, 'Test product not found');
 
     await page.goto(`/products/${productId}?tab=ai`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check if AI tab is available
     const aiTabLoaded = await page.locator('text=/describe engine|ai actions|suggestions/i').first().isVisible({ timeout: 5000 }).catch(() => false);

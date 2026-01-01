@@ -192,7 +192,7 @@ test.describe('@smoke LP-1.6.0: Service Worker / PWA', () => {
 
   test('@smoke service worker registered (if PWA enabled)', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check for service worker
     const swRegistered = await page.evaluate(async () => {
