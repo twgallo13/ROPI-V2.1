@@ -5,9 +5,15 @@ import { listObservations, resolveObservation, syncLocalToFirestore, addObservat
 import { Observation, ObservationSeverity, ObservationStatus, ObservationCreator } from '../types/observation';
 import { useAuth } from '../hooks/useAuth';
 import { isFirebaseAvailable } from '../firebaseConfig';
+import ScanOrManualMPN, { type ResolvedProduct } from '../components/observations/ScanOrManualMPN';
+import ObservationsAddModal from '../components/observations/ObservationsAddModal';
 
 /**
  * Observations Page
+ * 
+ * LP-observations-consolidation-1.3.0: Replaced legacy add flow with Scan/Manual MPN.
+ * Primary Add action now opens ScanOrManualMPN → ObservationsAddModal (tags-first).
+ * Legacy form kept behind dropdown for migration period.
  * 
  * Displays all observations across all products with filtering and resolution capabilities.
  * Uses Firestore when available, falls back to localStorage when offline.
@@ -16,11 +22,6 @@ import { isFirebaseAvailable } from '../firebaseConfig';
  * - Workflow W1 — Observations Capture & Apply: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations — Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
  * - Product Completion Workflows: https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
- * 
- * TODO: Implement cross-product observation aggregation
- * TODO: Add bulk operations (resolve multiple, export)
- * TODO: Add filtering by severity, status, date range
- * TODO: Add search functionality
  */
 function ObservationsPage() {
   const navigate = useNavigate();
@@ -42,9 +43,16 @@ function ObservationsPage() {
   const [severityFilter, setSeverityFilter] = useState<ObservationSeverity | 'all'>('all');
   const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
   const [syncing, setSyncing] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  
+  // LP-observations-consolidation-1.3.0: New add flow state
+  const [showAddFlow, setShowAddFlow] = useState(false);
+  const [resolvedProduct, setResolvedProduct] = useState<ResolvedProduct | null>(null);
+  
+  // Legacy add flow state (kept for migration)
+  const [showLegacyDropdown, setShowLegacyDropdown] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [newObservation, setNewObservation] = useState({
     title: '',
     description: '',
@@ -295,21 +303,81 @@ function ObservationsPage() {
           <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
             {filteredObservations.length} observation{filteredObservations.length !== 1 ? 's' : ''}
           </span>
-          <button
-            onClick={() => setShowAddModal(true)}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-            }}
-          >
-            Add Observation
-          </button>
+          
+          {/* LP-observations-consolidation-1.3.0: New tags-first Add flow */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowAddFlow(true)}
+              data-testid="add-observation-btn"
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+              }}
+            >
+              Add Observation
+            </button>
+            
+            {/* Legacy dropdown trigger */}
+            <button
+              onClick={() => setShowLegacyDropdown(!showLegacyDropdown)}
+              style={{
+                marginLeft: '4px',
+                padding: '8px 8px',
+                backgroundColor: 'transparent',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '12px',
+              }}
+              title="More options"
+            >
+              ▼
+            </button>
+            
+            {showLegacyDropdown && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: 0,
+                  marginTop: '4px',
+                  backgroundColor: 'white',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '6px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  zIndex: 100,
+                  minWidth: '180px',
+                }}
+              >
+                <button
+                  onClick={() => {
+                    setShowLegacyDropdown(false);
+                    setShowAddModal(true);
+                  }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    color: 'var(--color-text-secondary)',
+                  }}
+                >
+                  📝 Legacy Add Form
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -486,7 +554,63 @@ function ObservationsPage() {
         </ul>
       </div>
 
-      {/* Add Observation Modal */}
+      {/* LP-observations-consolidation-1.3.0: Scan/Manual MPN Flow */}
+      {showAddFlow && !resolvedProduct && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowAddFlow(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              padding: '24px',
+              borderRadius: '12px',
+              width: '100%',
+              maxWidth: '500px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            <ScanOrManualMPN
+              onProductResolved={(product) => {
+                setResolvedProduct(product);
+              }}
+              onCancel={() => setShowAddFlow(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* LP-observations-consolidation-1.3.0: Tags-first Add Modal */}
+      {resolvedProduct && (
+        <ObservationsAddModal
+          product={resolvedProduct}
+          onSuccess={(tags) => {
+            // Show success message
+            setSuccessMessage(`Observation added with ${tags.length} tag(s)`);
+            setTimeout(() => setSuccessMessage(null), 3000);
+            // Reload observations to reflect new data
+            loadObservations();
+          }}
+          onClose={() => {
+            setResolvedProduct(null);
+            setShowAddFlow(false);
+          }}
+        />
+      )}
+
+      {/* Legacy Add Observation Modal (kept for migration) */}
       {showAddModal && (
         <div
           style={{
