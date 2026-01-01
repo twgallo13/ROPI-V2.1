@@ -39,7 +39,7 @@ async function navigateToObservationsPage(page: Page) {
 test.describe('LP-1.3.0: Observations Page - Scan/Manual MPN Add Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Sign in as admin
-    await signInWithEmail(page, TEST_USERS.ADMIN.email, TEST_USERS.ADMIN.password);
+    await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
   });
 
   test('primary Add button should open ScanOrManualMPN, NOT legacy form', async ({ page }) => {
@@ -227,7 +227,7 @@ test.describe('LP-1.3.0: Observations Page - Scan/Manual MPN Add Flow', () => {
 
 test.describe('LP-1.3.0: Legacy Form Access', () => {
   test.beforeEach(async ({ page }) => {
-    await signInWithEmail(page, TEST_USERS.ADMIN.email, TEST_USERS.ADMIN.password);
+    await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
   });
 
   test('legacy form accessible via dropdown menu', async ({ page }) => {
@@ -251,7 +251,7 @@ test.describe('LP-1.3.0: Legacy Form Access', () => {
 
 test.describe('LP-1.3.0: No Navigation Acceptance Check', () => {
   test.beforeEach(async ({ page }) => {
-    await signInWithEmail(page, TEST_USERS.ADMIN.email, TEST_USERS.ADMIN.password);
+    await signInWithEmail(page, TEST_USERS.admin.email, TEST_USERS.admin.password);
   });
 
   test('Add flow should NOT open new tab', async ({ page, context }) => {
