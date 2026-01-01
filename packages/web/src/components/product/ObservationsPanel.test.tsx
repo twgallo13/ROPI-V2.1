@@ -1,6 +1,8 @@
 /**
  * Smoke Tests for ObservationsPanel component
  * 
+ * LP-observations-consolidation-1.0.0: Updated to test listenToProductObservation (SRoT)
+ * 
  * Basic rendering and integration tests for ObservationsPanel
  * with Firestore service integration.
  * 
@@ -8,7 +10,7 @@
  * These tests verify component renders correctly with mocked service.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
@@ -44,6 +46,12 @@ vi.mock('firebase/firestore', () => ({
 }));
 
 describe('ObservationsPanel - Smoke Tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // LP-observations-consolidation-1.0.0: Mock SRoT listener
+    vi.mocked(observationsService.listenToProductObservation).mockReturnValue(vi.fn());
+  });
+
   it('renders with basic structure', () => {
     vi.mocked(firebaseConfig.isFirebaseAvailable).mockReturnValue(true);
     vi.mocked(observationsService.listenToObservations).mockReturnValue(vi.fn());
@@ -75,6 +83,25 @@ describe('ObservationsPanel - Smoke Tests', () => {
     );
 
     expect(mockListen).toHaveBeenCalledWith('prod123', expect.any(Function));
+  });
+
+  // LP-observations-consolidation-1.0.0: Test canonical SRoT listener
+  it('calls listenToProductObservation on mount (SRoT)', () => {
+    vi.mocked(firebaseConfig.isFirebaseAvailable).mockReturnValue(true);
+    vi.mocked(observationsService.listenToObservations).mockReturnValue(vi.fn());
+
+    const mockProductListen = vi.fn().mockReturnValue(vi.fn());
+    vi.mocked(observationsService.listenToProductObservation).mockImplementation(mockProductListen);
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <ObservationsPanel productId="prod123" />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    expect(mockProductListen).toHaveBeenCalledWith('prod123', expect.any(Function));
   });
 
   it('shows offline banner when Firebase unavailable', () => {

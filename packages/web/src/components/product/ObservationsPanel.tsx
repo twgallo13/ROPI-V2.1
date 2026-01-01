@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Observation } from '../../types/observation';
-import { listenToObservations, resolveObservation, syncLocalToFirestore } from '../../services/observations';
+import { 
+  listenToObservations, 
+  listenToProductObservation, 
+  resolveObservation, 
+  syncLocalToFirestore,
+  type ProductObservation 
+} from '../../services/observations';
 import { useAuth } from '@/hooks/useAuth';
 import { isFirebaseAvailable } from '../../firebaseConfig';
 import SignInModal from '@/components/Auth/SignInModal';
@@ -11,11 +17,14 @@ import './ObservationsPanel.css';
 /**
  * Observations Panel - Product Editor Sidebar
  * 
+ * LP-observations-consolidation-1.0.0: Uses product.observation as canonical SRoT.
  * LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation model.
+ * 
  * Displays existing observations and allows adding product-level tags.
  * 
  * Features:
- * - Real-time observation updates via Firestore listener
+ * - Real-time observation updates via product.observation listener (SRoT)
+ * - Legacy observations displayed for backward compatibility
  * - Simplified tags-only add modal (no title/description/severity/linkedField)
  * - Product-level observation stored on product.observation
  * - Offline mode banner with sync retry
@@ -33,6 +42,13 @@ interface ObservationsPanelProps {
 function ObservationsPanel({ productId }: ObservationsPanelProps) {
   const { currentUser, isAdmin, loading: authLoading } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
+  // LP-observations-consolidation-1.0.0: SRoT - product.observation listener
+  const [productObservation, setProductObservation] = useState<ProductObservation>({
+    tags: [],
+    images: [],
+    updatedAt: null,
+    updatedBy: null,
+  });
   const [showModal, setShowModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
@@ -47,7 +63,22 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
 
   const openObservations = observations.filter(obs => obs.status === 'open');
 
-  // Set up real-time listener for observations
+  // LP-observations-consolidation-1.0.0: Listen to canonical product.observation (SRoT)
+  useEffect(() => {
+    if (!productId) return;
+
+    const unsubscribe = listenToProductObservation(productId, (observation) => {
+      setProductObservation(observation);
+      setIsOffline(!isFirebaseAvailable());
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [productId]);
+
+  // Legacy: Set up real-time listener for legacy observations collection
+  // This will be deprecated in a future LP after migration
   useEffect(() => {
     if (!productId) return;
 
@@ -225,7 +256,9 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     <div className="product-panel">
       <div className="product-panel-header">
         <h4 className="product-panel-title">Observations</h4>
-        <span className="product-panel-badge">{openObservations.length}</span>
+        <span className="product-panel-badge">
+          {productObservation.tags.length + openObservations.length}
+        </span>
       </div>
       
       {/* Auth banner when not signed in */}
@@ -260,10 +293,61 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
       )}
       
       <div className="product-panel-content">
-        {openObservations.length === 0 ? (
+        {/* LP-observations-consolidation-1.0.0: Display canonical product.observation tags (SRoT) */}
+        {productObservation.tags.length > 0 && (
+          <div className="observation-tags-section">
+            <div className="observation-tags-header">
+              <span className="observation-tags-label">Product Tags</span>
+              {productObservation.updatedAt && productObservation.updatedBy && (
+                <span className="observation-tags-meta">
+                  Last updated by {productObservation.updatedBy}
+                </span>
+              )}
+            </div>
+            <div className="observation-tags-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+              {productObservation.tags.map((tag) => (
+                <span 
+                  key={tag} 
+                  className="observation-tag"
+                  style={{ 
+                    background: '#e3f2fd', 
+                    color: '#1565c0', 
+                    borderRadius: '16px', 
+                    padding: '4px 12px', 
+                    fontSize: '13px',
+                    fontWeight: 500 
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            {productObservation.images.length > 0 && (
+              <div className="observation-images" style={{ marginBottom: '12px' }}>
+                {productObservation.images.map((imgUrl, idx) => (
+                  <img 
+                    key={idx} 
+                    src={imgUrl} 
+                    alt={`Observation image ${idx + 1}`} 
+                    className="observation-image"
+                    onClick={() => window.open(imgUrl, '_blank')}
+                    style={{ cursor: 'pointer', maxWidth: '80px', maxHeight: '80px', marginRight: '8px', borderRadius: '4px' }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Legacy observations (will be migrated in LP-observations-consolidation-1.4.0) */}
+        {openObservations.length === 0 && productObservation.tags.length === 0 ? (
           <p className="panel-empty">No open observations</p>
-        ) : (
-          openObservations.map((obs) => (
+        ) : openObservations.length > 0 && (
+          <div className="legacy-observations-section">
+            <span className="observation-tags-label" style={{ fontSize: '12px', color: '#999', marginBottom: '8px', display: 'block' }}>
+              Legacy Observations
+            </span>
+            {openObservations.map((obs) => (
             <div key={obs.id} className="observation-item">
               <div className="observation-header">
                 <span className={`observation-severity severity-${obs.severity}`}>
@@ -317,7 +401,8 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
                 {formatTime(obs.createdAt)} by {obs.createdBy.name}
               </div>
             </div>
-          ))
+          ))}
+          </div>
         )}
         
         <button 

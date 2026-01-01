@@ -1,25 +1,29 @@
 /**
  * Mobile Observation Capture Component
  * 
+ * LP-observations-consolidation-1.0.0: Hydrates tags from product.observation (SRoT).
  * LP-obs-studio-cleanup-1.6.6: Simplified tags-only observation capture.
+ * 
  * Captures product-level observation tags and stores directly on product document.
  * 
  * Workflow:
  * 1. Scan/select product by MPN
- * 2. Add observation tags (quick keywords)
- * 3. Optionally capture images
- * 4. Save to product.observation
+ * 2. Hydrate existing tags from product.observation (SRoT)
+ * 3. Add observation tags (quick keywords)
+ * 4. Optionally capture images
+ * 5. Save to product.observation via PATCH endpoint
  * 
  * References:
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - LP-obs-studio-cleanup-1.6.6: Collapse observations into product-level
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import MobileMPNScanner, { ScannedProduct } from './MobileMPNScanner';
 import ObservationImageUploader, { ImageFile } from './ObservationImageUploader';
 import AIAnalyzeChips from './AIAnalyzeChips';
 import { useObservationsSync } from '../../hooks/useObservationsSync';
+import { listenToProductObservation, type ProductObservation } from '../../services/observations';
 import './MobileObservationCapture.css';
 
 interface MobileObservationCaptureProps {
@@ -48,6 +52,9 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
   const [tagInput, setTagInput] = useState('');
   const [images, setImages] = useState<ImageFile[]>([]);
   
+  // LP-observations-consolidation-1.0.0: Existing product observation state (for hydration display)
+  const [_existingObservation, setExistingObservation] = useState<ProductObservation | null>(null);
+  
   // AI analysis state
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
 
@@ -55,6 +62,29 @@ function MobileObservationCapture({ apiBaseUrl = '/api' }: MobileObservationCapt
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // LP-observations-consolidation-1.0.0: Listen to product.observation when product is selected
+  useEffect(() => {
+    if (!selectedProduct?.id) {
+      setExistingObservation(null);
+      return;
+    }
+
+    const unsubscribe = listenToProductObservation(selectedProduct.id, (observation) => {
+      setExistingObservation(observation);
+      // Hydrate tags from product.observation if not already editing
+      // Only on initial load (when tags are empty)
+      if (tags.length === 0 && observation.tags.length > 0) {
+        setTags(observation.tags);
+      }
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+    // Only re-run when product changes, not when tags change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProduct?.id]);
 
   // Handle MPN selection from scanner or autocomplete
   const handleProductSelect = useCallback((product: ScannedProduct) => {

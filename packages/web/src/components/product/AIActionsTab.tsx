@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { Product, AIHistoryEntry } from '../../types/product';
 import { useSuggestions } from '../../hooks/useSuggestions';
 import TargetAccordion, { type TargetResult, type Candidate, type SEOData } from './TargetAccordion';
@@ -7,11 +7,13 @@ import aiDescribeClient, {
   getDefaultTargets,
   type DescribeRequest,
 } from '../../services/AIDescribeClient';
+import { listenToProductObservation, type ProductObservation } from '../../services/observations';
 import './AIActionsTab.css';
 
 /**
  * AIActionsTab Component
  * 
+ * LP-observations-consolidation-1.0.0: Uses product.observation as canonical SRoT.
  * LP-obs-studio-cleanup-1.6.5: Refactored to per-target aggregated model.
  * 
  * Tab 5: Describe Engine Controls and AI Power Features
@@ -21,7 +23,7 @@ import './AIActionsTab.css';
  * - Tone Preset Overrides
  * - Targets row with selectable target cards
  * - Per-target accordion panels with candidates
- * - Aggregated observations per target
+ * - Aggregated observations per target (from product.observation SRoT)
  * - SEO generation per target
  * - Apply/Edit/Try Again controls
  * - Show contributing observations
@@ -91,6 +93,14 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     message: '',
   });
 
+  // LP-observations-consolidation-1.0.0: SRoT - product.observation listener state
+  const [productObservation, setProductObservation] = useState<ProductObservation>({
+    tags: [],
+    images: [],
+    updatedAt: null,
+    updatedBy: null,
+  });
+
   // LP-obs-studio-cleanup-1.4.0: Suggestions from observations
   const {
     suggestions,
@@ -126,6 +136,19 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     }
   };
 
+  // LP-observations-consolidation-1.0.0: Listen to product.observation (SRoT)
+  useEffect(() => {
+    if (!product?.id) return;
+
+    const unsubscribe = listenToProductObservation(product.id, (observation) => {
+      setProductObservation(observation);
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [product?.id]);
+
   // LP-obs-studio-cleanup-1.4.0: Apply a single suggestion
   const handleApplySuggestion = async (suggestion: typeof suggestions[0]) => {
     if (!product?.id) return;
@@ -147,12 +170,24 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     }
   };
 
-  // Collect observations for the product
+  // LP-observations-consolidation-1.0.0: Collect observations from product.observation SRoT
+  // Combines canonical product.observation tags with legacy product.observations array
   const observations = useMemo(() => {
-    // In production, this would come from the observations service
-    const productObs = (product as unknown as { observations?: Array<{ id: string; text?: string; tags?: string[] }> }).observations || [];
-    return productObs;
-  }, [product]);
+    // Get tags from canonical product.observation (SRoT)
+    const srotTags = productObservation.tags || [];
+    
+    // Get legacy observations from product.observations array (for backward compatibility)
+    const legacyObs = (product as unknown as { observations?: Array<{ id: string; text?: string; tags?: string[] }> }).observations || [];
+    
+    // Combine: Create observation entries from canonical tags + legacy observations
+    const fromSrot = srotTags.length > 0 ? [{
+      id: 'product-observation-srot',
+      text: srotTags.join(', '),
+      tags: srotTags,
+    }] : [];
+    
+    return [...fromSrot, ...legacyObs];
+  }, [productObservation.tags, product]);
 
   // Aggregate observations data
   const aggregatedData = useMemo(() => {
