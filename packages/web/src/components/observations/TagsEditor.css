@@ -1,0 +1,217 @@
+/**
+ * TagsEditor Styles
+ * 
+ * LP-observations-consolidation-1.2.0: Styling for the reusable tags-first editor.
+ * Matches ROPI design system (dark theme).
+ */
+
+.tags-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tags-editor-disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Tags Input Container */
+.tags-editor-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  min-height: 44px;
+  cursor: text;
+}
+
+.tags-editor-input-container:focus-within {
+  border-color: #666;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Tag Chips */
+.tags-editor-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #3a3a3a;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.tags-editor-chip-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #888;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tags-editor-chip-remove:hover {
+  background: #555;
+  color: #fff;
+}
+
+/* Input Field */
+.tags-editor-input {
+  flex: 1;
+  min-width: 120px;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e0e0e0;
+  font-size: 14px;
+}
+
+.tags-editor-input::placeholder {
+  color: #666;
+}
+
+.tags-editor-input:disabled {
+  cursor: not-allowed;
+}
+
+/* Help Text */
+.tags-editor-help {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.tags-editor-limit {
+  color: #f59e0b;
+}
+
+/* AI Suggestions */
+.tags-editor-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tags-editor-suggestions-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.tags-editor-suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tags-editor-suggestion-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px dashed #4a4a4a;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tags-editor-suggestion-chip:hover {
+  border-color: #666;
+  background: #2a2a2a;
+  color: #bbb;
+}
+
+/* Image Upload Section */
+.tags-editor-images {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tags-editor-image-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tags-editor-image-preview {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.tags-editor-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tags-editor-image-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.tags-editor-image-preview:hover .tags-editor-image-remove {
+  opacity: 1;
+}
+
+.tags-editor-image-remove:hover {
+  background: rgba(239, 68, 68, 0.9);
+}
+
+.tags-editor-upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #2a2a2a;
+  border: 1px dashed #444;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tags-editor-upload-button:hover {
+  background: #333;
+  border-color: #555;
+  color: #aaa;
+}
+
+.tags-editor-image-count {
+  font-size: 12px;
+  color: #666;
+}

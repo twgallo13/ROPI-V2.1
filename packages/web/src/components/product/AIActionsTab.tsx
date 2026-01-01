@@ -7,6 +7,9 @@ import aiDescribeClient, {
   getDefaultTargets,
   type DescribeRequest,
 } from '../../services/AIDescribeClient';
+import { useAuth } from '@/hooks/useAuth';
+import { authFetch } from '../../services/authFetch';
+import TagsEditor, { getTagsEditorPayload } from '../observations/TagsEditor';
 import './AIActionsTab.css';
 
 /**
@@ -74,10 +77,17 @@ interface JobProgress {
 }
 
 function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
+  const { currentUser, loading: authLoading } = useAuth();
   const [selectedTemplate, setSelectedTemplate] = useState<string>('streetwear');
   const [selectedTone, setSelectedTone] = useState<string>('professional');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [autoResolve, setAutoResolve] = useState(false);
+  
+  // LP-observations-consolidation-1.2.0: Inline observation modal state
+  const [showObservationModal, setShowObservationModal] = useState(false);
+  const [observationTags, setObservationTags] = useState<string[]>([]);
+  const [observationImages, setObservationImages] = useState<string[]>([]);
+  const [isSubmittingObservation, setIsSubmittingObservation] = useState(false);
   
   // LP-obs-studio-cleanup-1.6.5: Per-target state
   const [selectedTargets, setSelectedTargets] = useState<string[]>(getDefaultTargets());
@@ -438,6 +448,116 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
     onUpdate('aiHistory', newHistory);
   };
 
+  // LP-observations-consolidation-1.2.0: Open inline observation modal
+  const handleOpenObservationModal = useCallback(() => {
+    // Pre-populate with existing observation tags if any
+    const existingTags = (product as unknown as { observation?: { tags?: string[] } }).observation?.tags || [];
+    setObservationTags(existingTags);
+    setObservationImages([]);
+    setShowObservationModal(true);
+  }, [product]);
+
+  // LP-observations-consolidation-1.2.0: Close inline observation modal
+  const handleCloseObservationModal = useCallback(() => {
+    setShowObservationModal(false);
+    setObservationTags([]);
+    setObservationImages([]);
+  }, []);
+
+  // LP-observations-consolidation-1.2.0: Submit observation via PATCH API (no navigation)
+  const handleSubmitObservation = useCallback(async () => {
+    if (!currentUser || !product?.id) {
+      console.error('Cannot submit: no user or product');
+      return;
+    }
+
+    const payload = getTagsEditorPayload(observationTags, observationImages);
+    if (payload.tags.length === 0) {
+      alert('Please add at least one tag');
+      return;
+    }
+
+    setIsSubmittingObservation(true);
+
+    try {
+      const response = await authFetch(`/api/products/${product.id}/observation`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tags: payload.tags,
+          images: payload.images,
+          source: 'ai-tab',
+          action: 'add',
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || `Server error: ${response.status}`);
+      }
+
+      // Response success - don't need body for UI update
+      await response.json();
+
+      // Update product observation locally for immediate UI feedback
+      const currentObs = (product as unknown as { observation?: { tags?: string[]; images?: string[] } }).observation || {};
+      const mergedTags = Array.from(new Set([...(currentObs.tags || []), ...payload.tags]));
+      const mergedImages = [...(currentObs.images || []), ...payload.images];
+      
+      onUpdate('observation', {
+        ...currentObs,
+        tags: mergedTags,
+        images: mergedImages,
+        updatedAt: new Date().toISOString(),
+      });
+
+      // Add to AI history
+      const newEntry: AIHistoryEntry = {
+        id: `ai-${Date.now()}`,
+        action: 'add_observation_tags',
+        timestamp: new Date().toISOString(),
+        result: `Added observation tags: ${payload.tags.join(', ')}`,
+        confidence: 100,
+      };
+      const newHistory = [...(product.aiHistory ?? []), newEntry];
+      onUpdate('aiHistory', newHistory);
+
+      // Close modal
+      handleCloseObservationModal();
+
+    } catch (error) {
+      console.error('Failed to add observation:', error);
+      alert(`Failed to add observation: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsSubmittingObservation(false);
+    }
+  }, [currentUser, product, observationTags, observationImages, onUpdate, handleCloseObservationModal]);
+
+  // Get AI suggestions for observation tags
+  const observationSuggestions = useMemo(() => {
+    // Derive suggestions from aggregated data and current product
+    const candidateTags: string[] = [];
+    
+    // Add tags from aggregated observations
+    aggregatedData.uniqueTags.forEach(tag => {
+      if (!observationTags.includes(tag)) {
+        candidateTags.push(tag);
+      }
+    });
+
+    // Add common attribute-based suggestions
+    const attributes = product.attributes || {};
+    const colorAttr = attributes.color;
+    const materialAttr = attributes.material;
+    if (colorAttr && typeof colorAttr === 'string' && !observationTags.includes(colorAttr.toLowerCase())) {
+      candidateTags.push(colorAttr.toLowerCase());
+    }
+    if (materialAttr && typeof materialAttr === 'string' && !observationTags.includes(materialAttr.toLowerCase())) {
+      candidateTags.push(materialAttr.toLowerCase());
+    }
+
+    return candidateTags.slice(0, 10);
+  }, [aggregatedData, product.attributes, observationTags]);
   // Calculate elapsed time for job
   const elapsedTime = jobProgress.startTime 
     ? Math.round((Date.now() - jobProgress.startTime) / 1000) 
@@ -602,17 +722,17 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
         )}
 
         {/* LP-obs-studio-cleanup-1.6.6: Product Observation Tags */}
+        {/* LP-observations-consolidation-1.2.0: Replaced external link with inline modal */}
         <div className="product-observation-section">
           <div className="product-observation-header">
             <h4 className="product-observation-title">📋 Product Observation Tags</h4>
-            <a 
-              href={`/observations?mpn=${product.mpn || product.sku}`}
-              className="add-observation-link"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button 
+              className="add-observation-link add-observation-button"
+              onClick={handleOpenObservationModal}
+              disabled={authLoading || !currentUser}
             >
               + Add Observation
-            </a>
+            </button>
           </div>
           {(product as unknown as { observation?: { tags?: string[] } }).observation?.tags?.length ? (
             <div className="product-observation-tags">
@@ -813,6 +933,63 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
           and the selected audience template. Review outputs in the Descriptions tab before export.
         </p>
       </div>
+
+      {/* LP-observations-consolidation-1.2.0: Inline Observation Modal (no navigation) */}
+      {showObservationModal && (
+        <div className="observation-modal-overlay" onClick={handleCloseObservationModal}>
+          <div className="observation-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="observation-modal-header">
+              <h3 className="observation-modal-title">📋 Add Observation Tags</h3>
+              <button 
+                className="observation-modal-close" 
+                onClick={handleCloseObservationModal}
+                disabled={isSubmittingObservation}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="observation-modal-content">
+              <p className="observation-modal-description">
+                Add tags to describe features, fit notes, or quality observations for this product.
+                These help improve AI-generated descriptions.
+              </p>
+              
+              <TagsEditor
+                initialTags={observationTags}
+                initialImages={observationImages}
+                suggestedTags={observationSuggestions}
+                enableImages={true}
+                maxTags={20}
+                maxImages={5}
+                onTagsChange={setObservationTags}
+                onImagesChange={setObservationImages}
+                disabled={isSubmittingObservation}
+                placeholder="e.g., hidden pocket, runs small, premium leather"
+                autoFocus={true}
+              />
+            </div>
+            
+            <div className="observation-modal-footer">
+              <button 
+                className="observation-modal-button observation-modal-button-secondary"
+                onClick={handleCloseObservationModal}
+                disabled={isSubmittingObservation}
+              >
+                Cancel
+              </button>
+              <button
+                className="observation-modal-button observation-modal-button-primary"
+                onClick={handleSubmitObservation}
+                disabled={observationTags.length === 0 || isSubmittingObservation}
+              >
+                {isSubmittingObservation ? 'Adding...' : 'Add Observation'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
