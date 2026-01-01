@@ -101,7 +101,7 @@ test.describe('@smoke LP-1.6.0: Offline Enqueue + Flush', () => {
     await page.locator('button:has-text("Find Product")').click();
 
     // Wait for ObservationsAddModal
-    const modal = page.locator('.observations-add-modal, text=/Add Observation Tags/i');
+    const modal = page.locator('.observations-add-modal').or(page.getByText('Add Observation Tags'));
     await expect(modal.first()).toBeVisible({ timeout: 5000 });
 
     // Add a unique test tag

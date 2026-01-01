@@ -214,7 +214,7 @@ test.describe('@smoke LP-1.6.0: Product Add Flow (Manual MPN)', () => {
     await page.locator('button:has-text("Find Product")').click();
 
     // Wait for ObservationsAddModal to appear
-    const modal = page.locator('.observations-add-modal, text=/Add Observation Tags/i');
+    const modal = page.locator('.observations-add-modal').or(page.getByText('Add Observation Tags'));
     await expect(modal.first()).toBeVisible({ timeout: 5000 });
 
     // URL should NOT have changed (inline modal)
