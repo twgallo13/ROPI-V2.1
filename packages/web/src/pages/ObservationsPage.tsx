@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
-import { listObservations, resolveObservation, syncLocalToFirestore, addObservation } from '../services/observations';
+import { resolveObservation, syncLocalToFirestore, addObservation } from '../services/observations';
 import { Observation, ObservationSeverity, ObservationStatus, ObservationCreator } from '../types/observation';
+import { listProductObservations, ProductObservation, useProductObservationSRoT } from '../services/productObservations';
 import { useAuth } from '../hooks/useAuth';
 import { isFirebaseAvailable } from '../firebaseConfig';
 import ScanOrManualMPN, { type ResolvedProduct } from '../components/observations/ScanOrManualMPN';
@@ -14,6 +15,10 @@ import ObservationsAddModal from '../components/observations/ObservationsAddModa
  * LP-observations-consolidation-1.3.0: Replaced legacy add flow with Scan/Manual MPN.
  * Primary Add action now opens ScanOrManualMPN → ObservationsAddModal (tags-first).
  * Legacy form kept behind dropdown for migration period.
+ * 
+ * LP-observations-consolidation-1.4.0: Migrated to product.observation SRoT.
+ * Read path now uses listProductObservations() from productObservations service.
+ * Legacy observations collection retired as canonical source.
  * 
  * Displays all observations across all products with filtering and resolution capabilities.
  * Uses Firestore when available, falls back to localStorage when offline.
@@ -36,11 +41,19 @@ function ObservationsPage() {
     name: 'Anonymous',
   };
   
+  // LP-observations-consolidation-1.4.0: Use product.observation SRoT
+  const useSRoT = useProductObservationSRoT();
+  
+  // State for new SRoT (product observations)
+  const [productObservations, setProductObservations] = useState<ProductObservation[]>([]);
+  
+  // State for legacy observations (kept for migration period)
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<ObservationStatus | 'all'>('all');
   const [severityFilter, setSeverityFilter] = useState<ObservationSeverity | 'all'>('all');
+  const [tagFilter, setTagFilter] = useState<string>('');  // LP-1.4.0: Tag search
   const [isOffline, setIsOffline] = useState(!isFirebaseAvailable());
   const [syncing, setSyncing] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -60,29 +73,34 @@ function ObservationsPage() {
     productId: '123', // Default product ID for demo
   });
 
-  // Mock product IDs for demo - in production, this would aggregate across all products
+  // Mock product IDs for demo - legacy fallback only
   const demoProductIds = ['123', '456', '789'];
 
   useEffect(() => {
     loadObservations();
-  }, []);
+  }, [useSRoT]);
 
   async function loadObservations() {
     setLoading(true);
     setError(null);
     try {
-      // In production, this would query all observations the user has access to
-      // For now, load from demo product IDs
-      const allObservations: Observation[] = [];
-      for (const productId of demoProductIds) {
-        const obs = await listObservations(productId);
-        allObservations.push(...obs);
+      // LP-observations-consolidation-1.4.0: Use product.observation SRoT
+      if (useSRoT) {
+        const prodObs = await listProductObservations(100);
+        setProductObservations(prodObs);
+        setObservations([]); // Clear legacy state
+      } else {
+        // Legacy fallback - loop through demo products
+        const { listObservations } = await import('../services/observations');
+        const allObservations: Observation[] = [];
+        for (const productId of demoProductIds) {
+          const obs = await listObservations(productId);
+          allObservations.push(...obs);
+        }
+        allObservations.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        setObservations(allObservations);
+        setProductObservations([]); // Clear SRoT state
       }
-      
-      // Sort by creation date (newest first)
-      allObservations.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-      
-      setObservations(allObservations);
       setIsOffline(!isFirebaseAvailable());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load observations');
@@ -173,11 +191,23 @@ function ObservationsPage() {
     }
   }
 
+  // LP-observations-consolidation-1.4.0: Filter product observations (SRoT)
+  const filteredProductObservations = productObservations.filter((obs) => {
+    if (tagFilter && !obs.tags.some(tag => 
+      tag.toLowerCase().includes(tagFilter.toLowerCase())
+    )) return false;
+    return true;
+  });
+  
+  // Legacy filter for migration period
   const filteredObservations = observations.filter((obs) => {
     if (filter !== 'all' && obs.status !== filter) return false;
     if (severityFilter !== 'all' && obs.severity !== severityFilter) return false;
     return true;
   });
+  
+  // Compute display count based on which mode is active
+  const displayCount = useSRoT ? filteredProductObservations.length : filteredObservations.length;
 
   const getSeverityColor = (severity: ObservationSeverity) => {
     switch (severity) {
@@ -261,47 +291,70 @@ function ObservationsPage() {
         </div>
       )}
 
-      <div style={{ marginBottom: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-        <div>
-          <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Status:</label>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value as ObservationStatus | 'all')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--color-border)',
-              backgroundColor: 'var(--color-background)',
-            }}
-          >
-            <option value="all">All</option>
-            <option value="open">Open</option>
-            <option value="resolved">Resolved</option>
-          </select>
-        </div>
+      <div style={{ marginBottom: '24px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+        {/* LP-observations-consolidation-1.4.0: Show tag filter for SRoT mode */}
+        {useSRoT ? (
+          <div>
+            <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Search Tags:</label>
+            <input
+              type="text"
+              value={tagFilter}
+              onChange={(e) => setTagFilter(e.target.value)}
+              placeholder="Filter by tag..."
+              data-testid="tag-filter-input"
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--color-border)',
+                backgroundColor: 'var(--color-background)',
+                minWidth: '180px',
+              }}
+            />
+          </div>
+        ) : (
+          <>
+            <div>
+              <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Status:</label>
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value as ObservationStatus | 'all')}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'var(--color-background)',
+                }}
+              >
+                <option value="all">All</option>
+                <option value="open">Open</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
 
-        <div>
-          <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Severity:</label>
-          <select
-            value={severityFilter}
-            onChange={(e) => setSeverityFilter(e.target.value as ObservationSeverity | 'all')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--color-border)',
-              backgroundColor: 'var(--color-background)',
-            }}
-          >
-            <option value="all">All</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-        </div>
+            <div>
+              <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>Severity:</label>
+              <select
+                value={severityFilter}
+                onChange={(e) => setSeverityFilter(e.target.value as ObservationSeverity | 'all')}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'var(--color-background)',
+                }}
+              >
+                <option value="all">All</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </>
+        )}
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-            {filteredObservations.length} observation{filteredObservations.length !== 1 ? 's' : ''}
+            {displayCount} product{displayCount !== 1 ? 's' : ''} with observations
           </span>
           
           {/* LP-observations-consolidation-1.3.0: New tags-first Add flow */}
@@ -400,7 +453,7 @@ function ObservationsPage() {
         </div>
       )}
 
-      {!loading && !error && filteredObservations.length === 0 && (
+      {!loading && !error && displayCount === 0 && (
         <div style={{
           textAlign: 'center',
           padding: '48px',
@@ -410,14 +463,79 @@ function ObservationsPage() {
         }}>
           <p style={{ fontSize: '18px', marginBottom: '8px' }}>👁️ No observations found</p>
           <p style={{ fontSize: '14px' }}>
-            {filter !== 'all' || severityFilter !== 'all'
+            {useSRoT && tagFilter
+              ? 'No products match your tag filter'
+              : filter !== 'all' || severityFilter !== 'all'
               ? 'Try adjusting your filters'
               : 'Observations will appear here as products are analyzed'}
           </p>
         </div>
       )}
 
-      {!loading && !error && filteredObservations.length > 0 && (
+      {/* LP-observations-consolidation-1.4.0: Render product observations from SRoT */}
+      {!loading && !error && useSRoT && filteredProductObservations.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {filteredProductObservations.map((obs) => (
+            <div
+              key={obs.productId}
+              data-testid={`product-obs-${obs.productId}`}
+              style={{
+                padding: '16px',
+                border: '1px solid var(--color-border)',
+                borderRadius: '8px',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+              }}
+              onClick={() => navigate(`/products/${obs.productId}`)}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+                      {obs.mpn || obs.productId}
+                    </h4>
+                    {obs.title && (
+                      <span style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>
+                        {obs.title}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                    {obs.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        style={{
+                          display: 'inline-block',
+                          padding: '2px 8px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          backgroundColor: '#e0e7ff',
+                          color: '#3730a3',
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  {obs.images.length > 0 && (
+                    <div style={{ marginTop: '8px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                      📷 {obs.images.length} image{obs.images.length !== 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign: 'right', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                  <div>Updated: {new Date(obs.updatedAt).toLocaleDateString()}</div>
+                  <div>By: {obs.updatedBy}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Legacy observation rendering (kept for migration period) */}
+      {!loading && !error && !useSRoT && filteredObservations.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filteredObservations.map((obs) => (
             <div

@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "lp": "LP-observations-consolidation-1.4.0",
+    "mode": "apply",
+    "timestamp": "2026-01-01T12:54:33.645Z",
+    "target": "staging",
+    "duration": "0.94s"
+  },
+  "summary": {
+    "totalObservations": 2,
+    "productsAffected": 2,
+    "tagsExtracted": 3,
+    "success": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "conflicts": [],
+  "errors": [],
+  "migrationPlan": [
+    {
+      "productId": "211737-90h1-8",
+      "observationCount": 1,
+      "observationIds": [
+        "Xeznf1TOQ3IhWsKBC8YX"
+      ],
+      "existingTags": [
+        "test4",
+        "test 1",
+        "hidden pocket",
+        "zipper detail",
+        "work1",
+        "blue1"
+      ],
+      "newTags": [
+        "lp-1.2.0 verification test"
+      ],
+      "mergedTags": [
+        "test4",
+        "test 1",
+        "hidden pocket",
+        "zipper detail",
+        "work1",
+        "blue1",
+        "lp-1.2.0 verification test"
+      ],
+      "existingImages": [
+        "https://firebasestorage.googleapis.com/v0/b/ropi-bccee.firebasestorage.app/o/observations%2F211737-90H1-8%2F1767237335665_74a21d57f82637796251020569d36a17.jpg?alt=media&token=3914914e-a6e8-49e4-8ed6-ea4e8ee1b48f",
+        "https://firebasestorage.googleapis.com/v0/b/ropi-bccee.firebasestorage.app/o/observations%2F211737-90H1-8%2F1767237480830_facea0ef42802c5a941e3ad756477308.jpg?alt=media&token=8947b09d-ae97-44a6-843b-e1d3423910ed"
+      ],
+      "newImages": [],
+      "mergedImages": [
+        "https://firebasestorage.googleapis.com/v0/b/ropi-bccee.firebasestorage.app/o/observations%2F211737-90H1-8%2F1767237335665_74a21d57f82637796251020569d36a17.jpg?alt=media&token=3914914e-a6e8-49e4-8ed6-ea4e8ee1b48f",
+        "https://firebasestorage.googleapis.com/v0/b/ropi-bccee.firebasestorage.app/o/observations%2F211737-90H1-8%2F1767237480830_facea0ef42802c5a941e3ad756477308.jpg?alt=media&token=8947b09d-ae97-44a6-843b-e1d3423910ed"
+      ]
+    },
+    {
+      "productId": "123",
+      "observationCount": 1,
+      "observationIds": [
+        "05nPruLiGAv40LbQDYg0"
+      ],
+      "existingTags": [],
+      "newTags": [
+        "first round of seeding",
+        "first 1 of 3"
+      ],
+      "mergedTags": [
+        "first round of seeding",
+        "first 1 of 3"
+      ],
+      "existingImages": [],
+      "newImages": [],
+      "mergedImages": []
+    }
+  ]
+}

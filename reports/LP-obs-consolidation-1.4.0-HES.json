@@ -1,0 +1,164 @@
+{
+  "lp": "LP-observations-consolidation-1.4.0",
+  "title": "Migrate Legacy Observations → Product.observation",
+  "status": "COMPLETE",
+  "completedAt": "2026-01-01T19:30:00Z",
+  "executor": "Homer (AI Agent)",
+  "approvedBy": "User approval at 2026-01-01T12:50:00Z",
+  
+  "summary": {
+    "objective": "Migrate legacy observations collection to product.observation as canonical SRoT",
+    "approach": "Option A - Direct migration (small data volume)",
+    "outcome": "SUCCESS - All observations migrated, UI updated, no data loss"
+  },
+  
+  "preflightChecks": {
+    "serviceAccount": {
+      "status": "VERIFIED",
+      "account": "ropi-deploy-sa@ropi-bccee.iam.gserviceaccount.com",
+      "projectId": "ropi-bccee"
+    },
+    "firestoreBackup": {
+      "status": "CREATED",
+      "path": "gs://ropi-bccee.firebasestorage.app/firestore-backup-20260101T125340Z/",
+      "timestamp": "2026-01-01T12:53:40Z"
+    },
+    "dryRun": {
+      "status": "PASSED",
+      "totalObservations": 2,
+      "productsAffected": 2,
+      "tagsExtracted": 3,
+      "conflictCount": 0,
+      "reportFile": "reports/dryrun-lp140-20260101-124652.json"
+    }
+  },
+  
+  "migration": {
+    "applyExecution": {
+      "status": "SUCCESS",
+      "timestamp": "2026-01-01T12:54:33.645Z",
+      "duration": "0.94s",
+      "results": {
+        "totalObservations": 2,
+        "productsAffected": 2,
+        "tagsExtracted": 3,
+        "success": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "logFile": "reports/apply-20260101T125432Z.log",
+      "reportFile": "reports/apply-2026-01-01T12-54-32-661Z.json"
+    },
+    "verification": {
+      "status": "PASSED",
+      "timestamp": "2026-01-01T12:55:56.723Z",
+      "duration": "0.92s",
+      "results": {
+        "totalProducts": 3,
+        "verified": 3,
+        "mismatches": 0,
+        "orphanedGroups": 0,
+        "verificationRate": "100.0%"
+      },
+      "reportFile": "reports/verify-2026-01-01T12-55-55-765Z.json"
+    }
+  },
+  
+  "productsAffected": [
+    {
+      "productId": "211737-90h1-8",
+      "observationIds": ["Xeznf1TOQ3IhWsKBC8YX"],
+      "tagsAdded": ["lp-1.2.0 verification test"],
+      "existingTagsPreserved": ["test4", "test 1", "hidden pocket", "zipper detail", "work1", "blue1"],
+      "imagesPreserved": 2
+    },
+    {
+      "productId": "123",
+      "observationIds": ["05nPruLiGAv40LbQDYg0"],
+      "tagsAdded": ["first round of seeding", "first 1 of 3"],
+      "existingTagsPreserved": [],
+      "imagesPreserved": 0
+    }
+  ],
+  
+  "uiUpdate": {
+    "status": "COMPLETE",
+    "file": "packages/web/src/pages/ObservationsPage.tsx",
+    "changes": [
+      "Import listProductObservations from productObservations service",
+      "Add useSRoT flag for feature toggle",
+      "Add tagFilter for tag-based search",
+      "Update loadObservations() to use SRoT when enabled",
+      "Render product observations with tags display",
+      "Keep legacy rendering behind feature flag"
+    ],
+    "commit": "ada828e"
+  },
+  
+  "codeChanges": {
+    "created": [
+      "scripts/migrate-observations-to-product-observation.js",
+      "scripts/verify-migration.js",
+      "packages/web/src/services/productObservations.ts",
+      "packages/web/e2e/observations-srot.spec.ts"
+    ],
+    "modified": [
+      "packages/web/src/pages/ObservationsPage.tsx"
+    ],
+    "commits": [
+      {
+        "sha": "a0a5e40",
+        "message": "feat(obs-1.4.0): add migration scripts and productObservations service"
+      },
+      {
+        "sha": "f90eba3",
+        "message": "chore(obs-1.4.0): add dry-run report"
+      },
+      {
+        "sha": "19f206a",
+        "message": "chore(obs-1.4.0): complete apply+verify with simplified queries"
+      },
+      {
+        "sha": "ada828e",
+        "message": "feat(obs-1.4.0): update ObservationsPage to use product.observation SRoT"
+      }
+    ]
+  },
+  
+  "buildStatus": {
+    "webPackage": "PASSED",
+    "typeCheck": "PASSED",
+    "linter": "PASSED"
+  },
+  
+  "legacyCollection": {
+    "collection": "observations",
+    "status": "RETIRED_AS_SROT",
+    "note": "Legacy collection data preserved for reference. No longer used as canonical source.",
+    "readsRemaining": "None in primary read paths (ObservationsPage now uses productObservations service)"
+  },
+  
+  "rollbackPlan": {
+    "status": "AVAILABLE",
+    "backupPath": "gs://ropi-bccee.firebasestorage.app/firestore-backup-20260101T125340Z/",
+    "procedure": [
+      "1. Restore from Firestore backup",
+      "2. Set useProductObservationSRoT() to return false",
+      "3. Redeploy frontend"
+    ]
+  },
+  
+  "nextSteps": [
+    "Monitor staging for 24-48 hours",
+    "Collect user feedback on new observations display",
+    "Consider removing legacy observations collection in future LP",
+    "Add Firestore composite indexes if scale increases"
+  ],
+  
+  "pr": {
+    "number": 406,
+    "branch": "fix/obs-migrate-1.4.0",
+    "targetBranch": "aoss-main",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/406"
+  }
+}
