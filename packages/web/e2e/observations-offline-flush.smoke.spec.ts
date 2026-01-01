@@ -86,11 +86,12 @@ test.describe('@smoke LP-1.6.0: Offline Enqueue + Flush', () => {
     await expect(addButton).toBeVisible({ timeout: 5000 });
     await addButton.click();
 
-    // Wait for ScanOrManualMPN modal
-    await expect(page.locator('text=/Select Product|Enter MPN|Scan/i')).toBeVisible({ timeout: 3000 });
+    // Wait for ScanOrManualMPN modal - use first() to avoid strict mode violation
+    const modalTitle = page.locator('h3:has-text("Select Product"), .scan-or-manual-title').first();
+    await expect(modalTitle).toBeVisible({ timeout: 3000 });
 
-    // Click "Enter MPN" / "Manual" option
-    await page.locator('text=/Enter MPN|Manual/i').click();
+    // Click "Enter MPN" / "Manual" option - use first() to avoid strict mode
+    await page.locator('span:has-text("Enter MPN"), button:has-text("Enter MPN")').first().click();
 
     // Enter MPN
     const mpnInput = page.locator('input.manual-mpn-input, input[placeholder*="MPN"]');
@@ -101,7 +102,7 @@ test.describe('@smoke LP-1.6.0: Offline Enqueue + Flush', () => {
 
     // Wait for ObservationsAddModal
     const modal = page.locator('.observations-add-modal, text=/Add Observation Tags/i');
-    await expect(modal).toBeVisible({ timeout: 5000 });
+    await expect(modal.first()).toBeVisible({ timeout: 5000 });
 
     // Add a unique test tag
     const offlineTag = `offline-test-${Date.now()}`;
