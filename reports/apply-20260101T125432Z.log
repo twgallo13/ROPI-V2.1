@@ -1,0 +1,34 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄 LP-observations-consolidation-1.4.0 Migration
+   Mode: ⚡ APPLY
+   Target: staging
+   Batch size: 500
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 Step 1: Fetching legacy observations...
+   Found 2 legacy observation(s)
+
+📊 Step 2: Grouping observations by product...
+   Products affected: 2
+   Tags extracted: 3
+   Images extracted: 0
+   Conflicts found: 0
+
+🔍 Step 3: Checking existing product observations...
+   Products with existing observation data: 1
+   Total conflicts after check: 0
+
+📋 Step 4: Building migration plan...
+   Migration plan entries: 2
+   Total new tags to add: 3
+
+⚡ Step 5: Applying migration...
+   Committed batch 1/1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ MIGRATION COMPLETE
+   Duration: 0.94s
+   Success: 2
+   Failed: 0
+   Report: reports/apply-2026-01-01T12-54-32-661Z.json
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

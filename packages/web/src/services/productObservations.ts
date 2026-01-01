@@ -16,10 +16,6 @@
 import {
   collection,
   getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
   onSnapshot,
   Unsubscribe,
 } from 'firebase/firestore';
@@ -67,15 +63,9 @@ export async function listProductObservations(maxProducts = 100): Promise<Produc
   }
 
   try {
-    // Query products that have observation data
-    const q = query(
-      collection(db, 'products'),
-      where('observation.tags', '!=', null),
-      orderBy('observation.updatedAt', 'desc'),
-      limit(maxProducts)
-    );
-
-    const snapshot = await getDocs(q);
+    // LP-observations-consolidation-1.4.0: Use simple query + in-memory filter
+    // to avoid composite index requirements on observation.* fields
+    const snapshot = await getDocs(collection(db, 'products'));
     const observations: ProductObservation[] = [];
 
     snapshot.forEach((doc) => {
@@ -96,7 +86,15 @@ export async function listProductObservations(maxProducts = 100): Promise<Produc
       }
     });
 
-    return observations;
+    // Sort by updatedAt descending (newest first)
+    observations.sort((a, b) => {
+      const timeA = new Date(a.updatedAt).getTime() || 0;
+      const timeB = new Date(b.updatedAt).getTime() || 0;
+      return timeB - timeA;
+    });
+
+    // Apply limit
+    return observations.slice(0, maxProducts);
   } catch (error) {
     console.error('Error fetching product observations:', error);
     throw error;
@@ -204,15 +202,12 @@ export function listenToProductObservations(
   }
 
   try {
-    const q = query(
-      collection(db, 'products'),
-      where('observation.tags', '!=', null),
-      orderBy('observation.updatedAt', 'desc'),
-      limit(100)
-    );
+    // LP-observations-consolidation-1.4.0: Use simple collection listener
+    // and filter in memory to avoid composite index requirements
+    const productsRef = collection(db, 'products');
 
     return onSnapshot(
-      q,
+      productsRef,
       (snapshot) => {
         const observations: ProductObservation[] = [];
         
@@ -234,7 +229,14 @@ export function listenToProductObservations(
           }
         });
         
-        onUpdate(observations);
+        // Sort by updatedAt descending
+        observations.sort((a, b) => {
+          const timeA = new Date(a.updatedAt).getTime() || 0;
+          const timeB = new Date(b.updatedAt).getTime() || 0;
+          return timeB - timeA;
+        });
+        
+        onUpdate(observations.slice(0, 100));
       },
       (error) => {
         console.error('Error listening to product observations:', error);

@@ -98,16 +98,26 @@ async function runVerification() {
   // ----------------------------------------
   console.log('📖 Step 1: Fetching products with observations...');
   
-  let productsQuery = db.collection('products')
-    .where('observation', '!=', null)
-    .orderBy('observation')
-    .orderBy('updatedAt', 'desc');
+  // Use simple query without composite index requirement
+  // Fetch all products and filter in memory for small datasets
+  const allProductsSnapshot = await db.collection('products').get();
+  const productsWithObs = allProductsSnapshot.docs.filter(doc => {
+    const data = doc.data();
+    return data.observation && Object.keys(data.observation).length > 0;
+  });
   
-  if (SAMPLE_SIZE) {
-    productsQuery = productsQuery.limit(SAMPLE_SIZE);
-  }
+  // Sort by updatedAt in memory if needed
+  productsWithObs.sort((a, b) => {
+    const aTime = a.data().updatedAt?.toMillis?.() || 0;
+    const bTime = b.data().updatedAt?.toMillis?.() || 0;
+    return bTime - aTime;
+  });
   
-  const productsSnapshot = await productsQuery.get();
+  // Apply sample limit if specified
+  const productsSnapshot = {
+    docs: SAMPLE_SIZE ? productsWithObs.slice(0, SAMPLE_SIZE) : productsWithObs,
+    size: SAMPLE_SIZE ? Math.min(SAMPLE_SIZE, productsWithObs.length) : productsWithObs.length,
+  };
   results.totalProducts = productsSnapshot.size;
   
   console.log(`   Found ${results.totalProducts} products with observation data`);
