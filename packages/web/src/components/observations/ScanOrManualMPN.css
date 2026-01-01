@@ -1,0 +1,290 @@
+/**
+ * ScanOrManualMPN Styles
+ * 
+ * LP-observations-consolidation-1.3.0: Styling for product selection UI.
+ */
+
+.scan-or-manual {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scan-or-manual-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.scan-or-manual-title {
+  flex: 1;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary, #1f2937);
+}
+
+.scan-or-manual-back {
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary, #3b82f6);
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.scan-or-manual-back:hover {
+  background: var(--color-bg-hover, #f3f4f6);
+}
+
+.scan-or-manual-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scan-or-manual-close:hover {
+  background: var(--color-bg-hover, #f3f4f6);
+  color: var(--color-text-primary, #1f2937);
+}
+
+.scan-or-manual-description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+/* Options Grid */
+.scan-or-manual-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.scan-or-manual-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  background: var(--color-bg-secondary, #f9fafb);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scan-or-manual-option:hover {
+  background: var(--color-bg-hover, #f3f4f6);
+  border-color: var(--color-primary, #3b82f6);
+}
+
+.scan-or-manual-option:active {
+  transform: scale(0.98);
+}
+
+.option-icon {
+  font-size: 2rem;
+}
+
+.option-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #1f2937);
+}
+
+.option-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  text-align: center;
+}
+
+/* Manual MPN Form */
+.manual-mpn-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.manual-mpn-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #374151);
+}
+
+.manual-mpn-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.manual-mpn-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.manual-mpn-input:focus {
+  outline: none;
+  border-color: var(--color-primary, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.manual-mpn-input:disabled {
+  background: var(--color-bg-disabled, #f3f4f6);
+  cursor: not-allowed;
+}
+
+.manual-mpn-resolve-btn {
+  padding: 10px 16px;
+  background: var(--color-primary, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.manual-mpn-resolve-btn:hover:not(:disabled) {
+  background: var(--color-primary-dark, #2563eb);
+}
+
+.manual-mpn-resolve-btn:disabled {
+  background: var(--color-bg-disabled, #9ca3af);
+  cursor: not-allowed;
+}
+
+.manual-mpn-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+/* Error State */
+.scan-or-manual-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 0.875rem;
+}
+
+.error-icon {
+  flex-shrink: 0;
+}
+
+/* Scan Mode */
+.scan-mode-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scan-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scan-camera-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px;
+  background: var(--color-bg-secondary, #f9fafb);
+  border: 2px dashed var(--color-border, #d1d5db);
+  border-radius: 8px;
+}
+
+.camera-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.scan-camera-placeholder p {
+  margin: 0;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 0.875rem;
+}
+
+.scan-demo-input {
+  padding: 12px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+}
+
+.scan-demo-label {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #92400e;
+}
+
+.scan-resolving {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px;
+}
+
+.scan-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border, #e5e7eb);
+  border-top-color: var(--color-primary, #3b82f6);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.scan-resolving p {
+  margin: 0;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .scan-or-manual-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .manual-mpn-input-row {
+    flex-direction: column;
+  }
+  
+  .manual-mpn-resolve-btn {
+    width: 100%;
+  }
+}
