@@ -25,6 +25,19 @@ import SmartRulesEngineV2, {
   deepGet,
   isUserEdited,
 } from '../lib/smartEngineV2';
+import { 
+  normalizeSmartRuleFields,
+  type SmartRulePayload,
+} from '../middleware/normalizeFieldPath';
+import {
+  validateSmartRuleServer,
+  extractAttributeId,
+} from '../schemas/smartRuleSchema';
+import {
+  loadRegistrySnapshot,
+  isInternalOnlyFromSnapshot,
+  getAttributeByIdFromSnapshot,
+} from '../services/registryBridge';
 
 // ============================================================================
 // Configuration
@@ -599,38 +612,51 @@ export const resolveConflict = onCall<ResolveConflictRequest, ResolveConflictRes
 // ============================================================================
 
 /**
- * Load attribute registry for validation
- * Rejects internalOnly fields as targets
+ * LP-smart-rules-normalize-1.0.0: Enhanced target field validation
+ * Uses Firestore registry bridge (single source of truth)
+ * Normalizes field path and validates against registry
  */
-async function validateTargetField(field: string): Promise<{ valid: boolean; reason?: string }> {
-  // Import attribute registry
+async function validateTargetField(field: string): Promise<{ valid: boolean; normalized?: string; reason?: string }> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const registry = require('@ropi/sdk/config/attributeRegistry.json');
-    const attributes: Array<{ attribute_id: string; exportable?: boolean; internalOnly?: boolean }> = registry.attributes || [];
+    const snapshot = await loadRegistrySnapshot();
     
-    // Extract attribute name from path like "attributes.gender"
-    const attrName = field.startsWith('attributes.') ? field.slice(11) : field;
+    // Normalize the field path
+    const { normalized, errors } = await normalizeSmartRuleFields(
+      { action: { targetField: field, valueTemplate: '' } } as SmartRulePayload,
+      snapshot
+    );
     
-    const attrConfig = attributes.find(a => a.attribute_id === attrName);
-    
-    if (!attrConfig) {
-      // Unknown field - allow but warn
-      logger.warn(`Target field "${attrName}" not found in registry, allowing`);
-      return { valid: true, reason: 'Unknown field - not in registry' };
-    }
-    
-    if (attrConfig.internalOnly) {
-      return { 
-        valid: false, 
-        reason: `Field "${attrName}" is marked as internalOnly and cannot be set by Smart Rules` 
+    if (errors.length > 0) {
+      return {
+        valid: false,
+        reason: `Field normalization failed: ${errors.join('; ')}`,
       };
     }
     
-    return { valid: true };
+    const normalizedField = normalized.action?.targetField || field;
+    const attrId = extractAttributeId(normalizedField);
+    
+    if (attrId) {
+      // Check if attribute exists
+      const attrDef = getAttributeByIdFromSnapshot(attrId, snapshot);
+      if (!attrDef) {
+        logger.warn(`Target field "${attrId}" not found in registry, allowing`);
+        return { valid: true, normalized: normalizedField, reason: 'Unknown field - not in registry' };
+      }
+      
+      // Check if internal only
+      if (isInternalOnlyFromSnapshot(attrId, snapshot)) {
+        return {
+          valid: false,
+          reason: `Field "${attrId}" is marked as internalOnly and cannot be set by Smart Rules`,
+        };
+      }
+    }
+    
+    return { valid: true, normalized: normalizedField };
   } catch (error) {
-    logger.error('Error loading attribute registry:', error);
-    return { valid: true, reason: 'Could not validate - registry load failed' };
+    logger.error('Error validating target field:', error);
+    return { valid: true, normalized: field, reason: 'Could not validate - registry load failed' };
   }
 }
 
@@ -711,12 +737,15 @@ export const createSmartRuleAdmin = onCall<CreateSmartRuleRequest, CreateSmartRu
       throw new HttpsError('invalid-argument', 'name, condition, action.targetField, and action.valueTemplate are required');
     }
     
-    // Validate target field (reject internalOnly)
+    // Validate target field (reject internalOnly) and get normalized path
     const targetValidation = await validateTargetField(action.targetField);
     if (!targetValidation.valid) {
       logger.warn(`Rejected rule creation: ${targetValidation.reason}`);
       return { ruleId: '', success: false, error: targetValidation.reason };
     }
+    
+    // LP-smart-rules-normalize-1.0.0: Use normalized field path
+    const normalizedTargetField = targetValidation.normalized || action.targetField;
     
     const db = admin.firestore();
     const now = new Date().toISOString();
@@ -729,7 +758,7 @@ export const createSmartRuleAdmin = onCall<CreateSmartRuleRequest, CreateSmartRu
       priority: priority ?? 1000,
       condition,
       action: {
-        targetField: action.targetField,
+        targetField: normalizedTargetField,
         valueTemplate: action.valueTemplate,
         confidenceModifier: action.confidenceModifier ?? null,
       },
@@ -795,12 +824,20 @@ export const updateSmartRuleAdmin = onCall<UpdateSmartRuleRequest, UpdateSmartRu
       throw new HttpsError('invalid-argument', 'ruleId is required');
     }
     
-    // Validate target field if being updated
+    // Validate target field if being updated and normalize
+    let normalizedAction = updates.action;
     if (updates.action?.targetField) {
       const targetValidation = await validateTargetField(updates.action.targetField);
       if (!targetValidation.valid) {
         logger.warn(`Rejected rule update: ${targetValidation.reason}`);
         return { success: false, error: targetValidation.reason };
+      }
+      // LP-smart-rules-normalize-1.0.0: Use normalized field path
+      if (targetValidation.normalized && targetValidation.normalized !== updates.action.targetField) {
+        normalizedAction = {
+          ...updates.action,
+          targetField: targetValidation.normalized,
+        };
       }
     }
     
@@ -827,7 +864,7 @@ export const updateSmartRuleAdmin = onCall<UpdateSmartRuleRequest, UpdateSmartRu
     if (updates.enabled !== undefined) updateData.enabled = updates.enabled;
     if (updates.priority !== undefined) updateData.priority = updates.priority;
     if (updates.condition !== undefined) updateData.condition = updates.condition;
-    if (updates.action !== undefined) updateData.action = updates.action;
+    if (normalizedAction !== undefined) updateData.action = normalizedAction;
     if (updates.autoApply !== undefined) updateData.autoApply = updates.autoApply;
     if (updates.autoApplyConfidence !== undefined) updateData.autoApplyConfidence = updates.autoApplyConfidence;
     if (updates.tags !== undefined) updateData.tags = updates.tags;
