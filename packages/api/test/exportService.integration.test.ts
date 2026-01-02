@@ -1,6 +1,7 @@
 /**
  * Export Service Integration Tests
  * LP-2.1.9 — Export & PDP Alignment
+ * S4 — Exporter & Validation Alignment
  * 
  * Integration tests for export functionality:
  * - Dry-run returns correct diagnostics for sample CSV
@@ -30,6 +31,38 @@ vi.mock('firebase-admin', async () => {
     },
     firestore: () => mockFirestore,
     initializeApp: vi.fn(),
+  };
+});
+
+// S4: Mock the SDK registry functions to align with the mock registry
+vi.mock('@ropi-aoss/sdk', async () => {
+  const actual = await vi.importActual('@ropi-aoss/sdk');
+  return {
+    ...actual,
+    // Mock registry access functions used by exportService
+    isExportable: vi.fn((id: string) => {
+      // internal_notes has export: false in our mock registry
+      if (id === 'internal_notes') return false;
+      return true;
+    }),
+    isRequiredForExport: vi.fn((id: string) => {
+      if (id === 'gender' || id === 'primary_color') return true;
+      return false;
+    }),
+    isInternalOnly: vi.fn((id: string) => {
+      return false; // No internal-only in this mock
+    }),
+    getExportMeta: vi.fn((id: string) => {
+      return undefined;
+    }),
+    getAttributesForTarget: vi.fn((target: string) => {
+      // Return basic attributes for any target
+      return [
+        { attribute_id: 'gender', label: 'Gender', data_type: 'select' },
+        { attribute_id: 'primary_color', label: 'Primary Color', data_type: 'select', external_header: 'Color' },
+        { attribute_id: 'materials', label: 'Materials', data_type: 'multiSelect' },
+      ];
+    }),
   };
 });
 
@@ -265,8 +298,11 @@ describe('LP-2.1.9: Export Service Integration', () => {
       
       expect(result.attributesIncluded).toContain('gender');
       expect(result.attributesIncluded).toContain('primary_color');
-      // internal_notes should be excluded
-      expect(result.attributesExcluded).toContain('internal_notes');
+      // S4: internal_notes should be excluded (now includes reason suffix)
+      const hasInternalNotes = result.attributesExcluded.some(
+        (attr: string) => attr.includes('internal_notes')
+      );
+      expect(hasInternalNotes).toBe(true);
     });
   });
 
