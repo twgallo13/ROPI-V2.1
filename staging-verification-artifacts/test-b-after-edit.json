@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-01-02T05:18:29.938Z",
+  "testId": "B-after",
+  "description": "Product state after human edit",
+  "attributes": {
+    "fit": "Regular",
+    "primary_color": "Black",
+    "age_group": "Adult",
+    "material": "Leather",
+    "gender": "Women"
+  },
+  "provenance": {
+    "attributes_primary_color": {
+      "actor": "test-setup@example.com",
+      "source": "human",
+      "appliedAt": "2026-01-02T05:17:41.104Z"
+    },
+    "attributes_age_group": {
+      "appliedAt": "2026-01-02T05:17:41.104Z",
+      "source": "smartRule",
+      "input": {
+        "department": "Men"
+      },
+      "ruleName": "Default Age Group",
+      "ruleId": "rule_age_group_default",
+      "reason": "Adult age group applied for Men department"
+    },
+    "attributes_gender": {
+      "actor": "staging-test@ropi.com",
+      "appliedAt": "2026-01-02T05:18:29.598Z",
+      "source": "human"
+    }
+  },
+  "activityLogCount": 3,
+  "latestActivityLog": {
+    "actor": "staging-test@ropi.com",
+    "action": "user_replaced_smartrule",
+    "timestamp": "2026-01-02T05:18:29.598Z",
+    "details": {
+      "fieldPath": "attributes.gender",
+      "previousProvenance": {
+        "input": {
+          "ricsCategory": "Men's Athletic Footwear"
+        },
+        "ruleId": "rule_gender_from_rics",
+        "appliedAt": "2026-01-02T05:17:41.104Z",
+        "reason": "Matched RICS category pattern: 'Men's' prefix detected",
+        "ruleName": "Gender from RICS Category",
+        "source": "smartRule"
+      },
+      "newValue": "Women"
+    }
+  }
+}

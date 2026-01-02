@@ -13,6 +13,7 @@ import ObservationsCapturePage from './pages/ObservationsCapturePage';
 import SmartRulesPage from './pages/SmartRulesPage';
 import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';
+import SmartRulesSettingsPage from './pages/settings/SmartRulesSettingsPage';
 import AttributesConsole from './pages/Settings/AttributesConsole';
 import UsersManager from './pages/Settings/UsersManager';
 import ProfilePage from './pages/Settings/ProfilePage';
@@ -51,6 +52,7 @@ function App() {
         <Route path="settings/bulk-actions" element={<SettingsSubPage section="bulk-actions" />} />
         <Route path="settings/workflows" element={<SettingsSubPage section="workflows" />} />
         <Route path="settings/ai-performance" element={<SettingsSubPage section="ai-performance" />} />
+        <Route path="settings/smart-rules" element={<SmartRulesSettingsPage />} />
       </Route>
     </Routes>
   );

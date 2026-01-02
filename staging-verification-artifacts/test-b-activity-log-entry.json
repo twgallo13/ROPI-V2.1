@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-01-02T05:18:29.939Z",
+  "testId": "B-activity-log",
+  "description": "Activity log entry for provenance replacement",
+  "entry": {
+    "actor": "staging-test@ropi.com",
+    "action": "user_replaced_smartrule",
+    "timestamp": "2026-01-02T05:18:29.598Z",
+    "details": {
+      "fieldPath": "attributes.gender",
+      "previousProvenance": {
+        "input": {
+          "ricsCategory": "Men's Athletic Footwear"
+        },
+        "ruleId": "rule_gender_from_rics",
+        "appliedAt": "2026-01-02T05:17:41.104Z",
+        "reason": "Matched RICS category pattern: 'Men's' prefix detected",
+        "ruleName": "Gender from RICS Category",
+        "source": "smartRule"
+      },
+      "newValue": "Women"
+    }
+  }
+}
