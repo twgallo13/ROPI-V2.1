@@ -243,7 +243,9 @@ export class SmartRuleLogger {
       conditionMatched: false, // Unknown at start
       action: 'skip',
       applied: false,
-    } as Partial<SmartRuleEvalFields>);
+      timestamp: new Date().toISOString(),
+      env: this.getEnv(),
+    } as Omit<SmartRuleEvalFields, 'event'>);
     
     return startTime;
   }
@@ -286,7 +288,9 @@ export class SmartRuleLogger {
       actor,
       traceId,
       durationMs: startTime ? Date.now() - startTime : undefined,
-    } as Partial<SmartRuleApplyFields>);
+      timestamp: new Date().toISOString(),
+      env: this.getEnv(),
+    } as Omit<SmartRuleApplyFields, 'event'>);
   }
 
   /**
@@ -303,7 +307,9 @@ export class SmartRuleLogger {
       productId,
       suggestion,
       traceId,
-    } as Partial<SmartRuleSuggestionFields>);
+      timestamp: new Date().toISOString(),
+      env: this.getEnv(),
+    } as Omit<SmartRuleSuggestionFields, 'event'>);
   }
 
   /**
@@ -325,7 +331,9 @@ export class SmartRuleLogger {
       ruleId,
       productId,
       traceId,
-    } as Partial<SmartRuleErrorFields>);
+      timestamp: new Date().toISOString(),
+      env: this.getEnv(),
+    } as Omit<SmartRuleErrorFields, 'event'>);
   }
 }
 

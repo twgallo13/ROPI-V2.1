@@ -1385,6 +1385,17 @@
       "exportable": true,
       "internalOnly": false,
       "requiredForExport": false
+    },
+    {
+      "attribute_id": "dept",
+      "label": "Department",
+      "description": "Product department (department / category grouping). Added to support Smart Rules targeting.",
+      "data_type": "string",
+      "import": true,
+      "exportable": true,
+      "requiredForExport": false,
+      "internalOnly": false,
+      "normalization": { "trim": true, "lowercase": false }
     }
   ]
 }

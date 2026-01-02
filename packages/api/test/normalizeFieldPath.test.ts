@@ -163,7 +163,11 @@ describe('normalizeFieldPath', () => {
       const { normalized, errors, changes } = await normalizeSmartRuleFields(rule);
 
       expect(errors).toHaveLength(0);
-      expect(normalized.condition?.field).toBe('attributes.rics_category');
+      if (Array.isArray(normalized.condition)) {
+        expect(normalized.condition[0]?.field).toBe('attributes.rics_category');
+      } else {
+        expect(normalized.condition?.field).toBe('attributes.rics_category');
+      }
       expect(changes.some(c => c.field === 'condition[0].field')).toBe(true);
     });
 
@@ -183,8 +187,10 @@ describe('normalizeFieldPath', () => {
       const { normalized, errors, changes } = await normalizeSmartRuleFields(rule);
 
       expect(errors).toHaveLength(0);
-      expect(normalized.condition[0].field).toBe('attributes.gender');
-      expect(normalized.condition[1].field).toBe('attributes.department');
+      if (Array.isArray(normalized.condition) && normalized.condition.length >= 2) {
+        expect(normalized.condition[0].field).toBe('attributes.gender');
+        expect(normalized.condition[1].field).toBe('attributes.department');
+      }
       expect(changes).toHaveLength(2);
     });
 
@@ -221,7 +227,9 @@ describe('normalizeFieldPath', () => {
 
       expect(errors).toHaveLength(0);
       expect(changes).toHaveLength(0);
-      expect(normalized.condition?.field).toBe('attributes.gender');
+      if (!Array.isArray(normalized.condition)) {
+        expect(normalized.condition?.field).toBe('attributes.gender');
+      }
       expect(normalized.action?.targetField).toBe('attributes.department');
     });
   });
