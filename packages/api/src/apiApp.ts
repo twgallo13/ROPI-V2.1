@@ -108,6 +108,12 @@ import {
   importDryRunHandler,
 } from './endpoints/import';
 
+// LP-registry-health-1.0.0: Registry health check
+import {
+  registryHealthHandler,
+  registryRefreshHandler,
+} from './endpoints/registryHealth';
+
 // Reconciliation (Homer v1.0.0)
 import reconcileAttributesRouter from './admin/reconcileAttributes';
 
@@ -200,6 +206,13 @@ api.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
 api.post('/admin/validateSmartRule', validateSmartRuleHandler);
 api.post('/admin/normalizeSmartRule', normalizeSmartRuleHandler);
 api.get('/admin/import-eval/:productId', getImportEvalHandler);
+
+/**
+ * Registry health endpoints (LP-registry-health-1.0.0)
+ * Public endpoint - no auth required for health checks
+ */
+api.get('/registry/health', registryHealthHandler);
+api.post('/registry/refresh', requireAdmin, registryRefreshHandler);
 
 /**
  * User Self-Profile endpoints

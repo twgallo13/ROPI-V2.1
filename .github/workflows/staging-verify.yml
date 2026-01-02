@@ -113,6 +113,23 @@ jobs:
           name: firebase-deploy-log
           path: /tmp/firebase_deploy.log
 
+      # LP-registry-health-1.0.0: Verify registry health after deployment
+      - name: Verify Registry Health
+        run: |
+          echo "Waiting 10s for functions to warm up..."
+          sleep 10
+          node scripts/verify-registry-health.mjs --ci --verbose > /tmp/registry_health.log 2>&1 || { cat /tmp/registry_health.log; exit 15; }
+          cat /tmp/registry_health.log
+        env:
+          NODE_OPTIONS: '--no-warnings'
+
+      - name: Upload registry health log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: registry-health-log
+          path: /tmp/registry_health.log
+
       - name: Run Playwright E2E
         run: |
           pnpm --filter @ropi-aoss/web test:e2e --reporter=list > /tmp/e2e.log 2>&1 || { cat /tmp/e2e.log; exit 14; }
