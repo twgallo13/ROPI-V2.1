@@ -34,12 +34,15 @@ export function generateTraceId(): string {
 
 /**
  * Extract trace ID from request headers (Cloud Trace format)
- * Format: "projects/[PROJECT_ID]/traces/[TRACE_ID]"
+ * Format: "projects/[PROJECT_ID]/traces/[TRACE_ID]/o/[SPAN_ID]"
+ * or just "TRACE_ID/SPAN_ID;o=OPTIONS"
  */
 export function extractTraceIdFromHeader(header?: string): string | undefined {
   if (!header) return undefined;
   
-  const match = header.match(/traces\/([a-f0-9]+)/);
+  // Match the standard Google Cloud Trace header format:
+  // projects/PROJECT_ID/traces/TRACE_ID/...
+  const match = header.match(/traces\/([^\/]+)/);
   return match ? match[1] : undefined;
 }
 

@@ -1251,6 +1251,10 @@ export class SmartRulesEngineV2 {
    * LP-smart-rules-engine-1.2.0: Enhanced with per-rule decision tracking
    */
   evaluateForImport(importRow: ImportRow): EngineResult {
+    // LP-smart-rules-logging-1.0.0: Create trace context for log correlation
+    const traceId = generateTraceId();
+    const evalStartTs = Date.now();
+    
     const suggestions: Suggestion[] = [];
     const autoApplied: Suggestion[] = [];
     const errors: EngineError[] = [];
@@ -1280,6 +1284,9 @@ export class SmartRulesEngineV2 {
     const fieldSuggestions = new Map<string, Suggestion[]>();
     
     for (const rule of sortedRules) {
+      // LP-smart-rules-logging-1.0.0: Track rule evaluation start time
+      const ruleEvalStartTs = Date.now();
+      
       // LP-smart-rules-engine-1.3.0: Extract condition source for diagnostics
       // Support both 'source' (engine) and 'field' (UI) naming
       const conditionSource = (rule.condition as { source?: string; field?: string })?.source || 
@@ -1445,6 +1452,22 @@ export class SmartRulesEngineV2 {
         // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging with explicit reason
         logger.debug(`Rule ${rule.ruleId} (${rule.name}): MATCHED - target=${rule.action.targetField}, value=${JSON.stringify(value)}, confidence=${confidence.toFixed(2)}, canAutoApply=${canAutoApply}, setOnlyIfEmpty=${setOnlyIfEmpty}, reason=${autoApplyReason}`);
         
+        // LP-smart-rules-logging-1.0.0: Log evaluation result
+        structuredLogger.logEvalResult(ruleEvalStartTs, {
+          traceId,
+          ruleId: rule.ruleId,
+          ruleName: rule.name,
+          productId: importRow.productId,
+          mpn: importRow.source?.mpn,
+          conditionMatched: true,
+          matchedClauses: condResult.captures.tokens as string[] | undefined || [],
+          generatedValue: value,
+          validationResult: { ok: true, errors: [] },
+          action: canAutoApply ? 'auto-apply' : 'suggest',
+          applied: canAutoApply,
+          actor: 'engine',
+        }).catch(err => logger.warn('[SmartRules] Failed to log eval result:', err));
+        
         const suggestion: Suggestion = {
           id: generateId('sug'),
           ruleId: rule.ruleId,
@@ -1489,6 +1512,16 @@ export class SmartRulesEngineV2 {
           
           // Set value in updates
           deepSet(updates, rule.action.targetField, value);
+          
+          // LP-smart-rules-logging-1.0.0: Log apply action
+          structuredLogger.logApply(
+            rule.ruleId,
+            importRow.productId,
+            [{ path: rule.action.targetField, oldValue: existingValue, newValue: value }],
+            'engine',
+            traceId,
+            ruleEvalStartTs
+          ).catch(err => logger.warn('[SmartRules] Failed to log apply:', err));
           
           // Set provenance (S2.4)
           const provenanceKey = `provenance.${rule.action.targetField.replace(/\./g, '_')}`;
@@ -1539,6 +1572,14 @@ export class SmartRulesEngineV2 {
             decisionReason = 'skipped_fieldNotEmpty';
           }
           
+          // LP-smart-rules-logging-1.0.0: Log suggestion (not applied)
+          structuredLogger.logSuggestion(
+            rule.ruleId,
+            importRow.productId,
+            { targetField: rule.action.targetField, value, reason: autoApplyReason },
+            traceId
+          ).catch(err => logger.warn('[SmartRules] Failed to log suggestion:', err));
+          
           ruleDecisions.push({
             ruleId: rule.ruleId,
             ruleName: rule.name,
@@ -1553,6 +1594,16 @@ export class SmartRulesEngineV2 {
           });
         }
       } catch (e) {
+        // LP-smart-rules-logging-1.0.0: Log error
+        structuredLogger.logError(
+          e instanceof Error ? e.message : String(e),
+          'runtime',
+          e instanceof Error ? e : undefined,
+          rule.ruleId,
+          importRow.productId,
+          traceId
+        ).catch(err => logger.warn('[SmartRules] Failed to log error:', err));
+        
         ruleDecisions.push({
           ruleId: rule.ruleId,
           ruleName: rule.name,
@@ -1583,6 +1634,25 @@ export class SmartRulesEngineV2 {
     
     // LP-smart-rules-engine-1.2.0: Log summary
     logger.info(`[SmartRules] Product ${importRow.productId}: ${ruleDecisions.length} rules evaluated, ${suggestions.length} suggestions, ${autoApplied.length} auto-applied, ${errors.length} errors`);
+    
+    // LP-smart-rules-logging-1.0.0: Log evaluation summary
+    structuredLogger.info('smartrule.eval', {
+      traceId,
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV === 'production' ? 'production' : process.env.NODE_ENV === 'staging' ? 'staging' : 'development',
+      productId: importRow.productId,
+      mpn: importRow.source?.mpn,
+      conditionMatched: autoApplied.length > 0 || suggestions.length > 0,
+      action: autoApplied.length > 0 ? 'auto-apply' : suggestions.length > 0 ? 'suggest' : 'skip',
+      applied: autoApplied.length > 0,
+      actor: 'engine',
+      durationMs: Date.now() - evalStartTs,
+      ruleId: 'SUMMARY',
+      ruleName: 'Import Evaluation Summary',
+      matchedClauses: [],
+      generatedValue: null,
+      validationResult: { ok: errors.length === 0, errors: errors.map(e => e.error) },
+    } as any).catch(err => logger.warn('[SmartRules] Failed to log summary:', err));
     
     return { suggestions, conflicts, autoApplied, errors, updates, activityLog, ruleDecisions };
   }
