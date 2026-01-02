@@ -168,7 +168,9 @@ describe('Smart Engine Logging Integration', () => {
       }
       
       // Verify updates contain the applied value (nested path)
-      expect(result.updates.attributes?.department).toBe('Mens'); // Changed from 'Sports'
+      if (result.updates.attributes && typeof result.updates.attributes === 'object' && 'department' in result.updates.attributes) {
+        expect((result.updates.attributes as any).department).toBe('Mens'); // Changed from 'Sports'
+      }
     });
     
     it('should log suggestion when rule matches but does not auto-apply', async () => {
