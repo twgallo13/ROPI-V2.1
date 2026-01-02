@@ -23,6 +23,9 @@
 
 import * as Handlebars from 'handlebars';
 import * as logger from 'firebase-functions/logger';
+// LP-smart-rules-logging-1.0.0: Import structured logger for Smart Rules observability
+import { logger as structuredLogger } from './logger';
+import { generateTraceId } from './trace';
 // LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry bridge
 // instead of direct SDK imports to ensure runtime consistency
 import { 
