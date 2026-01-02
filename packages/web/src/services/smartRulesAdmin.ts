@@ -435,6 +435,7 @@ export async function createSmartRule(form: SmartRuleForm): Promise<CreateRuleRe
 
 /**
  * Update an existing Smart Rule
+ * LP-smart-rules-schema-1.1.0: Client-side validation before write
  */
 export async function updateSmartRule(ruleId: string, updates: Partial<SmartRuleForm>): Promise<UpdateRuleResponse> {
   if (!isFirebaseAvailable() || !db) {
@@ -467,7 +468,7 @@ export async function updateSmartRule(ruleId: string, updates: Partial<SmartRule
     };
     
     if (updates.name !== undefined) updateData.name = updates.name;
-    if (updates.description !== undefined) updateData.description = updates.description;
+    if (updates.description !== undefined) updateData.description = updates.description || '';
     if (updates.enabled !== undefined) updateData.enabled = updates.enabled;
     if (updates.priority !== undefined) updateData.priority = updates.priority;
     if (updates.autoApply !== undefined) updateData.autoApply = updates.autoApply;
@@ -475,7 +476,7 @@ export async function updateSmartRule(ruleId: string, updates: Partial<SmartRule
     if (updates.tags !== undefined) updateData.tags = updates.tags;
     if (updates.packId !== undefined) updateData.packId = updates.packId;
     
-    // Handle condition updates
+    // Handle condition updates - ensure options is always an array
     if (updates.conditions) {
       if (updates.conditions.length === 1) {
         const c = updates.conditions[0];
@@ -483,29 +484,48 @@ export async function updateSmartRule(ruleId: string, updates: Partial<SmartRule
           field: c.field,
           matchType: c.matchType,
           value: c.value,
-          options: c.options,
+          options: Array.isArray(c.options) ? c.options : [],
         };
       } else {
         updateData.condition = updates.conditions.map(c => ({
           field: c.field,
           matchType: c.matchType,
           value: c.value,
-          options: c.options,
+          options: Array.isArray(c.options) ? c.options : [],
         }));
       }
     }
     
-    // Handle action updates
+    // Handle action updates - ensure confidenceModifier is number or omit
     if (updates.action) {
       updateData.action = {
         targetField: updates.action.targetField,
         valueTemplate: updates.action.valueTemplate,
-        confidenceModifier: updates.action.confidenceModifier,
+        ...(typeof updates.action.confidenceModifier === 'number' && { 
+          confidenceModifier: updates.action.confidenceModifier 
+        }),
+      };
+    }
+    
+    // LP-smart-rules-schema-1.1.0: Deep clean to remove any undefined values
+    const cleanedUpdateData = deepClean(updateData);
+    
+    // Validate the merged rule (current + updates)
+    const mergedRule = {
+      ...currentRule,
+      ...cleanedUpdateData,
+    };
+    const validationResult = await validateSmartRuleClient(mergedRule);
+    if (!validationResult.valid) {
+      console.error('Validation failed:', validationResult.issues);
+      return { 
+        success: false, 
+        error: 'VALIDATION_FAILED: ' + JSON.stringify(validationResult.issues) 
       };
     }
     
     const ruleRef = doc(db, SMART_RULES_COLLECTION, ruleId);
-    await updateDoc(ruleRef, updateData);
+    await updateDoc(ruleRef, cleanedUpdateData);
     
     // Write audit entry
     await writeAuditEntry({
@@ -515,7 +535,7 @@ export async function updateSmartRule(ruleId: string, updates: Partial<SmartRule
         : 'update',
       actorId: user?.uid || 'unknown',
       actorEmail: user?.email || undefined,
-      changes: { before: currentRule, after: updateData },
+      changes: { before: currentRule, after: cleanedUpdateData },
     });
     
     return { success: true };

@@ -2601,6 +2601,15 @@ function validateRequiredFields(normalized, mappings = DEFAULT_COLUMN_MAPPINGS) 
   return Array.from(missingFields);
 }
 
+// src/normalization/mpnNormalizer.ts
+function normalizeMpn(mpn) {
+  if (!mpn) return "";
+  return mpn.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "").replace(/-+/g, "-").replace(/^-+|-+$/g, "");
+}
+function mpnsMatch(mpn1, mpn2) {
+  return normalizeMpn(mpn1) === normalizeMpn(mpn2);
+}
+
 // ../../node_modules/.pnpm/uuid@9.0.1/node_modules/uuid/dist/esm-browser/rng.js
 var getRandomValues;
 var rnds8 = new Uint8Array(16);
@@ -3935,9 +3944,11 @@ exports.isEmptyRow = isEmptyRow;
 exports.isExportable = isExportable;
 exports.isInternalOnly = isInternalOnly;
 exports.isRequiredForExport = isRequiredForExport;
+exports.mpnsMatch = mpnsMatch;
 exports.normalizeDataType = normalizeDataType;
 exports.normalizeFormToDocument = normalizeFormToDocument;
 exports.normalizeImportRow = normalizeImportRow;
+exports.normalizeMpn = normalizeMpn;
 exports.normalizeTargetFieldToRegistry = normalizeTargetFieldToRegistry;
 exports.parseRetailOpsCsv = parseRetailOpsCsv;
 exports.parsedRowsToImportRows = parsedRowsToImportRows;

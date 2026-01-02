@@ -30,6 +30,7 @@ import {
 import {
   validateSmartRuleHandler,
   normalizeSmartRuleHandler,
+  getImportEvalHandler,
 } from './endpoints/adminSmartRules';
 import {
   listListsHandler,
@@ -198,6 +199,7 @@ api.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
  */
 api.post('/admin/validateSmartRule', validateSmartRuleHandler);
 api.post('/admin/normalizeSmartRule', normalizeSmartRuleHandler);
+api.get('/admin/import-eval/:productId', getImportEvalHandler);
 
 /**
  * User Self-Profile endpoints

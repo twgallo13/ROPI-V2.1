@@ -117,6 +117,12 @@ export {
   sourceColumnMatchesHeader,
 } from './normalization/importNormalizer';
 
+// LP-smart-rules-mpn-1.0.0: Canonical MPN normalizer
+export {
+  normalizeMpn,
+  mpnsMatch,
+} from './normalization/mpnNormalizer';
+
 // LP-importer-mapping-recon-1.1.0: Export legacy-to-registry translation map
 export {
   LEGACY_TO_REGISTRY,

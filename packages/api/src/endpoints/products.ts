@@ -14,6 +14,7 @@ import * as admin from 'firebase-admin';
 import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 import type { Request, Response } from 'express';
 import { getAttribute, ServiceError } from '../services/attributesService';
+import { normalizeMpn } from '@ropi-aoss/sdk';
 
 /**
  * PATCH /products/:productId/attributes
@@ -425,7 +426,7 @@ export async function listProductsHandler(req: Request, res: Response) {
 /**
  * GET /products/by-mpn/:mpn
  * 
- * LP-1.1.1: Retrieve a product by MPN for mobile observations capture.
+ * LP-smart-rules-mpn-1.0.0: Retrieve a product by MPN using normalized_mpn for reliable lookups.
  * Returns minimal product view: { product_mpn, title, thumbnail, id }
  */
 export async function getProductByMpnHandler(req: Request, res: Response) {
@@ -443,17 +444,51 @@ export async function getProductByMpnHandler(req: Request, res: Response) {
     const db = admin.firestore();
 
     try {
-      // LP-obs-studio-cleanup-1.1.0: Case-insensitive MPN lookup
-      // Try uppercase-normalized MPN first (most common storage format)
-      const normalizedMpn = mpn.toUpperCase();
+      // LP-smart-rules-mpn-1.0.0: Use canonical normalizer for reliable lookups
+      const normalizedMpn = normalizeMpn(mpn);
+      
+      console.log(`🔍 MPN lookup: raw="${mpn}" normalized="${normalizedMpn}"`);
+      
+      // Primary lookup: query on core.normalized_mpn (new canonical field)
       let snapshot = await db
         .collection('products')
-        .where('mpn', '==', normalizedMpn)
+        .where('core.normalized_mpn', '==', normalizedMpn)
         .limit(1)
         .get();
 
-      // Fallback: try original case if normalized fails (for legacy data)
+      // Fallback 1: Try top-level normalized_mpn (for products without nested core)
+      if (snapshot.empty) {
+        console.log('   Fallback 1: trying top-level normalized_mpn');
+        snapshot = await db
+          .collection('products')
+          .where('normalized_mpn', '==', normalizedMpn)
+          .limit(1)
+          .get();
+      }
+
+      // Fallback 2: Try legacy mpn field with uppercase match (pre-normalized data)
+      if (snapshot.empty) {
+        console.log('   Fallback 2: trying legacy mpn field');
+        snapshot = await db
+          .collection('products')
+          .where('mpn', '==', normalizedMpn)
+          .limit(1)
+          .get();
+      }
+      
+      // Fallback 3: Try core.mpn with uppercase match
+      if (snapshot.empty) {
+        console.log('   Fallback 3: trying core.mpn field');
+        snapshot = await db
+          .collection('products')
+          .where('core.mpn', '==', normalizedMpn)
+          .limit(1)
+          .get();
+      }
+
+      // Fallback 4: Try original case mpn (for exact match legacy data)
       if (snapshot.empty && mpn !== normalizedMpn) {
+        console.log('   Fallback 4: trying original case mpn');
         snapshot = await db
           .collection('products')
           .where('mpn', '==', mpn)
@@ -461,37 +496,36 @@ export async function getProductByMpnHandler(req: Request, res: Response) {
           .get();
       }
 
-      // Fallback: try lowercase (edge case for mixed-case data)
       if (snapshot.empty) {
-        const lowercaseMpn = mpn.toLowerCase();
-        if (lowercaseMpn !== mpn && lowercaseMpn !== normalizedMpn) {
-          snapshot = await db
-            .collection('products')
-            .where('mpn', '==', lowercaseMpn)
-            .limit(1)
-            .get();
-        }
-      }
-
-      if (snapshot.empty) {
+        console.log(`   ❌ Product not found for MPN "${mpn}"`);
         res.status(404).json({ 
           error: 'PRODUCT_NOT_FOUND', 
-          message: `Product with MPN '${mpn}' not found` 
+          message: `Product with MPN '${mpn}' not found`,
+          searchedNormalized: normalizedMpn,
         });
         return;
       }
 
       const doc = snapshot.docs[0];
       const data = doc.data();
+      
+      // Extract fields from nested or flat structure
+      const productMpn = data.core?.mpn || data.mpn || mpn;
+      const title = data.core?.title || data.name || data.title || 'Untitled Product';
+      const brand = data.core?.brand || data.brand || null;
+      const sku = data.core?.sku || data.sku || null;
+
+      console.log(`   ✅ Found product: id="${doc.id}" mpn="${productMpn}"`);
 
       // Return minimal product view for mobile capture
       res.status(200).json({
         id: doc.id,
-        product_mpn: data.mpn || mpn,
-        title: data.name || data.title || 'Untitled Product',
-        thumbnail: data.images?.[0]?.thumb || data.images?.[0]?.url || data.thumbnail || null,
-        brand: data.brand || null,
-        sku: data.sku || null,
+        productId: doc.id,
+        product_mpn: productMpn,
+        title,
+        thumbnail: data.images?.[0]?.thumb || data.images?.[0]?.url || data.thumbnail || data.media?.primaryImage || null,
+        brand,
+        sku,
       });
     } catch (error) {
       console.error('Error fetching product by MPN:', error);

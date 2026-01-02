@@ -23,6 +23,7 @@ import type {
   ProductMedia,
   ProductStatusFlags,
 } from '@ropi-aoss/sdk';
+import { normalizeMpn } from '@ropi-aoss/sdk';
 import {
   processImportWithSmartRules,
   type SmartRulesImportResult,
@@ -94,11 +95,13 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
   const now = new Date().toISOString();
 
   // Build core fields - LP-1.3.6: Include MPN as primary identifier (LP-2.1.0)
+  // LP-smart-rules-mpn-1.0.0: Add normalized_mpn for reliable lookups
   const core: ProductCore = {
     sku: normalized.sku || '',
     title: normalized.title || normalized.name || '',
     brand: normalized.brand || '',
     ...(normalized.mpn && { mpn: normalized.mpn }),
+    ...(normalized.mpn && { normalized_mpn: normalizeMpn(normalized.mpn) }),
     ...(normalized.style_id && { styleId: normalized.style_id }),
     ...(normalized.description && { description: normalized.description }),
     ...(normalized.first_received && { firstReceived: normalized.first_received }),
