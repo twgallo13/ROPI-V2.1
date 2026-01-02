@@ -220,7 +220,28 @@ export type {
 // ============================================================================
 
 export { AttributeSchema, type AttributeType } from './schema/attribute';
-export { SmartRuleSchema, SmartRuleCondition, SmartRuleAction, type SmartRuleType } from './schema/smartRule';
+export { 
+  SmartRuleSchema, 
+  SmartRuleCondition, 
+  SmartRuleAction, 
+  SmartRuleFormSchema,
+  RuleConditionFormSchema,
+  RuleActionFormSchema,
+  MatchTypeEnum,
+  validateSmartRule,
+  validateSmartRuleForm,
+  deepCleanUndefined,
+  normalizeFormToDocument,
+  preSubmitValidation,
+  type SmartRuleType,
+  type SmartRuleForm,
+  type RuleCondition,
+  type RuleAction,
+  type RuleConditionForm,
+  type RuleActionForm,
+  type MatchType,
+  type ValidationResult,
+} from './schema/smartRule';
 export { AITemplateSchema, type AITemplateType } from './schema/aiTemplate';
 
 // ============================================================================

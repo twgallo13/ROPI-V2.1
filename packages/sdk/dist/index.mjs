@@ -3581,33 +3581,208 @@ var AttributeSchema = z.object({
   updatedBy: z.string().optional(),
   updatedAt: z.union([z.string(), z.object({}).passthrough()]).optional()
 });
+var MatchTypeEnum = z.enum([
+  "equals",
+  "notEquals",
+  "contains",
+  "notContains",
+  "startsWith",
+  "endsWith",
+  "regex",
+  "greaterThan",
+  "lessThan",
+  "in",
+  "notIn",
+  "exists",
+  "notExists",
+  "token",
+  "phrase",
+  "and",
+  "or",
+  "not"
+]);
 var SmartRuleCondition = z.object({
-  field: z.string(),
-  matchType: z.enum(["equals", "contains", "regex", "in", "exists", "and", "or", "not"]),
-  value: z.union([z.string(), z.number(), z.array(z.string())]).optional(),
-  options: z.any().optional()
+  field: z.string().min(1, "Condition field is required"),
+  matchType: MatchTypeEnum,
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.array(z.string())
+  ]).default(""),
+  options: z.record(z.any()).default({})
 });
 var SmartRuleAction = z.object({
-  targetField: z.string(),
-  valueTemplate: z.string(),
-  confidenceModifier: z.number().optional()
+  targetField: z.string().min(1, "Target field is required"),
+  valueTemplate: z.string().default(""),
+  confidenceModifier: z.number().min(-1).max(1).optional()
 });
 var SmartRuleSchema = z.object({
+  // Identity
   ruleId: z.string().min(1),
-  name: z.string().min(1),
-  description: z.string().optional(),
+  // Core metadata
+  name: z.string().min(1, "Rule name is required"),
+  description: z.string().default(""),
+  // Status
+  enabled: z.boolean().default(true),
+  priority: z.number().int().min(0).max(1e4).default(1e3),
+  // Condition(s)
+  condition: z.union([
+    SmartRuleCondition,
+    z.array(SmartRuleCondition)
+  ]),
+  conditionLogic: z.enum(["and", "or"]).default("and"),
+  // Action
+  action: SmartRuleAction,
+  // Auto-apply settings
+  autoApply: z.boolean().default(false),
+  autoApplyConfidence: z.number().min(0).max(1).optional(),
+  // Organization
+  tags: z.array(z.string()).default([]),
+  packId: z.string().nullable().optional(),
+  // Audit fields (set by server)
+  createdBy: z.string().optional(),
+  createdAt: z.any().optional(),
+  // Firestore Timestamp or string
+  updatedBy: z.string().optional(),
+  updatedAt: z.any().optional()
+  // Firestore Timestamp or string
+});
+var RuleConditionFormSchema = z.object({
+  id: z.string(),
+  field: z.string().default(""),
+  matchType: MatchTypeEnum.default("contains"),
+  value: z.union([z.string(), z.array(z.string())]).default(""),
+  options: z.record(z.any()).default({})
+});
+var RuleActionFormSchema = z.object({
+  targetField: z.string().default(""),
+  valueTemplate: z.string().default(""),
+  setOnlyIfEmpty: z.boolean().default(false),
+  confidenceModifier: z.number().optional()
+});
+var SmartRuleFormSchema = z.object({
+  ruleId: z.string().optional(),
+  name: z.string().default(""),
+  description: z.string().default(""),
   enabled: z.boolean().default(true),
   priority: z.number().default(1e3),
-  condition: z.union([SmartRuleCondition, z.array(SmartRuleCondition)]),
-  action: SmartRuleAction,
-  autoApply: z.boolean().optional().default(false),
-  autoApplyConfidence: z.number().min(0).max(1).optional(),
-  tags: z.array(z.string()).optional(),
-  createdBy: z.string().optional(),
-  createdAt: z.string().optional(),
-  updatedBy: z.string().optional(),
-  updatedAt: z.string().optional()
+  conditions: z.array(RuleConditionFormSchema).default([]),
+  conditionLogic: z.enum(["and", "or"]).default("and"),
+  action: RuleActionFormSchema,
+  autoApply: z.boolean().default(false),
+  autoApplyConfidence: z.number().default(0.9),
+  tags: z.array(z.string()).default([]),
+  packId: z.string().nullable().optional()
 });
+function validateSmartRule(payload) {
+  const result = SmartRuleSchema.safeParse(payload);
+  if (result.success) {
+    return {
+      valid: true,
+      issues: [],
+      normalized: result.data
+    };
+  }
+  return {
+    valid: false,
+    issues: result.error.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+      code: issue.code
+    }))
+  };
+}
+function validateSmartRuleForm(payload) {
+  const result = SmartRuleFormSchema.safeParse(payload);
+  if (result.success) {
+    return {
+      valid: true,
+      issues: [],
+      normalized: void 0
+    };
+  }
+  return {
+    valid: false,
+    issues: result.error.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+      code: issue.code
+    }))
+  };
+}
+function deepCleanUndefined(obj) {
+  const cleaned = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === void 0) {
+      continue;
+    }
+    if (value === null) {
+      cleaned[key] = null;
+    } else if (Array.isArray(value)) {
+      cleaned[key] = value.map(
+        (item) => typeof item === "object" && item !== null ? deepCleanUndefined(item) : item
+      );
+    } else if (typeof value === "object" && value !== null) {
+      cleaned[key] = deepCleanUndefined(value);
+    } else {
+      cleaned[key] = value;
+    }
+  }
+  return cleaned;
+}
+function normalizeFormToDocument(form) {
+  const conditions = form.conditions.map((c) => ({
+    field: c.field || "",
+    matchType: c.matchType || "contains",
+    value: c.value || "",
+    options: c.options || {}
+  }));
+  const doc = {
+    ruleId: form.ruleId,
+    name: form.name || "",
+    description: form.description || "",
+    enabled: form.enabled ?? true,
+    priority: form.priority ?? 1e3,
+    condition: conditions.length === 1 ? conditions[0] : conditions,
+    conditionLogic: form.conditionLogic || "and",
+    action: {
+      targetField: form.action?.targetField || "",
+      valueTemplate: form.action?.valueTemplate || "",
+      ...form.action?.confidenceModifier !== void 0 && {
+        confidenceModifier: form.action.confidenceModifier
+      }
+    },
+    autoApply: form.autoApply ?? false,
+    autoApplyConfidence: form.autoApplyConfidence ?? 0.9,
+    tags: form.tags || []
+  };
+  if (form.packId) {
+    doc.packId = form.packId;
+  }
+  return deepCleanUndefined(doc);
+}
+function preSubmitValidation(form) {
+  const errors = {};
+  if (!form.name || form.name.trim() === "") {
+    errors["name"] = "Rule name is required";
+  }
+  if (!form.conditions || form.conditions.length === 0) {
+    errors["conditions"] = "At least one condition is required";
+  } else {
+    form.conditions.forEach((cond, i) => {
+      if (!cond.field || cond.field.trim() === "") {
+        errors[`conditions.${i}.field`] = "Condition field is required";
+      }
+    });
+  }
+  if (!form.action?.targetField || form.action.targetField.trim() === "") {
+    errors["action.targetField"] = "Target field is required";
+  }
+  if (!form.action?.valueTemplate || form.action.valueTemplate.trim() === "") {
+    errors["action.valueTemplate"] = "Value template is required";
+  }
+  return errors;
+}
 var Condition = z.object({
   field: z.string(),
   op: z.string(),
@@ -3722,4 +3897,4 @@ function detectCollisions(ids) {
 // src/index.ts
 var SDK_VERSION = "0.6.0";
 
-export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CanonicalRegistrySchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ExportMetadataSchema, ExportTargetSchema, ImportRowRawSchema, ImportRowSchema, LEGACY_TO_REGISTRY, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, REGISTRY_TO_LEGACY, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, RegistryAttributeSchema, RegistryExportMetaSchema, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getAttributesForTarget, getExportMeta, getExportableAttributes, getInternalOnlyAttributes, getRegistryVersion, getRequiredForExportAttributes, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, isExportable, isInternalOnly, isRequiredForExport, normalizeDataType, normalizeImportRow, normalizeTargetFieldToRegistry, parseRetailOpsCsv, parsedRowsToImportRows, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateCanonicalRegistry, safeValidateProduct, safeValidateRegistryAttribute, sourceColumnMatchesHeader, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCanonicalRegistry, validateCoreProduct, validateCoreProductOrThrow, validateExportControlConsistency, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRegistryAttribute, validateRegistryExportConsistency, validateRequiredFields, wouldCollide };
+export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CanonicalRegistrySchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ExportMetadataSchema, ExportTargetSchema, ImportRowRawSchema, ImportRowSchema, LEGACY_TO_REGISTRY, MatchTypeEnum, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, REGISTRY_TO_LEGACY, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, RegistryAttributeSchema, RegistryExportMetaSchema, RuleActionFormSchema, RuleConditionFormSchema, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleFormSchema, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deepCleanUndefined, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getAttributesForTarget, getExportMeta, getExportableAttributes, getInternalOnlyAttributes, getRegistryVersion, getRequiredForExportAttributes, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, isExportable, isInternalOnly, isRequiredForExport, normalizeDataType, normalizeFormToDocument, normalizeImportRow, normalizeTargetFieldToRegistry, parseRetailOpsCsv, parsedRowsToImportRows, preSubmitValidation, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateCanonicalRegistry, safeValidateProduct, safeValidateRegistryAttribute, sourceColumnMatchesHeader, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCanonicalRegistry, validateCoreProduct, validateCoreProductOrThrow, validateExportControlConsistency, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRegistryAttribute, validateRegistryExportConsistency, validateRequiredFields, validateSmartRule, validateSmartRuleForm, wouldCollide };

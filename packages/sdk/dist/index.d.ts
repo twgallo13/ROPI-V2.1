@@ -30,6 +30,27 @@ export type { RetailOpsRow, RetailOpsColumnMapping, RetailOpsExportMappingConfig
 export { parseRetailOpsCsv, retailOpsRowToImportRow, importRowToCoreProduct, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, parsedRowsToImportRows, importRowsToCoreProducts, } from './import/retailOps';
 export type { RetailOpsCsvParseOptions, ParsedRetailOpsRow, RetailOpsImportResult, } from './import/retailOps';
 export { AttributeSchema, type AttributeType } from './schema/attribute';
-export { SmartRuleSchema, SmartRuleCondition, SmartRuleAction, type SmartRuleType } from './schema/smartRule';
+export { 
+  SmartRuleSchema, 
+  SmartRuleCondition, 
+  SmartRuleAction, 
+  SmartRuleFormSchema,
+  RuleConditionFormSchema,
+  RuleActionFormSchema,
+  MatchTypeEnum,
+  validateSmartRule,
+  validateSmartRuleForm,
+  deepCleanUndefined,
+  normalizeFormToDocument,
+  preSubmitValidation,
+  type SmartRuleType,
+  type SmartRuleForm,
+  type RuleCondition,
+  type RuleAction,
+  type RuleConditionForm,
+  type RuleActionForm,
+  type MatchType,
+  type ValidationResult,
+} from './schema/smartRule';
 export { AITemplateSchema, type AITemplateType } from './schema/aiTemplate';
 export declare const SDK_VERSION = "0.6.0";

@@ -215,18 +215,42 @@ const styles: Record<string, React.CSSProperties> = {
 
 export function RuleTestConsole() {
   // State
-  const [productId, setProductId] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // Can be productId or MPN
+  const [searchType, setSearchType] = useState<'productId' | 'mpn'>('productId');
   const [loading, setLoading] = useState(false);
   const [applying, setApplying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RuleTestResult | null>(null);
   const [selectedSuggestions, setSelectedSuggestions] = useState<Set<string>>(new Set());
   const [applyResult, setApplyResult] = useState<{ appliedCount: number; skippedCount: number } | null>(null);
+  const [resolvedProductId, setResolvedProductId] = useState<string | null>(null);
+  
+  // Resolve product ID from search input
+  const resolveProductId = useCallback(async (input: string, type: 'productId' | 'mpn'): Promise<string | null> => {
+    if (type === 'productId') {
+      // Direct productId lookup
+      return input.trim();
+    }
+    
+    // MPN lookup - try to find product by MPN
+    // TODO: Implement proper MPN lookup endpoint
+    // For now, check if it looks like a productId (contains underscore or is numeric)
+    const trimmed = input.trim();
+    if (trimmed.includes('_') || /^\d+$/.test(trimmed)) {
+      // Looks like a productId, use directly
+      return trimmed;
+    }
+    
+    // Treat as MPN - format as potential productId pattern
+    // This is a fallback until proper MPN lookup is implemented
+    console.warn('MPN lookup not yet implemented, treating as productId');
+    return trimmed;
+  }, []);
   
   // Test rules for product
   const handleTest = useCallback(async () => {
-    if (!productId.trim()) {
-      setError('Please enter a product MPN');
+    if (!searchInput.trim()) {
+      setError('Please enter a Product ID or MPN');
       return;
     }
     
@@ -235,20 +259,38 @@ export function RuleTestConsole() {
     setResult(null);
     setSelectedSuggestions(new Set());
     setApplyResult(null);
+    setResolvedProductId(null);
     
     try {
-      const testResult = await testRulesForProduct(productId.trim());
+      // Step 1: Resolve product ID
+      const productId = await resolveProductId(searchInput, searchType);
+      
+      if (!productId) {
+        setError('PRODUCT_NOT_FOUND: Could not resolve product from input');
+        return;
+      }
+      
+      setResolvedProductId(productId);
+      
+      // Step 2: Test rules for resolved product
+      const testResult = await testRulesForProduct(productId);
       setResult(testResult);
       
       // Auto-select all suggestions
       const allIds = new Set(testResult.suggestions.map(s => s.suggestionId));
       setSelectedSuggestions(allIds);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to test rules');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to test rules';
+      // Check for specific error patterns
+      if (errorMessage.includes('not found') || errorMessage.includes('Product')) {
+        setError(`PRODUCT_NOT_FOUND: ${errorMessage}`);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
-  }, [productId]);
+  }, [searchInput, searchType, resolveProductId]);
   
   // Toggle suggestion selection
   const toggleSuggestion = useCallback((suggestionId: string) => {
@@ -308,13 +350,21 @@ export function RuleTestConsole() {
       
       {/* Search */}
       <div style={styles.searchRow}>
+        <select
+          style={{ ...styles.input, flex: '0 0 120px' }}
+          value={searchType}
+          onChange={e => setSearchType(e.target.value as 'productId' | 'mpn')}
+        >
+          <option value="productId">Product ID</option>
+          <option value="mpn">MPN</option>
+        </select>
         <input
           type="text"
           style={styles.input}
-          value={productId}
-          onChange={e => setProductId(e.target.value)}
+          value={searchInput}
+          onChange={e => setSearchInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleTest()}
-          placeholder="Enter product MPN..."
+          placeholder={searchType === 'productId' ? 'Enter product ID (e.g., 451-9201-BLK18)...' : 'Enter MPN...'}
         />
         <button
           style={{
@@ -328,10 +378,28 @@ export function RuleTestConsole() {
         </button>
       </div>
       
+      {/* Resolved Product ID */}
+      {resolvedProductId && !error && (
+        <div style={{ 
+          padding: 'var(--spacing-sm)', 
+          backgroundColor: 'var(--color-background-secondary)', 
+          borderRadius: '4px',
+          marginBottom: 'var(--spacing-md)',
+          fontSize: 'var(--font-size-sm)',
+        }}>
+          📌 Testing product: <strong>{resolvedProductId}</strong>
+        </div>
+      )}
+      
       {/* Error */}
       {error && (
         <div style={styles.errorBox}>
           ❌ {error}
+          {error.includes('PRODUCT_NOT_FOUND') && (
+            <div style={{ marginTop: 'var(--spacing-sm)', fontSize: 'var(--font-size-sm)' }}>
+              💡 Tip: Make sure the product exists in Firestore. Try using the exact product ID.
+            </div>
+          )}
         </div>
       )}
       

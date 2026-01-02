@@ -24,7 +24,7 @@ import {
   CONDITION_MATCH_TYPES, 
   CONDITION_SOURCE_FIELDS,
 } from '../../types/smartRulesAdmin';
-import { getExportableAttributes, generateRuleId } from '../../services/smartRulesAdmin';
+import { getExportableAttributes, generateRuleId, preSubmitValidation } from '../../services/smartRulesAdmin';
 
 // ============================================================================
 // Styles
@@ -256,13 +256,14 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
     getExportableAttributes().then(setTargetFields);
   }, []);
   
-  // Create empty condition
+  // Create empty condition (LP-smart-rules-schema-1.0.0: always include options)
   function createEmptyCondition(): RuleConditionForm {
     return {
       id: `cond_${Date.now()}_${Math.random().toString(36).slice(2, 4)}`,
       field: '',
       matchType: 'contains',
       value: '',
+      options: {}, // Never undefined
     };
   }
   
@@ -272,6 +273,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
       targetField: '',
       valueTemplate: '',
       setOnlyIfEmpty: true,
+      confidenceModifier: undefined,
     };
   }
   
@@ -306,57 +308,87 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
     setTags(prev => prev.filter(t => t !== tag));
   }, []);
   
-  // Validate form
+  // Validate form (LP-smart-rules-schema-1.0.0: uses canonical SDK validation)
   const validate = useCallback((): boolean => {
+    // Build the form object for validation
+    const formData: SmartRuleForm = {
+      ruleId: initialValue?.ruleId || '', // Temporary ID for validation
+      name: name.trim(),
+      description: description.trim(),
+      enabled,
+      priority,
+      conditions: conditions.map(c => ({
+        ...c,
+        options: c.options || {}, // Ensure options is never undefined
+      })),
+      conditionLogic,
+      action: {
+        ...action,
+        confidenceModifier: action.confidenceModifier,
+      },
+      autoApply,
+      autoApplyConfidence,
+      tags,
+    };
+    
+    // Use SDK's canonical pre-submit validation
+    const sdkErrors = preSubmitValidation(formData);
+    
+    // Convert SDK errors to UI format
     const newErrors: Record<string, string> = {};
-    
-    if (!name.trim()) {
-      newErrors.name = 'Rule name is required';
-    }
-    
-    if (conditions.length === 0) {
-      newErrors.conditions = 'At least one condition is required';
-    } else {
-      conditions.forEach((c, i) => {
-        if (!c.field) {
-          newErrors[`condition_${i}_field`] = 'Field is required';
+    for (const [path, message] of Object.entries(sdkErrors)) {
+      // Map SDK paths to UI field names
+      if (path.startsWith('conditions.')) {
+        const match = path.match(/conditions\.(\d+)\.(.+)/);
+        if (match) {
+          newErrors[`condition_${match[1]}_${match[2]}`] = message;
         }
-        if (!c.value && c.matchType !== 'exists') {
-          newErrors[`condition_${i}_value`] = 'Value is required';
-        }
-      });
-    }
-    
-    if (!action.targetField) {
-      newErrors.targetField = 'Target field is required';
-    }
-    
-    if (!action.valueTemplate) {
-      newErrors.valueTemplate = 'Value template is required';
+      } else if (path === 'action.targetField') {
+        newErrors['targetField'] = message;
+      } else if (path === 'action.valueTemplate') {
+        newErrors['valueTemplate'] = message;
+      } else {
+        newErrors[path] = message;
+      }
     }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name, conditions, action]);
+  }, [name, description, enabled, priority, conditions, conditionLogic, action, autoApply, autoApplyConfidence, tags, initialValue?.ruleId]);
   
-  // Handle save
+  // Handle save (LP-smart-rules-schema-1.0.0: normalize all fields before saving)
   const handleSave = useCallback(() => {
     if (!validate()) {
       return;
     }
     
+    // Build rule with explicit defaults (never undefined)
     const rule: SmartRuleForm = {
       ruleId: initialValue?.ruleId || generateRuleId(),
       name: name.trim(),
-      description: description.trim(),
+      description: description.trim() || '', // Default to empty string
       enabled,
       priority,
-      conditions,
+      conditions: conditions.map(c => ({
+        ...c,
+        field: c.field || '',
+        matchType: c.matchType || 'contains',
+        value: c.value || '',
+        options: c.options || {}, // Never undefined
+      })),
       conditionLogic,
-      action,
+      action: {
+        targetField: action.targetField || '',
+        valueTemplate: action.valueTemplate || '',
+        setOnlyIfEmpty: action.setOnlyIfEmpty ?? false,
+        // Only include confidenceModifier if set
+        ...(action.confidenceModifier !== undefined && { 
+          confidenceModifier: action.confidenceModifier 
+        }),
+      },
       autoApply,
       autoApplyConfidence,
-      tags,
+      tags: tags || [],
     };
     
     onSave(rule);

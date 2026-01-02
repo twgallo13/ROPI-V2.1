@@ -39,6 +39,17 @@ import type {
   UpdateRuleResponse,
 } from '../types/smartRulesAdmin';
 
+// LP-smart-rules-schema-1.0.0: Import canonical schema utilities
+import {
+  deepCleanUndefined,
+  preSubmitValidation as sdkPreSubmitValidation,
+  type ValidationResult,
+} from '@ropi-aoss/sdk';
+
+// Re-export for UI consumption
+export { sdkPreSubmitValidation as preSubmitValidation };
+export type { ValidationResult };
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -223,6 +234,7 @@ export async function getSmartRule(ruleId: string): Promise<SmartRuleDocument | 
 
 /**
  * Convert form data to Firestore document format
+ * LP-smart-rules-schema-1.0.0: Uses deepCleanUndefined to ensure no undefined values
  */
 function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> {
   // Build condition(s) based on form
@@ -232,37 +244,49 @@ function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> 
     // Single condition
     const c = form.conditions[0];
     condition = {
-      field: c.field,
-      matchType: c.matchType,
-      value: c.value,
-      options: c.options,
+      field: c.field || '',
+      matchType: c.matchType || 'contains',
+      value: c.value || '',
+      options: c.options || {},
     };
   } else {
     // Multiple conditions - wrap in AND/OR
     condition = form.conditions.map(c => ({
-      field: c.field,
-      matchType: c.matchType,
-      value: c.value,
-      options: c.options,
+      field: c.field || '',
+      matchType: c.matchType || 'contains',
+      value: c.value || '',
+      options: c.options || {},
     }));
   }
   
-  return {
-    name: form.name,
-    description: form.description || undefined,
-    enabled: form.enabled,
-    priority: form.priority,
+  // Build the document with explicit defaults (never undefined)
+  const doc: Record<string, unknown> = {
+    name: form.name || '',
+    description: form.description || '',  // Default to empty string, not undefined
+    enabled: form.enabled ?? true,
+    priority: form.priority ?? 1000,
     condition,
+    conditionLogic: form.conditionLogic || 'and',
     action: {
-      targetField: form.action.targetField,
-      valueTemplate: form.action.valueTemplate,
-      confidenceModifier: form.action.confidenceModifier,
+      targetField: form.action?.targetField || '',
+      valueTemplate: form.action?.valueTemplate || '',
+      // Only include confidenceModifier if it has a value
+      ...(form.action?.confidenceModifier !== undefined && {
+        confidenceModifier: form.action.confidenceModifier,
+      }),
     },
-    autoApply: form.autoApply,
-    autoApplyConfidence: form.autoApplyConfidence,
-    tags: form.tags,
-    packId: form.packId,
+    autoApply: form.autoApply ?? false,
+    autoApplyConfidence: form.autoApplyConfidence ?? 0.9,
+    tags: form.tags || [],
   };
+  
+  // Only include packId if it has a value
+  if (form.packId) {
+    doc.packId = form.packId;
+  }
+  
+  // LP-smart-rules-schema-1.0.0: Clean any remaining undefined values
+  return deepCleanUndefined(doc) as Omit<SmartRuleDocument, 'ruleId'>;
 }
 
 /**

@@ -3583,33 +3583,208 @@ var AttributeSchema = zod.z.object({
   updatedBy: zod.z.string().optional(),
   updatedAt: zod.z.union([zod.z.string(), zod.z.object({}).passthrough()]).optional()
 });
+var MatchTypeEnum = zod.z.enum([
+  "equals",
+  "notEquals",
+  "contains",
+  "notContains",
+  "startsWith",
+  "endsWith",
+  "regex",
+  "greaterThan",
+  "lessThan",
+  "in",
+  "notIn",
+  "exists",
+  "notExists",
+  "token",
+  "phrase",
+  "and",
+  "or",
+  "not"
+]);
 var SmartRuleCondition = zod.z.object({
-  field: zod.z.string(),
-  matchType: zod.z.enum(["equals", "contains", "regex", "in", "exists", "and", "or", "not"]),
-  value: zod.z.union([zod.z.string(), zod.z.number(), zod.z.array(zod.z.string())]).optional(),
-  options: zod.z.any().optional()
+  field: zod.z.string().min(1, "Condition field is required"),
+  matchType: MatchTypeEnum,
+  value: zod.z.union([
+    zod.z.string(),
+    zod.z.number(),
+    zod.z.array(zod.z.string())
+  ]).default(""),
+  options: zod.z.record(zod.z.any()).default({})
 });
 var SmartRuleAction = zod.z.object({
-  targetField: zod.z.string(),
-  valueTemplate: zod.z.string(),
-  confidenceModifier: zod.z.number().optional()
+  targetField: zod.z.string().min(1, "Target field is required"),
+  valueTemplate: zod.z.string().default(""),
+  confidenceModifier: zod.z.number().min(-1).max(1).optional()
 });
 var SmartRuleSchema = zod.z.object({
+  // Identity
   ruleId: zod.z.string().min(1),
-  name: zod.z.string().min(1),
-  description: zod.z.string().optional(),
+  // Core metadata
+  name: zod.z.string().min(1, "Rule name is required"),
+  description: zod.z.string().default(""),
+  // Status
+  enabled: zod.z.boolean().default(true),
+  priority: zod.z.number().int().min(0).max(1e4).default(1e3),
+  // Condition(s)
+  condition: zod.z.union([
+    SmartRuleCondition,
+    zod.z.array(SmartRuleCondition)
+  ]),
+  conditionLogic: zod.z.enum(["and", "or"]).default("and"),
+  // Action
+  action: SmartRuleAction,
+  // Auto-apply settings
+  autoApply: zod.z.boolean().default(false),
+  autoApplyConfidence: zod.z.number().min(0).max(1).optional(),
+  // Organization
+  tags: zod.z.array(zod.z.string()).default([]),
+  packId: zod.z.string().nullable().optional(),
+  // Audit fields (set by server)
+  createdBy: zod.z.string().optional(),
+  createdAt: zod.z.any().optional(),
+  // Firestore Timestamp or string
+  updatedBy: zod.z.string().optional(),
+  updatedAt: zod.z.any().optional()
+  // Firestore Timestamp or string
+});
+var RuleConditionFormSchema = zod.z.object({
+  id: zod.z.string(),
+  field: zod.z.string().default(""),
+  matchType: MatchTypeEnum.default("contains"),
+  value: zod.z.union([zod.z.string(), zod.z.array(zod.z.string())]).default(""),
+  options: zod.z.record(zod.z.any()).default({})
+});
+var RuleActionFormSchema = zod.z.object({
+  targetField: zod.z.string().default(""),
+  valueTemplate: zod.z.string().default(""),
+  setOnlyIfEmpty: zod.z.boolean().default(false),
+  confidenceModifier: zod.z.number().optional()
+});
+var SmartRuleFormSchema = zod.z.object({
+  ruleId: zod.z.string().optional(),
+  name: zod.z.string().default(""),
+  description: zod.z.string().default(""),
   enabled: zod.z.boolean().default(true),
   priority: zod.z.number().default(1e3),
-  condition: zod.z.union([SmartRuleCondition, zod.z.array(SmartRuleCondition)]),
-  action: SmartRuleAction,
-  autoApply: zod.z.boolean().optional().default(false),
-  autoApplyConfidence: zod.z.number().min(0).max(1).optional(),
-  tags: zod.z.array(zod.z.string()).optional(),
-  createdBy: zod.z.string().optional(),
-  createdAt: zod.z.string().optional(),
-  updatedBy: zod.z.string().optional(),
-  updatedAt: zod.z.string().optional()
+  conditions: zod.z.array(RuleConditionFormSchema).default([]),
+  conditionLogic: zod.z.enum(["and", "or"]).default("and"),
+  action: RuleActionFormSchema,
+  autoApply: zod.z.boolean().default(false),
+  autoApplyConfidence: zod.z.number().default(0.9),
+  tags: zod.z.array(zod.z.string()).default([]),
+  packId: zod.z.string().nullable().optional()
 });
+function validateSmartRule(payload) {
+  const result = SmartRuleSchema.safeParse(payload);
+  if (result.success) {
+    return {
+      valid: true,
+      issues: [],
+      normalized: result.data
+    };
+  }
+  return {
+    valid: false,
+    issues: result.error.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+      code: issue.code
+    }))
+  };
+}
+function validateSmartRuleForm(payload) {
+  const result = SmartRuleFormSchema.safeParse(payload);
+  if (result.success) {
+    return {
+      valid: true,
+      issues: [],
+      normalized: void 0
+    };
+  }
+  return {
+    valid: false,
+    issues: result.error.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+      code: issue.code
+    }))
+  };
+}
+function deepCleanUndefined(obj) {
+  const cleaned = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === void 0) {
+      continue;
+    }
+    if (value === null) {
+      cleaned[key] = null;
+    } else if (Array.isArray(value)) {
+      cleaned[key] = value.map(
+        (item) => typeof item === "object" && item !== null ? deepCleanUndefined(item) : item
+      );
+    } else if (typeof value === "object" && value !== null) {
+      cleaned[key] = deepCleanUndefined(value);
+    } else {
+      cleaned[key] = value;
+    }
+  }
+  return cleaned;
+}
+function normalizeFormToDocument(form) {
+  const conditions = form.conditions.map((c) => ({
+    field: c.field || "",
+    matchType: c.matchType || "contains",
+    value: c.value || "",
+    options: c.options || {}
+  }));
+  const doc = {
+    ruleId: form.ruleId,
+    name: form.name || "",
+    description: form.description || "",
+    enabled: form.enabled ?? true,
+    priority: form.priority ?? 1e3,
+    condition: conditions.length === 1 ? conditions[0] : conditions,
+    conditionLogic: form.conditionLogic || "and",
+    action: {
+      targetField: form.action?.targetField || "",
+      valueTemplate: form.action?.valueTemplate || "",
+      ...form.action?.confidenceModifier !== void 0 && {
+        confidenceModifier: form.action.confidenceModifier
+      }
+    },
+    autoApply: form.autoApply ?? false,
+    autoApplyConfidence: form.autoApplyConfidence ?? 0.9,
+    tags: form.tags || []
+  };
+  if (form.packId) {
+    doc.packId = form.packId;
+  }
+  return deepCleanUndefined(doc);
+}
+function preSubmitValidation(form) {
+  const errors = {};
+  if (!form.name || form.name.trim() === "") {
+    errors["name"] = "Rule name is required";
+  }
+  if (!form.conditions || form.conditions.length === 0) {
+    errors["conditions"] = "At least one condition is required";
+  } else {
+    form.conditions.forEach((cond, i) => {
+      if (!cond.field || cond.field.trim() === "") {
+        errors[`conditions.${i}.field`] = "Condition field is required";
+      }
+    });
+  }
+  if (!form.action?.targetField || form.action.targetField.trim() === "") {
+    errors["action.targetField"] = "Target field is required";
+  }
+  if (!form.action?.valueTemplate || form.action.valueTemplate.trim() === "") {
+    errors["action.valueTemplate"] = "Value template is required";
+  }
+  return errors;
+}
 var Condition = zod.z.object({
   field: zod.z.string(),
   op: zod.z.string(),
@@ -3739,6 +3914,7 @@ exports.ExportTargetSchema = ExportTargetSchema;
 exports.ImportRowRawSchema = ImportRowRawSchema;
 exports.ImportRowSchema = ImportRowSchema;
 exports.LEGACY_TO_REGISTRY = LEGACY_TO_REGISTRY;
+exports.MatchTypeEnum = MatchTypeEnum;
 exports.ProductAttributesSchema = ProductAttributesSchema;
 exports.ProductCoreSchema = ProductCoreSchema;
 exports.ProductFlagsSchema = ProductFlagsSchema;
@@ -3753,9 +3929,12 @@ exports.RETAILOPS_COLUMN_NAMES = RETAILOPS_COLUMN_NAMES;
 exports.RETAILOPS_HEADER_ROW = RETAILOPS_HEADER_ROW;
 exports.RegistryAttributeSchema = RegistryAttributeSchema;
 exports.RegistryExportMetaSchema = RegistryExportMetaSchema;
+exports.RuleActionFormSchema = RuleActionFormSchema;
+exports.RuleConditionFormSchema = RuleConditionFormSchema;
 exports.SDK_VERSION = SDK_VERSION;
 exports.SmartRuleAction = SmartRuleAction;
 exports.SmartRuleCondition = SmartRuleCondition;
+exports.SmartRuleFormSchema = SmartRuleFormSchema;
 exports.SmartRuleSchema = SmartRuleSchema;
 exports.allowsCustomValues = allowsCustomValues;
 exports.buildImportRow = buildImportRow;
@@ -3763,6 +3942,7 @@ exports.buildImportRows = buildImportRows;
 exports.buildRetailOpsCsv = buildRetailOpsCsv;
 exports.buildRetailOpsRow = buildRetailOpsRow;
 exports.canProcessRow = canProcessRow;
+exports.deepCleanUndefined = deepCleanUndefined;
 exports.deriveProductId = deriveProductId;
 exports.detectCollisions = detectCollisions;
 exports.getAllowedValues = getAllowedValues;
@@ -3784,10 +3964,12 @@ exports.isExportable = isExportable;
 exports.isInternalOnly = isInternalOnly;
 exports.isRequiredForExport = isRequiredForExport;
 exports.normalizeDataType = normalizeDataType;
+exports.normalizeFormToDocument = normalizeFormToDocument;
 exports.normalizeImportRow = normalizeImportRow;
 exports.normalizeTargetFieldToRegistry = normalizeTargetFieldToRegistry;
 exports.parseRetailOpsCsv = parseRetailOpsCsv;
 exports.parsedRowsToImportRows = parsedRowsToImportRows;
+exports.preSubmitValidation = preSubmitValidation;
 exports.productJsonSchema = productJsonSchema;
 exports.retailOpsCsvToCoreProducts = retailOpsCsvToCoreProducts;
 exports.retailOpsCsvToCoreProductsWithDetails = retailOpsCsvToCoreProductsWithDetails;
@@ -3818,4 +4000,6 @@ exports.validateProductWithDomains = validateProductWithDomains;
 exports.validateRegistryAttribute = validateRegistryAttribute;
 exports.validateRegistryExportConsistency = validateRegistryExportConsistency;
 exports.validateRequiredFields = validateRequiredFields;
+exports.validateSmartRule = validateSmartRule;
+exports.validateSmartRuleForm = validateSmartRuleForm;
 exports.wouldCollide = wouldCollide;
