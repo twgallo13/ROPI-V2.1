@@ -7,6 +7,8 @@
  * - Product Completion Workflows (W2): https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
  * - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
  * - Observations Overview: https://www.notion.so/2b845ee1ec5a81e1aeeae43318b38039
+ * 
+ * S5: Added FieldProvenance and provenance types for Smart Rules provenance tracking
  */
 
 export type ProductStatus = 'draft' | 'in-progress' | 'export-ready';
@@ -19,6 +21,45 @@ export type ObservationSeverity = 'low' | 'medium' | 'high';
 export type ObservationStatus = 'open' | 'resolved';
 
 export type SuggestionStatus = 'pending' | 'applied' | 'ignored';
+
+/**
+ * S5: Per-field provenance structure for tracking value origins
+ * Matches the API's FieldProvenance type from smartEngineV2
+ */
+export interface FieldProvenance {
+  /** Source of the value */
+  source: 'smartRule' | 'human' | 'import' | 'api';
+  /** Rule ID if source is smartRule */
+  ruleId?: string;
+  /** Rule name if source is smartRule */
+  ruleName?: string;
+  /** When the value was applied */
+  appliedAt: string;
+  /** Input data used to generate the value */
+  input?: Record<string, unknown>;
+  /** Human-readable reason for the value */
+  reason?: string;
+  /** Actor info if source is human - can be string (email/uid) or object */
+  actor?: string | { uid: string; name: string; };
+}
+
+/**
+ * S5: Activity log entry for tracking provenance changes
+ */
+export interface ActivityLogEntry {
+  /** Actor - can be string (email/uid) or object */
+  actor: string | { uid: string; name: string; };
+  action: 'user_replaced_smartrule' | 'smartrule_auto_apply' | 'user_edit' | 'conflict_resolved';
+  timestamp: string;
+  details: {
+    fieldPath?: string;
+    previousProvenance?: FieldProvenance;
+    previousSource?: string;
+    previousRuleId?: string;
+    newValue?: unknown;
+    [key: string]: unknown;
+  };
+}
 
 export interface ProductAttributes {
   [key: string]: string | string[];
@@ -109,6 +150,12 @@ export interface Product {
   observations: Observation[];
   smartSuggestions: SmartSuggestion[];
   aiHistory: AIHistoryEntry[];
+  
+  /** S5: Per-field provenance map (e.g., 'attributes.gender' -> FieldProvenance) */
+  provenance?: Record<string, FieldProvenance>;
+  
+  /** S5: Activity log for audit trail */
+  activityLog?: ActivityLogEntry[];
   
   // LP-0.4.0: Tab 0 (Product Header) fields - Read-only metadata
   /** MPN - Manufacturer Part Number (required for export) */

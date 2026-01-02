@@ -7,6 +7,7 @@ import type { NewObservation } from '../types/product';
 vi.mock('../firebaseConfig', () => ({
   isFirebaseAvailable: () => false,
   db: null,
+  auth: null, // LP-smart-rules-ui-provenance-1.0.0: Add auth mock
 }));
 
 // Mock firebase/firestore to prevent import errors
@@ -15,6 +16,23 @@ vi.mock('firebase/firestore', () => ({
   updateDoc: vi.fn(),
   setDoc: vi.fn(),
   onSnapshot: vi.fn(),
+  arrayUnion: vi.fn((val) => val), // LP-smart-rules-ui-provenance-1.0.0: Add arrayUnion mock
+}));
+
+// Mock productService (LP-smart-rules-ui-provenance-1.0.0)
+vi.mock('../services/productService', () => ({
+  getProvenanceKey: (path: string) => path.replace(/\./g, '_'),
+  createHumanProvenance: (actor: string) => ({
+    source: 'human',
+    appliedAt: new Date().toISOString(),
+    actor,
+  }),
+  createReplacementActivityLog: (actor: string, fieldPath: string, prev: unknown, value: unknown) => ({
+    actor,
+    action: 'user_replaced_smartrule',
+    timestamp: new Date().toISOString(),
+    details: { fieldPath, previousProvenance: prev, newValue: value },
+  }),
 }));
 
 // Mock localStorage

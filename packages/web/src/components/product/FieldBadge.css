@@ -1,0 +1,265 @@
+/**
+ * FieldBadge CSS
+ * S5 — Product UI: Provenance UX & Edit Behavior
+ * 
+ * Styles for the Smart Rule provenance badge and tooltip.
+ * Designed to be small, subtle, and consistent with product theme.
+ */
+
+/* Badge Container */
+.field-badge-container {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Badge Button */
+.field-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.field-badge:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.field-badge:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+.field-badge:focus:not(:focus-visible) {
+  box-shadow: none;
+}
+
+.field-badge:focus-visible {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+/* Smart Rule variant */
+.field-badge--smart-rule {
+  color: #3b82f6;
+}
+
+.field-badge--smart-rule:hover {
+  color: #2563eb;
+}
+
+/* Badge Icon */
+.field-badge__icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Tooltip */
+.field-badge__tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 360px;
+  padding: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-size: 13px;
+  line-height: 1.5;
+  color: #374151;
+}
+
+/* Tooltip arrow */
+.field-badge__tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-left: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Tooltip Header */
+.field-badge__tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 7px 7px 0 0;
+  color: #ffffff;
+}
+
+.field-badge__tooltip-title {
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-badge__tooltip-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.field-badge__tooltip-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.field-badge__tooltip-close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+/* Tooltip Content */
+.field-badge__tooltip-content {
+  margin: 0;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+}
+
+.field-badge__tooltip-content dt {
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field-badge__tooltip-content dd {
+  margin: 0;
+  color: #111827;
+  word-break: break-word;
+}
+
+/* Monospace text */
+.field-badge__mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Rule link */
+.field-badge__rule-link {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.field-badge__rule-link:hover {
+  text-decoration: underline;
+}
+
+/* Tooltip Footer */
+.field-badge__tooltip-footer {
+  padding: 10px 12px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 0 0 7px 7px;
+}
+
+.field-badge__admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #3b82f6;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.field-badge__admin-link:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .field-badge--smart-rule {
+    color: #60a5fa;
+  }
+
+  .field-badge--smart-rule:hover {
+    color: #93c5fd;
+    background-color: rgba(96, 165, 250, 0.1);
+  }
+
+  .field-badge__tooltip {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+
+  .field-badge__tooltip::before {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .field-badge__tooltip-content dd {
+    color: #f3f4f6;
+  }
+
+  .field-badge__tooltip-content dt {
+    color: #9ca3af;
+  }
+
+  .field-badge__mono {
+    background: #374151;
+    color: #e5e7eb;
+  }
+
+  .field-badge__tooltip-footer {
+    background: #111827;
+    border-color: #374151;
+  }
+}
+
+/* Responsive positioning */
+@media (max-width: 640px) {
+  .field-badge__tooltip {
+    position: fixed;
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    max-width: none;
+  }
+
+  .field-badge__tooltip::before {
+    display: none;
+  }
+}

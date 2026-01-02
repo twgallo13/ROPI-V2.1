@@ -1,14 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Product, Observation, NewObservation } from '../types/product';
-import { isFirebaseAvailable, db } from '../firebaseConfig';
+import type { Product, Observation, NewObservation, FieldProvenance, ActivityLogEntry } from '../types/product';
+import { isFirebaseAvailable, db, auth } from '../firebaseConfig';
 import {
   doc,
   updateDoc,
   setDoc,
   onSnapshot,
   Unsubscribe,
+  arrayUnion,
 } from 'firebase/firestore';
 import mockProductData from '../data/mock-product.json';
+import {
+  getProvenanceKey,
+  createHumanProvenance,
+  createReplacementActivityLog,
+} from '../services/productService';
 
 // LP-1.4.1: Helper functions for case conversion
 const toCamel = (s: string) => s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
@@ -425,8 +431,14 @@ export function useProduct(productId: string) {
   };
 
   // Update a single field in the product document
+  // LP-smart-rules-ui-provenance-1.0.0: Enhanced to handle provenance replacement
   const updateField = async (path: string, value: unknown): Promise<boolean> => {
     if (!product) return false;
+
+    // LP-smart-rules-ui-provenance-1.0.0: Check for Smart Rule provenance on this field
+    const provenanceKey = getProvenanceKey(path);
+    const existingProvenance = product.provenance?.[provenanceKey] as FieldProvenance | undefined;
+    const hasSmartRuleProvenance = existingProvenance?.source === 'smartRule';
 
     // Create a local copy with the updated value for immediate UI update
     const updatedProduct = JSON.parse(JSON.stringify(product));
@@ -441,6 +453,39 @@ export function useProduct(productId: string) {
     }
     current[keys[keys.length - 1]] = value;
 
+    // LP-smart-rules-ui-provenance-1.0.0: Prepare provenance updates
+    const currentUser = auth?.currentUser;
+    const actor = currentUser?.email || currentUser?.uid || 'anonymous';
+    let provenanceUpdates: Record<string, unknown> = {};
+    let activityLogEntry: ActivityLogEntry | null = null;
+
+    if (hasSmartRuleProvenance) {
+      // Replace Smart Rule provenance with human provenance
+      const humanProvenance = createHumanProvenance(actor);
+      provenanceUpdates[`provenance.${provenanceKey}`] = humanProvenance;
+      
+      // Create activity log entry for the replacement
+      activityLogEntry = createReplacementActivityLog(
+        actor,
+        path,
+        existingProvenance,
+        value
+      );
+
+      // Update local product copy with new provenance
+      if (!updatedProduct.provenance) {
+        updatedProduct.provenance = {};
+      }
+      updatedProduct.provenance[provenanceKey] = humanProvenance;
+
+      console.debug(`[useProduct:updateField] Replacing Smart Rule provenance for ${path}`, {
+        previousSource: existingProvenance.source,
+        previousRuleId: existingProvenance.ruleId,
+        newSource: 'human',
+        actor,
+      });
+    }
+
     // Recalculate export readiness
     const newReadiness = calculateExportReadiness(updatedProduct);
     updatedProduct.exportReadiness = newReadiness;
@@ -453,11 +498,21 @@ export function useProduct(productId: string) {
 
       if (isFirebaseAvailable() && db) {
         const ref = doc(db, 'products', product.id);
-        // Firestore accepts nested paths as keys: updateDoc(ref, { 'attributes.color': 'Red' })
-        await updateDoc(ref, { 
+        
+        // Build update payload
+        const updatePayload: Record<string, unknown> = {
           [path]: value,
           'exportReadiness': newReadiness,
-        });
+          ...provenanceUpdates,
+        };
+
+        // LP-smart-rules-ui-provenance-1.0.0: Add activity log entry if replacing Smart Rule
+        if (activityLogEntry) {
+          updatePayload['activityLog'] = arrayUnion(activityLogEntry);
+        }
+
+        // Firestore accepts nested paths as keys: updateDoc(ref, { 'attributes.color': 'Red' })
+        await updateDoc(ref, updatePayload);
       } else {
         await saveProduct(updatedProduct);
       }
