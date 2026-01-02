@@ -185,3 +185,4 @@ export {
   applySuggestions, 
   resolveConflict 
 } from './functions/smartRulesCallables';
+// LP-smart-rules-field-fix-1.0.0: Force redeploy 2026-01-02T19:22:44+00:00

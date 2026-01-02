@@ -41,9 +41,12 @@ export type MatchType =
 
 /**
  * Condition object for Smart Rules
+ * LP-smart-rules-field-fix-1.0.0: Support both 'source' (engine canonical) and 'field' (UI canonical)
  */
 export interface Condition {
   source?: string;
+  /** LP-smart-rules-field-fix-1.0.0: Alias for source, used by UI */
+  field?: string;
   matchType: MatchType;
   value: string | number | boolean | null | unknown[] | Record<string, unknown> | Condition | Condition[];
   options?: {
@@ -335,6 +338,7 @@ const ALLOWED_TARGET_FIELDS: Set<string> = new Set([
   // Attributes (via attributes object)
   'attributes.gender',
   'attributes.ageGroup',
+  'attributes.age_group', // snake_case alias for ageGroup
   'attributes.primaryColor',
   'attributes.secondaryColor',
   'attributes.material',
@@ -351,6 +355,8 @@ const ALLOWED_TARGET_FIELDS: Set<string> = new Set([
   'attributes.sportsTeam',
   'attributes.taxClass',
   'attributes.promoAllowed',
+  'attributes.department', // LP-smart-rules-field-fix: Allow department in attributes
+  'attributes.category',   // LP-smart-rules-field-fix: Allow category in attributes
 ]);
 
 // =============================================================================
@@ -560,7 +566,9 @@ Handlebars.registerHelper('tokenNormalized', (options: Handlebars.HelperOptions)
  * Evaluate a condition against a product
  */
 export function evaluateCondition(condition: Condition, product: Product): ConditionResult {
-  const { source, matchType, value, options = {} } = condition;
+  // LP-smart-rules-field-fix-1.0.0: Support both 'source' (engine) and 'field' (UI) naming
+  const { source, field, matchType, value, options = {} } = condition;
+  const sourceField = source || field; // Use source if present, fallback to field
   
   // Handle logical operators (and, or, not)
   if (matchType === 'and') {
@@ -618,11 +626,12 @@ export function evaluateCondition(condition: Condition, product: Product): Condi
   }
   
   // Get source value from product
-  if (!source) {
+  // LP-smart-rules-field-fix-1.0.0: Use sourceField (either source or field)
+  if (!sourceField) {
     return { matches: false, confidence: 0, captures: {} };
   }
   
-  const sourceValue = deepGet(product, source);
+  const sourceValue = deepGet(product, sourceField);
   
   // Handle different match types
   switch (matchType) {

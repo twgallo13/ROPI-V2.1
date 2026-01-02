@@ -1,6 +1,20 @@
 {
   "indexes": [
     {
+      "collectionGroup": "rules",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "enabled",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "priority",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "observations",
       "queryScope": "COLLECTION",
       "fields": [
