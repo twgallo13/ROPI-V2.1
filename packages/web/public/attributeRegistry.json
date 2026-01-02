@@ -220,6 +220,26 @@
       }
     },
     {
+      "attribute_id": "rics_category",
+      "label": "RICS Category",
+      "external_header": "RICS Category",
+      "category": "classification",
+      "description": "Canonical RICS category string used for Smart Rules condition matching (e.g., 'Men's Footwear > Athletic'). Read-only for Smart Rules.",
+      "data_type": "text",
+      "required_for_completion": false,
+      "required_for_export": false,
+      "import_required": false,
+      "import": true,
+      "status": "active",
+      "exportable": false,
+      "internalOnly": false,
+      "requiredForExport": false,
+      "normalization": {
+        "trim": true,
+        "lowercase": true
+      }
+    },
+    {
       "attribute_id": "website",
       "label": "Websites (Multi-select)",
       "external_header": "Websites",
