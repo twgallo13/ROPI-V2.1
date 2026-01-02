@@ -2,6 +2,7 @@
  * ROPI Smart Rules Engine V2
  * ===========================
  * LP-smart-rules-engine-1.0.0: Deterministic import-time Smart Rules engine
+ * LP-smart-rules-registry-bridge-1.0.0: Use Firestore registry at runtime
  * 
  * Per Lisa's S2 requirements:
  * - Runs only during import (no product-load or post-import writes)
@@ -12,18 +13,28 @@
  * - Per-field provenance model
  * - Idempotency via _smartRulesRanAt and _smartRulesSkipUntil
  * 
+ * LP-smart-rules-registry-bridge-1.0.0:
+ * - Now uses Firestore registry at runtime (via registryBridge)
+ * - Falls back to SDK static registry if Firestore unavailable
+ * - Eliminates dual-source divergence between engine and API/UI
+ * 
  * Based on: ROPI AOSS v1.0 — Section 4 (Smart Rules)
  */
 
 import * as Handlebars from 'handlebars';
 import * as logger from 'firebase-functions/logger';
+// LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry bridge
+// instead of direct SDK imports to ensure runtime consistency
 import { 
-  type RegistryAttribute, 
-  isExportable, 
-  isInternalOnly,
-  getAttributeById,
-  getAllowedValues,
-} from '@ropi-aoss/sdk';
+  type RegistrySnapshot,
+  getAttributeByIdFromSnapshot,
+  isExportableFromSnapshot,
+  isInternalOnlyFromSnapshot,
+  getAllowedValuesFromSnapshot,
+  getSynonymsFromSnapshot,
+} from '../services/registryBridge';
+// Keep SDK type import for compatibility
+import { type RegistryAttribute } from '@ropi-aoss/sdk';
 
 // =============================================================================
 // TYPE DEFINITIONS (S2.1)
@@ -682,10 +693,16 @@ export function extractAttributeName(targetField: string): string {
 
 /**
  * Validate that a rule target is allowed (S2.3)
+ * LP-smart-rules-registry-bridge-1.0.0: Now uses Firestore registry via snapshot
  * - Target must be exportable (not internalOnly)
  * - Target must be in whitelist
+ * @param targetField - The target field path
+ * @param registrySnapshot - Optional registry snapshot for Firestore-first lookup
  */
-export function validateRuleTarget(targetField: string): { 
+export function validateRuleTarget(
+  targetField: string,
+  registrySnapshot?: RegistrySnapshot
+): { 
   valid: boolean; 
   error?: string;
   code?: EngineError['code'];
@@ -702,8 +719,9 @@ export function validateRuleTarget(targetField: string): {
   // Extract attribute name and check registry flags
   const attrName = extractAttributeName(targetField);
   
+  // LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry lookup
   // Check if internalOnly
-  if (isInternalOnly(attrName)) {
+  if (isInternalOnlyFromSnapshot(attrName, registrySnapshot)) {
     return { 
       valid: false, 
       error: `Target attribute '${attrName}' is marked internalOnly`,
@@ -712,7 +730,7 @@ export function validateRuleTarget(targetField: string): {
   }
   
   // Check if exportable
-  if (!isExportable(attrName)) {
+  if (!isExportableFromSnapshot(attrName, registrySnapshot)) {
     return { 
       valid: false, 
       error: `Target attribute '${attrName}' is not exportable`,
@@ -725,13 +743,20 @@ export function validateRuleTarget(targetField: string): {
 
 /**
  * Validate generated value against registry domain (S2.3)
+ * LP-smart-rules-registry-bridge-1.0.0: Now uses Firestore registry via snapshot
+ * @param targetField - The target field path
+ * @param value - The value to validate
+ * @param registrySnapshot - Optional registry snapshot for Firestore-first lookup
  */
 export function validateGeneratedValue(
   targetField: string,
-  value: unknown
+  value: unknown,
+  registrySnapshot?: RegistrySnapshot
 ): { valid: boolean; normalizedValue: unknown; reason?: string } {
   const attrName = extractAttributeName(targetField);
-  const attr = getAttributeById(attrName);
+  
+  // LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry lookup
+  const attr = getAttributeByIdFromSnapshot(attrName, registrySnapshot);
   
   // If not in registry, allow value (unknown attributes are handled elsewhere)
   if (!attr) {
@@ -739,13 +764,13 @@ export function validateGeneratedValue(
   }
   
   // If attribute has no allowed_values constraint, allow any value
-  const allowedValues = getAllowedValues(attrName);
+  const allowedValues = getAllowedValuesFromSnapshot(attrName, registrySnapshot);
   if (!allowedValues || allowedValues.length === 0) {
     return { valid: true, normalizedValue: value };
   }
   
   // Only validate enum/select/multiSelect types
-  const enumTypes = ['select', 'multiSelect'];
+  const enumTypes = ['select', 'multiSelect', 'enum'];
   if (!enumTypes.includes(attr.data_type)) {
     return { valid: true, normalizedValue: value };
   }
@@ -757,8 +782,9 @@ export function validateGeneratedValue(
   
   const strValue = String(value).trim();
   
-  // Check synonyms from registry
-  const synonyms = attr.synonyms;
+  // LP-smart-rules-registry-bridge-1.0.0: Get synonyms from Firestore snapshot
+  const synonyms = getSynonymsFromSnapshot(attrName, registrySnapshot) || 
+    (attr && 'synonyms' in attr ? (attr as { synonyms?: Record<string, string> }).synonyms : undefined);
   let mappedValue = strValue;
   
   if (synonyms && typeof synonyms === 'object' && !Array.isArray(synonyms)) {
@@ -1175,13 +1201,16 @@ export class SmartRulesEngineV2 {
   private rules: SmartRule[] = [];
   private dictionary: DictionaryEntry[] = DEFAULT_RICS_DICTIONARY;
   private normalizer: RICSNormalizer;
+  /** LP-smart-rules-registry-bridge-1.0.0: Firestore registry snapshot for runtime validation */
+  private registrySnapshot?: RegistrySnapshot;
   
-  constructor(rules: SmartRule[] = [], dictionary?: DictionaryEntry[]) {
+  constructor(rules: SmartRule[] = [], dictionary?: DictionaryEntry[], registrySnapshot?: RegistrySnapshot) {
     this.rules = rules;
     if (dictionary) {
       this.dictionary = dictionary;
     }
     this.normalizer = new RICSNormalizer(this.dictionary);
+    this.registrySnapshot = registrySnapshot;
   }
   
   /**
@@ -1189,6 +1218,13 @@ export class SmartRulesEngineV2 {
    */
   setRules(rules: SmartRule[]): void {
     this.rules = rules;
+  }
+  
+  /**
+   * LP-smart-rules-registry-bridge-1.0.0: Set registry snapshot for Firestore-first validation
+   */
+  setRegistrySnapshot(snapshot: RegistrySnapshot): void {
+    this.registrySnapshot = snapshot;
   }
   
   /**
@@ -1267,7 +1303,8 @@ export class SmartRulesEngineV2 {
       
       try {
         // Validate target field (S2.3)
-        const targetValidation = validateRuleTarget(rule.action.targetField);
+        // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
+        const targetValidation = validateRuleTarget(rule.action.targetField, this.registrySnapshot);
         if (!targetValidation.valid) {
           logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - invalid target field: ${targetValidation.error}`);
           ruleDecisions.push({
@@ -1318,7 +1355,8 @@ export class SmartRulesEngineV2 {
         });
         
         // Validate generated value against registry domain (S2.3)
-        const validation = validateGeneratedValue(rule.action.targetField, value);
+        // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
+        const validation = validateGeneratedValue(rule.action.targetField, value, this.registrySnapshot);
         
         if (!validation.valid) {
           logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - domain validation failed: ${validation.reason}`);
@@ -1621,6 +1659,7 @@ export class SmartRulesEngineV2 {
   
   /**
    * Test a single rule against a product (for admin testing)
+   * LP-smart-rules-registry-bridge-1.0.0: Uses Firestore registry snapshot for validation
    */
   testRule(
     rule: SmartRule,
@@ -1635,7 +1674,8 @@ export class SmartRulesEngineV2 {
     validationResult: { valid: boolean; reason?: string };
   } {
     // Validate target first
-    const targetValidation = validateRuleTarget(rule.action.targetField);
+    // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
+    const targetValidation = validateRuleTarget(rule.action.targetField, this.registrySnapshot);
     if (!targetValidation.valid) {
       return {
         matches: false,
@@ -1676,7 +1716,8 @@ export class SmartRulesEngineV2 {
     });
     
     // Validate generated value
-    const valueValidation = validateGeneratedValue(rule.action.targetField, value);
+    // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
+    const valueValidation = validateGeneratedValue(rule.action.targetField, value, this.registrySnapshot);
     
     const confidence = Math.max(
       0,

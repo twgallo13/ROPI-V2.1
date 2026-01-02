@@ -1,6 +1,7 @@
 /**
  * Smart Rules Import Integration
  * LP-smart-rules-engine-1.0.0: Wire Smart Rules engine into import pipeline
+ * LP-smart-rules-registry-bridge-1.0.0: Use Firestore registry at runtime
  * 
  * Per Lisa's S2.5 requirements:
  * - Engine runs during import normalization step
@@ -23,6 +24,12 @@ import SmartRulesEngineV2, {
   DEFAULT_RICS_DICTIONARY,
 } from '../lib/smartEngineV2';
 import { loadActiveRules, loadDictionary, clearSmartRulesCache } from './smartRulesCallables';
+// LP-smart-rules-registry-bridge-1.0.0: Import Firestore registry loader
+import { 
+  loadRegistrySnapshot, 
+  clearRegistrySnapshotCache,
+  type RegistrySnapshot,
+} from '../services/registryBridge';
 
 // ============================================================================
 // Configuration
@@ -72,16 +79,19 @@ export interface SmartRulesBatchResult {
 /**
  * Process Smart Rules for a single import row
  * Called during import normalization step (S2.5)
+ * LP-smart-rules-registry-bridge-1.0.0: Now accepts optional registry snapshot
  * 
  * @param importRow - The import row to process
  * @param rules - Active Smart Rules (pre-loaded)
  * @param dictionary - RICS dictionary (pre-loaded)
+ * @param registrySnapshot - Optional Firestore registry snapshot for domain validation
  * @returns Processing result with updates to apply
  */
 export function processSmartRulesForRow(
   importRow: ImportRow,
   rules: SmartRule[],
-  dictionary: DictionaryEntry[]
+  dictionary: DictionaryEntry[],
+  registrySnapshot?: RegistrySnapshot
 ): SmartRulesImportResult {
   // Check if we should skip (idempotency check)
   if (importRow.existingProduct) {
@@ -100,7 +110,8 @@ export function processSmartRulesForRow(
   }
   
   // Create engine and evaluate
-  const engine = new SmartRulesEngineV2(rules, dictionary);
+  // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot for domain validation
+  const engine = new SmartRulesEngineV2(rules, dictionary, registrySnapshot);
   const result = engine.evaluateForImport(importRow);
   
   return {
@@ -117,6 +128,7 @@ export function processSmartRulesForRow(
 /**
  * Process Smart Rules for a batch of import rows
  * Optimized for batch processing with shared rules/dictionary
+ * LP-smart-rules-registry-bridge-1.0.0: Loads Firestore registry once for the batch
  * 
  * @param importRows - Array of import rows to process
  * @returns Batch processing result
@@ -126,14 +138,17 @@ export async function processSmartRulesForBatch(
 ): Promise<SmartRulesBatchResult> {
   const now = new Date().toISOString();
   
-  // Load rules and dictionary once for the batch
-  const [rules, dictionary] = await Promise.all([
+  // LP-smart-rules-registry-bridge-1.0.0: Load rules, dictionary, AND registry snapshot once for the batch
+  const [rules, dictionary, registrySnapshot] = await Promise.all([
     loadActiveRules(),
     loadDictionary(),
+    loadRegistrySnapshot(),
   ]);
   
   if (rules.length === 0) {
     logger.info('No active Smart Rules - skipping batch processing');
+    // Clear registry cache after batch
+    clearRegistrySnapshotCache();
     return {
       processedCount: 0,
       skippedCount: importRows.length,
@@ -154,6 +169,8 @@ export async function processSmartRulesForBatch(
     };
   }
   
+  logger.info(`[SmartRules] Loaded ${registrySnapshot.attributes.size} attributes from Firestore registry (source: ${registrySnapshot.source})`);
+  
   // Process each row
   const results: SmartRulesImportResult[] = [];
   let processedCount = 0;
@@ -164,7 +181,8 @@ export async function processSmartRulesForBatch(
   let totalErrors = 0;
   
   for (const importRow of importRows) {
-    const result = processSmartRulesForRow(importRow, rules, dictionary);
+    // LP-smart-rules-registry-bridge-1.0.0: Pass registry snapshot to engine
+    const result = processSmartRulesForRow(importRow, rules, dictionary, registrySnapshot);
     results.push(result);
     
     if (result.skipped) {
@@ -177,6 +195,9 @@ export async function processSmartRulesForBatch(
       totalErrors += result.errorsCount;
     }
   }
+  
+  // LP-smart-rules-registry-bridge-1.0.0: Clear registry cache after batch processing
+  clearRegistrySnapshotCache();
   
   logger.info(
     `Smart Rules batch: ${processedCount} processed, ${skippedCount} skipped, ` +
@@ -255,13 +276,15 @@ export async function processImportWithSmartRules(
     };
   }
   
-  // Load rules and dictionary
-  const [rules, dictionary] = await Promise.all([
+  // LP-smart-rules-registry-bridge-1.0.0: Load rules, dictionary, AND registry snapshot
+  const [rules, dictionary, registrySnapshot] = await Promise.all([
     loadActiveRules(),
     loadDictionary(),
+    loadRegistrySnapshot(),
   ]);
   
   if (rules.length === 0) {
+    clearRegistrySnapshotCache();
     return {
       suggestions: [],
       conflicts: [],
@@ -274,6 +297,8 @@ export async function processImportWithSmartRules(
     };
   }
   
+  logger.debug(`[SmartRules] Registry snapshot loaded: ${registrySnapshot.attributes.size} attributes (source: ${registrySnapshot.source})`);
+  
   // Build import row
   const importRow: ImportRow = {
     productId,
@@ -283,8 +308,12 @@ export async function processImportWithSmartRules(
   };
   
   // Create engine and evaluate
-  const engine = new SmartRulesEngineV2(rules, dictionary);
+  // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
+  const engine = new SmartRulesEngineV2(rules, dictionary, registrySnapshot);
   const result = engine.evaluateForImport(importRow);
+  
+  // Clear registry cache after evaluation
+  clearRegistrySnapshotCache();
   
   logger.info(
     `Smart Rules for ${productId}: ${result.suggestions.length} suggestions, ` +
@@ -304,6 +333,8 @@ export async function processImportWithSmartRules(
  */
 export function clearCaches(): void {
   clearSmartRulesCache();
+  // LP-smart-rules-registry-bridge-1.0.0: Also clear registry snapshot cache
+  clearRegistrySnapshotCache();
 }
 
 // ============================================================================
