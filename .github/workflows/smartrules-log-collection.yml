@@ -54,11 +54,11 @@ jobs:
           FNS=(importCSV onProductWrite)
           for FN in "${FNS[@]}"; do
             echo "Updating $FN..."
-            gcloud functions deploy "$FN" \
+            gcloud functions update "$FN" \
               --project="${PROJECT_ID}" \
               --region=us-central1 \
               --update-env-vars LOG_VERBOSE=true,LOG_SAMPLING_RATE=100 \
-              --quiet
+              --quiet || echo "Warning: Failed to update $FN, it may not exist or use Cloud Run"
           done
 
       - name: Get identity token
@@ -125,11 +125,11 @@ jobs:
           FNS=(importCSV onProductWrite)
           for FN in "${FNS[@]}"; do
             echo "Updating $FN..."
-            gcloud functions deploy "$FN" \
+            gcloud functions update "$FN" \
               --project="${PROJECT_ID}" \
               --region=us-central1 \
               --update-env-vars LOG_VERBOSE=false,LOG_SAMPLING_RATE=1 \
-              --quiet
+              --quiet || echo "Warning: Failed to revert $FN"
           done
 
       - name: Upload artifacts
