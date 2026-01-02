@@ -115,6 +115,12 @@ export const settingsNavConfig: NavItem[] = [
     icon: '📊',
   },
   {
+    id: 'smart-rules',
+    label: 'Smart Rules',
+    route: '/settings/smart-rules',
+    icon: '⚡',
+  },
+  {
     id: 'attributes',
     label: 'Attributes',
     route: '/settings/attributes',

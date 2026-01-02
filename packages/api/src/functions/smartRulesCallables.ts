@@ -593,3 +593,373 @@ export const resolveConflict = onCall<ResolveConflictRequest, ResolveConflictRes
     };
   }
 );
+
+// ============================================================================
+// Admin CRUD Callables (LP-smart-rules-admin-1.0.0)
+// ============================================================================
+
+/**
+ * Load attribute registry for validation
+ * Rejects internalOnly fields as targets
+ */
+async function validateTargetField(field: string): Promise<{ valid: boolean; reason?: string }> {
+  // Import attribute registry
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const registry = require('@ropi/sdk/config/attributeRegistry.json');
+    const attributes: Array<{ attribute_id: string; exportable?: boolean; internalOnly?: boolean }> = registry.attributes || [];
+    
+    // Extract attribute name from path like "attributes.gender"
+    const attrName = field.startsWith('attributes.') ? field.slice(11) : field;
+    
+    const attrConfig = attributes.find(a => a.attribute_id === attrName);
+    
+    if (!attrConfig) {
+      // Unknown field - allow but warn
+      logger.warn(`Target field "${attrName}" not found in registry, allowing`);
+      return { valid: true, reason: 'Unknown field - not in registry' };
+    }
+    
+    if (attrConfig.internalOnly) {
+      return { 
+        valid: false, 
+        reason: `Field "${attrName}" is marked as internalOnly and cannot be set by Smart Rules` 
+      };
+    }
+    
+    return { valid: true };
+  } catch (error) {
+    logger.error('Error loading attribute registry:', error);
+    return { valid: true, reason: 'Could not validate - registry load failed' };
+  }
+}
+
+/**
+ * Write audit entry for admin actions
+ */
+async function writeAdminAudit(
+  ruleId: string,
+  action: 'create' | 'update' | 'delete' | 'enable' | 'disable',
+  actorId: string,
+  actorEmail?: string,
+  changes?: { before?: unknown; after?: unknown }
+): Promise<void> {
+  const db = admin.firestore();
+  const auditId = `audit_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  
+  try {
+    await db.collection('settings/smartRules/audit').doc(auditId).set({
+      auditId,
+      ruleId,
+      action,
+      actorId,
+      actorEmail: actorEmail || null,
+      timestamp: new Date().toISOString(),
+      changes: changes || null,
+    });
+  } catch (error) {
+    logger.error('Failed to write audit entry:', error);
+    // Don't throw - audit failures shouldn't block operations
+  }
+}
+
+// ============================================================================
+// createSmartRule Callable (Admin)
+// ============================================================================
+
+interface CreateSmartRuleRequest {
+  name: string;
+  description?: string;
+  enabled?: boolean;
+  priority?: number;
+  condition: unknown;
+  action: {
+    targetField: string;
+    valueTemplate: string;
+    confidenceModifier?: number;
+  };
+  autoApply?: boolean;
+  autoApplyConfidence?: number;
+  tags?: string[];
+  packId?: string;
+}
+
+interface CreateSmartRuleResponse {
+  ruleId: string;
+  success: boolean;
+  error?: string;
+}
+
+export const createSmartRuleAdmin = onCall<CreateSmartRuleRequest, CreateSmartRuleResponse>(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 30,
+  },
+  async (request: CallableRequest<CreateSmartRuleRequest>): Promise<CreateSmartRuleResponse> => {
+    // Require authentication
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Must be authenticated to create rules');
+    }
+    
+    const { name, description, enabled, priority, condition, action, autoApply, autoApplyConfidence, tags, packId } = request.data;
+    const actorId = request.auth.uid;
+    const actorEmail = request.auth.token.email;
+    
+    // Validate required fields
+    if (!name || !condition || !action?.targetField || !action?.valueTemplate) {
+      throw new HttpsError('invalid-argument', 'name, condition, action.targetField, and action.valueTemplate are required');
+    }
+    
+    // Validate target field (reject internalOnly)
+    const targetValidation = await validateTargetField(action.targetField);
+    if (!targetValidation.valid) {
+      logger.warn(`Rejected rule creation: ${targetValidation.reason}`);
+      return { ruleId: '', success: false, error: targetValidation.reason };
+    }
+    
+    const db = admin.firestore();
+    const now = new Date().toISOString();
+    const ruleId = `rule_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    
+    const ruleData = {
+      name,
+      description: description || null,
+      enabled: enabled ?? true,
+      priority: priority ?? 1000,
+      condition,
+      action: {
+        targetField: action.targetField,
+        valueTemplate: action.valueTemplate,
+        confidenceModifier: action.confidenceModifier ?? null,
+      },
+      autoApply: autoApply ?? false,
+      autoApplyConfidence: autoApplyConfidence ?? 0.9,
+      tags: tags || [],
+      packId: packId || null,
+      createdBy: actorId,
+      createdAt: now,
+      updatedBy: actorId,
+      updatedAt: now,
+    };
+    
+    try {
+      await db.collection(SMART_RULES_SETTINGS).doc(ruleId).set(ruleData);
+      
+      // Clear cache
+      rulesCache = null;
+      
+      // Write audit
+      await writeAdminAudit(ruleId, 'create', actorId, actorEmail, { after: ruleData });
+      
+      logger.info(`Smart Rule ${ruleId} created by ${actorId}`);
+      return { ruleId, success: true };
+    } catch (error) {
+      logger.error('Error creating Smart Rule:', error);
+      throw new HttpsError('internal', 'Failed to create rule');
+    }
+  }
+);
+
+// ============================================================================
+// updateSmartRule Callable (Admin)
+// ============================================================================
+
+interface UpdateSmartRuleRequest {
+  ruleId: string;
+  updates: Partial<Omit<CreateSmartRuleRequest, 'condition'>> & { condition?: unknown };
+}
+
+interface UpdateSmartRuleResponse {
+  success: boolean;
+  error?: string;
+}
+
+export const updateSmartRuleAdmin = onCall<UpdateSmartRuleRequest, UpdateSmartRuleResponse>(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 30,
+  },
+  async (request: CallableRequest<UpdateSmartRuleRequest>): Promise<UpdateSmartRuleResponse> => {
+    // Require authentication
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Must be authenticated to update rules');
+    }
+    
+    const { ruleId, updates } = request.data;
+    const actorId = request.auth.uid;
+    const actorEmail = request.auth.token.email;
+    
+    if (!ruleId) {
+      throw new HttpsError('invalid-argument', 'ruleId is required');
+    }
+    
+    // Validate target field if being updated
+    if (updates.action?.targetField) {
+      const targetValidation = await validateTargetField(updates.action.targetField);
+      if (!targetValidation.valid) {
+        logger.warn(`Rejected rule update: ${targetValidation.reason}`);
+        return { success: false, error: targetValidation.reason };
+      }
+    }
+    
+    const db = admin.firestore();
+    const now = new Date().toISOString();
+    const ruleRef = db.collection(SMART_RULES_SETTINGS).doc(ruleId);
+    
+    // Get current rule for audit
+    const currentDoc = await ruleRef.get();
+    if (!currentDoc.exists) {
+      throw new HttpsError('not-found', `Rule ${ruleId} not found`);
+    }
+    
+    const currentData = currentDoc.data();
+    
+    // Build update object
+    const updateData: Record<string, unknown> = {
+      updatedBy: actorId,
+      updatedAt: now,
+    };
+    
+    if (updates.name !== undefined) updateData.name = updates.name;
+    if (updates.description !== undefined) updateData.description = updates.description;
+    if (updates.enabled !== undefined) updateData.enabled = updates.enabled;
+    if (updates.priority !== undefined) updateData.priority = updates.priority;
+    if (updates.condition !== undefined) updateData.condition = updates.condition;
+    if (updates.action !== undefined) updateData.action = updates.action;
+    if (updates.autoApply !== undefined) updateData.autoApply = updates.autoApply;
+    if (updates.autoApplyConfidence !== undefined) updateData.autoApplyConfidence = updates.autoApplyConfidence;
+    if (updates.tags !== undefined) updateData.tags = updates.tags;
+    if (updates.packId !== undefined) updateData.packId = updates.packId;
+    
+    try {
+      await ruleRef.update(updateData);
+      
+      // Clear cache
+      rulesCache = null;
+      
+      // Determine action type for audit
+      const auditAction = updates.enabled !== undefined && updates.enabled !== currentData?.enabled
+        ? (updates.enabled ? 'enable' : 'disable')
+        : 'update';
+      
+      // Write audit
+      await writeAdminAudit(ruleId, auditAction, actorId, actorEmail, { 
+        before: currentData, 
+        after: updateData 
+      });
+      
+      logger.info(`Smart Rule ${ruleId} updated by ${actorId}`);
+      return { success: true };
+    } catch (error) {
+      logger.error('Error updating Smart Rule:', error);
+      throw new HttpsError('internal', 'Failed to update rule');
+    }
+  }
+);
+
+// ============================================================================
+// deleteSmartRule Callable (Admin)
+// ============================================================================
+
+interface DeleteSmartRuleRequest {
+  ruleId: string;
+}
+
+interface DeleteSmartRuleResponse {
+  success: boolean;
+  error?: string;
+}
+
+export const deleteSmartRuleAdmin = onCall<DeleteSmartRuleRequest, DeleteSmartRuleResponse>(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 30,
+  },
+  async (request: CallableRequest<DeleteSmartRuleRequest>): Promise<DeleteSmartRuleResponse> => {
+    // Require authentication
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Must be authenticated to delete rules');
+    }
+    
+    const { ruleId } = request.data;
+    const actorId = request.auth.uid;
+    const actorEmail = request.auth.token.email;
+    
+    if (!ruleId) {
+      throw new HttpsError('invalid-argument', 'ruleId is required');
+    }
+    
+    const db = admin.firestore();
+    const ruleRef = db.collection(SMART_RULES_SETTINGS).doc(ruleId);
+    
+    // Get current rule for audit
+    const currentDoc = await ruleRef.get();
+    if (!currentDoc.exists) {
+      throw new HttpsError('not-found', `Rule ${ruleId} not found`);
+    }
+    
+    const currentData = currentDoc.data();
+    
+    try {
+      await ruleRef.delete();
+      
+      // Clear cache
+      rulesCache = null;
+      
+      // Write audit
+      await writeAdminAudit(ruleId, 'delete', actorId, actorEmail, { before: currentData });
+      
+      logger.info(`Smart Rule ${ruleId} deleted by ${actorId}`);
+      return { success: true };
+    } catch (error) {
+      logger.error('Error deleting Smart Rule:', error);
+      throw new HttpsError('internal', 'Failed to delete rule');
+    }
+  }
+);
+
+// ============================================================================
+// listSmartRules Callable (Admin) - includes disabled rules
+// ============================================================================
+
+interface ListSmartRulesResponse {
+  rules: Array<SmartRule & { ruleId: string }>;
+  total: number;
+}
+
+export const listSmartRulesAdmin = onCall<void, ListSmartRulesResponse>(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 30,
+  },
+  async (request: CallableRequest<void>): Promise<ListSmartRulesResponse> => {
+    // Require authentication
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Must be authenticated to list rules');
+    }
+    
+    const db = admin.firestore();
+    
+    try {
+      const snap = await db
+        .collection(SMART_RULES_SETTINGS)
+        .orderBy('priority', 'asc')
+        .limit(MAX_RULES)
+        .get();
+      
+      const rules = snap.docs.map(doc => ({
+        ruleId: doc.id,
+        ...doc.data(),
+      })) as Array<SmartRule & { ruleId: string }>;
+      
+      return { rules, total: rules.length };
+    } catch (error) {
+      logger.error('Error listing Smart Rules:', error);
+      throw new HttpsError('internal', 'Failed to list rules');
+    }
+  }
+);

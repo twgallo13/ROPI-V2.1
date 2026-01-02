@@ -1,0 +1,653 @@
+{
+  "testA": {
+    "ruleCreated": {
+      "id": "smoke-test-rule-gender-1767334195778",
+      "name": "TEST Gender From RICS",
+      "description": "Smoke test rule: IF RICS contains Women → THEN gender = Women's",
+      "enabled": true,
+      "autoApply": false,
+      "priority": 100,
+      "conditions": [
+        {
+          "sourceField": "rics_category",
+          "matchType": "contains_phrase",
+          "value": "Women",
+          "caseSensitive": false
+        }
+      ],
+      "conditionLogic": "AND",
+      "actions": [
+        {
+          "targetField": "attributes.gender",
+          "value": "Women's",
+          "setOnlyIfEmpty": false
+        }
+      ],
+      "tags": [
+        "smoke-test",
+        "gender"
+      ],
+      "createdAt": {
+        "_seconds": 1767334195,
+        "_nanoseconds": 778000000
+      },
+      "createdBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "updatedAt": {
+        "_seconds": 1767334195,
+        "_nanoseconds": 778000000
+      },
+      "updatedBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "version": 1
+    },
+    "productBefore": {
+      "id": "smoke-test-product-1767334195776",
+      "mpn": "SMOKE-TEST-MPN-001",
+      "rics_category": "Women's Apparel > Dresses > Casual",
+      "attributes": {},
+      "provenance": {},
+      "activityLog": [],
+      "createdAt": {
+        "_seconds": 1767334196,
+        "_nanoseconds": 400000000
+      },
+      "updatedAt": {
+        "_seconds": 1767334196,
+        "_nanoseconds": 400000000
+      }
+    },
+    "getProductSuggestionsResponse": {
+      "productId": "smoke-test-product-1767334195776",
+      "suggestions": [
+        {
+          "ruleId": "smoke-test-rule-gender-1767334195778",
+          "ruleName": "TEST Gender From RICS",
+          "targetField": "attributes.gender",
+          "suggestedValue": "Women's",
+          "currentValue": null,
+          "explanation": "Rule \"TEST Gender From RICS\" matched: rics_category contains_phrase \"Women\"",
+          "confidence": 0.95,
+          "setOnlyIfEmpty": false
+        }
+      ],
+      "evaluatedRules": 1,
+      "timestamp": "2026-01-02T06:09:56.754Z"
+    },
+    "applySuggestionsResponse": {
+      "productId": "smoke-test-product-1767334195776",
+      "applied": [
+        {
+          "field": "gender",
+          "value": "Women's",
+          "ruleId": "smoke-test-rule-gender-1767334195778"
+        }
+      ],
+      "actor": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "timestamp": "2026-01-02T06:09:57.107Z"
+    },
+    "productAfter": {
+      "id": "smoke-test-product-1767334195776",
+      "mpn": "SMOKE-TEST-MPN-001",
+      "createdAt": {
+        "_seconds": 1767334196,
+        "_nanoseconds": 400000000
+      },
+      "rics_category": "Women's Apparel > Dresses > Casual",
+      "provenance": {
+        "attributes_gender": {
+          "confidence": 0.95,
+          "appliedBy": {
+            "displayName": "Homer (Smoke Test)",
+            "email": "homer@ropi-test.com",
+            "uid": "homer-smoke-test-admin"
+          },
+          "source": "smartRule",
+          "appliedAt": {
+            "_seconds": 1767334196,
+            "_nanoseconds": 754000000
+          },
+          "ruleName": "TEST Gender From RICS",
+          "ruleId": "smoke-test-rule-gender-1767334195778"
+        }
+      },
+      "attributes": {
+        "gender": "Women's"
+      },
+      "updatedAt": {
+        "_seconds": 1767334196,
+        "_nanoseconds": 754000000
+      },
+      "activityLog": [
+        {
+          "action": "smartrule_apply",
+          "ruleId": "smoke-test-rule-gender-1767334195778",
+          "ruleName": "TEST Gender From RICS",
+          "field": "gender",
+          "oldValue": null,
+          "newValue": "Women's",
+          "actor": {
+            "uid": "homer-smoke-test-admin",
+            "email": "homer@ropi-test.com",
+            "displayName": "Homer (Smoke Test)"
+          },
+          "timestamp": {
+            "_seconds": 1767334196,
+            "_nanoseconds": 873000000
+          },
+          "source": "test_console"
+        }
+      ]
+    },
+    "passed": true,
+    "ruleId": "smoke-test-rule-gender-1767334195778"
+  },
+  "testB": {
+    "attemptedRule": {
+      "id": "smoke-test-internal-block-1767334197223",
+      "name": "TEST Internal Field Block",
+      "description": "This should be rejected - targets internalOnly field",
+      "enabled": true,
+      "autoApply": false,
+      "priority": 100,
+      "conditions": [
+        {
+          "sourceField": "rics_category",
+          "matchType": "contains_phrase",
+          "value": "Test",
+          "caseSensitive": false
+        }
+      ],
+      "conditionLogic": "AND",
+      "actions": [
+        {
+          "targetField": "product_is_active",
+          "value": "true",
+          "setOnlyIfEmpty": false
+        }
+      ],
+      "tags": [
+        "smoke-test",
+        "should-fail"
+      ],
+      "createdAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 223000000
+      },
+      "createdBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "updatedAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 223000000
+      },
+      "updatedBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "version": 1
+    },
+    "validationResponse": {
+      "valid": false,
+      "errorCode": "ILLEGAL_TARGET_INTERNAL_ONLY",
+      "errorMessage": "Cannot target internal-only field \"product_is_active\". This field is reserved for system use and cannot be modified by Smart Rules.",
+      "blockedField": "product_is_active"
+    },
+    "clientSideBlocking": {
+      "field": "product_is_active",
+      "inExportableList": false,
+      "note": "Field NOT in dropdown - client-side blocking ACTIVE"
+    },
+    "passed": true,
+    "validationMethod": "server-side rejection"
+  },
+  "testC": {
+    "autoApplyRule": {
+      "id": "smoke-test-rule-autoapply-1767334197224",
+      "name": "TEST Age Group Auto-Apply",
+      "description": "Smoke test: IF RICS contains Men → THEN age_group = Adult (auto-apply)",
+      "enabled": true,
+      "autoApply": true,
+      "priority": 100,
+      "conditions": [
+        {
+          "sourceField": "rics_category",
+          "matchType": "contains_phrase",
+          "value": "Men",
+          "caseSensitive": false
+        }
+      ],
+      "conditionLogic": "AND",
+      "actions": [
+        {
+          "targetField": "attributes.age_group",
+          "value": "Adult",
+          "setOnlyIfEmpty": true
+        }
+      ],
+      "tags": [
+        "smoke-test",
+        "auto-apply"
+      ],
+      "createdAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 224000000
+      },
+      "createdBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "updatedAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 224000000
+      },
+      "updatedBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "version": 1
+    },
+    "productBefore": {
+      "id": "smoke-test-product-autoapply-1767334197224",
+      "mpn": "SMOKE-TEST-AUTOAPPLY-001",
+      "rics_category": "Men's Footwear > Athletic > Running",
+      "attributes": {},
+      "provenance": {},
+      "activityLog": [],
+      "createdAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 449000000
+      },
+      "updatedAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 449000000
+      }
+    },
+    "autoApplyResult": {
+      "rulesEvaluated": 1,
+      "fieldsApplied": 1
+    },
+    "productAfter": {
+      "mpn": "SMOKE-TEST-AUTOAPPLY-001",
+      "id": "smoke-test-product-autoapply-1767334197224",
+      "createdAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 449000000
+      },
+      "rics_category": "Men's Footwear > Athletic > Running",
+      "provenance": {
+        "attributes_age_group": {
+          "ruleName": "TEST Age Group Auto-Apply",
+          "source": "smartRule_auto",
+          "appliedAt": {
+            "_seconds": 1767334197,
+            "_nanoseconds": 814000000
+          },
+          "confidence": 1,
+          "ruleId": "smoke-test-rule-autoapply-1767334197224"
+        }
+      },
+      "attributes": {
+        "age_group": "Adult"
+      },
+      "updatedAt": {
+        "_seconds": 1767334197,
+        "_nanoseconds": 814000000
+      },
+      "activityLog": [
+        {
+          "action": "smartrule_auto_apply",
+          "ruleId": "smoke-test-rule-autoapply-1767334197224",
+          "ruleName": "TEST Age Group Auto-Apply",
+          "field": "age_group",
+          "oldValue": null,
+          "newValue": "Adult",
+          "actor": {
+            "type": "system",
+            "name": "Smart Rules Engine"
+          },
+          "timestamp": {
+            "_seconds": 1767334197,
+            "_nanoseconds": 928000000
+          },
+          "source": "import_auto_apply"
+        }
+      ]
+    },
+    "passed": true,
+    "ruleId": "smoke-test-rule-autoapply-1767334197224",
+    "productId": "smoke-test-product-autoapply-1767334197224"
+  },
+  "testD": {
+    "packCreated": {
+      "id": "smoke-test-pack-1767334198266",
+      "name": "pack-shoe-defaults",
+      "description": "Default attributes for shoe products",
+      "enabled": true,
+      "ruleIds": [
+        "smoke-test-pack-rule1-1767334198266",
+        "smoke-test-pack-rule2-1767334198266"
+      ],
+      "version": 1,
+      "createdAt": {
+        "_seconds": 1767334198,
+        "_nanoseconds": 419000000
+      },
+      "createdBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "updatedAt": {
+        "_seconds": 1767334198,
+        "_nanoseconds": 419000000
+      },
+      "updatedBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      }
+    },
+    "packRules": [
+      {
+        "id": "smoke-test-pack-rule1-1767334198266",
+        "name": "Pack Rule 1 - Color",
+        "description": "Test pack rule: set color",
+        "enabled": true,
+        "autoApply": false,
+        "priority": 100,
+        "packId": "smoke-test-pack-1767334198266",
+        "conditions": [
+          {
+            "sourceField": "rics_category",
+            "matchType": "contains_phrase",
+            "value": "Shoe",
+            "caseSensitive": false
+          }
+        ],
+        "conditionLogic": "AND",
+        "actions": [
+          {
+            "targetField": "attributes.color",
+            "value": "Black",
+            "setOnlyIfEmpty": true
+          }
+        ],
+        "tags": [
+          "smoke-test",
+          "pack-test"
+        ],
+        "createdAt": {
+          "_seconds": 1767334198,
+          "_nanoseconds": 266000000
+        },
+        "createdBy": {
+          "uid": "homer-smoke-test-admin",
+          "email": "homer@ropi-test.com",
+          "displayName": "Homer (Smoke Test)"
+        },
+        "updatedAt": {
+          "_seconds": 1767334198,
+          "_nanoseconds": 266000000
+        },
+        "updatedBy": {
+          "uid": "homer-smoke-test-admin",
+          "email": "homer@ropi-test.com",
+          "displayName": "Homer (Smoke Test)"
+        },
+        "version": 1
+      },
+      {
+        "id": "smoke-test-pack-rule2-1767334198266",
+        "name": "Pack Rule 2 - Material",
+        "description": "Test pack rule: set material",
+        "enabled": true,
+        "autoApply": false,
+        "priority": 100,
+        "packId": "smoke-test-pack-1767334198266",
+        "conditions": [
+          {
+            "sourceField": "rics_category",
+            "matchType": "contains_phrase",
+            "value": "Shoe",
+            "caseSensitive": false
+          }
+        ],
+        "conditionLogic": "AND",
+        "actions": [
+          {
+            "targetField": "attributes.material",
+            "value": "Leather",
+            "setOnlyIfEmpty": true
+          }
+        ],
+        "tags": [
+          "smoke-test",
+          "pack-test"
+        ],
+        "createdAt": {
+          "_seconds": 1767334198,
+          "_nanoseconds": 266000000
+        },
+        "createdBy": {
+          "uid": "homer-smoke-test-admin",
+          "email": "homer@ropi-test.com",
+          "displayName": "Homer (Smoke Test)"
+        },
+        "updatedAt": {
+          "_seconds": 1767334198,
+          "_nanoseconds": 266000000
+        },
+        "updatedBy": {
+          "uid": "homer-smoke-test-admin",
+          "email": "homer@ropi-test.com",
+          "displayName": "Homer (Smoke Test)"
+        },
+        "version": 1
+      }
+    ],
+    "productBefore": {
+      "id": "smoke-test-product-pack-1767334198266",
+      "mpn": "SMOKE-TEST-PACK-001",
+      "rics_category": "Men's Footwear > Dress Shoes > Oxford",
+      "attributes": {},
+      "provenance": {},
+      "activityLog": [],
+      "createdAt": {
+        "_seconds": 1767334198,
+        "_nanoseconds": 513000000
+      },
+      "updatedAt": {
+        "_seconds": 1767334198,
+        "_nanoseconds": 513000000
+      }
+    },
+    "suggestionsWithPackEnabled": [
+      {
+        "ruleId": "smoke-test-pack-rule1-1767334198266",
+        "ruleName": "Pack Rule 1 - Color",
+        "targetField": "attributes.color",
+        "suggestedValue": "Black",
+        "packId": "smoke-test-pack-1767334198266"
+      },
+      {
+        "ruleId": "smoke-test-pack-rule2-1767334198266",
+        "ruleName": "Pack Rule 2 - Material",
+        "targetField": "attributes.material",
+        "suggestedValue": "Leather",
+        "packId": "smoke-test-pack-1767334198266"
+      }
+    ],
+    "suggestionsWithPackDisabled": [],
+    "passed": true,
+    "packId": "smoke-test-pack-1767334198266"
+  },
+  "testE": {
+    "ruleBefore": {
+      "updatedBy": {
+        "displayName": "Homer (Smoke Test)",
+        "email": "homer@ropi-test.com",
+        "uid": "homer-smoke-test-admin"
+      },
+      "createdBy": {
+        "email": "homer@ropi-test.com",
+        "uid": "homer-smoke-test-admin",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "version": 1,
+      "name": "TEST Gender From RICS",
+      "conditions": [
+        {
+          "value": "Women",
+          "sourceField": "rics_category",
+          "caseSensitive": false,
+          "matchType": "contains_phrase"
+        }
+      ],
+      "actions": [
+        {
+          "value": "Women's",
+          "setOnlyIfEmpty": false,
+          "targetField": "attributes.gender"
+        }
+      ],
+      "updatedAt": {
+        "_seconds": 1767334195,
+        "_nanoseconds": 778000000
+      },
+      "conditionLogic": "AND",
+      "description": "Smoke test rule: IF RICS contains Women → THEN gender = Women's",
+      "createdAt": {
+        "_seconds": 1767334195,
+        "_nanoseconds": 778000000
+      },
+      "enabled": true,
+      "autoApply": false,
+      "priority": 100,
+      "tags": [
+        "smoke-test",
+        "gender"
+      ],
+      "id": "smoke-test-rule-gender-1767334195778"
+    },
+    "ruleAfter": {
+      "updatedBy": {
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "createdBy": {
+        "email": "homer@ropi-test.com",
+        "uid": "homer-smoke-test-admin",
+        "displayName": "Homer (Smoke Test)"
+      },
+      "version": 2,
+      "name": "TEST Gender From RICS",
+      "conditions": [
+        {
+          "value": "Women",
+          "sourceField": "rics_category",
+          "caseSensitive": false,
+          "matchType": "contains_phrase"
+        }
+      ],
+      "actions": [
+        {
+          "targetField": "attributes.gender",
+          "value": "Women's Fashion",
+          "setOnlyIfEmpty": false
+        }
+      ],
+      "updatedAt": {
+        "_seconds": 1767334199,
+        "_nanoseconds": 12000000
+      },
+      "conditionLogic": "AND",
+      "description": "Smoke test rule: IF RICS contains Women → THEN gender = Women's",
+      "createdAt": {
+        "_seconds": 1767334195,
+        "_nanoseconds": 778000000
+      },
+      "enabled": true,
+      "autoApply": false,
+      "priority": 200,
+      "tags": [
+        "smoke-test",
+        "gender"
+      ],
+      "id": "smoke-test-rule-gender-1767334195778"
+    },
+    "auditEntry": {
+      "ruleName": "TEST Gender From RICS",
+      "id": "audit-smoke-test-rule-gender-1767334195778-1767334199096",
+      "action": "update",
+      "nextJson": "{\"updatedBy\":{\"uid\":\"homer-smoke-test-admin\",\"email\":\"homer@ropi-test.com\",\"displayName\":\"Homer (Smoke Test)\"},\"createdBy\":{\"email\":\"homer@ropi-test.com\",\"uid\":\"homer-smoke-test-admin\",\"displayName\":\"Homer (Smoke Test)\"},\"version\":2,\"name\":\"TEST Gender From RICS\",\"conditions\":[{\"value\":\"Women\",\"sourceField\":\"rics_category\",\"caseSensitive\":false,\"matchType\":\"contains_phrase\"}],\"actions\":[{\"targetField\":\"attributes.gender\",\"value\":\"Women's Fashion\",\"setOnlyIfEmpty\":false}],\"updatedAt\":{\"_seconds\":1767334199,\"_nanoseconds\":12000000},\"conditionLogic\":\"AND\",\"description\":\"Smoke test rule: IF RICS contains Women → THEN gender = Women's\",\"createdAt\":{\"_seconds\":1767334195,\"_nanoseconds\":778000000},\"enabled\":true,\"autoApply\":false,\"priority\":200,\"tags\":[\"smoke-test\",\"gender\"],\"id\":\"smoke-test-rule-gender-1767334195778\"}",
+      "actor": {
+        "displayName": "Homer (Smoke Test)",
+        "uid": "homer-smoke-test-admin",
+        "email": "homer@ropi-test.com"
+      },
+      "previousJson": "{\"updatedBy\":{\"displayName\":\"Homer (Smoke Test)\",\"email\":\"homer@ropi-test.com\",\"uid\":\"homer-smoke-test-admin\"},\"createdBy\":{\"email\":\"homer@ropi-test.com\",\"uid\":\"homer-smoke-test-admin\",\"displayName\":\"Homer (Smoke Test)\"},\"version\":1,\"name\":\"TEST Gender From RICS\",\"conditions\":[{\"value\":\"Women\",\"sourceField\":\"rics_category\",\"caseSensitive\":false,\"matchType\":\"contains_phrase\"}],\"actions\":[{\"value\":\"Women's\",\"setOnlyIfEmpty\":false,\"targetField\":\"attributes.gender\"}],\"updatedAt\":{\"_seconds\":1767334195,\"_nanoseconds\":778000000},\"conditionLogic\":\"AND\",\"description\":\"Smoke test rule: IF RICS contains Women → THEN gender = Women's\",\"createdAt\":{\"_seconds\":1767334195,\"_nanoseconds\":778000000},\"enabled\":true,\"autoApply\":false,\"priority\":100,\"tags\":[\"smoke-test\",\"gender\"],\"id\":\"smoke-test-rule-gender-1767334195778\"}",
+      "ruleId": "smoke-test-rule-gender-1767334195778",
+      "timestamp": {
+        "_seconds": 1767334199,
+        "_nanoseconds": 96000000
+      },
+      "changes": [
+        {
+          "newValue": 200,
+          "field": "priority",
+          "oldValue": 100
+        },
+        {
+          "newValue": "Women's Fashion",
+          "oldValue": "Women's",
+          "field": "actions[0].value"
+        },
+        {
+          "oldValue": 1,
+          "field": "version",
+          "newValue": 2
+        }
+      ]
+    },
+    "passed": true,
+    "auditId": "audit-smoke-test-rule-gender-1767334195778-1767334199096"
+  },
+  "summary": {
+    "testDate": "2026-01-02T06:09:59.247Z",
+    "actor": {
+      "uid": "homer-smoke-test-admin",
+      "email": "homer@ropi-test.com",
+      "displayName": "Homer (Smoke Test)"
+    },
+    "project": "ropi-bccee",
+    "environment": "staging",
+    "results": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "allPassed": true,
+    "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/415",
+    "branch": "lp-smart-rules-admin-1.0.0",
+    "commit": "fb41279"
+  }
+}
