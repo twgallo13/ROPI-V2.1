@@ -3581,78 +3581,47 @@ var AttributeSchema = z.object({
   updatedBy: z.string().optional(),
   updatedAt: z.union([z.string(), z.object({}).passthrough()]).optional()
 });
-var MatchTypeEnum = z.enum([
-  "equals",
-  "notEquals",
-  "contains",
-  "notContains",
-  "startsWith",
-  "endsWith",
-  "regex",
-  "greaterThan",
-  "lessThan",
-  "in",
-  "notIn",
-  "exists",
-  "notExists",
-  "token",
-  "phrase",
-  "and",
-  "or",
-  "not"
-]);
-var SmartRuleCondition = z.object({
-  field: z.string().min(1, "Condition field is required"),
-  matchType: MatchTypeEnum,
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.array(z.string())
-  ]).default(""),
-  options: z.record(z.any()).default({})
-});
-var SmartRuleAction = z.object({
-  targetField: z.string().min(1, "Target field is required"),
+var ActionSchema = z.object({
+  targetField: z.string().min(1),
   valueTemplate: z.string().default(""),
-  confidenceModifier: z.number().min(-1).max(1).optional()
+  confidenceModifier: z.number().optional()
 });
-var SmartRuleSchema = z.object({
-  // Identity
-  ruleId: z.string().min(1),
-  // Core metadata
-  name: z.string().min(1, "Rule name is required"),
+var SmartRuleAction = ActionSchema;
+var ConditionSchema = z.object({
+  field: z.string().min(1),
+  matchType: z.enum(["token", "phrase", "regex", "contains"]),
+  value: z.string().default(""),
+  // ensure options is always an array
+  options: z.array(z.any()).default([])
+});
+var SmartRuleCondition = ConditionSchema;
+var MatchTypeEnum = z.enum(["token", "phrase", "regex", "contains"]);
+var RuleSchema = z.object({
+  ruleId: z.string().optional(),
+  name: z.string().min(1),
   description: z.string().default(""),
-  // Status
   enabled: z.boolean().default(true),
-  priority: z.number().int().min(0).max(1e4).default(1e3),
-  // Condition(s)
-  condition: z.union([
-    SmartRuleCondition,
-    z.array(SmartRuleCondition)
-  ]),
-  conditionLogic: z.enum(["and", "or"]).default("and"),
-  // Action
-  action: SmartRuleAction,
-  // Auto-apply settings
+  priority: z.number().int().default(100),
+  // normalize single condition to array
+  condition: z.union([ConditionSchema, z.array(ConditionSchema)]).transform((v) => Array.isArray(v) ? v : [v]),
+  action: ActionSchema,
   autoApply: z.boolean().default(false),
   autoApplyConfidence: z.number().min(0).max(1).optional(),
-  // Organization
   tags: z.array(z.string()).default([]),
   packId: z.string().nullable().optional(),
-  // Audit fields (set by server)
   createdBy: z.string().optional(),
-  createdAt: z.any().optional(),
-  // Firestore Timestamp or string
+  createdAt: z.string().optional(),
   updatedBy: z.string().optional(),
-  updatedAt: z.any().optional()
-  // Firestore Timestamp or string
+  updatedAt: z.string().optional()
 });
+var SmartRuleSchema = RuleSchema;
 var RuleConditionFormSchema = z.object({
   id: z.string(),
   field: z.string().default(""),
   matchType: MatchTypeEnum.default("contains"),
   value: z.union([z.string(), z.array(z.string())]).default(""),
-  options: z.record(z.any()).default({})
+  // Form uses array for options (consistent with document schema)
+  options: z.array(z.any()).default([])
 });
 var RuleActionFormSchema = z.object({
   targetField: z.string().default(""),
@@ -3665,7 +3634,7 @@ var SmartRuleFormSchema = z.object({
   name: z.string().default(""),
   description: z.string().default(""),
   enabled: z.boolean().default(true),
-  priority: z.number().default(1e3),
+  priority: z.number().default(100),
   conditions: z.array(RuleConditionFormSchema).default([]),
   conditionLogic: z.enum(["and", "or"]).default("and"),
   action: RuleActionFormSchema,
@@ -3675,7 +3644,10 @@ var SmartRuleFormSchema = z.object({
   packId: z.string().nullable().optional()
 });
 function validateSmartRule(payload) {
-  const result = SmartRuleSchema.safeParse(payload);
+  return RuleSchema.parse(payload);
+}
+function safeValidateSmartRule(payload) {
+  const result = RuleSchema.safeParse(payload);
   if (result.success) {
     return {
       valid: true,
@@ -3711,40 +3683,36 @@ function validateSmartRuleForm(payload) {
   };
 }
 function deepCleanUndefined(obj) {
-  const cleaned = {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === void 0) {
-      continue;
+  if (obj === void 0) return void 0;
+  if (obj === null) return null;
+  if (Array.isArray(obj)) return obj.map(deepCleanUndefined);
+  if (typeof obj === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v === void 0) continue;
+      const cleaned = deepCleanUndefined(v);
+      if (cleaned !== void 0) out[k] = cleaned;
     }
-    if (value === null) {
-      cleaned[key] = null;
-    } else if (Array.isArray(value)) {
-      cleaned[key] = value.map(
-        (item) => typeof item === "object" && item !== null ? deepCleanUndefined(item) : item
-      );
-    } else if (typeof value === "object" && value !== null) {
-      cleaned[key] = deepCleanUndefined(value);
-    } else {
-      cleaned[key] = value;
-    }
+    return out;
   }
-  return cleaned;
+  return obj;
 }
+var deepClean = deepCleanUndefined;
 function normalizeFormToDocument(form) {
   const conditions = form.conditions.map((c) => ({
     field: c.field || "",
     matchType: c.matchType || "contains",
     value: c.value || "",
-    options: c.options || {}
+    options: Array.isArray(c.options) ? c.options : []
   }));
   const doc = {
     ruleId: form.ruleId,
     name: form.name || "",
     description: form.description || "",
     enabled: form.enabled ?? true,
-    priority: form.priority ?? 1e3,
+    priority: form.priority ?? 100,
+    // Normalize: single condition to array via schema transform
     condition: conditions.length === 1 ? conditions[0] : conditions,
-    conditionLogic: form.conditionLogic || "and",
     action: {
       targetField: form.action?.targetField || "",
       valueTemplate: form.action?.valueTemplate || "",
@@ -3897,4 +3865,4 @@ function detectCollisions(ids) {
 // src/index.ts
 var SDK_VERSION = "0.6.0";
 
-export { AITemplateSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CanonicalRegistrySchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ExportMetadataSchema, ExportTargetSchema, ImportRowRawSchema, ImportRowSchema, LEGACY_TO_REGISTRY, MatchTypeEnum, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, REGISTRY_TO_LEGACY, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, RegistryAttributeSchema, RegistryExportMetaSchema, RuleActionFormSchema, RuleConditionFormSchema, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleFormSchema, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deepCleanUndefined, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getAttributesForTarget, getExportMeta, getExportableAttributes, getInternalOnlyAttributes, getRegistryVersion, getRequiredForExportAttributes, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, isExportable, isInternalOnly, isRequiredForExport, normalizeDataType, normalizeFormToDocument, normalizeImportRow, normalizeTargetFieldToRegistry, parseRetailOpsCsv, parsedRowsToImportRows, preSubmitValidation, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateCanonicalRegistry, safeValidateProduct, safeValidateRegistryAttribute, sourceColumnMatchesHeader, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCanonicalRegistry, validateCoreProduct, validateCoreProductOrThrow, validateExportControlConsistency, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRegistryAttribute, validateRegistryExportConsistency, validateRequiredFields, validateSmartRule, validateSmartRuleForm, wouldCollide };
+export { AITemplateSchema, ActionSchema, AttributeConstraintSchema, AttributeDataTypeSchema, AttributeDefinitionSchema, AttributeRegistrySchema, AttributeSchema, AttributeValueSchema, CanonicalRegistrySchema, ConditionSchema, CoreProductSchema, DEFAULT_COLUMN_MAPPINGS, ExportMetadataSchema, ExportTargetSchema, ImportRowRawSchema, ImportRowSchema, LEGACY_TO_REGISTRY, MatchTypeEnum, ProductAttributesSchema, ProductCoreSchema, ProductFlagsSchema, ProductImageSchema, ProductInventorySchema, ProductMediaSchema, ProductMetaSchema, ProductPricingSchema, ProductSchema, REGISTRY_TO_LEGACY, RETAILOPS_COLUMN_NAMES, RETAILOPS_HEADER_ROW, RegistryAttributeSchema, RegistryExportMetaSchema, RuleActionFormSchema, RuleConditionFormSchema, RuleSchema, SDK_VERSION, SmartRuleAction, SmartRuleCondition, SmartRuleFormSchema, SmartRuleSchema, allowsCustomValues, buildImportRow, buildImportRows, buildRetailOpsCsv, buildRetailOpsRow, canProcessRow, deepClean, deepCleanUndefined, deriveProductId, detectCollisions, getAllowedValues, getAttributeById, getAttributeRegistry, getAttributes, getAttributesForTarget, getExportMeta, getExportableAttributes, getInternalOnlyAttributes, getRegistryVersion, getRequiredForExportAttributes, getRetailOpsHeaderRow, importRowJsonSchema, importRowToCoreProduct, importRowsToCoreProducts, isEmptyRow, isExportable, isInternalOnly, isRequiredForExport, normalizeDataType, normalizeFormToDocument, normalizeImportRow, normalizeTargetFieldToRegistry, parseRetailOpsCsv, parsedRowsToImportRows, preSubmitValidation, productJsonSchema, retailOpsCsvToCoreProducts, retailOpsCsvToCoreProductsWithDetails, retailOpsExportMapping, retailOpsRowToImportRow, safeValidateAttributeDefinition, safeValidateCanonicalRegistry, safeValidateProduct, safeValidateRegistryAttribute, safeValidateSmartRule, sourceColumnMatchesHeader, toSnakeCase, validateAttributeDefinition, validateAttributeDomain, validateAttributeDomains, validateAttributeRegistry, validateAttributeValue, validateAttributes, validateAttributesOnly, validateCanonicalRegistry, validateCoreProduct, validateCoreProductOrThrow, validateExportControlConsistency, validateImportRow, validateImportRowSchema, validateImportRowSchemaOrThrow, validateProduct, validateProductWithDomains, validateRegistryAttribute, validateRegistryExportConsistency, validateRequiredFields, validateSmartRule, validateSmartRuleForm, wouldCollide };

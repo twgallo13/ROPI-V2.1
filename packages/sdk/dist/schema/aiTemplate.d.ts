@@ -61,19 +61,23 @@ export declare const AITemplateSchema: z.ZodObject<{
     updatedBy: z.ZodOptional<z.ZodString>;
     updatedAt: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    status?: "draft" | "active" | "disabled";
+    key?: string;
+    status?: "active" | "draft" | "disabled";
     updatedBy?: string;
     updatedAt?: string;
-    title?: string;
     description?: string;
-    key?: string;
     version?: number;
-    scope?: "brand" | "global" | "store";
+    title?: string;
+    seo?: {
+        metaTitlePattern?: string;
+        metaDescPattern?: string;
+    };
     conditions?: {
         value?: string;
         field?: string;
         op?: string;
     }[];
+    scope?: "brand" | "global" | "store";
     matchMode?: "first" | "best" | "all";
     layout?: {
         pattern?: string;
@@ -84,27 +88,27 @@ export declare const AITemplateSchema: z.ZodObject<{
         preset?: string;
         avoid?: string[];
         brandRules?: string[];
-    };
-    seo?: {
-        metaTitlePattern?: string;
-        metaDescPattern?: string;
     };
     examples?: string[];
     banned_terms?: string[];
 }, {
-    status?: "draft" | "active" | "disabled";
+    key?: string;
+    status?: "active" | "draft" | "disabled";
     updatedBy?: string;
     updatedAt?: string;
-    title?: string;
     description?: string;
-    key?: string;
     version?: number;
-    scope?: "brand" | "global" | "store";
+    title?: string;
+    seo?: {
+        metaTitlePattern?: string;
+        metaDescPattern?: string;
+    };
     conditions?: {
         value?: string;
         field?: string;
         op?: string;
     }[];
+    scope?: "brand" | "global" | "store";
     matchMode?: "first" | "best" | "all";
     layout?: {
         pattern?: string;
@@ -115,10 +119,6 @@ export declare const AITemplateSchema: z.ZodObject<{
         preset?: string;
         avoid?: string[];
         brandRules?: string[];
-    };
-    seo?: {
-        metaTitlePattern?: string;
-        metaDescPattern?: string;
     };
     examples?: string[];
     banned_terms?: string[];

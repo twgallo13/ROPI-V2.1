@@ -25,6 +25,12 @@ import {
   getAuditEventHandler,
   revertAttributeHandler,
 } from './endpoints/admin/settings';
+
+// LP-smart-rules-server-validation-1.0.0: Smart Rules validation endpoint
+import {
+  validateSmartRuleHandler,
+  normalizeSmartRuleHandler,
+} from './endpoints/adminSmartRules';
 import {
   listListsHandler,
   getListHandler,
@@ -186,6 +192,12 @@ api.get('/admin/settings/roles', getRolesHandler);
 api.get('/admin/permissions', requireAdmin, getPermissionsHandler);
 api.patch('/admin/permissions', requireAdmin, updatePermissionsHandler);
 api.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
+
+/**
+ * Admin Smart Rules validation endpoints (LP-smart-rules-server-validation-1.0.0)
+ */
+api.post('/admin/validateSmartRule', validateSmartRuleHandler);
+api.post('/admin/normalizeSmartRule', normalizeSmartRuleHandler);
 
 /**
  * User Self-Profile endpoints

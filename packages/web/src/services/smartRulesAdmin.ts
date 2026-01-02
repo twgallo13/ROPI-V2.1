@@ -43,12 +43,81 @@ import type {
 import {
   deepCleanUndefined,
   preSubmitValidation as sdkPreSubmitValidation,
+  validateSmartRule as validateRuleClient,
   type ValidationResult,
 } from '@ropi-aoss/sdk';
 
 // Re-export for UI consumption
 export { sdkPreSubmitValidation as preSubmitValidation };
 export type { ValidationResult };
+
+// ============================================================================
+// Client-side Validation Utilities (Lisa's canonical)
+// ============================================================================
+
+/**
+ * deepClean removes undefined values recursively; keeps null/empty string/empty array
+ */
+export function deepClean<T>(obj: T): T {
+  return deepCleanUndefined(obj);
+}
+
+/**
+ * Client-side pre-validate using SDK schema; returns { valid, issues }
+ */
+export async function validateSmartRuleClient(payload: unknown): Promise<{ valid: boolean; issues?: Array<{ message: string }> }> {
+  try {
+    // parse will throw on invalid
+    validateRuleClient(payload);
+    return { valid: true };
+  } catch (err: unknown) {
+    const errObj = err as { errors?: Array<{ message: string }>; issues?: Array<{ message: string }>; message?: string };
+    return { 
+      valid: false, 
+      issues: errObj.errors || errObj.issues || [{ message: errObj.message || 'Unknown validation error' }] 
+    };
+  }
+}
+
+/**
+ * Use httpsCallable to call server getProductSuggestions (callable)
+ */
+export async function getProductSuggestionsCallable(productId: string) {
+  const functions = getFunctions();
+  const callable = httpsCallable(functions, 'getProductSuggestions');
+  const res = await callable({ productId });
+  return res.data;
+}
+
+/**
+ * Test rule by MPN: resolve productId first then call callable
+ * Lisa's canonical: MPN is the primary lookup method
+ */
+export async function testRuleByMpn(mpn: string): Promise<RuleTestResult> {
+  // Get API base URL from environment or use default
+  const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL || '';
+  
+  // Resolve product by MPN
+  const resp = await fetch(`${apiBaseUrl}/api/products/by-mpn/${encodeURIComponent(mpn)}`);
+  
+  if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('PRODUCT_NOT_FOUND');
+    }
+    const text = await resp.text();
+    throw new Error(text || `Lookup failed: ${resp.status}`);
+  }
+  
+  const pd = await resp.json();
+  const productId = pd.productId || pd.id;
+  
+  if (!productId) {
+    throw new Error('PRODUCT_LOOKUP_RESPONSE_MALFORMED');
+  }
+  
+  // Call getProductSuggestions with resolved productId
+  return getProductSuggestionsCallable(productId) as Promise<RuleTestResult>;
+}
 
 // ============================================================================
 // Constants
@@ -234,10 +303,10 @@ export async function getSmartRule(ruleId: string): Promise<SmartRuleDocument | 
 
 /**
  * Convert form data to Firestore document format
- * LP-smart-rules-schema-1.0.0: Uses deepCleanUndefined to ensure no undefined values
+ * LP-smart-rules-schema-1.1.0: Uses deepCleanUndefined, options as array
  */
 function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> {
-  // Build condition(s) based on form
+  // Build condition(s) based on form - Lisa's canonical uses array for options
   let condition: SmartRuleDocument['condition'];
   
   if (form.conditions.length === 1) {
@@ -247,26 +316,27 @@ function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> 
       field: c.field || '',
       matchType: c.matchType || 'contains',
       value: c.value || '',
-      options: c.options || {},
+      options: Array.isArray(c.options) ? c.options : [],
     };
   } else {
-    // Multiple conditions - wrap in AND/OR
+    // Multiple conditions - wrap in AND/OR (Lisa's canonical uses array for options)
     condition = form.conditions.map(c => ({
       field: c.field || '',
       matchType: c.matchType || 'contains',
       value: c.value || '',
-      options: c.options || {},
+      options: Array.isArray(c.options) ? c.options : [],
     }));
   }
   
   // Build the document with explicit defaults (never undefined)
+  // Lisa's canonical: priority defaults to 100
   const doc: Record<string, unknown> = {
     name: form.name || '',
     description: form.description || '',  // Default to empty string, not undefined
     enabled: form.enabled ?? true,
-    priority: form.priority ?? 1000,
+    priority: form.priority ?? 100,
     condition,
-    conditionLogic: form.conditionLogic || 'and',
+    // Note: conditionLogic removed from Lisa's canonical RuleSchema
     action: {
       targetField: form.action?.targetField || '',
       valueTemplate: form.action?.valueTemplate || '',
@@ -291,6 +361,7 @@ function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> 
 
 /**
  * Create a new Smart Rule
+ * LP-smart-rules-schema-1.1.0: Client-side validation before write
  */
 export async function createSmartRule(form: SmartRuleForm): Promise<CreateRuleResponse> {
   if (!isFirebaseAvailable() || !db) {
@@ -311,13 +382,29 @@ export async function createSmartRule(form: SmartRuleForm): Promise<CreateRuleRe
     // Generate rule ID if not provided
     const ruleId = form.ruleId || `rule_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     
+    // Convert form to document (includes normalization)
+    const docData = formToDocument(form);
+    
+    // Add metadata
     const ruleData = {
-      ...formToDocument(form),
+      ...docData,
+      ruleId,
       createdBy: user?.uid || 'unknown',
       createdAt: now,
       updatedBy: user?.uid || 'unknown',
       updatedAt: now,
     };
+    
+    // LP-smart-rules-schema-1.1.0: Client-side validation using SDK schema
+    const validationResult = await validateSmartRuleClient(ruleData);
+    if (!validationResult.valid) {
+      console.error('Validation failed:', validationResult.issues);
+      return { 
+        ruleId: '', 
+        success: false, 
+        error: 'VALIDATION_FAILED: ' + JSON.stringify(validationResult.issues) 
+      };
+    }
     
     const ruleRef = doc(db, SMART_RULES_COLLECTION, ruleId);
     await setDoc(ruleRef, ruleData);
@@ -773,6 +860,7 @@ export async function applySuggestions(
 
 /**
  * Convert document to form format for editing
+ * Lisa's canonical: matchType is token/phrase/regex/contains, options is array
  */
 export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
   // Parse condition(s)
@@ -784,9 +872,9 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
     conditions.push({
       id: 'cond_0',
       field: '',
-      matchType: 'equals',
+      matchType: 'contains', // Lisa's canonical default
       value: '',
-      options: undefined,
+      options: [], // Lisa's canonical: array
     });
   } else if (Array.isArray(doc.condition)) {
     // Multiple conditions
@@ -794,9 +882,9 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
       conditions.push({
         id: `cond_${i}`,
         field: c.field || '',
-        matchType: (c.matchType as RuleConditionForm['matchType']) || 'equals',
+        matchType: (c.matchType as RuleConditionForm['matchType']) || 'contains',
         value: (c.value as string | string[]) || '',
-        options: c.options as RuleConditionForm['options'],
+        options: Array.isArray(c.options) ? c.options : [],
       });
     });
   } else {
@@ -804,9 +892,9 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
     conditions.push({
       id: 'cond_0',
       field: doc.condition.field || '',
-      matchType: (doc.condition.matchType as RuleConditionForm['matchType']) || 'equals',
+      matchType: (doc.condition.matchType as RuleConditionForm['matchType']) || 'contains',
       value: (doc.condition.value as string | string[]) || '',
-      options: doc.condition.options as RuleConditionForm['options'],
+      options: Array.isArray(doc.condition.options) ? doc.condition.options : [],
     });
   }
   

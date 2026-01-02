@@ -14,18 +14,14 @@
 // We use pure TypeScript types for the web package
 
 // ============================================================================
-// Condition Match Types
+// Condition Match Types (Lisa's canonical: token, phrase, regex, contains)
 // ============================================================================
 
 export const CONDITION_MATCH_TYPES = [
-  { value: 'equals', label: 'Equals', description: 'Exact match' },
-  { value: 'contains', label: 'Contains', description: 'Substring match' },
+  { value: 'token', label: 'Token', description: 'Token match' },
+  { value: 'phrase', label: 'Phrase', description: 'Phrase match' },
   { value: 'regex', label: 'Regex', description: 'Regular expression' },
-  { value: 'in', label: 'In List', description: 'Value in array' },
-  { value: 'exists', label: 'Exists', description: 'Field has value' },
-  { value: 'and', label: 'AND', description: 'All conditions must match' },
-  { value: 'or', label: 'OR', description: 'Any condition must match' },
-  { value: 'not', label: 'NOT', description: 'Negation' },
+  { value: 'contains', label: 'Contains', description: 'Substring match' },
 ] as const;
 
 export type ConditionMatchType = typeof CONDITION_MATCH_TYPES[number]['value'];
@@ -50,6 +46,7 @@ export const CONDITION_SOURCE_FIELDS = [
 
 // ============================================================================
 // Rule Condition Schema (Form)
+// Lisa's canonical: options is array, not object
 // ============================================================================
 
 export interface RuleConditionForm {
@@ -57,10 +54,8 @@ export interface RuleConditionForm {
   field: string;
   matchType: ConditionMatchType;
   value: string | string[];
-  options?: {
-    caseSensitive?: boolean;
-    ignoreWhitespace?: boolean;
-  };
+  // Lisa's canonical: options is array for extensibility
+  options?: unknown[];
 }
 
 // ============================================================================
@@ -95,6 +90,7 @@ export interface SmartRuleForm {
 
 // ============================================================================
 // Smart Rule (Firestore Document)
+// Lisa's canonical: options is array, matchType is token/phrase/regex/contains
 // ============================================================================
 
 export interface SmartRuleDocument {
@@ -107,12 +103,12 @@ export interface SmartRuleDocument {
     field: string;
     matchType: string;
     value?: string | number | string[];
-    options?: Record<string, unknown>;
+    options?: unknown[];
   } | Array<{
     field: string;
     matchType: string;
     value?: string | number | string[];
-    options?: Record<string, unknown>;
+    options?: unknown[];
   }>;
   action: {
     targetField: string;

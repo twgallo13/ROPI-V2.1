@@ -2,11 +2,15 @@
  * Import Row Validator
  * Per AOSS Section 2.2 — Attribute Validation Schema
  *
+ * LP-2.1.0: MPN-first — MPN is required, SKU is optional
+ *
  * Validates normalized import rows and generates validation issues.
  */
 import type { ImportNormalizedFields, ImportValidation } from '../schema/importEngine';
 /**
  * Validate a normalized import row
+ *
+ * LP-2.1.0: MPN-first — MPN is required, SKU is optional
  *
  * @param normalized - Normalized fields to validate
  * @returns Validation results with errors and warnings

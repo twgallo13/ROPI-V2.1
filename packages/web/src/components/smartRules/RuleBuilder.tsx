@@ -256,14 +256,14 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
     getExportableAttributes().then(setTargetFields);
   }, []);
   
-  // Create empty condition (LP-smart-rules-schema-1.0.0: always include options)
+  // Create empty condition (Lisa's canonical: options is array)
   function createEmptyCondition(): RuleConditionForm {
     return {
       id: `cond_${Date.now()}_${Math.random().toString(36).slice(2, 4)}`,
       field: '',
       matchType: 'contains',
       value: '',
-      options: {}, // Never undefined
+      options: [], // Lisa's canonical: array, not object
     };
   }
   
@@ -308,7 +308,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
     setTags(prev => prev.filter(t => t !== tag));
   }, []);
   
-  // Validate form (LP-smart-rules-schema-1.0.0: uses canonical SDK validation)
+  // Validate form (Lisa's canonical: uses SDK validation)
   const validate = useCallback((): boolean => {
     // Build the form object for validation
     const formData: SmartRuleForm = {
@@ -319,7 +319,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
       priority,
       conditions: conditions.map(c => ({
         ...c,
-        options: c.options || {}, // Ensure options is never undefined
+        options: Array.isArray(c.options) ? c.options : [], // Lisa's canonical: array
       })),
       conditionLogic,
       action: {
@@ -362,7 +362,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
       return;
     }
     
-    // Build rule with explicit defaults (never undefined)
+    // Build rule with explicit defaults (Lisa's canonical: never undefined)
     const rule: SmartRuleForm = {
       ruleId: initialValue?.ruleId || generateRuleId(),
       name: name.trim(),
@@ -374,7 +374,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
         field: c.field || '',
         matchType: c.matchType || 'contains',
         value: c.value || '',
-        options: c.options || {}, // Never undefined
+        options: Array.isArray(c.options) ? c.options : [], // Lisa's canonical: array
       })),
       conditionLogic,
       action: {
@@ -545,8 +545,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
                 style={styles.input}
                 value={Array.isArray(condition.value) ? condition.value.join(', ') : condition.value}
                 onChange={e => updateCondition(condition.id, { value: e.target.value })}
-                placeholder={condition.matchType === 'in' ? 'value1, value2, ...' : 'Match value'}
-                disabled={condition.matchType === 'exists'}
+                placeholder={condition.matchType === 'regex' ? 'Regular expression' : 'Match value'}
               />
               {errors[`condition_${index}_value`] && (
                 <div style={styles.errorText}>{errors[`condition_${index}_value`]}</div>

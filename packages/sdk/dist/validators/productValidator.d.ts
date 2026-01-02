@@ -1,11 +1,14 @@
 /**
  * Product Validator
  * Per AOSS Section 2.1 — Product Schema (JSON)
+ * LP-attr-enforce-2.1.0 — Phase 2: Registry-based domain validation
  *
  * Runtime validation for product objects using zod.
+ * Integrates with attributeRegistry.json for domain enforcement.
  */
 import { z } from 'zod';
 import type { Product } from '../schema/product';
+import { DomainValidationResult } from '../registry';
 /**
  * ProductCore schema - required fields for product identification
  */
@@ -18,21 +21,21 @@ export declare const ProductCoreSchema: z.ZodObject<{
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status?: "draft" | "active" | "archived";
+    status?: "active" | "draft" | "archived";
     createdAt?: string;
     updatedAt?: string;
-    brand?: string;
+    description?: string;
     sku?: string;
     title?: string;
-    description?: string;
+    brand?: string;
 }, {
-    status?: "draft" | "active" | "archived";
+    status?: "active" | "draft" | "archived";
     createdAt?: string;
     updatedAt?: string;
-    brand?: string;
+    description?: string;
     sku?: string;
     title?: string;
-    description?: string;
+    brand?: string;
 }>;
 /**
  * ProductAttributes schema - attribute key-value pairs
@@ -132,21 +135,21 @@ export declare const ProductSchema: z.ZodObject<{
         createdAt: z.ZodString;
         updatedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        status?: "draft" | "active" | "archived";
+        status?: "active" | "draft" | "archived";
         createdAt?: string;
         updatedAt?: string;
-        brand?: string;
+        description?: string;
         sku?: string;
         title?: string;
-        description?: string;
+        brand?: string;
     }, {
-        status?: "draft" | "active" | "archived";
+        status?: "active" | "draft" | "archived";
         createdAt?: string;
         updatedAt?: string;
-        brand?: string;
+        description?: string;
         sku?: string;
         title?: string;
-        description?: string;
+        brand?: string;
     }>;
     attributes: z.ZodObject<{
         department: z.ZodOptional<z.ZodString>;
@@ -228,29 +231,20 @@ export declare const ProductSchema: z.ZodObject<{
         validatedAt: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         source?: string;
+        validatedAt?: string;
         importedAt?: string;
         normalizedAt?: string;
-        validatedAt?: string;
     }, {
         source?: string;
+        validatedAt?: string;
         importedAt?: string;
         normalizedAt?: string;
-        validatedAt?: string;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    core?: {
-        status?: "draft" | "active" | "archived";
-        createdAt?: string;
-        updatedAt?: string;
-        brand?: string;
-        sku?: string;
-        title?: string;
-        description?: string;
-    };
     attributes?: {
+        category?: string;
         department?: string;
         class?: string;
-        category?: string;
         subcategory?: string;
         gender?: string;
         ageGroup?: string;
@@ -259,6 +253,15 @@ export declare const ProductSchema: z.ZodObject<{
         material?: string;
     } & {
         [k: string]: string;
+    };
+    core?: {
+        status?: "active" | "draft" | "archived";
+        createdAt?: string;
+        updatedAt?: string;
+        description?: string;
+        sku?: string;
+        title?: string;
+        brand?: string;
     };
     pricing?: {
         currency?: string;
@@ -278,24 +281,15 @@ export declare const ProductSchema: z.ZodObject<{
     };
     _meta?: {
         source?: string;
+        validatedAt?: string;
         importedAt?: string;
         normalizedAt?: string;
-        validatedAt?: string;
     };
 }, {
-    core?: {
-        status?: "draft" | "active" | "archived";
-        createdAt?: string;
-        updatedAt?: string;
-        brand?: string;
-        sku?: string;
-        title?: string;
-        description?: string;
-    };
     attributes?: {
+        category?: string;
         department?: string;
         class?: string;
-        category?: string;
         subcategory?: string;
         gender?: string;
         ageGroup?: string;
@@ -304,6 +298,15 @@ export declare const ProductSchema: z.ZodObject<{
         material?: string;
     } & {
         [k: string]: string;
+    };
+    core?: {
+        status?: "active" | "draft" | "archived";
+        createdAt?: string;
+        updatedAt?: string;
+        description?: string;
+        sku?: string;
+        title?: string;
+        brand?: string;
     };
     pricing?: {
         currency?: string;
@@ -323,9 +326,9 @@ export declare const ProductSchema: z.ZodObject<{
     };
     _meta?: {
         source?: string;
+        validatedAt?: string;
         importedAt?: string;
         normalizedAt?: string;
-        validatedAt?: string;
     };
 }>;
 /**
@@ -341,3 +344,32 @@ export declare function validateProduct(input: unknown): Product;
  * @returns Validation result with data or error
  */
 export declare function safeValidateProduct(input: unknown): z.SafeParseReturnType<unknown, Product>;
+/**
+ * Extended validation result including domain checks
+ */
+export interface ProductValidationResult {
+    success: boolean;
+    data?: Product;
+    schemaErrors?: z.ZodError;
+    domainErrors: DomainValidationResult[];
+}
+/**
+ * Validate product with full domain enforcement
+ *
+ * Performs two-phase validation:
+ * 1. Zod schema validation (structure and types)
+ * 2. Domain validation (allowed_values from attributeRegistry)
+ *
+ * @param input - Unvalidated input
+ * @returns Validation result with both schema and domain errors
+ */
+export declare function validateProductWithDomains(input: unknown): ProductValidationResult;
+/**
+ * Validate only the attributes object against domain constraints
+ *
+ * Use this for quick validation of attribute values without full product validation.
+ *
+ * @param attributes - Object with attribute_id keys and values
+ * @returns Array of domain validation errors (empty if all valid)
+ */
+export declare function validateAttributesOnly(attributes: Record<string, unknown>): DomainValidationResult[];

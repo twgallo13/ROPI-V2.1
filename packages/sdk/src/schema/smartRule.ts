@@ -1,13 +1,13 @@
 /**
  * Smart Rule Schema
  * Canonical Zod schema for Smart Rules validation
- * Version: LP-smart-rules-schema-1.0.0
+ * Version: LP-smart-rules-schema-1.1.0 (Lisa canonical)
  * 
  * This is the SINGLE SOURCE OF TRUTH for SmartRule validation.
  * Used by both client (UI pre-submit) and server (write validation).
  * 
  * Key invariants:
- * - condition.options MUST be an object (default {}), never undefined
+ * - condition.options MUST be an array (default []), never undefined
  * - description MUST default to ''
  * - tags MUST default to []
  * - No undefined values allowed in Firestore payloads
@@ -16,72 +16,49 @@
 import { z } from 'zod';
 
 // ============================================================================
-// Match Type Enum
+// Action Schema
 // ============================================================================
 
 /**
- * Supported match types for rule conditions
+ * Action schema: single action for now (set a target field to a templated value)
  */
-export const MatchTypeEnum = z.enum([
-  'equals',
-  'notEquals',
-  'contains',
-  'notContains',
-  'startsWith',
-  'endsWith',
-  'regex',
-  'greaterThan',
-  'lessThan',
-  'in',
-  'notIn',
-  'exists',
-  'notExists',
-  'token',
-  'phrase',
-  'and',
-  'or',
-  'not',
-]);
+export const ActionSchema = z.object({
+  targetField: z.string().min(1),
+  valueTemplate: z.string().default(''),
+  confidenceModifier: z.number().optional(),
+});
 
-export type MatchType = z.infer<typeof MatchTypeEnum>;
+export type RuleAction = z.infer<typeof ActionSchema>;
+
+// Alias for compatibility
+export const SmartRuleAction = ActionSchema;
 
 // ============================================================================
 // Condition Schema
 // ============================================================================
 
 /**
- * Single rule condition
+ * Condition schema: match type enum includes token, phrase, regex, contains
  */
-export const SmartRuleCondition = z.object({
-  field: z.string().min(1, 'Condition field is required'),
-  matchType: MatchTypeEnum,
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.array(z.string()),
-  ]).default(''),
-  options: z.record(z.any()).default({}),
+export const ConditionSchema = z.object({
+  field: z.string().min(1),
+  matchType: z.enum(['token', 'phrase', 'regex', 'contains']),
+  value: z.string().default(''),
+  // ensure options is always an array
+  options: z.array(z.any()).default([]),
 });
 
-export type RuleCondition = z.infer<typeof SmartRuleCondition>;
+export type RuleCondition = z.infer<typeof ConditionSchema>;
+
+// Alias for compatibility
+export const SmartRuleCondition = ConditionSchema;
+
+// Match type enum for external reference
+export const MatchTypeEnum = z.enum(['token', 'phrase', 'regex', 'contains']);
+export type MatchType = z.infer<typeof MatchTypeEnum>;
 
 // ============================================================================
-// Action Schema
-// ============================================================================
-
-/**
- * Rule action (what happens when condition matches)
- */
-export const SmartRuleAction = z.object({
-  targetField: z.string().min(1, 'Target field is required'),
-  valueTemplate: z.string().default(''),
-  confidenceModifier: z.number().min(-1).max(1).optional(),
-});
-
-export type RuleAction = z.infer<typeof SmartRuleAction>;
-
-// ============================================================================
-// Full Smart Rule Schema
+// Full Smart Rule Schema (RuleSchema)
 // ============================================================================
 
 /**
@@ -91,48 +68,36 @@ export type RuleAction = z.infer<typeof SmartRuleAction>;
  * - No undefined values in output
  * - All optional fields have sensible defaults
  * - Server-side validation will use this exact schema
+ * - condition normalized to array via transform
  */
-export const SmartRuleSchema = z.object({
-  // Identity
-  ruleId: z.string().min(1),
-  
-  // Core metadata
-  name: z.string().min(1, 'Rule name is required'),
+export const RuleSchema = z.object({
+  ruleId: z.string().optional(),
+  name: z.string().min(1),
   description: z.string().default(''),
-  
-  // Status
   enabled: z.boolean().default(true),
-  priority: z.number().int().min(0).max(10000).default(1000),
-  
-  // Condition(s)
-  condition: z.union([
-    SmartRuleCondition,
-    z.array(SmartRuleCondition),
-  ]),
-  conditionLogic: z.enum(['and', 'or']).default('and'),
-  
-  // Action
-  action: SmartRuleAction,
-  
-  // Auto-apply settings
+  priority: z.number().int().default(100),
+  // normalize single condition to array
+  condition: z.union([ConditionSchema, z.array(ConditionSchema)])
+    .transform((v) => (Array.isArray(v) ? v : [v])),
+  action: ActionSchema,
   autoApply: z.boolean().default(false),
   autoApplyConfidence: z.number().min(0).max(1).optional(),
-  
-  // Organization
   tags: z.array(z.string()).default([]),
   packId: z.string().nullable().optional(),
-  
-  // Audit fields (set by server)
   createdBy: z.string().optional(),
-  createdAt: z.any().optional(), // Firestore Timestamp or string
+  createdAt: z.string().optional(),
   updatedBy: z.string().optional(),
-  updatedAt: z.any().optional(), // Firestore Timestamp or string
+  updatedAt: z.string().optional(),
 });
 
-export type SmartRuleType = z.infer<typeof SmartRuleSchema>;
+// Alias for compatibility with existing code
+export const SmartRuleSchema = RuleSchema;
+
+export type SmartRuleType = z.infer<typeof RuleSchema>;
+export type SmartRule = SmartRuleType;
 
 // ============================================================================
-// Form Schema (for UI editing)
+// Form Schemas (for UI editing)
 // ============================================================================
 
 /**
@@ -143,7 +108,8 @@ export const RuleConditionFormSchema = z.object({
   field: z.string().default(''),
   matchType: MatchTypeEnum.default('contains'),
   value: z.union([z.string(), z.array(z.string())]).default(''),
-  options: z.record(z.any()).default({}),
+  // Form uses array for options (consistent with document schema)
+  options: z.array(z.any()).default([]),
 });
 
 export type RuleConditionForm = z.infer<typeof RuleConditionFormSchema>;
@@ -168,7 +134,7 @@ export const SmartRuleFormSchema = z.object({
   name: z.string().default(''),
   description: z.string().default(''),
   enabled: z.boolean().default(true),
-  priority: z.number().default(1000),
+  priority: z.number().default(100),
   conditions: z.array(RuleConditionFormSchema).default([]),
   conditionLogic: z.enum(['and', 'or']).default('and'),
   action: RuleActionFormSchema,
@@ -195,11 +161,18 @@ export interface ValidationResult {
 }
 
 /**
- * Validate a SmartRule payload
- * Returns validation result with field-level issues
+ * Validate a SmartRule payload (throws on invalid)
+ * Lisa's canonical: parse will throw ZodError with issues
  */
-export function validateSmartRule(payload: unknown): ValidationResult {
-  const result = SmartRuleSchema.safeParse(payload);
+export function validateSmartRule(payload: unknown): SmartRule {
+  return RuleSchema.parse(payload);
+}
+
+/**
+ * Safe validation that returns result object instead of throwing
+ */
+export function safeValidateSmartRule(payload: unknown): ValidationResult {
+  const result = RuleSchema.safeParse(payload);
   
   if (result.success) {
     return {
@@ -250,42 +223,37 @@ export function validateSmartRuleForm(payload: unknown): ValidationResult {
 /**
  * Deep clean an object by removing undefined values
  * Firestore does not accept undefined - must remove or convert to null
+ * Lisa's canonical: keeps null/empty string/empty array
  */
-export function deepCleanUndefined<T extends Record<string, unknown>>(obj: T): T {
-  const cleaned: Record<string, unknown> = {};
-  
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === undefined) {
-      continue;
+export function deepCleanUndefined<T>(obj: T): T {
+  if (obj === undefined) return undefined as T;
+  if (obj === null) return null as T;
+  if (Array.isArray(obj)) return obj.map(deepCleanUndefined) as T;
+  if (typeof obj === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      if (v === undefined) continue;
+      const cleaned = deepCleanUndefined(v);
+      if (cleaned !== undefined) out[k] = cleaned;
     }
-    
-    if (value === null) {
-      cleaned[key] = null;
-    } else if (Array.isArray(value)) {
-      cleaned[key] = value.map(item => 
-        typeof item === 'object' && item !== null 
-          ? deepCleanUndefined(item as Record<string, unknown>)
-          : item
-      );
-    } else if (typeof value === 'object' && value !== null) {
-      cleaned[key] = deepCleanUndefined(value as Record<string, unknown>);
-    } else {
-      cleaned[key] = value;
-    }
+    return out as T;
   }
-  
-  return cleaned as T;
+  return obj;
 }
+
+// Alias for backward compatibility
+export const deepClean = deepCleanUndefined;
 
 /**
  * Normalize a form to a Firestore-safe SmartRule document
+ * Lisa's canonical: condition as array, options as array
  */
 export function normalizeFormToDocument(form: SmartRuleForm): Record<string, unknown> {
   const conditions = form.conditions.map(c => ({
     field: c.field || '',
     matchType: c.matchType || 'contains',
     value: c.value || '',
-    options: c.options || {},
+    options: Array.isArray(c.options) ? c.options : [],
   }));
   
   const doc: Record<string, unknown> = {
@@ -293,9 +261,9 @@ export function normalizeFormToDocument(form: SmartRuleForm): Record<string, unk
     name: form.name || '',
     description: form.description || '',
     enabled: form.enabled ?? true,
-    priority: form.priority ?? 1000,
+    priority: form.priority ?? 100,
+    // Normalize: single condition to array via schema transform
     condition: conditions.length === 1 ? conditions[0] : conditions,
-    conditionLogic: form.conditionLogic || 'and',
     action: {
       targetField: form.action?.targetField || '',
       valueTemplate: form.action?.valueTemplate || '',
@@ -347,4 +315,4 @@ export function preSubmitValidation(form: SmartRuleForm): Record<string, string>
   return errors;
 }
 
-export default SmartRuleSchema;
+export default RuleSchema;

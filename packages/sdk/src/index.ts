@@ -221,19 +221,31 @@ export type {
 
 export { AttributeSchema, type AttributeType } from './schema/attribute';
 export { 
+  // Canonical schemas (Lisa v1.1.0)
+  RuleSchema,
+  ActionSchema,
+  ConditionSchema,
+  // Aliases for backward compatibility
   SmartRuleSchema, 
   SmartRuleCondition, 
   SmartRuleAction, 
+  // Form schemas
   SmartRuleFormSchema,
   RuleConditionFormSchema,
   RuleActionFormSchema,
   MatchTypeEnum,
+  // Validators
   validateSmartRule,
+  safeValidateSmartRule,
   validateSmartRuleForm,
+  // Utilities
   deepCleanUndefined,
+  deepClean,
   normalizeFormToDocument,
   preSubmitValidation,
+  // Types
   type SmartRuleType,
+  type SmartRule,
   type SmartRuleForm,
   type RuleCondition,
   type RuleAction,

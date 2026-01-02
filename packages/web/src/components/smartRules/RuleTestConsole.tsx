@@ -216,7 +216,8 @@ const styles: Record<string, React.CSSProperties> = {
 export function RuleTestConsole() {
   // State
   const [searchInput, setSearchInput] = useState(''); // Can be productId or MPN
-  const [searchType, setSearchType] = useState<'productId' | 'mpn'>('productId');
+  // Lisa's canonical: Default to MPN as canonical lookup for product testing
+  const [searchType, setSearchType] = useState<'productId' | 'mpn'>('mpn');
   const [loading, setLoading] = useState(false);
   const [applying, setApplying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -226,25 +227,43 @@ export function RuleTestConsole() {
   const [resolvedProductId, setResolvedProductId] = useState<string | null>(null);
   
   // Resolve product ID from search input
+  // Lisa's canonical: Use /api/products/by-mpn/:mpn for MPN lookup
   const resolveProductId = useCallback(async (input: string, type: 'productId' | 'mpn'): Promise<string | null> => {
+    const trimmed = input.trim();
+    
     if (type === 'productId') {
       // Direct productId lookup
-      return input.trim();
-    }
-    
-    // MPN lookup - try to find product by MPN
-    // TODO: Implement proper MPN lookup endpoint
-    // For now, check if it looks like a productId (contains underscore or is numeric)
-    const trimmed = input.trim();
-    if (trimmed.includes('_') || /^\d+$/.test(trimmed)) {
-      // Looks like a productId, use directly
       return trimmed;
     }
     
-    // Treat as MPN - format as potential productId pattern
-    // This is a fallback until proper MPN lookup is implemented
-    console.warn('MPN lookup not yet implemented, treating as productId');
-    return trimmed;
+    // MPN lookup - use the server endpoint
+    try {
+      const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL || '';
+      const response = await fetch(`${apiBaseUrl}/api/products/by-mpn/${encodeURIComponent(trimmed)}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null; // Product not found
+        }
+        const text = await response.text();
+        console.error('MPN lookup failed:', response.status, text);
+        return null;
+      }
+      
+      const data = await response.json();
+      const productId = data.productId || data.id;
+      
+      if (!productId) {
+        console.error('MPN lookup response malformed:', data);
+        return null;
+      }
+      
+      console.log(`Resolved MPN "${trimmed}" to productId "${productId}"`);
+      return productId;
+    } catch (err) {
+      console.error('MPN lookup error:', err);
+      return null;
+    }
   }, []);
   
   // Test rules for product

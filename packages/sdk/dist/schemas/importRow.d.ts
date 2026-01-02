@@ -117,28 +117,28 @@ export declare const ImportRowSchema: z.ZodObject<{
     normalizedSizeScale: z.ZodOptional<z.ZodString>;
     notes: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    color?: string;
-    size?: string;
     source?: "SUPPLIER" | "RETAILOPS_EXPORT" | "MANUAL";
     brand?: string;
-    styleCode?: string;
+    color?: string;
+    size?: string;
+    upc?: string;
     rowId?: string;
     originalRowNumber?: number;
-    upc?: string;
+    styleCode?: string;
     raw?: Record<string, unknown>;
     normalizedGender?: string;
     normalizedCategory?: string;
     normalizedSizeScale?: string;
     notes?: string;
 }, {
-    color?: string;
-    size?: string;
     source?: "SUPPLIER" | "RETAILOPS_EXPORT" | "MANUAL";
     brand?: string;
-    styleCode?: string;
+    color?: string;
+    size?: string;
+    upc?: string;
     rowId?: string;
     originalRowNumber?: number;
-    upc?: string;
+    styleCode?: string;
     raw?: Record<string, unknown>;
     normalizedGender?: string;
     normalizedCategory?: string;

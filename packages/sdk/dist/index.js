@@ -3583,78 +3583,47 @@ var AttributeSchema = zod.z.object({
   updatedBy: zod.z.string().optional(),
   updatedAt: zod.z.union([zod.z.string(), zod.z.object({}).passthrough()]).optional()
 });
-var MatchTypeEnum = zod.z.enum([
-  "equals",
-  "notEquals",
-  "contains",
-  "notContains",
-  "startsWith",
-  "endsWith",
-  "regex",
-  "greaterThan",
-  "lessThan",
-  "in",
-  "notIn",
-  "exists",
-  "notExists",
-  "token",
-  "phrase",
-  "and",
-  "or",
-  "not"
-]);
-var SmartRuleCondition = zod.z.object({
-  field: zod.z.string().min(1, "Condition field is required"),
-  matchType: MatchTypeEnum,
-  value: zod.z.union([
-    zod.z.string(),
-    zod.z.number(),
-    zod.z.array(zod.z.string())
-  ]).default(""),
-  options: zod.z.record(zod.z.any()).default({})
-});
-var SmartRuleAction = zod.z.object({
-  targetField: zod.z.string().min(1, "Target field is required"),
+var ActionSchema = zod.z.object({
+  targetField: zod.z.string().min(1),
   valueTemplate: zod.z.string().default(""),
-  confidenceModifier: zod.z.number().min(-1).max(1).optional()
+  confidenceModifier: zod.z.number().optional()
 });
-var SmartRuleSchema = zod.z.object({
-  // Identity
-  ruleId: zod.z.string().min(1),
-  // Core metadata
-  name: zod.z.string().min(1, "Rule name is required"),
+var SmartRuleAction = ActionSchema;
+var ConditionSchema = zod.z.object({
+  field: zod.z.string().min(1),
+  matchType: zod.z.enum(["token", "phrase", "regex", "contains"]),
+  value: zod.z.string().default(""),
+  // ensure options is always an array
+  options: zod.z.array(zod.z.any()).default([])
+});
+var SmartRuleCondition = ConditionSchema;
+var MatchTypeEnum = zod.z.enum(["token", "phrase", "regex", "contains"]);
+var RuleSchema = zod.z.object({
+  ruleId: zod.z.string().optional(),
+  name: zod.z.string().min(1),
   description: zod.z.string().default(""),
-  // Status
   enabled: zod.z.boolean().default(true),
-  priority: zod.z.number().int().min(0).max(1e4).default(1e3),
-  // Condition(s)
-  condition: zod.z.union([
-    SmartRuleCondition,
-    zod.z.array(SmartRuleCondition)
-  ]),
-  conditionLogic: zod.z.enum(["and", "or"]).default("and"),
-  // Action
-  action: SmartRuleAction,
-  // Auto-apply settings
+  priority: zod.z.number().int().default(100),
+  // normalize single condition to array
+  condition: zod.z.union([ConditionSchema, zod.z.array(ConditionSchema)]).transform((v) => Array.isArray(v) ? v : [v]),
+  action: ActionSchema,
   autoApply: zod.z.boolean().default(false),
   autoApplyConfidence: zod.z.number().min(0).max(1).optional(),
-  // Organization
   tags: zod.z.array(zod.z.string()).default([]),
   packId: zod.z.string().nullable().optional(),
-  // Audit fields (set by server)
   createdBy: zod.z.string().optional(),
-  createdAt: zod.z.any().optional(),
-  // Firestore Timestamp or string
+  createdAt: zod.z.string().optional(),
   updatedBy: zod.z.string().optional(),
-  updatedAt: zod.z.any().optional()
-  // Firestore Timestamp or string
+  updatedAt: zod.z.string().optional()
 });
+var SmartRuleSchema = RuleSchema;
 var RuleConditionFormSchema = zod.z.object({
   id: zod.z.string(),
   field: zod.z.string().default(""),
   matchType: MatchTypeEnum.default("contains"),
   value: zod.z.union([zod.z.string(), zod.z.array(zod.z.string())]).default(""),
-  options: zod.z.record(zod.z.any()).default({})
+  // Form uses array for options (consistent with document schema)
+  options: zod.z.array(zod.z.any()).default([])
 });
 var RuleActionFormSchema = zod.z.object({
   targetField: zod.z.string().default(""),
@@ -3667,7 +3636,7 @@ var SmartRuleFormSchema = zod.z.object({
   name: zod.z.string().default(""),
   description: zod.z.string().default(""),
   enabled: zod.z.boolean().default(true),
-  priority: zod.z.number().default(1e3),
+  priority: zod.z.number().default(100),
   conditions: zod.z.array(RuleConditionFormSchema).default([]),
   conditionLogic: zod.z.enum(["and", "or"]).default("and"),
   action: RuleActionFormSchema,
@@ -3677,7 +3646,10 @@ var SmartRuleFormSchema = zod.z.object({
   packId: zod.z.string().nullable().optional()
 });
 function validateSmartRule(payload) {
-  const result = SmartRuleSchema.safeParse(payload);
+  return RuleSchema.parse(payload);
+}
+function safeValidateSmartRule(payload) {
+  const result = RuleSchema.safeParse(payload);
   if (result.success) {
     return {
       valid: true,
@@ -3713,40 +3685,36 @@ function validateSmartRuleForm(payload) {
   };
 }
 function deepCleanUndefined(obj) {
-  const cleaned = {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === void 0) {
-      continue;
+  if (obj === void 0) return void 0;
+  if (obj === null) return null;
+  if (Array.isArray(obj)) return obj.map(deepCleanUndefined);
+  if (typeof obj === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v === void 0) continue;
+      const cleaned = deepCleanUndefined(v);
+      if (cleaned !== void 0) out[k] = cleaned;
     }
-    if (value === null) {
-      cleaned[key] = null;
-    } else if (Array.isArray(value)) {
-      cleaned[key] = value.map(
-        (item) => typeof item === "object" && item !== null ? deepCleanUndefined(item) : item
-      );
-    } else if (typeof value === "object" && value !== null) {
-      cleaned[key] = deepCleanUndefined(value);
-    } else {
-      cleaned[key] = value;
-    }
+    return out;
   }
-  return cleaned;
+  return obj;
 }
+var deepClean = deepCleanUndefined;
 function normalizeFormToDocument(form) {
   const conditions = form.conditions.map((c) => ({
     field: c.field || "",
     matchType: c.matchType || "contains",
     value: c.value || "",
-    options: c.options || {}
+    options: Array.isArray(c.options) ? c.options : []
   }));
   const doc = {
     ruleId: form.ruleId,
     name: form.name || "",
     description: form.description || "",
     enabled: form.enabled ?? true,
-    priority: form.priority ?? 1e3,
+    priority: form.priority ?? 100,
+    // Normalize: single condition to array via schema transform
     condition: conditions.length === 1 ? conditions[0] : conditions,
-    conditionLogic: form.conditionLogic || "and",
     action: {
       targetField: form.action?.targetField || "",
       valueTemplate: form.action?.valueTemplate || "",
@@ -3900,6 +3868,7 @@ function detectCollisions(ids) {
 var SDK_VERSION = "0.6.0";
 
 exports.AITemplateSchema = AITemplateSchema;
+exports.ActionSchema = ActionSchema;
 exports.AttributeConstraintSchema = AttributeConstraintSchema;
 exports.AttributeDataTypeSchema = AttributeDataTypeSchema;
 exports.AttributeDefinitionSchema = AttributeDefinitionSchema;
@@ -3907,6 +3876,7 @@ exports.AttributeRegistrySchema = AttributeRegistrySchema;
 exports.AttributeSchema = AttributeSchema;
 exports.AttributeValueSchema = AttributeValueSchema;
 exports.CanonicalRegistrySchema = CanonicalRegistrySchema;
+exports.ConditionSchema = ConditionSchema;
 exports.CoreProductSchema = CoreProductSchema;
 exports.DEFAULT_COLUMN_MAPPINGS = DEFAULT_COLUMN_MAPPINGS;
 exports.ExportMetadataSchema = ExportMetadataSchema;
@@ -3931,6 +3901,7 @@ exports.RegistryAttributeSchema = RegistryAttributeSchema;
 exports.RegistryExportMetaSchema = RegistryExportMetaSchema;
 exports.RuleActionFormSchema = RuleActionFormSchema;
 exports.RuleConditionFormSchema = RuleConditionFormSchema;
+exports.RuleSchema = RuleSchema;
 exports.SDK_VERSION = SDK_VERSION;
 exports.SmartRuleAction = SmartRuleAction;
 exports.SmartRuleCondition = SmartRuleCondition;
@@ -3942,6 +3913,7 @@ exports.buildImportRows = buildImportRows;
 exports.buildRetailOpsCsv = buildRetailOpsCsv;
 exports.buildRetailOpsRow = buildRetailOpsRow;
 exports.canProcessRow = canProcessRow;
+exports.deepClean = deepClean;
 exports.deepCleanUndefined = deepCleanUndefined;
 exports.deriveProductId = deriveProductId;
 exports.detectCollisions = detectCollisions;
@@ -3979,6 +3951,7 @@ exports.safeValidateAttributeDefinition = safeValidateAttributeDefinition;
 exports.safeValidateCanonicalRegistry = safeValidateCanonicalRegistry;
 exports.safeValidateProduct = safeValidateProduct;
 exports.safeValidateRegistryAttribute = safeValidateRegistryAttribute;
+exports.safeValidateSmartRule = safeValidateSmartRule;
 exports.sourceColumnMatchesHeader = sourceColumnMatchesHeader;
 exports.toSnakeCase = toSnakeCase;
 exports.validateAttributeDefinition = validateAttributeDefinition;
