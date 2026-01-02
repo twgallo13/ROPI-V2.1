@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Observation } from '../../types/observation';
-import { listenToObservations, resolveObservation, syncLocalToFirestore } from '../../services/observations';
+import { listenToObservations, syncLocalToFirestore } from '../../services/observations';
 import { useAuth } from '@/hooks/useAuth';
 import { isFirebaseAvailable } from '../../firebaseConfig';
 import SignInModal from '@/components/Auth/SignInModal';
 import { fieldLinkToDisplayString, legacyLinkedFieldToFieldLink } from '../../utils/normalizeFieldLink';
 import { authFetch } from '../../services/authFetch';
+import { useProductObservationSRoT } from '../../services/productObservations';
 import './ObservationsPanel.css';
 
 /**
@@ -32,6 +33,7 @@ interface ObservationsPanelProps {
 
 function ObservationsPanel({ productId }: ObservationsPanelProps) {
   const { currentUser, isAdmin, loading: authLoading } = useAuth();
+  const useSRoT = useProductObservationSRoT();
   const [observations, setObservations] = useState<Observation[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
@@ -143,6 +145,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     }
   };
 
+  // Resolve observation: use SRoT DELETE when in SRoT mode, else legacy fallback
   const handleResolve = async (obsId: string) => {
     if (!currentUser) {
       setShowSignInModal(true);
@@ -150,10 +153,23 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     }
 
     try {
-      await resolveObservation(obsId, productId, {
-        uid: currentUser.uid,
-        name: currentUser.displayName || currentUser.email || 'Anonymous',
-      });
+      if (useSRoT) {
+        // SRoT: Clear product observation via DELETE endpoint
+        const resp = await authFetch(`/api/products/${productId}/observation`, {
+          method: 'DELETE',
+        });
+        if (!resp.ok) {
+          const data = await resp.json().catch(() => ({}));
+          throw new Error(data.message || `Server error: ${resp.status}`);
+        }
+      } else {
+        // Legacy fallback (may be deprecated)
+        const { resolveObservation: legacyResolve } = await import('../../services/observations');
+        await legacyResolve(obsId, productId, {
+          uid: currentUser.uid,
+          name: currentUser.displayName || currentUser.email || 'Anonymous',
+        });
+      }
     } catch (error) {
       console.error('Failed to resolve observation:', error);
       alert('Failed to resolve observation. Please try again.');

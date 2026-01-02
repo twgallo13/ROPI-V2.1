@@ -247,45 +247,88 @@ async function syncObservation(
       return true;
     }
     
-    // Legacy: Use standalone observations collection endpoint
-    // LP-obs-studio-cleanup-1.7.0: Use authFetch
-    const response = await authFetch(`${apiBaseUrl}/observations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        product_mpn: obs.product_mpn,
-        text: obs.text || (obs.tags?.join(', ') || ''), // Fallback to tags as text
-        description: obs.description,
-        severity: obs.severity || 'medium', // Default severity for legacy
-        images: obs.images,
-        tags: obs.tags || [],
-        fieldLink: obs.fieldLink,
-        source: obs.source,
-      }),
-    });
-    
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      const errorMsg = data.error || `Server error: ${response.status}`;
-      emitTelemetry('obs.sync.fail', { 
-        observationId: obs.id, 
-        productMpn: obs.product_mpn,
-        errorKind: response.status === 401 ? 'auth' : 'server',
-        status: response.status,
+    // Legacy write path removed:
+    // If there is no productId we must resolve the product via MPN and then
+    // write to the canonical product.observation SRoT. The legacy standalone
+    // observations collection is deprecated and returns 410 on the server.
+    //
+    // Resolve product by MPN
+    if (!obs.productId) {
+      if (!obs.product_mpn) {
+        emitTelemetry('obs.sync.fail', {
+          observationId: obs.id,
+          errorKind: 'client',
+          reason: 'MISSING_PRODUCT_ID_AND_MPN',
+        });
+        throw new Error('MISSING_PRODUCT_ID_AND_MPN');
+      }
+      // Look up product by MPN using the public by-mpn endpoint
+      const lookupResp = await authFetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(obs.product_mpn)}`, {
+        method: 'GET',
       });
-      throw new Error(errorMsg);
+      if (!lookupResp.ok) {
+        const data = await lookupResp.json().catch(() => ({}));
+        const code = lookupResp.status === 404 ? 'PRODUCT_NOT_FOUND' : (data.error || `Server error: ${lookupResp.status}`);
+        emitTelemetry('obs.sync.fail', {
+          observationId: obs.id,
+          productMpn: obs.product_mpn,
+          errorKind: lookupResp.status === 401 ? 'auth' : 'server',
+          status: lookupResp.status,
+        });
+        throw new Error(code);
+      }
+      const productData = await lookupResp.json().catch(() => (null));
+      const resolvedId: string | undefined = productData?.id || productData?.productId || undefined;
+      if (!resolvedId) {
+        emitTelemetry('obs.sync.fail', {
+          observationId: obs.id,
+          productMpn: obs.product_mpn,
+          errorKind: 'product_response_malformed',
+        });
+        throw new Error('PRODUCT_LOOKUP_RESPONSE_MALFORMED');
+      }
+      // Use SRoT to add tags/images
+      const srotResp = await authFetch(`${apiBaseUrl}/products/${resolvedId}/observation`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'add',
+          tags: obs.tags || [],
+          images: obs.images || [],
+          source: obs.source === 'mobile_capture' ? 'mobile' : 'desktop',
+        }),
+      });
+      if (!srotResp.ok) {
+        const data = await srotResp.json().catch(() => ({}));
+        const errorMsg = data.error || `Server error: ${srotResp.status}`;
+        emitTelemetry('obs.sync.fail', {
+          observationId: obs.id,
+          productMpn: obs.product_mpn,
+          productId: resolvedId,
+          errorKind: srotResp.status === 401 ? 'auth' : 'server',
+          status: srotResp.status,
+        });
+        throw new Error(errorMsg);
+      }
+      // Mark as synced and remove from queue
+      await updateStatus(obs.id, 'synced');
+      await removeFromQueue(obs.id);
+      emitTelemetry('obs.sync.success', {
+        observationId: obs.id,
+        productMpn: obs.product_mpn,
+        productId: resolvedId,
+      });
+      return true;
     }
     
-    // Mark as synced and remove from queue
-    await updateStatus(obs.id, 'synced');
-    await removeFromQueue(obs.id);
-    emitTelemetry('obs.sync.success', { 
-      observationId: obs.id, 
-      productMpn: obs.product_mpn,
+    // Fallback: should not reach here if productId is truthy (handled above)
+    // but keep this for safety - emit telemetry and mark error
+    emitTelemetry('obs.sync.fail', {
+      observationId: obs.id,
+      errorKind: 'client',
+      reason: 'UNEXPECTED_STATE_NO_PRODUCT_ID',
     });
-    return true;
+    throw new Error('UNEXPECTED_STATE_NO_PRODUCT_ID');
   } catch (err) {
     console.error(`Failed to sync observation ${obs.id}:`, err);
     await updateStatus(
