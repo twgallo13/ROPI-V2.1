@@ -80,6 +80,26 @@ export {
   AttributeConstraintSchema,
 } from './validators/attributeValidator';
 
+// LP-smart-rules-registry-1.0.0: Canonical registry validation
+export {
+  validateRegistryAttribute,
+  safeValidateRegistryAttribute,
+  validateCanonicalRegistry,
+  safeValidateCanonicalRegistry,
+  validateExportControlConsistency,
+  validateRegistryExportConsistency,
+  RegistryAttributeSchema,
+  RegistryExportMetaSchema,
+  CanonicalRegistrySchema,
+  ExportTargetSchema,
+} from './validators/registryValidator';
+
+export type {
+  RegistryAttributeDef,
+  RegistryExportMeta,
+  CanonicalRegistry,
+} from './validators/registryValidator';
+
 export {
   validateImportRow,
   canProcessRow,
@@ -218,6 +238,7 @@ export {
 // ============================================================================
 // Attribute Registry (LP-attr-enforce-2.1.0)
 // Runtime access to attributeRegistry.json for domain validation
+// LP-smart-rules-registry-1.0.0: Export control helpers
 // ============================================================================
 
 export {
@@ -229,13 +250,29 @@ export {
   validateAttributeDomain,
   validateAttributeDomains,
   getRegistryVersion,
+  // LP-smart-rules-registry-1.0.0: Export control functions
+  isExportable,
+  isRequiredForExport,
+  isInternalOnly,
+  getExportMeta,
+  getExportableAttributes,
+  getRequiredForExportAttributes,
+  getInternalOnlyAttributes,
+  getAttributesForTarget,
 } from './registry';
 
 export type {
   RegistryAttribute,
   AttributeRegistryData,
   DomainValidationResult,
+  // LP-smart-rules-registry-1.0.0: Export types
+  ExportTarget,
+  ExportMeta,
 } from './registry';
+
+// LP-smart-rules-registry-1.0.0: Re-export schema types
+export type { ExportMetadata } from './schema/attribute';
+export { ExportMetadataSchema } from './schema/attribute';
 
 // Version info
 export const SDK_VERSION = '0.6.0';
