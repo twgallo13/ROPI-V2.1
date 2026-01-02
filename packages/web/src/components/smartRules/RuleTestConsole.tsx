@@ -11,6 +11,7 @@
 
 import { useState, useCallback } from 'react';
 import { testRulesForProduct, applySuggestions } from '../../services/smartRulesAdmin';
+import { authFetch } from '../../services/authFetch';
 import type { RuleTestResult, RuleSuggestion, RuleConflict } from '../../types/smartRulesAdmin';
 
 // ============================================================================
@@ -236,12 +237,16 @@ export function RuleTestConsole() {
       return trimmed;
     }
     
-    // MPN lookup - use the server endpoint
+    // MPN lookup - use authenticated fetch for the server endpoint
     try {
       const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL || '';
-      const response = await fetch(`${apiBaseUrl}/api/products/by-mpn/${encodeURIComponent(trimmed)}`);
+      const response = await authFetch(`${apiBaseUrl}/api/products/by-mpn/${encodeURIComponent(trimmed)}`);
       
       if (!response.ok) {
+        if (response.status === 401) {
+          console.error('MPN lookup auth failed - user may need to sign in');
+          throw new Error('AUTH_REQUIRED');
+        }
         if (response.status === 404) {
           return null; // Product not found
         }
@@ -262,6 +267,10 @@ export function RuleTestConsole() {
       return productId;
     } catch (err) {
       console.error('MPN lookup error:', err);
+      // Re-throw auth errors so UI can handle
+      if (err instanceof Error && err.message === 'AUTH_REQUIRED') {
+        throw err;
+      }
       return null;
     }
   }, []);
@@ -301,7 +310,9 @@ export function RuleTestConsole() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to test rules';
       // Check for specific error patterns
-      if (errorMessage.includes('not found') || errorMessage.includes('Product')) {
+      if (errorMessage === 'AUTH_REQUIRED' || errorMessage.includes('Not authenticated')) {
+        setError('AUTH_REQUIRED: Please sign in to test rules');
+      } else if (errorMessage.includes('not found') || errorMessage.includes('Product') || errorMessage === 'PRODUCT_NOT_FOUND') {
         setError(`PRODUCT_NOT_FOUND: ${errorMessage}`);
       } else {
         setError(errorMessage);

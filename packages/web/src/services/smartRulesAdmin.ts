@@ -27,6 +27,7 @@ import {
 } from 'firebase/firestore';
 import { db, isFirebaseAvailable } from '../firebaseConfig';
 import { getAuth } from 'firebase/auth';
+import { authFetch } from './authFetch';
 import type { 
   SmartRuleDocument, 
   RulePack, 
@@ -97,10 +98,13 @@ export async function testRuleByMpn(mpn: string): Promise<RuleTestResult> {
   // Get API base URL from environment or use default
   const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL || '';
   
-  // Resolve product by MPN
-  const resp = await fetch(`${apiBaseUrl}/api/products/by-mpn/${encodeURIComponent(mpn)}`);
+  // Resolve product by MPN using authenticated fetch
+  const resp = await authFetch(`${apiBaseUrl}/api/products/by-mpn/${encodeURIComponent(mpn)}`);
   
   if (!resp.ok) {
+    if (resp.status === 401) {
+      throw new Error('AUTH_REQUIRED');
+    }
     if (resp.status === 404) {
       throw new Error('PRODUCT_NOT_FOUND');
     }
