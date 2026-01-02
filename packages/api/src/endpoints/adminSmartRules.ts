@@ -188,18 +188,34 @@ export async function getImportEvalHandler(req: Request, res: Response) {
       );
       
       // Return detailed evaluation result
+      // LP-smart-rules-engine-1.1.0 Fix 4: Include per-rule decision details
       res.status(200).json({
         productId: productDoc.id,
         evaluatedAt: new Date().toISOString(),
         skipped: result.skipped,
         skipReason: result.skipReason,
+        // Total rules evaluated
+        totalRulesLoaded: 'see rulesEvaluated below',
+        // Per-rule evaluation details (Fix 4)
+        rulesEvaluated: result.suggestions.map(s => ({
+          ruleId: s.ruleId,
+          ruleName: s.ruleName,
+          matched: true,
+          targetField: s.targetField,
+          suggestedValue: s.value,
+          confidence: s.confidence,
+          canAutoApply: s.autoApply,
+          wasApplied: s.applied,
+          explain: s.explain,
+          inputContext: s.input,
+        })),
         suggestions: result.suggestions.map(s => ({
           ruleId: s.ruleId,
           ruleName: s.ruleName,
           targetField: s.targetField,
-          suggestedValue: s.suggestedValue,
+          suggestedValue: s.value,
           confidence: s.confidence,
-          rationale: s.rationale,
+          rationale: s.explain,
         })),
         autoApplied: result.autoApplied.map(a => ({
           ruleId: a.ruleId,
@@ -223,9 +239,12 @@ export async function getImportEvalHandler(req: Request, res: Response) {
         // Include product context for debugging
         productContext: {
           mpn: productData.core?.mpn || productData.mpn,
+          normalized_mpn: productData.core?.normalized_mpn,
           rics_category: productData.attributes?.rics_category,
           current_department: productData.attributes?.department,
-          provenance: productData.provenance?.attributes_department,
+          current_gender: productData.attributes?.gender,
+          current_age_group: productData.attributes?.age_group,
+          provenance: productData.provenance,
         },
       });
     } catch (err) {

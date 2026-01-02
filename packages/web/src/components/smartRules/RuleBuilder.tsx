@@ -268,12 +268,13 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
   }
   
   // Create empty action
+  // LP-smart-rules-schema-1.2.0: Fix 3 - Initialize confidenceModifier as null (not undefined)
   function createEmptyAction(): RuleActionForm {
     return {
       targetField: '',
       valueTemplate: '',
       setOnlyIfEmpty: true,
-      confidenceModifier: undefined,
+      confidenceModifier: null as unknown as number | undefined, // null = not set, never undefined
     };
   }
   

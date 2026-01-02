@@ -344,8 +344,10 @@ function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> 
     action: {
       targetField: form.action?.targetField || '',
       valueTemplate: form.action?.valueTemplate || '',
-      // Only include confidenceModifier if it has a value
-      ...(form.action?.confidenceModifier !== undefined && {
+      // LP-smart-rules-schema-1.2.0: Always persist guardrail (Fix 1)
+      setOnlyIfEmpty: form.action?.setOnlyIfEmpty ?? false,
+      // Only include confidenceModifier if it has a numeric value (Fix 3)
+      ...(typeof form.action?.confidenceModifier === 'number' && {
         confidenceModifier: form.action.confidenceModifier,
       }),
     },
@@ -496,11 +498,14 @@ export async function updateSmartRule(ruleId: string, updates: Partial<SmartRule
       }
     }
     
-    // Handle action updates - ensure confidenceModifier is number or omit
+    // Handle action updates - ensure confidenceModifier is number or omit (Fix 2/3)
     if (updates.action) {
       updateData.action = {
         targetField: updates.action.targetField,
         valueTemplate: updates.action.valueTemplate,
+        // LP-smart-rules-schema-1.2.0: Always persist guardrail (Fix 1)
+        setOnlyIfEmpty: updates.action.setOnlyIfEmpty ?? false,
+        // Only include confidenceModifier if it has a numeric value (Fix 3)
         ...(typeof updates.action.confidenceModifier === 'number' && { 
           confidenceModifier: updates.action.confidenceModifier 
         }),

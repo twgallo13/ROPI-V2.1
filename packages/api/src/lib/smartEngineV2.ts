@@ -16,6 +16,7 @@
  */
 
 import * as Handlebars from 'handlebars';
+import * as logger from 'firebase-functions/logger';
 import { 
   type RegistryAttribute, 
   isExportable, 
@@ -69,6 +70,8 @@ export interface Action {
   targetField: string;
   valueTemplate: string;
   confidenceModifier?: number;
+  /** LP-smart-rules-schema-1.2.0: Guardrail - only set if field is currently empty */
+  setOnlyIfEmpty?: boolean;
   postActions?: PostAction[];
 }
 
@@ -1197,12 +1200,18 @@ export class SmartRulesEngineV2 {
     
     for (const rule of sortedRules) {
       // Skip disabled rules
-      if (!rule.enabled) continue;
+      if (!rule.enabled) {
+        // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
+        logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - disabled`);
+        continue;
+      }
       
       try {
         // Validate target field (S2.3)
         const targetValidation = validateRuleTarget(rule.action.targetField);
         if (!targetValidation.valid) {
+          // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
+          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - invalid target field: ${targetValidation.error}`);
           errors.push({
             ruleId: rule.ruleId,
             error: targetValidation.error!,
@@ -1214,7 +1223,11 @@ export class SmartRulesEngineV2 {
         // Evaluate condition
         const condResult = evaluateCondition(rule.condition, importRow);
         
-        if (!condResult.matches) continue;
+        if (!condResult.matches) {
+          // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
+          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - condition not matched`);
+          continue;
+        }
         
         // Render value template
         let value = renderTemplate(rule.action.valueTemplate, {
@@ -1226,6 +1239,8 @@ export class SmartRulesEngineV2 {
         const validation = validateGeneratedValue(rule.action.targetField, value);
         
         if (!validation.valid) {
+          // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
+          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - domain validation failed: ${validation.reason}`);
           errors.push({
             ruleId: rule.ruleId,
             error: `Domain validation failed: ${validation.reason}`,
@@ -1263,18 +1278,38 @@ export class SmartRulesEngineV2 {
           ? isUserEdited(importRow.existingProduct, rule.action.targetField)
           : false;
         
-        // Set only if empty enforcement (S2.3)
+        // LP-smart-rules-schema-1.2.0: Respect setOnlyIfEmpty guardrail from rule
+        // If rule.action.setOnlyIfEmpty is true (or undefined - default), require field to be empty
+        // If rule.action.setOnlyIfEmpty is explicitly false, allow overwrite
+        const setOnlyIfEmpty = rule.action.setOnlyIfEmpty !== false; // Default true
+        
+        // Set only if empty enforcement (S2.3) - now respects rule setting
         const fieldIsEmpty = existingValue === undefined || existingValue === null || existingValue === '';
+        const passesEmptyCheck = !setOnlyIfEmpty || fieldIsEmpty;
         
         let canAutoApply = false;
+        // LP-smart-rules-engine-1.1.0 Fix 4: Build explicit reason for auto-apply decision
+        let autoApplyReason = '';
         if (
           rule.autoApply &&
           confidence >= rule.autoApplyConfidence &&
           !userEdited &&
-          fieldIsEmpty // Hard enforcement: set only if empty
+          passesEmptyCheck // Respects setOnlyIfEmpty setting
         ) {
           canAutoApply = true;
+          autoApplyReason = 'all conditions met';
+        } else {
+          // Build explicit reason for why auto-apply is blocked
+          const reasons: string[] = [];
+          if (!rule.autoApply) reasons.push('autoApply=false');
+          if (confidence < rule.autoApplyConfidence) reasons.push(`confidenceBelowThreshold (${confidence.toFixed(2)} < ${rule.autoApplyConfidence})`);
+          if (userEdited) reasons.push('userEdited');
+          if (!passesEmptyCheck) reasons.push(`fieldNotEmpty (setOnlyIfEmpty=${setOnlyIfEmpty}, existingValue: ${JSON.stringify(existingValue)})`);
+          autoApplyReason = reasons.join(', ');
         }
+        
+        // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging with explicit reason
+        logger.debug(`Rule ${rule.ruleId} (${rule.name}): MATCHED - target=${rule.action.targetField}, value=${JSON.stringify(value)}, confidence=${confidence.toFixed(2)}, canAutoApply=${canAutoApply}, setOnlyIfEmpty=${setOnlyIfEmpty}, reason=${autoApplyReason}`);
         
         const suggestion: Suggestion = {
           id: generateId('sug'),
@@ -1285,7 +1320,7 @@ export class SmartRulesEngineV2 {
           confidence,
           autoApply: canAutoApply,
           applied: false,
-          explain: `Matched rule "${rule.name}" (${rule.ruleId}) with confidence=${confidence.toFixed(2)}`,
+          explain: `Matched rule "${rule.name}" (${rule.ruleId}) with confidence=${confidence.toFixed(2)}. Auto-apply: ${canAutoApply ? 'yes' : 'no (' + autoApplyReason + ')'}`,
           input: inputContext,
         };
         
