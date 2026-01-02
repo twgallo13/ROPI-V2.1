@@ -55,52 +55,25 @@ service cloud.firestore {
     }
     
     // ========================================
-    // OBSERVATIONS COLLECTION
+    // OBSERVATIONS COLLECTION (LP-observations-srot-1.0.0 — Read-Only)
     // ========================================
     // Related Notion docs:
     // - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
     // - Section 9 — Security & IAM: https://www.notion.so/2b845ee1ec5a81739de7fc1743de9a33
     //
-    // PROMPT_018C_vB: Email verification enforcement for writes
+    // LP-observations-srot-1.0.0: Legacy observations collection is now READ-ONLY.
+    // All observation writes must go through the product.observation SRoT endpoint:
+    //   PATCH /api/products/:productId/observation
+    // Legacy collection is kept for backward-compatible reads during migration.
     match /observations/{observationId} {
-      // Allow authenticated users to read all observations
-      // In production, restrict to observations for products the user has access to
+      // Allow authenticated users to read all observations (migration period)
       allow read: if request.auth != null;
       
-      // Allow authenticated users to create observations
-      // Production: Require email verification for write-capable roles
-      // Ensure createdBy.uid matches the authenticated user
-      allow create: if request.auth != null 
-                    && request.resource.data.createdBy.uid == request.auth.uid
-                    && request.resource.data.status == 'open'
-                    && request.resource.data.keys().hasAll(['productId', 'title', 'body', 'severity', 'status', 'createdBy', 'createdAt'])
-                    && (!requiresEmailVerification() || isEmailVerified());
-      
-      // Allow users to update observations they created or if they're resolving
-      // Admins can update any observation
-      // Production: Require email verification for write-capable roles
-      allow update: if request.auth != null 
-                    && (
-                      // Admin can update any observation
-                      (isAdmin() || isAdminViaMetadata())
-                      // Creator can update their own observation
-                      || resource.data.createdBy.uid == request.auth.uid
-                      // Anyone can resolve an observation
-                      || (
-                        request.resource.data.status == 'resolved'
-                        && request.resource.data.resolvedBy.uid == request.auth.uid
-                        && request.resource.data.keys().hasAll(['resolvedBy', 'resolvedAt'])
-                      )
-                    )
-                    && (!requiresEmailVerification() || isEmailVerified());
-      
-      // Only allow deletion by the creator or admins
-      allow delete: if request.auth != null 
-                    && (
-                      (isAdmin() || isAdminViaMetadata())
-                      || resource.data.createdBy.uid == request.auth.uid
-                    )
-                    && (!requiresEmailVerification() || isEmailVerified());
+      // DEPRECATED: Client writes blocked. Use /api/products/:productId/observation
+      // Server-side writes are allowed via Admin SDK (bypasses rules)
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
     
     // ========================================
