@@ -415,6 +415,7 @@ export async function deleteSmartRule(ruleId: string): Promise<{ success: boolea
 
 /**
  * List all Rule Packs
+ * If permission denied, return empty array and log warning.
  */
 export async function listRulePacks(): Promise<RulePack[]> {
   if (!isFirebaseAvailable() || !db) {
@@ -432,7 +433,7 @@ export async function listRulePacks(): Promise<RulePack[]> {
     
     return packs;
   } catch (error) {
-    console.error('Failed to list rule packs:', error);
+    console.warn('Failed to list rule packs (permission or other error):', error);
     return [];
   }
 }
@@ -620,7 +621,8 @@ export async function getRuleAuditHistory(ruleId: string, limit = 50): Promise<R
 }
 
 /**
- * Get recent audit activity across all rules
+ * Get recent audit activity across all rules.
+ * If permission denied, return empty array and log warning.
  */
 export async function getRecentAuditActivity(limit = 20): Promise<RuleAuditEntry[]> {
   if (!isFirebaseAvailable() || !db) {
@@ -639,7 +641,7 @@ export async function getRecentAuditActivity(limit = 20): Promise<RuleAuditEntry
     
     return entries.slice(0, limit);
   } catch (error) {
-    console.error('Failed to get recent audit activity:', error);
+    console.warn('Failed to load recent audit activity (permission or other error):', error);
     return [];
   }
 }

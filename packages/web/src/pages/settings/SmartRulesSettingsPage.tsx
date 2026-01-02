@@ -282,21 +282,47 @@ function SmartRulesSettingsPage() {
     setLoading(true);
     setError(null);
     
+    // Load each dataset individually so a single permission error won't break the whole page.
     try {
-      const [rulesResult, packsResult, activityResult] = await Promise.all([
-        listSmartRules(),
-        listRulePacks(),
-        getRecentAuditActivity(20),
-      ]);
-      
-      setRules(rulesResult.rules);
-      setPacks(packsResult);
-      setActivity(activityResult);
+      // Rules (required)
+      const rulesResult = await listSmartRules().catch((e) => {
+        console.warn('Failed to list smart rules:', e);
+        // If we can't list rules, that's fatal for the admin console.
+        throw e;
+      });
+      setRules(rulesResult.rules || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
-    } finally {
+      setError(err instanceof Error ? err.message : 'Failed to load smart rules');
+      // stop further loads if rules are not available
       setLoading(false);
+      // Ensure we keep arrays defined to avoid map errors
+      setPacks([]);
+      setActivity([]);
+      return;
     }
+    
+    // Rule packs (optional)
+    try {
+      const packsResult = await listRulePacks();
+      setPacks(packsResult || []);
+    } catch (err) {
+      console.warn('Failed to list rule packs:', err);
+      setPacks([]);
+      // Non-fatal: show a permission notice in the UI
+      setError((prev) => prev ? prev + '; failed to load rule packs' : 'Failed to load rule packs');
+    }
+    
+    // Recent audit activity (optional)
+    try {
+      const activityResult = await getRecentAuditActivity(20);
+      setActivity(activityResult || []);
+    } catch (err) {
+      console.warn('Failed to get recent audit activity:', err);
+      setActivity([]);
+      setError((prev) => prev ? prev + '; failed to load audit activity' : 'Failed to load audit activity');
+    }
+    
+    setLoading(false);
   }, []);
   
   // Filter rules
@@ -323,8 +349,8 @@ function SmartRulesSettingsPage() {
     return true;
   });
   
-  // Get unique tags for filter dropdown
-  const allTags = Array.from(new Set(rules.flatMap(r => r.tags || [])));
+  // Get unique tags for filter dropdown; safely handle empty rules
+  const allTags = Array.from(new Set((rules || []).flatMap(r => r.tags || [])));
   
   // Handle create rule
   const handleCreateRule = useCallback(() => {
@@ -444,10 +470,17 @@ function SmartRulesSettingsPage() {
           </button>
         </div>
         
-        {/* Error */}
+        {/* Error/Warning Banner */}
         {error && (
-          <div style={{ padding: 'var(--spacing-md)', backgroundColor: '#ffebee', borderRadius: '4px', marginBottom: 'var(--spacing-md)', color: '#c62828' }}>
-            ❌ {error}
+          <div style={{ 
+            padding: 'var(--spacing-md)', 
+            backgroundColor: '#fff6f6', 
+            border: '1px solid #ffdede',
+            borderRadius: '4px', 
+            marginBottom: 'var(--spacing-md)', 
+            color: '#c62828' 
+          }}>
+            <strong>⚠️ Warning:</strong> {error}. You may not have permission to view all Smart Rules content.
           </div>
         )}
         
