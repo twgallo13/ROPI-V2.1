@@ -15,7 +15,8 @@
  * - Write normalized_mpn if missing or different
  */
 
-import * as admin from 'firebase-admin';
+import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 
 // Parse CLI args
 const args = process.argv.slice(2);
@@ -43,13 +44,13 @@ if (!projectId) {
 }
 
 // Initialize Firebase Admin
-if (!admin.apps.length) {
-  admin.initializeApp({
+if (!getApps().length) {
+  initializeApp({
     projectId,
   });
 }
 
-const db = admin.firestore();
+const db = getFirestore();
 
 /**
  * Canonical MPN normalizer (must match SDK normalizeMpn)
