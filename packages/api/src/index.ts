@@ -174,3 +174,14 @@ export const updateProductAttributes = functions.https.onRequest(async (req, res
 // Per AOSS Section 4 — Smart Rules & W1/W2 Workflows
 // ============================================================================
 export { onProductWrite, onSmartRuleUpdate } from './functions/smartRules';
+
+// ============================================================================
+// Smart Rules V2 Callable Functions
+// LP-smart-rules-engine-1.0.0
+// Per Lisa's S2 requirements — Admin API for testing and application
+// ============================================================================
+export { 
+  getProductSuggestions, 
+  applySuggestions, 
+  resolveConflict 
+} from './functions/smartRulesCallables';
