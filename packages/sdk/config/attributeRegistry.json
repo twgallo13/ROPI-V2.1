@@ -196,12 +196,9 @@
       "category": "classification",
       "data_type": "select",
       "allowed_values": [
-        "Mens",
-        "Womens",
-        "Kids",
-        "Unisex",
-        "Boys",
-        "Girls"
+        "Footwear",
+        "Clothing",
+        "Accessories"
       ],
       "required_for_completion": true,
       "required_for_export": true,
