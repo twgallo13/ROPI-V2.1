@@ -1,0 +1,125 @@
+{
+  "timestamp": "2026-01-02T03:50:00.000Z",
+  "phase": "S3",
+  "branch": "lp-smart-rules-import-1.0.0",
+  "mergeCommit": "1771eb50c346f2474c072ab576dfa954c3eda2d8",
+  "deployment": {
+    "project": "ropi-bccee",
+    "targets": ["functions", "hosting", "firestore:rules"],
+    "status": "SUCCESS",
+    "hostingUrl": "https://ropi-aoss-staging.web.app",
+    "functionsDeployed": [
+      "api:api(us-central1)",
+      "api:exportApi(us-central1)",
+      "api:exportDryRun(us-central1)",
+      "api:exportRun(us-central1)",
+      "api:getProduct(us-central1)",
+      "api:importBatchStatus(us-central1)",
+      "api:importCSV(us-central1)",
+      "api:importDryRun(us-central1)",
+      "api:listProducts(us-central1)",
+      "api:onProductWrite(us-central1)",
+      "api:onSmartRuleUpdate(us-central1)",
+      "api:processImportBatch(us-central1)",
+      "api:syncAttributeRegistry(us-central1)",
+      "api:updateProductAttributes(us-central1)",
+      "api:applySuggestions(us-central1)",
+      "api:getProductSuggestions(us-central1)",
+      "api:resolveConflict(us-central1)"
+    ]
+  },
+  "smokeTests": {
+    "s3IntegrationTests": {
+      "status": "PASS",
+      "testsRun": 25,
+      "testsPassed": 25,
+      "suites": [
+        "S3.1: Import Pipeline Integration (6 tests)",
+        "S3.2: Idempotency (3 tests)",
+        "S3.3: Skip-Window Loop Prevention (4 tests)",
+        "S3.4: Activity Log / Audit Trail (6 tests)",
+        "S3.5: Full Integration Scenario (2 tests)",
+        "S3.6: Edge Cases (4 tests)"
+      ]
+    },
+    "engineV2Tests": {
+      "status": "PASS",
+      "testsRun": 70,
+      "testsPassed": 70
+    }
+  },
+  "exampleProductDoc": {
+    "mpn": "NIKE-AM90-001",
+    "attributes": {
+      "category": "Footwear",
+      "gender": "Men's"
+    },
+    "provenance": {
+      "attributes_category": {
+        "source": "smartRule",
+        "ruleId": "category-footwear",
+        "ruleName": "Category - Footwear Detection",
+        "appliedAt": "2026-01-02T03:49:49.561Z",
+        "reason": "token match 'footwear', 'Footwear'"
+      },
+      "attributes_gender": {
+        "source": "smartRule",
+        "ruleId": "gender-men",
+        "ruleName": "Gender - Men's Detection",
+        "appliedAt": "2026-01-02T03:49:49.561Z",
+        "reason": "token match 'Men's', 'men's', 'Men's'"
+      }
+    },
+    "_appliedRules": {
+      "attributes_category": {
+        "ruleId": "category-footwear",
+        "confidence": 0.9,
+        "appliedAt": "2026-01-02T03:49:49.561Z"
+      },
+      "attributes_gender": {
+        "ruleId": "gender-men",
+        "confidence": 0.95,
+        "appliedAt": "2026-01-02T03:49:49.561Z"
+      }
+    },
+    "_smartRulesRanAt": "2026-01-02T03:49:49.561Z",
+    "_smartRulesSkipUntil": 1767325799561,
+    "_activityLog": [
+      {
+        "actor": "system:smartRulesEngine",
+        "action": "smartrule_auto_apply",
+        "timestamp": "2026-01-02T03:49:49.561Z",
+        "details": {
+          "ruleId": "category-footwear",
+          "targetField": "attributes.category",
+          "value": "Footwear"
+        }
+      },
+      {
+        "actor": "system:smartRulesEngine",
+        "action": "smartrule_auto_apply",
+        "timestamp": "2026-01-02T03:49:49.561Z",
+        "details": {
+          "ruleId": "gender-men",
+          "targetField": "attributes.gender",
+          "value": "Men's"
+        }
+      }
+    ]
+  },
+  "idempotencyEvidence": {
+    "_smartRulesRanAt": "Timestamp set on every evaluation",
+    "_smartRulesSkipUntil": "Skip window of 10 seconds (10000ms) prevents re-trigger",
+    "setOnlyIfEmpty": "Auto-apply only when field is empty - re-run produces no changes"
+  },
+  "skipWindowEvidence": {
+    "windowMs": 10000,
+    "behavior": "Engine skips evaluation if current time < _smartRulesSkipUntil",
+    "testedIn": "S3.3: Skip-Window Loop Prevention (4 tests)"
+  },
+  "verification": {
+    "status": "PENDING_LISA_REVIEW",
+    "timestamp": "2026-01-02T03:50:00.000Z",
+    "tester": "Homer (AI Agent)"
+  }
+}

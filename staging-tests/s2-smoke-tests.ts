@@ -380,6 +380,7 @@ console.log('\n--- getProductSuggestions simulation ---\n');
 
 const testProduct: Product = {
   mpn: 'CALLABLE-TEST-001',
+  attributes: {},
   source: { rics: { category: "Footwear | Men's | Basketball" } },
 };
 

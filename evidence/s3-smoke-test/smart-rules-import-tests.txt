@@ -1,0 +1,16 @@
+ WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run "test/smartRulesImport.test.ts"
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+filter:  test/smartRulesImport.test.ts
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/integration/**, **/*.emu.test.ts, **/*.emu.spec.ts
+watch exclude:  **/node_modules/**, **/dist/**
+
+No test files found, exiting with code 1
+ ELIFECYCLE  Test failed. See above for more details.

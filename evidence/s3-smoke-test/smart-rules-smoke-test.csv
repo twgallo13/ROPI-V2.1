@@ -1,0 +1,6 @@
+MPN,SKU,Brand,Name,RICS Category,RICS Color,MSRP,Description
+NIKE-AM90-S3-001,NIKE-AM90-BLK-10,Nike,Air Max 90 Smoke Test,Footwear | Men's | Running,Black/White,150.00,S3 Smoke Test Product 1 - Should get gender=Men's and category=Footwear
+ADIDAS-UB-S3-002,ADIDAS-UB-WHT-9,Adidas,Ultra Boost Smoke Test,Footwear | Women's | Athletic,White/Grey,180.00,S3 Smoke Test Product 2 - Should get gender=Women's and category=Footwear
+NB-990-S3-003,NB-990-GRY-11,New Balance,990v5 Smoke Test,Footwear | Unisex | Casual,Grey/Navy,175.00,S3 Smoke Test Product 3 - Should get category=Footwear (no gender rule match)
+PUMA-RS-S3-004,PUMA-RS-BLU-8,Puma,RS-X Smoke Test,Sneakers | Kids | Lifestyle,Blue/Red,85.00,S3 Smoke Test Product 4 - Should get category from Sneakers
+REEBOK-CL-S3-005,REEBOK-CL-WHT-10,Reebok,Classic Leather Smoke Test,Footwear | Men's | Lifestyle,White/Gum,75.00,S3 Smoke Test Product 5 - Should get gender=Men's and category=Footwear
