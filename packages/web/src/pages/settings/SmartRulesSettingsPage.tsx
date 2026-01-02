@@ -26,6 +26,10 @@ import {
   toggleRulePack,
   getRecentAuditActivity,
   documentToForm,
+  loadAttributeRegistry,
+  isRegistryLoaded,
+  getRegistryLoadError,
+  clearRegistryCache,
 } from '@/services/smartRulesAdmin';
 import type { 
   SmartRuleDocument, 
@@ -263,6 +267,10 @@ function SmartRulesSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // Registry state (critical for rule authoring)
+  const [registryReady, setRegistryReady] = useState(false);
+  const [registryError, setRegistryError] = useState<string | null>(null);
+  
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all');
@@ -281,6 +289,26 @@ function SmartRulesSettingsPage() {
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setRegistryError(null);
+    
+    // CRITICAL: Load registry first - blocks rule authoring if failed
+    try {
+      await loadAttributeRegistry();
+      if (isRegistryLoaded()) {
+        setRegistryReady(true);
+        console.log('✅ Registry loaded successfully');
+      } else {
+        const regError = getRegistryLoadError();
+        setRegistryError(regError || 'Registry loaded but is empty');
+        setRegistryReady(false);
+        console.error('❌ Registry load failed:', regError);
+      }
+    } catch (err) {
+      const regError = err instanceof Error ? err.message : 'Failed to load registry';
+      setRegistryError(regError);
+      setRegistryReady(false);
+      console.error('❌ Registry exception:', regError);
+    }
     
     // Load each dataset individually so a single permission error won't break the whole page.
     try {
@@ -432,11 +460,22 @@ function SmartRulesSettingsPage() {
           <div style={styles.headerButtons}>
             <button
               style={{ ...styles.button, ...styles.buttonSecondary }}
-              onClick={loadData}
+              onClick={() => {
+                clearRegistryCache();
+                loadData();
+              }}
             >
               🔄 Refresh
             </button>
-            <button style={styles.button} onClick={handleCreateRule}>
+            <button 
+              style={{ 
+                ...styles.button, 
+                ...(registryReady ? {} : { opacity: 0.5, cursor: 'not-allowed' }) 
+              }} 
+              onClick={handleCreateRule}
+              disabled={!registryReady}
+              title={registryReady ? 'Create a new Smart Rule' : 'Registry not loaded - rule authoring disabled'}
+            >
               ➕ Create Rule
             </button>
           </div>
@@ -469,6 +508,35 @@ function SmartRulesSettingsPage() {
             📜 Activity
           </button>
         </div>
+        
+        {/* CRITICAL: Registry Error Banner - blocks rule authoring */}
+        {registryError && (
+          <div style={{ 
+            padding: 'var(--spacing-md)', 
+            backgroundColor: '#ffebee', 
+            border: '2px solid #c62828',
+            borderRadius: '4px', 
+            marginBottom: 'var(--spacing-md)', 
+            color: '#c62828' 
+          }}>
+            <strong>🚫 Attribute Registry Failed to Load</strong>
+            <p style={{ margin: 'var(--spacing-sm) 0' }}>
+              Rule authoring is disabled until the registry is available.
+            </p>
+            <p style={{ fontSize: 'var(--font-size-sm)', fontFamily: 'monospace', marginBottom: 'var(--spacing-sm)' }}>
+              Error: {registryError}
+            </p>
+            <button
+              style={{ ...styles.button, backgroundColor: '#c62828' }}
+              onClick={() => {
+                clearRegistryCache();
+                loadData();
+              }}
+            >
+              🔄 Retry Loading Registry
+            </button>
+          </div>
+        )}
         
         {/* Error/Warning Banner */}
         {error && (
@@ -524,7 +592,16 @@ function SmartRulesSettingsPage() {
               <div style={styles.emptyState}>
                 <div style={{ fontSize: '3rem', marginBottom: 'var(--spacing-md)' }}>⚡</div>
                 <div>No rules found</div>
-                <button style={{ ...styles.button, marginTop: 'var(--spacing-md)' }} onClick={handleCreateRule}>
+                <button 
+                  style={{ 
+                    ...styles.button, 
+                    marginTop: 'var(--spacing-md)',
+                    ...(registryReady ? {} : { opacity: 0.5, cursor: 'not-allowed' })
+                  }} 
+                  onClick={handleCreateRule}
+                  disabled={!registryReady}
+                  title={registryReady ? 'Create a new Smart Rule' : 'Registry not loaded - rule authoring disabled'}
+                >
                   Create Your First Rule
                 </button>
               </div>
@@ -584,9 +661,13 @@ function SmartRulesSettingsPage() {
                       <td style={styles.td}>
                         <div style={styles.actions}>
                           <button
-                            style={styles.actionButton}
-                            onClick={() => handleEditRule(rule.ruleId)}
-                            title="Edit"
+                            style={{ 
+                              ...styles.actionButton,
+                              ...(registryReady ? {} : { opacity: 0.5, cursor: 'not-allowed' })
+                            }}
+                            onClick={() => registryReady && handleEditRule(rule.ruleId)}
+                            title={registryReady ? 'Edit' : 'Registry not loaded - editing disabled'}
+                            disabled={!registryReady}
                           >
                             ✏️
                           </button>

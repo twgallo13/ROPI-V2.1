@@ -49,50 +49,94 @@ const RULE_AUDIT_COLLECTION = 'settings/smartRules/audit';
 
 // Attribute registry for validation
 let attributeRegistryCache: Record<string, { exportable: boolean; internalOnly: boolean }> | null = null;
+let registryLoadError: string | null = null;
 
 // ============================================================================
 // Attribute Registry Helpers
 // ============================================================================
 
 /**
+ * Get the last registry load error (if any)
+ */
+export function getRegistryLoadError(): string | null {
+  return registryLoadError;
+}
+
+/**
+ * Check if registry is loaded and valid
+ */
+export function isRegistryLoaded(): boolean {
+  return attributeRegistryCache !== null && Object.keys(attributeRegistryCache).length > 0;
+}
+
+/**
+ * Clear registry cache to force reload
+ */
+export function clearRegistryCache(): void {
+  attributeRegistryCache = null;
+  registryLoadError = null;
+}
+
+/**
  * Load attribute registry for validating target fields
+ * Robust loader with Content-Type validation per Lisa's spec
  */
 export async function loadAttributeRegistry(): Promise<Record<string, { exportable: boolean; internalOnly: boolean }>> {
   if (attributeRegistryCache) {
     return attributeRegistryCache;
   }
   
+  registryLoadError = null;
+  
   try {
-    // Try to load from public directory (copied during build)
+    // Fetch from public directory (copied during build from SDK)
     const response = await fetch('/attributeRegistry.json');
-    if (response.ok) {
-      const registry = await response.json();
-      const attributes = registry.attributes || [];
+    
+    // Check HTTP status first
+    if (!response.ok) {
+      registryLoadError = `HTTP ${response.status}: ${response.statusText}`;
+      console.error(`Registry fetch failed: ${registryLoadError}`);
+      return {};
+    }
+    
+    // CRITICAL: Validate Content-Type to prevent HTML parsing
+    const contentType = response.headers.get('Content-Type') || '';
+    if (!contentType.includes('application/json')) {
+      registryLoadError = `Invalid Content-Type: ${contentType} (expected application/json). Server may be returning HTML.`;
+      console.error(`Registry Content-Type mismatch: ${registryLoadError}`);
       
-      attributeRegistryCache = {};
-      for (const attr of attributes) {
+      // Log first 100 chars of response for diagnosis
+      const text = await response.text();
+      console.error(`Response preview: ${text.slice(0, 100)}...`);
+      return {};
+    }
+    
+    // Parse JSON
+    const registry = await response.json();
+    const attributes = registry.attributes || [];
+    
+    if (!Array.isArray(attributes) || attributes.length === 0) {
+      registryLoadError = 'Registry loaded but contains no attributes';
+      console.warn(registryLoadError);
+      return {};
+    }
+    
+    attributeRegistryCache = {};
+    for (const attr of attributes) {
+      if (attr.attribute_id) {
         attributeRegistryCache[attr.attribute_id] = {
           exportable: attr.exportable ?? true,
           internalOnly: attr.internalOnly ?? false,
         };
       }
-      
-      return attributeRegistryCache;
     }
     
-    // Fallback: return default known internalOnly fields
-    console.warn('Could not load attribute registry, using defaults');
-    attributeRegistryCache = {
-      // Known internal-only fields
-      'status': { exportable: false, internalOnly: true },
-      'launch_date': { exportable: false, internalOnly: true },
-      'kl_post_date': { exportable: false, internalOnly: true },
-      'family_sizing': { exportable: false, internalOnly: true },
-      'hype': { exportable: false, internalOnly: true },
-    };
+    console.log(`✅ Attribute registry loaded: ${Object.keys(attributeRegistryCache).length} attributes`);
     return attributeRegistryCache;
+    
   } catch (error) {
-    console.warn('Failed to load attribute registry, using empty registry:', error);
+    registryLoadError = error instanceof Error ? error.message : 'Unknown error loading registry';
+    console.error('Failed to load attribute registry:', registryLoadError);
     return {};
   }
 }
