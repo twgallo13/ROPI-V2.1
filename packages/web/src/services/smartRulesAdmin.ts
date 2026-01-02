@@ -307,7 +307,10 @@ export async function getSmartRule(ruleId: string): Promise<SmartRuleDocument | 
 
 /**
  * Convert form data to Firestore document format
- * LP-smart-rules-schema-1.1.0: Uses deepCleanUndefined, options as array
+ * LP-smart-rules-schema-1.3.0: Lisa's canonical persistence
+ * - Always persist action.setOnlyIfEmpty (never omit)
+ * - Use null for confidenceModifier when not set (never undefined)
+ * - deepClean removes any stray undefined values
  */
 function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> {
   // Build condition(s) based on form - Lisa's canonical uses array for options
@@ -332,6 +335,22 @@ function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> 
     }));
   }
   
+  // LP-smart-rules-schema-1.3.0: Build action object with explicit guardrail
+  // CRITICAL: Always include setOnlyIfEmpty - never omit it
+  // Use null for confidenceModifier when absent (never undefined)
+  const actionObj: Record<string, unknown> = {
+    targetField: form.action?.targetField || '',
+    valueTemplate: form.action?.valueTemplate || '',
+    setOnlyIfEmpty: !!form.action?.setOnlyIfEmpty, // Always explicit boolean
+  };
+  
+  // Only add confidenceModifier if it's a valid number
+  const cm = form.action?.confidenceModifier;
+  if (typeof cm === 'number' && !isNaN(cm)) {
+    actionObj.confidenceModifier = cm;
+  }
+  // Note: if absent, we don't set it at all (rather than null) - engine uses default
+  
   // Build the document with explicit defaults (never undefined)
   // Lisa's canonical: priority defaults to 100
   const doc: Record<string, unknown> = {
@@ -340,17 +359,7 @@ function formToDocument(form: SmartRuleForm): Omit<SmartRuleDocument, 'ruleId'> 
     enabled: form.enabled ?? true,
     priority: form.priority ?? 100,
     condition,
-    // Note: conditionLogic removed from Lisa's canonical RuleSchema
-    action: {
-      targetField: form.action?.targetField || '',
-      valueTemplate: form.action?.valueTemplate || '',
-      // LP-smart-rules-schema-1.2.0: Always persist guardrail (Fix 1)
-      setOnlyIfEmpty: form.action?.setOnlyIfEmpty ?? false,
-      // Only include confidenceModifier if it has a numeric value (Fix 3)
-      ...(typeof form.action?.confidenceModifier === 'number' && {
-        confidenceModifier: form.action.confidenceModifier,
-      }),
-    },
+    action: actionObj,
     autoApply: form.autoApply ?? false,
     autoApplyConfidence: form.autoApplyConfidence ?? 0.9,
     tags: form.tags || [],
@@ -498,18 +507,20 @@ export async function updateSmartRule(ruleId: string, updates: Partial<SmartRule
       }
     }
     
-    // Handle action updates - ensure confidenceModifier is number or omit (Fix 2/3)
+    // Handle action updates - LP-smart-rules-schema-1.3.0
+    // CRITICAL: Always persist setOnlyIfEmpty, never write undefined
     if (updates.action) {
-      updateData.action = {
-        targetField: updates.action.targetField,
-        valueTemplate: updates.action.valueTemplate,
-        // LP-smart-rules-schema-1.2.0: Always persist guardrail (Fix 1)
-        setOnlyIfEmpty: updates.action.setOnlyIfEmpty ?? false,
-        // Only include confidenceModifier if it has a numeric value (Fix 3)
-        ...(typeof updates.action.confidenceModifier === 'number' && { 
-          confidenceModifier: updates.action.confidenceModifier 
-        }),
+      const actionUpdate: Record<string, unknown> = {
+        targetField: updates.action.targetField || '',
+        valueTemplate: updates.action.valueTemplate || '',
+        setOnlyIfEmpty: !!updates.action.setOnlyIfEmpty, // Always explicit boolean
       };
+      // Only include confidenceModifier if it's a valid number
+      const cm = updates.action.confidenceModifier;
+      if (typeof cm === 'number' && !isNaN(cm)) {
+        actionUpdate.confidenceModifier = cm;
+      }
+      updateData.action = actionUpdate;
     }
     
     // LP-smart-rules-schema-1.1.0: Deep clean to remove any undefined values

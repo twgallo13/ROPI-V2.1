@@ -252,6 +252,28 @@ export interface Product {
 }
 
 /**
+ * Per-rule evaluation decision (LP-smart-rules-engine-1.2.0 - Lisa's diagnostic requirement)
+ */
+export interface RuleDecision {
+  ruleId: string;
+  ruleName: string;
+  matched: boolean;
+  matchedTokens?: string[];
+  canAutoApply: boolean;
+  reason: 'applied' | 'skipped_disabled' | 'skipped_invalidTarget' | 'skipped_conditionNotMatched' | 
+          'skipped_domainValidation' | 'skipped_fieldNotEmpty' | 'skipped_userEdited' | 
+          'skipped_confidenceLow' | 'skipped_autoApplyOff' | 'suggested_not_applied';
+  reasonDetail?: string;
+  applied?: {
+    field: string;
+    value: unknown;
+  };
+  conditionSource?: string;
+  conditionValue?: string;
+  productFieldValue?: unknown;
+}
+
+/**
  * Engine run result (S2.1)
  */
 export interface EngineResult {
@@ -263,6 +285,8 @@ export interface EngineResult {
   updates: Record<string, unknown>;
   /** Activity log entries to append */
   activityLog: ActivityLogEntry[];
+  /** LP-smart-rules-engine-1.2.0: Per-rule decision log for diagnostics */
+  ruleDecisions?: RuleDecision[];
 }
 
 export interface EngineError {
@@ -1179,6 +1203,7 @@ export class SmartRulesEngineV2 {
   /**
    * Evaluate rules for an import row (S2.1 - import-time only)
    * This is the primary entry point for import integration
+   * LP-smart-rules-engine-1.2.0: Enhanced with per-rule decision tracking
    */
   evaluateForImport(importRow: ImportRow): EngineResult {
     const suggestions: Suggestion[] = [];
@@ -1186,7 +1211,16 @@ export class SmartRulesEngineV2 {
     const errors: EngineError[] = [];
     const updates: Record<string, unknown> = {};
     const activityLog: ActivityLogEntry[] = [];
+    const ruleDecisions: RuleDecision[] = [];
     const now = new Date().toISOString();
+    
+    // LP-smart-rules-engine-1.2.0 PR D: Debug log product fields for condition matching diagnosis
+    logger.debug(`[SmartRules] Evaluating product ${importRow.productId}`);
+    logger.debug(`[SmartRules] Product fields available:`, {
+      normalized_keys: Object.keys(importRow.normalized || {}),
+      source_rics: importRow.source?.rics,
+      existingProduct_attributes_keys: importRow.existingProduct ? Object.keys(importRow.existingProduct.attributes || {}) : [],
+    });
     
     // Sort rules by priority (desc) then ruleId (asc) for deterministic ordering
     const sortedRules = [...this.rules].sort((a, b) => {
@@ -1195,14 +1229,30 @@ export class SmartRulesEngineV2 {
       return a.ruleId.localeCompare(b.ruleId);
     });
     
+    logger.debug(`[SmartRules] ${sortedRules.length} rules to evaluate`);
+    
     // Track which fields already have suggestions (for conflict detection)
     const fieldSuggestions = new Map<string, Suggestion[]>();
     
     for (const rule of sortedRules) {
+      // LP-smart-rules-engine-1.2.0: Extract condition source for diagnostics
+      const conditionSource = (rule.condition as { source?: string })?.source || 'unknown';
+      const conditionValue = String((rule.condition as { value?: unknown })?.value || '');
+      const productFieldValue = conditionSource !== 'unknown' ? deepGet(importRow, conditionSource) : undefined;
+      
       // Skip disabled rules
       if (!rule.enabled) {
-        // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
         logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - disabled`);
+        ruleDecisions.push({
+          ruleId: rule.ruleId,
+          ruleName: rule.name,
+          matched: false,
+          canAutoApply: false,
+          reason: 'skipped_disabled',
+          conditionSource,
+          conditionValue,
+          productFieldValue,
+        });
         continue;
       }
       
@@ -1210,8 +1260,18 @@ export class SmartRulesEngineV2 {
         // Validate target field (S2.3)
         const targetValidation = validateRuleTarget(rule.action.targetField);
         if (!targetValidation.valid) {
-          // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
           logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - invalid target field: ${targetValidation.error}`);
+          ruleDecisions.push({
+            ruleId: rule.ruleId,
+            ruleName: rule.name,
+            matched: false,
+            canAutoApply: false,
+            reason: 'skipped_invalidTarget',
+            reasonDetail: targetValidation.error,
+            conditionSource,
+            conditionValue,
+            productFieldValue,
+          });
           errors.push({
             ruleId: rule.ruleId,
             error: targetValidation.error!,
@@ -1220,12 +1280,25 @@ export class SmartRulesEngineV2 {
           continue;
         }
         
+        // LP-smart-rules-engine-1.2.0 PR D: Log condition source and product field value
+        logger.debug(`Rule ${rule.ruleId} (${rule.name}): Evaluating condition source='${conditionSource}' against productValue='${JSON.stringify(productFieldValue)}'`);
+        
         // Evaluate condition
         const condResult = evaluateCondition(rule.condition, importRow);
         
         if (!condResult.matches) {
-          // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
-          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - condition not matched`);
+          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - condition not matched (source='${conditionSource}', productValue='${JSON.stringify(productFieldValue)}', conditionValue='${conditionValue}')`);
+          ruleDecisions.push({
+            ruleId: rule.ruleId,
+            ruleName: rule.name,
+            matched: false,
+            canAutoApply: false,
+            reason: 'skipped_conditionNotMatched',
+            reasonDetail: `source=${conditionSource}, productValue=${JSON.stringify(productFieldValue)}, conditionValue=${conditionValue}`,
+            conditionSource,
+            conditionValue,
+            productFieldValue,
+          });
           continue;
         }
         
@@ -1239,8 +1312,19 @@ export class SmartRulesEngineV2 {
         const validation = validateGeneratedValue(rule.action.targetField, value);
         
         if (!validation.valid) {
-          // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging
           logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - domain validation failed: ${validation.reason}`);
+          ruleDecisions.push({
+            ruleId: rule.ruleId,
+            ruleName: rule.name,
+            matched: true,
+            matchedTokens: condResult.captures.tokens as string[] | undefined,
+            canAutoApply: false,
+            reason: 'skipped_domainValidation',
+            reasonDetail: validation.reason,
+            conditionSource,
+            conditionValue,
+            productFieldValue,
+          });
           errors.push({
             ruleId: rule.ruleId,
             error: `Domain validation failed: ${validation.reason}`,
@@ -1336,6 +1420,23 @@ export class SmartRulesEngineV2 {
           suggestion.applied = true;
           autoApplied.push(suggestion);
           
+          // LP-smart-rules-engine-1.2.0: Track decision for applied rule
+          ruleDecisions.push({
+            ruleId: rule.ruleId,
+            ruleName: rule.name,
+            matched: true,
+            matchedTokens: condResult.captures.tokens as string[] | undefined,
+            canAutoApply: true,
+            reason: 'applied',
+            applied: {
+              field: rule.action.targetField,
+              value,
+            },
+            conditionSource,
+            conditionValue,
+            productFieldValue,
+          });
+          
           // Set value in updates
           deepSet(updates, rule.action.targetField, value);
           
@@ -1374,8 +1475,42 @@ export class SmartRulesEngineV2 {
               input: inputContext,
             },
           });
+        } else {
+          // LP-smart-rules-engine-1.2.0: Track decision for matched but not auto-applied rule
+          // Determine specific reason
+          let decisionReason: RuleDecision['reason'] = 'suggested_not_applied';
+          if (!rule.autoApply) {
+            decisionReason = 'skipped_autoApplyOff';
+          } else if (confidence < rule.autoApplyConfidence) {
+            decisionReason = 'skipped_confidenceLow';
+          } else if (userEdited) {
+            decisionReason = 'skipped_userEdited';
+          } else if (!passesEmptyCheck) {
+            decisionReason = 'skipped_fieldNotEmpty';
+          }
+          
+          ruleDecisions.push({
+            ruleId: rule.ruleId,
+            ruleName: rule.name,
+            matched: true,
+            matchedTokens: condResult.captures.tokens as string[] | undefined,
+            canAutoApply: false,
+            reason: decisionReason,
+            reasonDetail: autoApplyReason,
+            conditionSource,
+            conditionValue,
+            productFieldValue,
+          });
         }
       } catch (e) {
+        ruleDecisions.push({
+          ruleId: rule.ruleId,
+          ruleName: rule.name,
+          matched: false,
+          canAutoApply: false,
+          reason: 'skipped_conditionNotMatched',
+          reasonDetail: `Error: ${e instanceof Error ? e.message : String(e)}`,
+        });
         errors.push({
           ruleId: rule.ruleId,
           error: e instanceof Error ? e.message : String(e),
@@ -1396,7 +1531,10 @@ export class SmartRulesEngineV2 {
     updates._smartRulesRanAt = now;
     updates._smartRulesSkipUntil = Date.now() + 10000; // 10 second skip window
     
-    return { suggestions, conflicts, autoApplied, errors, updates, activityLog };
+    // LP-smart-rules-engine-1.2.0: Log summary
+    logger.info(`[SmartRules] Product ${importRow.productId}: ${ruleDecisions.length} rules evaluated, ${suggestions.length} suggestions, ${autoApplied.length} auto-applied, ${errors.length} errors`);
+    
+    return { suggestions, conflicts, autoApplied, errors, updates, activityLog, ruleDecisions };
   }
   
   /**

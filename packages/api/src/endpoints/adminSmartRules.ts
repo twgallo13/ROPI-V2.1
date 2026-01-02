@@ -188,35 +188,38 @@ export async function getImportEvalHandler(req: Request, res: Response) {
       );
       
       // Return detailed evaluation result
-      // LP-smart-rules-engine-1.1.0 Fix 4: Include per-rule decision details
+      // LP-smart-rules-engine-1.2.0: Include comprehensive per-rule decision details
       res.status(200).json({
         productId: productDoc.id,
         evaluatedAt: new Date().toISOString(),
         skipped: result.skipped,
         skipReason: result.skipReason,
-        // Total rules evaluated
-        totalRulesLoaded: 'see rulesEvaluated below',
-        // Per-rule evaluation details (Fix 4)
-        rulesEvaluated: result.suggestions.map(s => ({
-          ruleId: s.ruleId,
-          ruleName: s.ruleName,
-          matched: true,
-          targetField: s.targetField,
-          suggestedValue: s.value,
-          confidence: s.confidence,
-          canAutoApply: s.autoApply,
-          wasApplied: s.applied,
-          explain: s.explain,
-          inputContext: s.input,
-        })),
+        
+        // LP-smart-rules-engine-1.2.0 PR C: Per-rule decisions (ALL rules, not just matched)
+        ruleDecisions: result.ruleDecisions || [],
+        
+        // Summary counts
+        summary: {
+          totalRulesEvaluated: result.ruleDecisions?.length || 0,
+          matched: result.suggestions.length,
+          autoApplied: result.autoApplied.length,
+          errors: result.errors.length,
+          conflicts: result.conflicts.length,
+        },
+        
+        // Suggestions (matched rules only)
         suggestions: result.suggestions.map(s => ({
           ruleId: s.ruleId,
           ruleName: s.ruleName,
           targetField: s.targetField,
           suggestedValue: s.value,
           confidence: s.confidence,
-          rationale: s.explain,
+          canAutoApply: s.autoApply,
+          wasApplied: s.applied,
+          explain: s.explain,
         })),
+        
+        // Auto-applied rules
         autoApplied: result.autoApplied.map(a => ({
           ruleId: a.ruleId,
           ruleName: a.ruleName,
@@ -224,6 +227,8 @@ export async function getImportEvalHandler(req: Request, res: Response) {
           value: a.value,
           confidence: a.confidence,
         })),
+        
+        // Conflicts
         conflicts: result.conflicts.map(c => ({
           field: c.field,
           candidateRules: c.candidates.map(r => ({
@@ -233,18 +238,33 @@ export async function getImportEvalHandler(req: Request, res: Response) {
             confidence: r.confidence,
           })),
         })),
+        
+        // Errors
         errors: result.errors,
+        
+        // Updates that would be applied
         updates: result.updates,
+        
+        // Activity log entries
         activityLog: result.activityLog,
-        // Include product context for debugging
+        
+        // Product context for debugging
         productContext: {
           mpn: productData.core?.mpn || productData.mpn,
           normalized_mpn: productData.core?.normalized_mpn,
           rics_category: productData.attributes?.rics_category,
+          rics_category_path: productData.attributes?.rics_category_path,
           current_department: productData.attributes?.department,
           current_gender: productData.attributes?.gender,
           current_age_group: productData.attributes?.age_group,
+          current_category: productData.attributes?.category,
           provenance: productData.provenance,
+        },
+        
+        // Input data used for evaluation (for debugging field mapping)
+        inputDataUsed: {
+          normalizedDataKeys: Object.keys(normalizedData),
+          sourceRics: sourceData?.rics,
         },
       });
     } catch (err) {
