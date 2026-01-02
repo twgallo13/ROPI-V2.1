@@ -53,7 +53,10 @@ export type MatchType =
  * Condition object for Smart Rules
  */
 export interface Condition {
+  /** Source field path (engine canonical name) */
   source?: string;
+  /** Field path (UI canonical name - alias for source) */
+  field?: string;
   matchType: MatchType;
   value: string | number | boolean | null | unknown[] | Record<string, unknown> | Condition | Condition[];
   options?: {
@@ -866,7 +869,9 @@ Handlebars.registerHelper('ricsMatch', function(this: unknown, tokenType: string
  * Evaluate a condition against an import row / product
  */
 export function evaluateCondition(condition: Condition, data: ImportRow | Product): ConditionResult {
-  const { source, matchType, value, options = {} } = condition;
+  // LP-smart-rules-engine-1.3.0: Support both 'source' (engine) and 'field' (UI) naming
+  const { source, field, matchType, value, options = {} } = condition;
+  const sourceField = source || field; // Use source if present, fallback to field
   
   // Handle logical operators (and, or, not)
   if (matchType === 'and') {
@@ -924,11 +929,12 @@ export function evaluateCondition(condition: Condition, data: ImportRow | Produc
   }
   
   // Get source value from data
-  if (!source) {
+  // LP-smart-rules-engine-1.3.0: Use sourceField (either source or field)
+  if (!sourceField) {
     return { matches: false, confidence: 0, captures: {} };
   }
   
-  const sourceValue = deepGet(data, source);
+  const sourceValue = deepGet(data, sourceField);
   
   // Handle different match types
   switch (matchType) {
@@ -1235,8 +1241,11 @@ export class SmartRulesEngineV2 {
     const fieldSuggestions = new Map<string, Suggestion[]>();
     
     for (const rule of sortedRules) {
-      // LP-smart-rules-engine-1.2.0: Extract condition source for diagnostics
-      const conditionSource = (rule.condition as { source?: string })?.source || 'unknown';
+      // LP-smart-rules-engine-1.3.0: Extract condition source for diagnostics
+      // Support both 'source' (engine) and 'field' (UI) naming
+      const conditionSource = (rule.condition as { source?: string; field?: string })?.source || 
+                              (rule.condition as { source?: string; field?: string })?.field || 
+                              'unknown';
       const conditionValue = String((rule.condition as { value?: unknown })?.value || '');
       const productFieldValue = conditionSource !== 'unknown' ? deepGet(importRow, conditionSource) : undefined;
       

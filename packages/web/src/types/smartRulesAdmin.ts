@@ -31,7 +31,8 @@ export type ConditionMatchType = typeof CONDITION_MATCH_TYPES[number]['value'];
 // ============================================================================
 
 export const CONDITION_SOURCE_FIELDS = [
-  { value: 'rics_category_path', label: 'RICS Category Path', group: 'RICS' },
+  // LP-smart-rules-field-fix-1.0.0: Use rics_category (actual field) not rics_category_path
+  { value: 'rics_category', label: 'RICS Category', group: 'RICS' },
   { value: 'rics_gender', label: 'RICS Gender', group: 'RICS' },
   { value: 'rics_age_group', label: 'RICS Age Group', group: 'RICS' },
   { value: 'rics_product_type', label: 'RICS Product Type', group: 'RICS' },

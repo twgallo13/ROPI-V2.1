@@ -73,7 +73,7 @@ describe('Smart Rules Admin Service', () => {
         enabled: true,
         priority: 1000,
         condition: {
-          field: 'rics_category_path',
+          field: 'rics_category',
           matchType: 'contains',
           value: 'Women',
         },
@@ -91,7 +91,7 @@ describe('Smart Rules Admin Service', () => {
       expect(form.ruleId).toBe('rule_123');
       expect(form.name).toBe('Test Rule');
       expect(form.conditions).toHaveLength(1);
-      expect(form.conditions[0].field).toBe('rics_category_path');
+      expect(form.conditions[0].field).toBe('rics_category');
       expect(form.conditions[0].matchType).toBe('contains');
       expect(form.conditions[0].value).toBe('Women');
       expect(form.action.targetField).toBe('attributes.gender');
@@ -105,7 +105,7 @@ describe('Smart Rules Admin Service', () => {
         enabled: true,
         priority: 500,
         condition: [
-          { field: 'rics_category_path', matchType: 'contains', value: 'Women' },
+          { field: 'rics_category', matchType: 'contains', value: 'Women' },
           { field: 'rics_age_group', matchType: 'equals', value: 'Adult' },
         ],
         action: {
@@ -117,7 +117,7 @@ describe('Smart Rules Admin Service', () => {
       const form = documentToForm(doc);
       
       expect(form.conditions).toHaveLength(2);
-      expect(form.conditions[0].field).toBe('rics_category_path');
+      expect(form.conditions[0].field).toBe('rics_category');
       expect(form.conditions[1].field).toBe('rics_age_group');
     });
     
@@ -187,7 +187,7 @@ describe('Smart Rules Types', () => {
       
       const fields = CONDITION_SOURCE_FIELDS.map(f => f.value);
       
-      expect(fields).toContain('rics_category_path');
+      expect(fields).toContain('rics_category');
       expect(fields).toContain('source.brand');
       expect(fields).toContain('attributes.gender');
     });

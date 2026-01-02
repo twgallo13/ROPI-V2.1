@@ -53,7 +53,7 @@ describe('RuleBuilder Component', () => {
         priority: 500,
         conditions: [{
           id: 'cond_1',
-          field: 'rics_category_path',
+          field: 'rics_category',
           matchType: 'contains' as const,
           value: 'Women',
         }],
