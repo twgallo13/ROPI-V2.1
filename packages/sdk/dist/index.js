@@ -6,7 +6,7 @@ var zod = require('zod');
 
 // config/attributeRegistry.json
 var attributeRegistry_default = {
-  version: "1.1.4",
+  version: "1.1.0",
   attributes: [
     {
       attribute_id: "sku",
@@ -18,7 +18,10 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Primary SKU / item id. Optional for import (MPN is primary identifier).",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "style_id",
@@ -29,7 +32,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "mpn",
@@ -41,7 +47,16 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: true,
       ai_usage_notes: "Manufacturer part number. Required for import (LP-2.1.2).",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "sku",
+        targets: [
+          "shopify"
+        ]
+      }
     },
     {
       attribute_id: "gtin",
@@ -53,7 +68,18 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Global Trade Item Number. Required for many export channels",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "barcode",
+        targets: [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       attribute_id: "name",
@@ -64,7 +90,18 @@ var attributeRegistry_default = {
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "title",
+        targets: [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       attribute_id: "slug",
@@ -76,7 +113,10 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Required for web export",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "brand",
@@ -87,7 +127,16 @@ var attributeRegistry_default = {
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "vendor",
+        targets: [
+          "shopify"
+        ]
+      }
     },
     {
       attribute_id: "category",
@@ -95,11 +144,32 @@ var attributeRegistry_default = {
       external_header: "Category",
       category: "classification",
       data_type: "select",
-      allowed_values: ["Footwear", "Apparel", "Accessories", "Athletic", "Casual", "Dress", "Boots", "Sandals", "Sneakers", "Slippers"],
+      allowed_values: [
+        "Footwear",
+        "Apparel",
+        "Accessories",
+        "Athletic",
+        "Casual",
+        "Dress",
+        "Boots",
+        "Sandals",
+        "Sneakers",
+        "Slippers"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: true,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "product_type",
+        targets: [
+          "shopify",
+          "google"
+        ]
+      }
     },
     {
       attribute_id: "class",
@@ -107,11 +177,24 @@ var attributeRegistry_default = {
       external_header: "Class",
       category: "classification",
       data_type: "select",
-      allowed_values: ["Athletic", "Casual", "Formal", "Outdoor", "Performance", "Fashion", "Comfort", "Work", "Sport"],
+      allowed_values: [
+        "Athletic",
+        "Casual",
+        "Formal",
+        "Outdoor",
+        "Performance",
+        "Fashion",
+        "Comfort",
+        "Work",
+        "Sport"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "department",
@@ -119,11 +202,29 @@ var attributeRegistry_default = {
       external_header: "Department",
       category: "classification",
       data_type: "select",
-      allowed_values: ["Footwear", "Accessories", "Clothing"],
+      allowed_values: [
+        "Mens",
+        "Womens",
+        "Kids",
+        "Unisex",
+        "Boys",
+        "Girls"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: true,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "department",
+        targets: [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       attribute_id: "website",
@@ -131,12 +232,26 @@ var attributeRegistry_default = {
       external_header: "Websites",
       category: "sku_core",
       data_type: "multiSelect",
-      allowed_values: ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "NOT FOR WEB"],
+      allowed_values: [
+        "shiekh.com",
+        "Karmaloop.com",
+        "mltd.com",
+        "sangremia.com",
+        "plndr.com",
+        "fbrkclothing.com",
+        "Vnds.com",
+        "Kazbah.com",
+        "Tiltedsole.com",
+        "NOT FOR WEB"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Drives site-specific descriptions & AI",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "product_is_active",
@@ -148,7 +263,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Internal only",
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "status",
@@ -159,7 +277,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "launch_date",
@@ -170,7 +291,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "kl_post_date",
@@ -181,7 +305,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "family_sizing",
@@ -189,11 +316,17 @@ var attributeRegistry_default = {
       external_header: "Family Sizing",
       category: "lifecycle",
       data_type: "boolean",
+      aliases: [
+        "family_sharing"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      ai_usage_notes: "Indicates if product is part of a family sizing collection",
-      status: "active"
+      ai_usage_notes: "LP-product-ordering-import-completeness-0.1.0: Changed to boolean. Coercion: true='true'|'1'|'yes'|'y'|'on'|'allowed'; false='false'|'0'|'no'|'n'|'off'|'not allowed'|'disallowed' (case-insensitive).",
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "hype",
@@ -204,7 +337,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "first_received",
@@ -215,7 +351,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "last_received",
@@ -226,7 +365,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: false,
+      internalOnly: true,
+      requiredForExport: false
     },
     {
       attribute_id: "height",
@@ -238,7 +380,17 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "For shipping/ops only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false,
+      export: {
+        key: "height",
+        omitIfEmpty: true,
+        targets: [
+          "shopify"
+        ]
+      }
     },
     {
       attribute_id: "length",
@@ -249,7 +401,17 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false,
+      export: {
+        key: "length",
+        omitIfEmpty: true,
+        targets: [
+          "shopify"
+        ]
+      }
     },
     {
       attribute_id: "width",
@@ -261,7 +423,17 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Package / dimension width (kept for shipping)",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false,
+      export: {
+        key: "width",
+        omitIfEmpty: true,
+        targets: [
+          "shopify"
+        ]
+      }
     },
     {
       attribute_id: "shoe_width",
@@ -269,12 +441,20 @@ var attributeRegistry_default = {
       external_header: "Shoe Width",
       category: "measurements",
       data_type: "select",
-      allowed_values: ["Narrow", "Standard", "Wide", "Extra Wide"],
+      allowed_values: [
+        "Narrow",
+        "Standard",
+        "Wide",
+        "Extra Wide"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Shoe width / fit width for footwear. Added to avoid collision with package 'width'.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "weight",
@@ -286,7 +466,18 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Product weight in ounces. Used for shipping calculations.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false,
+      export: {
+        key: "weight",
+        omitIfEmpty: true,
+        targets: [
+          "shopify",
+          "google"
+        ]
+      }
     },
     {
       attribute_id: "gender",
@@ -294,13 +485,34 @@ var attributeRegistry_default = {
       external_header: "Gender",
       category: "identity_demographic",
       data_type: "select",
-      allowed_values: ["Men's", "Women's", "Unisex", "Boys", "Girls", "Kids"],
-      synonyms: ["sex", "target_gender"],
+      allowed_values: [
+        "Men's",
+        "Women's",
+        "Unisex",
+        "Boys",
+        "Girls",
+        "Kids"
+      ],
+      synonyms: [
+        "sex",
+        "target_gender"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: true,
       ai_usage_notes: "Primary demographic for product targeting. Used in product descriptions and filtering.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "gender",
+        targets: [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       attribute_id: "age_group",
@@ -308,13 +520,32 @@ var attributeRegistry_default = {
       external_header: "Age Group",
       category: "identity_demographic",
       data_type: "select",
-      allowed_values: ["Adult", "Grade-School", "Infant", "Kids", "Pre-School", "Toddler"],
-      synonyms: ["ageGroup", "age-group"],
+      allowed_values: [
+        "Adult",
+        "Grade-School",
+        "Infant",
+        "Kids",
+        "Pre-School",
+        "Toddler"
+      ],
+      synonyms: [
+        "ageGroup",
+        "age-group"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Used for Google Shopping feed and age-appropriate product descriptions.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true,
+      export: {
+        key: "age_group",
+        targets: [
+          "google"
+        ]
+      }
     },
     {
       attribute_id: "primary_color",
@@ -322,13 +553,50 @@ var attributeRegistry_default = {
       external_header: "Primary Color",
       category: "color",
       data_type: "select",
-      allowed_values: ["Beige", "Black", "Blue", "Bronze", "Brown", "Clear", "Cream", "Cyan", "Floral", "Gold", "Gray", "Green", "Grey", "Metallic", "Multi Color", "Navy", "None", "Off-White", "Orange", "Pink", "Print", "Purple", "Red", "Silver", "Transparent", "Turquoise", "Wheat", "White", "Yellow"],
-      synonyms: ["color", "main_color", "colour"],
+      allowed_values: [
+        "Beige",
+        "Black",
+        "Blue",
+        "Bronze",
+        "Brown",
+        "Clear",
+        "Cream",
+        "Cyan",
+        "Floral",
+        "Gold",
+        "Gray",
+        "Green",
+        "Grey",
+        "Metallic",
+        "Multi Color",
+        "Navy",
+        "None",
+        "Off-White",
+        "Orange",
+        "Pink",
+        "Print",
+        "Purple",
+        "Red",
+        "Silver",
+        "Transparent",
+        "Turquoise",
+        "Wheat",
+        "White",
+        "Yellow"
+      ],
+      synonyms: [
+        "color",
+        "main_color",
+        "colour"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: true,
       ai_usage_notes: "Primary visible color for search and filtering. Use standardized color names.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "descriptive_color",
@@ -336,12 +604,17 @@ var attributeRegistry_default = {
       external_header: "Descriptive Color",
       category: "color",
       data_type: "text",
-      synonyms: ["descriptiveColor"],
+      synonyms: [
+        "descriptiveColor"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Used for copy & AI (more descriptive color phrasing than primary_color).",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "material",
@@ -349,7 +622,6 @@ var attributeRegistry_default = {
       external_header: "Material",
       category: "materials_construction",
       data_type: "multiSelect",
-      allow_custom_values: true,
       allowed_values: [
         "Acrylic",
         "Canvas",
@@ -431,12 +703,18 @@ var attributeRegistry_default = {
         "Wool-Blend",
         "Worsted-Wool"
       ],
-      synonyms: ["upper_material", "fabric"],
+      synonyms: [
+        "upper_material",
+        "fabric"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: true,
       ai_usage_notes: "Primary material for the product. Important for product descriptions and care instructions.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "outsole_material",
@@ -444,12 +722,28 @@ var attributeRegistry_default = {
       external_header: "Outsole Material",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["Cork", "Crepe", "Fabric", "Latex", "Leather", "Leather-and-Rubber", "Lug-sole", "Manmade", "Rubber", "Suede", "Vibram", "Wood"],
+      allowed_values: [
+        "Cork",
+        "Crepe",
+        "Fabric",
+        "Latex",
+        "Leather",
+        "Leather-and-Rubber",
+        "Lug-sole",
+        "Manmade",
+        "Rubber",
+        "Suede",
+        "Vibram",
+        "Wood"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Optional; used when outsole differs from upper.",
-      status: "deprecated"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "closure_type",
@@ -457,12 +751,45 @@ var attributeRegistry_default = {
       external_header: "Closure",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["Buckle", "Bungee", "Button", "Clasp", "Clip", "D-ring", "Drawstring", "Elastic", "Flap", "Hook-and-eye", "Hook-and-loop", "Kiss-lock", "Lace-up", "Lobster-claw", "Magnet", "No-closure", "Pull-on", "Self-tie", "Slip-on", "Snap", "Toggle", "Turn-lock", "Velcro", "Zip", "Zipper", "wrap around"],
-      synonyms: ["closure", "fastening"],
+      allowed_values: [
+        "Buckle",
+        "Bungee",
+        "Button",
+        "Clasp",
+        "Clip",
+        "D-ring",
+        "Drawstring",
+        "Elastic",
+        "Flap",
+        "Hook-and-eye",
+        "Hook-and-loop",
+        "Kiss-lock",
+        "Lace-up",
+        "Lobster-claw",
+        "Magnet",
+        "No-closure",
+        "Pull-on",
+        "Self-tie",
+        "Slip-on",
+        "Snap",
+        "Toggle",
+        "Turn-lock",
+        "Velcro",
+        "Zip",
+        "Zipper",
+        "wrap around"
+      ],
+      synonyms: [
+        "closure",
+        "fastening"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "cut_type",
@@ -470,11 +797,18 @@ var attributeRegistry_default = {
       external_header: "Cut Type",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["Low", "Mid", "High"],
+      allowed_values: [
+        "Low",
+        "Mid",
+        "High"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "fit",
@@ -482,12 +816,21 @@ var attributeRegistry_default = {
       external_header: "Fit",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["Runs A Half Size Big", "Runs A Half Size Small", "Runs One Size Big", "Runs One Size Small", "True To Size"],
+      allowed_values: [
+        "Runs A Half Size Big",
+        "Runs A Half Size Small",
+        "Runs One Size Big",
+        "Runs One Size Small",
+        "True To Size"
+      ],
       required_for_completion: true,
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Drives copy and Smart Rules",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "heel_height",
@@ -495,11 +838,19 @@ var attributeRegistry_default = {
       external_header: "Heel Height",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ['1-2"', '2-3"', '3-4"', '5"+'],
+      allowed_values: [
+        '1-2"',
+        '2-3"',
+        '3-4"',
+        '5"+'
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "platform_height",
@@ -507,11 +858,20 @@ var attributeRegistry_default = {
       external_header: "Platform Height",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["Flat", 'Low 0-1"', "Medium 1-2'", 'High 2-3"', 'Ultra High 3-4"'],
+      allowed_values: [
+        "Flat",
+        'Low 0-1"',
+        "Medium 1-2'",
+        'High 2-3"',
+        'Ultra High 3-4"'
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "heel_type",
@@ -519,11 +879,22 @@ var attributeRegistry_default = {
       external_header: "Heel Type",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["Block Heel", "Cone Heel", "Flat", "Kitten Heel", "Stiletto", "Wedge Heel", "Platform"],
+      allowed_values: [
+        "Block Heel",
+        "Cone Heel",
+        "Flat",
+        "Kitten Heel",
+        "Stiletto",
+        "Wedge Heel",
+        "Platform"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "shoe_height_map",
@@ -531,11 +902,23 @@ var attributeRegistry_default = {
       external_header: "Shoe Height Map",
       category: "materials_construction",
       data_type: "select",
-      allowed_values: ["above-the-knee", "ankle-high", "high-top", "knee-high", "low-top", "mid-calf", "mid-top", "thigh-high"],
+      allowed_values: [
+        "above-the-knee",
+        "ankle-high",
+        "high-top",
+        "knee-high",
+        "low-top",
+        "mid-calf",
+        "mid-top",
+        "thigh-high"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "made_in",
@@ -543,12 +926,17 @@ var attributeRegistry_default = {
       external_header: "Made In",
       category: "compliance",
       data_type: "text",
-      synonyms: ["country_of_origin"],
+      synonyms: [
+        "country_of_origin"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Country where the product was manufactured. Required for some export channels.",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "league",
@@ -556,11 +944,20 @@ var attributeRegistry_default = {
       external_header: "League",
       category: "sport_league",
       data_type: "select",
-      allowed_values: ["MLB", "NBA", "NCAA", "NFL", "NHL"],
+      allowed_values: [
+        "MLB",
+        "NBA",
+        "NCAA",
+        "NFL",
+        "NHL"
+      ],
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "sports_team",
@@ -572,7 +969,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Required when league is major",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "collection_name",
@@ -584,7 +984,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Optional launch flag",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "fast_fashion",
@@ -595,7 +998,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "tax_class",
@@ -603,12 +1009,18 @@ var attributeRegistry_default = {
       external_header: "Tax Class",
       category: "product_flags",
       data_type: "select",
-      allowed_values: ["Taxable Goods", "None"],
+      allowed_values: [
+        "Taxable Goods",
+        "None"
+      ],
       required_for_completion: false,
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Required for export; default Taxable Goods",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "description_shiekh",
@@ -620,7 +1032,10 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Required if website includes shiekh.com",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "description_karmaloop",
@@ -632,7 +1047,10 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "Required if website includes Karmaloop",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "description_mltd",
@@ -643,7 +1061,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "description_sangremia",
@@ -654,7 +1075,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "meta_name",
@@ -665,7 +1089,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "meta_description",
@@ -676,7 +1103,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: true,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "keywords",
@@ -689,7 +1119,10 @@ var attributeRegistry_default = {
       required_for_export: true,
       import_required: false,
       ai_usage_notes: "SEO keywords used for export",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: true
     },
     {
       attribute_id: "rics_long_desc",
@@ -701,7 +1134,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       usage: "reference_only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "rics_short_description",
@@ -713,7 +1149,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       usage: "reference_only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "media_status",
@@ -725,7 +1164,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Tracks image readiness",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "hide_image_date",
@@ -736,19 +1178,24 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "map",
       label: "MAP",
       external_header: "MAP",
       category: "launch_media_pricing",
-      data_type: "boolean",
+      data_type: "money",
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      ai_usage_notes: "Minimum Advertised Price toggle - indicates if MAP pricing applies",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "scom_regular_price",
@@ -759,7 +1206,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "scom_sale_price",
@@ -770,32 +1220,25 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "promo",
       label: "Promo",
       external_header: "Promo",
       category: "launch_media_pricing",
-      data_type: "select",
-      allowed_values: ["Allowed", "Disallowed"],
+      data_type: "boolean",
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
-    },
-    {
-      attribute_id: "drawing",
-      label: "Drawing",
-      external_header: "Drawing",
-      category: "launch_media_pricing",
-      data_type: "select",
-      allowed_values: ["FCFS", "Store-only", "Web-only", "Store & Web", "Token set"],
-      required_for_completion: false,
-      required_for_export: false,
-      import_required: false,
-      ai_usage_notes: "Indicates drawing/raffle release type for limited product launches",
-      status: "active"
+      ai_usage_notes: "LP-product-ordering-import-completeness-0.1.0: Changed to boolean. Coercion: true='true'|'1'|'yes'|'y'|'on'|'allowed' (Allowed\u2192true); false='false'|'0'|'no'|'n'|'off'|'not allowed'|'disallowed' (Not Allowed\u2192false, case-insensitive).",
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "standard_shipping_override",
@@ -806,7 +1249,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "expedited_override_shipping",
@@ -817,7 +1263,10 @@ var attributeRegistry_default = {
       required_for_completion: false,
       required_for_export: false,
       import_required: false,
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "custom_message",
@@ -829,7 +1278,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       usage: "internal_only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "total_inv",
@@ -841,7 +1293,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       usage: "display_only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "warehouse_inv",
@@ -853,7 +1308,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       usage: "display_only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "store_inv",
@@ -865,7 +1323,10 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       usage: "display_only",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     },
     {
       attribute_id: "pattern",
@@ -877,7 +1338,40 @@ var attributeRegistry_default = {
       required_for_export: false,
       import_required: false,
       ai_usage_notes: "Pattern type (solid, striped, floral, geometric, etc.)",
-      status: "active"
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
+    },
+    {
+      attribute_id: "sustainable",
+      label: "Sustainable",
+      external_header: "Sustainable",
+      category: "attributes",
+      data_type: "boolean",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Indicates if product meets sustainability standards",
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
+    },
+    {
+      attribute_id: "waterproof",
+      label: "Waterproof",
+      external_header: "Waterproof",
+      category: "material_performance",
+      data_type: "boolean",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      ai_usage_notes: "Indicates if product is waterproof",
+      status: "active",
+      exportable: true,
+      internalOnly: false,
+      requiredForExport: false
     }
   ]
 };
@@ -993,6 +1487,46 @@ function validateAttributeDomains(attributes) {
 }
 function getRegistryVersion() {
   return attributeRegistry_default.version;
+}
+function isExportable(attributeId) {
+  const attr = getAttributeById(attributeId);
+  if (!attr) return true;
+  if (attr.internalOnly === true) return false;
+  return attr.exportable !== false;
+}
+function isRequiredForExport(attributeId) {
+  const attr = getAttributeById(attributeId);
+  if (!attr) return false;
+  return attr.requiredForExport === true || attr.required_for_export === true;
+}
+function isInternalOnly(attributeId) {
+  const attr = getAttributeById(attributeId);
+  return attr?.internalOnly === true;
+}
+function getExportMeta(attributeId) {
+  const attr = getAttributeById(attributeId);
+  return attr?.export;
+}
+function getExportableAttributes() {
+  return getAttributes().filter((attr) => {
+    if (attr.internalOnly === true) return false;
+    return attr.exportable !== false;
+  });
+}
+function getRequiredForExportAttributes() {
+  return getAttributes().filter(
+    (attr) => attr.requiredForExport === true || attr.required_for_export === true
+  );
+}
+function getInternalOnlyAttributes() {
+  return getAttributes().filter((attr) => attr.internalOnly === true);
+}
+function getAttributesForTarget(target) {
+  return getAttributes().filter((attr) => {
+    if (attr.internalOnly === true || attr.exportable === false) return false;
+    if (!attr.export?.targets) return true;
+    return attr.export.targets.includes(target);
+  });
 }
 
 // src/validators/productValidator.ts
@@ -1140,6 +1674,91 @@ function validateAttributes(input) {
 }
 function safeValidateAttributeDefinition(input) {
   return AttributeDefinitionSchema.safeParse(input);
+}
+var ExportTargetSchema = zod.z.enum(["shopify", "google", "amazon", "magento", "csv"]);
+var RegistryExportMetaSchema = zod.z.object({
+  /** Column key/header for export */
+  key: zod.z.string().optional(),
+  /** Omit from export if value is empty */
+  omitIfEmpty: zod.z.boolean().optional(),
+  /** Target channels */
+  targets: zod.z.array(ExportTargetSchema).optional()
+}).strict();
+var SynonymsSchema = zod.z.union([
+  zod.z.array(zod.z.string()),
+  zod.z.record(zod.z.string(), zod.z.string()),
+  zod.z.array(zod.z.object({ alias: zod.z.string(), canonical: zod.z.string() }))
+]).optional();
+var RegistryAttributeSchema = zod.z.object({
+  // Required fields
+  attribute_id: zod.z.string().min(1).regex(/^[a-z0-9-_.]+$/, "attribute_id must be lowercase with only a-z, 0-9, -, _, ."),
+  label: zod.z.string().min(1),
+  // Optional core fields
+  external_header: zod.z.string().optional(),
+  category: zod.z.string().optional(),
+  data_type: zod.z.enum(["text", "select", "multiSelect", "boolean", "number", "date", "currency", "json", "longText", "string", "money"]).optional(),
+  allowed_values: zod.z.array(zod.z.string()).optional(),
+  allow_custom_values: zod.z.boolean().optional(),
+  aliases: zod.z.array(zod.z.string()).optional(),
+  synonyms: SynonymsSchema,
+  // Completion/import flags
+  required_for_completion: zod.z.boolean().optional(),
+  required_for_export: zod.z.boolean().optional(),
+  import_required: zod.z.boolean().optional(),
+  import_strict: zod.z.boolean().optional(),
+  // Metadata
+  ai_usage_notes: zod.z.string().optional(),
+  status: zod.z.enum(["active", "deprecated", "disabled"]).optional(),
+  // LP-smart-rules-registry-1.0.0: Export control fields
+  /** Whether this attribute can be included in exports */
+  exportable: zod.z.boolean().optional(),
+  /** Whether this attribute must have a value for export */
+  requiredForExport: zod.z.boolean().optional(),
+  /** Whether this attribute is internal-only */
+  internalOnly: zod.z.boolean().optional(),
+  /** Channel-specific export configuration */
+  export: RegistryExportMetaSchema.optional()
+});
+var CanonicalRegistrySchema = zod.z.object({
+  version: zod.z.string().regex(/^\d+\.\d+\.\d+$/, "version must be semver format (e.g., 1.0.0)"),
+  attributes: zod.z.array(RegistryAttributeSchema).min(1, "Registry must have at least one attribute")
+});
+function validateRegistryAttribute(input) {
+  return RegistryAttributeSchema.parse(input);
+}
+function safeValidateRegistryAttribute(input) {
+  return RegistryAttributeSchema.safeParse(input);
+}
+function validateCanonicalRegistry(input) {
+  return CanonicalRegistrySchema.parse(input);
+}
+function safeValidateCanonicalRegistry(input) {
+  return CanonicalRegistrySchema.safeParse(input);
+}
+function validateExportControlConsistency(attr) {
+  if (attr.internalOnly === true && attr.exportable === true) {
+    return {
+      valid: false,
+      message: `Attribute '${attr.attribute_id}': internalOnly=true is inconsistent with exportable=true`
+    };
+  }
+  if (attr.requiredForExport === true && attr.exportable === false) {
+    return {
+      valid: false,
+      message: `Attribute '${attr.attribute_id}': requiredForExport=true is inconsistent with exportable=false`
+    };
+  }
+  return { valid: true };
+}
+function validateRegistryExportConsistency(registry) {
+  const errors = [];
+  for (const attr of registry.attributes) {
+    const result = validateExportControlConsistency(attr);
+    if (!result.valid && result.message) {
+      errors.push(result.message);
+    }
+  }
+  return errors;
 }
 
 // src/validators/importValidator.ts
@@ -1859,21 +2478,50 @@ function applyTransform(value, transform) {
       return strValue.trim().toUpperCase();
     case "lowercase":
       return strValue.trim().toLowerCase();
+    case "boolean": {
+      const normalized = strValue.trim().toLowerCase();
+      const trueValues = ["true", "1", "yes", "y", "on", "allowed"];
+      const falseValues = ["false", "0", "no", "n", "off", "not allowed", "disallowed"];
+      if (trueValues.includes(normalized)) {
+        return true;
+      }
+      if (falseValues.includes(normalized)) {
+        return false;
+      }
+      return void 0;
+    }
     case "number": {
       const cleaned = strValue.replace(/[$,\s]/g, "");
       const num = parseFloat(cleaned);
       return isNaN(num) ? void 0 : num;
     }
     case "date": {
-      try {
-        const date = new Date(strValue);
-        if (isNaN(date.getTime())) {
-          return void 0;
-        }
-        return date.toISOString();
-      } catch {
-        return void 0;
+      const s = strValue.trim();
+      const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoMatch) {
+        const [, y, m, d] = isoMatch;
+        return `${y}-${m}-${d}`;
       }
+      const mdy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+      if (mdy) {
+        let [, mm, dd, yy] = mdy;
+        mm = mm.padStart(2, "0");
+        dd = dd.padStart(2, "0");
+        if (yy.length === 2) {
+          const n = parseInt(yy, 10);
+          const full = n >= 70 ? 1900 + n : 2e3 + n;
+          yy = String(full);
+        }
+        return `${yy}-${mm}-${dd}`;
+      }
+      const parsed = new Date(s);
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear();
+        const mm = String(parsed.getMonth() + 1).padStart(2, "0");
+        const dd = String(parsed.getDate()).padStart(2, "0");
+        return `${y}-${mm}-${dd}`;
+      }
+      return void 0;
     }
     case "array": {
       return strValue.split(/[|,;]/).map((s) => s.trim()).filter((s) => s.length > 0);
@@ -2893,11 +3541,19 @@ function importRowsToCoreProducts(rows) {
   }
   return products;
 }
-var SynonymsSchema = zod.z.union([
+var SynonymsSchema2 = zod.z.union([
   zod.z.array(zod.z.string()),
   zod.z.record(zod.z.string(), zod.z.string()),
   zod.z.array(zod.z.object({ alias: zod.z.string(), canonical: zod.z.string() }))
 ]).optional();
+var ExportMetadataSchema = zod.z.object({
+  /** Column key/header for export (if different from attribute_id) */
+  key: zod.z.string().optional(),
+  /** Omit this field from export if value is empty/null/undefined */
+  omitIfEmpty: zod.z.boolean().optional().default(false),
+  /** Export target channels this attribute applies to */
+  targets: zod.z.array(zod.z.enum(["shopify", "google", "amazon", "magento", "csv"])).optional()
+}).optional();
 var AttributeSchema = zod.z.object({
   attribute_id: zod.z.string().min(1).regex(/^[a-z0-9-_.]+$/),
   label: zod.z.string().min(1),
@@ -2905,7 +3561,7 @@ var AttributeSchema = zod.z.object({
   category: zod.z.string().optional(),
   data_type: zod.z.enum(["string", "number", "boolean", "enum", "currency", "json", "multiSelect", "date"]),
   allowed_values: zod.z.array(zod.z.string()).optional(),
-  synonyms: SynonymsSchema,
+  synonyms: SynonymsSchema2,
   required_for_completion: zod.z.boolean().optional().default(false),
   required_for_export: zod.z.boolean().optional().default(false),
   import_required: zod.z.boolean().optional().default(false),
@@ -2913,6 +3569,15 @@ var AttributeSchema = zod.z.object({
   status: zod.z.enum(["active", "deprecated", "hidden"]).optional().default("active"),
   // LP-3.0.4: Added 'repo' to source enum for repository-sourced attributes
   source: zod.z.enum(["notion", "derived", "json", "repo"]).optional(),
+  // LP-smart-rules-registry-1.0.0: Export control flags
+  /** Whether this attribute can be included in exports (default: true for most, false for internal fields) */
+  exportable: zod.z.boolean().optional().default(true),
+  /** Whether this attribute must have a value for the product to be export-ready */
+  requiredForExport: zod.z.boolean().optional().default(false),
+  /** Whether this attribute is for internal use only and should never be exposed to external channels */
+  internalOnly: zod.z.boolean().optional().default(false),
+  /** Channel-specific export configuration */
+  export: ExportMetadataSchema,
   createdBy: zod.z.string().optional(),
   createdAt: zod.z.union([zod.z.string(), zod.z.object({}).passthrough()]).optional(),
   updatedBy: zod.z.string().optional(),
@@ -3066,8 +3731,11 @@ exports.AttributeDefinitionSchema = AttributeDefinitionSchema;
 exports.AttributeRegistrySchema = AttributeRegistrySchema;
 exports.AttributeSchema = AttributeSchema;
 exports.AttributeValueSchema = AttributeValueSchema;
+exports.CanonicalRegistrySchema = CanonicalRegistrySchema;
 exports.CoreProductSchema = CoreProductSchema;
 exports.DEFAULT_COLUMN_MAPPINGS = DEFAULT_COLUMN_MAPPINGS;
+exports.ExportMetadataSchema = ExportMetadataSchema;
+exports.ExportTargetSchema = ExportTargetSchema;
 exports.ImportRowRawSchema = ImportRowRawSchema;
 exports.ImportRowSchema = ImportRowSchema;
 exports.LEGACY_TO_REGISTRY = LEGACY_TO_REGISTRY;
@@ -3083,6 +3751,8 @@ exports.ProductSchema = ProductSchema;
 exports.REGISTRY_TO_LEGACY = REGISTRY_TO_LEGACY;
 exports.RETAILOPS_COLUMN_NAMES = RETAILOPS_COLUMN_NAMES;
 exports.RETAILOPS_HEADER_ROW = RETAILOPS_HEADER_ROW;
+exports.RegistryAttributeSchema = RegistryAttributeSchema;
+exports.RegistryExportMetaSchema = RegistryExportMetaSchema;
 exports.SDK_VERSION = SDK_VERSION;
 exports.SmartRuleAction = SmartRuleAction;
 exports.SmartRuleCondition = SmartRuleCondition;
@@ -3099,12 +3769,20 @@ exports.getAllowedValues = getAllowedValues;
 exports.getAttributeById = getAttributeById;
 exports.getAttributeRegistry = getAttributeRegistry;
 exports.getAttributes = getAttributes;
+exports.getAttributesForTarget = getAttributesForTarget;
+exports.getExportMeta = getExportMeta;
+exports.getExportableAttributes = getExportableAttributes;
+exports.getInternalOnlyAttributes = getInternalOnlyAttributes;
 exports.getRegistryVersion = getRegistryVersion;
+exports.getRequiredForExportAttributes = getRequiredForExportAttributes;
 exports.getRetailOpsHeaderRow = getRetailOpsHeaderRow;
 exports.importRowJsonSchema = importRowJsonSchema;
 exports.importRowToCoreProduct = importRowToCoreProduct;
 exports.importRowsToCoreProducts = importRowsToCoreProducts;
 exports.isEmptyRow = isEmptyRow;
+exports.isExportable = isExportable;
+exports.isInternalOnly = isInternalOnly;
+exports.isRequiredForExport = isRequiredForExport;
 exports.normalizeDataType = normalizeDataType;
 exports.normalizeImportRow = normalizeImportRow;
 exports.normalizeTargetFieldToRegistry = normalizeTargetFieldToRegistry;
@@ -3116,7 +3794,9 @@ exports.retailOpsCsvToCoreProductsWithDetails = retailOpsCsvToCoreProductsWithDe
 exports.retailOpsExportMapping = retailOpsExportMapping;
 exports.retailOpsRowToImportRow = retailOpsRowToImportRow;
 exports.safeValidateAttributeDefinition = safeValidateAttributeDefinition;
+exports.safeValidateCanonicalRegistry = safeValidateCanonicalRegistry;
 exports.safeValidateProduct = safeValidateProduct;
+exports.safeValidateRegistryAttribute = safeValidateRegistryAttribute;
 exports.sourceColumnMatchesHeader = sourceColumnMatchesHeader;
 exports.toSnakeCase = toSnakeCase;
 exports.validateAttributeDefinition = validateAttributeDefinition;
@@ -3126,12 +3806,16 @@ exports.validateAttributeRegistry = validateAttributeRegistry;
 exports.validateAttributeValue = validateAttributeValue;
 exports.validateAttributes = validateAttributes;
 exports.validateAttributesOnly = validateAttributesOnly;
+exports.validateCanonicalRegistry = validateCanonicalRegistry;
 exports.validateCoreProduct = validateCoreProduct;
 exports.validateCoreProductOrThrow = validateCoreProductOrThrow;
+exports.validateExportControlConsistency = validateExportControlConsistency;
 exports.validateImportRow = validateImportRow;
 exports.validateImportRowSchema = validateImportRowSchema;
 exports.validateImportRowSchemaOrThrow = validateImportRowSchemaOrThrow;
 exports.validateProduct = validateProduct;
 exports.validateProductWithDomains = validateProductWithDomains;
+exports.validateRegistryAttribute = validateRegistryAttribute;
+exports.validateRegistryExportConsistency = validateRegistryExportConsistency;
 exports.validateRequiredFields = validateRequiredFields;
 exports.wouldCollide = wouldCollide;

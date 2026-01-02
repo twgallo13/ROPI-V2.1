@@ -1,6 +1,7 @@
 /**
  * Attribute Registry Loader
  * LP-attr-enforce-2.1.0 — Phase 2 Domain Enforcement
+ * LP-smart-rules-registry-1.0.0 — Export metadata and control flags
  * 
  * Provides access to the canonical attribute registry for domain validation.
  * Loads attributeRegistry.json at runtime and provides lookup utilities.
@@ -11,6 +12,25 @@ import registryData from '../../config/attributeRegistry.json';
 // ============================================================================
 // Types
 // ============================================================================
+
+/**
+ * Export target channels
+ * LP-smart-rules-registry-1.0.0
+ */
+export type ExportTarget = 'shopify' | 'google' | 'amazon' | 'magento' | 'csv';
+
+/**
+ * Export metadata for channel-specific configuration
+ * LP-smart-rules-registry-1.0.0
+ */
+export interface ExportMeta {
+  /** Column key/header for export (if different from attribute_id) */
+  key?: string;
+  /** Omit this field from export if value is empty/null/undefined */
+  omitIfEmpty?: boolean;
+  /** Export target channels this attribute applies to */
+  targets?: ExportTarget[];
+}
 
 /**
  * Attribute definition from the registry
@@ -30,6 +50,16 @@ export interface RegistryAttribute {
   import_strict?: boolean;
   ai_usage_notes?: string;
   status?: 'active' | 'deprecated' | 'disabled';
+  
+  // LP-smart-rules-registry-1.0.0: Export control flags
+  /** Whether this attribute can be included in exports (default: true) */
+  exportable?: boolean;
+  /** Whether this attribute must have a value for export (alias for required_for_export) */
+  requiredForExport?: boolean;
+  /** Whether this attribute is internal-only and should never be exported */
+  internalOnly?: boolean;
+  /** Channel-specific export configuration */
+  export?: ExportMeta;
 }
 
 /**
@@ -235,4 +265,108 @@ export function validateAttributeDomains(attributes: Record<string, unknown>): D
  */
 export function getRegistryVersion(): string {
   return (registryData as AttributeRegistryData).version;
+}
+
+// ============================================================================
+// Export Control Helpers (LP-smart-rules-registry-1.0.0)
+// ============================================================================
+
+/**
+ * Check if an attribute is exportable
+ * An attribute is exportable if:
+ * - It has exportable: true (or not explicitly set to false)
+ * - It is not marked as internalOnly: true
+ * 
+ * @param attributeId - The attribute_id to check
+ * @returns true if the attribute can be exported
+ */
+export function isExportable(attributeId: string): boolean {
+  const attr = getAttributeById(attributeId);
+  if (!attr) return true; // Unknown attributes pass through
+  
+  // Internal-only attributes are never exportable
+  if (attr.internalOnly === true) return false;
+  
+  // Check explicit exportable flag (default: true)
+  return attr.exportable !== false;
+}
+
+/**
+ * Check if an attribute is required for export
+ * @param attributeId - The attribute_id to check
+ * @returns true if the attribute must have a value for export
+ */
+export function isRequiredForExport(attributeId: string): boolean {
+  const attr = getAttributeById(attributeId);
+  if (!attr) return false;
+  
+  // Check both the new requiredForExport and legacy required_for_export
+  return attr.requiredForExport === true || attr.required_for_export === true;
+}
+
+/**
+ * Check if an attribute is internal-only
+ * @param attributeId - The attribute_id to check
+ * @returns true if the attribute should never be exported
+ */
+export function isInternalOnly(attributeId: string): boolean {
+  const attr = getAttributeById(attributeId);
+  return attr?.internalOnly === true;
+}
+
+/**
+ * Get export metadata for an attribute
+ * @param attributeId - The attribute_id to look up
+ * @returns Export metadata or undefined if not defined
+ */
+export function getExportMeta(attributeId: string): ExportMeta | undefined {
+  const attr = getAttributeById(attributeId);
+  return attr?.export;
+}
+
+/**
+ * Get all exportable attributes
+ * @returns Array of attribute definitions that can be exported
+ */
+export function getExportableAttributes(): RegistryAttribute[] {
+  return getAttributes().filter(attr => {
+    if (attr.internalOnly === true) return false;
+    return attr.exportable !== false;
+  });
+}
+
+/**
+ * Get all attributes required for export
+ * @returns Array of attribute definitions that must have values for export
+ */
+export function getRequiredForExportAttributes(): RegistryAttribute[] {
+  return getAttributes().filter(attr => 
+    attr.requiredForExport === true || attr.required_for_export === true
+  );
+}
+
+/**
+ * Get all internal-only attributes
+ * @returns Array of attribute definitions marked as internal-only
+ */
+export function getInternalOnlyAttributes(): RegistryAttribute[] {
+  return getAttributes().filter(attr => attr.internalOnly === true);
+}
+
+/**
+ * Get attributes for a specific export target
+ * @param target - The export target channel
+ * @returns Array of attribute definitions that apply to the target
+ */
+export function getAttributesForTarget(target: ExportTarget): RegistryAttribute[] {
+  return getAttributes().filter(attr => {
+    // Skip non-exportable attributes
+    if (attr.internalOnly === true || attr.exportable === false) return false;
+    
+    // If no export metadata, include by default
+    if (!attr.export?.targets) return true;
+    
+    // Check if target is in the targets list
+    return attr.export.targets.includes(target);
+  });
 }

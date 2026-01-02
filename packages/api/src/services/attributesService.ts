@@ -97,6 +97,7 @@ function toFirestorePayload(
  * and applies schema defaults via Zod validation.
  * 
  * PVS-0.2.2: Fix blank-on-load by normalizing on GET
+ * LP-smart-rules-registry-1.0.0: Added export control fields
  */
 function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | null {
   if (!doc.exists) return null;
@@ -123,6 +124,11 @@ function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | n
     createdAt: data.createdAt ?? data.audit?.createdAt,
     updatedBy: data.updatedBy ?? data.audit?.updatedBy,
     updatedAt: data.updatedAt ?? data.audit?.updatedAt,
+    // LP-smart-rules-registry-1.0.0: Export control fields
+    exportable: data.exportable,
+    requiredForExport: data.requiredForExport,
+    internalOnly: data.internalOnly,
+    export: data.export,
   };
   
   // Remove undefined values

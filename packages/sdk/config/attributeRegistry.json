@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.1.0",
   "attributes": [
     {
       "attribute_id": "sku",
@@ -11,7 +11,10 @@
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Primary SKU / item id. Optional for import (MPN is primary identifier).",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "style_id",
@@ -22,7 +25,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "mpn",
@@ -34,7 +40,16 @@
       "required_for_export": true,
       "import_required": true,
       "ai_usage_notes": "Manufacturer part number. Required for import (LP-2.1.2).",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "sku",
+        "targets": [
+          "shopify"
+        ]
+      }
     },
     {
       "attribute_id": "gtin",
@@ -46,7 +61,18 @@
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Global Trade Item Number. Required for many export channels",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "barcode",
+        "targets": [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       "attribute_id": "name",
@@ -57,7 +83,18 @@
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "title",
+        "targets": [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       "attribute_id": "slug",
@@ -69,7 +106,10 @@
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Required for web export",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "brand",
@@ -80,7 +120,16 @@
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "vendor",
+        "targets": [
+          "shopify"
+        ]
+      }
     },
     {
       "attribute_id": "category",
@@ -88,11 +137,32 @@
       "external_header": "Category",
       "category": "classification",
       "data_type": "select",
-      "allowed_values": ["Footwear", "Apparel", "Accessories", "Athletic", "Casual", "Dress", "Boots", "Sandals", "Sneakers", "Slippers"],
+      "allowed_values": [
+        "Footwear",
+        "Apparel",
+        "Accessories",
+        "Athletic",
+        "Casual",
+        "Dress",
+        "Boots",
+        "Sandals",
+        "Sneakers",
+        "Slippers"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "product_type",
+        "targets": [
+          "shopify",
+          "google"
+        ]
+      }
     },
     {
       "attribute_id": "class",
@@ -100,11 +170,24 @@
       "external_header": "Class",
       "category": "classification",
       "data_type": "select",
-      "allowed_values": ["Athletic", "Casual", "Formal", "Outdoor", "Performance", "Fashion", "Comfort", "Work", "Sport"],
+      "allowed_values": [
+        "Athletic",
+        "Casual",
+        "Formal",
+        "Outdoor",
+        "Performance",
+        "Fashion",
+        "Comfort",
+        "Work",
+        "Sport"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "department",
@@ -112,11 +195,29 @@
       "external_header": "Department",
       "category": "classification",
       "data_type": "select",
-      "allowed_values": ["Mens", "Womens", "Kids", "Unisex", "Boys", "Girls"],
+      "allowed_values": [
+        "Mens",
+        "Womens",
+        "Kids",
+        "Unisex",
+        "Boys",
+        "Girls"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "department",
+        "targets": [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       "attribute_id": "website",
@@ -124,12 +225,26 @@
       "external_header": "Websites",
       "category": "sku_core",
       "data_type": "multiSelect",
-      "allowed_values": ["shiekh.com", "Karmaloop.com", "mltd.com", "sangremia.com", "plndr.com", "fbrkclothing.com", "Vnds.com", "Kazbah.com", "Tiltedsole.com", "NOT FOR WEB"],
+      "allowed_values": [
+        "shiekh.com",
+        "Karmaloop.com",
+        "mltd.com",
+        "sangremia.com",
+        "plndr.com",
+        "fbrkclothing.com",
+        "Vnds.com",
+        "Kazbah.com",
+        "Tiltedsole.com",
+        "NOT FOR WEB"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Drives site-specific descriptions & AI",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "product_is_active",
@@ -141,7 +256,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Internal only",
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "status",
@@ -152,7 +270,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "launch_date",
@@ -163,7 +284,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "kl_post_date",
@@ -174,7 +298,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "family_sizing",
@@ -182,12 +309,17 @@
       "external_header": "Family Sizing",
       "category": "lifecycle",
       "data_type": "boolean",
-      "aliases": ["family_sharing"],
+      "aliases": [
+        "family_sharing"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "LP-product-ordering-import-completeness-0.1.0: Changed to boolean. Coercion: true='true'|'1'|'yes'|'y'|'on'|'allowed'; false='false'|'0'|'no'|'n'|'off'|'not allowed'|'disallowed' (case-insensitive).",
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "hype",
@@ -198,7 +330,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "first_received",
@@ -209,7 +344,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "last_received",
@@ -220,7 +358,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": false,
+      "internalOnly": true,
+      "requiredForExport": false
     },
     {
       "attribute_id": "height",
@@ -232,7 +373,17 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "For shipping/ops only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false,
+      "export": {
+        "key": "height",
+        "omitIfEmpty": true,
+        "targets": [
+          "shopify"
+        ]
+      }
     },
     {
       "attribute_id": "length",
@@ -243,7 +394,17 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false,
+      "export": {
+        "key": "length",
+        "omitIfEmpty": true,
+        "targets": [
+          "shopify"
+        ]
+      }
     },
     {
       "attribute_id": "width",
@@ -255,7 +416,17 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Package / dimension width (kept for shipping)",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false,
+      "export": {
+        "key": "width",
+        "omitIfEmpty": true,
+        "targets": [
+          "shopify"
+        ]
+      }
     },
     {
       "attribute_id": "shoe_width",
@@ -263,12 +434,20 @@
       "external_header": "Shoe Width",
       "category": "measurements",
       "data_type": "select",
-      "allowed_values": ["Narrow", "Standard", "Wide", "Extra Wide"],
+      "allowed_values": [
+        "Narrow",
+        "Standard",
+        "Wide",
+        "Extra Wide"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Shoe width / fit width for footwear. Added to avoid collision with package 'width'.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "weight",
@@ -280,7 +459,18 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Product weight in ounces. Used for shipping calculations.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false,
+      "export": {
+        "key": "weight",
+        "omitIfEmpty": true,
+        "targets": [
+          "shopify",
+          "google"
+        ]
+      }
     },
     {
       "attribute_id": "gender",
@@ -288,13 +478,34 @@
       "external_header": "Gender",
       "category": "identity_demographic",
       "data_type": "select",
-      "allowed_values": ["Men's", "Women's", "Unisex", "Boys", "Girls", "Kids"],
-      "synonyms": ["sex", "target_gender"],
+      "allowed_values": [
+        "Men's",
+        "Women's",
+        "Unisex",
+        "Boys",
+        "Girls",
+        "Kids"
+      ],
+      "synonyms": [
+        "sex",
+        "target_gender"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
       "ai_usage_notes": "Primary demographic for product targeting. Used in product descriptions and filtering.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "gender",
+        "targets": [
+          "shopify",
+          "google",
+          "amazon"
+        ]
+      }
     },
     {
       "attribute_id": "age_group",
@@ -302,13 +513,32 @@
       "external_header": "Age Group",
       "category": "identity_demographic",
       "data_type": "select",
-      "allowed_values": ["Adult", "Grade-School", "Infant", "Kids", "Pre-School", "Toddler"],
-      "synonyms": ["ageGroup", "age-group"],
+      "allowed_values": [
+        "Adult",
+        "Grade-School",
+        "Infant",
+        "Kids",
+        "Pre-School",
+        "Toddler"
+      ],
+      "synonyms": [
+        "ageGroup",
+        "age-group"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Used for Google Shopping feed and age-appropriate product descriptions.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true,
+      "export": {
+        "key": "age_group",
+        "targets": [
+          "google"
+        ]
+      }
     },
     {
       "attribute_id": "primary_color",
@@ -316,13 +546,50 @@
       "external_header": "Primary Color",
       "category": "color",
       "data_type": "select",
-      "allowed_values": ["Beige", "Black", "Blue", "Bronze", "Brown", "Clear", "Cream", "Cyan", "Floral", "Gold", "Gray", "Green", "Grey", "Metallic", "Multi Color", "Navy", "None", "Off-White", "Orange", "Pink", "Print", "Purple", "Red", "Silver", "Transparent", "Turquoise", "Wheat", "White", "Yellow"],
-      "synonyms": ["color", "main_color", "colour"],
+      "allowed_values": [
+        "Beige",
+        "Black",
+        "Blue",
+        "Bronze",
+        "Brown",
+        "Clear",
+        "Cream",
+        "Cyan",
+        "Floral",
+        "Gold",
+        "Gray",
+        "Green",
+        "Grey",
+        "Metallic",
+        "Multi Color",
+        "Navy",
+        "None",
+        "Off-White",
+        "Orange",
+        "Pink",
+        "Print",
+        "Purple",
+        "Red",
+        "Silver",
+        "Transparent",
+        "Turquoise",
+        "Wheat",
+        "White",
+        "Yellow"
+      ],
+      "synonyms": [
+        "color",
+        "main_color",
+        "colour"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
       "ai_usage_notes": "Primary visible color for search and filtering. Use standardized color names.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "descriptive_color",
@@ -330,12 +597,17 @@
       "external_header": "Descriptive Color",
       "category": "color",
       "data_type": "text",
-      "synonyms": ["descriptiveColor"],
+      "synonyms": [
+        "descriptiveColor"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Used for copy & AI (more descriptive color phrasing than primary_color).",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "material",
@@ -344,23 +616,98 @@
       "category": "materials_construction",
       "data_type": "multiSelect",
       "allowed_values": [
-        "Acrylic", "Canvas", "Cotton", "Cotton-Blend", "Cotton-Rich", "Crocodile", "Dacron", "Denim",
-        "Down", "Egyptian-Cotton", "Fabric", "Fabric-And-Leather", "Faux-Fur", "Fleece", "Fur", "Gore-Tex",
-        "Kevlar", "Kidskin", "Lambskin", "Leather", "Linen", "Linen-Blend", "Lizard", "Lurex", "Lycra",
-        "Lycra Blend", "Mercerized-Cotton", "Mesh", "Merino-Wool", "Microfiber", "Microsuede", "Mohair",
-        "Nappa-Leather", "Neoprene", "Nubuck", "Nylon", "Ostrich", "Patent-Leather", "Pima-Cotton",
-        "Plain Weave", "Plastic", "Pleather", "Polartec-Fleece", "Poly-Cotton", "Poly-Rayon", "Polyester",
-        "Polyester-Blend", "Polypropylene", "Polyurethane", "Pony", "Rayon", "Rayon-Blend", "Rubber",
-        "Satin", "Sequin", "Shearling", "Sheepskin", "Sherpa", "Shetland", "Silk", "Silk-Blend",
-        "Snakeskin", "Spandex", "Straw", "Suede", "Synthetic", "Tencel", "Thinsulate", "Ultrasuede",
-        "Urethane", "Velcro", "Velvet", "Vinyl", "Viscose", "Viscose-Rayon", "Watersnake", "Wool", "Wool-Blend", "Worsted-Wool"
+        "Acrylic",
+        "Canvas",
+        "Cotton",
+        "Cotton-Blend",
+        "Cotton-Rich",
+        "Crocodile",
+        "Dacron",
+        "Denim",
+        "Down",
+        "Egyptian-Cotton",
+        "Fabric",
+        "Fabric-And-Leather",
+        "Faux-Fur",
+        "Fleece",
+        "Fur",
+        "Gore-Tex",
+        "Kevlar",
+        "Kidskin",
+        "Lambskin",
+        "Leather",
+        "Linen",
+        "Linen-Blend",
+        "Lizard",
+        "Lurex",
+        "Lycra",
+        "Lycra Blend",
+        "Mercerized-Cotton",
+        "Mesh",
+        "Merino-Wool",
+        "Microfiber",
+        "Microsuede",
+        "Mohair",
+        "Nappa-Leather",
+        "Neoprene",
+        "Nubuck",
+        "Nylon",
+        "Ostrich",
+        "Patent-Leather",
+        "Pima-Cotton",
+        "Plain Weave",
+        "Plastic",
+        "Pleather",
+        "Polartec-Fleece",
+        "Poly-Cotton",
+        "Poly-Rayon",
+        "Polyester",
+        "Polyester-Blend",
+        "Polypropylene",
+        "Polyurethane",
+        "Pony",
+        "Rayon",
+        "Rayon-Blend",
+        "Rubber",
+        "Satin",
+        "Sequin",
+        "Shearling",
+        "Sheepskin",
+        "Sherpa",
+        "Shetland",
+        "Silk",
+        "Silk-Blend",
+        "Snakeskin",
+        "Spandex",
+        "Straw",
+        "Suede",
+        "Synthetic",
+        "Tencel",
+        "Thinsulate",
+        "Ultrasuede",
+        "Urethane",
+        "Velcro",
+        "Velvet",
+        "Vinyl",
+        "Viscose",
+        "Viscose-Rayon",
+        "Watersnake",
+        "Wool",
+        "Wool-Blend",
+        "Worsted-Wool"
       ],
-      "synonyms": ["upper_material", "fabric"],
+      "synonyms": [
+        "upper_material",
+        "fabric"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": true,
       "ai_usage_notes": "Primary material for the product. Important for product descriptions and care instructions.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "outsole_material",
@@ -368,12 +715,28 @@
       "external_header": "Outsole Material",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["Cork", "Crepe", "Fabric", "Latex", "Leather", "Leather-and-Rubber", "Lug-sole", "Manmade", "Rubber", "Suede", "Vibram", "Wood"],
+      "allowed_values": [
+        "Cork",
+        "Crepe",
+        "Fabric",
+        "Latex",
+        "Leather",
+        "Leather-and-Rubber",
+        "Lug-sole",
+        "Manmade",
+        "Rubber",
+        "Suede",
+        "Vibram",
+        "Wood"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Optional; used when outsole differs from upper.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "closure_type",
@@ -381,12 +744,45 @@
       "external_header": "Closure",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["Buckle", "Bungee", "Button", "Clasp", "Clip", "D-ring", "Drawstring", "Elastic", "Flap", "Hook-and-eye", "Hook-and-loop", "Kiss-lock", "Lace-up", "Lobster-claw", "Magnet", "No-closure", "Pull-on", "Self-tie", "Slip-on", "Snap", "Toggle", "Turn-lock", "Velcro", "Zip", "Zipper", "wrap around"],
-      "synonyms": ["closure", "fastening"],
+      "allowed_values": [
+        "Buckle",
+        "Bungee",
+        "Button",
+        "Clasp",
+        "Clip",
+        "D-ring",
+        "Drawstring",
+        "Elastic",
+        "Flap",
+        "Hook-and-eye",
+        "Hook-and-loop",
+        "Kiss-lock",
+        "Lace-up",
+        "Lobster-claw",
+        "Magnet",
+        "No-closure",
+        "Pull-on",
+        "Self-tie",
+        "Slip-on",
+        "Snap",
+        "Toggle",
+        "Turn-lock",
+        "Velcro",
+        "Zip",
+        "Zipper",
+        "wrap around"
+      ],
+      "synonyms": [
+        "closure",
+        "fastening"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "cut_type",
@@ -394,11 +790,18 @@
       "external_header": "Cut Type",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["Low", "Mid", "High"],
+      "allowed_values": [
+        "Low",
+        "Mid",
+        "High"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "fit",
@@ -406,12 +809,21 @@
       "external_header": "Fit",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["Runs A Half Size Big", "Runs A Half Size Small", "Runs One Size Big", "Runs One Size Small", "True To Size"],
+      "allowed_values": [
+        "Runs A Half Size Big",
+        "Runs A Half Size Small",
+        "Runs One Size Big",
+        "Runs One Size Small",
+        "True To Size"
+      ],
       "required_for_completion": true,
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Drives copy and Smart Rules",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "heel_height",
@@ -419,11 +831,19 @@
       "external_header": "Heel Height",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["1-2\"", "2-3\"", "3-4\"", "5\"+"],
+      "allowed_values": [
+        "1-2\"",
+        "2-3\"",
+        "3-4\"",
+        "5\"+"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "platform_height",
@@ -431,11 +851,20 @@
       "external_header": "Platform Height",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["Flat", "Low 0-1\"", "Medium 1-2'", "High 2-3\"", "Ultra High 3-4\""],
+      "allowed_values": [
+        "Flat",
+        "Low 0-1\"",
+        "Medium 1-2'",
+        "High 2-3\"",
+        "Ultra High 3-4\""
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "heel_type",
@@ -443,11 +872,22 @@
       "external_header": "Heel Type",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["Block Heel", "Cone Heel", "Flat", "Kitten Heel", "Stiletto", "Wedge Heel", "Platform"],
+      "allowed_values": [
+        "Block Heel",
+        "Cone Heel",
+        "Flat",
+        "Kitten Heel",
+        "Stiletto",
+        "Wedge Heel",
+        "Platform"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "shoe_height_map",
@@ -455,11 +895,23 @@
       "external_header": "Shoe Height Map",
       "category": "materials_construction",
       "data_type": "select",
-      "allowed_values": ["above-the-knee", "ankle-high", "high-top", "knee-high", "low-top", "mid-calf", "mid-top", "thigh-high"],
+      "allowed_values": [
+        "above-the-knee",
+        "ankle-high",
+        "high-top",
+        "knee-high",
+        "low-top",
+        "mid-calf",
+        "mid-top",
+        "thigh-high"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "made_in",
@@ -467,12 +919,17 @@
       "external_header": "Made In",
       "category": "compliance",
       "data_type": "text",
-      "synonyms": ["country_of_origin"],
+      "synonyms": [
+        "country_of_origin"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Country where the product was manufactured. Required for some export channels.",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "league",
@@ -480,11 +937,20 @@
       "external_header": "League",
       "category": "sport_league",
       "data_type": "select",
-      "allowed_values": ["MLB", "NBA", "NCAA", "NFL", "NHL"],
+      "allowed_values": [
+        "MLB",
+        "NBA",
+        "NCAA",
+        "NFL",
+        "NHL"
+      ],
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "sports_team",
@@ -496,7 +962,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Required when league is major",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "collection_name",
@@ -508,7 +977,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Optional launch flag",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "fast_fashion",
@@ -519,7 +991,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "tax_class",
@@ -527,12 +1002,18 @@
       "external_header": "Tax Class",
       "category": "product_flags",
       "data_type": "select",
-      "allowed_values": ["Taxable Goods", "None"],
+      "allowed_values": [
+        "Taxable Goods",
+        "None"
+      ],
       "required_for_completion": false,
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Required for export; default Taxable Goods",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "description_shiekh",
@@ -544,7 +1025,10 @@
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Required if website includes shiekh.com",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "description_karmaloop",
@@ -556,7 +1040,10 @@
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "Required if website includes Karmaloop",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "description_mltd",
@@ -567,7 +1054,10 @@
       "required_for_completion": false,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "description_sangremia",
@@ -578,7 +1068,10 @@
       "required_for_completion": false,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "meta_name",
@@ -589,7 +1082,10 @@
       "required_for_completion": false,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "meta_description",
@@ -600,7 +1096,10 @@
       "required_for_completion": false,
       "required_for_export": true,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "keywords",
@@ -613,7 +1112,10 @@
       "required_for_export": true,
       "import_required": false,
       "ai_usage_notes": "SEO keywords used for export",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": true
     },
     {
       "attribute_id": "rics_long_desc",
@@ -625,7 +1127,10 @@
       "required_for_export": false,
       "import_required": false,
       "usage": "reference_only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "rics_short_description",
@@ -637,7 +1142,10 @@
       "required_for_export": false,
       "import_required": false,
       "usage": "reference_only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "media_status",
@@ -649,7 +1157,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Tracks image readiness",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "hide_image_date",
@@ -660,7 +1171,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "map",
@@ -671,7 +1185,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "scom_regular_price",
@@ -682,7 +1199,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "scom_sale_price",
@@ -693,7 +1213,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "promo",
@@ -705,7 +1228,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "LP-product-ordering-import-completeness-0.1.0: Changed to boolean. Coercion: true='true'|'1'|'yes'|'y'|'on'|'allowed' (Allowed→true); false='false'|'0'|'no'|'n'|'off'|'not allowed'|'disallowed' (Not Allowed→false, case-insensitive).",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "standard_shipping_override",
@@ -716,7 +1242,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "expedited_override_shipping",
@@ -727,7 +1256,10 @@
       "required_for_completion": false,
       "required_for_export": false,
       "import_required": false,
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "custom_message",
@@ -739,7 +1271,10 @@
       "required_for_export": false,
       "import_required": false,
       "usage": "internal_only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "total_inv",
@@ -751,7 +1286,10 @@
       "required_for_export": false,
       "import_required": false,
       "usage": "display_only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "warehouse_inv",
@@ -763,7 +1301,10 @@
       "required_for_export": false,
       "import_required": false,
       "usage": "display_only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "store_inv",
@@ -775,7 +1316,10 @@
       "required_for_export": false,
       "import_required": false,
       "usage": "display_only",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "pattern",
@@ -787,7 +1331,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Pattern type (solid, striped, floral, geometric, etc.)",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "sustainable",
@@ -799,7 +1346,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Indicates if product meets sustainability standards",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     },
     {
       "attribute_id": "waterproof",
@@ -811,7 +1361,10 @@
       "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Indicates if product is waterproof",
-      "status": "active"
+      "status": "active",
+      "exportable": true,
+      "internalOnly": false,
+      "requiredForExport": false
     }
   ]
 }
