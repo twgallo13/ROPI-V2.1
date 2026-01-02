@@ -711,14 +711,23 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
   const conditions: RuleConditionForm[] = [];
   let conditionLogic: 'and' | 'or' = 'and';
   
-  if (Array.isArray(doc.condition)) {
+  if (!doc.condition) {
+    // No condition - create a default empty one
+    conditions.push({
+      id: 'cond_0',
+      field: '',
+      matchType: 'equals',
+      value: '',
+      options: undefined,
+    });
+  } else if (Array.isArray(doc.condition)) {
     // Multiple conditions
     doc.condition.forEach((c, i) => {
       conditions.push({
         id: `cond_${i}`,
-        field: c.field,
-        matchType: c.matchType as RuleConditionForm['matchType'],
-        value: c.value as string | string[],
+        field: c.field || '',
+        matchType: (c.matchType as RuleConditionForm['matchType']) || 'equals',
+        value: (c.value as string | string[]) || '',
         options: c.options as RuleConditionForm['options'],
       });
     });
@@ -726,26 +735,26 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
     // Single condition
     conditions.push({
       id: 'cond_0',
-      field: doc.condition.field,
-      matchType: doc.condition.matchType as RuleConditionForm['matchType'],
-      value: doc.condition.value as string | string[],
+      field: doc.condition.field || '',
+      matchType: (doc.condition.matchType as RuleConditionForm['matchType']) || 'equals',
+      value: (doc.condition.value as string | string[]) || '',
       options: doc.condition.options as RuleConditionForm['options'],
     });
   }
   
   return {
     ruleId: doc.ruleId,
-    name: doc.name,
+    name: doc.name || '',
     description: doc.description || '',
-    enabled: doc.enabled,
-    priority: doc.priority,
+    enabled: doc.enabled ?? true,
+    priority: doc.priority ?? 100,
     conditions,
     conditionLogic,
     action: {
-      targetField: doc.action.targetField,
-      valueTemplate: doc.action.valueTemplate,
+      targetField: doc.action?.targetField || '',
+      valueTemplate: doc.action?.valueTemplate || '',
       setOnlyIfEmpty: false, // Default - not stored in original schema
-      confidenceModifier: doc.action.confidenceModifier,
+      confidenceModifier: doc.action?.confidenceModifier,
     },
     autoApply: doc.autoApply || false,
     autoApplyConfidence: doc.autoApplyConfidence || 0.9,
