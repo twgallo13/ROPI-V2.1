@@ -552,15 +552,17 @@ function SmartRulesSettingsPage() {
                       </td>
                       <td style={styles.td}>
                         <code style={{ fontSize: 'var(--font-size-xs)' }}>
-                          {Array.isArray(rule.condition) 
-                            ? `${rule.condition.length} conditions`
-                            : `${rule.condition.field} ${rule.condition.matchType} ${rule.condition.value || ''}`
+                          {!rule.condition 
+                            ? '(no condition)'
+                            : Array.isArray(rule.condition) 
+                              ? `${rule.condition.length} conditions`
+                              : `${rule.condition.field || '?'} ${rule.condition.matchType || '?'} ${rule.condition.value || ''}`
                           }
                         </code>
                       </td>
                       <td style={styles.td}>
                         <code style={{ fontSize: 'var(--font-size-xs)' }}>
-                          {rule.action.targetField} = {rule.action.valueTemplate}
+                          {rule.action?.targetField || '?'} = {rule.action?.valueTemplate || '?'}
                         </code>
                       </td>
                       <td style={styles.td}>{rule.priority}</td>
