@@ -10,9 +10,10 @@ import ExportPage from './pages/ExportPage';
 import ObservationsPage from './pages/ObservationsPage';
 import ObservationsCapturePage from './pages/ObservationsCapturePage';
 // AttributesPage now uses new master-detail console (PVS-0.2.3)
-import SmartRulesPage from './pages/SmartRulesPage';
+// SmartRulesPage removed - redirect to /settings/smart-rules instead
 import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';
+import SmartRulesSettingsPage from './pages/settings/SmartRulesSettingsPage';
 import AttributesConsole from './pages/Settings/AttributesConsole';
 import UsersManager from './pages/Settings/UsersManager';
 import ProfilePage from './pages/Settings/ProfilePage';
@@ -36,7 +37,8 @@ function App() {
         <Route path="observations" element={<ObservationsPage />} />
         <Route path="observations/capture" element={<ObservationsCapturePage />} />
         <Route path="attributes" element={<Navigate to="/settings/attributes" replace />} />
-        <Route path="smart-rules" element={<SmartRulesPage />} />
+        {/* Redirect legacy top-level URL to Settings admin console */}
+        <Route path="smart-rules" element={<Navigate to="/settings/smart-rules" replace />} />
         
         {/* Settings routes */}
         <Route path="settings" element={<SettingsPage />} />
@@ -51,6 +53,7 @@ function App() {
         <Route path="settings/bulk-actions" element={<SettingsSubPage section="bulk-actions" />} />
         <Route path="settings/workflows" element={<SettingsSubPage section="workflows" />} />
         <Route path="settings/ai-performance" element={<SettingsSubPage section="ai-performance" />} />
+        <Route path="settings/smart-rules" element={<SmartRulesSettingsPage />} />
       </Route>
     </Routes>
   );

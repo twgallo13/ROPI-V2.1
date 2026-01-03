@@ -1,5 +1,7 @@
-import type { Product } from '../../types/product';
+import type { Product, FieldProvenance } from '../../types/product';
 import { useAttributeRegistry } from '../../hooks/useAttributeRegistry';
+import { FieldBadge } from './FieldBadge';
+import { getProvenanceKey } from '../../services/productService';
 import './CoreInformationTab.css';
 
 /**
@@ -38,6 +40,15 @@ const WEBSITE_OPTIONS = [
   'NOT FOR WEB',
 ];
 
+/**
+ * LP-smart-rules-ui-provenance-1.0.0: Get provenance for a field path.
+ * Uses the provenance key format with underscores.
+ */
+function getFieldProvenance(product: Product, fieldPath: string): FieldProvenance | undefined {
+  const provenanceKey = getProvenanceKey(fieldPath);
+  return product.provenance?.[provenanceKey];
+}
+
 function CoreInformationTab({ product, onUpdate, onUpdateMultiple }: CoreInformationTabProps) {
   const { getAttributeById } = useAttributeRegistry();
   
@@ -60,6 +71,10 @@ function CoreInformationTab({ product, onUpdate, onUpdateMultiple }: CoreInforma
   
   const websiteAttr = getAttributeById('website');
   const websiteOptions = websiteAttr?.allowed_values ?? WEBSITE_OPTIONS;
+
+  // LP-smart-rules-ui-provenance-1.0.0: Get provenance for key fields
+  const genderProvenance = getFieldProvenance(product, 'attributes.gender');
+  const ageGroupProvenance = getFieldProvenance(product, 'attributes.age_group');
 
   return (
     <div className="editor-tab-content">
@@ -156,9 +171,11 @@ function CoreInformationTab({ product, onUpdate, onUpdateMultiple }: CoreInforma
           </div>
           
           {/* LP-0.4.4: Added gender and age_group (moved from Tab 2) */}
+          {/* LP-smart-rules-ui-provenance-1.0.0: Added Smart Rule badges */}
           <div className="form-field">
             <label className="form-label">
               Gender <span className="required">*</span>
+              <FieldBadge provenance={genderProvenance} fieldPath="attributes.gender" />
             </label>
             <select
               className="form-input"
@@ -177,6 +194,7 @@ function CoreInformationTab({ product, onUpdate, onUpdateMultiple }: CoreInforma
           <div className="form-field">
             <label className="form-label">
               Age Group <span className="required">*</span>
+              <FieldBadge provenance={ageGroupProvenance} fieldPath="attributes.age_group" />
             </label>
             <select
               className="form-input"

@@ -20,11 +20,11 @@ export declare const AttributeConstraintSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     value?: any;
     message?: string;
-    type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+    type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
 }, {
     value?: any;
     message?: string;
-    type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+    type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
 }>;
 /**
  * AttributeDefinition schema
@@ -43,42 +43,42 @@ export declare const AttributeDefinitionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value?: any;
         message?: string;
-        type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+        type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
     }, {
         value?: any;
         message?: string;
-        type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+        type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
     }>, "many">>;
     description: z.ZodOptional<z.ZodString>;
     category: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    category?: string;
-    label?: string;
-    description?: string;
-    required?: boolean;
     key?: string;
+    label?: string;
+    category?: string;
+    required?: boolean;
     dataType?: "string" | "number" | "boolean" | "object" | "date" | "array";
     defaultValue?: any;
     allowedValues?: string[];
     constraints?: {
         value?: any;
         message?: string;
-        type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+        type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
     }[];
+    description?: string;
 }, {
-    category?: string;
-    label?: string;
-    description?: string;
-    required?: boolean;
     key?: string;
+    label?: string;
+    category?: string;
+    required?: boolean;
     dataType?: "string" | "number" | "boolean" | "object" | "date" | "array";
     defaultValue?: any;
     allowedValues?: string[];
     constraints?: {
         value?: any;
         message?: string;
-        type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+        type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
     }[];
+    description?: string;
 }>;
 /**
  * AttributeValue schema
@@ -90,17 +90,17 @@ export declare const AttributeValueSchema: z.ZodObject<{
     confidence: z.ZodOptional<z.ZodNumber>;
     validatedAt: z.ZodOptional<z.ZodString>;
 }, "strict", z.ZodTypeAny, {
+    key?: string;
     value?: any;
     source?: string;
-    validatedAt?: string;
-    key?: string;
     confidence?: number;
+    validatedAt?: string;
 }, {
+    key?: string;
     value?: any;
     source?: string;
-    validatedAt?: string;
-    key?: string;
     confidence?: number;
+    validatedAt?: string;
 }>;
 /**
  * AttributeRegistry schema
@@ -120,79 +120,79 @@ export declare const AttributeRegistrySchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value?: any;
             message?: string;
-            type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+            type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
         }, {
             value?: any;
             message?: string;
-            type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+            type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
         }>, "many">>;
         description: z.ZodOptional<z.ZodString>;
         category: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        category?: string;
-        label?: string;
-        description?: string;
-        required?: boolean;
         key?: string;
+        label?: string;
+        category?: string;
+        required?: boolean;
         dataType?: "string" | "number" | "boolean" | "object" | "date" | "array";
         defaultValue?: any;
         allowedValues?: string[];
         constraints?: {
             value?: any;
             message?: string;
-            type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+            type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
         }[];
+        description?: string;
     }, {
-        category?: string;
-        label?: string;
-        description?: string;
-        required?: boolean;
         key?: string;
+        label?: string;
+        category?: string;
+        required?: boolean;
         dataType?: "string" | "number" | "boolean" | "object" | "date" | "array";
         defaultValue?: any;
         allowedValues?: string[];
         constraints?: {
             value?: any;
             message?: string;
-            type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+            type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
         }[];
+        description?: string;
     }>, "many">;
     version: z.ZodOptional<z.ZodString>;
     updatedAt: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     updatedAt?: string;
     attributes?: {
-        category?: string;
-        label?: string;
-        description?: string;
-        required?: boolean;
         key?: string;
+        label?: string;
+        category?: string;
+        required?: boolean;
         dataType?: "string" | "number" | "boolean" | "object" | "date" | "array";
         defaultValue?: any;
         allowedValues?: string[];
         constraints?: {
             value?: any;
             message?: string;
-            type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+            type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
         }[];
+        description?: string;
     }[];
     version?: string;
 }, {
     updatedAt?: string;
     attributes?: {
-        category?: string;
-        label?: string;
-        description?: string;
-        required?: boolean;
         key?: string;
+        label?: string;
+        category?: string;
+        required?: boolean;
         dataType?: "string" | "number" | "boolean" | "object" | "date" | "array";
         defaultValue?: any;
         allowedValues?: string[];
         constraints?: {
             value?: any;
             message?: string;
-            type?: "enum" | "range" | "required" | "min" | "max" | "pattern";
+            type?: "enum" | "min" | "max" | "required" | "pattern" | "range";
         }[];
+        description?: string;
     }[];
     version?: string;
 }>;

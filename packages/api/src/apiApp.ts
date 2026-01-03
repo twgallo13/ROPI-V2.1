@@ -25,6 +25,13 @@ import {
   getAuditEventHandler,
   revertAttributeHandler,
 } from './endpoints/admin/settings';
+
+// LP-smart-rules-server-validation-1.0.0: Smart Rules validation endpoint
+import {
+  validateSmartRuleHandler,
+  normalizeSmartRuleHandler,
+  getImportEvalHandler,
+} from './endpoints/adminSmartRules';
 import {
   listListsHandler,
   getListHandler,
@@ -100,6 +107,12 @@ import {
   importCSVHandler,
   importDryRunHandler,
 } from './endpoints/import';
+
+// LP-registry-health-1.0.0: Registry health check
+import {
+  registryHealthHandler,
+  registryRefreshHandler,
+} from './endpoints/registryHealth';
 
 // Reconciliation (Homer v1.0.0)
 import reconcileAttributesRouter from './admin/reconcileAttributes';
@@ -186,6 +199,20 @@ api.get('/admin/settings/roles', getRolesHandler);
 api.get('/admin/permissions', requireAdmin, getPermissionsHandler);
 api.patch('/admin/permissions', requireAdmin, updatePermissionsHandler);
 api.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
+
+/**
+ * Admin Smart Rules validation endpoints (LP-smart-rules-server-validation-1.0.0)
+ */
+api.post('/admin/validateSmartRule', validateSmartRuleHandler);
+api.post('/admin/normalizeSmartRule', normalizeSmartRuleHandler);
+api.get('/admin/import-eval/:productId', getImportEvalHandler);
+
+/**
+ * Registry health endpoints (LP-registry-health-1.0.0)
+ * Public endpoint - no auth required for health checks
+ */
+api.get('/registry/health', registryHealthHandler);
+api.post('/registry/refresh', requireAdmin, registryRefreshHandler);
 
 /**
  * User Self-Profile endpoints

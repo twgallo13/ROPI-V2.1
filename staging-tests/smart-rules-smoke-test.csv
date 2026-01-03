@@ -1,0 +1,11 @@
+mpn,sku,title,brand,rics_category,rics_color,description
+TEST-MEN-001,SKU-MEN-001,Nike Air Max 90 Black,Nike,"Footwear | Men's | Athletic | Running",Black/White,Men's running shoe
+TEST-WMN-001,SKU-WMN-001,Adidas UltraBoost Women's,Adidas,"Footwear | Women's | Athletic | Running",Grey/Pink,Women's running shoe
+TEST-GS-001,SKU-GS-001,Jordan 1 Grade School,Jordan,"Footwear | Grade School | Basketball",Red/Black,Grade school basketball shoe
+TEST-PS-001,SKU-PS-001,Nike Air Force 1 PS,Nike,"Footwear | Pre-School | Casual",White/White,Pre-school casual shoe
+TEST-UNI-001,SKU-UNI-001,Converse Chuck Taylor,Converse,"Footwear | Unisex | Casual",Black/White,Unisex casual shoe
+TEST-WMNS-001,SKU-WMNS-001,Puma RS-X WMNS,Puma,"Footwear | WMNS | Lifestyle",Purple/Pink,Women's lifestyle shoe
+TEST-APP-001,SKU-APP-001,Nike Dri-FIT Tee,Nike,"Apparel | Men's | Athletic",Navy,Men's athletic t-shirt
+TEST-ACC-001,SKU-ACC-001,Adidas Originals Cap,Adidas,"Accessories | Unisex | Headwear",Black,Unisex cap
+TEST-MULTI-001,SKU-MULTI-001,Jordan Retro Mens,Jordan,"Footwear | Mens | Basketball | Retro",White/Red/Black,Men's retro basketball shoe
+TEST-EDGE-001,SKU-EDGE-001,Nike SB Womens Dunk,Nike,"Footwear | Women's skateboarding | SB",Green/White,Women's skateboarding shoe

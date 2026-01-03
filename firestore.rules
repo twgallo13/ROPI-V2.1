@@ -225,6 +225,28 @@ service cloud.firestore {
                    && (isAdmin() || isAdminViaMetadata());
     }
     
+    // Rule Packs: settings/smartRules/packs/{packId}
+    // Admins can list/read/write rule packs. Packs are used to group rules.
+    match /settings/smartRules/packs/{packId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // Smart Rules Audit: settings/smartRules/audit/{auditId}
+    // Admins can read audit activity; only admins/server may create audit entries.
+    match /settings/smartRules/audit/{auditId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      // Writes to audit should be created by server-side processes or admins only.
+      allow create: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata());
+      // Prevent client-side updates/deletes of audit entries.
+      allow update: if false;
+      allow delete: if false;
+    }
+    
     // AI Templates subcollection: settings/aiTemplates/templates/{templateKey}
     match /settings/aiTemplates/templates/{templateKey} {
       allow read: if request.auth != null

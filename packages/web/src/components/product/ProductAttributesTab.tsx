@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
-import type { Product } from '../../types/product';
+import type { Product, FieldProvenance } from '../../types/product';
 import { useAttributeRegistry, type Attribute } from '../../hooks/useAttributeRegistry';
 import { formatForDateInput } from '../../utils/dateUtils';
+import { FieldBadge } from './FieldBadge';
+import { getProvenanceKey } from '../../services/productService';
 import './ProductAttributesTab.css';
 
 /**
@@ -70,6 +72,20 @@ function getAttributeValue(product: Product, attributeKey: string): unknown {
   }
   // Fallback to legacy format: top-level key
   return (product as unknown as Record<string, unknown>)[attributeKey];
+}
+
+/**
+ * LP-smart-rules-ui-provenance-1.0.0: Get provenance for an attribute field.
+ * Uses the provenance key format with underscores (attributes_gender).
+ * 
+ * @param product - Product object
+ * @param attributeKey - Attribute key (e.g., 'gender')
+ * @returns FieldProvenance or undefined
+ */
+function getAttributeProvenance(product: Product, attributeKey: string): FieldProvenance | undefined {
+  const fieldPath = `attributes.${attributeKey}`;
+  const provenanceKey = getProvenanceKey(fieldPath);
+  return product.provenance?.[provenanceKey];
 }
 
 /**
@@ -336,6 +352,8 @@ function ProductAttributesTab({ product, onUpdate }: ProductAttributesTabProps) 
             const key = attr.attribute_id;
             const value = productAttrs[key] ?? '';
             const isRequired = Boolean(attr.required_for_completion);
+            const provenance = getAttributeProvenance(product, key);
+            const fieldPath = `attributes.${key}`;
 
             return (
               <div
@@ -351,6 +369,8 @@ function ProductAttributesTab({ product, onUpdate }: ProductAttributesTabProps) 
                   {attr.category && (
                     <span className="attribute-category">{attr.category}</span>
                   )}
+                  {/* LP-smart-rules-ui-provenance-1.0.0: Smart Rule badge */}
+                  <FieldBadge provenance={provenance} fieldPath={fieldPath} />
                 </div>
 
                 <div className="attribute-value">
@@ -410,6 +430,8 @@ function ProductAttributesTab({ product, onUpdate }: ProductAttributesTabProps) 
                 const key = attr.attribute_id;
                 const value = productAttrs[key] ?? '';
                 const isRequired = Boolean(attr.required_for_completion);
+                const provenance = getAttributeProvenance(product, key);
+                const fieldPath = `attributes.${key}`;
 
                 return (
                   <div
@@ -425,6 +447,8 @@ function ProductAttributesTab({ product, onUpdate }: ProductAttributesTabProps) 
                       {attr.category && (
                         <span className="attribute-category">{attr.category}</span>
                       )}
+                      {/* LP-smart-rules-ui-provenance-1.0.0: Smart Rule badge */}
+                      <FieldBadge provenance={provenance} fieldPath={fieldPath} />
                     </div>
 
                     <div className="attribute-value">

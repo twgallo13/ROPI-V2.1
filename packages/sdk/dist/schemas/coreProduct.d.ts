@@ -323,12 +323,12 @@ export declare const CoreProductSchema: z.ZodObject<{
     }>>;
     meta: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    class?: string;
+    status?: "READY_FOR_EXPORT" | "DRAFT" | "DISCONTINUED";
     category?: "FOOTWEAR";
-    gender?: "MEN";
-    status?: "DRAFT" | "READY_FOR_EXPORT" | "DISCONTINUED";
-    brand?: "NIKE" | "JORDAN";
     sku?: string;
+    brand?: "NIKE" | "JORDAN";
+    class?: string;
+    gender?: "MEN";
     msrp?: number;
     launchDate?: string;
     images?: {
@@ -336,11 +336,11 @@ export declare const CoreProductSchema: z.ZodObject<{
         alt?: string;
         isPrimary?: boolean;
     }[];
-    id?: string;
     styleCode?: string;
+    id?: string;
+    price?: number;
     colorPrimary?: string;
     sizeScale?: "MENS_US";
-    price?: number;
     colorSecondary?: string;
     season?: string;
     flags?: {
@@ -350,12 +350,12 @@ export declare const CoreProductSchema: z.ZodObject<{
     };
     meta?: Record<string, string>;
 }, {
-    class?: string;
+    status?: "READY_FOR_EXPORT" | "DRAFT" | "DISCONTINUED";
     category?: "FOOTWEAR";
-    gender?: "MEN";
-    status?: "DRAFT" | "READY_FOR_EXPORT" | "DISCONTINUED";
-    brand?: "NIKE" | "JORDAN";
     sku?: string;
+    brand?: "NIKE" | "JORDAN";
+    class?: string;
+    gender?: "MEN";
     msrp?: number;
     launchDate?: string;
     images?: {
@@ -363,11 +363,11 @@ export declare const CoreProductSchema: z.ZodObject<{
         alt?: string;
         isPrimary?: boolean;
     }[];
-    id?: string;
     styleCode?: string;
+    id?: string;
+    price?: number;
     colorPrimary?: string;
     sizeScale?: "MENS_US";
-    price?: number;
     colorSecondary?: string;
     season?: string;
     flags?: {

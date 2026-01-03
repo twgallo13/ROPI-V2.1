@@ -4,6 +4,11 @@
  * 
  * Converts validated import rows into products/{productId} documents.
  * Implements idempotent commit logic with statusFlags initialization.
+ * 
+ * S3 (LP-smart-rules-import-1.0.0): Integrated Smart Rules Engine V2
+ * - Engine runs as canonical import normalization step
+ * - Persists per-field provenance and activity logs
+ * - Idempotent and safe (skip-window loop prevention)
  */
 
 import * as admin from 'firebase-admin';
@@ -18,6 +23,12 @@ import type {
   ProductMedia,
   ProductStatusFlags,
 } from '@ropi-aoss/sdk';
+import { normalizeMpn } from '@ropi-aoss/sdk';
+import {
+  processImportWithSmartRules,
+  type SmartRulesImportResult,
+} from '../functions/smartRulesImport';
+import type { ImportRow, Product as SmartRulesProduct } from '../lib/smartEngineV2';
 
 const FIRESTORE_BATCH_LIMIT = 500;
 
@@ -29,6 +40,14 @@ interface RowProcessResult {
   productId: string;
   outcome: 'created' | 'updated' | 'skipped_validation_error';
   error?: string;
+  /** S3: Smart Rules processing statistics */
+  smartRules?: {
+    suggestionsCount: number;
+    autoAppliedCount: number;
+    conflictsCount: number;
+    skipped: boolean;
+    skipReason?: string;
+  };
 }
 
 /**
@@ -42,6 +61,14 @@ export interface BatchProcessResult {
   processedAt: string;
   processedBy: string;
   results: RowProcessResult[];
+  /** S3: Smart Rules batch statistics */
+  smartRulesStats?: {
+    totalSuggestions: number;
+    totalAutoApplied: number;
+    totalConflicts: number;
+    processedCount: number;
+    skippedCount: number;
+  };
 }
 
 /**
@@ -68,11 +95,13 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
   const now = new Date().toISOString();
 
   // Build core fields - LP-1.3.6: Include MPN as primary identifier (LP-2.1.0)
+  // LP-smart-rules-mpn-1.0.0: Add normalized_mpn for reliable lookups
   const core: ProductCore = {
     sku: normalized.sku || '',
     title: normalized.title || normalized.name || '',
     brand: normalized.brand || '',
     ...(normalized.mpn && { mpn: normalized.mpn }),
+    ...(normalized.mpn && { normalized_mpn: normalizeMpn(normalized.mpn) }),
     ...(normalized.style_id && { styleId: normalized.style_id }),
     ...(normalized.description && { description: normalized.description }),
     ...(normalized.first_received && { firstReceived: normalized.first_received }),
@@ -205,6 +234,7 @@ export function convertRowToProduct(row: ImportEngineRow): Product {
 
 /**
  * Process a single import row into a product document
+ * S3: Integrated Smart Rules Engine V2 as canonical import normalization step
  * 
  * @param row - Import engine row
  * @param db - Firestore instance
@@ -216,7 +246,7 @@ async function processRow(
   db: admin.firestore.Firestore,
   userId: string
 ): Promise<RowProcessResult> {
-  const { meta, validation } = row;
+  const { meta, validation, normalized } = row;
 
   // Check if row has blocking validation errors
   const hasBlockingErrors = validation.errors.length > 0;
@@ -244,32 +274,116 @@ async function processRow(
   const productRef = db.collection('products').doc(meta.productId);
   const productDoc = await productRef.get();
   const exists = productDoc.exists;
+  const existingData = exists ? productDoc.data() as Product : undefined;
 
   // Convert row to product document
   const product = convertRowToProduct(row);
 
   // If updating, preserve createdAt
-  if (exists && productDoc.data()?.core?.createdAt) {
-    product.core.createdAt = productDoc.data()!.core.createdAt;
+  if (exists && existingData?.core?.createdAt) {
+    product.core.createdAt = existingData.core.createdAt;
+  }
+
+  // ============================================================================
+  // S3: Smart Rules Engine Integration
+  // Run engine as canonical import normalization step
+  // ============================================================================
+  
+  // Build source data for Smart Rules (RICS fields)
+  const sourceData: ImportRow['source'] = {
+    rics: {
+      category: normalized.rics_category || normalized.category || '',
+      color: normalized.rics_color || normalized.color || '',
+      shortDescription: normalized.rics_short_description || '',
+      longDescription: normalized.rics_long_desc || '',
+    },
+  };
+  
+  // Build existing product for set-only-if-empty checks
+  const existingProduct: SmartRulesProduct | undefined = existingData ? {
+    mpn: meta.productId,
+    attributes: existingData.attributes || {},
+    provenance: (existingData as any).provenance || {},
+    _smartRulesRanAt: (existingData as any)._smartRulesRanAt,
+    _smartRulesSkipUntil: (existingData as any)._smartRulesSkipUntil,
+  } : undefined;
+  
+  // Process Smart Rules
+  const smartRulesResult = await processImportWithSmartRules(
+    meta.productId,
+    normalized,
+    sourceData,
+    existingProduct
+  );
+  
+  // Apply Smart Rules updates to product (if not skipped)
+  if (!smartRulesResult.skipped && Object.keys(smartRulesResult.updates).length > 0) {
+    // Merge Smart Rules attribute updates
+    if (smartRulesResult.updates.attributes) {
+      product.attributes = {
+        ...product.attributes,
+        ...(smartRulesResult.updates.attributes as ProductAttributes),
+      };
+    }
+    
+    // Add provenance per-field
+    if (smartRulesResult.updates.provenance) {
+      (product as any).provenance = {
+        ...(existingData as any)?.provenance,
+        ...(smartRulesResult.updates.provenance as Record<string, unknown>),
+      };
+    }
+    
+    // Add _appliedRules tracking
+    if (smartRulesResult.updates._appliedRules) {
+      (product as any)._appliedRules = {
+        ...(existingData as any)?._appliedRules,
+        ...(smartRulesResult.updates._appliedRules as Record<string, unknown>),
+      };
+    }
+    
+    // Add _smartConflicts if present
+    if (smartRulesResult.updates._smartConflicts) {
+      (product as any)._smartConflicts = smartRulesResult.updates._smartConflicts;
+    }
+    
+    // Set _smartRulesRanAt and _smartRulesSkipUntil (loop prevention)
+    (product as any)._smartRulesRanAt = smartRulesResult.updates._smartRulesRanAt;
+    (product as any)._smartRulesSkipUntil = smartRulesResult.updates._smartRulesSkipUntil;
   }
 
   // Write product (create or update)
   await productRef.set(product, { merge: true });
+  
+  // S3: Append activity log entries (separate update to use arrayUnion)
+  if (!smartRulesResult.skipped && smartRulesResult.activityLog.length > 0) {
+    await productRef.update({
+      _activityLog: admin.firestore.FieldValue.arrayUnion(...smartRulesResult.activityLog),
+    });
+  }
 
   return {
     rowId: meta.rowId,
     productId: meta.productId,
     outcome: exists ? 'updated' : 'created',
+    smartRules: {
+      suggestionsCount: smartRulesResult.suggestions.length,
+      autoAppliedCount: smartRulesResult.autoApplied.length,
+      conflictsCount: smartRulesResult.conflicts.length,
+      skipped: smartRulesResult.skipped,
+      skipReason: smartRulesResult.skipReason,
+    },
   };
 }
 
 /**
  * Process an import batch by converting rows to products
+ * S3: Includes Smart Rules Engine as canonical normalization step
  * Implements idempotent commit logic with chunked Firestore writes.
  * 
  * @param batchId - Import batch ID
  * @param userId - User ID processing the batch
- * @returns Batch process result with counters
+ * @returns Batch process result with counters and Smart Rules stats
  */
 export async function processImportBatch(
   batchId: string,
@@ -298,6 +412,13 @@ export async function processImportBatch(
   let createdCount = 0;
   let updatedCount = 0;
   let blockedCount = 0;
+  
+  // S3: Smart Rules batch statistics
+  let smartRulesTotalSuggestions = 0;
+  let smartRulesTotalAutoApplied = 0;
+  let smartRulesTotalConflicts = 0;
+  let smartRulesProcessedCount = 0;
+  let smartRulesSkippedCount = 0;
 
   for (const row of rows) {
     try {
@@ -312,6 +433,18 @@ export async function processImportBatch(
       } else if (result.outcome === 'skipped_validation_error') {
         blockedCount++;
       }
+      
+      // S3: Aggregate Smart Rules statistics
+      if (result.smartRules) {
+        smartRulesTotalSuggestions += result.smartRules.suggestionsCount;
+        smartRulesTotalAutoApplied += result.smartRules.autoAppliedCount;
+        smartRulesTotalConflicts += result.smartRules.conflictsCount;
+        if (result.smartRules.skipped) {
+          smartRulesSkippedCount++;
+        } else {
+          smartRulesProcessedCount++;
+        }
+      }
 
       // Update row meta with importOutcome
       await batchRef
@@ -319,6 +452,8 @@ export async function processImportBatch(
         .doc(row.rowId)
         .update({
           'meta.importOutcome': result.outcome,
+          // S3: Store Smart Rules result per row
+          'meta.smartRulesResult': result.smartRules || null,
         });
     } catch (error) {
       console.error(`Error processing row ${row.rowId}:`, error);
@@ -342,6 +477,14 @@ export async function processImportBatch(
     createdCount,
     updatedCount,
     blockedCount,
+    // S3: Smart Rules batch summary
+    smartRulesStats: {
+      totalSuggestions: smartRulesTotalSuggestions,
+      totalAutoApplied: smartRulesTotalAutoApplied,
+      totalConflicts: smartRulesTotalConflicts,
+      processedCount: smartRulesProcessedCount,
+      skippedCount: smartRulesSkippedCount,
+    },
   });
 
   return {
@@ -352,6 +495,13 @@ export async function processImportBatch(
     processedAt,
     processedBy: userId,
     results,
+    smartRulesStats: {
+      totalSuggestions: smartRulesTotalSuggestions,
+      totalAutoApplied: smartRulesTotalAutoApplied,
+      totalConflicts: smartRulesTotalConflicts,
+      processedCount: smartRulesProcessedCount,
+      skippedCount: smartRulesSkippedCount,
+    },
   };
 }
 

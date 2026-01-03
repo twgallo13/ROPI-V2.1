@@ -1,0 +1,261 @@
+ WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run "test/smartRulesImportIntegration.test.ts"
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | test/smartRulesImportIntegration.test.ts > S3.5: Full Integration Scenario > should produce complete product doc with all S3 fields
+
+=== EXAMPLE PRODUCT DOC FOR S3 HES ===
+{
+  "mpn": "TEST-MPN-001",
+  "core": {
+    "sku": "TEST-SKU-001",
+    "title": "Test Product",
+    "brand": "TestBrand"
+  },
+  "attributes": {
+    "category": "Footwear",
+    "gender": "Men's"
+  },
+  "provenance": {
+    "attributes_category": {
+      "source": "smartRule",
+      "ruleId": "category-footwear",
+      "ruleName": "Category - Footwear Detection",
+      "appliedAt": "2026-01-02T03:49:49.560Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Sneakers",
+        "matchedValue": "footwear",
+        "matchedTokens": [
+          "footwear",
+          "Footwear"
+        ]
+      },
+      "reason": "token match 'footwear', 'Footwear'"
+    },
+    "attributes_gender": {
+      "source": "smartRule",
+      "ruleId": "gender-men",
+      "ruleName": "Gender - Men's Detection",
+      "appliedAt": "2026-01-02T03:49:49.560Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Sneakers",
+        "matchedValue": "Men's",
+        "matchedTokens": [
+          "Men's",
+          "men's",
+          "Men's"
+        ]
+      },
+      "reason": "token match 'Men's', 'men's', 'Men's'"
+    }
+  },
+  "_appliedRules": {
+    "attributes_category": {
+      "ruleId": "category-footwear",
+      "confidence": 0.8999999999999999,
+      "appliedAt": "2026-01-02T03:49:49.560Z"
+    },
+    "attributes_gender": {
+      "ruleId": "gender-men",
+      "confidence": 0.95,
+      "appliedAt": "2026-01-02T03:49:49.560Z"
+    }
+  },
+  "_smartRulesRanAt": "2026-01-02T03:49:49.560Z",
+  "_smartRulesSkipUntil": 1767325799560,
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-02T03:49:49.560Z",
+      "details": {
+        "ruleId": "category-footwear",
+        "ruleName": "Category - Footwear Detection",
+        "targetField": "attributes.category",
+        "value": "Footwear",
+        "confidence": 0.8999999999999999,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Sneakers",
+          "matchedValue": "footwear",
+          "matchedTokens": [
+            "footwear",
+            "Footwear"
+          ]
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-02T03:49:49.560Z",
+      "details": {
+        "ruleId": "gender-men",
+        "ruleName": "Gender - Men's Detection",
+        "targetField": "attributes.gender",
+        "value": "Men's",
+        "confidence": 0.95,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Sneakers",
+          "matchedValue": "Men's",
+          "matchedTokens": [
+            "Men's",
+            "men's",
+            "Men's"
+          ]
+        }
+      }
+    }
+  ]
+}
+=== END EXAMPLE ===
+
+
+stdout | test/smartRulesImportIntegration.test.ts > S3.5: Full Integration Scenario > should demonstrate before/after for HES documentation
+
+=== S3 HES: BEFORE IMPORT ===
+{
+  "mpn": "NIKE-AM90-001",
+  "core": {
+    "sku": "NIKE-AM90-BLK-10",
+    "title": "Air Max 90",
+    "brand": "Nike"
+  },
+  "attributes": {},
+  "source": {
+    "rics": {
+      "category": "Footwear | Men's | Running",
+      "color": "Black/White"
+    }
+  }
+}
+
+=== S3 HES: AFTER IMPORT ===
+{
+  "mpn": "NIKE-AM90-001",
+  "core": {
+    "sku": "NIKE-AM90-BLK-10",
+    "title": "Air Max 90",
+    "brand": "Nike"
+  },
+  "attributes": {
+    "category": "Footwear",
+    "gender": "Men's"
+  },
+  "source": {
+    "rics": {
+      "category": "Footwear | Men's | Running",
+      "color": "Black/White"
+    }
+  },
+  "provenance": {
+    "attributes_category": {
+      "source": "smartRule",
+      "ruleId": "category-footwear",
+      "ruleName": "Category - Footwear Detection",
+      "appliedAt": "2026-01-02T03:49:49.561Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Running",
+        "matchedValue": "footwear",
+        "matchedTokens": [
+          "footwear",
+          "Footwear"
+        ]
+      },
+      "reason": "token match 'footwear', 'Footwear'"
+    },
+    "attributes_gender": {
+      "source": "smartRule",
+      "ruleId": "gender-men",
+      "ruleName": "Gender - Men's Detection",
+      "appliedAt": "2026-01-02T03:49:49.561Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Running",
+        "matchedValue": "Men's",
+        "matchedTokens": [
+          "Men's",
+          "men's",
+          "Men's"
+        ]
+      },
+      "reason": "token match 'Men's', 'men's', 'Men's'"
+    }
+  },
+  "_appliedRules": {
+    "attributes_category": {
+      "ruleId": "category-footwear",
+      "confidence": 0.8999999999999999,
+      "appliedAt": "2026-01-02T03:49:49.561Z"
+    },
+    "attributes_gender": {
+      "ruleId": "gender-men",
+      "confidence": 0.95,
+      "appliedAt": "2026-01-02T03:49:49.561Z"
+    }
+  },
+  "_smartRulesRanAt": "2026-01-02T03:49:49.561Z",
+  "_smartRulesSkipUntil": 1767325799561,
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-02T03:49:49.561Z",
+      "details": {
+        "ruleId": "category-footwear",
+        "ruleName": "Category - Footwear Detection",
+        "targetField": "attributes.category",
+        "value": "Footwear",
+        "confidence": 0.8999999999999999,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Running",
+          "matchedValue": "footwear",
+          "matchedTokens": [
+            "footwear",
+            "Footwear"
+          ]
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-02T03:49:49.561Z",
+      "details": {
+        "ruleId": "gender-men",
+        "ruleName": "Gender - Men's Detection",
+        "targetField": "attributes.gender",
+        "value": "Men's",
+        "confidence": 0.95,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Running",
+          "matchedValue": "Men's",
+          "matchedTokens": [
+            "Men's",
+            "men's",
+            "Men's"
+          ]
+        }
+      }
+    }
+  ]
+}
+=== END ===
+
+
+ ✓ test/smartRulesImportIntegration.test.ts  (25 tests) 36ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  03:49:48
+   Duration  612ms (transform 209ms, setup 34ms, collect 266ms, tests 36ms, environment 0ms, prepare 77ms)
+

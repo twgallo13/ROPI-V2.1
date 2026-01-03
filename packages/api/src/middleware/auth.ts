@@ -69,14 +69,33 @@ export function isAdmin(auth: AuthContext): boolean {
 export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext | null> {
   // Extract token from Authorization header
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  let token: string | null = null;
+  let tokenSource: string = 'none';
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    tokenSource = 'header';
+  } else {
+    // Lisa's canonical: Cookie fallback for browser flows
+    // Check for __session cookie (Firebase Hosting convention)
+    const cookies = req.cookies || {};
+    if (cookies.__session) {
+      token = cookies.__session;
+      tokenSource = 'cookie';
+    }
+  }
+  
+  if (!token) {
     if (IS_EMULATOR) {
       return buildEmulatorAuth(req);
     }
+    console.warn('⚠️ Auth: No token found (checked header and __session cookie)', {
+      path: req.path,
+      hasAuthHeader: !!authHeader,
+      hasCookies: !!req.cookies,
+    });
     return null;
   }
-  
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
   if (IS_EMULATOR) {
     // In emulator/test flows we accept any bearer token and treat it as admin
@@ -87,6 +106,11 @@ export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext 
     // Verify token with Firebase Admin
     const decodedToken = await admin.auth().verifyIdToken(token);
     
+    console.log(`✅ Auth: Token verified (source: ${tokenSource})`, {
+      uid: decodedToken.uid,
+      path: req.path,
+    });
+    
     return {
       uid: decodedToken.uid,
       email: decodedToken.email,
@@ -96,7 +120,7 @@ export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext 
       emailVerified: decodedToken.email_verified || false,
     };
   } catch (error) {
-    console.error('⚠️ Token verification failed:', error);
+    console.error(`⚠️ Token verification failed (source: ${tokenSource}):`, error);
     return null;
   }
 }
@@ -114,8 +138,9 @@ export async function requireAuth(
   
   if (!auth) {
     res.status(401).json({
-      error: 'Unauthorized',
-      message: 'Valid authentication token required',
+      error: 'INVALID_AUTH_TOKEN',
+      reason: 'missing_or_invalid_token',
+      message: 'Valid authentication token required. Include Authorization: Bearer <token> header or __session cookie.',
     });
     return;
   }
@@ -154,8 +179,9 @@ export async function requireAdmin(
   
   if (!auth) {
     res.status(401).json({
-      error: 'Unauthorized',
-      message: 'Valid authentication token required',
+      error: 'INVALID_AUTH_TOKEN',
+      reason: 'missing_or_invalid_token',
+      message: 'Valid authentication token required. Include Authorization: Bearer <token> header or __session cookie.',
     });
     return;
   }

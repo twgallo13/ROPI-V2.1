@@ -4,11 +4,11 @@
  * LP-1.1.1: Barcode scanner for scanning product MPNs.
  * Uses native BarcodeDetector API with @zxing/library fallback.
  * 
- * LP-1.2.3: Fixed 401 error by adding Authorization header to API requests.
+ * LP-smart-rules-mpn-1.0.0: Use authFetch for consistent auth handling.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { getAuthHeaders } from '@/lib/authHeaders';
+import { authFetch } from '../../services/authFetch';
 import './MobileMPNScanner.css';
 
 // Product type from API
@@ -82,16 +82,13 @@ export default function MobileMPNScanner({
   }, []);
 
   // Lookup product by MPN (exact match)
+  // LP-smart-rules-mpn-1.0.0: Use authFetch for consistent auth handling
   const lookupProduct = useCallback(async (mpn: string): Promise<ScannedProduct | null> => {
     const cleanMpn = mpn.trim();
     if (!cleanMpn) return null;
     
     try {
-      // LP-1.2.3: Get auth headers with Bearer token to fix 401 error
-      const headers = await getAuthHeaders();
-      const response = await fetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`, {
-        headers,
-      });
+      const response = await authFetch(`${apiBaseUrl}/products/by-mpn/${encodeURIComponent(cleanMpn)}`);
       
       if (!response.ok) {
         if (response.status === 401) {
@@ -112,17 +109,14 @@ export default function MobileMPNScanner({
   }, [apiBaseUrl]);
 
   // LP-1.1.10: Search products by partial MPN
-  // LP-obs-studio-cleanup-1.1.0: Add auth headers for search endpoint
+  // LP-smart-rules-mpn-1.0.0: Use authFetch for consistent auth handling
   const searchProducts = useCallback(async (query: string): Promise<ScannedProduct[]> => {
     const cleanQuery = query.trim();
     if (cleanQuery.length < 2) return [];
     
     try {
-      // LP-obs-studio-cleanup-1.1.0: Get auth headers with Bearer token
-      const headers = await getAuthHeaders();
-      const response = await fetch(
-        `${apiBaseUrl}/products/search-mpn?q=${encodeURIComponent(cleanQuery)}&limit=10`,
-        { headers }
+      const response = await authFetch(
+        `${apiBaseUrl}/products/search-mpn?q=${encodeURIComponent(cleanQuery)}&limit=10`
       );
       
       if (!response.ok) {

@@ -1,6 +1,7 @@
 /**
  * Export Service
  * LP-2.1.9 — Export & PDP Alignment
+ * S4 (LP-smart-rules-exporter-1.0.0) — Exporter & Validation Alignment
  * 
  * Centralized export logic for generating RO CSV and other feed formats.
  * Ensures exports use MPN as primary key, export only attributes with 
@@ -9,16 +10,34 @@
  * 
  * Features:
  * - MPN as primary identifier (required for all export rows)
- * - Attribute selection based on export: true flag
+ * - Attribute selection based on registry flags:
+ *   - exportable: true → included in export (default)
+ *   - internalOnly: true → never exported
+ *   - requiredForExport: true → validation failure if missing
+ * - Export metadata support:
+ *   - export.key → column header override
+ *   - export.omitIfEmpty → skip if empty/null
+ *   - export.targets → channel-specific filtering
  * - Per-site export filters (exportForSites)
  * - Enum/multiSelect canonical value mapping with synonyms
  * - Export readiness scoring based on requiredForExport flags
  * - _meta provenance columns (optional)
  * - Batched/streaming export for large datasets
+ * - Channel-specific exports (shopify, google, amazon, magento, csv)
  */
 
 import * as admin from 'firebase-admin';
 import { loadRegistryMap, type AttributeDefinition } from './attributeValidator';
+import {
+  getExportableAttributes,
+  getAttributesForTarget,
+  isExportable,
+  isRequiredForExport,
+  isInternalOnly,
+  getExportMeta,
+  type ExportTarget,
+  type RegistryAttribute,
+} from '@ropi-aoss/sdk';
 
 // ============================================================================
 // Types
@@ -26,6 +45,7 @@ import { loadRegistryMap, type AttributeDefinition } from './attributeValidator'
 
 /**
  * Export configuration options
+ * S4: Added target channel for channel-specific exports
  */
 export interface ExportOptions {
   /** Target site for per-site attribute filtering */
@@ -40,6 +60,10 @@ export interface ExportOptions {
   multiSelectDelimiter?: string;
   /** Page size for batched queries (default: 1000) */
   pageSize?: number;
+  /** S4: Export target channel for channel-specific filtering */
+  target?: ExportTarget;
+  /** S4: Whether to skip omitIfEmpty columns with empty values */
+  respectOmitIfEmpty?: boolean;
 }
 
 /**
@@ -185,33 +209,76 @@ const SKIP_ATTRIBUTE_IDS = new Set([
 
 /**
  * Extended attribute definition for export
+ * S4: Updated to include SDK registry export metadata
  */
 export interface ExportAttributeDefinition extends AttributeDefinition {
-  export?: boolean;
+  export?: boolean | { key?: string; omitIfEmpty?: boolean; targets?: ExportTarget[] };
   exportForSites?: string[];
   required_for_export?: boolean;
   requiredForExport?: boolean;
   category?: string;
   external_header?: string;
+  /** S4: Whether this attribute is internal-only */
+  internalOnly?: boolean;
+  /** S4: Whether this attribute is explicitly exportable */
+  exportable?: boolean;
 }
 
 /**
  * Load exportable attributes from registry
+ * S4: Now uses SDK registry helpers and respects internalOnly flag
  */
 export async function loadExportableAttributes(
-  site?: string
+  site?: string,
+  target?: ExportTarget
 ): Promise<Map<string, ExportAttributeDefinition>> {
   const registry = await loadRegistryMap();
   const exportable = new Map<string, ExportAttributeDefinition>();
 
+  // If a target channel is specified, use SDK's channel-specific filter
+  if (target) {
+    const channelAttrs = getAttributesForTarget(target);
+    for (const attr of channelAttrs) {
+      if (SKIP_ATTRIBUTE_IDS.has(attr.attribute_id)) continue;
+      
+      // Map RegistryAttribute to ExportAttributeDefinition
+      const exportDef: ExportAttributeDefinition = {
+        id: attr.attribute_id,
+        attribute_id: attr.attribute_id,
+        label: attr.label,
+        data_type: attr.data_type === 'select' ? 'enum' : attr.data_type as any,
+        allowed_values: attr.allowed_values,
+        synonyms: typeof attr.synonyms === 'object' && !Array.isArray(attr.synonyms) 
+          ? attr.synonyms as Record<string, string>
+          : undefined,
+        category: attr.category,
+        external_header: attr.external_header,
+        export: attr.export,
+        required_for_export: attr.required_for_export,
+        requiredForExport: attr.requiredForExport,
+        exportable: attr.exportable,
+        internalOnly: attr.internalOnly,
+      };
+      
+      // Site-specific filter (legacy)
+      if (site && exportDef.exportForSites && exportDef.exportForSites.length > 0) {
+        if (!exportDef.exportForSites.includes(site)) continue;
+      }
+      
+      exportable.set(attr.attribute_id, exportDef);
+    }
+    return exportable;
+  }
+
+  // No target channel - use default SDK exportable filter
   for (const [id, def] of registry) {
     const exportDef = def as ExportAttributeDefinition;
     
-    // Skip if not exportable
-    // Default export to true if not specified (for backward compat)
-    const isExportable = exportDef.export !== false;
+    // S4: Use SDK helper for exportability check (handles internalOnly)
+    if (!isExportable(id)) continue;
     
-    if (!isExportable) continue;
+    // S4: Double-check internalOnly flag
+    if (isInternalOnly(id)) continue;
 
     // If site filter specified, check exportForSites
     if (site && exportDef.exportForSites && exportDef.exportForSites.length > 0) {
@@ -244,8 +311,10 @@ export function getExportColumnHeaders(
   for (const [id, def] of sorted) {
     if (SKIP_ATTRIBUTE_IDS.has(id)) continue;
     
-    // Use external_header if available, otherwise label or id
-    const header = def.external_header || def.label || id;
+    // S4: Use export.key if available, then external_header, then label or id
+    const exportMeta = typeof def.export === 'object' ? def.export : undefined;
+    const exportKey = exportMeta?.key;
+    const header = exportKey || def.external_header || def.label || id;
     headers.push(header);
 
     // Add meta column if requested
@@ -255,6 +324,23 @@ export function getExportColumnHeaders(
   }
 
   return headers;
+}
+
+/**
+ * S4: Get the export header for an attribute
+ * Uses export.key if available, then external_header, then label or id
+ */
+export function getExportHeader(def: ExportAttributeDefinition): string {
+  const exportMeta = typeof def.export === 'object' ? def.export : undefined;
+  return exportMeta?.key || def.external_header || def.label || def.id;
+}
+
+/**
+ * S4: Check if an attribute should be omitted when empty
+ */
+export function shouldOmitIfEmpty(def: ExportAttributeDefinition): boolean {
+  const exportMeta = typeof def.export === 'object' ? def.export : undefined;
+  return exportMeta?.omitIfEmpty === true;
 }
 
 // ============================================================================
@@ -430,7 +516,7 @@ export function formatValueForExport(
 }
 
 // ============================================================================
-// Export Readiness
+// Export Readiness & Validation
 // ============================================================================
 
 /**
@@ -443,7 +529,27 @@ export interface MissingAttribute {
 }
 
 /**
+ * S4: Export validation error
+ */
+export interface ExportValidationError {
+  code: 'MISSING_REQUIRED_EXPORT_FIELD' | 'INVALID_EXPORT_VALUE';
+  message: string;
+  attributeId: string;
+  productId?: string;
+}
+
+/**
+ * S4: Export validation result for a product
+ */
+export interface ExportValidationResult {
+  valid: boolean;
+  errors: ExportValidationError[];
+  missingRequiredFields: string[];
+}
+
+/**
  * Calculate export readiness for a product
+ * S4: Now uses SDK helper isRequiredForExport
  */
 export function calculateExportReadiness(
   product: ProductDocument,
@@ -459,9 +565,10 @@ export function calculateExportReadiness(
     });
   }
 
-  // Check required_for_export attributes
+  // S4: Check required_for_export attributes using SDK helper as fallback
   for (const [id, def] of attributes) {
-    const isRequired = def.required_for_export || def.requiredForExport;
+    // Check both direct property and SDK helper
+    const isRequired = def.required_for_export || def.requiredForExport || isRequiredForExport(id);
     if (!isRequired) continue;
 
     // Check if attribute has a value
@@ -480,12 +587,99 @@ export function calculateExportReadiness(
   };
 }
 
+/**
+ * S4: Validate a product for export readiness
+ * Returns validation errors for missing required export fields
+ */
+export function validateProductForExport(
+  product: ProductDocument,
+  attributes: Map<string, ExportAttributeDefinition>
+): ExportValidationResult {
+  const errors: ExportValidationError[] = [];
+  const missingRequiredFields: string[] = [];
+
+  // MPN is always required
+  if (!product.mpn || product.mpn.trim() === '') {
+    errors.push({
+      code: 'MISSING_REQUIRED_EXPORT_FIELD',
+      message: 'MPN is required for export',
+      attributeId: 'mpn',
+      productId: product.id,
+    });
+    missingRequiredFields.push('mpn');
+  }
+
+  // Check required_for_export attributes
+  for (const [id, def] of attributes) {
+    const isRequired = def.required_for_export || def.requiredForExport || isRequiredForExport(id);
+    if (!isRequired) continue;
+
+    const value = product.attributes?.[id];
+    if (value === undefined || value === null || value === '') {
+      errors.push({
+        code: 'MISSING_REQUIRED_EXPORT_FIELD',
+        message: `Required field '${def.label || id}' is missing for export`,
+        attributeId: id,
+        productId: product.id,
+      });
+      missingRequiredFields.push(id);
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    missingRequiredFields,
+  };
+}
+
+/**
+ * S4: Validate a batch of products for export
+ * Returns aggregated validation results
+ */
+export function validateBatchForExport(
+  products: ProductDocument[],
+  attributes: Map<string, ExportAttributeDefinition>
+): {
+  totalProducts: number;
+  validProducts: number;
+  invalidProducts: number;
+  errors: ExportValidationError[];
+  byProduct: Map<string, ExportValidationResult>;
+} {
+  const byProduct = new Map<string, ExportValidationResult>();
+  const allErrors: ExportValidationError[] = [];
+  let validCount = 0;
+  let invalidCount = 0;
+
+  for (const product of products) {
+    const result = validateProductForExport(product, attributes);
+    byProduct.set(product.id, result);
+    
+    if (result.valid) {
+      validCount++;
+    } else {
+      invalidCount++;
+      allErrors.push(...result.errors);
+    }
+  }
+
+  return {
+    totalProducts: products.length,
+    validProducts: validCount,
+    invalidProducts: invalidCount,
+    errors: allErrors,
+    byProduct,
+  };
+}
+
 // ============================================================================
 // Product Export Processing
 // ============================================================================
 
 /**
  * Build export row from product document
+ * S4: Updated to use export.key for headers and respect omitIfEmpty
  */
 export function buildExportRow(
   product: ProductDocument,
@@ -513,8 +707,16 @@ export function buildExportRow(
   for (const [id, def] of attributes) {
     if (SKIP_ATTRIBUTE_IDS.has(id)) continue;
 
-    const header = def.external_header || def.label || id;
+    // S4: Use export.key if available for header
+    const header = getExportHeader(def);
     const value = product.attributes?.[id];
+
+    // S4: Check omitIfEmpty - skip this column if empty and omitIfEmpty is true
+    const isEmpty = value === undefined || value === null || value === '';
+    if (isEmpty && options.respectOmitIfEmpty && shouldOmitIfEmpty(def)) {
+      // Don't include this column in the output
+      continue;
+    }
 
     const result = formatValueForExport(value, def, options);
     columns[header] = result.formatted;
@@ -602,6 +804,7 @@ export function generateCsvContent(
 
 /**
  * Run dry-run export preview
+ * S4: Updated to support target channel filtering
  */
 export async function runDryRunExport(
   options: ExportOptions = {}
@@ -609,8 +812,8 @@ export async function runDryRunExport(
   const db = admin.firestore();
   const timestamp = new Date().toISOString();
 
-  // Load exportable attributes
-  const attributes = await loadExportableAttributes(options.site);
+  // S4: Load exportable attributes with optional channel target
+  const attributes = await loadExportableAttributes(options.site, options.target);
   const headers = getExportColumnHeaders(attributes, options.includeMeta);
 
   // Get non-exportable attributes for info
@@ -618,7 +821,14 @@ export async function runDryRunExport(
   const excludedAttrs: string[] = [];
   for (const [id] of fullRegistry) {
     if (!attributes.has(id) && !SKIP_ATTRIBUTE_IDS.has(id)) {
-      excludedAttrs.push(id);
+      // S4: Include reason for exclusion
+      if (isInternalOnly(id)) {
+        excludedAttrs.push(`${id} (internal-only)`);
+      } else if (!isExportable(id)) {
+        excludedAttrs.push(`${id} (not exportable)`);
+      } else {
+        excludedAttrs.push(id);
+      }
     }
   }
 
@@ -689,6 +899,7 @@ export async function runDryRunExport(
 
 /**
  * Run full export with batching
+ * S4: Updated to support target channel filtering
  */
 export async function runFullExport(
   options: ExportOptions = {}
@@ -697,8 +908,8 @@ export async function runFullExport(
   const timestamp = new Date().toISOString();
   const pageSize = options.pageSize || DEFAULT_PAGE_SIZE;
 
-  // Load exportable attributes
-  const attributes = await loadExportableAttributes(options.site);
+  // S4: Load exportable attributes with optional channel target
+  const attributes = await loadExportableAttributes(options.site, options.target);
   const headers = getExportColumnHeaders(attributes, options.includeMeta);
 
   const rows: ExportRow[] = [];
@@ -837,5 +1048,8 @@ export {
   DEFAULT_PAGE_SIZE,
   DEFAULT_MULTISELECT_DELIMITER,
   CORE_COLUMNS,
-  SKIP_ATTRIBUTE_IDS
+  SKIP_ATTRIBUTE_IDS,
 };
+
+// S4: Re-export ExportTarget for convenience
+export type { ExportTarget } from '@ropi-aoss/sdk';

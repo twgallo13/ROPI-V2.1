@@ -29,8 +29,10 @@ export interface ImportSourceColumns {
 /**
  * Normalized product fields mapped from source columns
  * Per AOSS Section 3.2 — Import Normalization Rules
+ * LP-2.1.0: MPN is the canonical product identifier
  */
 export interface ImportNormalizedFields {
+    mpn?: string;
     sku?: string;
     title?: string;
     brand?: string;
@@ -126,7 +128,7 @@ export interface ImportBatch {
 export interface ColumnMapping {
     sourceColumn: string;
     targetField: string;
-    transform?: 'trim' | 'uppercase' | 'lowercase' | 'number' | 'date' | 'array';
+    transform?: 'trim' | 'uppercase' | 'lowercase' | 'number' | 'date' | 'array' | 'boolean';
     required?: boolean;
     defaultValue?: string | number;
 }

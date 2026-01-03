@@ -117,6 +117,12 @@ export {
   sourceColumnMatchesHeader,
 } from './normalization/importNormalizer';
 
+// LP-smart-rules-mpn-1.0.0: Canonical MPN normalizer
+export {
+  normalizeMpn,
+  mpnsMatch,
+} from './normalization/mpnNormalizer';
+
 // LP-importer-mapping-recon-1.1.0: Export legacy-to-registry translation map
 export {
   LEGACY_TO_REGISTRY,
@@ -220,7 +226,40 @@ export type {
 // ============================================================================
 
 export { AttributeSchema, type AttributeType } from './schema/attribute';
-export { SmartRuleSchema, SmartRuleCondition, SmartRuleAction, type SmartRuleType } from './schema/smartRule';
+export { 
+  // Canonical schemas (Lisa v1.1.0)
+  RuleSchema,
+  ActionSchema,
+  ConditionSchema,
+  // Aliases for backward compatibility
+  SmartRuleSchema, 
+  SmartRuleCondition, 
+  SmartRuleAction, 
+  // Form schemas
+  SmartRuleFormSchema,
+  RuleConditionFormSchema,
+  RuleActionFormSchema,
+  MatchTypeEnum,
+  // Validators
+  validateSmartRule,
+  safeValidateSmartRule,
+  validateSmartRuleForm,
+  // Utilities
+  deepCleanUndefined,
+  deepClean,
+  normalizeFormToDocument,
+  preSubmitValidation,
+  // Types
+  type SmartRuleType,
+  type SmartRule,
+  type SmartRuleForm,
+  type RuleCondition,
+  type RuleAction,
+  type RuleConditionForm,
+  type RuleActionForm,
+  type MatchType,
+  type ValidationResult,
+} from './schema/smartRule';
 export { AITemplateSchema, type AITemplateType } from './schema/aiTemplate';
 
 // ============================================================================

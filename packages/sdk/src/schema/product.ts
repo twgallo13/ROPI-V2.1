@@ -8,12 +8,21 @@
 
 /**
  * Core product identification and metadata
+ * LP-smart-rules-mpn-1.0.0: Added mpn and normalized_mpn fields
  */
 export interface ProductCore {
   sku: string;
   title: string;
   brand: string;
   description?: string;
+  /** Manufacturer Part Number - raw value from import */
+  mpn?: string;
+  /** Normalized MPN for reliable lookups (uppercase, no special chars) */
+  normalized_mpn?: string;
+  styleId?: string;
+  firstReceived?: string;
+  lastReceived?: string;
+  launchDate?: string;
   status: 'draft' | 'active' | 'archived';
   createdAt: string; // ISO timestamp
   updatedAt: string; // ISO timestamp

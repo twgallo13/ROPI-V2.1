@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-01-02T05:18:29.940Z",
+  "testId": "C",
+  "description": "Failure recovery test - requires manual browser simulation",
+  "instructions": [
+    "Open Chrome DevTools → Network tab",
+    "Enable Request Blocking",
+    "Add block pattern: *firestore.googleapis.com*",
+    "Edit a field in product editor and save",
+    "Verify UI shows optimistic change then reverts",
+    "Verify error message is displayed",
+    "Verify console shows network error",
+    "Disable blocking and refresh - data unchanged"
+  ],
+  "expectedBehavior": {
+    "optimisticUpdate": "UI immediately shows new value",
+    "rollback": "UI reverts to previous value on network failure",
+    "errorDisplay": "Toast or inline error message shown to user",
+    "serverState": "Server data unchanged (verify via GET)"
+  }
+}

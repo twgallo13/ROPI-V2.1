@@ -2601,6 +2601,15 @@ function validateRequiredFields(normalized, mappings = DEFAULT_COLUMN_MAPPINGS) 
   return Array.from(missingFields);
 }
 
+// src/normalization/mpnNormalizer.ts
+function normalizeMpn(mpn) {
+  if (!mpn) return "";
+  return mpn.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "").replace(/-+/g, "-").replace(/^-+|-+$/g, "");
+}
+function mpnsMatch(mpn1, mpn2) {
+  return normalizeMpn(mpn1) === normalizeMpn(mpn2);
+}
+
 // ../../node_modules/.pnpm/uuid@9.0.1/node_modules/uuid/dist/esm-browser/rng.js
 var getRandomValues;
 var rnds8 = new Uint8Array(16);
@@ -3583,33 +3592,176 @@ var AttributeSchema = zod.z.object({
   updatedBy: zod.z.string().optional(),
   updatedAt: zod.z.union([zod.z.string(), zod.z.object({}).passthrough()]).optional()
 });
-var SmartRuleCondition = zod.z.object({
-  field: zod.z.string(),
-  matchType: zod.z.enum(["equals", "contains", "regex", "in", "exists", "and", "or", "not"]),
-  value: zod.z.union([zod.z.string(), zod.z.number(), zod.z.array(zod.z.string())]).optional(),
-  options: zod.z.any().optional()
-});
-var SmartRuleAction = zod.z.object({
-  targetField: zod.z.string(),
-  valueTemplate: zod.z.string(),
+var ActionSchema = zod.z.object({
+  targetField: zod.z.string().min(1),
+  valueTemplate: zod.z.string().default(""),
   confidenceModifier: zod.z.number().optional()
 });
-var SmartRuleSchema = zod.z.object({
-  ruleId: zod.z.string().min(1),
+var SmartRuleAction = ActionSchema;
+var ConditionSchema = zod.z.object({
+  field: zod.z.string().min(1),
+  matchType: zod.z.enum(["token", "phrase", "regex", "contains"]),
+  value: zod.z.string().default(""),
+  // ensure options is always an array
+  options: zod.z.array(zod.z.any()).default([])
+});
+var SmartRuleCondition = ConditionSchema;
+var MatchTypeEnum = zod.z.enum(["token", "phrase", "regex", "contains"]);
+var RuleSchema = zod.z.object({
+  ruleId: zod.z.string().optional(),
   name: zod.z.string().min(1),
-  description: zod.z.string().optional(),
+  description: zod.z.string().default(""),
   enabled: zod.z.boolean().default(true),
-  priority: zod.z.number().default(1e3),
-  condition: zod.z.union([SmartRuleCondition, zod.z.array(SmartRuleCondition)]),
-  action: SmartRuleAction,
-  autoApply: zod.z.boolean().optional().default(false),
+  priority: zod.z.number().int().default(100),
+  // normalize single condition to array
+  condition: zod.z.union([ConditionSchema, zod.z.array(ConditionSchema)]).transform((v) => Array.isArray(v) ? v : [v]),
+  action: ActionSchema,
+  autoApply: zod.z.boolean().default(false),
   autoApplyConfidence: zod.z.number().min(0).max(1).optional(),
-  tags: zod.z.array(zod.z.string()).optional(),
+  tags: zod.z.array(zod.z.string()).default([]),
+  packId: zod.z.string().nullable().optional(),
   createdBy: zod.z.string().optional(),
   createdAt: zod.z.string().optional(),
   updatedBy: zod.z.string().optional(),
   updatedAt: zod.z.string().optional()
 });
+var SmartRuleSchema = RuleSchema;
+var RuleConditionFormSchema = zod.z.object({
+  id: zod.z.string(),
+  field: zod.z.string().default(""),
+  matchType: MatchTypeEnum.default("contains"),
+  value: zod.z.union([zod.z.string(), zod.z.array(zod.z.string())]).default(""),
+  // Form uses array for options (consistent with document schema)
+  options: zod.z.array(zod.z.any()).default([])
+});
+var RuleActionFormSchema = zod.z.object({
+  targetField: zod.z.string().default(""),
+  valueTemplate: zod.z.string().default(""),
+  setOnlyIfEmpty: zod.z.boolean().default(false),
+  confidenceModifier: zod.z.number().optional()
+});
+var SmartRuleFormSchema = zod.z.object({
+  ruleId: zod.z.string().optional(),
+  name: zod.z.string().default(""),
+  description: zod.z.string().default(""),
+  enabled: zod.z.boolean().default(true),
+  priority: zod.z.number().default(100),
+  conditions: zod.z.array(RuleConditionFormSchema).default([]),
+  conditionLogic: zod.z.enum(["and", "or"]).default("and"),
+  action: RuleActionFormSchema,
+  autoApply: zod.z.boolean().default(false),
+  autoApplyConfidence: zod.z.number().default(0.9),
+  tags: zod.z.array(zod.z.string()).default([]),
+  packId: zod.z.string().nullable().optional()
+});
+function validateSmartRule(payload) {
+  return RuleSchema.parse(payload);
+}
+function safeValidateSmartRule(payload) {
+  const result = RuleSchema.safeParse(payload);
+  if (result.success) {
+    return {
+      valid: true,
+      issues: [],
+      normalized: result.data
+    };
+  }
+  return {
+    valid: false,
+    issues: result.error.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+      code: issue.code
+    }))
+  };
+}
+function validateSmartRuleForm(payload) {
+  const result = SmartRuleFormSchema.safeParse(payload);
+  if (result.success) {
+    return {
+      valid: true,
+      issues: [],
+      normalized: void 0
+    };
+  }
+  return {
+    valid: false,
+    issues: result.error.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+      code: issue.code
+    }))
+  };
+}
+function deepCleanUndefined(obj) {
+  if (obj === void 0) return void 0;
+  if (obj === null) return null;
+  if (Array.isArray(obj)) return obj.map(deepCleanUndefined);
+  if (typeof obj === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v === void 0) continue;
+      const cleaned = deepCleanUndefined(v);
+      if (cleaned !== void 0) out[k] = cleaned;
+    }
+    return out;
+  }
+  return obj;
+}
+var deepClean = deepCleanUndefined;
+function normalizeFormToDocument(form) {
+  const conditions = form.conditions.map((c) => ({
+    field: c.field || "",
+    matchType: c.matchType || "contains",
+    value: c.value || "",
+    options: Array.isArray(c.options) ? c.options : []
+  }));
+  const doc = {
+    ruleId: form.ruleId,
+    name: form.name || "",
+    description: form.description || "",
+    enabled: form.enabled ?? true,
+    priority: form.priority ?? 100,
+    // Normalize: single condition to array via schema transform
+    condition: conditions.length === 1 ? conditions[0] : conditions,
+    action: {
+      targetField: form.action?.targetField || "",
+      valueTemplate: form.action?.valueTemplate || "",
+      ...form.action?.confidenceModifier !== void 0 && {
+        confidenceModifier: form.action.confidenceModifier
+      }
+    },
+    autoApply: form.autoApply ?? false,
+    autoApplyConfidence: form.autoApplyConfidence ?? 0.9,
+    tags: form.tags || []
+  };
+  if (form.packId) {
+    doc.packId = form.packId;
+  }
+  return deepCleanUndefined(doc);
+}
+function preSubmitValidation(form) {
+  const errors = {};
+  if (!form.name || form.name.trim() === "") {
+    errors["name"] = "Rule name is required";
+  }
+  if (!form.conditions || form.conditions.length === 0) {
+    errors["conditions"] = "At least one condition is required";
+  } else {
+    form.conditions.forEach((cond, i) => {
+      if (!cond.field || cond.field.trim() === "") {
+        errors[`conditions.${i}.field`] = "Condition field is required";
+      }
+    });
+  }
+  if (!form.action?.targetField || form.action.targetField.trim() === "") {
+    errors["action.targetField"] = "Target field is required";
+  }
+  if (!form.action?.valueTemplate || form.action.valueTemplate.trim() === "") {
+    errors["action.valueTemplate"] = "Value template is required";
+  }
+  return errors;
+}
 var Condition = zod.z.object({
   field: zod.z.string(),
   op: zod.z.string(),
@@ -3725,6 +3877,7 @@ function detectCollisions(ids) {
 var SDK_VERSION = "0.6.0";
 
 exports.AITemplateSchema = AITemplateSchema;
+exports.ActionSchema = ActionSchema;
 exports.AttributeConstraintSchema = AttributeConstraintSchema;
 exports.AttributeDataTypeSchema = AttributeDataTypeSchema;
 exports.AttributeDefinitionSchema = AttributeDefinitionSchema;
@@ -3732,6 +3885,7 @@ exports.AttributeRegistrySchema = AttributeRegistrySchema;
 exports.AttributeSchema = AttributeSchema;
 exports.AttributeValueSchema = AttributeValueSchema;
 exports.CanonicalRegistrySchema = CanonicalRegistrySchema;
+exports.ConditionSchema = ConditionSchema;
 exports.CoreProductSchema = CoreProductSchema;
 exports.DEFAULT_COLUMN_MAPPINGS = DEFAULT_COLUMN_MAPPINGS;
 exports.ExportMetadataSchema = ExportMetadataSchema;
@@ -3739,6 +3893,7 @@ exports.ExportTargetSchema = ExportTargetSchema;
 exports.ImportRowRawSchema = ImportRowRawSchema;
 exports.ImportRowSchema = ImportRowSchema;
 exports.LEGACY_TO_REGISTRY = LEGACY_TO_REGISTRY;
+exports.MatchTypeEnum = MatchTypeEnum;
 exports.ProductAttributesSchema = ProductAttributesSchema;
 exports.ProductCoreSchema = ProductCoreSchema;
 exports.ProductFlagsSchema = ProductFlagsSchema;
@@ -3753,9 +3908,13 @@ exports.RETAILOPS_COLUMN_NAMES = RETAILOPS_COLUMN_NAMES;
 exports.RETAILOPS_HEADER_ROW = RETAILOPS_HEADER_ROW;
 exports.RegistryAttributeSchema = RegistryAttributeSchema;
 exports.RegistryExportMetaSchema = RegistryExportMetaSchema;
+exports.RuleActionFormSchema = RuleActionFormSchema;
+exports.RuleConditionFormSchema = RuleConditionFormSchema;
+exports.RuleSchema = RuleSchema;
 exports.SDK_VERSION = SDK_VERSION;
 exports.SmartRuleAction = SmartRuleAction;
 exports.SmartRuleCondition = SmartRuleCondition;
+exports.SmartRuleFormSchema = SmartRuleFormSchema;
 exports.SmartRuleSchema = SmartRuleSchema;
 exports.allowsCustomValues = allowsCustomValues;
 exports.buildImportRow = buildImportRow;
@@ -3763,6 +3922,8 @@ exports.buildImportRows = buildImportRows;
 exports.buildRetailOpsCsv = buildRetailOpsCsv;
 exports.buildRetailOpsRow = buildRetailOpsRow;
 exports.canProcessRow = canProcessRow;
+exports.deepClean = deepClean;
+exports.deepCleanUndefined = deepCleanUndefined;
 exports.deriveProductId = deriveProductId;
 exports.detectCollisions = detectCollisions;
 exports.getAllowedValues = getAllowedValues;
@@ -3783,11 +3944,15 @@ exports.isEmptyRow = isEmptyRow;
 exports.isExportable = isExportable;
 exports.isInternalOnly = isInternalOnly;
 exports.isRequiredForExport = isRequiredForExport;
+exports.mpnsMatch = mpnsMatch;
 exports.normalizeDataType = normalizeDataType;
+exports.normalizeFormToDocument = normalizeFormToDocument;
 exports.normalizeImportRow = normalizeImportRow;
+exports.normalizeMpn = normalizeMpn;
 exports.normalizeTargetFieldToRegistry = normalizeTargetFieldToRegistry;
 exports.parseRetailOpsCsv = parseRetailOpsCsv;
 exports.parsedRowsToImportRows = parsedRowsToImportRows;
+exports.preSubmitValidation = preSubmitValidation;
 exports.productJsonSchema = productJsonSchema;
 exports.retailOpsCsvToCoreProducts = retailOpsCsvToCoreProducts;
 exports.retailOpsCsvToCoreProductsWithDetails = retailOpsCsvToCoreProductsWithDetails;
@@ -3797,6 +3962,7 @@ exports.safeValidateAttributeDefinition = safeValidateAttributeDefinition;
 exports.safeValidateCanonicalRegistry = safeValidateCanonicalRegistry;
 exports.safeValidateProduct = safeValidateProduct;
 exports.safeValidateRegistryAttribute = safeValidateRegistryAttribute;
+exports.safeValidateSmartRule = safeValidateSmartRule;
 exports.sourceColumnMatchesHeader = sourceColumnMatchesHeader;
 exports.toSnakeCase = toSnakeCase;
 exports.validateAttributeDefinition = validateAttributeDefinition;
@@ -3818,4 +3984,6 @@ exports.validateProductWithDomains = validateProductWithDomains;
 exports.validateRegistryAttribute = validateRegistryAttribute;
 exports.validateRegistryExportConsistency = validateRegistryExportConsistency;
 exports.validateRequiredFields = validateRequiredFields;
+exports.validateSmartRule = validateSmartRule;
+exports.validateSmartRuleForm = validateSmartRuleForm;
 exports.wouldCollide = wouldCollide;
