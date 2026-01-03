@@ -1,0 +1,270 @@
+Verify Attributes Meta	Set up job	﻿2026-01-03T08:02:56.0653222Z Current runner version: '2.330.0'
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0678738Z ##[group]Runner Image Provisioner
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0679579Z Hosted Compute Agent
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0680233Z Version: 20251211.462
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0680845Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0681564Z Build Date: 2025-12-11T16:28:49Z
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0682278Z Worker ID: {24aa0666-dad4-46ec-ae0a-aff3417704cf}
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0682958Z ##[endgroup]
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0683426Z ##[group]Operating System
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0684034Z Ubuntu
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0684909Z 24.04.3
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0685353Z LTS
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0685882Z ##[endgroup]
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0686376Z ##[group]Runner Image
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0686887Z Image: ubuntu-24.04
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0687456Z Version: 20251215.174.1
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0688480Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251215.174/images/ubuntu/Ubuntu2404-Readme.md
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0689805Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251215.174
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0691280Z ##[endgroup]
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0693072Z ##[group]GITHUB_TOKEN Permissions
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0695778Z Contents: read
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0696368Z Metadata: read
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0697018Z Packages: read
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0697515Z ##[endgroup]
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0699655Z Secret source: Actions
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.0700495Z Prepare workflow directory
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.1038172Z Prepare all required actions
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.1081024Z Getting action download info
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.4648107Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.5861221Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Verify Attributes Meta	Set up job	2026-01-03T08:02:56.7379486Z Download action repository 'pnpm/action-setup@v2' (SHA:eae0cfeb286e66ffb5155f1a79b90583a127a68b)
+Verify Attributes Meta	Set up job	2026-01-03T08:02:57.4064061Z Complete job name: Verify Attributes Meta
+Verify Attributes Meta	Checkout	﻿2026-01-03T08:02:57.4784046Z ##[group]Run actions/checkout@v4
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4785083Z with:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4785499Z   repository: twgallo13/ROPI-V2.1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4786188Z   token: ***
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4786576Z   ssh-strict: true
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4786986Z   ssh-user: git
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4787378Z   persist-credentials: true
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4787819Z   clean: true
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4788210Z   sparse-checkout-cone-mode: true
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4788683Z   fetch-depth: 1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4789062Z   fetch-tags: false
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4789453Z   show-progress: true
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4789851Z   lfs: false
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4790214Z   submodules: false
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4790613Z   set-safe-directory: true
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.4791251Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.5887150Z Syncing repository: twgallo13/ROPI-V2.1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.5889199Z ##[group]Getting Git version info
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.5889955Z Working directory is '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.5890973Z [command]/usr/bin/git version
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.5972433Z git version 2.52.0
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.5999503Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6014811Z Temporarily overriding HOME='/home/runner/work/_temp/627fa02d-1c69-4ea0-bb8e-fc2c3156b43c' before making global git config changes
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6016223Z Adding repository directory to the temporary git global config as a safe directory
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6020315Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6061287Z Deleting the contents of '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6065188Z ##[group]Initializing the repository
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6069347Z [command]/usr/bin/git init /home/runner/work/ROPI-V2.1/ROPI-V2.1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6181348Z hint: Using 'master' as the name for the initial branch. This default branch name
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6182686Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6185594Z hint: to use in all of your new repositories, which will suppress this warning,
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6186889Z hint: call:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6187461Z hint:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6188198Z hint: 	git config --global init.defaultBranch <name>
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6188968Z hint:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6189520Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6190433Z hint: 'development'. The just-created branch can be renamed via this command:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6191137Z hint:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6191499Z hint: 	git branch -m <name>
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6191931Z hint:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6192534Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6194095Z Initialized empty Git repository in /home/runner/work/ROPI-V2.1/ROPI-V2.1/.git/
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6199714Z [command]/usr/bin/git remote add origin https://github.com/twgallo13/ROPI-V2.1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6237053Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6237783Z ##[group]Disabling automatic garbage collection
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6241148Z [command]/usr/bin/git config --local gc.auto 0
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6270921Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6271612Z ##[group]Setting up auth
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6278172Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6310341Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6651321Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6682050Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6921897Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.6954207Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.7188173Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.7228362Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.7229663Z ##[group]Fetching the repository
+Verify Attributes Meta	Checkout	2026-01-03T08:02:57.7238759Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +464db76b5474f5b3ec45302c929c863b55259d8c:refs/remotes/pull/424/merge
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3852171Z From https://github.com/twgallo13/ROPI-V2.1
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3853850Z  * [new ref]         464db76b5474f5b3ec45302c929c863b55259d8c -> pull/424/merge
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3885135Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3886675Z ##[group]Determining the checkout info
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3888088Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3892041Z [command]/usr/bin/git sparse-checkout disable
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3934277Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3962134Z ##[group]Checking out the ref
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.3965730Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/424/merge
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5732128Z Note: switching to 'refs/remotes/pull/424/merge'.
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5733949Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5735407Z You are in 'detached HEAD' state. You can look around, make experimental
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5736453Z changes and commit them, and you can discard any commits you make in this
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5737453Z state without impacting any branches by switching back to a branch.
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5738030Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5738466Z If you want to create a new branch to retain commits you create, you may
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5739391Z do so (now or later) by using -c with the switch command. Example:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5739929Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5740203Z   git switch -c <new-branch-name>
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5740587Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5741192Z Or undo this operation with:
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5741531Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5741742Z   git switch -
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5742061Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5742508Z Turn off this advice by setting config variable advice.detachedHead to false
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5743139Z 
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5743840Z HEAD is now at 464db76 Merge b45c57d93641b369c0d14829c6edd471a72ec4a1 into a14dd06ccfe2a4b65eee96cd5a39b980b6285603
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5753546Z ##[endgroup]
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5800562Z [command]/usr/bin/git log -1 --format=%H
+Verify Attributes Meta	Checkout	2026-01-03T08:02:58.5825763Z 464db76b5474f5b3ec45302c929c863b55259d8c
+Verify Attributes Meta	Setup Node.js	﻿2026-01-03T08:02:58.6086610Z ##[group]Run actions/setup-node@v4
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.6087130Z with:
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.6087504Z   node-version: 20
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.6087879Z   always-auth: false
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.6088264Z   check-latest: false
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.6088809Z   token: ***
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.6089164Z ##[endgroup]
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.8088096Z Found in cache @ /opt/hostedtoolcache/node/20.19.6/x64
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:02:58.8094836Z ##[group]Environment details
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:03:00.7534189Z node: v20.19.6
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:03:00.7535279Z npm: 10.8.2
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:03:00.7535672Z yarn: 1.22.22
+Verify Attributes Meta	Setup Node.js	2026-01-03T08:03:00.7538486Z ##[endgroup]
+Verify Attributes Meta	Setup pnpm	﻿2026-01-03T08:03:00.7731211Z ##[group]Run pnpm/action-setup@v2
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7731546Z with:
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7731766Z   version: 8
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7731984Z   dest: ~/setup-pnpm
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7732223Z   run_install: null
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7732465Z   package_json_file: package.json
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7732736Z   standalone: false
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.7732969Z ##[endgroup]
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:00.8627323Z ##[group]Running self-installer...
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:01.4892466Z Progress: resolved 1, reused 0, downloaded 0, added 0
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:01.4982028Z Packages: +1
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:01.4982457Z +
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.0808400Z Packages are hard linked from the content-addressable store to the virtual store.
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.0809611Z   Content-addressable store is at: /home/runner/.local/share/pnpm/store/v3
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.0810554Z   Virtual store is at:             node_modules/.pnpm
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.1034709Z 
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.1035407Z dependencies:
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.1036091Z + pnpm 8.15.9 (10.27.0 is available)
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.1036682Z 
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.1068153Z Done in 1s
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.4899636Z Progress: resolved 1, reused 0, downloaded 1, added 1, done
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.5032509Z ##[endgroup]
+Verify Attributes Meta	Setup pnpm	2026-01-03T08:03:02.5036891Z Installation Completed!
+Verify Attributes Meta	Install dependencies	﻿2026-01-03T08:03:02.5136848Z ##[group]Run pnpm install || npm install
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:02.5137239Z [36;1mpnpm install || npm install[0m
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:02.5181114Z shell: /usr/bin/bash -e {0}
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:02.5181386Z env:
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:02.5181639Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:02.5182003Z ##[endgroup]
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:03.0558753Z Scope: all 5 workspace projects
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:03.1394913Z Lockfile is up to date, resolution step is skipped
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:03.2218822Z Progress: resolved 1, reused 0, downloaded 0, added 0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:03.3678334Z Packages: +762
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:03.3679440Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:04.2307622Z Progress: resolved 762, reused 0, downloaded 45, added 31
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:05.2300136Z Progress: resolved 762, reused 0, downloaded 310, added 308
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:06.2318898Z Progress: resolved 762, reused 0, downloaded 538, added 535
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:07.2320593Z Progress: resolved 762, reused 0, downloaded 693, added 684
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:07.6198096Z Progress: resolved 762, reused 0, downloaded 762, added 762, done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:07.9121186Z .../node_modules/@firebase/util postinstall$ node ./postinstall.js
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:07.9125798Z .../node_modules/protobufjs postinstall$ node scripts/postinstall
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:07.9563802Z .../node_modules/@firebase/util postinstall: Done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:07.9660400Z .../node_modules/protobufjs postinstall: Done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.0057706Z .../node_modules/@sentry/cli postinstall$ node ./scripts/install.js
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.0063618Z .../esbuild@0.27.2/node_modules/esbuild postinstall$ node install.js
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.0152645Z .../esbuild@0.21.5/node_modules/esbuild postinstall$ node install.js
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.0846837Z .../esbuild@0.21.5/node_modules/esbuild postinstall: Done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.0868095Z .../esbuild@0.27.2/node_modules/esbuild postinstall: Done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.1069481Z .../node_modules/@sentry/cli postinstall: Done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.1508118Z .../node_modules/puppeteer postinstall$ node install.mjs
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:08.2791602Z .../node_modules/puppeteer postinstall: **INFO** Skipping Firefox download as instructed.
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:12.3574088Z .../node_modules/puppeteer postinstall: chrome-headless-shell (143.0.7499.169) downloaded to /home/runner/.cache/puppeteer/chrome-headless-shell/linux-143.0.7499.169
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.5170933Z .../node_modules/puppeteer postinstall: chrome (143.0.7499.169) downloaded to /home/runner/.cache/puppeteer/chrome/linux-143.0.7499.169
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.5255721Z .../node_modules/puppeteer postinstall: Done
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8788805Z 
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8789238Z dependencies:
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8789551Z + @notionhq/client 3.1.3
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8789795Z + zod 3.25.76
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8789911Z 
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8789994Z devDependencies:
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8790277Z + @firebase/rules-unit-testing 5.0.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8790592Z + @google-cloud/firestore 8.0.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8790857Z + eslint 8.57.1
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8791060Z + firebase 12.7.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8791273Z + firebase-admin 13.6.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8791490Z + playwright 1.57.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8791694Z + pnpm 8.15.9
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8791879Z + prettier 2.8.8
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8792077Z + puppeteer 24.34.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8792396Z + typescript 5.9.3
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8792587Z + yargs 18.0.0
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:13.8792693Z 
+Verify Attributes Meta	Install dependencies	2026-01-03T08:03:14.0022501Z Done in 11.4s
+Verify Attributes Meta	Setup GCloud Service Account	﻿2026-01-03T08:03:14.0481927Z ##[group]Run if [ -z "$GCP_SA_KEY_BASE64" ]; then
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0482341Z [36;1mif [ -z "$GCP_SA_KEY_BASE64" ]; then[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0482814Z [36;1m  echo "⚠️ GCP_SA_KEY_BASE64 secret not configured - skipping Firestore check"[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0483283Z [36;1m  echo "SKIP_FIRESTORE_CHECK=true" >> $GITHUB_ENV[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0483561Z [36;1melse[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0483826Z [36;1m  echo "$GCP_SA_KEY_BASE64" | base64 --decode > /tmp/sa.json[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0484213Z [36;1m  echo "GCP_SA_FILE=/tmp/sa.json" >> $GITHUB_ENV[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0484785Z [36;1mfi[0m
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0518867Z shell: /usr/bin/bash -e {0}
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0519105Z env:
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0519339Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0613383Z   GCP_SA_KEY_BASE64: ***
+Verify Attributes Meta	Setup GCloud Service Account	2026-01-03T08:03:14.0613626Z ##[endgroup]
+Verify Attributes Meta	Run verify-attributes-meta	﻿2026-01-03T08:03:14.0722650Z ##[group]Run if [ "$SKIP_FIRESTORE_CHECK" = "true" ]; then
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0723086Z [36;1mif [ "$SKIP_FIRESTORE_CHECK" = "true" ]; then[0m
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0723467Z [36;1m  echo "⚠️ Skipping Firestore verification (no credentials)"[0m
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0723916Z [36;1m  node scripts/verify-attributes-meta.js --skip-firestore[0m
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0724238Z [36;1melse[0m
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0724810Z [36;1m  node scripts/verify-attributes-meta.js --project ropi-bccee[0m
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0725181Z [36;1mfi[0m
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0757140Z shell: /usr/bin/bash -e {0}
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0757375Z env:
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0757603Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0757925Z   GCP_SA_FILE: /tmp/sa.json
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0758176Z   GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.0758454Z ##[endgroup]
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.1664296Z 📦 Local attributeRegistry.json version: 1.1.0
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.1668282Z 🔑 Using service account: /tmp/sa.json
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.2308356Z 
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.2309406Z 🔍 Checking Firestore settings/attributesMeta...
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6671758Z 📄 settings/attributesMeta: {
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6673694Z ❌ MISMATCH: registry_version (da4bd5e1d4ba5f96223e04f8e530c9821c5e531f) != local file version (1.1.0)
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6676989Z   "dryRun": false,
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6677334Z   "registry_source": "json",
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6677666Z   "totalAttributes": 67,
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6677952Z   "git_sha": null,
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6678211Z   "lastSyncedBy": "system",
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6678650Z   "lastSyncedAt": "2026-01-02T03:06:49.250Z",
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6679172Z   "registry_version": "da4bd5e1d4ba5f96223e04f8e530c9821c5e531f",
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6679619Z   "updatedAt": {
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6679827Z     "_seconds": 1767412773,
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6680053Z     "_nanoseconds": 930000000
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6680278Z   }
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6680441Z }
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6680530Z 
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6680838Z 📦 Local attributeRegistry.json version: 1.1.0
+Verify Attributes Meta	Run verify-attributes-meta	2026-01-03T08:03:14.6750629Z ##[error]Process completed with exit code 1.
+Verify Attributes Meta	Post Setup pnpm	﻿2026-01-03T08:03:14.6811755Z Post job cleanup.
+Verify Attributes Meta	Post Setup pnpm	2026-01-03T08:03:14.7707014Z Pruning is unnecessary.
+Verify Attributes Meta	Post Checkout	﻿2026-01-03T08:03:14.7815639Z Post job cleanup.
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8775652Z [command]/usr/bin/git version
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8820105Z git version 2.52.0
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8862529Z Temporarily overriding HOME='/home/runner/work/_temp/dcb67dfc-c0cf-467e-907e-1446e7ddfa22' before making global git config changes
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8864068Z Adding repository directory to the temporary git global config as a safe directory
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8868111Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8906169Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.8944273Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.9187446Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.9213295Z http.https://github.com/.extraheader
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.9227857Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.9261853Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.9497692Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify Attributes Meta	Post Checkout	2026-01-03T08:03:14.9533308Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify Attributes Meta	Complete job	﻿2026-01-03T08:03:14.9907819Z Cleaning up orphan processes

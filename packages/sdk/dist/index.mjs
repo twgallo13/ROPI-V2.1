@@ -201,12 +201,9 @@ var attributeRegistry_default = {
       category: "classification",
       data_type: "select",
       allowed_values: [
-        "Mens",
-        "Womens",
-        "Kids",
-        "Unisex",
-        "Boys",
-        "Girls"
+        "Footwear",
+        "Clothing",
+        "Accessories"
       ],
       required_for_completion: true,
       required_for_export: true,
@@ -222,6 +219,26 @@ var attributeRegistry_default = {
           "google",
           "amazon"
         ]
+      }
+    },
+    {
+      attribute_id: "rics_category",
+      label: "RICS Category",
+      external_header: "RICS Category",
+      category: "classification",
+      description: "Canonical RICS category string used for Smart Rules condition matching (e.g., 'Men's Footwear > Athletic'). Read-only for Smart Rules.",
+      data_type: "text",
+      required_for_completion: false,
+      required_for_export: false,
+      import_required: false,
+      import: true,
+      status: "active",
+      exportable: false,
+      internalOnly: false,
+      requiredForExport: false,
+      normalization: {
+        trim: true,
+        lowercase: true
       }
     },
     {
@@ -1370,6 +1387,17 @@ var attributeRegistry_default = {
       exportable: true,
       internalOnly: false,
       requiredForExport: false
+    },
+    {
+      attribute_id: "dept",
+      label: "Department",
+      description: "Product department (department / category grouping). Added to support Smart Rules targeting.",
+      data_type: "string",
+      import: true,
+      exportable: true,
+      requiredForExport: false,
+      internalOnly: false,
+      normalization: { trim: true, lowercase: false }
     }
   ]
 };

@@ -7,6 +7,7 @@
  */
 
 import * as admin from 'firebase-admin';
+import { cleanObject } from '../lib/cleanObject';
 
 // Firestore paths
 const ATTRIBUTES_COLLECTION = 'settings/attributes/keys';
@@ -145,7 +146,7 @@ export async function createAuditEvent(
   };
   
   const auditRef = getAuditCollection(input.attribute_id).doc(eventId);
-  await auditRef.set(event);
+  await auditRef.set(cleanObject(event));
   
   return event;
 }
@@ -178,7 +179,7 @@ export function createAuditEventInBatch(
   };
   
   const auditRef = getAuditCollection(input.attribute_id).doc(eventId);
-  batch.set(auditRef, event);
+  batch.set(auditRef, cleanObject(event));
   
   return event;
 }

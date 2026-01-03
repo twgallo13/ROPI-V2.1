@@ -1,0 +1,45 @@
+[
+  {
+    "insertId": "..........X4OGiZdoK0QA.LE8TYlBMC",
+    "jsonPayload": {
+      "action": "skip",
+      "actor": "engine",
+      "applied": false,
+      "conditionMatched": false,
+      "durationMs": 1,
+      "env": "development",
+      "event": "smartrule.eval",
+      "generatedValue": null,
+      "matchedClauses": [],
+      "mpn": "SAMPLING",
+      "productId": "prod_sampling",
+      "ruleId": "SUMMARY",
+      "ruleName": "Import Evaluation Summary",
+      "timestamp": "2026-01-02T21:28:49.334Z",
+      "traceId": "0202e6e2-0106-4792-bdd1-bd58356f5603",
+      "validationResult": {
+        "errors": [
+          "Target field 'attributes.dept' not in allowed whitelist"
+        ],
+        "ok": false
+      },
+      "workerId": "local"
+    },
+    "labels": {
+      "event_type": "smartrule.eval",
+      "rule_id": "SUMMARY"
+    },
+    "logName": "projects/ropi-bccee/logs/smart-rules",
+    "receiveTimestamp": "2026-01-02T21:28:49.395612521Z",
+    "resource": {
+      "labels": {
+        "function_name": "",
+        "project_id": "ropi-bccee",
+        "region": ""
+      },
+      "type": "cloud_function"
+    },
+    "severity": "INFO",
+    "timestamp": "2026-01-02T21:28:49.334000110Z"
+  }
+]

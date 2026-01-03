@@ -114,6 +114,7 @@ import {
   registryRefreshHandler,
   registryVersionHandler,
 } from './endpoints/registryHealth';
+import { runVerificationHandler, latestVerificationHandler } from './endpoints/verification';
 
 // Reconciliation (Homer v1.0.0)
 import reconcileAttributesRouter from './admin/reconcileAttributes';
@@ -215,6 +216,8 @@ api.get('/admin/import-eval/:productId', getImportEvalHandler);
 api.get('/registry/health', registryHealthHandler);
 api.get('/registry/registry-version', registryVersionHandler);
 api.post('/registry/refresh', requireAdmin, registryRefreshHandler);
+api.get('/smartrules/verification/latest', latestVerificationHandler);
+api.post('/smartrules/verification/run', requireAdmin, runVerificationHandler);
 
 /**
  * User Self-Profile endpoints
