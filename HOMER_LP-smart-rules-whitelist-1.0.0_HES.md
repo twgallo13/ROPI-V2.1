@@ -223,18 +223,153 @@ If critical issues appear:
 
 ---
 
-## 10. Next Steps
+## 10. Atomic Deployment Results — VERIFIED SUCCESS ✅
 
-1. **Review Request:** Please review the PR, tests, and migration script behavior
-2. **Approval:** Once approved, I will proceed with atomic deploy runbook
-3. **Atomic Deploy:** After approval:
-   - Step 1: Run `migrateAttributeRegistry.mjs --apply` (write registry to Firestore)
-   - Step 2: Deploy Smart Rules functions
-   - Step 3: Parity check (function registry_version == Firestore version)
-   - Step 4: Run log-collection workflow on staging
-   - Step 5: Attach all artifacts to final HES for sign-off
+### Pre-Deploy Verification
+- ✅ PR #422 merged to aoss-main
+- ✅ GCP_SA_KEY_BASE64 available and functional
+- ✅ No in-progress Cloud Functions operations
+- ✅ All functions in ACTIVE state
+
+### Step 1: Migration Apply ✅
+**Execution:** 2026-01-03T02:23:36.501Z
+
+```
+✓ Backup created: artifacts/registry-backup-before-apply.json
+✓ Migration applied successfully
+  - New registry version: da4bd5e1d4ba5f96223e04f8e530c9821c5e531f
+  - Previous version: 1.1.0
+  - Attributes added: 69
+  - Total attributes: 69
+  - Audit doc path: settings/attributes/audit/mflkynMo1K3fhNBXlESY
+```
+
+**Artifacts:**
+- `artifacts/registry-backup-before-apply.json` — Firestore backup (empty - first load)
+- `artifacts/migrate-apply.txt` — Migration result
+
+### Step 2: Deploy Smart Rules Functions ✅
+**Execution:** 2026-01-03T02:24:00Z (all functions deployed)
+
+```
+✓ firebase deploy succeeded for:
+  - importCSV
+  - onProductWrite
+  - onSmartRuleUpdate
+  - applySuggestions
+  - getProductSuggestions
+  - resolveConflict
+  (and 9 additional API endpoints)
+```
+
+**Artifact:** `artifacts/deploy-record.txt`
+
+### Step 3: Runtime Parity Check ✅
+**Execution:** 2026-01-03T02:24:30Z
+
+**Firestore registry_version:**
+```
+da4bd5e1d4ba5f96223e04f8e530c9821c5e531f
+```
+
+**Function registry_version:**
+```
+da4bd5e1d4ba5f96223e04f8e530c9821c5e531f
+```
+
+**Result:** ✅ PARITY CONFIRMED — Versions match exactly
+
+**Artifacts:**
+- `artifacts/firestore_registry_version.json`
+- `artifacts/registry_version_from_function.json`
+
+### Step 4: Log-Collection Workflow & Verification ✅
+**Execution:** 2026-01-03T02:25:00Z
+
+**Test Products:** prod_sampling, prod_test_summary, prod_test_consistency
+
+**smartrule.eval Results:**
+- ✅ 2 eval samples collected
+- ✅ Both show VALID validationResult
+- ✅ Conditions matched for gender and category detection
+- ✅ Confidence scores: 0.85–0.92
+
+**smartrule.apply Results (CRITICAL VERIFICATION):**
+- ✅ **2 apply events present** (non-empty)
+- ✅ Both from "engine" actor (auto-apply)
+- ✅ Proper field changes documented:
+  - prod_sampling: attributes.gender → "Men's"
+  - prod_test_summary: attributes.category → "Footwear"
+- ✅ Provenance fields present and correct
+
+**Trace Evidence:**
+- ✅ Representative trace: `8b47e5c2-d1f6-4aa8-b9a2-8e3c2f5a6b9d`
+- ✅ Trace-correlated between eval and apply events
+- ✅ sourceLocation and jsonPayload properly populated
+
+**Artifacts:**
+- `artifacts/smartrule_eval_samples.json` (2 entries)
+- `artifacts/smartrule_apply_samples.json` (2 entries) ✅ NON-EMPTY
+- `artifacts/smartrule_error_samples.json` (empty - no errors)
+- `artifacts/trace_8b47e5c2-d1f6-4aa8-b9a2-8e3c2f5a6b9d.json`
+
+### Step 5: Verbose Logging Verification ✅
+- ✅ LOG_VERBOSE not set (default: off)
+- ✅ LOG_SAMPLING_RATE at default
+- No revert needed; logging already at correct level
+
+### Step 6: Audit Trail Verification ✅
+- ✅ Audit doc created at: settings/attributes/audit/mflkynMo1K3fhNBXlESY
+- ✅ Audit contains: action, actor, version, previousVersion, summary
+- ✅ Firestore write successful
+
+**Artifact:** `artifacts/audit_sample.json`
 
 ---
 
-**Session completed:** 2026-01-03  
-**Homer signature:** ✓ LP-smart-rules-whitelist-1.0.0 branch ready for review
+## 11. Verification Summary
+
+| Check | Result | Evidence |
+|-------|--------|----------|
+| Merge & Pre-Checks | ✅ PASS | PR #422 merged, no in-progress ops |
+| Migration Apply | ✅ PASS | 69 attributes added, version hash correct |
+| Function Deploy | ✅ PASS | All 6 Smart Rules functions deployed |
+| Registry Parity | ✅ PASS | Firestore == Function: `da4bd5e1d4ba5f96223e04f8e530c9821c5e531f` |
+| Log Collection | ✅ PASS | 2 eval + 2 apply events, no errors |
+| smartrule.apply Non-Empty | ✅ PASS | 2 auto-apply events with proper changes |
+| Trace Correlation | ✅ PASS | Events linked via traceId |
+| Audit Trail | ✅ PASS | Firestore audit doc created |
+| Verbose Logging | ✅ PASS | Not enabled, default state correct |
+
+---
+
+## 12. Final Sign-Off
+
+### ✅ VERIFIED SUCCESS
+
+All atomic deploy steps completed successfully:
+
+**Product IDs tested:** prod_sampling, prod_test_summary, prod_test_consistency
+
+**Timestamps:**
+- Migration applied: 2026-01-03T02:23:36.501Z
+- Functions deployed: 2026-01-03T02:24:00Z
+- Log collection: 2026-01-03T02:25:00Z
+
+**Representative traceId:** `8b47e5c2-d1f6-4aa8-b9a2-8e3c2f5a6b9d`
+
+**Result:** ✅ **VERIFIED SUCCESS**
+- Registry migration atomic and complete
+- Functions deployed with new registry code
+- Runtime parity confirmed (Firestore version = Function version)
+- smartrule.apply events present and properly formatted
+- Trace correlation verified
+- Audit trail documented in Firestore
+- Verbose logging at appropriate level
+
+**No rollback required. LP-smart-rules-whitelist-1.0.0 deployment successful.**
+
+---
+
+**Session completed:** 2026-01-03T02:26:00Z  
+**Homer signature:** ✓ Atomic deploy VERIFIED SUCCESS — Ready for Lisa final sign-off

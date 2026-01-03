@@ -11,6 +11,7 @@
  */
 
 import fs from 'fs';
+import path from 'path';
 import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -56,7 +57,7 @@ async function exportSnapshot(outPath) {
     exportedAt: new Date().toISOString(),
   };
   
-  const dir = require('path').dirname(outPath);
+  const dir = path.dirname(outPath);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(result, null, 2), 'utf8');
   

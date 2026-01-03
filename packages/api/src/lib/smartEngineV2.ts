@@ -504,68 +504,23 @@ export const ricsNormalizer = new RICSNormalizer();
 // =============================================================================
 
 /**
- * Whitelist of fields that Smart Rules can write to (S2.3)
- * Prevents writes to sensitive system fields
+ * ALLOWED_TARGET_FIELDS is now dynamically computed from the registry.
+ * This ensures the engine accepts all exportable registry attributes.
+ * 
+ * LP: LP-smart-rules-whitelist-remediation-1.0.0
+ * Replaces hard-coded whitelist with registry-derived computation.
+ * 
+ * Import the allowedTargetFields module functions for runtime checks.
  */
-export const ALLOWED_TARGET_FIELDS: Set<string> = new Set([
-  // Descriptive fields
-  'descriptive.gender',
-  'descriptive.ageGroup',
-  'descriptive.primaryColor',
-  'descriptive.secondaryColor',
-  'descriptive.material',
-  'descriptive.closureType',
-  'descriptive.heelType',
-  'descriptive.heelHeight',
-  'descriptive.platformHeight',
-  'descriptive.toeStyle',
-  'descriptive.pattern',
-  'descriptive.style',
-  'descriptive.silhouette',
-  'descriptive.familySizing',
-  // Attributes (via attributes object)
-  'attributes.gender',
-  'attributes.age_group',
-  'attributes.ageGroup',
-  'attributes.primary_color',
-  'attributes.primaryColor',
-  'attributes.secondary_color',
-  'attributes.secondaryColor',
-  'attributes.material',
-  'attributes.closure_type',
-  'attributes.closureType',
-  'attributes.heel_type',
-  'attributes.heelType',
-  'attributes.heel_height',
-  'attributes.heelHeight',
-  'attributes.platform_height',
-  'attributes.platformHeight',
-  'attributes.toe_style',
-  'attributes.toeStyle',
-  'attributes.pattern',
-  'attributes.style',
-  'attributes.silhouette',
-  'attributes.family_sizing',
-  'attributes.familySizing',
-  'attributes.sports_league',
-  'attributes.sportsLeague',
-  'attributes.sports_team',
-  'attributes.sportsTeam',
-  'attributes.tax_class',
-  'attributes.taxClass',
-  'attributes.promo_allowed',
-  'attributes.promoAllowed',
-  'attributes.category',
-  'attributes.subcategory',
-  'attributes.class',
-  'attributes.department',
-  // SKU core fields
-  'sku_core.gender',
-  'sku_core.ageGroup',
-  'sku_core.category',
-  'sku_core.subcategory',
-  'sku_core.department',
-]);
+import { isAllowedTargetField as _isAllowedTargetField, initializeAllowedFieldsCache } from './allowedTargetFields';
+
+/**
+ * @deprecated Use isAllowedTargetField() from allowedTargetFields module
+ * 
+ * This export maintained for backward compatibility but will return empty set.
+ * Engine now uses dynamic registry-derived whitelist.
+ */
+export const ALLOWED_TARGET_FIELDS: Set<string> = new Set();
 
 // =============================================================================
 // UTILITY FUNCTIONS
@@ -624,17 +579,12 @@ export function isUserEdited(product: Product, field: string): boolean {
 
 /**
  * Validate target field is in whitelist (S2.3)
+ * 
+ * LP: LP-smart-rules-whitelist-remediation-1.0.0
+ * Now uses registry-derived whitelist (synchronous with cache).
  */
 export function isAllowedTargetField(field: string): boolean {
-  // Check exact match
-  if (ALLOWED_TARGET_FIELDS.has(field)) return true;
-  
-  // Check if it starts with an allowed prefix (for nested attributes)
-  for (const allowed of Array.from(ALLOWED_TARGET_FIELDS)) {
-    if (field.startsWith(allowed + '.')) return true;
-  }
-  
-  return false;
+  return _isAllowedTargetField(field);
 }
 
 /**
@@ -654,14 +604,18 @@ export function extractAttributeName(targetField: string): string {
  * Validate that a rule target is allowed (S2.3)
  * - Target must be exportable (not internalOnly)
  * - Target must be in whitelist
+ * 
+ * LP: LP-smart-rules-whitelist-remediation-1.0.0
+ * Now uses registry-derived whitelist.
  */
 export function validateRuleTarget(targetField: string): { 
   valid: boolean; 
   error?: string;
   code?: EngineError['code'];
 } {
-  // Check whitelist first
-  if (!isAllowedTargetField(targetField)) {
+  // Check whitelist first (now uses registry-derived cache)
+  const allowed = isAllowedTargetField(targetField);
+  if (!allowed) {
     return { 
       valid: false, 
       error: `Target field '${targetField}' not in allowed whitelist`,
