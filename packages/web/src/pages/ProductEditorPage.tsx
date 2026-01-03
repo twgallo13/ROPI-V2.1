@@ -12,6 +12,7 @@ import DescriptionsTab from '../components/product/DescriptionsTab';
 import ObservationsPanel from '../components/product/ObservationsPanel';
 import SmartSuggestionsPanel from '../components/product/SmartSuggestionsPanel';
 import ExportReadinessPanel from '../components/product/ExportReadinessPanel';
+import { CompletionExportGatePanel } from '../components/product/CompletionExportGatePanel';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { safeArray } from '../lib/productUtils';
 import './ProductEditorPage.css';
@@ -173,6 +174,10 @@ function ProductEditorPage() {
 
           {/* Right Sidebar with Panels */}
           <div className="product-sidebar">
+            <CompletionExportGatePanel
+              productId={product.id}
+            />
+            
             <ObservationsPanel
               productId={product.id}
             />
