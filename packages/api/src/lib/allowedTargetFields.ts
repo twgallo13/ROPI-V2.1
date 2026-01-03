@@ -78,7 +78,7 @@ export async function initializeAllowedFieldsCache(): Promise<void> {
 
   try {
     // Load registry snapshot
-    const { snapshot } = await loadRegistrySnapshot(true);
+    const snapshot = await loadRegistrySnapshot();
     
     if (!snapshot || !snapshot.attributes) {
       console.error('[allowedTargetFields] Registry snapshot missing or has no attributes');
@@ -86,7 +86,7 @@ export async function initializeAllowedFieldsCache(): Promise<void> {
     }
 
     // Add all exportable registry attribute IDs
-    Object.entries(snapshot.attributes).forEach(([attrId, attrDef]: [string, any]) => {
+    snapshot.attributes.forEach((attrDef: any, attrId: string) => {
       // Only include exportable and not internalOnly
       if (attrDef.exportable && !attrDef.internalOnly) {
         allowed.add(`attributes.${attrId}`);
