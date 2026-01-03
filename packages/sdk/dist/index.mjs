@@ -3621,6 +3621,7 @@ var AttributeSchema = z.object({
 var ActionSchema = z.object({
   targetField: z.string().min(1),
   valueTemplate: z.string().default(""),
+  setOnlyIfEmpty: z.boolean().default(false),
   confidenceModifier: z.number().optional()
 });
 var SmartRuleAction = ActionSchema;
