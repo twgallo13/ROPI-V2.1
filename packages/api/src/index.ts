@@ -21,8 +21,17 @@ import { runSyncAttributeRegistry } from './tasks/syncAttributeRegistry';
 // Import the unified API Express app
 import apiApp from './apiApp';
 
+// LP-smart-rules-whitelist-remediation-1.0.0: Initialize allowed fields cache
+import { initializeAllowedFieldsCache } from './lib/allowedTargetFields';
+
 // Initialize Firebase Admin SDK
 admin.initializeApp();
+
+// Initialize allowed target fields cache (async, runs in background)
+// LP-smart-rules-whitelist-remediation-1.0.0: Populate whitelist from registry
+initializeAllowedFieldsCache().catch(err => {
+  console.error('[Initialization] Failed to initialize allowed fields cache:', err);
+});
 
 // Export the unified API function for hosting rewrites
 // Routes: /admin/**, /products/**, /processImportBatch, /importBatchStatus, /syncAttributeRegistry

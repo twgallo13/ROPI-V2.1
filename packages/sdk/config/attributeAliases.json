@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schema/attributeAliases.schema.json",
+  "description": "Legacy attribute name aliases for backward compatibility. Maps full names to canonical registry IDs.",
+  "aliases": {
+    "attributes.gender": "gender",
+    "attributes.color": "primary_color",
+    "attributes.ageGroup": "age_group",
+    "attributes.primaryColor": "primary_color",
+    "attributes.secondaryColor": "secondary_color",
+    "attributes.closureType": "closure_type",
+    "attributes.heelType": "heel_type",
+    "attributes.heelHeight": "heel_height",
+    "attributes.platformHeight": "platform_height",
+    "attributes.toeStyle": "toe_style",
+    "attributes.familySizing": "family_sizing",
+    "attributes.sportsLeague": "sports_league",
+    "attributes.sportsTeam": "sports_team",
+    "attributes.taxClass": "tax_class",
+    "attributes.promoAllowed": "promo_allowed",
+    "attributes.subcategory": "subcategory"
+  },
+  "notes": [
+    "Aliases allow legacy rules to continue working while canonical IDs remain snake_case.",
+    "Both alias form (e.g., 'attributes.primaryColor') and canonical form (e.g., 'attributes.primary_color') are accepted.",
+    "Registry attribute_id is the source of truth for canonical names."
+  ]
+}
