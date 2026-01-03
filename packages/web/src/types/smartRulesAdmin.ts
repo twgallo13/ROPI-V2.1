@@ -114,6 +114,7 @@ export interface SmartRuleDocument {
   action: {
     targetField: string;
     valueTemplate: string;
+    setOnlyIfEmpty?: boolean;
     confidenceModifier?: number;
   };
   autoApply?: boolean;

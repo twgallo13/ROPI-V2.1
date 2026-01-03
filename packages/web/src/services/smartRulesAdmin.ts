@@ -949,7 +949,7 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
     action: {
       targetField: doc.action?.targetField || '',
       valueTemplate: doc.action?.valueTemplate || '',
-      setOnlyIfEmpty: false, // Default - not stored in original schema
+      setOnlyIfEmpty: doc.action?.setOnlyIfEmpty ?? false, // Read from document, default to false
       confidenceModifier: doc.action?.confidenceModifier,
     },
     autoApply: doc.autoApply || false,
