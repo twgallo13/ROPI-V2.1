@@ -9,7 +9,7 @@
  * Date: 2026-01-03
  */
 
-import { loadRegistrySnapshot } from './registryBridge';
+import { loadRegistrySnapshot } from '../services/registryBridge';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
 
@@ -132,6 +132,7 @@ export async function initializeAllowedFieldsCache(): Promise<void> {
  * Check if a target field is allowed (SYNCHRONOUS VERSION)
  * 
  * Uses cached allowed fields. Call initializeAllowedFieldsCache() during initialization.
+ * Falls back to static whitelist when cache is empty (for tests).
  * 
  * @param targetField - Field path like 'attributes.dept'
  * @returns true if allowed
@@ -139,23 +140,53 @@ export async function initializeAllowedFieldsCache(): Promise<void> {
 export function isAllowedTargetField(targetField: string): boolean {
   const allowed = computeAllowedTargetFieldsSync();
   
-  // If cache is empty, be permissive and log warning
-  if (allowed.size === 0) {
-    console.warn(`[allowedTargetFields] Cache empty, allowing field by default: ${targetField}`);
-    return true;
-  }
+  // If cache is empty, use static fallback whitelist (for tests)
+  const whitelist = allowed.size > 0 ? allowed : getStaticWhitelist();
   
   // Check exact match
-  if (allowed.has(targetField)) return true;
+  if (whitelist.has(targetField)) return true;
   
   // Check if it starts with an allowed prefix (for nested attributes)
-  for (const allowedField of Array.from(allowed)) {
+  for (const allowedField of Array.from(whitelist)) {
     if (targetField.startsWith(allowedField + '.')) {
       return true;
     }
   }
   
   return false;
+}
+
+/**
+ * Static whitelist fallback (used when cache is not initialized, e.g., in tests)
+ * Contains common exportable attributes from the original hard-coded whitelist.
+ */
+function getStaticWhitelist(): Set<string> {
+  return new Set([
+    // Core product attributes
+    'attributes.gender',
+    'attributes.ageGroup',
+    'attributes.primaryColor',
+    'attributes.secondaryColor',
+    'attributes.brand',
+    'attributes.mpn',
+    'attributes.category',
+    'attributes.department',
+    'attributes.dept',
+    'attributes.material',
+    'attributes.closureType',
+    'attributes.heelType',
+    
+    // Descriptive namespace
+    'descriptive.gender',
+    'descriptive.ageGroup',
+    'descriptive.primaryColor',
+    'descriptive.secondaryColor',
+    
+    // SKU core namespace
+    'sku_core.gender',
+    'sku_core.category',
+    'sku_core.brand',
+  ]);
 }
 
 /**
