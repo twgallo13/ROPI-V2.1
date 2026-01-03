@@ -434,17 +434,29 @@ export function formatValueForExport(
 // ============================================================================
 
 /**
+ * Missing attribute with ID and human-readable label
+ * LP-export-readiness-attribute-registry-1.0.0
+ */
+export interface MissingAttribute {
+  id: string;
+  label: string;
+}
+
+/**
  * Calculate export readiness for a product
  */
 export function calculateExportReadiness(
   product: ProductDocument,
   attributes: Map<string, ExportAttributeDefinition>
-): { ready: boolean; missingAttributes: string[] } {
-  const missing: string[] = [];
+): { ready: boolean; missingAttributes: MissingAttribute[] } {
+  const missing: MissingAttribute[] = [];
 
   // MPN is always required
   if (!product.mpn || product.mpn.trim() === '') {
-    missing.push('mpn');
+    missing.push({
+      id: 'mpn',
+      label: 'MPN'
+    });
   }
 
   // Check required_for_export attributes
@@ -455,7 +467,10 @@ export function calculateExportReadiness(
     // Check if attribute has a value
     const value = product.attributes?.[id];
     if (value === undefined || value === null || value === '') {
-      missing.push(id);
+      missing.push({
+        id: id,
+        label: def.label || id
+      });
     }
   }
 

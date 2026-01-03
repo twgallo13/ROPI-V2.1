@@ -303,7 +303,7 @@ describe('LP-2.1.9: Export Service', () => {
       const result = calculateExportReadiness(product, mockAttributes);
       
       expect(result.ready).toBe(false);
-      expect(result.missingAttributes).toContain('mpn');
+      expect(result.missingAttributes).toContainEqual({ id: 'mpn', label: 'MPN' });
     });
 
     it('should return ready=false when required attributes missing', () => {
@@ -319,7 +319,7 @@ describe('LP-2.1.9: Export Service', () => {
       const result = calculateExportReadiness(product, mockAttributes);
       
       expect(result.ready).toBe(false);
-      expect(result.missingAttributes).toContain('primary_color');
+      expect(result.missingAttributes).toContainEqual({ id: 'primary_color', label: 'Primary Color' });
     });
 
     it('should not require non-required attributes', () => {
@@ -336,8 +336,101 @@ describe('LP-2.1.9: Export Service', () => {
       const result = calculateExportReadiness(product, mockAttributes);
       
       expect(result.ready).toBe(true);
-      expect(result.missingAttributes).not.toContain('materials');
+      expect(result.missingAttributes.find(a => a.id === 'materials')).toBeUndefined();
     });
+
+    // LP-export-readiness-attribute-registry-1.0.0: Acceptance Criteria Tests
+    
+    it('AC1: product with no images but all required attributes should be export ready', () => {
+      const product: ProductDocument = {
+        id: 'prod-no-images',
+        mpn: 'TEST-MPN-NO-IMAGES',
+        attributes: {
+          gender: 'Men',
+          primary_color: 'Black'
+        }
+        // No media field - no images
+      };
+
+      const result = calculateExportReadiness(product, mockAttributes);
+      
+      expect(result.ready).toBe(true);
+      expect(result.missingAttributes).toHaveLength(0);
+      // Explicitly verify that lack of images does NOT block export readiness
+    });
+
+    it('AC2: missing required attribute should return attribute ID and label', () => {
+      const product: ProductDocument = {
+        id: 'prod-missing-color',
+        mpn: 'TEST-MPN-MISSING',
+        attributes: {
+          gender: 'Men'
+          // primary_color missing
+        }
+      };
+
+      const result = calculateExportReadiness(product, mockAttributes);
+      
+      expect(result.ready).toBe(false);
+      expect(result.missingAttributes).toHaveLength(1);
+      expect(result.missingAttributes[0]).toEqual({
+        id: 'primary_color',
+        label: 'Primary Color'
+      });
+    });
+
+    it('AC3: toggling requiredForExport flag should change readiness', () => {
+      const product: ProductDocument = {
+        id: 'prod-toggle-test',
+        mpn: 'TEST-MPN-TOGGLE',
+        attributes: {
+          gender: 'Men',
+          primary_color: 'Black'
+          // materials is NOT set
+        }
+      };
+
+      // First: materials is NOT required (current state in mockAttributes)
+      let result = calculateExportReadiness(product, mockAttributes);
+      expect(result.ready).toBe(true); // Should be ready
+
+      // Second: toggle materials to requiredForExport=true
+      const modifiedAttributes = new Map(mockAttributes);
+      const materialsDef = modifiedAttributes.get('materials');
+      if (materialsDef) {
+        modifiedAttributes.set('materials', {
+          ...materialsDef,
+          requiredForExport: true
+        });
+      }
+
+      result = calculateExportReadiness(product, modifiedAttributes);
+      expect(result.ready).toBe(false); // Should NOW be not ready
+      expect(result.missingAttributes).toContainEqual({
+        id: 'materials',
+        label: 'Materials'
+      });
+    });
+
+    it('should use registry label, not attribute ID, for missing attribute display', () => {
+      const product: ProductDocument = {
+        id: 'prod-label-test',
+        mpn: 'TEST-MPN-LABEL',
+        attributes: {
+          gender: 'Men'
+          // primary_color missing
+        }
+      };
+
+      const result = calculateExportReadiness(product, mockAttributes);
+      
+      // Verify label comes from registry definition, not ID
+      const missingColor = result.missingAttributes.find(a => a.id === 'primary_color');
+      expect(missingColor).toBeDefined();
+      expect(missingColor?.label).toBe('Primary Color');
+      expect(missingColor?.label).not.toBe('primary_color'); // NOT the ID
+    });
+
   });
 
   // ============================================================================
@@ -421,7 +514,7 @@ describe('LP-2.1.9: Export Service', () => {
       const row = buildExportRow(product, 1, mockAttributes, options);
       
       expect(row.exportReady).toBe(false);
-      expect(row.missingAttributes).toContain('primary_color');
+      expect(row.missingAttributes).toContainEqual({ id: 'primary_color', label: 'Primary Color' });
     });
 
     it('should collect warnings for unknown values', () => {
@@ -631,7 +724,7 @@ describe('LP-2.1.9: Export Service', () => {
 
       const result = calculateExportReadiness(product, mockAttributes);
       expect(result.ready).toBe(false);
-      expect(result.missingAttributes).toContain('mpn');
+      expect(result.missingAttributes).toContainEqual({ id: 'mpn', label: 'MPN' });
     });
   });
 });
