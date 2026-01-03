@@ -112,6 +112,7 @@ import {
 import {
   registryHealthHandler,
   registryRefreshHandler,
+  registryVersionHandler,
 } from './endpoints/registryHealth';
 
 // Reconciliation (Homer v1.0.0)
@@ -209,9 +210,10 @@ api.get('/admin/import-eval/:productId', getImportEvalHandler);
 
 /**
  * Registry health endpoints (LP-registry-health-1.0.0)
- * Public endpoint - no auth required for health checks
+ * Public endpoints - no auth required for health/version checks
  */
 api.get('/registry/health', registryHealthHandler);
+api.get('/registry/registry-version', registryVersionHandler);
 api.post('/registry/refresh', requireAdmin, registryRefreshHandler);
 
 /**

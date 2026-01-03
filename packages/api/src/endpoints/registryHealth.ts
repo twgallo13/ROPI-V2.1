@@ -203,3 +203,25 @@ export async function registryRefreshHandler(req: Request, res: Response): Promi
     });
   }
 }
+
+/**
+ * GET /api/registry/registry-version
+ * 
+ * Returns the current registry version for parity checks.
+ * Used by deployment verification to confirm functions have loaded the new version.
+ */
+export async function registryVersionHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const syncStatus = await getRegistrySyncStatus();
+    res.status(200).json({
+      registry_version: syncStatus.firestoreVersion || null,
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV || 'staging',
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: 'REGISTRY_VERSION_FETCH_FAILED',
+      message: err instanceof Error ? err.message : String(err),
+    });
+  }
+}
