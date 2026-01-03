@@ -297,3 +297,52 @@ Apply Function
 ---
 
 **Status**: Core functionality verified working. Two new issues under investigation.
+
+---
+
+## 🔧 Issue #7 UPDATE - Complete Fix (3 Bugs Total)
+
+After user reported "the save guardrail is still failing", further investigation revealed **3 separate bugs**:
+
+### Complete Bug List:
+
+**Bug 1**: SDK Schema missing `setOnlyIfEmpty`  
+**File**: `packages/sdk/src/schema/smartRule.ts`  
+**Fix**: Added `setOnlyIfEmpty: z.boolean().default(false)` to ActionSchema
+
+**Bug 2**: TypeScript type missing `setOnlyIfEmpty`  
+**File**: `packages/web/src/types/smartRulesAdmin.ts`  
+**Fix**: Added `setOnlyIfEmpty?: boolean` to SmartRuleDocument action type
+
+**Bug 3**: ⭐ **CRITICAL** - UI hardcoded to `false` when loading  
+**File**: `packages/web/src/services/smartRulesAdmin.ts` line 949  
+**Bug**: `documentToForm()` function had hardcoded `setOnlyIfEmpty: false`  
+**Fix**: Changed to `setOnlyIfEmpty: doc.action?.setOnlyIfEmpty ?? false`
+
+### Why Bug #3 Was Critical:
+
+Even after fixing the schema (Bugs 1 & 2), the checkbox still appeared unchecked when editing existing rules because the loading function was hardcoded to return `false`. This created the illusion that saves weren't working, when actually:
+- ✅ Saves WERE working (Firestore persisting correctly)
+- ❌ Loads WEREN'T working (UI always showing unchecked)
+
+### Testing Evidence:
+
+Created `test_guardrail_save.js` which confirmed:
+```
+✅ Write true → Read true (Firestore working)
+✅ Write false → Read false (Firestore working)  
+✅ SDK schema accepts field (validation working)
+```
+
+The bug was purely in the UI's `documentToForm()` conversion function.
+
+### Current Status:
+
+🟢 **FULLY FIXED** - All 3 bugs resolved:
+- Schema accepts field ✅
+- Type definition includes field ✅  
+- UI reads actual value from Firestore ✅
+- Checkbox shows correct state when editing ✅
+- Checkbox value persists across save/load cycles ✅
+
+---
