@@ -166,7 +166,9 @@ export function evaluateCompletion(
   }
 
   // Calculate total weighted completion percentage
-  const totalCompletionPct = calculateWeightedCompletion(segmentResults);
+  // If any site is blocked, completion is 0% (blocking blocks completion)
+  const rawCompletionPct = calculateWeightedCompletion(segmentResults);
+  const totalCompletionPct = siteBlockingReasons.length > 0 ? 0 : rawCompletionPct;
 
   return {
     totalCompletionPct,

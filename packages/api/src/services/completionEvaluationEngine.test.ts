@@ -208,8 +208,25 @@ describe('Completion Evaluation Engine', () => {
     
     expect(result.totalCompletionPct).toBe(100);
     expect(result.hasBlockingSites).toBe(false);
+    expect(result.siteBlockingReasons).toHaveLength(0);
     expect(result.evaluationMeta.enabledSegmentCount).toBe(2);
     expect(result.evaluationMeta.evaluatedAt).toBe('2025-01-01T00:00:00Z');
+    
+    // Exact segment results for complete product
+    expect(result.segmentResults[0]).toEqual(expect.objectContaining({
+      segmentId: 'description-seo',
+      score: 100,
+      totalAttributes: 5,
+      completedAttributes: 5,
+      missingAttributes: []
+    }));
+    expect(result.segmentResults[1]).toEqual(expect.objectContaining({
+      segmentId: 'technical',
+      score: 100,
+      totalAttributes: 2,
+      completedAttributes: 2,
+      missingAttributes: []
+    }));
   });
 
   it('should detect site blocking for missing description/SEO attributes', () => {
@@ -221,8 +238,34 @@ describe('Completion Evaluation Engine', () => {
     );
     
     expect(result.hasBlockingSites).toBe(true);
-    expect(result.siteBlockingReasons.length).toBeGreaterThan(0);
-    expect(result.totalCompletionPct).toBeLessThan(100);
+    expect(result.totalCompletionPct).toBe(0); // Blocked = 0% completion
+    expect(result.siteBlockingReasons).toHaveLength(2);
+    expect(result.siteBlockingReasons[0]).toEqual({
+      site: 'us',
+      reason: 'Missing required Description/SEO attributes',
+      missingAttributes: ['description_us']
+    });
+    expect(result.siteBlockingReasons[1]).toEqual({
+      site: 'uk',
+      reason: 'Missing required Description/SEO attributes', 
+      missingAttributes: ['title_uk']
+    });
+    
+    // Exact segment results
+    expect(result.segmentResults[0]).toEqual(expect.objectContaining({
+      segmentId: 'description-seo',
+      score: 60,
+      totalAttributes: 5,
+      completedAttributes: 3,
+      missingAttributes: ['title_uk', 'description_us']
+    }));
+    expect(result.segmentResults[1]).toEqual(expect.objectContaining({
+      segmentId: 'technical',
+      score: 50,
+      totalAttributes: 2,
+      completedAttributes: 1,
+      missingAttributes: ['weight']
+    }));
   });
 
   it('should return 0% completion for empty product', () => {
@@ -235,7 +278,22 @@ describe('Completion Evaluation Engine', () => {
     
     expect(result.totalCompletionPct).toBe(0);
     expect(result.hasBlockingSites).toBe(true);
+    expect(result.siteBlockingReasons).toHaveLength(2);
     expect(result.evaluationMeta.enabledSegmentCount).toBe(2);
+    
+    // Exact segment results for empty product
+    expect(result.segmentResults[0]).toEqual(expect.objectContaining({
+      segmentId: 'description-seo',
+      score: 0,
+      totalAttributes: 5,
+      completedAttributes: 0
+    }));
+    expect(result.segmentResults[1]).toEqual(expect.objectContaining({
+      segmentId: 'technical',
+      score: 0,
+      totalAttributes: 2,
+      completedAttributes: 0
+    }));
   });
 
   it('should handle deterministic evaluation without timestamp', () => {
