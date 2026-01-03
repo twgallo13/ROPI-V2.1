@@ -221,8 +221,11 @@ service cloud.firestore {
     match /settings/smartRules/rules/{ruleId} {
       allow read: if request.auth != null
                   && (isAdmin() || isAdminViaMetadata());
-      allow write: if request.auth != null
-                   && (isAdmin() || isAdminViaMetadata());
+      allow create, update: if request.auth != null
+                            && (isAdmin() || isAdminViaMetadata());
+      allow delete: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && !(resource.data.meta.protected == true);
     }
     
     // Rule Packs: settings/smartRules/packs/{packId}
