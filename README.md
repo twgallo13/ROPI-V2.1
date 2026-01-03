@@ -74,6 +74,28 @@ The attribute registry defines 800+ product attributes with their:
 
 For detailed documentation, see [docs/ATTRIBUTE-REGISTRY.md](docs/ATTRIBUTE-REGISTRY.md).
 
+## Completion → Export Gate (Authoritative)
+
+**Completion** is the single, canonical gate for product export readiness in ROPI AOSS.
+
+The following documents define the complete contract for how Completion is computed, controlled, and enforced:
+
+| Document | Purpose |
+|----------|---------|
+| [docs/completion/COMPLETION_CONTRACT.md](docs/completion/COMPLETION_CONTRACT.md) | Core principles, semantics, and invariants |
+| [docs/completion/COMPLETION_RULES_UI_SPEC.md](docs/completion/COMPLETION_RULES_UI_SPEC.md) | Settings UI specification (single screen) |
+| [docs/completion/COMPLETION_RULES_BACKEND_CONFIG.md](docs/completion/COMPLETION_RULES_BACKEND_CONFIG.md) | Backend config objects (1:1 mapping) |
+| [docs/completion/COMPLETION_STORAGE_MATH_VVP.md](docs/completion/COMPLETION_STORAGE_MATH_VVP.md) | Storage layout, deterministic math, VVP checklist |
+
+**Key guarantees:**
+- Completion is settings-driven (no hard-coded logic)
+- Export is allowed only when Completion meets the configured threshold
+- Media/pricing never affect completion or export eligibility
+- Site-aware descriptions enforcement (per selected website)
+- Full operator visibility: why blocked, which segment, which site, which attributes
+
+Any implementation that contradicts these docs is incorrect by definition.
+
 ## Staging Environment
 
 **Stable Staging URL**: https://ropi-aoss-staging.web.app
