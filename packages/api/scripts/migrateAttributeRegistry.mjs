@@ -24,6 +24,24 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import crypto from 'crypto';
 
+/**
+ * Clean object utility - removes undefined values to prevent Firestore errors
+ */
+function cleanObject(obj) {
+  if (obj === null) return obj;
+  if (Array.isArray(obj)) return obj.map(cleanObject).filter(item => item !== undefined);
+  if (obj && typeof obj === 'object') {
+    const cleaned = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value === undefined) continue;
+      const cleanedValue = cleanObject(value);
+      if (cleanedValue !== undefined) cleaned[key] = cleanedValue;
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
 const argv = yargs(hideBin(process.argv))
   .option('source', { 
     type: 'string', 
@@ -181,14 +199,14 @@ async function run() {
     // Write audit doc
     console.log('Writing audit document...');
     const auditRef = db.collection('settings').doc('attributes').collection('audit').doc();
-    await auditRef.set({
+    await auditRef.set(cleanObject({
       action: 'apply_registry_migration',
       version: newVersion,
       previousVersion: currentVersion,
       actor: 'migrateAttributeRegistry.mjs',
       plan: plan,
       timestamp: admin.firestore.FieldValue.serverTimestamp()
-    });
+    }));
     console.log(`✓ Audit doc written to ${auditRef.path}`);
 
     // Write result artifact

@@ -19,6 +19,24 @@
 import fs from 'fs';
 import admin from 'firebase-admin';
 
+/**
+ * Clean object utility - removes undefined values to prevent Firestore errors
+ */
+function cleanObject(obj) {
+  if (obj === null) return obj;
+  if (Array.isArray(obj)) return obj.map(cleanObject).filter(item => item !== undefined);
+  if (obj && typeof obj === 'object') {
+    const cleaned = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value === undefined) continue;
+      const cleanedValue = cleanObject(value);
+      if (cleanedValue !== undefined) cleaned[key] = cleanedValue;
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
 function decodeSaKey() {
   const b64 = process.env.GCP_SA_KEY_BASE64;
   if (!b64) return null;
@@ -99,14 +117,14 @@ async function upsertRule() {
 
   // Audit entry
   const auditRef = db.collection('settings').doc('smartRules').collection('audit').doc();
-  await auditRef.set({
+  await auditRef.set(cleanObject({
     action: 'upsert_test_rule',
     ruleId: 'test-autoapply-sampling',
     before: null,
     after: testRule,
     actor: 'create_test_smartrule.mjs',
     ts: admin.firestore.FieldValue.serverTimestamp()
-  });
+  }));
   console.log('Audit written to', auditRef.path);
 }
 

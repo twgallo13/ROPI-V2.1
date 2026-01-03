@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import { cleanObject } from '../lib/cleanObject';
 
 const RULE_DOC_PATH = 'settings/smartRules/rules/test-autoapply-sampling';
 
@@ -42,13 +43,13 @@ export async function ensureProtectedTestRule(): Promise<void> {
   await docRef.set(rule, { merge: true });
 
   const auditRef = db.collection('settings').doc('smartRules').collection('audit').doc();
-  await auditRef.set({
+  await auditRef.set(cleanObject({
     action: 'ensure_protected_test_rule',
     ruleId: 'test-autoapply-sampling',
     after: rule,
     actor: 'svs-system',
     ts: admin.firestore.FieldValue.serverTimestamp(),
-  });
+  }));
 }
 
 export function getProtectedRulePath() {

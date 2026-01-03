@@ -13,6 +13,7 @@
 import { requireAdmin, type AuthenticatedRequest } from '../../middleware/auth';
 import type { Request, Response, RequestHandler, NextFunction } from 'express';
 import * as admin from 'firebase-admin';
+import { cleanObject } from '../../lib/cleanObject';
 
 function getDb() {
   return admin.firestore();
@@ -130,13 +131,13 @@ export const updatePermissionsHandler: RequestHandler = async (
     );
 
     // Create audit trail
-    await db.collection('audit').add({
+    await db.collection('audit').add(cleanObject({
       type: 'permissions_update',
       roleMatrix: permissions,
       updatedBy: authReq.auth.email || authReq.auth.uid,
       updatedByUid: authReq.auth.uid,
       timestamp,
-    });
+    }));
 
     res.status(200).json({
       message: 'Permissions updated successfully',
@@ -173,13 +174,13 @@ export const resetPermissionsHandler: RequestHandler = async (
     });
 
     // Create audit trail
-    await db.collection('audit').add({
+    await db.collection('audit').add(cleanObject({
       type: 'permissions_reset',
       roleMatrix: DEFAULT_PERMISSIONS,
       updatedBy: authReq.auth.email || authReq.auth.uid,
       updatedByUid: authReq.auth.uid,
       timestamp,
-    });
+    }));
 
     res.status(200).json({
       message: 'Permissions reset to defaults',

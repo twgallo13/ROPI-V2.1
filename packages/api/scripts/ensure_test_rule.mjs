@@ -16,6 +16,24 @@ import admin from 'firebase-admin';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+/**
+ * Clean object utility - removes undefined values to prevent Firestore errors
+ */
+function cleanObject(obj) {
+  if (obj === null) return obj;
+  if (Array.isArray(obj)) return obj.map(cleanObject).filter(item => item !== undefined);
+  if (obj && typeof obj === 'object') {
+    const cleaned = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value === undefined) continue;
+      const cleanedValue = cleanObject(value);
+      if (cleanedValue !== undefined) cleaned[key] = cleanedValue;
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
 const argv = yargs(hideBin(process.argv))
   .option('apply', { type: 'boolean', default: false })
   .parseSync();
@@ -92,13 +110,13 @@ async function upsertRule() {
   console.log('Upserted protected test rule at', docRef.path);
 
   const auditRef = db.collection('settings').doc('smartRules').collection('audit').doc();
-  await auditRef.set({
+  await auditRef.set(cleanObject({
     action: 'ensure_test_rule_upsert',
     ruleId: 'test-autoapply-sampling',
     after: rule,
     actor: 'ensure_test_rule.mjs',
     ts: admin.firestore.FieldValue.serverTimestamp(),
-  });
+  }));
   console.log('Audit written:', auditRef.path);
 }
 
