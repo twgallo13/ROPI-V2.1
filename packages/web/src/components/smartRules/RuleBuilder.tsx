@@ -341,7 +341,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
     };
     
     // Use SDK's canonical pre-submit validation
-    const sdkErrors = preSubmitValidation(formData);
+    const sdkErrors = preSubmitValidation(formData as any); // Cast to any due to Zod type inference issue with options[]
     
     // Convert SDK errors to UI format
     const newErrors: Record<string, string> = {};

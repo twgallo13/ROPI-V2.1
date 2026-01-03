@@ -152,6 +152,14 @@ export interface ImportBatch {
   updatedCount?: number; // Products updated
   blockedCount?: number; // Rows blocked by validation
   processedBy?: string; // User ID who processed/committed the batch
+  // Smart Rules statistics (S3)
+  smartRulesStats?: {
+    totalSuggestions: number;
+    totalAutoApplied: number;
+    totalConflicts: number;
+    processedCount: number;
+    skippedCount: number;
+  };
 }
 
 /**

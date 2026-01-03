@@ -1,127 +1,41 @@
 import { z } from 'zod';
-export declare const AITemplateSchema: z.ZodObject<{
-    key: z.ZodString;
-    title: z.ZodString;
-    description: z.ZodOptional<z.ZodString>;
-    status: z.ZodDefault<z.ZodEnum<["active", "draft", "disabled"]>>;
-    scope: z.ZodDefault<z.ZodOptional<z.ZodEnum<["global", "store", "brand"]>>>;
-    version: z.ZodOptional<z.ZodNumber>;
-    conditions: z.ZodOptional<z.ZodArray<z.ZodObject<{
-        field: z.ZodString;
-        op: z.ZodString;
-        value: z.ZodOptional<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
-        value?: string;
-        field?: string;
-        op?: string;
-    }, {
-        value?: string;
-        field?: string;
-        op?: string;
-    }>, "many">>;
-    matchMode: z.ZodDefault<z.ZodOptional<z.ZodEnum<["first", "best", "all"]>>>;
-    layout: z.ZodOptional<z.ZodObject<{
-        headlineEnabled: z.ZodOptional<z.ZodBoolean>;
-        pattern: z.ZodOptional<z.ZodString>;
-        bodyTemplate: z.ZodOptional<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
-        pattern?: string;
-        headlineEnabled?: boolean;
-        bodyTemplate?: string;
-    }, {
-        pattern?: string;
-        headlineEnabled?: boolean;
-        bodyTemplate?: string;
-    }>>;
-    voice: z.ZodOptional<z.ZodObject<{
-        preset: z.ZodOptional<z.ZodString>;
-        avoid: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-        brandRules: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    }, "strip", z.ZodTypeAny, {
-        preset?: string;
-        avoid?: string[];
-        brandRules?: string[];
-    }, {
-        preset?: string;
-        avoid?: string[];
-        brandRules?: string[];
-    }>>;
-    seo: z.ZodOptional<z.ZodObject<{
-        metaTitlePattern: z.ZodOptional<z.ZodString>;
-        metaDescPattern: z.ZodOptional<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
-        metaTitlePattern?: string;
-        metaDescPattern?: string;
-    }, {
-        metaTitlePattern?: string;
-        metaDescPattern?: string;
-    }>>;
-    examples: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    banned_terms: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    updatedBy: z.ZodOptional<z.ZodString>;
-    updatedAt: z.ZodOptional<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
-    key?: string;
-    status?: "active" | "draft" | "disabled";
-    updatedBy?: string;
-    updatedAt?: string;
-    description?: string;
-    version?: number;
-    title?: string;
-    seo?: {
-        metaTitlePattern?: string;
-        metaDescPattern?: string;
-    };
-    conditions?: {
-        value?: string;
-        field?: string;
-        op?: string;
-    }[];
-    scope?: "brand" | "global" | "store";
-    matchMode?: "first" | "best" | "all";
-    layout?: {
-        pattern?: string;
-        headlineEnabled?: boolean;
-        bodyTemplate?: string;
-    };
-    voice?: {
-        preset?: string;
-        avoid?: string[];
-        brandRules?: string[];
-    };
-    examples?: string[];
-    banned_terms?: string[];
-}, {
-    key?: string;
-    status?: "active" | "draft" | "disabled";
-    updatedBy?: string;
-    updatedAt?: string;
-    description?: string;
-    version?: number;
-    title?: string;
-    seo?: {
-        metaTitlePattern?: string;
-        metaDescPattern?: string;
-    };
-    conditions?: {
-        value?: string;
-        field?: string;
-        op?: string;
-    }[];
-    scope?: "brand" | "global" | "store";
-    matchMode?: "first" | "best" | "all";
-    layout?: {
-        pattern?: string;
-        headlineEnabled?: boolean;
-        bodyTemplate?: string;
-    };
-    voice?: {
-        preset?: string;
-        avoid?: string[];
-        brandRules?: string[];
-    };
-    examples?: string[];
-    banned_terms?: string[];
-}>;
+
+const Condition = z.object({
+  field: z.string(),
+  op: z.string(),
+  value: z.string().optional()
+});
+
+const Voice = z.object({
+  preset: z.string().optional(),
+  avoid: z.array(z.string()).optional(),
+  brandRules: z.array(z.string()).optional()
+}).optional();
+
+export const AITemplateSchema = z.object({
+  key: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().optional(),
+  status: z.enum(['active','draft','disabled']).default('draft'),
+  scope: z.enum(['global','store','brand']).optional().default('global'),
+  version: z.number().optional(),
+  conditions: z.array(Condition).optional(),
+  matchMode: z.enum(['first','best','all']).optional().default('best'),
+  layout: z.object({
+    headlineEnabled: z.boolean().optional(),
+    pattern: z.string().optional(),
+    bodyTemplate: z.string().optional()
+  }).optional(),
+  voice: Voice,
+  seo: z.object({
+    metaTitlePattern: z.string().optional(),
+    metaDescPattern: z.string().optional()
+  }).optional(),
+  examples: z.array(z.string()).optional(),
+  banned_terms: z.array(z.string()).optional(),
+  updatedBy: z.string().optional(),
+  updatedAt: z.string().optional()
+});
+
 export type AITemplateType = z.infer<typeof AITemplateSchema>;
 export default AITemplateSchema;

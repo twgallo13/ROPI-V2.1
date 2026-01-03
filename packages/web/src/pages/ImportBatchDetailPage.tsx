@@ -9,14 +9,14 @@ import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import PageLayout from '@/components/common/PageLayout';
 import { useAuth } from '@/contexts/AuthProvider';
 import { db } from '@/firebaseConfig';
-import type { ImportBatch, ImportEngineRow } from '@ropi-aoss/sdk';
+import type { ImportEngineRow } from '@ropi-aoss/sdk';
 import './ImportBatchDetailPage.css';
 
 export function ImportBatchDetailPage() {
   const { batchId } = useParams<{ batchId: string }>();
   const navigate = useNavigate();
   const { currentUser, isAdmin } = useAuth();
-  const [batch, setBatch] = useState<ImportBatch | null>(null);
+  const [batch, setBatch] = useState<any | null>(null); // TODO: Use proper ImportBatchWithSmartRules type once SDK exports are fixed
   const [rows, setRows] = useState<ImportEngineRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -71,7 +71,7 @@ export function ImportBatchDetailPage() {
         const batchData = {
           batchId: batchSnap.id,
           ...batchSnap.data(),
-        } as ImportBatch;
+        };
         setBatch(batchData);
 
         // Load rows (limit to first 100 for performance)
@@ -213,7 +213,7 @@ export function ImportBatchDetailPage() {
               <div className="count-label">Products Updated</div>
             </div>
           )}
-          {batch.blockedCount !== undefined && (
+          {batch.blockedCount !== undefined && batch.blockedCount > 0 && (
             <div className="count-card blocked">
               <div className="count-value">{batch.blockedCount}</div>
               <div className="count-label">Rows Blocked</div>
@@ -233,6 +233,49 @@ export function ImportBatchDetailPage() {
           </div>
         </div>
 
+        {/* Smart Rules Summary */}
+        {batch.smartRulesStats && (
+          <div className="smart-rules-summary">
+            <h3>Smart Rules Engine</h3>
+            <div className="smart-rules-stats">
+              <div className="stat-item">
+                <div className="stat-value">{batch.smartRulesStats.processedCount || 0}</div>
+                <div className="stat-label">Rows Processed</div>
+              </div>
+              {batch.smartRulesStats.skippedCount > 0 && (
+                <div className="stat-item warning">
+                  <div className="stat-value">{batch.smartRulesStats.skippedCount}</div>
+                  <div className="stat-label">Rows Skipped</div>
+                </div>
+              )}
+              <div className="stat-item success">
+                <div className="stat-value">{batch.smartRulesStats.totalAutoApplied || 0}</div>
+                <div className="stat-label">Rules Auto-Applied</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">{batch.smartRulesStats.totalSuggestions || 0}</div>
+                <div className="stat-label">Total Suggestions</div>
+              </div>
+              {batch.smartRulesStats.totalConflicts > 0 && (
+                <div className="stat-item error">
+                  <div className="stat-value">{batch.smartRulesStats.totalConflicts}</div>
+                  <div className="stat-label">Conflicts Detected</div>
+                </div>
+              )}
+            </div>
+            {batch.smartRulesStats.skippedCount > 0 && (
+              <div className="smart-rules-note">
+                <strong>Note:</strong> {batch.smartRulesStats.skippedCount} row(s) skipped Smart Rules due to skip-window (idempotency) or no active rules.
+              </div>
+            )}
+            {batch.blockedCount !== undefined && batch.blockedCount > 0 && (
+              <div className="smart-rules-warning">
+                <strong>Warning:</strong> {batch.blockedCount} row(s) blocked by validation errors. Smart Rules were NOT applied to blocked rows.
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Filter controls */}
         <div className="filter-controls">
           <label>Filter by status:</label>
@@ -250,8 +293,8 @@ export function ImportBatchDetailPage() {
             <thead>
               <tr>
                 <th>Line</th>
-                <th>SKU</th>
-                <th>Title</th>
+                <th>MPN</th>
+                <th>Name</th>
                 <th>Status</th>
                 <th>Errors</th>
                 <th>Product</th>
@@ -262,9 +305,9 @@ export function ImportBatchDetailPage() {
                 <tr key={row.rowId} className={`row-${row.meta.status}`}>
                   <td className="line-number">{row.source.lineNumber}</td>
                   <td className="sku">
-                    <code>{row.normalized.sku || '—'}</code>
+                    <code>{row.meta.productId || row.normalized.sku || row.normalized.mpn || '—'}</code>
                   </td>
-                  <td className="title">{row.normalized.title || '—'}</td>
+                  <td className="title">{row.normalized.name || row.normalized.title || '—'}</td>
                   <td className="status-cell">{getStatusBadge(row.meta.status)}</td>
                   <td className="errors-cell">
                     {row.validation.errors.length > 0 ? (
