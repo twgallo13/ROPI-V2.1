@@ -32,6 +32,12 @@ import {
   normalizeSmartRuleHandler,
   getImportEvalHandler,
 } from './endpoints/adminSmartRules';
+
+// Smart Rules CRUD endpoints
+import {
+  createRuleHandler,
+  updateRuleHandler,
+} from './endpoints/rules';
 import {
   listListsHandler,
   getListHandler,
@@ -210,6 +216,12 @@ api.post('/admin/normalizeSmartRule', normalizeSmartRuleHandler);
 api.get('/admin/import-eval/:productId', getImportEvalHandler);
 
 /**
+ * Smart Rules CRUD endpoints with validation (Step 2.2)
+ */
+api.post('/admin/rules', requireAdmin, createRuleHandler);
+api.put('/admin/rules/:ruleId', requireAdmin, updateRuleHandler);
+
+/**
  * Registry health endpoints (LP-registry-health-1.0.0)
  * Public endpoints - no auth required for health/version checks
  */
@@ -310,6 +322,44 @@ api.get('/healthz', (_req, res) => {
 
 // Mount API under /api to align with hosting rewrites
 app.use('/api', api);
+
+// Also mount at root for direct function calls (without hosting rewrites)
+app.use('/', api);
+
+// Add startup logging to show all registered routes
+function logRegisteredRoutes() {
+  console.log('🚀 API Routes Registered:');
+  
+  // Log the main app routes
+  app._router?.stack?.forEach((middleware: any) => {
+    if (middleware.route) {
+      const methods = Object.keys(middleware.route.methods).join(', ').toUpperCase();
+      console.log(`  [APP] ${methods} ${middleware.route.path}`);
+    } else if (middleware.name === 'router' && middleware.regexp?.source) {
+      const path = middleware.regexp.source.replace(/\\\//g, '/').replace(/\?\$/, '');
+      console.log(`  [MOUNT] Router mounted at: ${path}`);
+    }
+  });
+  
+  // Log the API router routes
+  console.log('  📍 API Router routes available at both /api/<path> and /<path>:');
+  api.stack?.forEach((layer: any) => {
+    if (layer.route) {
+      const methods = Object.keys(layer.route.methods).join(', ').toUpperCase();
+      const apiPath = `/api${layer.route.path}`;
+      const rootPath = `${layer.route.path}`;
+      console.log(`    ${methods} ${apiPath} OR ${rootPath}`);
+    } else if (layer.name === 'router' && layer.regexp) {
+      const mountPath = layer.regexp.source.replace(/\\\//g, '/').replace(/\?\$/, '');
+      console.log(`    [SUBROUTER] ${mountPath}`);
+    }
+  });
+  
+  console.log('✅ Route registration complete');
+}
+
+// Call logging function when module is loaded
+logRegisteredRoutes();
 
 // Export both default and named for test compatibility
 export const apiApp = app;

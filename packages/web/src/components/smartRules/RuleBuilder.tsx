@@ -27,6 +27,34 @@ import {
 import { getExportableAttributes, generateRuleId, preSubmitValidation } from '../../services/smartRulesAdmin';
 
 // ============================================================================
+// Helper Functions
+// ============================================================================
+
+// Create empty condition (Lisa's canonical: options is array)
+function createEmptyCondition(): RuleConditionForm {
+  return {
+    id: `cond_${Date.now()}_${Math.random().toString(36).slice(2, 4)}`,
+    field: '',
+    matchType: 'contains',
+    value: '',
+    options: [], // Lisa's canonical: array, not object
+  };
+}
+
+// Create empty action
+// LP-smart-rules-schema-1.3.0: Initialize with explicit values
+// - setOnlyIfEmpty defaults to true (guardrail ON by default)
+// - confidenceModifier is undefined (will be omitted, engine uses default)
+function createEmptyAction(): RuleActionForm {
+  return {
+    targetField: '',
+    valueTemplate: '',
+    setOnlyIfEmpty: true,
+    confidenceModifier: undefined, // Will be omitted in serialization, engine uses default
+  };
+}
+
+// ============================================================================
 // Styles
 // ============================================================================
 
@@ -256,29 +284,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
     getExportableAttributes().then(setTargetFields);
   }, []);
   
-  // Create empty condition (Lisa's canonical: options is array)
-  function createEmptyCondition(): RuleConditionForm {
-    return {
-      id: `cond_${Date.now()}_${Math.random().toString(36).slice(2, 4)}`,
-      field: '',
-      matchType: 'contains',
-      value: '',
-      options: [], // Lisa's canonical: array, not object
-    };
-  }
-  
-  // Create empty action
-  // LP-smart-rules-schema-1.3.0: Initialize with explicit values
-  // - setOnlyIfEmpty defaults to true (guardrail ON by default)
-  // - confidenceModifier is undefined (will be omitted, engine uses default)
-  function createEmptyAction(): RuleActionForm {
-    return {
-      targetField: '',
-      valueTemplate: '',
-      setOnlyIfEmpty: true,
-      confidenceModifier: undefined, // Will be omitted in serialization, engine uses default
-    };
-  }
+
   
   // Add condition
   const addCondition = useCallback(() => {
@@ -383,7 +389,7 @@ export function RuleBuilder({ initialValue, onSave, onCancel, isEditing }: RuleB
       action: {
         targetField: action.targetField || '',
         valueTemplate: action.valueTemplate || '',
-        setOnlyIfEmpty: action.setOnlyIfEmpty ?? false,
+        setOnlyIfEmpty: action.setOnlyIfEmpty,
         // Only include confidenceModifier if set
         ...(action.confidenceModifier !== undefined && { 
           confidenceModifier: action.confidenceModifier 

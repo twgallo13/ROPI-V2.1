@@ -72,6 +72,21 @@ async function loadActiveRules(): Promise<SmartRule[]> {
     
     const rules = snap.docs.map(doc => {
       const data = doc.data();
+      
+      // Convert actions array to single action object (backwards compatibility)
+      let action = data.action;
+      if (!action && data.actions && data.actions.length > 0) {
+        // Use the first action from actions array
+        action = data.actions[0];
+      }
+      
+      // Convert conditions array to single condition object (backwards compatibility)
+      let condition = data.condition;
+      if (!condition && data.conditions && data.conditions.length > 0) {
+        // Use the first condition from conditions array
+        condition = data.conditions[0];
+      }
+      
       return {
         ruleId: doc.id,
         name: data.name || doc.id,
@@ -79,8 +94,8 @@ async function loadActiveRules(): Promise<SmartRule[]> {
         enabled: data.enabled ?? true,
         priority: data.priority ?? 0,
         tags: data.tags,
-        condition: data.condition,
-        action: data.action,
+        condition: condition, // Single condition object expected by engine
+        action: action, // Single action object expected by engine
         autoApply: data.autoApply ?? false,
         autoApplyConfidence: data.autoApplyConfidence ?? 0.9,
         createdBy: data.createdBy,

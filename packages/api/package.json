@@ -11,6 +11,7 @@
     "lint": "eslint src --ext .ts || true",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:export-gate": "vitest run --reporter=verbose src/lib/export/ src/controllers/ExportController.test.ts",
     "clean": "rm -rf dist",
     "serve": "firebase emulators:start --only functions",
     "deploy": "firebase deploy --only functions",

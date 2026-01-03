@@ -977,7 +977,7 @@ export async function getExportableAttributes(): Promise<Array<{ id: string; lab
   for (const [id, config] of Object.entries(registry)) {
     if (!config.internalOnly) {
       attributes.push({
-        id: `attributes.${id}`,
+        id: id, // Use registry attribute ID directly (e.g., 'department', not 'attributes.department')
         label: id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
         group: config.exportable ? 'Exportable' : 'Standard',
       });

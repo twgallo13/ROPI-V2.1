@@ -70,6 +70,8 @@ export interface Action {
   valueTemplate: string;
   confidenceModifier?: number;
   postActions?: PostAction[];
+  /** Only apply if target field is empty/null/undefined (default: false) */
+  onlyIfEmpty?: boolean;
 }
 
 /**
@@ -179,7 +181,7 @@ export interface FieldProvenance {
  */
 export interface ActivityLogEntry {
   actor: string;
-  action: 'smartrule_auto_apply' | 'smartrule_manual_apply' | 'user_edit' | 'conflict_resolved';
+  action: 'smartrule_auto_apply' | 'smartrule_manual_apply' | 'user_edit' | 'conflict_resolved' | 'smartrule_guardrail_blocked';
   timestamp: string;
   details: Record<string, unknown>;
 }
@@ -855,7 +857,22 @@ export function evaluateCondition(condition: Condition, data: ImportRow | Produc
     return { matches: false, confidence: 0, captures: {} };
   }
   
-  const sourceValue = deepGet(data, source);
+  // Determine if we're dealing with ImportRow vs Product
+  // ImportRow has 'normalized' and 'productId', Product has 'mpn'
+  const isImportRow = 'normalized' in data && 'productId' in data;
+  
+  // Try to get the value - handle both ImportRow and Product formats
+  let sourceValue = deepGet(data, source);
+  
+  if (sourceValue === undefined && !source.includes('.')) {
+    // For ImportRow, try normalized.*
+    if (isImportRow) {
+      sourceValue = deepGet(data, `normalized.${source}`);
+    } else {
+      // For Product, try attributes.*
+      sourceValue = deepGet(data, `attributes.${source}`);
+    }
+  }
   
   // Handle different match types
   switch (matchType) {
@@ -1154,6 +1171,16 @@ export class SmartRulesEngineV2 {
       if (!rule.enabled) continue;
       
       try {
+        // Defensive validation: Check rule structure
+        if (!rule.action || !rule.action.targetField) {
+          errors.push({
+            ruleId: rule.ruleId || 'unknown',
+            error: `Invalid rule structure: missing action.targetField`,
+            code: 'INVALID_RULE_STRUCTURE',
+          });
+          continue;
+        }
+        
         // Validate target field (S2.3)
         const targetValidation = validateRuleTarget(rule.action.targetField);
         if (!targetValidation.valid) {
@@ -1208,7 +1235,7 @@ export class SmartRulesEngineV2 {
           inputContext.matchedTokens = condResult.captures.tokens;
         }
         
-        // Determine if auto-apply is allowed (S2.3 - set only if empty)
+        // Determine if auto-apply is allowed (S2.3 - honor onlyIfEmpty guardrail)
         const existingValue = importRow.existingProduct 
           ? deepGet(importRow.existingProduct, rule.action.targetField)
           : deepGet(importRow.normalized, extractAttributeName(rule.action.targetField));
@@ -1217,21 +1244,27 @@ export class SmartRulesEngineV2 {
           ? isUserEdited(importRow.existingProduct, rule.action.targetField)
           : false;
         
-        // Set only if empty enforcement (S2.3)
+        // Check if field is empty (null, undefined, or empty string)
         const fieldIsEmpty = existingValue === undefined || existingValue === null || existingValue === '';
         
+        // Honor onlyIfEmpty guardrail (Step 2.3: Engine honor guardrail)
         let canAutoApply = false;
-        if (
-          rule.autoApply &&
-          confidence >= rule.autoApplyConfidence &&
-          !userEdited &&
-          fieldIsEmpty // Hard enforcement: set only if empty
-        ) {
-          canAutoApply = true;
+        if (rule.autoApply && confidence >= rule.autoApplyConfidence && !userEdited) {
+          if (rule.action.onlyIfEmpty === true) {
+            // Guardrail active: only apply if target field is empty
+            canAutoApply = fieldIsEmpty;
+          } else {
+            // No guardrail: apply regardless of existing value
+            canAutoApply = true;
+          }
         }
         
+        // Use deterministic ID based on ruleId and targetField so suggestions
+        // remain stable across multiple calls (needed for apply workflow)
+        const deterministicId = `sug-${rule.ruleId}-${rule.action.targetField}`.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        
         const suggestion: Suggestion = {
-          id: generateId('sug'),
+          id: deterministicId,
           ruleId: rule.ruleId,
           ruleName: rule.name,
           targetField: rule.action.targetField,
@@ -1290,6 +1323,23 @@ export class SmartRulesEngineV2 {
               targetField: rule.action.targetField,
               value,
               confidence,
+              input: inputContext,
+            },
+          });
+        } else if (rule.autoApply && rule.action.onlyIfEmpty === true && !fieldIsEmpty) {
+          // Log when guardrail prevents application (Step 2.3)
+          activityLog.push({
+            actor: 'system:smartRulesEngine',
+            action: 'smartrule_guardrail_blocked',
+            timestamp: now,
+            details: {
+              ruleId: rule.ruleId,
+              ruleName: rule.name,
+              targetField: rule.action.targetField,
+              suggestedValue: value,
+              confidence,
+              existingValue,
+              reason: 'GUARDRAIL_ONLY_IF_EMPTY',
               input: inputContext,
             },
           });
