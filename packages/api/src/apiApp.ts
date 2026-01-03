@@ -26,6 +26,14 @@ import {
   revertAttributeHandler,
 } from './endpoints/admin/settings';
 
+// Completion Rules handlers
+import {
+  getCompletionRulesHandler,
+  setCompletionRulesHandler,
+  listCompletionRulesVersionsHandler,
+  getCompletionRulesVersionHandler,
+} from './endpoints/admin/completionRules';
+
 // LP-smart-rules-server-validation-1.0.0: Smart Rules validation endpoint
 import {
   validateSmartRuleHandler,
@@ -181,6 +189,14 @@ api.get('/admin/settings/lists/:listId', getListHandler);
 api.post('/admin/settings/lists', createListHandler);
 api.put('/admin/settings/lists/:listId', updateListHandler);
 api.delete('/admin/settings/lists/:listId', deleteListHandler);
+
+/**
+ * Admin Completion Rules endpoints
+ */
+api.get('/admin/settings/exportSettings/completionRules', getCompletionRulesHandler);
+api.put('/admin/settings/exportSettings/completionRules', setCompletionRulesHandler);
+api.get('/admin/settings/exportSettings/completionRules/versions', listCompletionRulesVersionsHandler);
+api.get('/admin/settings/exportSettings/completionRules/versions/:version', getCompletionRulesVersionHandler);
 
 /**
  * Admin Users endpoints
