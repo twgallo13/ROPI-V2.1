@@ -23,6 +23,10 @@ import {
   type DryRunResult,
   type ExportResult
 } from '../services/exportService';
+import { 
+  calculateCompletionDrivenExportReadiness,
+  type CompletionDrivenExportReadiness
+} from '../services/completionDrivenExportReadiness';
 
 // Initialize express app
 const app = express();
@@ -51,6 +55,29 @@ export async function dryRunExportHandler(
     };
 
     console.log('[Export] Running dry-run with options:', options);
+
+    // COMPLETION GATE: Check export readiness before processing
+    console.log('[Export] Checking completion-driven export readiness...');
+    const readinessResult = await calculateCompletionDrivenExportReadiness();
+    
+    if (!readinessResult.ready) {
+      console.log('[Export] BLOCKED: Export not ready due to completion requirements:', {
+        ready: readinessResult.ready,
+        completionPct: readinessResult.completionPct,
+        threshold: readinessResult.threshold,
+        blockingReasons: readinessResult.blockingReasons.length
+      });
+      
+      res.status(423).json({
+        success: false,
+        error: 'EXPORT_BLOCKED_COMPLETION_GATE',
+        message: 'Export blocked by completion requirements',
+        readiness: readinessResult
+      });
+      return;
+    }
+    
+    console.log('[Export] Completion gate passed - proceeding with dry-run');
 
     const result = await runDryRunExport(options);
 
@@ -94,6 +121,29 @@ export async function runExportHandler(
     };
 
     console.log('[Export] Running full export with options:', options);
+
+    // COMPLETION GATE: Check export readiness before processing
+    console.log('[Export] Checking completion-driven export readiness...');
+    const readinessResult = await calculateCompletionDrivenExportReadiness();
+    
+    if (!readinessResult.ready) {
+      console.log('[Export] BLOCKED: Export not ready due to completion requirements:', {
+        ready: readinessResult.ready,
+        completionPct: readinessResult.completionPct,
+        threshold: readinessResult.threshold,
+        blockingReasons: readinessResult.blockingReasons.length
+      });
+      
+      res.status(423).json({
+        success: false,
+        error: 'EXPORT_BLOCKED_COMPLETION_GATE',
+        message: 'Export blocked by completion requirements',
+        readiness: readinessResult
+      });
+      return;
+    }
+    
+    console.log('[Export] Completion gate passed - proceeding with full export');
 
     // Run export
     const result = await runFullExport(options);

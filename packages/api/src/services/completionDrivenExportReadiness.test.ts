@@ -535,12 +535,15 @@ describe('Completion-Driven Export Readiness', () => {
 describe('Completion-Driven Export Readiness (Integration)', () => {
   
   it('should integrate with actual completion rules service', async () => {
-    // This test would verify integration with live Firestore
-    // For now, mark as pending since we need Firestore setup
-    expect(true).toBe(true); // Placeholder
+    // This test verifies integration with completion rules service
+    // using mocked configuration from CompletionRulesService
+    const result = await calculateCompletionDrivenExportReadiness(PRODUCT_100_COMPLETE, true);
     
-    // TODO: Add integration test when Firestore completion rules are deployed
-    // const result = await calculateCompletionDrivenExportReadiness(PRODUCT_100_COMPLETE, true);
-    // expect(result).toBeDefined();
+    expect(result).toBeDefined();
+    expect(result.ready).toBe(true);
+    expect(result.completionPct).toBe(100);
+    expect(result.threshold).toBe(80); // Mock config threshold
+    expect(result.blockingReasons).toHaveLength(0);
+    expect(result.operatorExplanation).toBeDefined();
   });
 });
