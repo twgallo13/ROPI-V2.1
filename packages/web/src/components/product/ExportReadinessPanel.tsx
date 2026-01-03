@@ -23,6 +23,17 @@ function ExportReadinessPanel({ readiness, websites, onJumpToTab }: ExportReadin
   const safeWebsites = Array.isArray(websites) ? websites : [];
   const overallScore = typeof safeReadiness.overall === 'number' ? safeReadiness.overall : 0;
 
+  // Aggregate missing attributes (labels) across all websites, fallback to empty
+  const missingAcrossSites = safeWebsites
+    .map((site) => safeReadiness.byWebsite?.[site]?.missingAttributes ?? [])
+    .flat()
+    .filter(Boolean);
+
+  // De-duplicate by attribute id while preserving first label encountered
+  const uniqueMissing = Array.from(
+    new Map(missingAcrossSites.map((attr) => [attr.id, attr])).values()
+  );
+
   const getScoreClass = (score: number): string => {
     if (score >= 80) return 'score-ready';
     if (score >= 50) return 'score-progress';
@@ -72,6 +83,15 @@ function ExportReadinessPanel({ readiness, websites, onJumpToTab }: ExportReadin
           )}
         </div>
 
+        {uniqueMissing.length > 0 && (
+          <div className="readiness-missing-attributes">
+            <p>
+              <strong>Missing Required Attributes:</strong>{' '}
+              {uniqueMissing.map((attr) => attr.label).join(', ')}
+            </p>
+          </div>
+        )}
+
         {safeWebsites.map(website => {
           const siteReadiness = safeReadiness.byWebsite?.[website];
           if (!siteReadiness) return null;
@@ -100,6 +120,13 @@ function ExportReadinessPanel({ readiness, websites, onJumpToTab }: ExportReadin
                   </div>
                 ))}
               </div>
+
+              {Array.isArray(siteReadiness.missingAttributes) && siteReadiness.missingAttributes.length > 0 && (
+                <div className="readiness-missing-attributes">
+                  <strong>Missing for {website}:</strong>{' '}
+                  {siteReadiness.missingAttributes.map((attr) => attr.label).join(', ')}
+                </div>
+              )}
             </div>
           );
         })}

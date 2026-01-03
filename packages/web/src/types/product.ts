@@ -50,6 +50,7 @@ export interface WebsiteChecklist {
 export interface WebsiteReadiness {
   score: number;
   checklist: WebsiteChecklist;
+  missingAttributes?: Array<{ id: string; label: string }>;
 }
 
 export interface ExportReadiness {
