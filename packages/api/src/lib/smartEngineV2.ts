@@ -2,7 +2,6 @@
  * ROPI Smart Rules Engine V2
  * ===========================
  * LP-smart-rules-engine-1.0.0: Deterministic import-time Smart Rules engine
- * LP-smart-rules-registry-bridge-1.0.0: Use Firestore registry at runtime
  * 
  * Per Lisa's S2 requirements:
  * - Runs only during import (no product-load or post-import writes)
@@ -13,31 +12,17 @@
  * - Per-field provenance model
  * - Idempotency via _smartRulesRanAt and _smartRulesSkipUntil
  * 
- * LP-smart-rules-registry-bridge-1.0.0:
- * - Now uses Firestore registry at runtime (via registryBridge)
- * - Falls back to SDK static registry if Firestore unavailable
- * - Eliminates dual-source divergence between engine and API/UI
- * 
  * Based on: ROPI AOSS v1.0 — Section 4 (Smart Rules)
  */
 
 import * as Handlebars from 'handlebars';
-import * as logger from 'firebase-functions/logger';
-// LP-smart-rules-logging-1.0.0: Import structured logger for Smart Rules observability
-import { logger as structuredLogger } from './logger';
-import { generateTraceId } from './trace';
-// LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry bridge
-// instead of direct SDK imports to ensure runtime consistency
 import { 
-  type RegistrySnapshot,
-  getAttributeByIdFromSnapshot,
-  isExportableFromSnapshot,
-  isInternalOnlyFromSnapshot,
-  getAllowedValuesFromSnapshot,
-  getSynonymsFromSnapshot,
-} from '../services/registryBridge';
-// Keep SDK type import for compatibility
-import { type RegistryAttribute } from '@ropi-aoss/sdk';
+  type RegistryAttribute, 
+  isExportable, 
+  isInternalOnly,
+  getAttributeById,
+  getAllowedValues,
+} from '@ropi-aoss/sdk';
 
 // =============================================================================
 // TYPE DEFINITIONS (S2.1)
@@ -67,10 +52,7 @@ export type MatchType =
  * Condition object for Smart Rules
  */
 export interface Condition {
-  /** Source field path (engine canonical name) */
   source?: string;
-  /** Field path (UI canonical name - alias for source) */
-  field?: string;
   matchType: MatchType;
   value: string | number | boolean | null | unknown[] | Record<string, unknown> | Condition | Condition[];
   options?: {
@@ -87,8 +69,6 @@ export interface Action {
   targetField: string;
   valueTemplate: string;
   confidenceModifier?: number;
-  /** LP-smart-rules-schema-1.2.0: Guardrail - only set if field is currently empty */
-  setOnlyIfEmpty?: boolean;
   postActions?: PostAction[];
 }
 
@@ -269,28 +249,6 @@ export interface Product {
 }
 
 /**
- * Per-rule evaluation decision (LP-smart-rules-engine-1.2.0 - Lisa's diagnostic requirement)
- */
-export interface RuleDecision {
-  ruleId: string;
-  ruleName: string;
-  matched: boolean;
-  matchedTokens?: string[];
-  canAutoApply: boolean;
-  reason: 'applied' | 'skipped_disabled' | 'skipped_invalidTarget' | 'skipped_conditionNotMatched' | 
-          'skipped_domainValidation' | 'skipped_fieldNotEmpty' | 'skipped_userEdited' | 
-          'skipped_confidenceLow' | 'skipped_autoApplyOff' | 'suggested_not_applied';
-  reasonDetail?: string;
-  applied?: {
-    field: string;
-    value: unknown;
-  };
-  conditionSource?: string;
-  conditionValue?: string;
-  productFieldValue?: unknown;
-}
-
-/**
  * Engine run result (S2.1)
  */
 export interface EngineResult {
@@ -302,8 +260,6 @@ export interface EngineResult {
   updates: Record<string, unknown>;
   /** Activity log entries to append */
   activityLog: ActivityLogEntry[];
-  /** LP-smart-rules-engine-1.2.0: Per-rule decision log for diagnostics */
-  ruleDecisions?: RuleDecision[];
 }
 
 export interface EngineError {
@@ -696,16 +652,10 @@ export function extractAttributeName(targetField: string): string {
 
 /**
  * Validate that a rule target is allowed (S2.3)
- * LP-smart-rules-registry-bridge-1.0.0: Now uses Firestore registry via snapshot
  * - Target must be exportable (not internalOnly)
  * - Target must be in whitelist
- * @param targetField - The target field path
- * @param registrySnapshot - Optional registry snapshot for Firestore-first lookup
  */
-export function validateRuleTarget(
-  targetField: string,
-  registrySnapshot?: RegistrySnapshot
-): { 
+export function validateRuleTarget(targetField: string): { 
   valid: boolean; 
   error?: string;
   code?: EngineError['code'];
@@ -722,9 +672,8 @@ export function validateRuleTarget(
   // Extract attribute name and check registry flags
   const attrName = extractAttributeName(targetField);
   
-  // LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry lookup
   // Check if internalOnly
-  if (isInternalOnlyFromSnapshot(attrName, registrySnapshot)) {
+  if (isInternalOnly(attrName)) {
     return { 
       valid: false, 
       error: `Target attribute '${attrName}' is marked internalOnly`,
@@ -733,7 +682,7 @@ export function validateRuleTarget(
   }
   
   // Check if exportable
-  if (!isExportableFromSnapshot(attrName, registrySnapshot)) {
+  if (!isExportable(attrName)) {
     return { 
       valid: false, 
       error: `Target attribute '${attrName}' is not exportable`,
@@ -746,20 +695,13 @@ export function validateRuleTarget(
 
 /**
  * Validate generated value against registry domain (S2.3)
- * LP-smart-rules-registry-bridge-1.0.0: Now uses Firestore registry via snapshot
- * @param targetField - The target field path
- * @param value - The value to validate
- * @param registrySnapshot - Optional registry snapshot for Firestore-first lookup
  */
 export function validateGeneratedValue(
   targetField: string,
-  value: unknown,
-  registrySnapshot?: RegistrySnapshot
+  value: unknown
 ): { valid: boolean; normalizedValue: unknown; reason?: string } {
   const attrName = extractAttributeName(targetField);
-  
-  // LP-smart-rules-registry-bridge-1.0.0: Use Firestore-first registry lookup
-  const attr = getAttributeByIdFromSnapshot(attrName, registrySnapshot);
+  const attr = getAttributeById(attrName);
   
   // If not in registry, allow value (unknown attributes are handled elsewhere)
   if (!attr) {
@@ -767,13 +709,13 @@ export function validateGeneratedValue(
   }
   
   // If attribute has no allowed_values constraint, allow any value
-  const allowedValues = getAllowedValuesFromSnapshot(attrName, registrySnapshot);
+  const allowedValues = getAllowedValues(attrName);
   if (!allowedValues || allowedValues.length === 0) {
     return { valid: true, normalizedValue: value };
   }
   
   // Only validate enum/select/multiSelect types
-  const enumTypes = ['select', 'multiSelect', 'enum'];
+  const enumTypes = ['select', 'multiSelect'];
   if (!enumTypes.includes(attr.data_type)) {
     return { valid: true, normalizedValue: value };
   }
@@ -785,9 +727,8 @@ export function validateGeneratedValue(
   
   const strValue = String(value).trim();
   
-  // LP-smart-rules-registry-bridge-1.0.0: Get synonyms from Firestore snapshot
-  const synonyms = getSynonymsFromSnapshot(attrName, registrySnapshot) || 
-    (attr && 'synonyms' in attr ? (attr as { synonyms?: Record<string, string> }).synonyms : undefined);
+  // Check synonyms from registry
+  const synonyms = attr.synonyms;
   let mappedValue = strValue;
   
   if (synonyms && typeof synonyms === 'object' && !Array.isArray(synonyms)) {
@@ -898,9 +839,7 @@ Handlebars.registerHelper('ricsMatch', function(this: unknown, tokenType: string
  * Evaluate a condition against an import row / product
  */
 export function evaluateCondition(condition: Condition, data: ImportRow | Product): ConditionResult {
-  // LP-smart-rules-engine-1.3.0: Support both 'source' (engine) and 'field' (UI) naming
-  const { source, field, matchType, value, options = {} } = condition;
-  const sourceField = source || field; // Use source if present, fallback to field
+  const { source, matchType, value, options = {} } = condition;
   
   // Handle logical operators (and, or, not)
   if (matchType === 'and') {
@@ -958,12 +897,11 @@ export function evaluateCondition(condition: Condition, data: ImportRow | Produc
   }
   
   // Get source value from data
-  // LP-smart-rules-engine-1.3.0: Use sourceField (either source or field)
-  if (!sourceField) {
+  if (!source) {
     return { matches: false, confidence: 0, captures: {} };
   }
   
-  const sourceValue = deepGet(data, sourceField);
+  const sourceValue = deepGet(data, source);
   
   // Handle different match types
   switch (matchType) {
@@ -1204,16 +1142,13 @@ export class SmartRulesEngineV2 {
   private rules: SmartRule[] = [];
   private dictionary: DictionaryEntry[] = DEFAULT_RICS_DICTIONARY;
   private normalizer: RICSNormalizer;
-  /** LP-smart-rules-registry-bridge-1.0.0: Firestore registry snapshot for runtime validation */
-  private registrySnapshot?: RegistrySnapshot;
   
-  constructor(rules: SmartRule[] = [], dictionary?: DictionaryEntry[], registrySnapshot?: RegistrySnapshot) {
+  constructor(rules: SmartRule[] = [], dictionary?: DictionaryEntry[]) {
     this.rules = rules;
     if (dictionary) {
       this.dictionary = dictionary;
     }
     this.normalizer = new RICSNormalizer(this.dictionary);
-    this.registrySnapshot = registrySnapshot;
   }
   
   /**
@@ -1221,13 +1156,6 @@ export class SmartRulesEngineV2 {
    */
   setRules(rules: SmartRule[]): void {
     this.rules = rules;
-  }
-  
-  /**
-   * LP-smart-rules-registry-bridge-1.0.0: Set registry snapshot for Firestore-first validation
-   */
-  setRegistrySnapshot(snapshot: RegistrySnapshot): void {
-    this.registrySnapshot = snapshot;
   }
   
   /**
@@ -1248,28 +1176,14 @@ export class SmartRulesEngineV2 {
   /**
    * Evaluate rules for an import row (S2.1 - import-time only)
    * This is the primary entry point for import integration
-   * LP-smart-rules-engine-1.2.0: Enhanced with per-rule decision tracking
    */
   evaluateForImport(importRow: ImportRow): EngineResult {
-    // LP-smart-rules-logging-1.0.0: Create trace context for log correlation
-    const traceId = generateTraceId();
-    const evalStartTs = Date.now();
-    
     const suggestions: Suggestion[] = [];
     const autoApplied: Suggestion[] = [];
     const errors: EngineError[] = [];
     const updates: Record<string, unknown> = {};
     const activityLog: ActivityLogEntry[] = [];
-    const ruleDecisions: RuleDecision[] = [];
     const now = new Date().toISOString();
-    
-    // LP-smart-rules-engine-1.2.0 PR D: Debug log product fields for condition matching diagnosis
-    logger.debug(`[SmartRules] Evaluating product ${importRow.productId}`);
-    logger.debug(`[SmartRules] Product fields available:`, {
-      normalized_keys: Object.keys(importRow.normalized || {}),
-      source_rics: importRow.source?.rics,
-      existingProduct_attributes_keys: importRow.existingProduct ? Object.keys(importRow.existingProduct.attributes || {}) : [],
-    });
     
     // Sort rules by priority (desc) then ruleId (asc) for deterministic ordering
     const sortedRules = [...this.rules].sort((a, b) => {
@@ -1278,56 +1192,17 @@ export class SmartRulesEngineV2 {
       return a.ruleId.localeCompare(b.ruleId);
     });
     
-    logger.debug(`[SmartRules] ${sortedRules.length} rules to evaluate`);
-    
     // Track which fields already have suggestions (for conflict detection)
     const fieldSuggestions = new Map<string, Suggestion[]>();
     
     for (const rule of sortedRules) {
-      // LP-smart-rules-logging-1.0.0: Track rule evaluation start time
-      const ruleEvalStartTs = Date.now();
-      
-      // LP-smart-rules-engine-1.3.0: Extract condition source for diagnostics
-      // Support both 'source' (engine) and 'field' (UI) naming
-      const conditionSource = (rule.condition as { source?: string; field?: string })?.source || 
-                              (rule.condition as { source?: string; field?: string })?.field || 
-                              'unknown';
-      const conditionValue = String((rule.condition as { value?: unknown })?.value || '');
-      const productFieldValue = conditionSource !== 'unknown' ? deepGet(importRow, conditionSource) : undefined;
-      
       // Skip disabled rules
-      if (!rule.enabled) {
-        logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - disabled`);
-        ruleDecisions.push({
-          ruleId: rule.ruleId,
-          ruleName: rule.name,
-          matched: false,
-          canAutoApply: false,
-          reason: 'skipped_disabled',
-          conditionSource,
-          conditionValue,
-          productFieldValue,
-        });
-        continue;
-      }
+      if (!rule.enabled) continue;
       
       try {
         // Validate target field (S2.3)
-        // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
-        const targetValidation = validateRuleTarget(rule.action.targetField, this.registrySnapshot);
+        const targetValidation = validateRuleTarget(rule.action.targetField);
         if (!targetValidation.valid) {
-          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - invalid target field: ${targetValidation.error}`);
-          ruleDecisions.push({
-            ruleId: rule.ruleId,
-            ruleName: rule.name,
-            matched: false,
-            canAutoApply: false,
-            reason: 'skipped_invalidTarget',
-            reasonDetail: targetValidation.error,
-            conditionSource,
-            conditionValue,
-            productFieldValue,
-          });
           errors.push({
             ruleId: rule.ruleId,
             error: targetValidation.error!,
@@ -1336,27 +1211,10 @@ export class SmartRulesEngineV2 {
           continue;
         }
         
-        // LP-smart-rules-engine-1.2.0 PR D: Log condition source and product field value
-        logger.debug(`Rule ${rule.ruleId} (${rule.name}): Evaluating condition source='${conditionSource}' against productValue='${JSON.stringify(productFieldValue)}'`);
-        
         // Evaluate condition
         const condResult = evaluateCondition(rule.condition, importRow);
         
-        if (!condResult.matches) {
-          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - condition not matched (source='${conditionSource}', productValue='${JSON.stringify(productFieldValue)}', conditionValue='${conditionValue}')`);
-          ruleDecisions.push({
-            ruleId: rule.ruleId,
-            ruleName: rule.name,
-            matched: false,
-            canAutoApply: false,
-            reason: 'skipped_conditionNotMatched',
-            reasonDetail: `source=${conditionSource}, productValue=${JSON.stringify(productFieldValue)}, conditionValue=${conditionValue}`,
-            conditionSource,
-            conditionValue,
-            productFieldValue,
-          });
-          continue;
-        }
+        if (!condResult.matches) continue;
         
         // Render value template
         let value = renderTemplate(rule.action.valueTemplate, {
@@ -1365,23 +1223,9 @@ export class SmartRulesEngineV2 {
         });
         
         // Validate generated value against registry domain (S2.3)
-        // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
-        const validation = validateGeneratedValue(rule.action.targetField, value, this.registrySnapshot);
+        const validation = validateGeneratedValue(rule.action.targetField, value);
         
         if (!validation.valid) {
-          logger.debug(`Rule ${rule.ruleId} (${rule.name}): SKIPPED - domain validation failed: ${validation.reason}`);
-          ruleDecisions.push({
-            ruleId: rule.ruleId,
-            ruleName: rule.name,
-            matched: true,
-            matchedTokens: condResult.captures.tokens as string[] | undefined,
-            canAutoApply: false,
-            reason: 'skipped_domainValidation',
-            reasonDetail: validation.reason,
-            conditionSource,
-            conditionValue,
-            productFieldValue,
-          });
           errors.push({
             ruleId: rule.ruleId,
             error: `Domain validation failed: ${validation.reason}`,
@@ -1419,54 +1263,18 @@ export class SmartRulesEngineV2 {
           ? isUserEdited(importRow.existingProduct, rule.action.targetField)
           : false;
         
-        // LP-smart-rules-schema-1.2.0: Respect setOnlyIfEmpty guardrail from rule
-        // If rule.action.setOnlyIfEmpty is true (or undefined - default), require field to be empty
-        // If rule.action.setOnlyIfEmpty is explicitly false, allow overwrite
-        const setOnlyIfEmpty = rule.action.setOnlyIfEmpty !== false; // Default true
-        
-        // Set only if empty enforcement (S2.3) - now respects rule setting
+        // Set only if empty enforcement (S2.3)
         const fieldIsEmpty = existingValue === undefined || existingValue === null || existingValue === '';
-        const passesEmptyCheck = !setOnlyIfEmpty || fieldIsEmpty;
         
         let canAutoApply = false;
-        // LP-smart-rules-engine-1.1.0 Fix 4: Build explicit reason for auto-apply decision
-        let autoApplyReason = '';
         if (
           rule.autoApply &&
           confidence >= rule.autoApplyConfidence &&
           !userEdited &&
-          passesEmptyCheck // Respects setOnlyIfEmpty setting
+          fieldIsEmpty // Hard enforcement: set only if empty
         ) {
           canAutoApply = true;
-          autoApplyReason = 'all conditions met';
-        } else {
-          // Build explicit reason for why auto-apply is blocked
-          const reasons: string[] = [];
-          if (!rule.autoApply) reasons.push('autoApply=false');
-          if (confidence < rule.autoApplyConfidence) reasons.push(`confidenceBelowThreshold (${confidence.toFixed(2)} < ${rule.autoApplyConfidence})`);
-          if (userEdited) reasons.push('userEdited');
-          if (!passesEmptyCheck) reasons.push(`fieldNotEmpty (setOnlyIfEmpty=${setOnlyIfEmpty}, existingValue: ${JSON.stringify(existingValue)})`);
-          autoApplyReason = reasons.join(', ');
         }
-        
-        // LP-smart-rules-engine-1.1.0 Fix 4: Per-rule decision logging with explicit reason
-        logger.debug(`Rule ${rule.ruleId} (${rule.name}): MATCHED - target=${rule.action.targetField}, value=${JSON.stringify(value)}, confidence=${confidence.toFixed(2)}, canAutoApply=${canAutoApply}, setOnlyIfEmpty=${setOnlyIfEmpty}, reason=${autoApplyReason}`);
-        
-        // LP-smart-rules-logging-1.0.0: Log evaluation result
-        structuredLogger.logEvalResult(ruleEvalStartTs, {
-          traceId,
-          ruleId: rule.ruleId,
-          ruleName: rule.name,
-          productId: importRow.productId,
-          mpn: importRow.source?.mpn,
-          conditionMatched: true,
-          matchedClauses: condResult.captures.tokens as string[] | undefined || [],
-          generatedValue: value,
-          validationResult: { ok: true, errors: [] },
-          action: canAutoApply ? 'auto-apply' : 'suggest',
-          applied: canAutoApply,
-          actor: 'engine',
-        }).catch(err => logger.warn('[SmartRules] Failed to log eval result:', err));
         
         const suggestion: Suggestion = {
           id: generateId('sug'),
@@ -1477,7 +1285,7 @@ export class SmartRulesEngineV2 {
           confidence,
           autoApply: canAutoApply,
           applied: false,
-          explain: `Matched rule "${rule.name}" (${rule.ruleId}) with confidence=${confidence.toFixed(2)}. Auto-apply: ${canAutoApply ? 'yes' : 'no (' + autoApplyReason + ')'}`,
+          explain: `Matched rule "${rule.name}" (${rule.ruleId}) with confidence=${confidence.toFixed(2)}`,
           input: inputContext,
         };
         
@@ -1493,35 +1301,8 @@ export class SmartRulesEngineV2 {
           suggestion.applied = true;
           autoApplied.push(suggestion);
           
-          // LP-smart-rules-engine-1.2.0: Track decision for applied rule
-          ruleDecisions.push({
-            ruleId: rule.ruleId,
-            ruleName: rule.name,
-            matched: true,
-            matchedTokens: condResult.captures.tokens as string[] | undefined,
-            canAutoApply: true,
-            reason: 'applied',
-            applied: {
-              field: rule.action.targetField,
-              value,
-            },
-            conditionSource,
-            conditionValue,
-            productFieldValue,
-          });
-          
           // Set value in updates
           deepSet(updates, rule.action.targetField, value);
-          
-          // LP-smart-rules-logging-1.0.0: Log apply action
-          structuredLogger.logApply(
-            rule.ruleId,
-            importRow.productId,
-            [{ path: rule.action.targetField, oldValue: existingValue, newValue: value }],
-            'engine',
-            traceId,
-            ruleEvalStartTs
-          ).catch(err => logger.warn('[SmartRules] Failed to log apply:', err));
           
           // Set provenance (S2.4)
           const provenanceKey = `provenance.${rule.action.targetField.replace(/\./g, '_')}`;
@@ -1558,60 +1339,8 @@ export class SmartRulesEngineV2 {
               input: inputContext,
             },
           });
-        } else {
-          // LP-smart-rules-engine-1.2.0: Track decision for matched but not auto-applied rule
-          // Determine specific reason
-          let decisionReason: RuleDecision['reason'] = 'suggested_not_applied';
-          if (!rule.autoApply) {
-            decisionReason = 'skipped_autoApplyOff';
-          } else if (confidence < rule.autoApplyConfidence) {
-            decisionReason = 'skipped_confidenceLow';
-          } else if (userEdited) {
-            decisionReason = 'skipped_userEdited';
-          } else if (!passesEmptyCheck) {
-            decisionReason = 'skipped_fieldNotEmpty';
-          }
-          
-          // LP-smart-rules-logging-1.0.0: Log suggestion (not applied)
-          structuredLogger.logSuggestion(
-            rule.ruleId,
-            importRow.productId,
-            { targetField: rule.action.targetField, value, reason: autoApplyReason },
-            traceId
-          ).catch(err => logger.warn('[SmartRules] Failed to log suggestion:', err));
-          
-          ruleDecisions.push({
-            ruleId: rule.ruleId,
-            ruleName: rule.name,
-            matched: true,
-            matchedTokens: condResult.captures.tokens as string[] | undefined,
-            canAutoApply: false,
-            reason: decisionReason,
-            reasonDetail: autoApplyReason,
-            conditionSource,
-            conditionValue,
-            productFieldValue,
-          });
         }
       } catch (e) {
-        // LP-smart-rules-logging-1.0.0: Log error
-        structuredLogger.logError(
-          e instanceof Error ? e.message : String(e),
-          'runtime',
-          e instanceof Error ? e : undefined,
-          rule.ruleId,
-          importRow.productId,
-          traceId
-        ).catch(err => logger.warn('[SmartRules] Failed to log error:', err));
-        
-        ruleDecisions.push({
-          ruleId: rule.ruleId,
-          ruleName: rule.name,
-          matched: false,
-          canAutoApply: false,
-          reason: 'skipped_conditionNotMatched',
-          reasonDetail: `Error: ${e instanceof Error ? e.message : String(e)}`,
-        });
         errors.push({
           ruleId: rule.ruleId,
           error: e instanceof Error ? e.message : String(e),
@@ -1632,29 +1361,7 @@ export class SmartRulesEngineV2 {
     updates._smartRulesRanAt = now;
     updates._smartRulesSkipUntil = Date.now() + 10000; // 10 second skip window
     
-    // LP-smart-rules-engine-1.2.0: Log summary
-    logger.info(`[SmartRules] Product ${importRow.productId}: ${ruleDecisions.length} rules evaluated, ${suggestions.length} suggestions, ${autoApplied.length} auto-applied, ${errors.length} errors`);
-    
-    // LP-smart-rules-logging-1.0.0: Log evaluation summary
-    structuredLogger.info('smartrule.eval', {
-      traceId,
-      timestamp: new Date().toISOString(),
-      env: process.env.NODE_ENV === 'production' ? 'production' : process.env.NODE_ENV === 'staging' ? 'staging' : 'development',
-      productId: importRow.productId,
-      mpn: importRow.source?.mpn,
-      conditionMatched: autoApplied.length > 0 || suggestions.length > 0,
-      action: autoApplied.length > 0 ? 'auto-apply' : suggestions.length > 0 ? 'suggest' : 'skip',
-      applied: autoApplied.length > 0,
-      actor: 'engine',
-      durationMs: Date.now() - evalStartTs,
-      ruleId: 'SUMMARY',
-      ruleName: 'Import Evaluation Summary',
-      matchedClauses: [],
-      generatedValue: null,
-      validationResult: { ok: errors.length === 0, errors: errors.map(e => e.error) },
-    } as any).catch(err => logger.warn('[SmartRules] Failed to log summary:', err));
-    
-    return { suggestions, conflicts, autoApplied, errors, updates, activityLog, ruleDecisions };
+    return { suggestions, conflicts, autoApplied, errors, updates, activityLog };
   }
   
   /**
@@ -1732,7 +1439,6 @@ export class SmartRulesEngineV2 {
   
   /**
    * Test a single rule against a product (for admin testing)
-   * LP-smart-rules-registry-bridge-1.0.0: Uses Firestore registry snapshot for validation
    */
   testRule(
     rule: SmartRule,
@@ -1747,8 +1453,7 @@ export class SmartRulesEngineV2 {
     validationResult: { valid: boolean; reason?: string };
   } {
     // Validate target first
-    // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
-    const targetValidation = validateRuleTarget(rule.action.targetField, this.registrySnapshot);
+    const targetValidation = validateRuleTarget(rule.action.targetField);
     if (!targetValidation.valid) {
       return {
         matches: false,
@@ -1789,8 +1494,7 @@ export class SmartRulesEngineV2 {
     });
     
     // Validate generated value
-    // LP-smart-rules-registry-bridge-1.0.0: Pass Firestore registry snapshot
-    const valueValidation = validateGeneratedValue(rule.action.targetField, value, this.registrySnapshot);
+    const valueValidation = validateGeneratedValue(rule.action.targetField, value);
     
     const confidence = Math.max(
       0,

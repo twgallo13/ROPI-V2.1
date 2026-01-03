@@ -728,6 +728,8 @@ function calculateExportReadiness(product: Product) {
     byWebsite[website] = {
       score,
       checklist,
+      // Mock readiness path: no registry-driven missing attributes available here
+      missingAttributes: [],
     };
 
     overall += score;
