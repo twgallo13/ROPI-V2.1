@@ -1,17 +1,11 @@
 /**
- * Test Fixtures for Completion Evaluation Engine
+ * Completion Evaluation Engine Tests
  * 
- * Static, explicit test fixtures covering all specified scenarios:
- * - 100% completion
- * - Partial completion 
- * - Multi-site blocking
- * - Segment weight math validation
- * - Description+SEO blocking
- * 
- * These fixtures are deterministic and contain NO mocks that infer behavior.
- * All test data is explicitly defined.
+ * Unit tests for deterministic completion evaluation engine.
+ * Uses static fixtures with no mocks or inferred behavior.
  */
 
+import { describe, it, expect } from 'vitest';
 import { 
   ProductSnapshot, 
   AttributeRegistry, 
@@ -19,53 +13,82 @@ import {
   CompletionEvaluationResult 
 } from './completionEvaluationEngine';
 import { CompletionRulesConfig } from './completionRulesService';
+import type { AttributeType } from '../../../sdk/src/schema/attribute';
 
-// Static Attribute Registry for Testing
-export const TEST_ATTRIBUTE_REGISTRY: AttributeRegistry = {
-  // Description category
-  'title': {
-    id: 'title',
+// Static Attribute Registry for Testing (using canonical structure)
+const TEST_ATTRIBUTE_REGISTRY: AttributeRegistry = {
+  // Description attributes for different sites
+  'title_us': {
+    attribute_id: 'title_us',
+    label: 'Title - US',
     category: 'description',
+    data_type: 'string',
     required_for_completion: true,
-    sites: ['us', 'uk', 'de']
-  },
-  'short_description': {
-    id: 'short_description', 
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
+  'title_uk': {
+    attribute_id: 'title_uk',
+    label: 'Title - UK', 
     category: 'description',
+    data_type: 'string',
     required_for_completion: true,
-    sites: ['us', 'uk', 'de']
-  },
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
+  'description_us': {
+    attribute_id: 'description_us',
+    label: 'Description - US',
+    category: 'description',
+    data_type: 'string',
+    required_for_completion: true,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
   
-  // SEO category
-  'meta_title': {
-    id: 'meta_title',
+  // SEO attributes
+  'meta_title_us': {
+    attribute_id: 'meta_title_us',
+    label: 'Meta Title - US',
     category: 'seo',
+    data_type: 'string',
     required_for_completion: true,
-    sites: ['us', 'uk', 'de']
-  },
-  'meta_description': {
-    id: 'meta_description',
-    category: 'seo',
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
+  'meta_title_uk': {
+    attribute_id: 'meta_title_uk',
+    label: 'Meta Title - UK',
+    category: 'seo', 
+    data_type: 'string',
     required_for_completion: true,
-    sites: ['us', 'uk', 'de']
-  },
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
   
-  // Technical category
+  // Technical attributes (global)
   'dimensions': {
-    id: 'dimensions',
+    attribute_id: 'dimensions',
+    label: 'Dimensions',
     category: 'technical',
-    required_for_completion: true
-    // No sites = applies to all sites
-  },
+    data_type: 'string',
+    required_for_completion: true,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
   'weight': {
-    id: 'weight',
+    attribute_id: 'weight',
+    label: 'Weight',
     category: 'technical', 
-    required_for_completion: true
-  }
+    data_type: 'string',
+    required_for_completion: true,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType
 };
 
 // Base Completion Rules Configuration
-export const TEST_COMPLETION_RULES: CompletionRulesConfig = {
+const TEST_COMPLETION_RULES: CompletionRulesConfig = {
   schemaVersion: '1.0',
   rulesVersion: 1,
   updatedAt: '2025-01-01T00:00:00Z',
@@ -130,198 +153,130 @@ export const TEST_COMPLETION_RULES: CompletionRulesConfig = {
 };
 
 // Test Case 1: 100% Completion - All attributes present
-export const PRODUCT_100_COMPLETE: ProductSnapshot = {
+const PRODUCT_100_COMPLETE: ProductSnapshot = {
   productId: 'test-product-100',
   attributes: {
-    // Description (site-aware)
-    'title': { us: 'US Title', uk: 'UK Title', de: 'DE Titel' },
-    'short_description': { us: 'US Short Desc', uk: 'UK Short Desc', de: 'DE Kurze Beschreibung' },
+    // Site-specific description attributes
+    'title_us': 'US Title',
+    'title_uk': 'UK Title',
+    'description_us': 'US Description',
     
-    // SEO (site-aware)
-    'meta_title': { us: 'US Meta Title', uk: 'UK Meta Title', de: 'DE Meta Titel' },
-    'meta_description': { us: 'US Meta Desc', uk: 'UK Meta Desc', de: 'DE Meta Beschreibung' },
+    // Site-specific SEO attributes
+    'meta_title_us': 'US Meta Title',
+    'meta_title_uk': 'UK Meta Title',
     
-    // Technical (global)
+    // Global technical attributes
     'dimensions': '10x20x30 cm',
     'weight': '2.5 kg'
   },
-  sites: ['us', 'uk', 'de']
+  sites: ['us', 'uk']
 };
 
 // Test Case 2: Partial Completion - Missing some attributes  
-export const PRODUCT_PARTIAL_COMPLETE: ProductSnapshot = {
+const PRODUCT_PARTIAL_COMPLETE: ProductSnapshot = {
   productId: 'test-product-partial',
   attributes: {
-    // Description - missing title for DE
-    'title': { us: 'US Title', uk: 'UK Title' }, // Missing DE
-    'short_description': { us: 'US Short Desc', uk: 'UK Short Desc', de: 'DE Kurze Beschreibung' },
+    // Missing title_uk and description_us
+    'title_us': 'US Title',
     
-    // SEO - complete
-    'meta_title': { us: 'US Meta Title', uk: 'UK Meta Title', de: 'DE Meta Titel' },
-    'meta_description': { us: 'US Meta Desc', uk: 'UK Meta Desc', de: 'DE Meta Beschreibung' },
+    // Complete SEO
+    'meta_title_us': 'US Meta Title',
+    'meta_title_uk': 'UK Meta Title',
     
-    // Technical - missing weight
+    // Missing weight
     'dimensions': '10x20x30 cm'
-    // weight missing
   },
-  sites: ['us', 'uk', 'de']
+  sites: ['us', 'uk']
 };
 
 // Test Case 3: Empty Product - All missing
-export const PRODUCT_EMPTY: ProductSnapshot = {
+const PRODUCT_EMPTY: ProductSnapshot = {
   productId: 'test-product-empty',
   attributes: {},
   sites: ['us', 'uk']
 };
 
-// Expected Results
-export const EXPECTED_RESULTS = {
-  PRODUCT_100_COMPLETE: {
-    totalCompletionPct: 100,
-    hasBlockingSites: false,
-    enabledSegments: 2
-  },
-  
-  PRODUCT_PARTIAL_COMPLETE: {
-    totalCompletionPct: 45, // 75% * 60% + 50% * 40% = 45% + 20% = 65% -> 45 due to blocking
-    hasBlockingSites: true, // Missing title for DE
-    enabledSegments: 2
-  },
-  
-  PRODUCT_EMPTY: {
-    totalCompletionPct: 0,
-    hasBlockingSites: true,
-    enabledSegments: 2
-  }
-};
-
-// Test Runner Function
-export function runAllTests(): { passed: number; failed: number; results: any[] } {
-  const testResults: any[] = [];
-  let passed = 0;
-  let failed = 0;
-
-  // Test 1: 100% Completion
-  try {
+describe('Completion Evaluation Engine', () => {
+  it('should calculate 100% completion for complete product', () => {
     const result = evaluateCompletion(
       PRODUCT_100_COMPLETE,
-      ['us', 'uk', 'de'],
+      ['us', 'uk'],
       TEST_ATTRIBUTE_REGISTRY,
-      TEST_COMPLETION_RULES
+      TEST_COMPLETION_RULES,
+      '2025-01-01T00:00:00Z' // Fixed timestamp for determinism
     );
     
-    const expected = EXPECTED_RESULTS.PRODUCT_100_COMPLETE;
-    const testPassed = 
-      result.totalCompletionPct === expected.totalCompletionPct &&
-      result.hasBlockingSites === expected.hasBlockingSites &&
-      result.evaluationMeta.enabledSegmentCount === expected.enabledSegments;
-    
-    testResults.push({
-      name: 'TEST_100_COMPLETE',
-      passed: testPassed,
-      expected: expected.totalCompletionPct,
-      actual: result.totalCompletionPct,
-      details: result
-    });
-    
-    if (testPassed) passed++; else failed++;
-  } catch (error) {
-    failed++;
-    testResults.push({
-      name: 'TEST_100_COMPLETE',
-      passed: false,
-      error: error instanceof Error ? error.message : String(error)
-    });
-  }
+    expect(result.totalCompletionPct).toBe(100);
+    expect(result.hasBlockingSites).toBe(false);
+    expect(result.evaluationMeta.enabledSegmentCount).toBe(2);
+    expect(result.evaluationMeta.evaluatedAt).toBe('2025-01-01T00:00:00Z');
+  });
 
-  // Test 2: Partial Completion
-  try {
+  it('should detect site blocking for missing description/SEO attributes', () => {
     const result = evaluateCompletion(
       PRODUCT_PARTIAL_COMPLETE,
-      ['us', 'uk', 'de'],
-      TEST_ATTRIBUTE_REGISTRY,
-      TEST_COMPLETION_RULES
-    );
-    
-    const expected = EXPECTED_RESULTS.PRODUCT_PARTIAL_COMPLETE;
-    const testPassed = 
-      result.hasBlockingSites === expected.hasBlockingSites;
-    
-    testResults.push({
-      name: 'TEST_PARTIAL_COMPLETE',
-      passed: testPassed,
-      expected: `Blocking: ${expected.hasBlockingSites}`,
-      actual: `Completion: ${result.totalCompletionPct}%, Blocking: ${result.hasBlockingSites}`,
-      details: result
-    });
-    
-    if (testPassed) passed++; else failed++;
-  } catch (error) {
-    failed++;
-    testResults.push({
-      name: 'TEST_PARTIAL_COMPLETE', 
-      passed: false,
-      error: error instanceof Error ? error.message : String(error)
-    });
-  }
-
-  // Test 3: Empty Product
-  try {
-    const result = evaluateCompletion(
-      PRODUCT_EMPTY,
       ['us', 'uk'],
       TEST_ATTRIBUTE_REGISTRY,
       TEST_COMPLETION_RULES
     );
     
-    const expected = EXPECTED_RESULTS.PRODUCT_EMPTY;
-    const testPassed = 
-      result.totalCompletionPct === expected.totalCompletionPct &&
-      result.hasBlockingSites === expected.hasBlockingSites;
-    
-    testResults.push({
-      name: 'TEST_EMPTY_PRODUCT',
-      passed: testPassed,
-      expected: expected.totalCompletionPct,
-      actual: result.totalCompletionPct,
-      details: result
-    });
-    
-    if (testPassed) passed++; else failed++;
-  } catch (error) {
-    failed++;
-    testResults.push({
-      name: 'TEST_EMPTY_PRODUCT',
-      passed: false,
-      error: error instanceof Error ? error.message : String(error)
-    });
-  }
-
-  return { passed, failed, results: testResults };
-}
-
-// Manual test execution function
-export function logTestResults(): void {
-  console.log('='.repeat(60));
-  console.log('COMPLETION EVALUATION ENGINE - TEST RESULTS');
-  console.log('='.repeat(60));
-  
-  const { passed, failed, results } = runAllTests();
-  
-  console.log(`\nSUMMARY: ${passed} passed, ${failed} failed\n`);
-  
-  results.forEach((result, i) => {
-    console.log(`${i + 1}. ${result.name}`);
-    console.log(`   Status: ${result.passed ? '✅ PASSED' : '❌ FAILED'}`);
-    
-    if (result.error) {
-      console.log(`   Error: ${result.error}`);
-    } else {
-      console.log(`   Expected: ${result.expected}`);
-      console.log(`   Actual: ${result.actual}`);
-    }
-    console.log('');
+    expect(result.hasBlockingSites).toBe(true);
+    expect(result.siteBlockingReasons.length).toBeGreaterThan(0);
+    expect(result.totalCompletionPct).toBeLessThan(100);
   });
-  
-  console.log('='.repeat(60));
-}
+
+  it('should return 0% completion for empty product', () => {
+    const result = evaluateCompletion(
+      PRODUCT_EMPTY,
+      ['us', 'uk'], 
+      TEST_ATTRIBUTE_REGISTRY,
+      TEST_COMPLETION_RULES
+    );
+    
+    expect(result.totalCompletionPct).toBe(0);
+    expect(result.hasBlockingSites).toBe(true);
+    expect(result.evaluationMeta.enabledSegmentCount).toBe(2);
+  });
+
+  it('should handle deterministic evaluation without timestamp', () => {
+    const result1 = evaluateCompletion(
+      PRODUCT_100_COMPLETE,
+      ['us'],
+      TEST_ATTRIBUTE_REGISTRY,
+      TEST_COMPLETION_RULES
+    );
+    
+    const result2 = evaluateCompletion(
+      PRODUCT_100_COMPLETE,
+      ['us'],
+      TEST_ATTRIBUTE_REGISTRY,
+      TEST_COMPLETION_RULES
+    );
+    
+    // Results should be identical (deterministic)
+    expect(result1.totalCompletionPct).toBe(result2.totalCompletionPct);
+    expect(result1.hasBlockingSites).toBe(result2.hasBlockingSites);
+    expect(result1.evaluationMeta.evaluatedAt).toBeUndefined();
+    expect(result2.evaluationMeta.evaluatedAt).toBeUndefined();
+  });
+
+  it('should validate input requirements', () => {
+    expect(() => {
+      evaluateCompletion(
+        PRODUCT_100_COMPLETE,
+        [], // Empty sites array
+        TEST_ATTRIBUTE_REGISTRY,
+        TEST_COMPLETION_RULES
+      );
+    }).toThrow('Cannot evaluate completion: no sites selected');
+    
+    expect(() => {
+      evaluateCompletion(
+        PRODUCT_100_COMPLETE,
+        ['us'],
+        TEST_ATTRIBUTE_REGISTRY,
+        { ...TEST_COMPLETION_RULES, segments: [] } // Empty segments
+      );
+    }).toThrow('Cannot evaluate completion: no segments configured');
+  });
+});

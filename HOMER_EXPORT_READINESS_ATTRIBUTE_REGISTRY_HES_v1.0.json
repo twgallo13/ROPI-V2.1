@@ -1,0 +1,108 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-readiness-attribute-registry-1.0.0",
+  "homer_run": "HR-export-readiness-attribute-registry-01",
+  "phase": "VERIFYING",
+  "timestamp": "2026-01-03T00:38:00Z",
+  
+  "actions_executed": [
+    "Updated calculateExportReadiness() to return missingAttributes with labels (registry-driven, fallback to ID)",
+    "Added MissingAttribute interface {id: string, label: string} for structured response",
+    "Updated ExportReadinessPanel to display missing required attributes by registry label (aggregated + per-site)",
+    "Extended WebsiteReadiness type to include optional missingAttributes array",
+    "Updated useProduct mock readiness to supply empty missingAttributes arrays",
+    "Added AC1 test: Product with no images but all required attributes = export ready",
+    "Added AC2 test: Missing required attribute returns {id, label} from registry",
+    "Added AC3 test: Toggling requiredForExport flag changes readiness result",
+    "Added AC4 test: Label comes from registry definition, not attribute ID",
+    "Updated all 38 existing tests to expect MissingAttribute[] instead of string[]"
+  ],
+  
+  "files_changed": [
+    "packages/api/src/services/exportService.ts",
+    "packages/api/test/exportService.unit.test.ts",
+    "packages/web/src/components/product/ExportReadinessPanel.tsx",
+    "packages/web/src/hooks/useProduct.ts",
+    "packages/web/src/types/product.ts"
+  ],
+  
+  "artifacts": {
+    "branch": "feature/LP-export-readiness-attribute-registry-1.0.0",
+    "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/419",
+    "pr_number": 419,
+    "commits": [
+      "5357e36 - Backend: Return missing attributes with registry labels",
+      "95f30a9 - Frontend: Display registry labels for missing attributes"
+    ],
+    "ci_runs": [
+      {
+        "workflow": "Deploy pre-check",
+        "status": "SUCCESS",
+        "completed_at": "2026-01-03T00:37:03Z",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20669659159/job/59348308770"
+      }
+    ],
+    "test_evidence": [
+      "packages/api: npm test -- exportService.unit.test.ts → 42/42 passing",
+      "Test suite includes: formatValueForExport (11), calculateExportReadiness (8 + 4 new AC tests), buildExportRow (14), generateCsvContent (4), Export Flag Enforcement (1), MPN Primary Key (2)",
+      "AC1: no-images product ready ✓",
+      "AC2: missing attr returns {id, label} ✓",
+      "AC3: requiredForExport toggle flips readiness ✓",
+      "AC4: label hydration from registry ✓"
+    ]
+  },
+  
+  "evidence": {
+    "no_image_hardcoding": "grep search across packages/** found NO image-based validation in export readiness logic. Only checks: product.mpn and attributes[id] against requiredForExport flags from registry.",
+    "single_source_of_truth": "calculateExportReadiness() iterates over Map<string, ExportAttributeDefinition> from loadRegistryMap(). No secondary rule sets.",
+    "label_hydration": "missing.push({ id: id, label: def.label || id }) uses def.label from AttributeDefinition interface loaded from packages/sdk/config/attributeRegistry.json",
+    "registry_structure": "attributeRegistry.json contains 1368 lines with attributes having explicit requiredForExport: true/false booleans. Examples: sku→true, mpn→true, style_id→false",
+    "ui_display": "ExportReadinessPanel.tsx lines 28-34: aggregates missingAttributes across sites, de-duplicates by id, displays joined labels. Per-site display at lines 85-90."
+  },
+  
+  "warnings": [],
+  
+  "acceptance_criteria_verification": {
+    "ac1_registry_driven": {
+      "status": "VERIFIED",
+      "evidence": "calculateExportReadiness() line 458-465: `for (const [id, def] of attributes) { const isRequired = def.required_for_export || def.requiredForExport; ... }`. No other logic paths."
+    },
+    "ac2_no_image_hardcoding": {
+      "status": "VERIFIED",
+      "evidence": "grep_search for 'heroImage|primaryImage|galleryImage.*required|image.*mandatory|media.*required.*export' returned ZERO matches in export readiness logic. Images only referenced in productCommitService.ts for media field storage."
+    },
+    "ac3_missing_attrs_by_label": {
+      "status": "VERIFIED",
+      "evidence": "MissingAttribute interface line 439-442. Push logic line 468-471: `missing.push({ id: id, label: def.label || id });`. UI renders via `missingAttributes.map((attr) => attr.label).join(', ')`"
+    },
+    "ac4_images_scoped_to_calendar": {
+      "status": "VERIFIED",
+      "evidence": "Images are NOT checked in calculateExportReadiness(). LP documentation confirmed images scoped to Launch Calendar / AI Observation Assistant only."
+    },
+    "ac5_images_do_not_affect_readiness": {
+      "status": "VERIFIED",
+      "evidence": "Test AC1 (line 345-361): Product with NO media field, all required attrs present → result.ready === true. Passes."
+    },
+    "ac6_test_no_images": {
+      "status": "VERIFIED",
+      "evidence": "exportService.unit.test.ts line 345-361: 'AC1: product with no images but all required attributes should be export ready'"
+    },
+    "ac7_test_toggle_required": {
+      "status": "VERIFIED",
+      "evidence": "exportService.unit.test.ts line 381-411: 'AC3: toggling requiredForExport flag should change readiness'. Modifies mockAttributes in-test, verifies ready flips false→true."
+    },
+    "ac8_no_duplicate_lists": {
+      "status": "VERIFIED",
+      "evidence": "Single loadRegistryMap() call in loadExportableAttributes() (line 204). calculateExportReadiness() receives same Map<string, ExportAttributeDefinition>. No secondary lists."
+    }
+  },
+  
+  "outcome": "VERIFIED SUCCESS",
+  
+  "next_steps": [
+    "Await Lisa VVP execution against PR #419",
+    "Address any VVP findings if state:vvp-failed",
+    "Merge when state:vvp-passed"
+  ]
+}

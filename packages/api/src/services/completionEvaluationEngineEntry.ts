@@ -36,17 +36,6 @@ export {
   type AttributeSelectorConfig
 } from './completionRulesService';
 
-// Test fixtures and runner (for development/validation only)
-export {
-  TEST_ATTRIBUTE_REGISTRY,
-  TEST_COMPLETION_RULES,
-  PRODUCT_100_COMPLETE,
-  PRODUCT_PARTIAL_COMPLETE,
-  EXPECTED_RESULTS,
-  runAllTests,
-  logTestResults
-} from './completionEvaluationEngine.test';
-
 // Version and metadata
 export const ENGINE_VERSION = '1.0.0';
 export const ENGINE_DESCRIPTION = 'Pure math-only completion evaluation engine';
@@ -58,5 +47,6 @@ export const GOVERNANCE_COMPLIANCE = {
   excludesSmartRules: true,
   noDefaults: true,
   noHardcodedAttributes: true,
-  pureFunctionality: true
+  pureFunctionality: true,
+  deterministic: true
 };

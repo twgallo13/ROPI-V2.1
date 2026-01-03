@@ -15,6 +15,7 @@
  */
 
 import { CompletionRulesConfig, SegmentConfig, AttributeSelectorConfig } from './completionRulesService';
+import type { AttributeType } from '../../../sdk/src/schema/attribute';
 
 // Input data structures
 export interface ProductSnapshot {
@@ -23,13 +24,8 @@ export interface ProductSnapshot {
   sites: string[];
 }
 
-export interface AttributeRegistryEntry {
-  id: string;
-  category: string;
-  required_for_completion: boolean;
-  sites?: string[]; // Site-specific availability
-  internal_only?: boolean;
-}
+// Use canonical attribute type from SDK
+export type AttributeRegistryEntry = AttributeType;
 
 export interface AttributeRegistry {
   [attributeId: string]: AttributeRegistryEntry;
@@ -65,7 +61,7 @@ export interface CompletionEvaluationResult {
     totalSegmentWeights: number;
     enabledSegmentCount: number;
     rulesVersion: number;
-    evaluatedAt: string;
+    evaluatedAt?: string; // Optional timestamp if provided
   };
 }
 
@@ -76,13 +72,15 @@ export interface CompletionEvaluationResult {
  * @param selectedSites - Sites to evaluate completion for
  * @param registry - Attribute registry snapshot
  * @param config - Completion rules configuration
+ * @param evaluatedAt - Optional timestamp for evaluation metadata
  * @returns Deterministic completion evaluation result
  */
 export function evaluateCompletion(
   product: ProductSnapshot,
   selectedSites: string[],
   registry: AttributeRegistry,
-  config: CompletionRulesConfig
+  config: CompletionRulesConfig,
+  evaluatedAt?: string
 ): CompletionEvaluationResult {
   
   const evaluationMeta = {
@@ -90,7 +88,7 @@ export function evaluateCompletion(
     totalSegmentWeights: 0,
     enabledSegmentCount: 0,
     rulesVersion: config.rulesVersion,
-    evaluatedAt: new Date().toISOString()
+    ...(evaluatedAt && { evaluatedAt })
   };
 
   const segmentResults: SegmentEvaluationResult[] = [];
@@ -212,9 +210,11 @@ function checkBuiltInSegmentBlocking(
     for (const attrId of descSeoAttributes) {
       const attr = registry[attrId];
       
-      // Check site-awareness
-      if (attr.sites && !attr.sites.includes(site)) {
-        continue; // Attribute not applicable to this site
+      // Check if attribute applies to this site (site-specific attributes have site names in their IDs)
+      const isGlobalAttribute = !attr.attribute_id.includes('_');
+      const attributeSite = !isGlobalAttribute ? attr.attribute_id.split('_').pop() : null;
+      if (attributeSite && attributeSite !== site) {
+        continue; // Site-specific attribute not applicable to this site
       }
 
       // Check if attribute value exists for this site
@@ -346,12 +346,12 @@ function resolveAttributes(
     }
 
     // Skip internal-only attributes unless explicitly included
-    if (attr.internal_only && !selector.includeInternalOnly) {
+    if (attr.internalOnly && !selector.includeInternalOnly) {
       continue;
     }
 
     // Check category match
-    if (!selector.categories.includes(attr.category)) {
+    if (attr.category && !selector.categories.includes(attr.category)) {
       continue;
     }
 
@@ -383,16 +383,13 @@ function hasAttributeValueForSite(
     return false;
   }
 
-  // Handle site-aware attributes
-  if (attributeConfig?.sites) {
-    // Attribute is site-specific
-    if (!attributeConfig.sites.includes(site)) {
-      return true; // Not applicable to this site, consider complete
-    }
+  // Handle site-specific attributes (identified by site suffix in attribute_id)
+  if (attributeConfig) {
+    const isGlobalAttribute = !attributeConfig.attribute_id.includes('_');
+    const attributeSite = !isGlobalAttribute ? attributeConfig.attribute_id.split('_').pop() : null;
     
-    // Check if value exists for the specific site
-    if (typeof value === 'object' && value !== null) {
-      return value[site] !== undefined && value[site] !== null && value[site] !== '';
+    if (attributeSite && attributeSite !== site) {
+      return true; // Not applicable to this site, consider complete
     }
   }
 
