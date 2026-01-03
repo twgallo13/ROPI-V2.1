@@ -22,6 +22,24 @@ function main() {
   const prNumber = process.env.PR_NUMBER || 'unknown';
   const prTitle = process.env.PR_TITLE || '';
 
+  // Check for exemption: docs-only PRs
+  const labelNames = prLabels.map(l => l.name);
+  const hasDocsOnlyLabel = labelNames.includes('type:docs');
+  const bodyLower = prBody.toLowerCase();
+  const titleLower = prTitle.toLowerCase();
+  const isDocsOnly = 
+    (titleLower.startsWith('docs:') || titleLower.includes('documentation')) &&
+    (bodyLower.includes('docs-only') || bodyLower.includes('no behavior changes'));
+  
+  if (hasDocsOnlyLabel && isDocsOnly) {
+    console.log('✅ EXEMPTION: Docs-only PR detected');
+    console.log(`   - Title starts with "docs:" or contains "documentation"`);
+    console.log(`   - Body contains "docs-only" or "no behavior changes"`);
+    console.log(`   - Has "type:docs" label`);
+    console.log('\n✅ LP LINT SKIPPED (docs-only exemption)\n');
+    process.exit(0);
+  }
+
   const errors = [];
   let lpFromBody = null;
   let lpFromLabel = null;
