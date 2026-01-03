@@ -57,8 +57,10 @@ export async function dryRunExportHandler(
     console.log('[Export] Running dry-run with options:', options);
 
     // COMPLETION GATE: Check export readiness before processing
-    console.log('[Export] Checking completion-driven export readiness...');
-    const readinessResult = await calculateCompletionDrivenExportReadiness();
+    // GOVERNANCE: Capture timestamp at request start for deterministic evaluation
+    const evaluatedAt = new Date().toISOString();
+    console.log('[Export] Checking completion-driven export readiness...', { evaluatedAt });
+    const readinessResult = await calculateCompletionDrivenExportReadiness(undefined, false, evaluatedAt);
     
     if (!readinessResult.ready) {
       console.log('[Export] BLOCKED: Export not ready due to completion requirements:', {
@@ -123,8 +125,10 @@ export async function runExportHandler(
     console.log('[Export] Running full export with options:', options);
 
     // COMPLETION GATE: Check export readiness before processing
-    console.log('[Export] Checking completion-driven export readiness...');
-    const readinessResult = await calculateCompletionDrivenExportReadiness();
+    // GOVERNANCE: Capture timestamp at request start for deterministic evaluation
+    const evaluatedAt = new Date().toISOString();
+    console.log('[Export] Checking completion-driven export readiness...', { evaluatedAt });
+    const readinessResult = await calculateCompletionDrivenExportReadiness(undefined, false, evaluatedAt);
     
     if (!readinessResult.ready) {
       console.log('[Export] BLOCKED: Export not ready due to completion requirements:', {

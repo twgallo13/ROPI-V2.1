@@ -38,6 +38,12 @@ export interface CompletionDrivenExportReadiness {
   hasBlockingSites: boolean;
   blockingReasons: ExportBlockingReason[];
   operatorExplanation: OperatorExplanation;
+  catalogStats?: {
+    totalProducts: number;
+    blockedByCompletionCount: number;
+    blockedBySiteCount: number;
+    readyCount: number;
+  };
   evaluationTimestamp: string;
   rulesVersion: number;
 }
@@ -47,6 +53,7 @@ export interface ExportBlockingReason {
   severity: 'BLOCKING' | 'WARNING';
   message: string;
   details: {
+    productId?: string;
     site?: string;
     missingAttributes?: string[];
     currentCompletion?: number;
@@ -79,12 +86,19 @@ export interface OperatorExplanation {
 // ============================================================================
 
 /**
- * Evaluate catalog-level completion by aggregating all products
+ * GOVERNANCE CONTRACT: Conservative catalog-level blocking
+ * 
+ * Policy: ANY product blocked → entire export blocked
+ * - If ANY product has site Description/SEO blocking → export blocked
+ * - Otherwise, if ANY product below threshold → export blocked
+ * - Otherwise → export ready
+ * 
+ * No averaging, no hidden defaults, deterministic sample selection.
  * 
  * @param rules - Completion rules configuration
  * @param attributeRegistry - Attribute registry
  * @param timestamp - Evaluation timestamp
- * @returns CompletionDrivenExportReadiness - Aggregate catalog readiness
+ * @returns CompletionDrivenExportReadiness - Conservative catalog readiness
  */
 async function evaluateCatalogCompletion(
   rules: CompletionRulesConfig,
@@ -94,8 +108,12 @@ async function evaluateCatalogCompletion(
   const admin = require('firebase-admin');
   const db = admin.firestore();
   
-  // Query all products
-  const productsSnapshot = await db.collection('products').limit(1000).get();
+  // Query all products - explicit limit with deterministic ordering
+  const productsSnapshot = await db
+    .collection('products')
+    .orderBy('id')
+    .limit(1000)
+    .get();
   
   if (productsSnapshot.empty) {
     return {
@@ -116,15 +134,28 @@ async function evaluateCatalogCompletion(
         siteStatus: [],
         actionRequired: ['Add products to catalog']
       },
+      catalogStats: {
+        totalProducts: 0,
+        blockedByCompletionCount: 0,
+        blockedBySiteCount: 0,
+        readyCount: 0
+      },
       evaluationTimestamp: timestamp,
       rulesVersion: rules.rulesVersion
     };
   }
   
-  // Aggregate completion scores
-  let totalCompletion = 0;
-  let productCount = 0;
-  const siteBlockingIssues: Map<string, number> = new Map();
+  // Evaluate each product conservatively
+  interface ProductEvaluation {
+    productId: string;
+    completionPct: number;
+    hasBlockingSites: boolean;
+    siteBlockingReasons: SiteBlockingReason[];
+    isBelowThreshold: boolean;
+  }
+  
+  const evaluations: ProductEvaluation[] = [];
+  const SAMPLE_LIMIT = 5; // Explicit, deterministic sample size for operator visibility
   
   for (const doc of productsSnapshot.docs) {
     const product = { id: doc.id, ...doc.data() } as ProductDocument;
@@ -141,73 +172,113 @@ async function evaluateCatalogCompletion(
       timestamp
     );
     
-    totalCompletion += result.totalCompletionPct;
-    productCount++;
-    
-    // Track site blocking issues
-    for (const siteBlock of result.siteBlockingReasons) {
-      const count = siteBlockingIssues.get(siteBlock.site) || 0;
-      siteBlockingIssues.set(siteBlock.site, count + 1);
-    }
+    evaluations.push({
+      productId: product.id,
+      completionPct: result.totalCompletionPct,
+      hasBlockingSites: result.hasBlockingSites,
+      siteBlockingReasons: result.siteBlockingReasons,
+      isBelowThreshold: result.totalCompletionPct < rules.exportUnlockThresholdPct
+    });
   }
   
-  const avgCompletion = productCount > 0 ? Math.round(totalCompletion / productCount) : 0;
-  const hasSiteBlocking = siteBlockingIssues.size > 0;
-  const isReady = !hasSiteBlocking && avgCompletion >= rules.exportUnlockThresholdPct;
+  // Conservative policy: ANY product blocked → export blocked
+  const blockedBySite = evaluations.filter(e => e.hasBlockingSites);
+  const blockedByThreshold = evaluations.filter(e => !e.hasBlockingSites && e.isBelowThreshold);
+  const ready = evaluations.filter(e => !e.hasBlockingSites && !e.isBelowThreshold);
   
-  // PROMPT B: Single canonical gate - prioritize site blocking over threshold
+  const hasAnyBlocking = blockedBySite.length > 0 || blockedByThreshold.length > 0;
+  const minCompletionPct = evaluations.length > 0 
+    ? Math.min(...evaluations.map(e => e.completionPct))
+    : 0;
+  
+  // Build blocking reasons (prioritize site blocking)
   const blockingReasons: ExportBlockingReason[] = [];
   
-  if (hasSiteBlocking) {
-    // Site blocking is primary - force completion to 0 for gating
-    for (const [site, count] of siteBlockingIssues.entries()) {
+  if (blockedBySite.length > 0) {
+    // Take first N samples for operator visibility
+    const sampleProducts = blockedBySite.slice(0, SAMPLE_LIMIT);
+    
+    for (const sample of sampleProducts) {
+      for (const siteBlock of sample.siteBlockingReasons) {
+        blockingReasons.push({
+          type: 'SITE_DESCRIPTION_SEO_MISSING',
+          severity: 'BLOCKING',
+          message: `Product ${sample.productId}: missing Description/SEO attributes for ${siteBlock.site}`,
+          details: {
+            site: siteBlock.site,
+            missingAttributes: siteBlock.missingAttributes,
+            productId: sample.productId
+          }
+        });
+      }
+    }
+    
+    // Indicate if more products are blocked beyond sample
+    if (blockedBySite.length > SAMPLE_LIMIT) {
       blockingReasons.push({
         type: 'SITE_DESCRIPTION_SEO_MISSING',
         severity: 'BLOCKING',
-        message: `${count} products missing Description/SEO attributes for ${site}`,
-        details: { site }
+        message: `${blockedBySite.length - SAMPLE_LIMIT} additional products also blocked by site requirements`,
+        details: {}
       });
     }
-  } else if (avgCompletion < rules.exportUnlockThresholdPct) {
-    // Only show threshold blocking if no site blocking
-    blockingReasons.push({
-      type: 'COMPLETION_BELOW_THRESHOLD',
-      severity: 'BLOCKING',
-      message: `Catalog completion ${avgCompletion}% below threshold ${rules.exportUnlockThresholdPct}%`,
-      details: {
-        currentCompletion: avgCompletion,
-        requiredCompletion: rules.exportUnlockThresholdPct
-      }
-    });
+  } else if (blockedByThreshold.length > 0) {
+    // Only show threshold blocking if NO site blocking
+    const sampleProducts = blockedByThreshold.slice(0, SAMPLE_LIMIT);
+    
+    for (const sample of sampleProducts) {
+      blockingReasons.push({
+        type: 'COMPLETION_BELOW_THRESHOLD',
+        severity: 'BLOCKING',
+        message: `Product ${sample.productId}: ${sample.completionPct}% below threshold ${rules.exportUnlockThresholdPct}%`,
+        details: {
+          productId: sample.productId,
+          currentCompletion: sample.completionPct,
+          requiredCompletion: rules.exportUnlockThresholdPct
+        }
+      });
+    }
+    
+    if (blockedByThreshold.length > SAMPLE_LIMIT) {
+      blockingReasons.push({
+        type: 'COMPLETION_BELOW_THRESHOLD',
+        severity: 'BLOCKING',
+        message: `${blockedByThreshold.length - SAMPLE_LIMIT} additional products below threshold`,
+        details: {}
+      });
+    }
   }
   
   // Generate operator explanation
   const operatorExplanation: OperatorExplanation = {
-    summary: isReady 
-      ? `Export ready: catalog ${avgCompletion}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`
-      : hasSiteBlocking
-        ? `Export blocked: ${siteBlockingIssues.size} sites have Description/SEO issues`
-        : `Export blocked: catalog ${avgCompletion}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`,
+    summary: hasAnyBlocking
+      ? blockedBySite.length > 0
+        ? `Export blocked: ${blockedBySite.length} products missing Description/SEO attributes`
+        : `Export blocked: ${blockedByThreshold.length} products below ${rules.exportUnlockThresholdPct}% threshold`
+      : `Export ready: all ${ready.length} products meet requirements (min completion: ${minCompletionPct}%)`,
     blockingIssues: blockingReasons.map(r => r.message),
     completionBreakdown: [],
-    siteStatus: Array.from(siteBlockingIssues.entries()).map(([site, count]) => ({
-      site,
-      blocked: true,
-      reason: `${count} products missing required attributes`,
-      missingAttributes: []
-    })),
-    actionRequired: hasSiteBlocking
-      ? ['Fix Description/SEO attributes for all products on affected sites']
-      : [`Increase catalog completion to ${rules.exportUnlockThresholdPct}% or higher`]
+    siteStatus: [],
+    actionRequired: hasAnyBlocking
+      ? blockedBySite.length > 0
+        ? [`Fix Description/SEO attributes for ${blockedBySite.length} products`]
+        : [`Increase completion for ${blockedByThreshold.length} products to ${rules.exportUnlockThresholdPct}% or higher`]
+      : []
   };
   
   return {
-    ready: isReady,
-    completionPct: hasSiteBlocking ? 0 : avgCompletion, // PROMPT B: Force 0 when site-blocked
+    ready: !hasAnyBlocking,
+    completionPct: blockedBySite.length > 0 ? 0 : minCompletionPct, // Force 0 when site-blocked
     threshold: rules.exportUnlockThresholdPct,
-    hasBlockingSites: hasSiteBlocking,
+    hasBlockingSites: blockedBySite.length > 0,
     blockingReasons,
     operatorExplanation,
+    catalogStats: {
+      totalProducts: evaluations.length,
+      blockedByCompletionCount: blockedByThreshold.length,
+      blockedBySiteCount: blockedBySite.length,
+      readyCount: ready.length
+    },
     evaluationTimestamp: timestamp,
     rulesVersion: rules.rulesVersion
   };
