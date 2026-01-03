@@ -249,7 +249,7 @@ describe('Completion-Driven Export Readiness', () => {
     
     // Exact operator explanation
     expect(result.operatorExplanation).toEqual({
-      summary: 'Product is ready for export (100% completion)',
+      summary: 'Export ready: product 100% complete (threshold: 80%)',
       blockingIssues: [],
       completionBreakdown: [
         {
@@ -311,7 +311,7 @@ describe('Completion-Driven Export Readiness', () => {
     expect(result.blockingReasons[0]).toEqual({
       type: 'COMPLETION_BELOW_THRESHOLD',
       severity: 'BLOCKING',
-      message: 'Completion 75% is below export threshold 80%',
+      message: 'Product completion 75% is below export threshold 80%',
       details: {
         currentCompletion: 75,
         requiredCompletion: 80
@@ -319,12 +319,12 @@ describe('Completion-Driven Export Readiness', () => {
     });
     
     // Exact operator explanation for threshold failure
-    expect(result.operatorExplanation.summary).toBe('Export blocked: 1 issue(s) prevent export readiness');
+    expect(result.operatorExplanation.summary).toBe('Export blocked: product 75% complete (threshold: 80%)');
     expect(result.operatorExplanation.blockingIssues).toEqual([
-      'Completion 75% is 5% below export threshold'
+      'Product completion 75% is below export threshold 80%'
     ]);
     expect(result.operatorExplanation.actionRequired).toEqual([
-      'Increase completion to at least 80% by addressing missing attributes'
+      'Increase product completion to 80% or higher'
     ]);
     expect(result.operatorExplanation.completionBreakdown[1].missingAttributes).toEqual(['weight']);
   });
@@ -378,7 +378,7 @@ describe('Completion-Driven Export Readiness', () => {
     });
     
     // Exact operator explanation for site blocking
-    expect(result.operatorExplanation.summary).toBe('Export blocked: 1 issue(s) prevent export readiness');
+    expect(result.operatorExplanation.summary).toBe('Export blocked: missing Description/SEO attributes for uk');
     expect(result.operatorExplanation.blockingIssues).toEqual([
       'uk: Missing title_uk'
     ]);
@@ -392,7 +392,7 @@ describe('Completion-Driven Export Readiness', () => {
       }
     ]);
     expect(result.operatorExplanation.actionRequired).toEqual([
-      'Add missing Description/SEO attributes for uk site'
+      'Add missing attributes for uk: title_uk'
     ]);
   });
   
@@ -507,7 +507,7 @@ describe('Completion-Driven Export Readiness', () => {
     // Should be ready despite missing media/pricing (excluded by design)
     expect(result.ready).toBe(true);
     expect(result.completionPct).toBe(100);
-    expect(result.operatorExplanation.summary).toBe('Product is ready for export (100% completion)');
+    expect(result.operatorExplanation.summary).toBe('Export ready: product 100% complete (threshold: 80%)');
   });
   
   it('should handle system errors gracefully', async () => {
@@ -535,9 +535,9 @@ describe('Completion-Driven Export Readiness', () => {
 describe('Completion-Driven Export Readiness (Integration)', () => {
   
   it('should integrate with actual completion rules service', async () => {
-    // This test verifies integration with completion rules service
-    // using mocked configuration from CompletionRulesService
-    const result = await calculateCompletionDrivenExportReadiness(PRODUCT_100_COMPLETE, true);
+    // PROMPT C: Use explicit timestamp for deterministic output
+    const explicitTimestamp = '2026-01-03T13:00:00.000Z';
+    const result = await calculateCompletionDrivenExportReadiness(PRODUCT_100_COMPLETE, false, explicitTimestamp);
     
     expect(result).toBeDefined();
     expect(result.ready).toBe(true);
@@ -545,5 +545,142 @@ describe('Completion-Driven Export Readiness (Integration)', () => {
     expect(result.threshold).toBe(80); // Mock config threshold
     expect(result.blockingReasons).toHaveLength(0);
     expect(result.operatorExplanation).toBeDefined();
+    expect(result.evaluationTimestamp).toBe(explicitTimestamp); // PROMPT C: Verify determinism
+  });
+});
+
+// ============================================================================
+// PROMPT D: Snapshot-Style Blocking Payload Tests
+// ============================================================================
+
+describe('Completion-Driven Export Readiness (Blocking Payloads)', () => {
+  
+  const DETERMINISTIC_TIMESTAMP = '2026-01-03T13:00:00.000Z';
+  
+  it('should return actionable 423 payload for threshold-only blocking', async () => {
+    // Mock completion engine result for 75% completion (below threshold)
+    (evaluateCompletion as any).mockReturnValue({
+      totalCompletionPct: 75,
+      hasBlockingSites: false,
+      siteBlockingReasons: [],
+      segmentResults: [
+        {
+          segmentId: 'description-seo',
+          segmentName: 'Description & SEO',
+          score: 75,
+          weightPct: 60,
+          missingAttributes: ['weight']
+        },
+        {
+          segmentId: 'technical',
+          segmentName: 'Technical Specifications',
+          score: 75,
+          weightPct: 40,
+          missingAttributes: []
+        }
+      ]
+    });
+    
+    const result = await calculateCompletionDrivenExportReadiness(
+      PRODUCT_75_COMPLETE_BELOW_THRESHOLD,
+      false,
+      DETERMINISTIC_TIMESTAMP
+    );
+    
+    // PROMPT D: Validate stable, actionable 423 response structure
+    expect(result.ready).toBe(false);
+    expect(result.completionPct).toBe(75);
+    expect(result.threshold).toBe(80);
+    expect(result.hasBlockingSites).toBe(false);
+    
+    // PROMPT D: Exact blocking reasons structure
+    expect(result.blockingReasons).toHaveLength(1);
+    expect(result.blockingReasons[0]).toEqual({
+      type: 'COMPLETION_BELOW_THRESHOLD',
+      severity: 'BLOCKING',
+      message: 'Product completion 75% is below export threshold 80%',
+      details: {
+        currentCompletion: 75,
+        requiredCompletion: 80
+      }
+    });
+    
+    // PROMPT D: Operator explanation with actionable guidance
+    expect(result.operatorExplanation.summary).toBe('Export blocked: product 75% complete (threshold: 80%)');
+    expect(result.operatorExplanation.blockingIssues).toContain('Product completion 75% is below export threshold 80%');
+    expect(result.operatorExplanation.actionRequired).toContain('Increase product completion to 80% or higher');
+    
+    // PROMPT C: Verify deterministic timestamp
+    expect(result.evaluationTimestamp).toBe(DETERMINISTIC_TIMESTAMP);
+    expect(result.rulesVersion).toBe(1);
+  });
+  
+  it('should return actionable 423 payload for site Description/SEO blocking', async () => {
+    // Mock completion engine result for site blocking (uk missing title_uk)
+    (evaluateCompletion as any).mockReturnValue({
+      totalCompletionPct: 85, // High completion but site-blocked
+      hasBlockingSites: true,
+      siteBlockingReasons: [
+        {
+          site: 'uk',
+          reason: 'Missing required Description/SEO attributes',
+          missingAttributes: ['title_uk']
+        }
+      ],
+      segmentResults: [
+        {
+          segmentId: 'description-seo',
+          segmentName: 'Description & SEO',
+          score: 80,
+          weightPct: 60,
+          missingAttributes: ['title_uk']
+        },
+        {
+          segmentId: 'technical',
+          segmentName: 'Technical Specifications',
+          score: 100,
+          weightPct: 40,
+          missingAttributes: []
+        }
+      ]
+    });
+    
+    const result = await calculateCompletionDrivenExportReadiness(
+      PRODUCT_SITE_BLOCKED,
+      false,
+      DETERMINISTIC_TIMESTAMP
+    );
+    
+    // PROMPT D: Validate stable, actionable 423 response structure
+    expect(result.ready).toBe(false);
+    expect(result.completionPct).toBe(0); // PROMPT B: Force 0 when site-blocked
+    expect(result.threshold).toBe(80);
+    expect(result.hasBlockingSites).toBe(true);
+    
+    // PROMPT B + PROMPT D: Only site blocking reason (no threshold duplicate)
+    expect(result.blockingReasons).toHaveLength(1);
+    expect(result.blockingReasons[0].type).toBe('SITE_DESCRIPTION_SEO_MISSING');
+    expect(result.blockingReasons[0].severity).toBe('BLOCKING');
+    expect(result.blockingReasons[0].details.site).toBe('uk');
+    expect(result.blockingReasons[0].details.missingAttributes).toEqual(['title_uk']);
+    
+    // PROMPT D: Operator explanation with specific missing attributes per site
+    expect(result.operatorExplanation.summary).toContain('Export blocked');
+    expect(result.operatorExplanation.summary).toContain('uk');
+    expect(result.operatorExplanation.siteStatus).toHaveLength(2);
+    expect(result.operatorExplanation.siteStatus).toContainEqual({
+      site: 'us',
+      blocked: false
+    });
+    expect(result.operatorExplanation.siteStatus).toContainEqual({
+      site: 'uk',
+      blocked: true,
+      reason: 'Missing required Description/SEO attributes',
+      missingAttributes: ['title_uk']
+    });
+    expect(result.operatorExplanation.actionRequired).toContain('Add missing attributes for uk: title_uk');
+    
+    // PROMPT C: Verify deterministic timestamp
+    expect(result.evaluationTimestamp).toBe(DETERMINISTIC_TIMESTAMP);
   });
 });

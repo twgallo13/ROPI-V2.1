@@ -75,6 +75,145 @@ export interface OperatorExplanation {
 }
 
 // ============================================================================
+// Catalog-Level Evaluation
+// ============================================================================
+
+/**
+ * Evaluate catalog-level completion by aggregating all products
+ * 
+ * @param rules - Completion rules configuration
+ * @param attributeRegistry - Attribute registry
+ * @param timestamp - Evaluation timestamp
+ * @returns CompletionDrivenExportReadiness - Aggregate catalog readiness
+ */
+async function evaluateCatalogCompletion(
+  rules: CompletionRulesConfig,
+  attributeRegistry: AttributeRegistry,
+  timestamp: string
+): Promise<CompletionDrivenExportReadiness> {
+  const admin = require('firebase-admin');
+  const db = admin.firestore();
+  
+  // Query all products
+  const productsSnapshot = await db.collection('products').limit(1000).get();
+  
+  if (productsSnapshot.empty) {
+    return {
+      ready: false,
+      completionPct: 0,
+      threshold: rules.exportUnlockThresholdPct,
+      hasBlockingSites: false,
+      blockingReasons: [{
+        type: 'COMPLETION_BELOW_THRESHOLD',
+        severity: 'BLOCKING',
+        message: 'No products in catalog',
+        details: {}
+      }],
+      operatorExplanation: {
+        summary: 'Export blocked: no products in catalog',
+        blockingIssues: ['Catalog contains no products'],
+        completionBreakdown: [],
+        siteStatus: [],
+        actionRequired: ['Add products to catalog']
+      },
+      evaluationTimestamp: timestamp,
+      rulesVersion: rules.rulesVersion
+    };
+  }
+  
+  // Aggregate completion scores
+  let totalCompletion = 0;
+  let productCount = 0;
+  const siteBlockingIssues: Map<string, number> = new Map();
+  
+  for (const doc of productsSnapshot.docs) {
+    const product = { id: doc.id, ...doc.data() } as ProductDocument;
+    const productSnapshot = convertToProductSnapshot(product);
+    const selectedSites = extractSelectedSites(product);
+    
+    if (selectedSites.length === 0) continue;
+    
+    const result = evaluateCompletion(
+      productSnapshot,
+      selectedSites,
+      attributeRegistry,
+      rules,
+      timestamp
+    );
+    
+    totalCompletion += result.totalCompletionPct;
+    productCount++;
+    
+    // Track site blocking issues
+    for (const siteBlock of result.siteBlockingReasons) {
+      const count = siteBlockingIssues.get(siteBlock.site) || 0;
+      siteBlockingIssues.set(siteBlock.site, count + 1);
+    }
+  }
+  
+  const avgCompletion = productCount > 0 ? Math.round(totalCompletion / productCount) : 0;
+  const hasSiteBlocking = siteBlockingIssues.size > 0;
+  const isReady = !hasSiteBlocking && avgCompletion >= rules.exportUnlockThresholdPct;
+  
+  // PROMPT B: Single canonical gate - prioritize site blocking over threshold
+  const blockingReasons: ExportBlockingReason[] = [];
+  
+  if (hasSiteBlocking) {
+    // Site blocking is primary - force completion to 0 for gating
+    for (const [site, count] of siteBlockingIssues.entries()) {
+      blockingReasons.push({
+        type: 'SITE_DESCRIPTION_SEO_MISSING',
+        severity: 'BLOCKING',
+        message: `${count} products missing Description/SEO attributes for ${site}`,
+        details: { site }
+      });
+    }
+  } else if (avgCompletion < rules.exportUnlockThresholdPct) {
+    // Only show threshold blocking if no site blocking
+    blockingReasons.push({
+      type: 'COMPLETION_BELOW_THRESHOLD',
+      severity: 'BLOCKING',
+      message: `Catalog completion ${avgCompletion}% below threshold ${rules.exportUnlockThresholdPct}%`,
+      details: {
+        currentCompletion: avgCompletion,
+        requiredCompletion: rules.exportUnlockThresholdPct
+      }
+    });
+  }
+  
+  // Generate operator explanation
+  const operatorExplanation: OperatorExplanation = {
+    summary: isReady 
+      ? `Export ready: catalog ${avgCompletion}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`
+      : hasSiteBlocking
+        ? `Export blocked: ${siteBlockingIssues.size} sites have Description/SEO issues`
+        : `Export blocked: catalog ${avgCompletion}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`,
+    blockingIssues: blockingReasons.map(r => r.message),
+    completionBreakdown: [],
+    siteStatus: Array.from(siteBlockingIssues.entries()).map(([site, count]) => ({
+      site,
+      blocked: true,
+      reason: `${count} products missing required attributes`,
+      missingAttributes: []
+    })),
+    actionRequired: hasSiteBlocking
+      ? ['Fix Description/SEO attributes for all products on affected sites']
+      : [`Increase catalog completion to ${rules.exportUnlockThresholdPct}% or higher`]
+  };
+  
+  return {
+    ready: isReady,
+    completionPct: hasSiteBlocking ? 0 : avgCompletion, // PROMPT B: Force 0 when site-blocked
+    threshold: rules.exportUnlockThresholdPct,
+    hasBlockingSites: hasSiteBlocking,
+    blockingReasons,
+    operatorExplanation,
+    evaluationTimestamp: timestamp,
+    rulesVersion: rules.rulesVersion
+  };
+}
+
+// ============================================================================
 // Main Export Readiness Function
 // ============================================================================
 
@@ -84,16 +223,21 @@ export interface OperatorExplanation {
  * Replaces the legacy calculateExportReadiness function with completion-based evaluation
  * that enforces site-aware blocking and threshold-based gating.
  * 
- * @param product - Product document with attributes and sites
+ * When product is provided: evaluates that specific product's completion
+ * When product is omitted: evaluates catalog-level completion (queries all products)
+ * 
+ * @param product - Optional product document. If omitted, evaluates full catalog
  * @param forceRulesRefresh - Force reload of completion rules from Firestore
+ * @param evaluatedAt - Optional explicit timestamp for deterministic output
  * @returns Promise<CompletionDrivenExportReadiness> - Enhanced readiness result with operator explanations
  */
 export async function calculateCompletionDrivenExportReadiness(
-  product: ProductDocument,
-  forceRulesRefresh = false
+  product?: ProductDocument,
+  forceRulesRefresh = false,
+  evaluatedAt?: string
 ): Promise<CompletionDrivenExportReadiness> {
   
-  const evaluationTimestamp = new Date().toISOString();
+  const evaluationTimestamp = evaluatedAt || new Date().toISOString();
   
   try {
     // Load completion rules configuration
@@ -101,6 +245,11 @@ export async function calculateCompletionDrivenExportReadiness(
     
     // Load attribute registry
     const attributeRegistry = await loadAttributeRegistryForCompletion();
+    
+    // If no product provided, evaluate catalog-level completion
+    if (!product) {
+      return await evaluateCatalogCompletion(completionRules, attributeRegistry, evaluationTimestamp);
+    }
     
     // Convert product to completion engine format
     const productSnapshot = convertToProductSnapshot(product);
@@ -129,13 +278,17 @@ export async function calculateCompletionDrivenExportReadiness(
     // Determine export readiness based on completion
     const isReady = determineExportReadiness(completionResult, completionRules);
     
-    // Generate blocking reasons and operator explanations
+    // PROMPT B: Single canonical gate - prioritize site blocking, force completion to 0
+    const hasSiteBlocking = completionResult.hasBlockingSites;
+    const reportedCompletion = hasSiteBlocking ? 0 : completionResult.totalCompletionPct;
+    
+    // Generate blocking reasons (site blocking takes priority - no threshold duplicate)
     const blockingReasons = generateBlockingReasons(completionResult, completionRules);
     const operatorExplanation = generateOperatorExplanation(completionResult, completionRules, selectedSites);
     
     return {
       ready: isReady,
-      completionPct: completionResult.totalCompletionPct,
+      completionPct: reportedCompletion, // PROMPT B: Force 0 when site-blocked
       threshold: completionRules.exportUnlockThresholdPct,
       hasBlockingSites: completionResult.hasBlockingSites,
       blockingReasons,
@@ -258,7 +411,7 @@ function generateBlockingReasons(
     reasons.push({
       type: 'COMPLETION_BELOW_THRESHOLD',
       severity: 'BLOCKING',
-      message: `Completion ${completionResult.totalCompletionPct}% is below export threshold ${rules.exportUnlockThresholdPct}%`,
+      message: `Product completion ${completionResult.totalCompletionPct}% is below export threshold ${rules.exportUnlockThresholdPct}%`,
       details: {
         currentCompletion: completionResult.totalCompletionPct,
         requiredCompletion: rules.exportUnlockThresholdPct
@@ -285,24 +438,26 @@ function generateOperatorExplanation(
   if (completionResult.hasBlockingSites) {
     for (const siteBlocking of completionResult.siteBlockingReasons) {
       blockingIssues.push(`${siteBlocking.site}: Missing ${siteBlocking.missingAttributes.join(', ')}`);
-      actionRequired.push(`Add missing Description/SEO attributes for ${siteBlocking.site} site`);
+      actionRequired.push(`Add missing attributes for ${siteBlocking.site}: ${siteBlocking.missingAttributes.join(', ')}`);
     }
   }
   
   // Completion threshold issues (only if no site blocking)
   if (!completionResult.hasBlockingSites && 
       completionResult.totalCompletionPct < rules.exportUnlockThresholdPct) {
-    const gap = rules.exportUnlockThresholdPct - completionResult.totalCompletionPct;
-    blockingIssues.push(`Completion ${completionResult.totalCompletionPct}% is ${gap}% below export threshold`);
-    actionRequired.push(`Increase completion to at least ${rules.exportUnlockThresholdPct}% by addressing missing attributes`);
+    blockingIssues.push(`Product completion ${completionResult.totalCompletionPct}% is below export threshold ${rules.exportUnlockThresholdPct}%`);
+    actionRequired.push(`Increase product completion to ${rules.exportUnlockThresholdPct}% or higher`);
   }
   
   // Generate summary
   let summary: string;
-  if (blockingIssues.length === 0) {
-    summary = `Product is ready for export (${completionResult.totalCompletionPct}% completion)`;
+  if (completionResult.hasBlockingSites) {
+    const sitesAffected = completionResult.siteBlockingReasons.map(s => s.site).join(', ');
+    summary = `Export blocked: missing Description/SEO attributes for ${sitesAffected}`;
+  } else if (completionResult.totalCompletionPct < rules.exportUnlockThresholdPct) {
+    summary = `Export blocked: product ${completionResult.totalCompletionPct}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`;
   } else {
-    summary = `Export blocked: ${blockingIssues.length} issue(s) prevent export readiness`;
+    summary = `Export ready: product ${completionResult.totalCompletionPct}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`;
   }
   
   return {
@@ -317,11 +472,17 @@ function generateOperatorExplanation(
     })),
     siteStatus: selectedSites.map(site => {
       const siteBlocking = completionResult.siteBlockingReasons.find(b => b.site === site);
+      if (siteBlocking) {
+        return {
+          site,
+          blocked: true,
+          reason: siteBlocking.reason,
+          missingAttributes: siteBlocking.missingAttributes
+        };
+      }
       return {
         site,
-        blocked: !!siteBlocking,
-        reason: siteBlocking?.reason,
-        missingAttributes: siteBlocking?.missingAttributes
+        blocked: false
       };
     }),
     actionRequired
