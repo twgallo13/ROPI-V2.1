@@ -11,7 +11,7 @@
 This document defines the **authoritative backend configuration schema** for Completion Rules, which drive the export gate evaluation engine. It eliminates ambiguity, defaults, and inferred logic by documenting **actual behavior as implemented**.
 
 **Scope:**
-- Configuration schema stored in `settings/exportSettings/completionRules`
+- Configuration schema stored as `completionRules` field on `settings/exportSettings`
 - Backend services that read, validate, and enforce completion rules
 - Completion evaluation engine behavior and semantics
 
