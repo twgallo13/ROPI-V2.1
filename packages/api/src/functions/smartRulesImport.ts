@@ -127,8 +127,9 @@ export async function processSmartRulesForBatch(
   const now = new Date().toISOString();
   
   // Load rules and dictionary once for the batch
+  // Force refresh to ensure we don't use stale cached rules
   const [rules, dictionary] = await Promise.all([
-    loadActiveRules(),
+    loadActiveRules(true),
     loadDictionary(),
   ]);
   
@@ -256,8 +257,9 @@ export async function processImportWithSmartRules(
   }
   
   // Load rules and dictionary
+  // Force refresh to ensure we have latest rules (avoid stale cache)
   const [rules, dictionary] = await Promise.all([
-    loadActiveRules(),
+    loadActiveRules(true),
     loadDictionary(),
   ]);
   

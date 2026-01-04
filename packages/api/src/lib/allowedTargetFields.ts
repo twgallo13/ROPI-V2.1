@@ -182,6 +182,10 @@ function getStaticWhitelist(): Set<string> {
     'material',
     'closure_type',
     'heel_type',
+    'weight',
+    'height',
+    'length',
+    'width',
     
     // Legacy path formats (for backward compatibility)
     'attributes.gender',
@@ -201,6 +205,10 @@ function getStaticWhitelist(): Set<string> {
     'attributes.closure_type',
     'attributes.heelType',
     'attributes.heel_type',
+    'attributes.weight',
+    'attributes.height',
+    'attributes.length',
+    'attributes.width',
     
     // Descriptive namespace
     'descriptive.gender',

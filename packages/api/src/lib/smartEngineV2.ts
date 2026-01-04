@@ -92,7 +92,10 @@ export interface SmartRule {
   enabled: boolean;
   priority: number;
   tags?: string[];
-  condition: Condition;
+  /** Single condition (legacy format) */
+  condition?: Condition;
+  /** Multiple conditions with AND logic (preferred format) */
+  conditions?: Condition[];
   action: Action;
   /** Whether to auto-apply during import (default: false) */
   autoApply: boolean;
@@ -115,6 +118,71 @@ export interface ConditionResult {
     matchGroups?: string[];
     [key: string]: unknown;
   };
+}
+
+/**
+ * Helper function to normalize condition format.
+ * Converts UI format (with 'field') to backend format (with 'source').
+ */
+function normalizeCondition(condition: any): Condition {
+  if (!condition) {
+    return { source: '', matchType: 'equals', value: '' };
+  }
+  
+  // If already has 'source', it's backend format - return as-is
+  if ('source' in condition) {
+    return condition as Condition;
+  }
+  
+  // Convert UI format (field) to backend format (source)
+  if ('field' in condition) {
+    return {
+      source: condition.field,
+      matchType: condition.matchType,
+      value: condition.value,
+      options: condition.options
+    };
+  }
+  
+  return condition as Condition;
+}
+
+/**
+ * Helper function to evaluate rule conditions.
+ * Supports both single condition and conditions array (with AND logic).
+ * Handles both UI format (field) and backend format (source).
+ */
+function evaluateRuleConditions(
+  rule: SmartRule,
+  data: ImportRow | Product
+): ConditionResult {
+  // Use conditions array (backend format with 'source' property)
+  if (rule.conditions && Array.isArray(rule.conditions) && rule.conditions.length > 0) {
+    let minConfidence = 1.0;
+    const allCaptures: Record<string, unknown> = {};
+    
+    for (const condition of rule.conditions) {
+      const normalized = normalizeCondition(condition);
+      const result = evaluateCondition(normalized, data);
+      if (!result.matches) {
+        return { matches: false, confidence: 0, captures: {} };
+      }
+      minConfidence = Math.min(minConfidence, result.confidence);
+      Object.assign(allCaptures, result.captures);
+    }
+    
+    return { matches: true, confidence: minConfidence, captures: allCaptures };
+  }
+  
+  // Only use rule.condition if it's a single object (not an array)
+  // Skip if it's an array (that's UI format array which we don't use)
+  if (rule.condition && !Array.isArray(rule.condition)) {
+    const normalized = normalizeCondition(rule.condition);
+    return evaluateCondition(normalized, data);
+  }
+  
+  // No valid conditions defined
+  return { matches: false, confidence: 0, captures: {} };
 }
 
 /**
@@ -1192,8 +1260,8 @@ export class SmartRulesEngineV2 {
           continue;
         }
         
-        // Evaluate condition
-        const condResult = evaluateCondition(rule.condition, importRow);
+        // Evaluate condition(s)
+        const condResult = evaluateRuleConditions(rule, importRow);
         
         if (!condResult.matches) continue;
         
@@ -1288,7 +1356,7 @@ export class SmartRulesEngineV2 {
           suggestion.applied = true;
           autoApplied.push(suggestion);
           
-          // Set value in updates
+          // Set value in updates using flat field name from registry
           deepSet(updates, rule.action.targetField, value);
           
           // Set provenance (S2.4)
@@ -1474,7 +1542,7 @@ export class SmartRulesEngineV2 {
       };
     }
     
-    const condResult = evaluateCondition(rule.condition, product);
+    const condResult = evaluateRuleConditions(rule, product);
     
     if (!condResult.matches) {
       return {

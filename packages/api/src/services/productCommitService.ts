@@ -318,11 +318,18 @@ async function processRow(
   
   // Apply Smart Rules updates to product (if not skipped)
   if (!smartRulesResult.skipped && Object.keys(smartRulesResult.updates).length > 0) {
-    // Merge Smart Rules attribute updates
-    if (smartRulesResult.updates.attributes) {
+    // Merge Smart Rules attribute updates (flat field names from registry)
+    // Extract attribute fields (exclude metadata fields like provenance, _appliedRules, etc.)
+    const attributeUpdates: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(smartRulesResult.updates)) {
+      if (!key.startsWith('_') && !key.startsWith('provenance')) {
+        attributeUpdates[key] = value;
+      }
+    }
+    if (Object.keys(attributeUpdates).length > 0) {
       product.attributes = {
         ...product.attributes,
-        ...(smartRulesResult.updates.attributes as ProductAttributes),
+        ...(attributeUpdates as ProductAttributes),
       };
     }
     
