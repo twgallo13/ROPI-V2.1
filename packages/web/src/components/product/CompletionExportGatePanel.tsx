@@ -1,15 +1,13 @@
 /**
  * Completion / Export Gate Panel
- * 
- * Sidebar panel in product editor showing completion status and blocking reasons.
- * Helps operators understand exactly what's missing for export.
+ * LP-completion-user-visibility-ui-1.4.0
  */
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import './CompletionExportGatePanel.css';
 
 export interface CompletionEvaluationResult {
+  ready: boolean;
   completionPct: number;
   threshold: number;
   hasBlockingSites: boolean;
@@ -24,22 +22,22 @@ export interface CompletionEvaluationResult {
     };
   }>;
   operatorExplanation?: {
-    summary: string;
-    blockingIssues: string[];
-    completionBreakdown: Array<{
+    summary?: string;
+    blockingIssues?: string[];
+    completionBreakdown?: Array<{
       segmentId: string;
       segmentName: string;
       score: number;
       weightPct: number;
       missingAttributes: string[];
     }>;
-    siteStatus: Array<{
+    siteStatus?: Array<{
       site: string;
       blocked: boolean;
       reason?: string;
       missingAttributes?: string[];
     }>;
-    actionRequired: string[];
+    actionRequired?: string[];
   };
 }
 
@@ -47,16 +45,13 @@ interface CompletionExportGatePanelProps {
   productId: string;
 }
 
-/**
- * Fetch product completion evaluation from API
- */
 async function fetchProductCompletion(
   productId: string
 ): Promise<CompletionEvaluationResult | null> {
   try {
     const response = await fetch(`/api/products/${productId}/completion`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('firebase_token') || ''}`,
+        Authorization: `Bearer ${localStorage.getItem('firebase_token') || ''}`,
       },
     });
 
@@ -68,26 +63,19 @@ async function fetchProductCompletion(
     return await response.json();
   } catch (error) {
     console.error('[CompletionPanel] Error fetching completion:', error);
-    return null;
+    throw error;
   }
 }
 
-/**
- * Completion / Export Gate Panel Component
- */
-export function CompletionExportGatePanel({
-  productId,
-}: CompletionExportGatePanelProps) {
-  const navigate = useNavigate();
-  const [completion, setCompletion] = useState<CompletionEvaluationResult | null>(
-    null
-  );
+export function CompletionExportGatePanel({ productId }: CompletionExportGatePanelProps) {
+  const [completion, setCompletion] = useState<CompletionEvaluationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedSite, setExpandedSite] = useState<string | null>(null);
 
   useEffect(() => {
     loadCompletion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
   async function loadCompletion() {
@@ -104,71 +92,80 @@ export function CompletionExportGatePanel({
     }
   }
 
-  const isBlocked = !completion || completion.blockingReasons.length > 0;
-  const percentComplete = completion?.completionPct || 0;
-  const threshold = completion?.threshold || 80;
+  const isBlocked = completion ? !completion.ready : false;
+  const percentComplete = completion?.completionPct ?? 0;
+  const threshold = completion?.threshold;
+  const operatorExplanation = completion?.operatorExplanation;
+  const blockingIssues = operatorExplanation?.blockingIssues ?? [];
+  const completionBreakdown = operatorExplanation?.completionBreakdown ?? [];
+  const siteStatus = operatorExplanation?.siteStatus ?? [];
+  const actionRequired = operatorExplanation?.actionRequired ?? [];
 
   return (
     <div className="completion-export-gate-panel">
       <div className="panel-header">
-        <h3 className="panel-title">
-          {isBlocked ? '🚫' : '✅'} Completion / Export
-        </h3>
-        <button
-          className="refresh-button"
-          onClick={loadCompletion}
-          title="Refresh"
-        >
+        <h3 className="panel-title">{isBlocked ? '🚫' : '✅'} Completion / Export</h3>
+        <button className="refresh-button" onClick={loadCompletion} title="Refresh">
           ↻
         </button>
       </div>
 
       {loading && <div className="panel-loading">Loading completion data...</div>}
 
-      {error && <div className="panel-error">{error}</div>}
+      {error && (
+        <div className="panel-error">
+          <div>{error}</div>
+          <button className="retry-button" onClick={loadCompletion}>
+            Retry
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && !completion && (
+        <div className="panel-empty">
+          <div>No completion data returned for this product.</div>
+          <button className="retry-button" onClick={loadCompletion}>
+            Retry
+          </button>
+        </div>
+      )}
 
       {completion && (
         <>
-          {/* Completion Percentage */}
           <div className="completion-section">
             <div className="completion-header">
               <span>Completion</span>
-              <span className="completion-percentage">
-                {percentComplete.toFixed(0)}%
-              </span>
+              <span className="completion-percentage">{percentComplete.toFixed(0)}%</span>
             </div>
             <div className="completion-bar-container">
               <div
-                className={`completion-bar ${percentComplete >= threshold ? 'ready' : 'blocked'}`}
+                className={`completion-bar ${threshold !== undefined && percentComplete >= threshold ? 'ready' : 'blocked'}`}
                 style={{ width: `${Math.min(percentComplete, 100)}%` }}
-              >
-                {percentComplete > 10 && <span>{percentComplete.toFixed(0)}%</span>}
-              </div>
+              />
             </div>
             <div className="threshold-info">
-              Export threshold: <strong>{threshold}%</strong>
+              Export threshold: <strong>{threshold !== undefined ? `${threshold}%` : '—'}</strong>
             </div>
           </div>
 
-          {/* Status Badge */}
           <div className="status-badge-container">
             {isBlocked ? (
-              <div className="badge badge-blocked">
-                ❌ Blocked from export
-              </div>
+              <div className="badge badge-blocked">❌ Blocked from export</div>
             ) : (
-              <div className="badge badge-ready">
-                ✅ Ready for export
-              </div>
+              <div className="badge badge-ready">✅ Ready for export</div>
             )}
           </div>
 
-          {/* Blocking Reasons */}
+          {operatorExplanation?.summary && (
+            <div className="summary-section">
+              <h4 className="section-title">Summary</h4>
+              <p className="summary-text">{operatorExplanation.summary}</p>
+            </div>
+          )}
+
           {completion.blockingReasons.length > 0 && (
             <div className="blocking-reasons-section">
-              <h4 className="section-title">
-                Why blocked ({completion.blockingReasons.length})
-              </h4>
+              <h4 className="section-title">Why blocked ({completion.blockingReasons.length})</h4>
               <div className="reasons-list">
                 {completion.blockingReasons.map((reason, i) => (
                   <div key={i} className="reason">
@@ -176,12 +173,10 @@ export function CompletionExportGatePanel({
                     <div className="reason-content">
                       <div className="reason-type">{reason.type}</div>
                       <div className="reason-message">{reason.message}</div>
-                      {reason.details?.missingAttributes &&
-                        reason.details.missingAttributes.length > 0 && (
-                          <div className="reason-attrs">
-                            Missing: {reason.details.missingAttributes.join(', ')}
-                          </div>
-                        )}
+                      {reason.details?.missingAttributes && reason.details.missingAttributes.length > 0 && (
+                        <div className="reason-attrs">Missing: {reason.details.missingAttributes.join(', ')}</div>
+                      )}
+                      {reason.details?.site && <div className="reason-attrs">Site: {reason.details.site}</div>}
                     </div>
                   </div>
                 ))}
@@ -189,124 +184,84 @@ export function CompletionExportGatePanel({
             </div>
           )}
 
-          {/* Operator Explanation */}
-          {completion.operatorExplanation && (
-            <>
-              {/* Site Status */}
-              {completion.operatorExplanation.siteStatus &&
-                completion.operatorExplanation.siteStatus.length > 0 && (
-                  <div className="sites-section">
-                    <h4 className="section-title">Site Status</h4>
-                    <div className="sites-list">
-                      {completion.operatorExplanation.siteStatus.map((site) => (
-                        <div key={site.site} className="site-item">
-                          <button
-                            className={`site-button ${site.blocked ? 'blocked' : 'ready'}`}
-                            onClick={() =>
-                              setExpandedSite(
-                                expandedSite === site.site ? null : site.site
-                              )
-                            }
-                          >
-                            <span className="site-icon">
-                              {site.blocked ? '❌' : '✅'}
-                            </span>
-                            <span className="site-name">{site.site}</span>
-                            <span className="expand-icon">
-                              {expandedSite === site.site ? '▼' : '▶'}
-                            </span>
-                          </button>
-
-                          {expandedSite === site.site && site.missingAttributes && (
-                            <div className="site-details">
-                              {site.reason && (
-                                <p className="site-reason">{site.reason}</p>
-                              )}
-                              {site.missingAttributes.length > 0 && (
-                                <div className="missing-list">
-                                  <strong>Missing attributes:</strong>
-                                  <ul>
-                                    {site.missingAttributes.map((attr, j) => (
-                                      <li key={j}>{attr}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              {/* Completion by Segment */}
-              {completion.operatorExplanation.completionBreakdown &&
-                completion.operatorExplanation.completionBreakdown.length > 0 && (
-                  <div className="segments-section">
-                    <h4 className="section-title">Completion by Segment</h4>
-                    <div className="segments-breakdown">
-                      {completion.operatorExplanation.completionBreakdown.map(
-                        (segment) => (
-                          <div key={segment.segmentId} className="segment-row">
-                            <div className="segment-name">
-                              {segment.segmentName}
-                            </div>
-                            <div className="segment-bar-container">
-                              <div
-                                className="segment-bar"
-                                style={{
-                                  width: `${Math.min(segment.score, 100)}%`,
-                                }}
-                              />
-                            </div>
-                            <div className="segment-score">
-                              {segment.score.toFixed(0)}%
-                            </div>
-                            {segment.missingAttributes.length > 0 && (
-                              <div className="segment-missing">
-                                Missing: {segment.missingAttributes.join(', ')}
-                              </div>
-                            )}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-              {/* Action Required */}
-              {completion.operatorExplanation.actionRequired &&
-                completion.operatorExplanation.actionRequired.length > 0 && (
-                  <div className="actions-section">
-                    <h4 className="section-title">What to fix</h4>
-                    <ul className="actions-list">
-                      {completion.operatorExplanation.actionRequired.map(
-                        (action, i) => (
-                          <li key={i}>{action}</li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                )}
-            </>
+          {blockingIssues.length > 0 && (
+            <div className="blocking-issues-section">
+              <h4 className="section-title">Blocking issues</h4>
+              <ul className="blocking-issues">
+                {blockingIssues.map((issue, i) => (
+                  <li key={i}>{issue}</li>
+                ))}
+              </ul>
+            </div>
           )}
 
-          {/* CTA Links */}
-          <div className="panel-ctas">
-            <button
-              className="cta-button"
-              onClick={() => navigate('/settings/export-settings')}
-            >
-              View Export Settings
-            </button>
-            <button
-              className="cta-button secondary"
-              onClick={loadCompletion}
-            >
-              Refresh Status
-            </button>
-          </div>
+          {siteStatus.length > 0 && (
+            <div className="sites-section">
+              <h4 className="section-title">Site Status</h4>
+              <div className="sites-list">
+                {siteStatus.map((site) => (
+                  <div key={site.site} className="site-item">
+                    <button
+                      className={`site-button ${site.blocked ? 'blocked' : 'ready'}`}
+                      onClick={() => setExpandedSite(expandedSite === site.site ? null : site.site)}
+                    >
+                      <span className="site-icon">{site.blocked ? '❌' : '✅'}</span>
+                      <span className="site-name">{site.site}</span>
+                      <span className="expand-icon">{expandedSite === site.site ? '▼' : '▶'}</span>
+                    </button>
+                    {expandedSite === site.site && (
+                      <div className="site-details">
+                        {site.reason && <p className="site-reason">{site.reason}</p>}
+                        {site.missingAttributes && site.missingAttributes.length > 0 && (
+                          <div className="missing-list">
+                            <strong>Missing attributes:</strong>
+                            <ul>
+                              {site.missingAttributes.map((attr, idx) => (
+                                <li key={idx}>{attr}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {completionBreakdown.length > 0 && (
+            <div className="segment-section">
+              <h4 className="section-title">Completion by Segment</h4>
+              <div className="segments-list">
+                {completionBreakdown.map((segment) => (
+                  <div key={segment.segmentId} className="segment-item">
+                    <div className="segment-header">
+                      <div className="segment-name">{segment.segmentName}</div>
+                      <div className="segment-weight">Weight: {segment.weightPct}%</div>
+                    </div>
+                    <div className="segment-score">Score: {segment.score}%</div>
+                    {segment.missingAttributes.length > 0 && (
+                      <div className="segment-missing">
+                        Missing: {segment.missingAttributes.join(', ')}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {actionRequired.length > 0 && (
+            <div className="action-section">
+              <h4 className="section-title">What to do next</h4>
+              <ul className="action-list">
+                {actionRequired.map((action, i) => (
+                  <li key={i}>{action}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
     </div>
