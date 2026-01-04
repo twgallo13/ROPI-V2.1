@@ -29,6 +29,7 @@ import {
 // LP-smart-rules-server-validation-1.0.0: Smart Rules validation endpoint
 import {
   validateSmartRuleHandler,
+  getProductCompletionHandler,
   normalizeSmartRuleHandler,
   getImportEvalHandler,
 } from './endpoints/adminSmartRules';
@@ -232,7 +233,8 @@ api.get('/products', listProductsHandler);
 // LP-obs-studio-cleanup-1.1.0: Register search-mpn BEFORE :productId to avoid route shadowing
 api.get('/products/search-mpn', searchProductsByMpnHandler);
 api.get('/products/by-mpn/:mpn', getProductByMpnHandler);
-api.get('/products/:productId', getProductHandler);
+  api.get('/products/:productId/completion', getProductCompletionHandler);
+  api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);
 // LP-obs-studio-cleanup-1.4.0: Observation-based suggestions endpoints
 api.post('/products/:productId/suggestions', generateSuggestionsHandler);
