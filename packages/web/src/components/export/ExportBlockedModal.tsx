@@ -1,11 +1,8 @@
 /**
- * Export Blocked Modal Component
- * 
- * Displays when export is blocked by completion gate (HTTP 423).
- * Shows operator-visible explanation with actionable next steps.
+ * Export Blocked Modal
+ * LP-completion-user-visibility-ui-1.4.0
  */
 
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ExportBlockedModal.css';
 
@@ -35,8 +32,8 @@ export interface ExportBlockedModalProps {
     readyCount: number;
   };
   operatorExplanation?: {
-    summary: string;
-    blockingIssues: string[];
+    summary?: string;
+    blockingIssues?: string[];
     completionBreakdown?: Array<{
       segmentId: string;
       segmentName: string;
@@ -50,7 +47,7 @@ export interface ExportBlockedModalProps {
       reason?: string;
       missingAttributes?: string[];
     }>;
-    actionRequired: string[];
+    actionRequired?: string[];
   };
 }
 
@@ -63,77 +60,61 @@ export function ExportBlockedModal({
   operatorExplanation,
 }: ExportBlockedModalProps) {
   const navigate = useNavigate();
-  const [expandedSection, setExpandedSection] = useState<string | null>('reasons');
 
   if (!open) return null;
 
-  const blockedProductIds = blockingReasons
-    ?.filter(r => r.details?.productId)
-    .map(r => r.details!.productId!)
-    .slice(0, 3) || [];
+  const blockedProductIds = (blockingReasons || [])
+    .map((r) => r.details?.productId)
+    .filter((id): id is string => Boolean(id))
+    .slice(0, 3);
+
+  function handleProductNavigate(productId: string) {
+    navigate(`/products/${productId}`);
+    onClose();
+  }
 
   return (
     <div className="export-blocked-modal-overlay" onClick={onClose}>
       <div className="export-blocked-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="modal-header">
           <h2 className="modal-title">
             <span className="icon">🚫</span>
             Export Blocked
           </h2>
-          <button
-            className="modal-close"
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>
 
-        {/* Summary */}
-        {summary && (
-          <div className="modal-summary">
-            {summary}
-          </div>
-        )}
+        {summary && <div className="modal-summary">{summary}</div>}
 
-        {/* Operator Explanation */}
         {operatorExplanation && (
-          <div className="modal-explanation">
-            <div className="explanation-section">
-              <h3>What's blocking export</h3>
-              <p className="explanation-summary">
-                {operatorExplanation.summary}
-              </p>
-              {operatorExplanation.blockingIssues.length > 0 && (
-                <ul className="blocking-issues">
-                  {operatorExplanation.blockingIssues.map((issue, i) => (
-                    <li key={i}>{issue}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
+          <div className="modal-section">
+            <h3>What's blocking export</h3>
+            {operatorExplanation.summary && (
+              <p className="explanation-summary">{operatorExplanation.summary}</p>
+            )}
 
-            {/* Site Status */}
+            {operatorExplanation.blockingIssues && operatorExplanation.blockingIssues.length > 0 && (
+              <ul className="blocking-issues">
+                {operatorExplanation.blockingIssues.map((issue, i) => (
+                  <li key={i}>{issue}</li>
+                ))}
+              </ul>
+            )}
+
             {operatorExplanation.siteStatus && operatorExplanation.siteStatus.length > 0 && (
               <div className="explanation-section">
                 <h3>Site Status</h3>
                 <div className="sites-status">
                   {operatorExplanation.siteStatus.map((site) => (
-                    <div
-                      key={site.site}
-                      className={`site-card ${site.blocked ? 'blocked' : 'ready'}`}
-                    >
-                      <div className="site-icon">
-                        {site.blocked ? '❌' : '✅'}
-                      </div>
+                    <div key={site.site} className={`site-card ${site.blocked ? 'blocked' : 'ready'}`}>
+                      <div className="site-icon">{site.blocked ? '❌' : '✅'}</div>
                       <div className="site-info">
                         <div className="site-name">{site.site}</div>
-                        {site.reason && (
-                          <div className="site-reason">{site.reason}</div>
-                        )}
+                        {site.reason && <div className="site-reason">{site.reason}</div>}
                         {site.missingAttributes && site.missingAttributes.length > 0 && (
-                          <div className="site-attributes">
+                          <div className="missing-attrs">
                             Missing: {site.missingAttributes.join(', ')}
                           </div>
                         )}
@@ -144,7 +125,6 @@ export function ExportBlockedModal({
               </div>
             )}
 
-            {/* Completion Breakdown */}
             {operatorExplanation.completionBreakdown &&
               operatorExplanation.completionBreakdown.length > 0 && (
                 <div className="explanation-section">
@@ -170,8 +150,7 @@ export function ExportBlockedModal({
                 </div>
               )}
 
-            {/* Action Required */}
-            {operatorExplanation.actionRequired.length > 0 && (
+            {operatorExplanation.actionRequired && operatorExplanation.actionRequired.length > 0 && (
               <div className="explanation-section action-section">
                 <h3>What to do next</h3>
                 <ul className="action-list">
@@ -184,7 +163,6 @@ export function ExportBlockedModal({
           </div>
         )}
 
-        {/* Catalog Stats */}
         {catalogStats && (
           <div className="modal-stats">
             <div className="stat-item">
@@ -197,71 +175,57 @@ export function ExportBlockedModal({
             </div>
             <div className="stat-item">
               <div className="stat-label">Blocked (Completion)</div>
-              <div className="stat-value blocked">
-                {catalogStats.blockedByCompletionCount}
-              </div>
+              <div className="stat-value blocked">{catalogStats.blockedByCompletionCount}</div>
             </div>
             <div className="stat-item">
               <div className="stat-label">Blocked (Site)</div>
-              <div className="stat-value blocked">
-                {catalogStats.blockedBySiteCount}
-              </div>
+              <div className="stat-value blocked">{catalogStats.blockedBySiteCount}</div>
             </div>
           </div>
         )}
 
-        {/* Blocking Reasons (detailed) */}
         {blockingReasons && blockingReasons.length > 0 && (
-          <div
-            className="modal-section expandable"
-            onClick={() =>
-              setExpandedSection(
-                expandedSection === 'reasons' ? null : 'reasons'
-              )
-            }
-          >
-            <h3 className="expandable-header">
-              <span className="expand-icon">
-                {expandedSection === 'reasons' ? '▼' : '▶'}
-              </span>
-              Detailed Blocking Reasons ({blockingReasons.length})
-            </h3>
-            {expandedSection === 'reasons' && (
-              <div className="reasons-list">
-                {blockingReasons.map((reason, i) => (
-                  <div key={i} className="reason-item">
-                    <div className="reason-type">{reason.type}</div>
-                    <div className="reason-message">{reason.message}</div>
-                    {reason.details && (
-                      <div className="reason-details">
-                        {reason.details.productId && (
-                          <span className="detail">
-                            Product: {reason.details.productId}
-                          </span>
-                        )}
-                        {reason.details.site && (
-                          <span className="detail">Site: {reason.details.site}</span>
-                        )}
-                        {reason.details.currentCompletion !== undefined && (
-                          <span className="detail">
-                            Completion: {reason.details.currentCompletion}%
-                          </span>
-                        )}
-                        {reason.details.requiredCompletion !== undefined && (
-                          <span className="detail">
-                            Required: {reason.details.requiredCompletion}%
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="modal-section">
+            <h3>Detailed Blocking Reasons ({blockingReasons.length})</h3>
+            <div className="reasons-list">
+              {blockingReasons.map((reason, i) => (
+                <div key={i} className="reason-item">
+                  <div className="reason-type">{reason.type}</div>
+                  <div className="reason-message">{reason.message}</div>
+                  {reason.details && (
+                    <div className="reason-details">
+                      {reason.details.productId && (
+                        <span className="detail">Product: {reason.details.productId}</span>
+                      )}
+                      {reason.details.site && <span className="detail">Site: {reason.details.site}</span>}
+                      {reason.details.currentCompletion !== undefined && (
+                        <span className="detail">Completion: {reason.details.currentCompletion}%</span>
+                      )}
+                      {reason.details.requiredCompletion !== undefined && (
+                        <span className="detail">Required: {reason.details.requiredCompletion}%</span>
+                      )}
+                      {reason.details.missingAttributes && reason.details.missingAttributes.length > 0 && (
+                        <span className="detail">Missing: {reason.details.missingAttributes.join(', ')}</span>
+                      )}
+                    </div>
+                  )}
+                  {reason.details?.productId && (
+                    <button
+                      className="link-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleProductNavigate(reason.details!.productId!);
+                      }}
+                    >
+                      View
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Actions */}
         <div className="modal-actions">
           <button
             className="btn btn-primary"
@@ -275,10 +239,7 @@ export function ExportBlockedModal({
           {blockedProductIds.length > 0 && (
             <button
               className="btn btn-secondary"
-              onClick={() => {
-                navigate(`/products/${blockedProductIds[0]}`);
-                onClose();
-              }}
+              onClick={() => handleProductNavigate(blockedProductIds[0])}
             >
               Open First Blocked Product
             </button>

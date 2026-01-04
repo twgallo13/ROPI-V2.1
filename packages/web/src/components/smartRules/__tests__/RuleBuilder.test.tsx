@@ -19,6 +19,16 @@ vi.mock('../../../services/smartRulesAdmin', () => ({
     { id: 'attributes.size', label: 'Size', group: 'Standard' },
   ])),
   generateRuleId: vi.fn(() => 'rule_test_123'),
+  preSubmitValidation: vi.fn((form) => {
+    const errors: Record<string, string> = {};
+    if (!form.name?.trim()) {
+      errors['name'] = 'Rule name is required';
+    }
+    if (!form.action?.targetField?.trim()) {
+      errors['action.targetField'] = 'Target field is required';
+    }
+    return errors;
+  }),
 }));
 
 describe('RuleBuilder Component', () => {
