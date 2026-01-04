@@ -158,26 +158,6 @@ export async function runExportHandler(
       exportReady: result.summary.exportReadyCount
     });
 
-    // Check for blocking issues (>1% or >1000 unknown values)
-    const unknownCount = result.summary.errorCodes['unknown_export_value'] || 0;
-    const unknownPercent = result.summary.exportedProducts > 0 
-      ? (unknownCount / result.summary.exportedProducts) * 100 
-      : 0;
-
-    if (unknownCount > 1000 || unknownPercent > 1) {
-      console.error('[Export] BLOCKED: Too many unknown export values', {
-        unknownCount,
-        unknownPercent: `${unknownPercent.toFixed(2)}%`
-      });
-      res.status(422).json({
-        success: false,
-        error: 'EXPORT_BLOCKED_UNKNOWN_VALUES',
-        message: `Export blocked: ${unknownCount} unknown values (${unknownPercent.toFixed(2)}%) exceeds threshold`,
-        summary: result.summary
-      });
-      return;
-    }
-
     // Save to file if not a simple preview
     let filePaths: { csvPath: string; summaryPath: string } | null = null;
     if (req.body.save !== false) {

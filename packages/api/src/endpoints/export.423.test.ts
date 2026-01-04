@@ -213,4 +213,77 @@ describe('Export Endpoint 423 Response Schema', () => {
     expect(payload.readiness.catalogStats.blockedBySiteCount).toBe(5);
     expect(payload.readiness.catalogStats.readyCount).toBe(70);
   });
+
+  it('allows export when completion is ready even if unknown values exist (reported, not blocking)', async () => {
+    // Completion ready
+    const readyReadiness = {
+      ready: true,
+      completionPct: 95,
+      threshold: 80,
+      hasBlockingSites: false,
+      blockingReasons: [],
+      operatorExplanation: {
+        summary: 'Export ready',
+        blockingIssues: [],
+        completionBreakdown: [],
+        siteStatus: [],
+        actionRequired: []
+      },
+      catalogStats: {
+        totalProducts: 10,
+        blockedByCompletionCount: 0,
+        blockedBySiteCount: 0,
+        readyCount: 10
+      },
+      evaluationTimestamp: '2026-01-04T00:00:00.000Z',
+      rulesVersion: 1
+    };
+
+    (calculateCompletionDrivenExportReadiness as any).mockResolvedValue(readyReadiness);
+
+    // Export result with high unknown_export_value count (should not block)
+    const exportResult = {
+      timestamp: '2026-01-04T00:00:00.000Z',
+      summary: {
+        totalProducts: 10,
+        exportedProducts: 10,
+        exportReadyCount: 10,
+        notExportReadyCount: 0,
+        warningCount: 2,
+        errorCodes: { unknown_export_value: 5000 },
+        missingAttributeCounts: {}
+      },
+      columnHeaders: ['mpn'],
+      rows: [
+        {
+          rowNumber: 1,
+          mpn: '123',
+          productId: '123',
+          exportReady: true,
+          missingAttributes: [],
+          warnings: [
+            {
+              code: 'unknown_export_value',
+              attribute: 'class',
+              message: 'Value "Hats" not in allowed_values for Class',
+              value: 'Hats'
+            }
+          ],
+          columns: { MPN: '123' }
+        }
+      ],
+      csvContent: 'MPN\n123\n'
+    } as any;
+
+    const { runFullExport } = await import('../services/exportService');
+    (runFullExport as any).mockResolvedValue(exportResult);
+
+    await runExportHandler(mockReq as Request, mockRes as Response);
+
+    // Should not block on unknown_export_value; completion is the only gate
+    expect(mockStatus).toHaveBeenCalledWith(200);
+    const payload = mockJson.mock.calls[0][0];
+    expect(payload.success).toBe(true);
+    expect(payload.summary.errorCodes.unknown_export_value).toBe(5000);
+  });
 });
