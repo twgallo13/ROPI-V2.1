@@ -16,6 +16,39 @@ import {
 } from '@/services/completionRulesClient';
 import './ExportSettingsPage.css';
 
+function normalizeRules(config: CompletionRulesConfig): CompletionRulesConfig {
+  return {
+    ...config,
+    segments: config.segments.map((segment) => ({
+      ...segment,
+      appliesTo: {
+        mode: segment.appliesTo?.mode || 'ALL_PRODUCTS',
+        sites: segment.appliesTo?.sites || [],
+      },
+      attributeSelector: {
+        source: segment.attributeSelector?.source || 'REGISTRY',
+        categories: segment.attributeSelector?.categories || [],
+        requirementFlag: segment.attributeSelector?.requirementFlag || '',
+        siteAware: Boolean(segment.attributeSelector?.siteAware),
+        includeInternalOnly: Boolean(segment.attributeSelector?.includeInternalOnly),
+        excludeAttributeIds: segment.attributeSelector?.excludeAttributeIds || [],
+        staticAttributeIds: segment.attributeSelector?.staticAttributeIds || [],
+      },
+    })),
+  };
+}
+
+function parseCsv(value: string): string[] {
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
+function formatCsv(list?: string[]): string {
+  return (list || []).join(', ');
+}
+
 /**
  * Component for editing a single segment
  */
@@ -34,6 +67,29 @@ function SegmentEditor({
   canRemove,
   allSites,
 }: SegmentEditorProps) {
+  const appliesToMode = segment.appliesTo?.mode || 'ALL_PRODUCTS';
+  const appliesToSites = segment.appliesTo?.sites || [];
+  const attributeSelector = segment.attributeSelector || {
+    source: 'REGISTRY' as const,
+    categories: [],
+    requirementFlag: '',
+    siteAware: false,
+    includeInternalOnly: false,
+    excludeAttributeIds: [],
+    staticAttributeIds: [],
+  };
+
+  const weightInputId = `weight-${segment.id}`;
+  const ruleTypeId = `rule-type-${segment.id}`;
+  const appliesModeId = `applies-mode-${segment.id}`;
+  const attributeSourceId = `attribute-source-${segment.id}`;
+  const categoriesId = `categories-${segment.id}`;
+  const requirementFlagId = `requirement-flag-${segment.id}`;
+  const includeInternalOnlyId = `include-internal-only-${segment.id}`;
+  const excludeAttributesId = `exclude-attributes-${segment.id}`;
+  const staticAttributesId = `static-attributes-${segment.id}`;
+  const siteAwareId = `site-aware-${segment.id}`;
+
   return (
     <div className="segment-card">
       <div className="segment-header">
@@ -64,141 +120,275 @@ function SegmentEditor({
         </div>
       </div>
 
-      {segment.enabled && (
+      {/* Weight */}
+      <div className="form-row">
+        <label htmlFor={weightInputId}>Weight (%)</label>
+        <input
+          id={weightInputId}
+          type="number"
+          min="0"
+          max="100"
+          value={segment.weightPct || 0}
+          onChange={(e) =>
+            onChange({
+              ...segment,
+              weightPct: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)),
+            })
+          }
+          className="form-input"
+        />
+        <div className="hint">Total of all enabled segments must equal 100%</div>
+      </div>
+
+      {/* Rule Type */}
+      <div className="form-row">
+        <label htmlFor={ruleTypeId}>Rule Type</label>
+        <select
+          id={ruleTypeId}
+          value={segment.ruleType}
+          onChange={(e) =>
+            onChange({
+              ...segment,
+              ruleType: e.target.value as 'ALL_REQUIRED' | 'ANY_REQUIRED',
+            })
+          }
+          className="form-input"
+        >
+          <option value="ALL_REQUIRED">All attributes required</option>
+          <option value="ANY_REQUIRED">Any attribute required</option>
+        </select>
+        <div className="hint">
+          ALL_REQUIRED: Product must have all selected attributes
+          <br />
+          ANY_REQUIRED: Product must have at least one selected attribute
+        </div>
+      </div>
+
+      {/* Applies To Mode */}
+      <div className="form-row">
+        <label htmlFor={appliesModeId}>Applies To Mode</label>
+        <select
+          id={appliesModeId}
+          value={appliesToMode}
+          onChange={(e) => {
+            const mode = e.target.value as 'ALL_PRODUCTS' | 'CONDITIONAL';
+            onChange({
+              ...segment,
+              appliesTo: {
+                mode,
+                sites: mode === 'ALL_PRODUCTS' ? [] : appliesToSites,
+              },
+            });
+          }}
+          className="form-input"
+        >
+          <option value="ALL_PRODUCTS">All products</option>
+          <option value="CONDITIONAL">Only selected sites</option>
+        </select>
+      </div>
+
+      {/* Selected Sites (conditional) */}
+      {appliesToMode === 'CONDITIONAL' && (
+        <div className="form-row">
+          <label>Sites (where this requirement applies)</label>
+          <div className="sites-list">
+            {allSites.map((site) => (
+              <label key={site} className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={appliesToSites.includes(site)}
+                  onChange={(e) => {
+                    const sites = appliesToSites || [];
+                    const newSites = e.target.checked
+                      ? [...sites, site]
+                      : sites.filter((s) => s !== site);
+                    onChange({
+                      ...segment,
+                      appliesTo: {
+                        mode: appliesToMode,
+                        sites: newSites,
+                      },
+                    });
+                  }}
+                />
+                {site}
+              </label>
+            ))}
+          </div>
+          {appliesToSites.length === 0 && segment.enabled && (
+            <div className="warning-text">
+              ⚠️ No sites selected: This requirement will not block any products
+            </div>
+          )}
+          <div className="hint">
+            Sites are required when Applies To is set to Conditional.
+          </div>
+        </div>
+      )}
+
+      {/* Attribute Source */}
+      <div className="form-row">
+        <label htmlFor={attributeSourceId}>Attribute Source</label>
+        <select
+          id={attributeSourceId}
+          value={attributeSelector.source || 'REGISTRY'}
+          onChange={(e) =>
+            onChange({
+              ...segment,
+              attributeSelector: {
+                ...attributeSelector,
+                source: e.target.value as 'REGISTRY' | 'STATIC',
+              },
+            })
+          }
+          className="form-input"
+        >
+          <option value="REGISTRY">From Attribute Registry</option>
+          <option value="STATIC">Static list</option>
+        </select>
+        <div className="hint">
+          REGISTRY: Attributes marked with the requirement flag (e.g. required_for_completion)
+          <br />
+          STATIC: Fixed list of attribute IDs
+        </div>
+      </div>
+
+      {/* Registry attribute selector fields */}
+      {attributeSelector.source === 'REGISTRY' && (
         <>
-          {/* Weight */}
           <div className="form-row">
-            <label>Weight (%)</label>
+            <label htmlFor={categoriesId}>Categories</label>
             <input
-              type="number"
-              min="0"
-              max="100"
-              value={segment.weightPct || 0}
-              onChange={(e) =>
-                onChange({
-                  ...segment,
-                  weightPct: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)),
-                })
-              }
-              className="form-input"
-            />
-            <div className="hint">
-              Total of all enabled segments must equal 100%
-            </div>
-          </div>
-
-          {/* Rule Type */}
-          <div className="form-row">
-            <label>Rule Type</label>
-            <select
-              value={segment.ruleType}
-              onChange={(e) =>
-                onChange({
-                  ...segment,
-                  ruleType: e.target.value as 'ALL_REQUIRED' | 'ANY_REQUIRED',
-                })
-              }
-              className="form-input"
-            >
-              <option value="ALL_REQUIRED">All attributes required</option>
-              <option value="ANY_REQUIRED">Any attribute required</option>
-            </select>
-            <div className="hint">
-              ALL_REQUIRED: Product must have all selected attributes
-              <br />
-              ANY_REQUIRED: Product must have at least one selected attribute
-            </div>
-          </div>
-
-          {/* Selected Sites */}
-          <div className="form-row">
-            <label>Sites (where this requirement applies)</label>
-            <div className="sites-list">
-              {allSites.map((site) => (
-                <label key={site} className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={(segment.appliesTo?.sites || []).includes(site)}
-                    onChange={(e) => {
-                      const sites = segment.appliesTo?.sites || [];
-                      const newSites = e.target.checked
-                        ? [...sites, site]
-                        : sites.filter((s) => s !== site);
-                      onChange({
-                        ...segment,
-                        appliesTo: {
-                          ...segment.appliesTo,
-                          sites: newSites,
-                        },
-                      });
-                    }}
-                  />
-                  {site}
-                </label>
-              ))}
-            </div>
-            {(!segment.appliesTo?.sites || segment.appliesTo.sites.length === 0) && (
-              <div className="warning-text">
-                ⚠️ No sites selected: This requirement will not block any products
-              </div>
-            )}
-            <div className="hint">
-              When a site is selected, the Description and SEO attributes required
-              for that site will block completion if missing
-            </div>
-          </div>
-
-          {/* Attribute Source */}
-          <div className="form-row">
-            <label>Attribute Source</label>
-            <select
-              value={segment.attributeSelector?.source || 'REGISTRY'}
+              id={categoriesId}
+              type="text"
+              value={formatCsv(attributeSelector.categories)}
               onChange={(e) =>
                 onChange({
                   ...segment,
                   attributeSelector: {
-                    ...segment.attributeSelector,
-                    source: e.target.value as 'REGISTRY' | 'STATIC',
+                    ...attributeSelector,
+                    categories: parseCsv(e.target.value),
                   },
                 })
               }
               className="form-input"
-            >
-              <option value="REGISTRY">From Attribute Registry</option>
-              <option value="STATIC">Static list</option>
-            </select>
-            <div className="hint">
-              REGISTRY: Attributes marked as "required_for_completion" in the registry
-              <br />
-              STATIC: Fixed list of attribute IDs
-            </div>
+              placeholder="description, seo"
+            />
+            <div className="hint">Comma-separated registry categories</div>
           </div>
 
-          {/* Site-Aware Requirement */}
           <div className="form-row">
-            <label className="toggle-label">
+            <label htmlFor={requirementFlagId}>Requirement Flag</label>
+            <input
+              id={requirementFlagId}
+              type="text"
+              value={attributeSelector.requirementFlag || ''}
+              onChange={(e) =>
+                onChange({
+                  ...segment,
+                  attributeSelector: {
+                    ...attributeSelector,
+                    requirementFlag: e.target.value,
+                  },
+                })
+              }
+              className="form-input"
+              placeholder="required_for_completion"
+            />
+            <div className="hint">Registry flag used to select required attributes</div>
+          </div>
+
+          <div className="form-row">
+            <label className="toggle-label" htmlFor={includeInternalOnlyId}>
               <input
+                id={includeInternalOnlyId}
                 type="checkbox"
-                checked={segment.attributeSelector?.siteAware || false}
+                checked={attributeSelector.includeInternalOnly || false}
                 onChange={(e) =>
                   onChange({
                     ...segment,
                     attributeSelector: {
-                      ...segment.attributeSelector,
-                      siteAware: e.target.checked,
+                      ...attributeSelector,
+                      includeInternalOnly: e.target.checked,
                     },
                   })
                 }
               />
-              Site-Aware Requirement
+              Include Internal Only Attributes
             </label>
-            <div className="hint">
-              When enabled, attributes required for this segment may vary by site
-              (e.g., Description text content must be in the product's language for that site)
-            </div>
           </div>
         </>
       )}
+
+      {/* Static attribute selector fields */}
+      {attributeSelector.source === 'STATIC' && (
+        <div className="form-row">
+          <label htmlFor={staticAttributesId}>Static Attribute IDs</label>
+          <input
+            id={staticAttributesId}
+            type="text"
+            value={formatCsv(attributeSelector.staticAttributeIds)}
+            onChange={(e) =>
+              onChange({
+                ...segment,
+                attributeSelector: {
+                  ...attributeSelector,
+                  staticAttributeIds: parseCsv(e.target.value),
+                },
+              })
+            }
+            className="form-input"
+            placeholder="attr.title, attr.bullet_points"
+          />
+          <div className="hint">Comma-separated attribute IDs</div>
+        </div>
+      )}
+
+      {/* Common attribute selector options */}
+      <div className="form-row">
+        <label className="toggle-label" htmlFor={siteAwareId}>
+          <input
+            id={siteAwareId}
+            type="checkbox"
+            checked={attributeSelector.siteAware || false}
+            onChange={(e) =>
+              onChange({
+                ...segment,
+                attributeSelector: {
+                  ...attributeSelector,
+                  siteAware: e.target.checked,
+                },
+              })
+            }
+          />
+          Site-Aware Requirement
+        </label>
+        <div className="hint">
+          When enabled, attributes required for this segment may vary by site
+          (e.g., Description text content must be in the product's language for that site)
+        </div>
+      </div>
+
+      <div className="form-row">
+        <label htmlFor={excludeAttributesId}>Exclude Attribute IDs</label>
+        <input
+          id={excludeAttributesId}
+          type="text"
+          value={formatCsv(attributeSelector.excludeAttributeIds)}
+          onChange={(e) =>
+            onChange({
+              ...segment,
+              attributeSelector: {
+                ...attributeSelector,
+                excludeAttributeIds: parseCsv(e.target.value),
+              },
+            })
+          }
+          className="form-input"
+          placeholder="attr.internal_notes"
+        />
+        <div className="hint">Attributes to ignore for this segment (comma-separated)</div>
+      </div>
     </div>
   );
 }
@@ -222,6 +412,14 @@ export default function ExportSettingsPage() {
     loadRules();
   }, []);
 
+  useEffect(() => {
+    if (rules) {
+      setValidationErrors(validateRules(rules));
+    } else {
+      setValidationErrors([]);
+    }
+  }, [rules]);
+
   async function loadRules() {
     try {
       setLoading(true);
@@ -231,7 +429,9 @@ export default function ExportSettingsPage() {
         setError('No completion rules configured in Firestore');
         return;
       }
-      setRules(data);
+      const normalized = normalizeRules(data);
+      setRules(normalized);
+      setValidationErrors(validateRules(normalized));
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to load rules';
       setError(message);
@@ -242,6 +442,11 @@ export default function ExportSettingsPage() {
 
   function validateRules(config: CompletionRulesConfig): string[] {
     const errors: string[] = [];
+
+    if (!config.segments || config.segments.length === 0) {
+      errors.push('At least one segment is required');
+      return errors;
+    }
 
     const enabledSegments = config.segments.filter((s) => s.enabled);
     if (enabledSegments.length === 0) {
@@ -255,13 +460,72 @@ export default function ExportSettingsPage() {
       }
     }
 
-    if (config.exportUnlockThresholdPct < 0 || config.exportUnlockThresholdPct > 100) {
+    if (
+      typeof config.exportUnlockThresholdPct !== 'number' ||
+      config.exportUnlockThresholdPct < 0 ||
+      config.exportUnlockThresholdPct > 100
+    ) {
       errors.push('Threshold must be between 0 and 100');
     }
 
     for (const segment of config.segments) {
-      if (segment.enabled && (!segment.appliesTo?.sites || segment.appliesTo.sites.length === 0)) {
-        errors.push(`Segment "${segment.name}" is enabled but no sites selected`);
+      const segmentLabel = segment.name || segment.id || 'segment';
+      const appliesToMode = segment.appliesTo?.mode || 'ALL_PRODUCTS';
+      const appliesToSites = segment.appliesTo?.sites || [];
+      const selector = segment.attributeSelector;
+
+      if (!segment.id || !segment.name) {
+        errors.push(`Segment "${segmentLabel}" must have an id and name`);
+      }
+
+      if (
+        typeof segment.weightPct !== 'number' ||
+        segment.weightPct < 0 ||
+        segment.weightPct > 100
+      ) {
+        errors.push(`Segment "${segmentLabel}" weight must be between 0 and 100`);
+      }
+
+      if (!['ALL_REQUIRED', 'ANY_REQUIRED'].includes(segment.ruleType)) {
+        errors.push(`Segment "${segmentLabel}" has invalid rule type`);
+      }
+
+      if (!['ALL_PRODUCTS', 'CONDITIONAL'].includes(appliesToMode)) {
+        errors.push(`Segment "${segmentLabel}" has invalid appliesTo mode`);
+      }
+
+      if (!Array.isArray(appliesToSites)) {
+        errors.push(`Segment "${segmentLabel}" sites must be an array`);
+      }
+
+      if (segment.enabled && appliesToMode === 'CONDITIONAL' && appliesToSites.length === 0) {
+        errors.push(`Segment "${segmentLabel}" is enabled but no sites selected`);
+      }
+
+      if (!selector) {
+        errors.push(`Segment "${segmentLabel}" is missing attribute selector`);
+        continue;
+      }
+
+      if (!['REGISTRY', 'STATIC'].includes(selector.source)) {
+        errors.push(`Segment "${segmentLabel}" has invalid attribute selector source`);
+      }
+
+      if (selector.source === 'REGISTRY') {
+        const categories = (selector.categories || []).filter((c) => c && c.trim().length > 0);
+        if (categories.length === 0) {
+          errors.push(`Segment "${segmentLabel}" requires categories when using REGISTRY source`);
+        }
+        if (!selector.requirementFlag || selector.requirementFlag.trim().length === 0) {
+          errors.push(`Segment "${segmentLabel}" requires a requirement flag when using REGISTRY source`);
+        }
+      }
+
+      if (selector.source === 'STATIC') {
+        const staticIds = selector.staticAttributeIds || [];
+        if (staticIds.length === 0) {
+          errors.push(`Segment "${segmentLabel}" requires staticAttributeIds when using STATIC source`);
+        }
       }
     }
 
@@ -297,14 +561,13 @@ export default function ExportSettingsPage() {
     if (!rules) return;
     const newSegments = [...rules.segments];
     newSegments[index] = segment;
-    setRules({ ...rules, segments: newSegments });
-    setValidationErrors([]); // Clear validation on edit
+    setRules(normalizeRules({ ...rules, segments: newSegments }));
   }
 
   function removeSegment(index: number) {
     if (!rules) return;
     const newSegments = rules.segments.filter((_, i) => i !== index);
-    setRules({ ...rules, segments: newSegments });
+    setRules(normalizeRules({ ...rules, segments: newSegments }));
   }
 
   if (loading) {
@@ -381,7 +644,6 @@ export default function ExportSettingsPage() {
                 onChange={(e) => {
                   const val = Math.max(0, Math.min(100, parseFloat(e.target.value) || 0));
                   setRules({ ...rules, exportUnlockThresholdPct: val });
-                  setValidationErrors([]);
                 }}
                 className="form-input threshold-input"
               />

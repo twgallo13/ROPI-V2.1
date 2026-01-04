@@ -4,7 +4,7 @@
  * API client for fetching and saving completion rules from settings/exportSettings/completionRules.
  */
 
-import { getFirestore, doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 export interface SegmentConfig {
@@ -71,40 +71,28 @@ export async function fetchCompletionRules(): Promise<CompletionRulesConfig | nu
 
 /**
  * Save completion rules to Firestore
+ *
+ * Note: Versioning and metadata are owned by the backend. The client must not
+ * mutate rulesVersion/updatedAt/updatedBy; it should only write the user-edited
+ * configuration fields as provided.
  */
 export async function saveCompletionRules(rules: CompletionRulesConfig): Promise<void> {
   try {
     const db = getFirestore();
     const auth = getAuth();
-    const user = auth.currentUser;
 
-    if (!user) {
+    if (!auth.currentUser) {
       throw new Error('User not authenticated');
     }
 
-    // Update metadata
-    const updatedRules = {
-      ...rules,
-      updatedAt: new Date().toISOString(),
-      updatedBy: user.email || 'unknown',
-      rulesVersion: (rules.rulesVersion || 0) + 1
-    };
+    // Validate rules before saving (client-side parity with backend constraints)
+    validateRules(rules);
 
-    // Validate rules before saving
-    validateRules(updatedRules);
-
-    // Save to live path
+    // Persist without client-side metadata/version mutation
     const rulesRef = doc(db, 'settings/exportSettings/completionRules');
-    await setDoc(rulesRef, updatedRules);
+    await setDoc(rulesRef, rules);
 
-    // Save versioned snapshot
-    const versionRef = doc(db, `settings/exportSettings/completionRulesVersions/${updatedRules.rulesVersion}`);
-    await setDoc(versionRef, updatedRules);
-
-    console.log('[CompletionRulesClient] Completion rules saved successfully', {
-      version: updatedRules.rulesVersion,
-      updatedBy: updatedRules.updatedBy
-    });
+    console.log('[CompletionRulesClient] Completion rules saved successfully');
   } catch (error) {
     console.error('[CompletionRulesClient] Failed to save completion rules:', error);
     throw error;
@@ -119,36 +107,84 @@ function validateRules(rules: CompletionRulesConfig): void {
     throw new Error('At least one segment is required');
   }
 
-  // Validate threshold
-  if (typeof rules.exportUnlockThresholdPct !== 'number' || 
-      rules.exportUnlockThresholdPct < 0 || 
-      rules.exportUnlockThresholdPct > 100) {
+  if (
+    typeof rules.exportUnlockThresholdPct !== 'number' ||
+    rules.exportUnlockThresholdPct < 0 ||
+    rules.exportUnlockThresholdPct > 100
+  ) {
     throw new Error('Threshold must be a percentage (0-100)');
   }
 
-  // Validate segment weights
-  const enabledSegments = rules.segments.filter(s => s.enabled);
+  const enabledSegments = rules.segments.filter((s) => s.enabled);
   if (enabledSegments.length === 0) {
     throw new Error('At least one segment must be enabled');
   }
 
   const totalWeight = enabledSegments.reduce((sum, s) => sum + (s.weightPct || 0), 0);
   if (Math.abs(totalWeight - 100) > 0.1) {
-    throw new Error(`Enabled segment weights must sum to 100% (got ${totalWeight.toFixed(1)}%)`);
+    throw new Error(
+      `Enabled segment weights must sum to 100% (got ${totalWeight.toFixed(1)}%)`
+    );
   }
 
-  // Validate segments
   for (const segment of rules.segments) {
+    const segmentLabel = segment.name || segment.id || 'segment';
+
     if (!segment.id || !segment.name) {
-      throw new Error(`Segment missing id or name`);
+      throw new Error(`Segment ${segment.id || '<missing-id>'}: id and name are required`);
     }
 
-    if (!Array.isArray(segment.appliesTo?.sites)) {
+    if (
+      typeof segment.weightPct !== 'number' ||
+      segment.weightPct < 0 ||
+      segment.weightPct > 100
+    ) {
+      throw new Error(`Segment "${segmentLabel}" weightPct must be between 0 and 100`);
+    }
+
+    if (!['ALL_REQUIRED', 'ANY_REQUIRED'].includes(segment.ruleType)) {
+      throw new Error(`Segment "${segmentLabel}" ruleType must be ALL_REQUIRED or ANY_REQUIRED`);
+    }
+
+    const appliesToMode = segment.appliesTo?.mode || 'ALL_PRODUCTS';
+    const appliesToSites = segment.appliesTo?.sites ?? [];
+
+    if (!['ALL_PRODUCTS', 'CONDITIONAL'].includes(appliesToMode)) {
+      throw new Error(`Segment "${segmentLabel}" has invalid appliesTo.mode`);
+    }
+
+    if (!Array.isArray(appliesToSites)) {
       throw new Error(`Segment ${segment.id}: appliesTo.sites must be an array`);
     }
 
-    if (!segment.attributeSelector) {
+    if (segment.enabled && appliesToMode === 'CONDITIONAL' && appliesToSites.length === 0) {
+      throw new Error(`Segment "${segmentLabel}" is enabled but no sites selected`);
+    }
+
+    const selector = segment.attributeSelector;
+    if (!selector) {
       throw new Error(`Segment ${segment.id}: attributeSelector is required`);
+    }
+
+    if (!['REGISTRY', 'STATIC'].includes(selector.source)) {
+      throw new Error(`Segment "${segmentLabel}" attributeSelector.source is invalid`);
+    }
+
+    if (selector.source === 'REGISTRY') {
+      const categories = (selector.categories || []).filter((c) => c && c.trim().length > 0);
+      if (!selector.requirementFlag || selector.requirementFlag.trim().length === 0) {
+        throw new Error(`Segment "${segmentLabel}" requires requirementFlag when using REGISTRY source`);
+      }
+      if (categories.length === 0) {
+        throw new Error(`Segment "${segmentLabel}" requires categories when using REGISTRY source`);
+      }
+    }
+
+    if (selector.source === 'STATIC') {
+      const staticIds = selector.staticAttributeIds || [];
+      if (staticIds.length === 0) {
+        throw new Error(`Segment "${segmentLabel}" requires staticAttributeIds when using STATIC source`);
+      }
     }
   }
 }
