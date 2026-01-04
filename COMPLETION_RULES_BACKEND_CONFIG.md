@@ -24,14 +24,15 @@ This document defines the **authoritative backend configuration schema** for Com
 
 ## Configuration Storage
 
-**Firestore Path:**
+**Firestore Location:**
 ```
-settings/exportSettings/completionRules
+Document: settings/exportSettings
+Field:    completionRules
 ```
 
-**Document Type:** Single JSON document  
+**Document Type:** settings/exportSettings is a single JSON document; `completionRules` is a top-level field on that doc  
 **Access:** Read by backend services, written by admin UI  
-**Versioning:** Immutable snapshots stored in `completionRulesVersions/{version}` subcollection
+**Versioning:** Immutable snapshots stored in `completionRulesVersions/{version}` subcollection under the same document
 
 ---
 

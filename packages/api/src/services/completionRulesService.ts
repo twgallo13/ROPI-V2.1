@@ -79,20 +79,24 @@ export async function loadCompletionRules(forceLatest = false): Promise<Completi
   
   try {
     // Load live configuration from settings
-    const rulesRef = db.doc('settings/exportSettings/completionRules');
-    const snapshot = await rulesRef.get();
+    const settingsRef = db.doc('settings/exportSettings');
+    const snapshot = await settingsRef.get();
     
     if (!snapshot.exists) {
-      throw new Error('No completion rules configured in settings/exportSettings/completionRules');
+      throw new Error('No settings/exportSettings document found');
     }
     
     const data = snapshot.data();
     if (!data) {
       throw new Error('Completion rules document is empty');
     }
+    const rules = (data as Record<string, unknown>).completionRules;
+    if (!rules) {
+      throw new Error('completionRules field missing on settings/exportSettings');
+    }
     
     // Validate required fields
-    const config = data as CompletionRulesConfig;
+    const config = rules as CompletionRulesConfig;
     validateCompletionRulesConfig(config);
     
     return config;

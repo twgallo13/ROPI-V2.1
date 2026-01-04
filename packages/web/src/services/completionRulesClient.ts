@@ -53,16 +53,23 @@ export interface CompletionRulesConfig {
 export async function fetchCompletionRules(): Promise<CompletionRulesConfig | null> {
   try {
     const db = getFirestore();
-    const rulesRef = doc(db, 'settings/exportSettings/completionRules');
-    const snapshot = await getDoc(rulesRef);
+    const settingsRef = doc(db, 'settings', 'exportSettings');
+    const snapshot = await getDoc(settingsRef);
 
     if (!snapshot.exists()) {
-      console.warn('[CompletionRulesClient] No completion rules found in Firestore');
+      console.warn('[CompletionRulesClient] settings/exportSettings document not found');
       return null;
     }
 
     const data = snapshot.data();
-    return data as CompletionRulesConfig;
+    const rules = data?.completionRules;
+
+    if (!rules) {
+      console.warn('[CompletionRulesClient] completionRules field missing on settings/exportSettings');
+      return null;
+    }
+
+    return rules as CompletionRulesConfig;
   } catch (error) {
     console.error('[CompletionRulesClient] Failed to fetch completion rules:', error);
     throw error;
@@ -89,8 +96,8 @@ export async function saveCompletionRules(rules: CompletionRulesConfig): Promise
     validateRules(rules);
 
     // Persist without client-side metadata/version mutation
-    const rulesRef = doc(db, 'settings/exportSettings/completionRules');
-    await setDoc(rulesRef, rules);
+    const settingsRef = doc(db, 'settings', 'exportSettings');
+    await setDoc(settingsRef, { completionRules: rules }, { merge: true });
 
     console.log('[CompletionRulesClient] Completion rules saved successfully');
   } catch (error) {
