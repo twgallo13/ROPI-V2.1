@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
 import { settingsNavConfig } from '@/config/nav';
+import ExportSettingsPage from './ExportSettingsPage';
 
 interface SettingsSubPageProps {
   section: string;
@@ -21,6 +22,12 @@ interface SettingsSubPageProps {
  */
 function SettingsSubPage({ section }: SettingsSubPageProps) {
   const navigate = useNavigate();
+  
+  // Route to specialized pages
+  if (section === 'export-settings') {
+    return <ExportSettingsPage />;
+  }
+  
   const setting = settingsNavConfig.find(s => s.id === section);
   
   if (!setting) {
