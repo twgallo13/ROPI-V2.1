@@ -15,6 +15,10 @@ import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 import type { Request, Response } from 'express';
 import { getAttribute, ServiceError } from '../services/attributesService';
 import { normalizeMpn } from '@ropi-aoss/sdk';
+import { 
+  calculateCompletionDrivenExportReadiness,
+  type CompletionDrivenExportReadiness
+} from '../services/completionDrivenExportReadiness';
 
 /**
  * PATCH /products/:productId/attributes
