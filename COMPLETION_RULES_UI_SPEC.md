@@ -30,6 +30,14 @@ This document defines the **authoritative UI specification** for Completion Rule
 **Access Control:** Admin users only  
 **Navigation:** From Settings page → "Export Settings" link
 
+**Storage Location (canonical):**
+```
+Document: settings/exportSettings
+Field:    completionRules
+Versioned snapshots: settings/exportSettings/completionRulesVersions/{version}
+```
+All UI reads/writes target the `completionRules` field on `settings/exportSettings` (merge writes only).
+
 ---
 
 ## Page Structure
