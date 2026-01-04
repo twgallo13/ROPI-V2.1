@@ -911,3 +911,56 @@ export async function searchProductsByMpnHandler(req: Request, res: Response) {
     }
   });
 }
+
+/**
+ * GET /products/:productId/completion
+ * 
+ * Returns product completion readiness for export gating.
+ * Evaluates product against configured completion rules and returns
+ * operator-visible explanation payload.
+ * 
+ * Response:
+ * - 200: CompletionDrivenExportReadiness
+ * - 400: Missing productId
+ * - 404: Product not found
+ * - 500: Internal error
+ */
+export async function getProductCompletionHandler(req: Request, res: Response) {
+  try {
+    const productId = req.params.productId;
+    
+    if (!productId) {
+      res.status(400).json({ 
+        error: 'MISSING_PRODUCT_ID', 
+        message: 'Product ID is required' 
+      });
+      return;
+    }
+
+    // Fetch product from Firestore
+    const db = admin.firestore();
+    const productDoc = await db.collection('products').doc(productId).get();
+
+    if (!productDoc.exists) {
+      res.status(404).json({ 
+        error: 'PRODUCT_NOT_FOUND', 
+        message: `Product ${productId} not found` 
+      });
+      return;
+    }
+
+    const productData = productDoc.data();
+
+    // Calculate completion-driven export readiness
+    const readiness = await calculateCompletionDrivenExportReadiness(productId, productData);
+
+    // Return readiness payload
+    res.status(200).json(readiness);
+  } catch (error) {
+    console.error('Error evaluating product completion:', error);
+    res.status(500).json({ 
+      error: 'INTERNAL_ERROR', 
+      message: 'Failed to evaluate product completion' 
+    });
+  }
+}

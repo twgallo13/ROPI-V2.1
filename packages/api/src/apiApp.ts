@@ -29,7 +29,6 @@ import {
 // LP-smart-rules-server-validation-1.0.0: Smart Rules validation endpoint
 import {
   validateSmartRuleHandler,
-  getProductCompletionHandler,
   normalizeSmartRuleHandler,
   getImportEvalHandler,
 } from './endpoints/adminSmartRules';
@@ -70,6 +69,7 @@ import {
   searchProductsByMpnHandler,
   generateSuggestionsHandler,
   applySuggestionHandler,
+  getProductCompletionHandler,
 } from './endpoints/products';
 
 // LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe handlers
