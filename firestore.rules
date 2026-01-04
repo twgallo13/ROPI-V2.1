@@ -259,6 +259,35 @@ service cloud.firestore {
     }
     
     // ========================================
+    // COMPLETION RULES CONFIGURATION (LP-completion-model-export-gate-1.0.0)
+    // ========================================
+    // Authoritative configuration document for completion evaluation engine
+    // - Canonical path: settings/exportSettings (top-level doc with completionRules field)
+    // - Versioned snapshots: settings/exportSettings/completionRulesVersions/{rulesVersion}
+    // - Audit trail: settings/exportSettings/completionRulesAudit/{eventId}
+    
+    match /settings/exportSettings {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    match /settings/exportSettings/completionRulesVersions/{rulesVersion} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    match /settings/exportSettings/completionRulesAudit/{eventId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // ========================================
     // DEFAULT DENY
     // ========================================
     // Deny access to all other collections by default
