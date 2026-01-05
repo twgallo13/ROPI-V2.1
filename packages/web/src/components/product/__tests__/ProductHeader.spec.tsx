@@ -192,4 +192,154 @@ describe('ProductHeader', () => {
       expect(publishButton).not.toBeDisabled();
     });
   });
+
+  // LP-export-completion-fix-1.0.0: Tests for guidance banner
+  describe('Sites Guidance Banner (LP-export-completion-fix-1.0.0)', () => {
+    it('should show guidance banner when blocked due to "No sites selected"', () => {
+      const blockingReasons = [
+        {
+          type: 'REQUIRED_ATTRIBUTE_MISSING',
+          severity: 'BLOCKING',
+          message: 'No sites selected for product',
+        },
+      ];
+
+      render(
+        <ProductHeader
+          product={mockProduct}
+          onSave={mockOnSave}
+          onPublish={mockOnPublish}
+          onBack={mockOnBack}
+          canPublish={false}
+          publishReadinessLoading={false}
+          blockingReasons={blockingReasons}
+        />
+      );
+
+      const banner = screen.getByTestId('sites-guidance-banner');
+      expect(banner).toBeInTheDocument();
+      expect(banner).toHaveTextContent(/export blocked/i);
+      expect(banner).toHaveTextContent(/no sites selected/i);
+    });
+
+    it('should not show guidance banner when no blocking reasons', () => {
+      render(
+        <ProductHeader
+          product={mockProduct}
+          onSave={mockOnSave}
+          onPublish={mockOnPublish}
+          onBack={mockOnBack}
+          canPublish={true}
+          publishReadinessLoading={false}
+          blockingReasons={[]}
+        />
+      );
+
+      expect(screen.queryByTestId('sites-guidance-banner')).not.toBeInTheDocument();
+    });
+
+    it('should not show guidance banner for non-sites blocking reasons', () => {
+      const blockingReasons = [
+        {
+          type: 'SITE_DESCRIPTION_SEO_MISSING',
+          severity: 'BLOCKING',
+          message: 'Export blocked for us: Missing required Description/SEO attributes',
+        },
+      ];
+
+      render(
+        <ProductHeader
+          product={mockProduct}
+          onSave={mockOnSave}
+          onPublish={mockOnPublish}
+          onBack={mockOnBack}
+          canPublish={false}
+          publishReadinessLoading={false}
+          blockingReasons={blockingReasons}
+        />
+      );
+
+      expect(screen.queryByTestId('sites-guidance-banner')).not.toBeInTheDocument();
+    });
+
+    it('should show "Select Sites" button when onSelectSites callback provided', () => {
+      const mockOnSelectSites = vi.fn();
+      const blockingReasons = [
+        {
+          type: 'REQUIRED_ATTRIBUTE_MISSING',
+          severity: 'BLOCKING',
+          message: 'No sites selected for product',
+        },
+      ];
+
+      render(
+        <ProductHeader
+          product={mockProduct}
+          onSave={mockOnSave}
+          onPublish={mockOnPublish}
+          onBack={mockOnBack}
+          canPublish={false}
+          publishReadinessLoading={false}
+          blockingReasons={blockingReasons}
+          onSelectSites={mockOnSelectSites}
+        />
+      );
+
+      const selectSitesButton = screen.getByTestId('select-sites-button');
+      expect(selectSitesButton).toBeInTheDocument();
+      expect(selectSitesButton).toHaveTextContent(/select sites/i);
+    });
+
+    it('should call onSelectSites when "Select Sites" button clicked', () => {
+      const mockOnSelectSites = vi.fn();
+      const blockingReasons = [
+        {
+          type: 'REQUIRED_ATTRIBUTE_MISSING',
+          severity: 'BLOCKING',
+          message: 'No sites selected for product',
+        },
+      ];
+
+      render(
+        <ProductHeader
+          product={mockProduct}
+          onSave={mockOnSave}
+          onPublish={mockOnPublish}
+          onBack={mockOnBack}
+          canPublish={false}
+          publishReadinessLoading={false}
+          blockingReasons={blockingReasons}
+          onSelectSites={mockOnSelectSites}
+        />
+      );
+
+      const selectSitesButton = screen.getByTestId('select-sites-button');
+      fireEvent.click(selectSitesButton);
+      expect(mockOnSelectSites).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not show "Select Sites" button when onSelectSites not provided', () => {
+      const blockingReasons = [
+        {
+          type: 'REQUIRED_ATTRIBUTE_MISSING',
+          severity: 'BLOCKING',
+          message: 'No sites selected for product',
+        },
+      ];
+
+      render(
+        <ProductHeader
+          product={mockProduct}
+          onSave={mockOnSave}
+          onPublish={mockOnPublish}
+          onBack={mockOnBack}
+          canPublish={false}
+          publishReadinessLoading={false}
+          blockingReasons={blockingReasons}
+        />
+      );
+
+      expect(screen.queryByTestId('select-sites-button')).not.toBeInTheDocument();
+    });
+  });
 });
