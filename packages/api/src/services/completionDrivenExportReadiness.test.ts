@@ -684,3 +684,139 @@ describe('Completion-Driven Export Readiness (Blocking Payloads)', () => {
     expect(result.evaluationTimestamp).toBe(DETERMINISTIC_TIMESTAMP);
   });
 });
+
+// ============================================================================
+// LP-export-completion-fix-1.0.0: Unit Tests for extractSelectedSites
+// ============================================================================
+
+import { extractSelectedSites } from './completionDrivenExportReadiness';
+
+describe('extractSelectedSites (LP-export-completion-fix-1.0.0)', () => {
+  
+  it('should return product.websites array when present', () => {
+    const product: ProductDocument = {
+      id: 'test-1',
+      mpn: 'MPN-1',
+      attributes: {},
+      websites: ['us', 'uk', 'ca']
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['us', 'uk', 'ca']);
+  });
+  
+  it('should return product.sites array when websites not present', () => {
+    const product: ProductDocument = {
+      id: 'test-2',
+      mpn: 'MPN-2',
+      attributes: {},
+      sites: ['site-a', 'site-b']
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['site-a', 'site-b']);
+  });
+  
+  it('should return product.website (string) as single-element array for legacy format', () => {
+    const product: ProductDocument = {
+      id: 'test-3',
+      mpn: 'MPN-3',
+      attributes: {},
+      website: 'legacy-site'
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['legacy-site']);
+  });
+  
+  it('should return product.attributes.website array (CSV import format)', () => {
+    const product: ProductDocument = {
+      id: 'test-4',
+      mpn: 'MPN-4',
+      attributes: {
+        website: ['us', 'uk']
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['us', 'uk']);
+  });
+  
+  it('should return empty array when no site fields are present', () => {
+    const product: ProductDocument = {
+      id: 'test-5',
+      mpn: 'MPN-5',
+      attributes: {}
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual([]);
+  });
+  
+  it('should prefer websites over sites (precedence test)', () => {
+    const product: ProductDocument = {
+      id: 'test-6',
+      mpn: 'MPN-6',
+      attributes: {
+        website: ['attr-site']
+      },
+      websites: ['top-level-site'],
+      sites: ['sites-field']
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['top-level-site']);
+  });
+  
+  it('should prefer sites over website string (precedence test)', () => {
+    const product: ProductDocument = {
+      id: 'test-7',
+      mpn: 'MPN-7',
+      attributes: {
+        website: ['attr-site']
+      },
+      sites: ['sites-field'],
+      website: 'legacy-site'
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['sites-field']);
+  });
+  
+  it('should prefer website string over attributes.website (precedence test)', () => {
+    const product: ProductDocument = {
+      id: 'test-8',
+      mpn: 'MPN-8',
+      attributes: {
+        website: ['attr-site']
+      },
+      website: 'legacy-site'
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['legacy-site']);
+  });
+  
+  it('should ignore empty attributes.website array', () => {
+    const product: ProductDocument = {
+      id: 'test-9',
+      mpn: 'MPN-9',
+      attributes: {
+        website: []
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual([]);
+  });
+  
+  it('should handle undefined attributes gracefully', () => {
+    const product: ProductDocument = {
+      id: 'test-10',
+      mpn: 'MPN-10'
+    } as ProductDocument;
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual([]);
+  });
+});

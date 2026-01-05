@@ -421,8 +421,9 @@ function convertToProductSnapshot(product: ProductDocument): ProductSnapshot {
  * Extract selected sites from product document
  * Precedence: websites → sites → website (string) → attributes.website
  * LP-export-completion-fix-1.0.0: Added attributes.website support for CSV imports
+ * @exported for testing
  */
-function extractSelectedSites(product: ProductDocument): string[] {
+export function extractSelectedSites(product: ProductDocument): string[] {
   if (Array.isArray(product.websites)) {
     return product.websites;
   }
