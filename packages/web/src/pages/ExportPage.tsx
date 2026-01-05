@@ -1,56 +1,31 @@
 import { useState } from 'react';
 import PageLayout from '@/components/common/PageLayout';
-import { ExportBlockedModal, type ExportBlockingReason } from '@/components/export/ExportBlockedModal';
+import { ExportBlockedModal } from '@/components/export/ExportBlockedModal';
+import { useExportCompletion } from '@/hooks/useExportCompletion';
 
 /**
  * Export Manager Page
- * 
+ * LP-export-unlock-1.0.0
+ *
  * Handles product data exports with completion gate enforcement.
- * Shows 423 blocking modal when export is blocked by completion requirements.
+ * Export is gated solely by completion.ready:
+ * - completion not loaded → disabled + loading indicator
+ * - completion.ready === true → export enabled, UI interactive
+ * - completion.ready === false → blocked modal with reasons
  */
-interface ExportBlockedPayload {
-  success: false;
-  error: string;
-  message: string;
-  readiness: {
-    ready: boolean;
-    completionPct: number;
-    threshold: number;
-    hasBlockingSites: boolean;
-    blockingReasons: ExportBlockingReason[];
-    operatorExplanation: {
-      summary: string;
-      blockingIssues: string[];
-      completionBreakdown?: Array<{
-        segmentId: string;
-        segmentName: string;
-        score: number;
-        weightPct: number;
-        missingAttributes: string[];
-      }>;
-      siteStatus?: Array<{
-        site: string;
-        blocked: boolean;
-        reason?: string;
-        missingAttributes?: string[];
-      }>;
-      actionRequired: string[];
-    };
-    catalogStats?: {
-      totalProducts: number;
-      blockedByCompletionCount: number;
-      blockedBySiteCount: number;
-      readyCount: number;
-    };
-  };
-}
 
 function ExportPage() {
-  const [exportBlocked, setExportBlocked] = useState(false);
-  const [blockedPayload, setBlockedPayload] = useState<ExportBlockedPayload | null>(null);
+  const { loading, error, completion, exportReady, exportBlocked, refresh } = useExportCompletion();
   const [exporting, setExporting] = useState(false);
+  const [selectedSite, setSelectedSite] = useState('ropi-web');
+  const [selectedFormat, setSelectedFormat] = useState('csv');
 
   async function handleExport() {
+    // Guard: only allow export when completion.ready === true
+    if (!exportReady) {
+      return;
+    }
+
     try {
       setExporting(true);
 
@@ -58,40 +33,46 @@ function ExportPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('firebase_token') || ''}`,
+          Authorization: `Bearer ${localStorage.getItem('firebase_token') || ''}`,
         },
         body: JSON.stringify({
-          site: 'ropi-web',
+          site: selectedSite,
+          format: selectedFormat,
           limit: 100,
           includeMeta: true,
         }),
       });
 
-      if (response.status === 423) {
-        // Export blocked - show modal
-        const data = (await response.json()) as ExportBlockedPayload;
-        setBlockedPayload(data);
-        setExportBlocked(true);
-        return;
-      }
-
       if (!response.ok) {
+        // Re-check completion on failure (may have changed)
+        await refresh();
         throw new Error(`Export failed: ${response.statusText}`);
       }
 
       const result = await response.json();
       alert(`Export successful! ${result.summary?.exportedProducts || 0} products exported.`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Export failed';
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Export failed';
       alert(message);
     } finally {
       setExporting(false);
     }
   }
 
+  // Derive UI states from completion.ready
+  const isDisabled = loading || !exportReady || exporting;
+  const buttonLabel = loading
+    ? 'Checking readiness...'
+    : exporting
+      ? 'Exporting...'
+      : exportReady
+        ? 'Start Export'
+        : 'Export Blocked';
+
   return (
     <PageLayout title="Export Manager">
       <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+        {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <h2>Product Export</h2>
           <p style={{ color: 'var(--color-text-secondary)' }}>
@@ -100,89 +81,199 @@ function ExportPage() {
           </p>
         </div>
 
-        <div style={{
-          padding: '2rem',
-          border: '1px solid var(--color-border)',
-          borderRadius: '8px',
-          backgroundColor: 'var(--color-surface)',
-        }}>
-          <div style={{ marginBottom: '2rem' }}>
-            <h3>Export Options</h3>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1rem',
-              marginBottom: '2rem',
-            }}>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                  Site
-                </label>
-                <select style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '4px',
-                }}>
-                  <option>ropi-web</option>
-                  <option>shiekh</option>
-                  <option>karmaloop</option>
-                  <option>mltd</option>
-                </select>
-              </div>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                  Format
-                </label>
-                <select style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '4px',
-                }}>
-                  <option>CSV (RetailOps)</option>
-                  <option>JSON</option>
-                </select>
+        {/* Loading State */}
+        {loading && (
+          <div
+            style={{
+              padding: '2rem',
+              textAlign: 'center',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-surface)',
+            }}
+            data-testid="export-loading"
+          >
+            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+            <p>Checking export readiness...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div
+            style={{
+              padding: '2rem',
+              textAlign: 'center',
+              border: '1px solid var(--color-error)',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-error-bg)',
+            }}
+            data-testid="export-error"
+          >
+            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚠️</div>
+            <p style={{ color: 'var(--color-error)' }}>{error}</p>
+            <button
+              onClick={refresh}
+              style={{
+                marginTop: '1rem',
+                padding: '0.5rem 1rem',
+                border: '1px solid var(--color-border)',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Export Ready State */}
+        {!loading && !error && exportReady && (
+          <div
+            style={{
+              padding: '2rem',
+              border: '1px solid var(--color-success)',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-surface)',
+            }}
+            data-testid="export-ready"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+              <span style={{ fontSize: '1.5rem' }}>✅</span>
+              <h3 style={{ margin: 0 }}>Export Ready</h3>
+            </div>
+            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+              Completion requirements met. You can export products.
+              {completion?.completionPct !== undefined && (
+                <span style={{ marginLeft: '0.5rem' }}>
+                  (Completion: {completion.completionPct.toFixed(0)}% / {completion.threshold}% threshold)
+                </span>
+              )}
+            </p>
+
+            <div style={{ marginBottom: '2rem' }}>
+              <h4>Export Options</h4>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: '1rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Site
+                  </label>
+                  <select
+                    value={selectedSite}
+                    onChange={(e) => setSelectedSite(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '4px',
+                    }}
+                    data-testid="export-site-select"
+                  >
+                    <option value="ropi-web">ropi-web</option>
+                    <option value="shiekh">shiekh</option>
+                    <option value="karmaloop">karmaloop</option>
+                    <option value="mltd">mltd</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Format
+                  </label>
+                  <select
+                    value={selectedFormat}
+                    onChange={(e) => setSelectedFormat(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '4px',
+                    }}
+                    data-testid="export-format-select"
+                  >
+                    <option value="csv">CSV (RetailOps)</option>
+                    <option value="json">JSON</option>
+                  </select>
+                </div>
               </div>
             </div>
+
+            <button
+              onClick={handleExport}
+              disabled={isDisabled}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: 'var(--color-primary)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                fontWeight: 500,
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                opacity: isDisabled ? 0.6 : 1,
+              }}
+              data-testid="export-button"
+            >
+              {buttonLabel}
+            </button>
           </div>
+        )}
 
-          <button
-            onClick={handleExport}
-            disabled={exporting}
+        {/* Export Blocked State - show summary card (modal auto-opens) */}
+        {!loading && !error && exportBlocked && (
+          <div
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              fontWeight: 500,
-              cursor: exporting ? 'not-allowed' : 'pointer',
-              opacity: exporting ? 0.6 : 1,
+              padding: '2rem',
+              border: '1px solid var(--color-warning)',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-surface)',
             }}
+            data-testid="export-blocked"
           >
-            {exporting ? 'Exporting...' : 'Start Export'}
-          </button>
-
-          <p style={{
-            marginTop: '1rem',
-            fontSize: 'var(--font-size-sm)',
-            color: 'var(--color-text-secondary)',
-          }}>
-            💡 If export is blocked, the page will show you exactly why and what to fix.
-          </p>
-        </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+              <span style={{ fontSize: '1.5rem' }}>🚫</span>
+              <h3 style={{ margin: 0 }}>Export Blocked</h3>
+            </div>
+            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
+              {completion?.operatorExplanation?.summary ||
+                'Completion requirements not met. See details below.'}
+            </p>
+            {completion?.completionPct !== undefined && (
+              <p style={{ marginBottom: '1rem' }}>
+                Current completion: <strong>{completion.completionPct.toFixed(0)}%</strong> (required:{' '}
+                {completion.threshold}%)
+              </p>
+            )}
+            <button
+              onClick={refresh}
+              style={{
+                padding: '0.5rem 1rem',
+                border: '1px solid var(--color-border)',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                marginRight: '1rem',
+              }}
+            >
+              Refresh Status
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Export Blocked Modal */}
+      {/* Export Blocked Modal — auto-opens when exportBlocked */}
       <ExportBlockedModal
         open={exportBlocked}
-        onClose={() => setExportBlocked(false)}
-        summary={blockedPayload?.readiness.operatorExplanation?.summary}
-        blockingReasons={blockedPayload?.readiness.blockingReasons}
-        catalogStats={blockedPayload?.readiness.catalogStats}
-        operatorExplanation={blockedPayload?.readiness.operatorExplanation}
+        onClose={refresh}
+        summary={completion?.operatorExplanation?.summary}
+        blockingReasons={completion?.blockingReasons}
+        catalogStats={completion?.catalogStats}
+        operatorExplanation={completion?.operatorExplanation}
       />
     </PageLayout>
   );
