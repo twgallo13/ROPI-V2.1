@@ -2,7 +2,7 @@
 /**
  * Verify Attributes Meta Script
  * 
- * LP-observations-consolidation-1.5.0: Phase readiness check
+ * LP-workflow-fix-#001: Phase readiness check
  * 
  * Verifies that Firestore settings/attributesMeta.registry_version
  * matches the local attributeRegistry.json version.
@@ -14,9 +14,11 @@
  * 
  * Environment:
  *   GOOGLE_APPLICATION_CREDENTIALS - Path to service account JSON
+ * 
+ * Note: firebase-admin is only loaded when NOT in skip-firestore mode,
+ * allowing the script to run in CI without credentials when skipping.
  */
 
-const admin = require('firebase-admin');
 const fs = require('fs');
 const path = require('path');
 
@@ -57,8 +59,13 @@ try {
 if (skipFirestore) {
   console.log('\n⚠️ Skipping Firestore verification (--skip-firestore flag)');
   console.log('✅ Local registry version verified:', verLocal);
+  console.log('✅ Local registry file readable at:', registryPath);
   process.exit(0);
 }
+
+// Only require firebase-admin when NOT skipping Firestore
+// This allows the script to run without the dependency in CI skip mode
+const admin = require('firebase-admin');
 
 if (!keyFile) {
   console.error('❌ No service account credentials found.');

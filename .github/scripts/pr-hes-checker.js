@@ -122,8 +122,8 @@ function validateHES(json) {
   }
 
   // Check LP format
-  if (json.lp && !/^LP-[a-z0-9-]+-\d+\.\d+\.\d+$/i.test(json.lp)) {
-    warnings.push(`LP format "${json.lp}" may be non-standard. Expected: LP-<PhaseSlug>-<SemVer>`);
+  if (json.lp && !/^LP-[a-z0-9-]+-#?\d{1,3}$/i.test(json.lp)) {
+    warnings.push(`LP format "${json.lp}" may be non-standard. Expected: LP-<PhaseSlug>-#NNN`);
   }
 
   // Check for artifacts (recommended)
@@ -221,7 +221,7 @@ async function main() {
     console.log(JSON.stringify({
       from: 'Homer',
       to: 'Lisa',
-      lp: 'LP-<PhaseSlug>-<SemVer>',
+      lp: 'LP-<PhaseSlug>-#NNN',
       actions: ['Action 1', 'Action 2'],
       artifacts: { pr: '#123', ci_runs: [] },
       outcome: 'VERIFIED SUCCESS',

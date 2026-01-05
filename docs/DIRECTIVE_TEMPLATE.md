@@ -12,7 +12,7 @@
 
 **PhaseSlug:** `<kebab-case-slug>`
 
-**LP:** `LP-<PhaseSlug>-<SemVer>`
+**LP:** `LP-<PhaseSlug>-#NNN`
 
 **Version:** `<SemVer e.g. 1.0.0>`
 

@@ -1,7 +1,7 @@
 <!-- PR Template: Lisa-controlled PR -->
 <!-- LP-observations-consolidation-1.5.0: Updated with LP requirements -->
 
-LP: LP-<PhaseSlug>-<SemVer>
+LP: LP-<PhaseSlug>-#NNN
 PhaseSlug: <phase-slug>
 
 ---
@@ -34,8 +34,8 @@ PVS-<MAJOR.MINOR.PATCH>
 - [ ] Firestore meta version matches registry
 
 ### Acceptance Criteria
-- [ ] PR title begins with `LP: LP-<PhaseSlug>-<SemVer>` or `PVS-<MAJOR.MINOR.PATCH>`
-- [ ] PR has label `lp:<phaseSlug>-<semver>`
+- [ ] PR title begins with `LP: LP-<PhaseSlug>-#NNN` or `PVS-<MAJOR.MINOR.PATCH>`
+- [ ] PR has label `lp:<phaseSlug>-NNN`
 - [ ] Branch name follows convention
 - [ ] Commit messages include LP/PVS tag
 - [ ] CI checks green
@@ -57,7 +57,7 @@ Squash / Rebase / Merge Commit — (chosen by Lisa)
 - [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs` | `infra`
 - [ ] **Area label**: `frontend` | `backend` | `infra` | `api` | `sdk`
 - [ ] **Priority label**: `p0-critical` | `p1-high` | `p2-medium` | `p3-low`
-- [ ] **LP label**: `lp:<phaseSlug>-<semver>`
+- [ ] **LP label**: `lp:<phaseSlug>-NNN`
 
 ## Pre-Merge Checklist
 
@@ -78,7 +78,7 @@ Squash / Rebase / Merge Commit — (chosen by Lisa)
 {
   "from": "Homer",
   "to": "Lisa",
-  "lp": "LP-<PhaseSlug>-<SemVer>",
+  "lp": "LP-<PhaseSlug>-#NNN",
   "actions": [],
   "outcome": "PENDING"
 }
