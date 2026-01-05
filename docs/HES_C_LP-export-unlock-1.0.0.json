@@ -1,0 +1,177 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-unlock-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "C",
+  "checkpointName": "Verification",
+  "branch": {
+    "name": "feat/export-unlock-2026-01-05",
+    "sha": "e5af75c"
+  },
+  "prNumber": 445,
+  "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/445",
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    { "path": "packages/web/src/hooks/useExportCompletion.ts", "action": "created" },
+    { "path": "packages/web/src/hooks/useProductCompletion.ts", "action": "created" },
+    { "path": "packages/web/src/hooks/__tests__/useExportCompletion.spec.ts", "action": "created" },
+    { "path": "packages/web/src/pages/__tests__/ExportPage.spec.tsx", "action": "created" },
+    { "path": "packages/web/src/components/product/__tests__/ProductHeader.spec.tsx", "action": "created" },
+    { "path": "packages/web/src/pages/ExportPage.tsx", "action": "modified" },
+    { "path": "packages/web/src/pages/ProductEditorPage.tsx", "action": "modified" },
+    { "path": "packages/web/src/components/product/ProductHeader.tsx", "action": "modified" },
+    { "path": "docs/vvp/VVP_LP-export-unlock-1.0.0.md", "action": "created" },
+    { "path": "docs/HES_A_LP-export-unlock-1.0.0.json", "action": "created" },
+    { "path": "docs/HES_B_LP-export-unlock-1.0.0.json", "action": "created" }
+  ],
+  "commitShas": [
+    "e8d473d6bce94588907d37ec0f2bebbe94028d24",
+    "64dfbe3c9d6e10cd4a062983ea7a06ce54b46c0e",
+    "e5af75c"
+  ],
+  "ciRuns": [
+    {
+      "name": "Validate LP Format",
+      "runId": "20710036071",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710036071",
+      "status": "pass"
+    },
+    {
+      "name": "Validate HES JSON",
+      "runId": "20710036053",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710036053",
+      "status": "pass"
+    },
+    {
+      "name": "E2E Tests",
+      "runId": "20709996156",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996156",
+      "status": "pass"
+    },
+    {
+      "name": "Deploy AOSS PR Preview",
+      "runId": "20709996169",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996169",
+      "status": "pass"
+    },
+    {
+      "name": "Deploy pre-check",
+      "runId": "20709996165",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996165",
+      "status": "pass"
+    },
+    {
+      "name": "CodeRabbit",
+      "runId": "external",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/445",
+      "status": "pass"
+    },
+    {
+      "name": "Verify Attributes Meta",
+      "runId": "20709996154",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996154",
+      "status": "fail",
+      "note": "PRE-EXISTING repo-wide issue: registry_version mismatch. Not introduced by this PR."
+    }
+  ],
+  "deployInfo": {
+    "runId": "20709996169",
+    "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996169",
+    "stagingUrl": "https://ropi-aoss-staging--pr-445-vzqe7ehx.web.app",
+    "deployedAt": "2026-01-05T08:52:00Z"
+  },
+  "verification": {
+    "export_route_mounted": {
+      "status": "PASS",
+      "evidence": "ExportPage mounted at /export in packages/web/src/App.tsx line 45. Staging URL accessible: https://ropi-aoss-staging--pr-445-vzqe7ehx.web.app/export"
+    },
+    "completion_ready_gating": {
+      "status": "PASS",
+      "evidence": "ExportPage.tsx uses useExportCompletion hook (line 12); gating based on completion.ready (lines 31-78). Three states implemented: loading, ready, blocked."
+    },
+    "legacy_gating_removed": {
+      "status": "PASS",
+      "evidence": "ProductHeader.tsx: removed product.exportReadiness?.overall < 80 check. Now uses canPublish prop (line 23, 108-112). File ref: packages/web/src/components/product/ProductHeader.tsx",
+      "fileRef": "packages/web/src/components/product/ProductHeader.tsx",
+      "linesBefore": "disabled={(product.exportReadiness?.overall ?? 0) < 80}",
+      "linesAfter": "disabled={publishDisabled}"
+    },
+    "loading_state": {
+      "status": "PASS",
+      "evidence": "ExportPage.tsx line 31-38: shows loading indicator with data-testid='export-loading' when loading=true. Test: ExportPage.spec.tsx 'should show loading indicator'"
+    },
+    "ready_state": {
+      "status": "PASS",
+      "evidence": "ExportPage.tsx line 49-61: shows export-ready div with enabled StartExportButton when exportReady=true. Test: ExportPage.spec.tsx 'should show export ready state'"
+    },
+    "blocked_state": {
+      "status": "PASS",
+      "evidence": "ExportPage.tsx line 63-78: shows export-blocked div and ExportBlockedModal when exportBlocked=true. Test: ExportPage.spec.tsx 'should show export blocked state'"
+    },
+    "firestore_path": {
+      "status": "PASS",
+      "evidence": "useExportCompletion.ts line 35: fetches /api/admin/exports/readiness which reads settings/exportSettings.completionRules"
+    },
+    "unit_tests": {
+      "status": "PASS",
+      "evidence": "28 tests pass: useExportCompletion.spec.ts (6), ExportPage.spec.tsx (14), ProductHeader.spec.tsx (8). All pass locally and in E2E CI."
+    },
+    "e2e_tests": {
+      "status": "PASS",
+      "evidence": "E2E Tests workflow passed: https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996156"
+    },
+    "vvp_created": {
+      "status": "PASS",
+      "evidence": "docs/vvp/VVP_LP-export-unlock-1.0.0.md created per VVP_TEMPLATE with 7 verification steps"
+    },
+    "staging_deployed": {
+      "status": "PASS",
+      "evidence": "Staging URL: https://ropi-aoss-staging--pr-445-vzqe7ehx.web.app - HTTP 200 verified"
+    }
+  },
+  "vvp": {
+    "document": "docs/vvp/VVP_LP-export-unlock-1.0.0.md",
+    "verifier": "Homer (automated)",
+    "verifierRole": "AI Agent",
+    "verificationDate": "2026-01-05",
+    "steps": {
+      "step1_export_page_loads": "PASS - Export Manager page accessible at /export",
+      "step2_loading_state": "PASS - Loading indicator visible during fetch (data-testid='export-loading')",
+      "step3_ready_state": "PASS - Export ready state shows green indicator and enabled controls when completion.ready=true",
+      "step4_blocked_state": "PASS - Blocked state shows modal with reasons when completion.ready=false",
+      "step5_modal_interaction": "PASS - Modal can be closed and status refreshed",
+      "step6_completion_api": "PASS - Network shows /api/admin/exports/readiness call",
+      "step7_publish_button": "PASS - ProductHeader uses canPublish prop for gating"
+    },
+    "overallResult": "PASS"
+  },
+  "testResults": {
+    "unitTests": {
+      "total": 28,
+      "passed": 28,
+      "failed": 0,
+      "files": [
+        "useExportCompletion.spec.ts (6 tests)",
+        "ExportPage.spec.tsx (14 tests)",
+        "ProductHeader.spec.tsx (8 tests)"
+      ]
+    },
+    "e2eTests": {
+      "status": "PASS",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20709996156"
+    }
+  },
+  "knownIssues": [
+    {
+      "check": "Verify Attributes Meta",
+      "status": "FAILURE",
+      "reason": "PRE-EXISTING repo-wide issue: Firestore registry_version mismatch (63f787312f56fbfc52d4f813f9755b0251629442 != 1.1.0). This affects all PRs and is not introduced by LP-export-unlock-1.0.0.",
+      "impact": "None - does not affect export functionality",
+      "remediation": "Out of scope for this LP. Tracked separately."
+    }
+  ],
+  "deviations": [],
+  "result": "VERIFIED SUCCESS"
+}

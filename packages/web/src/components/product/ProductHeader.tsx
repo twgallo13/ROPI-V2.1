@@ -3,11 +3,14 @@ import { formatForDisplayYYYYMMDD } from '../../utils/dateUtils';
 import './ProductHeader.css';
 
 /**
- * Product Header Component — LP-0.4.1.1
+ * Product Header Component — LP-0.4.1.1, LP-export-unlock-1.0.0
  * 
  * Persistent sticky header bar displaying read-only product metadata.
  * All fields in this component are read-only as they represent metadata
  * from external systems (ROPI, warehouse) or derived states.
+ * 
+ * LP-export-unlock-1.0.0: Publish button gating now uses completion.ready
+ * passed via canPublish prop, replacing legacy product.exportReadiness?.overall.
  * 
  * LP-0.4.1.1: websites field displays values from Firestore document.
  * If a product shows unexpected website values (e.g., "shiekhshoes.com"),
@@ -34,6 +37,15 @@ interface ProductHeaderProps {
   onSave: () => void;
   onPublish: () => void;
   onBack: () => void;
+  /** 
+   * LP-export-unlock-1.0.0: Publish readiness from completion.ready.
+   * When undefined, publish button shows loading state.
+   * When true, publish is enabled.
+   * When false, publish is disabled with tooltip.
+   */
+  canPublish?: boolean;
+  /** Loading state for publish readiness check */
+  publishReadinessLoading?: boolean;
 }
 
 /**
@@ -62,7 +74,14 @@ function formatNumber(num?: number): string {
   return num.toLocaleString();
 }
 
-function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProps) {
+function ProductHeader({ 
+  product, 
+  onSave, 
+  onPublish, 
+  onBack,
+  canPublish,
+  publishReadinessLoading,
+}: ProductHeaderProps) {
   const status = statusConfig[product.status] || statusConfig['draft'];
   // LP-1.4.2: Defensive fallback for unknown media_status values
   const mediaStatusKey = product.media_status ?? 'missing';
@@ -75,6 +94,15 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
   const attrLastStr = typeof attrLast === 'string' ? attrLast : Array.isArray(attrLast) ? attrLast[0] : undefined;
   const rawLastStr = attrLastStr || product?.last_received;
   const lastDisplay = formatForDisplayYYYYMMDD(rawLastStr) ?? '—';
+
+  // LP-export-unlock-1.0.0: Publish button state from completion.ready
+  const publishDisabled = publishReadinessLoading || canPublish === false || canPublish === undefined;
+  const publishTitle = publishReadinessLoading
+    ? 'Checking publish readiness...'
+    : canPublish === true
+      ? 'Publish product'
+      : 'Publish blocked - completion requirements not met';
+  const publishLabel = publishReadinessLoading ? 'Checking...' : 'Publish';
 
   return (
     <header className="product-header" role="banner" aria-label="Product Header">
@@ -98,10 +126,11 @@ function ProductHeader({ product, onSave, onPublish, onBack }: ProductHeaderProp
           <button 
             onClick={onPublish}
             className="product-header__btn product-header__btn--primary"
-            disabled={(product.exportReadiness?.overall ?? 0) < 80}
-            title={(product.exportReadiness?.overall ?? 0) < 80 ? 'Export readiness must be at least 80%' : 'Publish product'}
+            disabled={publishDisabled}
+            title={publishTitle}
+            data-testid="publish-button"
           >
-            Publish
+            {publishLabel}
           </button>
         </div>
       </div>

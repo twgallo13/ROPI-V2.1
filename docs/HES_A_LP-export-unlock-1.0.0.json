@@ -1,0 +1,135 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-unlock-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "A",
+  "checkpointName": "Planning",
+  "branch": "feat/export-unlock-2026-01-05",
+  "baseSha": "0230f6f47b9dcfaa8618c53c9cd88ef74c9f3173",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "planning": {
+    "exportManagerComponentLocation": {
+      "path": "packages/web/src/pages/ExportPage.tsx",
+      "description": "Export Manager UI component exists with full blocking modal integration",
+      "verified": true
+    },
+    "exportRouteMounting": {
+      "routerFile": "packages/web/src/App.tsx",
+      "currentRoute": "/export",
+      "currentComponent": "ExportPage",
+      "status": "ALREADY_MOUNTED",
+      "evidence": "Route path=\"export\" element={<ExportPage />} at line 36"
+    },
+    "settingsExportSettingsMountingPattern": {
+      "routerFile": "packages/web/src/App.tsx",
+      "currentRoute": "/settings/export-settings",
+      "mountingPattern": "SettingsSubPage delegates to ExportSettingsPage when section='export-settings'",
+      "files": [
+        "packages/web/src/pages/settings/SettingsSubPage.tsx",
+        "packages/web/src/pages/settings/ExportSettingsPage.tsx"
+      ],
+      "status": "VERIFIED"
+    },
+    "firestoreExportSettingsStructure": {
+      "documentPath": "settings/exportSettings",
+      "field": "completionRules",
+      "clientFile": "packages/web/src/services/completionRulesClient.ts",
+      "firestoreRulesReference": "firestore.rules lines 265-290",
+      "status": "SCHEMA_VERIFIED_IN_CODE"
+    },
+    "legacyGatingLogicIdentified": [
+      {
+        "file": "packages/web/src/components/product/ProductHeader.tsx",
+        "line": 101,
+        "code": "disabled={(product.exportReadiness?.overall ?? 0) < 80}",
+        "type": "LEGACY_PERCENTAGE_GATE"
+      },
+      {
+        "file": "packages/web/src/components/product/ProductHeader.tsx",
+        "line": 102,
+        "code": "title={(product.exportReadiness?.overall ?? 0) < 80 ? 'Export readiness must be at least 80%' : 'Publish product'}",
+        "type": "LEGACY_PERCENTAGE_GATE"
+      },
+      {
+        "file": "packages/web/src/pages/ProductEditorPage.tsx",
+        "line": 111,
+        "code": "const safeExportReadiness = product.exportReadiness ?? { overall: 0, byWebsite: {} };",
+        "type": "LEGACY_FALLBACK"
+      }
+    ],
+    "completionReadyGatingExists": {
+      "file": "packages/web/src/components/product/CompletionExportGatePanel.tsx",
+      "line": 87,
+      "code": "const isBlocked = completion ? !completion.ready : false;",
+      "status": "COMPLETION_READY_PATTERN_EXISTS"
+    }
+  },
+  "plannedCommits": [
+    {
+      "order": 1,
+      "message": "feat(export): add completion gating hook and types",
+      "description": "Create useExportCompletion hook to fetch and manage completion.ready state from API"
+    },
+    {
+      "order": 2,
+      "message": "feat(export): implement export unlock gating on /export route",
+      "description": "Wire ExportPage to use completion.ready for enabling/disabling export controls with loading and blocked states"
+    },
+    {
+      "order": 3,
+      "message": "refactor(product): remove legacy exportReadiness gating from ProductHeader",
+      "description": "Replace product.exportReadiness?.overall < 80 with completion.ready-based gating"
+    },
+    {
+      "order": 4,
+      "message": "test(export): add unit/integration tests for export gating behaviors",
+      "description": "Test: loading state, completion.ready === true, completion.ready === false with blocked modal"
+    },
+    {
+      "order": 5,
+      "message": "docs(vvp): add VVP for export unlock verification",
+      "description": "Create docs/VVP_LP-export-unlock-1.0.0.md per VVP_TEMPLATE"
+    }
+  ],
+  "filesChanged": [],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": null,
+  "verification": {
+    "export_manager_component": {
+      "status": "PASS",
+      "evidence": "packages/web/src/pages/ExportPage.tsx exists with ExportBlockedModal integration"
+    },
+    "export_route_mounted": {
+      "status": "PASS",
+      "evidence": "App.tsx line 36: Route path=\"export\" element={<ExportPage />}"
+    },
+    "settings_export_settings_pattern": {
+      "status": "PASS",
+      "evidence": "SettingsSubPage.tsx line 25-27 delegates to ExportSettingsPage"
+    },
+    "firestore_completionRules_schema": {
+      "status": "PASS",
+      "evidence": "completionRulesClient.ts reads from settings/exportSettings.completionRules"
+    },
+    "legacy_gating_identified": {
+      "status": "PASS",
+      "evidence": "ProductHeader.tsx lines 101-102 use product.exportReadiness?.overall < 80"
+    },
+    "completion_ready_pattern_exists": {
+      "status": "PASS",
+      "evidence": "CompletionExportGatePanel.tsx line 87: !completion.ready"
+    }
+  },
+  "deviations": [],
+  "stopConditions": {
+    "missingExportManagerUI": false,
+    "missingCompletionRules": false,
+    "missingGovernanceEvidence": false
+  },
+  "result": "PLANNING COMPLETE - READY FOR IMPLEMENTATION"
+}

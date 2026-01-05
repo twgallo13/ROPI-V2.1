@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useProduct } from '../hooks/useProduct';
+import { useProductCompletion } from '../hooks/useProductCompletion';
 import { isFirebaseAvailable } from '../firebaseConfig';
 import ProductHeader from '../components/product/ProductHeader';
 import CoreInformationTab from '../components/product/CoreInformationTab';
@@ -18,7 +19,7 @@ import { safeArray } from '../lib/productUtils';
 import './ProductEditorPage.css';
 
 /**
- * Product Editor Page — AOSS_PRODUCT_EDITOR_LAYOUT_v1.1
+ * Product Editor Page — AOSS_PRODUCT_EDITOR_LAYOUT_v1.1, LP-export-unlock-1.0.0
  * 
  * Complete interactive Product Editor with:
  * - Top header bar with product metadata and actions
@@ -63,6 +64,12 @@ function ProductEditorPage() {
     applySuggestion,
     ignoreSuggestion,
   } = useProduct(id);
+
+  // LP-export-unlock-1.0.0: Fetch product completion for publish gating
+  const { 
+    loading: completionLoading, 
+    canPublish 
+  } = useProductCompletion(id);
 
   // Sync tab with URL query param
   useEffect(() => {
@@ -144,12 +151,14 @@ function ProductEditorPage() {
   return (
     <ErrorBoundary>
       <div className="product-editor">
-        {/* Product Header */}
+        {/* Product Header — LP-export-unlock-1.0.0: Publish gated by completion.ready */}
         <ProductHeader
           product={product}
           onSave={handleSave}
           onPublish={handlePublish}
           onBack={() => navigate('/products')}
+          canPublish={canPublish}
+          publishReadinessLoading={completionLoading}
         />
 
         {/* Tab Bar */}
