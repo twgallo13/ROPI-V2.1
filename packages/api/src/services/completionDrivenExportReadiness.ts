@@ -419,6 +419,8 @@ function convertToProductSnapshot(product: ProductDocument): ProductSnapshot {
 
 /**
  * Extract selected sites from product document
+ * Precedence: websites → sites → website (string) → attributes.website
+ * LP-export-completion-fix-1.0.0: Added attributes.website support for CSV imports
  */
 function extractSelectedSites(product: ProductDocument): string[] {
   if (Array.isArray(product.websites)) {
@@ -430,6 +432,10 @@ function extractSelectedSites(product: ProductDocument): string[] {
   // Legacy format support
   if (product.website && typeof product.website === 'string') {
     return [product.website];
+  }
+  // LP-export-completion-fix-1.0.0: Check attributes.website for CSV imports
+  if (Array.isArray(product.attributes?.website) && product.attributes.website.length > 0) {
+    return product.attributes.website;
   }
   return [];
 }
