@@ -17,7 +17,7 @@
     { "path": "docs/WORKFLOW.md", "action": "modified" },
     { "path": "evidence/_template/LP-SemVer/HES.md", "action": "modified" }
   ],
-  "commitShas": [],
+  "commitShas": ["43b08f0e041ef5f3c4738db10422c69b8a9dc882"],
   "ciRuns": [],
   "deployInfo": null,
   "verification": {
