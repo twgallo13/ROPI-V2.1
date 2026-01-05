@@ -99,5 +99,11 @@ Checklist: [ ] Phase readiness satisfied
 
 ---
 
+## Execution Rules
+
+If no new evidence is discovered after one complete repo scan, execution must stop and escalate for direction. Re-running searches without new inputs is not allowed.
+
+---
+
 ## Change control & updates
 This governance file is the authoritative policy. Changes must follow the LP process and be documented with a new LP and PR.
