@@ -52,7 +52,7 @@
 - **LP Prefix:** `LP-<PhaseSlug>-`
 - **Description:** <one-line description>
 - **LPs:**
-  - `LP-<PhaseSlug>-<SemVer>` → PR: #<number> → Status: <open/merged/closed>
+  - `LP-<PhaseSlug>-#NNN` → PR: #<number> → Status: <open/merged/closed>
 - **Evidence:**
   - HES: `<path or link>`
 ```

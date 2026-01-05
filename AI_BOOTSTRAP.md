@@ -28,7 +28,7 @@ ROPI AOSS — Admin Order & Staging System. Monorepo: `packages/cli`, `packages/
 ## Minimal machine-readable hints (for agents)
 - `registry_path`: `packages/sdk/config/attributeRegistry.json`  
 - `registry_firestore_meta`: `settings/attributesMeta`  
-- `lp_label_prefix`: `lp:` (labels start `lp:<PhaseSlug>-<SemVer>`)
+- `lp_label_prefix`: `lp:` (labels start `lp:<PhaseSlug>-NNN`)
 
 ---
 
@@ -57,7 +57,7 @@ Resume phase "<PhaseSlug>-<SemVer>".
 
 Steps:
 1. Read AI_BOOTSTRAP.md and GOVERNANCE.md.
-2. List open PRs with label lp:<PhaseSlug>-<SemVer>.
+2. List open PRs with label lp:<PhaseSlug>-NNN.
 3. Summarize: current step, last HES, pending actions.
 4. Wait for my instruction before any new action.
 

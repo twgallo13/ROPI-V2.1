@@ -21,7 +21,7 @@ VVP (Visual Verification Protocol) is a step-by-step guide for non-technical use
 ```markdown
 # VVP: <Feature Name>
 
-**LP:** LP-<PhaseSlug>-<SemVer>
+**LP:** LP-<PhaseSlug>-#NNN
 **Date:** <YYYY-MM-DD>
 **Verifier:** <Name or role>
 **Environment:** <staging URL or local>

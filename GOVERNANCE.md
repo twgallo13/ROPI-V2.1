@@ -16,7 +16,7 @@ Work proceeds in **phases**. Each phase is governed by a single PhaseSlug and a 
 
 ## Core concepts
 - **Phase** — high-level work unit (PhaseSlug). Lifecycle: Ready → Execute → Verify → Complete.  
-- **LP (Lisa Prompt)** — `LP-<PhaseSlug>-<SemVer>`. Governs a single deterministic execution. LPs are immutable.  
+- **LP (Lisa Prompt)** — `LP-<PhaseSlug>-#NNN`. Governs a single deterministic execution. LPs are immutable.  
 - **HES (Homer Execution Summary)** — strict evidence-only summary produced by Homer after each LP.  
 - **Authority:** Lisa (governance/orchestration), Homer (executor), John (human relay).
 
@@ -30,17 +30,17 @@ Before any LP is issued, Lisa must confirm Phase Readiness with these evidence i
 If any item is missing, the phase cannot start and Lisa must require evidence or pause.
 
 ## LP format & PhaseSlug rules (MANDATORY)
-- LP format: `LP-<PhaseSlug>-<SemVer>` (e.g., `LP-service-account-ropi-deploy-1.0.0`).  
+- LP format: `LP-<PhaseSlug>-#NNN` (e.g., `LP-workflow-fix-#001`).  
 - PhaseSlug: kebab-case, short, constant for the phase.  
-- Semantic version: major.minor.patch (phase-scoped).
+- Numeric suffix: three-digit counter (phase-scoped), prefixed with `#` in PR body.
 
 ## LP → PR mapping (HARD)
 - Each LP maps to one PR. The PR title or body must include the LP string.  
-- PR labels: exactly one `state:*`, exactly one `lp:<PhaseSlug>-<SemVer>`. Optional `type:*`. Add `cleanup:required` at open.
+- PR labels: exactly one `state:*`, exactly one `lp:<PhaseSlug>-NNN`. Optional `type:*`. Add `cleanup:required` at open.
 
 ## Pull Request labels taxonomy (required)
 - **State (exactly one):** `state:planned`, `state:in-progress`, `state:review`, `state:changes-requested`, `state:approved`, `state:merged`, `state:closed`  
-- **LP (exactly one):** `lp:<PhaseSlug>-<SemVer>`  
+- **LP (exactly one):** `lp:<PhaseSlug>-NNN`  
 - **Type (optional):** `type:docs`, `type:infra`, `type:feature`, `type:fix`, `type:chore`  
 - **Blocking:** `blocked:decision-needed`, `blocked:dependency`, `blocked:ci-failure`, `blocked:external`, `blocked:coderabbit-review`  
 - **Cleanup:** `cleanup:required`, `cleanup:done`
@@ -49,7 +49,7 @@ If any item is missing, the phase cannot start and Lisa must require evidence or
 HES is produced by Homer after each LP execution and must be included in the PR body (or linked). HES must contain immutable references and no interpretation.
 
 ### Required HES fields:
-1. `From: Homer` `To: Lisa` `LP: LP-<PhaseSlug>-<SemVer>`  
+1. `From: Homer` `To: Lisa` `LP: LP-<PhaseSlug>-#NNN`  
 2. Actions executed (branches created, commits SHAs)  
 3. Artifacts created/modified (files, paths, commits)  
 4. PR URLs and numbers (if created)  
@@ -94,9 +94,9 @@ Absence of evidence = non-verifiable = phase hold.
 Add the following to `.github/PULL_REQUEST_TEMPLATE.md` (example):
 
 ```
-LP: LP-<PhaseSlug>-<SemVer>
+LP: LP-<PhaseSlug>-#NNN
 HES: [paste or link to HES here]
-Labels: state:in-progress, lp:<PhaseSlug>-<SemVer>, type:docs
+Labels: state:in-progress, lp:<PhaseSlug>-NNN, type:docs
 Checklist: [ ] Phase readiness satisfied
 ```
 

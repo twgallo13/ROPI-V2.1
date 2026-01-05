@@ -1,5 +1,6 @@
-# LP-observations-consolidation-1.5.0: Phase Readiness Check
-# Validates Firestore attributesMeta matches registry version
+# LP-workflow-fix-#001: Phase Readiness Check
+# Validates local registry exists and is readable
+# Optionally validates Firestore attributesMeta matches registry version
 
 name: phase-readiness-check
 
@@ -22,14 +23,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install dependencies
-        run: pnpm install || npm install
-
       - name: Setup GCloud Service Account
         env:
           GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
@@ -42,13 +35,33 @@ jobs:
             echo "GCP_SA_FILE=/tmp/sa.json" >> $GITHUB_ENV
           fi
 
-      - name: Run verify-attributes-meta
+      - name: Verify local registry (no dependencies needed)
+        if: env.SKIP_FIRESTORE_CHECK == 'true'
+        run: |
+          echo "⚠️ Skipping Firestore verification (no credentials)"
+          echo "📦 Checking local attributeRegistry.json..."
+          if [ -f "packages/sdk/config/attributeRegistry.json" ]; then
+            VERSION=$(node -e "console.log(require('./packages/sdk/config/attributeRegistry.json').version)")
+            echo "✅ Local registry version: $VERSION"
+            echo "✅ Local registry file exists and is readable"
+          else
+            echo "❌ Local registry not found at packages/sdk/config/attributeRegistry.json"
+            exit 1
+          fi
+
+      - name: Install dependencies (only if checking Firestore)
+        if: env.SKIP_FIRESTORE_CHECK != 'true'
+        run: |
+          # Create isolated install for firebase-admin (avoids pnpm workspace protocol issues)
+          mkdir -p /tmp/firebase-verify
+          cd /tmp/firebase-verify
+          npm init -y
+          npm install firebase-admin
+          # Link node_modules to workspace root
+          ln -sf /tmp/firebase-verify/node_modules $GITHUB_WORKSPACE/node_modules
+
+      - name: Run full verify-attributes-meta
+        if: env.SKIP_FIRESTORE_CHECK != 'true'
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ env.GCP_SA_FILE }}
-        run: |
-          if [ "$SKIP_FIRESTORE_CHECK" = "true" ]; then
-            echo "⚠️ Skipping Firestore verification (no credentials)"
-            node scripts/verify-attributes-meta.js --skip-firestore
-          else
-            node scripts/verify-attributes-meta.js --project ropi-bccee
-          fi
+        run: node scripts/verify-attributes-meta.js --project ropi-bccee

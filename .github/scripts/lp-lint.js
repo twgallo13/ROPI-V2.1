@@ -2,17 +2,23 @@
 /**
  * LP Lint Script
  * 
- * LP-observations-consolidation-1.5.0: Validates PR format
+ * LP-workflow-fix-#001: Validates PR format
  * 
  * Checks:
- * 1. PR body first line contains: LP: LP-<PhaseSlug>-<SemVer>
- * 2. PR labels include: lp:<phaseSlug>-<semver>
+ * 1. PR body first line contains: LP: LP-<PhaseSlug>-#NNN (numeric LP ID)
+ * 2. PR labels include: lp:<phaseSlug>-NNN (no # in labels - GitHub limitation)
+ * 
+ * Note: GitHub labels cannot contain '#', so label format omits it.
  * 
  * Exits non-zero if either check fails.
  */
 
-const LP_PATTERN = /^LP:\s*LP-([a-z0-9-]+)-(\d+\.\d+\.\d+)/i;
-const LP_LABEL_PATTERN = /^lp:([a-z0-9-]+)-(\d+\.\d+\.\d+)$/i;
+// LP body format: LP: LP-<phase-slug>-#NNN (e.g., LP: LP-governance-alignment-#001)
+// Also accepts markdown heading: ## LP: LP-<phase-slug>-#NNN
+const LP_PATTERN = /^(?:##\s*)?LP:\s*LP-([a-z0-9-]+)-#(\d+)/i;
+
+// LP label format: lp:<phase-slug>-NNN (no # - GitHub limitation)
+const LP_LABEL_PATTERN = /^lp:([a-z0-9-]+)-(\d+)$/i;
 
 function main() {
   console.log('🔍 LP Lint - Validating PR format...\n');
@@ -34,16 +40,16 @@ function main() {
     errors.push({
       check: 'LP in PR Body',
       status: '❌ FAILED',
-      message: `First line of PR body must contain: LP: LP-<PhaseSlug>-<SemVer>`,
+      message: `First line of PR body must contain: LP: LP-<PhaseSlug>-#NNN`,
       found: firstLine ? `"${firstLine.substring(0, 80)}..."` : '(empty)',
-      example: 'LP: LP-observations-consolidation-1.5.0',
+      example: 'LP: LP-workflow-fix-#001',
     });
   } else {
-    lpFromBody = `LP-${lpMatch[1]}-${lpMatch[2]}`;
+    lpFromBody = `LP-${lpMatch[1]}-#${lpMatch[2]}`;
     console.log(`✅ LP in PR Body: ${lpFromBody}`);
   }
 
-  // Check 2: PR labels include lp:<phaseSlug>-<semver>
+  // Check 2: PR labels include lp:<phaseSlug>-NNN (no # in labels)
   const lpLabels = prLabels
     .map(label => label.name)
     .filter(name => LP_LABEL_PATTERN.test(name));
@@ -52,11 +58,11 @@ function main() {
     errors.push({
       check: 'LP Label',
       status: '❌ FAILED',
-      message: `PR must have a label matching: lp:<phaseSlug>-<semver>`,
+      message: `PR must have a label matching: lp:<phaseSlug>-NNN (no # in label)`,
       found: prLabels.length > 0 
         ? `Labels: ${prLabels.map(l => l.name).join(', ')}`
         : '(no labels)',
-      example: 'lp:observations-consolidation-1.5.0',
+      example: 'lp:workflow-fix-001',
     });
   } else {
     lpFromLabel = lpLabels[0];
@@ -65,16 +71,17 @@ function main() {
 
   // Check 3: LP in body and label should match (if both present)
   if (lpFromBody && lpFromLabel) {
-    const bodySlug = lpFromBody.toLowerCase().replace('lp-', '');
+    // Body has #NNN, label has NNN (no #)
+    const bodySlug = lpFromBody.toLowerCase().replace('lp-', '').replace('#', '');
     const labelSlug = lpFromLabel.toLowerCase().replace('lp:', '');
     
     if (bodySlug !== labelSlug) {
       errors.push({
         check: 'LP Consistency',
         status: '⚠️ WARNING',
-        message: 'LP in body and label do not match',
+        message: 'LP in body and label do not match (ignoring # difference)',
         found: `Body: ${lpFromBody}, Label: ${lpFromLabel}`,
-        example: 'Both should reference the same LP version',
+        example: 'Body: LP-workflow-fix-#001, Label: lp:workflow-fix-001',
       });
     } else {
       console.log(`✅ LP Consistency: Body and label match`);
@@ -104,8 +111,10 @@ function main() {
 
     console.log('━'.repeat(60));
     console.log('📝 How to fix:');
-    console.log('1. Edit PR description - first line must be: LP: LP-<PhaseSlug>-<SemVer>');
-    console.log('2. Add label: lp:<phaseSlug>-<semver>');
+    console.log('1. Edit PR description - first line must be: LP: LP-<PhaseSlug>-#NNN');
+    console.log('   Example: LP: LP-workflow-fix-#001');
+    console.log('2. Add label: lp:<phaseSlug>-NNN (no # in label - GitHub limitation)');
+    console.log('   Example: lp:workflow-fix-001');
     console.log('━'.repeat(60));
     
     process.exit(1);

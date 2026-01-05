@@ -14,7 +14,7 @@
 {
   "from": "Homer",
   "to": "Lisa",
-  "lp": "LP-<PhaseSlug>-<SemVer>",
+  "lp": "LP-<PhaseSlug>-#NNN",
   "date": "<YYYY-MM-DD>",
   "branch": "<branch-name>",
   "prNumber": <number>,
