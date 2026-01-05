@@ -7,12 +7,12 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import ProductHeader from '../../components/product/ProductHeader';
-import type { Product } from '../../types/product';
+import ProductHeader from '../ProductHeader';
+import type { Product } from '../../../types/product';
 
 // Mock CSS import
-vi.mock('../../components/product/ProductHeader.css', () => ({}));
-vi.mock('../../utils/dateUtils', () => ({
+vi.mock('../ProductHeader.css', () => ({}));
+vi.mock('../../../utils/dateUtils', () => ({
   formatForDisplayYYYYMMDD: (date: string) => date || '—',
 }));
 

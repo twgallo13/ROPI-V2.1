@@ -187,20 +187,21 @@ describe('ExportPage', () => {
       render(<ExportPage />, { wrapper: Wrapper });
 
       expect(screen.getByTestId('export-blocked')).toBeInTheDocument();
-      expect(screen.getByText(/🚫/)).toBeInTheDocument();
+      expect(screen.getAllByText(/🚫/).length).toBeGreaterThan(0);
     });
 
     it('should show blocked modal with reasons', () => {
       render(<ExportPage />, { wrapper: Wrapper });
 
-      // The ExportBlockedModal should be open
-      expect(screen.getByText(/export is blocked due to completion requirements/i)).toBeInTheDocument();
+      // The ExportBlockedModal should be open - text appears in card and modal
+      expect(screen.getAllByText(/export is blocked due to completion requirements/i).length).toBeGreaterThan(0);
     });
 
     it('should show completion percentage below threshold', () => {
       render(<ExportPage />, { wrapper: Wrapper });
 
-      expect(screen.getByText(/65%/)).toBeInTheDocument();
+      // Modal and card both show percentage - use getAllByText
+      expect(screen.getAllByText(/65\s*%/).length).toBeGreaterThan(0);
     });
 
     it('should not show export options when blocked', () => {
