@@ -52,8 +52,13 @@ jobs:
       - name: Install dependencies (only if checking Firestore)
         if: env.SKIP_FIRESTORE_CHECK != 'true'
         run: |
-          # Only install firebase-admin for Firestore verification
+          # Create isolated install for firebase-admin (avoids pnpm workspace protocol issues)
+          mkdir -p /tmp/firebase-verify
+          cd /tmp/firebase-verify
+          npm init -y
           npm install firebase-admin
+          # Link node_modules to workspace root
+          ln -sf /tmp/firebase-verify/node_modules $GITHUB_WORKSPACE/node_modules
 
       - name: Run full verify-attributes-meta
         if: env.SKIP_FIRESTORE_CHECK != 'true'
