@@ -74,6 +74,34 @@ export async function loadActiveRules(forceRefresh = false): Promise<SmartRule[]
     
     const rules = snap.docs.map(doc => {
       const data = doc.data();
+      
+      // Convert actions array to single action object (backwards compatibility)
+      let action = data.action;
+      if (!action && data.actions && data.actions.length > 0) {
+        // Use the first action from actions array
+        action = data.actions[0];
+      }
+      
+      // Convert conditions array to single condition object (backwards compatibility)
+      let condition = data.condition;
+      if (!condition && data.conditions && data.conditions.length > 0) {
+        // Use the first condition from conditions array
+        condition = data.conditions[0];
+      }
+      
+      // Map 'field' to 'source' if needed (UI uses 'field', engine uses 'source')
+      if (condition && condition.field && !condition.source) {
+        logger.info(`[DEBUG] Mapping field→source for rule ${data.name}: ${condition.field}`);
+        condition = {
+          ...condition,
+          source: condition.field,
+        };
+        delete condition.field;
+      }
+      
+      // Debug log the final condition
+      logger.info(`[DEBUG] Rule ${data.name} condition.source = ${condition?.source}, condition.field = ${condition?.field}`);
+      
       return {
         ruleId: doc.id,
         name: data.name || doc.id,
@@ -81,8 +109,8 @@ export async function loadActiveRules(forceRefresh = false): Promise<SmartRule[]
         enabled: data.enabled ?? true,
         priority: data.priority ?? 0,
         tags: data.tags,
-        condition: data.condition,
-        action: data.action,
+        condition: condition, // Single condition object expected by engine
+        action: action, // Single action object expected by engine
         autoApply: data.autoApply ?? false,
         autoApplyConfidence: data.autoApplyConfidence ?? 0.9,
         createdBy: data.createdBy,
@@ -163,7 +191,18 @@ interface GetSuggestionsRequest {
 
 interface GetSuggestionsResponse {
   productId: string;
-  suggestions: Suggestion[];
+  // Map to frontend-compatible RuleSuggestion format (Step 3 fix)
+  suggestions: Array<{
+    suggestionId: string;
+    ruleId: string;
+    ruleName: string;
+    targetField: string;
+    suggestedValue: unknown;
+    confidence: number;
+    reason: string;
+    currentValue?: unknown;
+    isOverwrite: boolean;
+  }>;
   conflicts: Array<{
     conflictId: string;
     field: string;
@@ -244,7 +283,18 @@ export const getProductSuggestions = onCall<GetSuggestionsRequest, GetSuggestion
     
     return {
       productId,
-      suggestions: result.suggestions,
+      // Map backend Suggestion interface to frontend RuleSuggestion interface (Step 3 fix)
+      suggestions: result.suggestions.map(suggestion => ({
+        suggestionId: suggestion.id,
+        ruleId: suggestion.ruleId,
+        ruleName: suggestion.ruleName,
+        targetField: suggestion.targetField,
+        suggestedValue: suggestion.value,
+        confidence: suggestion.confidence,
+        reason: suggestion.explain,
+        currentValue: product.attributes ? deepGet(product, suggestion.targetField) : undefined,
+        isOverwrite: product.attributes ? (deepGet(product, suggestion.targetField) !== undefined) : false,
+      })),
       conflicts: result.conflicts.map(c => ({
         conflictId: c.conflictId,
         field: c.field,
@@ -391,7 +441,9 @@ export const applySuggestions = onCall<ApplySuggestionsRequest, ApplySuggestions
       }
       
       // Check if field already has value (set only if empty)
-      const currentValue = deepGet(product, suggestion.targetField);
+      // For registry attributes, check in attributes namespace
+      const checkPath = suggestion.targetField.includes('.') ? suggestion.targetField : `attributes.${suggestion.targetField}`;
+      const currentValue = deepGet(product, checkPath);
       if (currentValue !== undefined && currentValue !== null && currentValue !== '') {
         applied.push({
           suggestionId,
@@ -405,7 +457,9 @@ export const applySuggestions = onCall<ApplySuggestionsRequest, ApplySuggestions
       }
       
       // Apply the suggestion
-      deepSet(updates, suggestion.targetField, suggestion.value);
+      // For registry attributes, write to attributes namespace
+      const targetPath = suggestion.targetField.includes('.') ? suggestion.targetField : `attributes.${suggestion.targetField}`;
+      deepSet(updates, targetPath, suggestion.value);
       
       // Set provenance
       const provenanceKey = `provenance.${suggestion.targetField.replace(/\./g, '_')}`;

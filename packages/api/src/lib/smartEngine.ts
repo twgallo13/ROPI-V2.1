@@ -631,7 +631,12 @@ export function evaluateCondition(condition: Condition, product: Product): Condi
     return { matches: false, confidence: 0, captures: {} };
   }
   
-  const sourceValue = deepGet(product, sourceField);
+  // Try to get the value - if field doesn't contain a dot and isn't found,
+  // try looking in attributes.* namespace (for registry attributes like rics_category)
+  let sourceValue = deepGet(product, sourceField);
+  if (sourceValue === undefined && !sourceField.includes('.')) {
+    sourceValue = deepGet(product, `attributes.${sourceField}`);
+  }
   
   // Handle different match types
   switch (matchType) {

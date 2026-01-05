@@ -348,14 +348,17 @@ export function RuleTestConsole() {
   
   // Apply selected suggestions
   const handleApply = useCallback(async () => {
-    if (selectedSuggestions.size === 0 || !result) return;
+    if (selectedSuggestions.size === 0 || !result) {
+      return;
+    }
     
     setApplying(true);
     setError(null);
     setApplyResult(null);
     
     try {
-      const applyRes = await applySuggestions(result.productId, Array.from(selectedSuggestions));
+      const suggestionIds = Array.from(selectedSuggestions);
+      const applyRes = await applySuggestions(result.productId, suggestionIds);
       setApplyResult(applyRes);
       
       // Clear result to encourage re-testing
@@ -595,14 +598,14 @@ function SuggestionCard({ suggestion, selected, onToggle }: SuggestionCardProps)
       </div>
       
       <div style={styles.valueRow}>
-        <span style={styles.valueLabel}>{suggestion.targetField}:</span>
+        <span style={styles.valueLabel}>{suggestion.targetField || '[Unknown Field]'}:</span>
         {suggestion.currentValue !== undefined && (
           <>
             <span style={styles.valueOld}>{String(suggestion.currentValue)}</span>
             <span style={styles.arrow}>→</span>
           </>
         )}
-        <span style={styles.valueNew}>{String(suggestion.suggestedValue)}</span>
+        <span style={styles.valueNew}>{String(suggestion.suggestedValue || '[No Value]')}</span>
         {suggestion.isOverwrite && (
           <span style={{ ...styles.badge, ...styles.badgeWarning }}>Overwrite</span>
         )}

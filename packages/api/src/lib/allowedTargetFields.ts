@@ -89,6 +89,10 @@ export async function initializeAllowedFieldsCache(): Promise<void> {
     snapshot.attributes.forEach((attrDef: any, attrId: string) => {
       // Only include exportable and not internalOnly
       if (attrDef.exportable && !attrDef.internalOnly) {
+        // Add BOTH formats for maximum compatibility:
+        // 1. Registry attribute ID format (preferred): 'department', 'age_group'
+        allowed.add(attrId);
+        // 2. Legacy path format (backward compatible): 'attributes.department', 'attributes.age_group'
         allowed.add(`attributes.${attrId}`);
       }
     });
@@ -159,14 +163,38 @@ export function isAllowedTargetField(targetField: string): boolean {
 /**
  * Static whitelist fallback (used when cache is not initialized, e.g., in tests)
  * Contains common exportable attributes from the original hard-coded whitelist.
+ * 
+ * IMPORTANT: Supports BOTH formats:
+ * - Registry attribute ID format: 'department', 'age_group', 'gender'
+ * - Legacy path format: 'attributes.department', 'attributes.age_group', 'attributes.gender'
  */
 function getStaticWhitelist(): Set<string> {
   return new Set([
-    // Core product attributes
+    // Registry attribute IDs (preferred format - snake_case)
+    'department',
+    'age_group',
+    'gender',
+    'primary_color',
+    'secondary_color',
+    'brand',
+    'mpn',
+    'category',
+    'material',
+    'closure_type',
+    'heel_type',
+    'weight',
+    'height',
+    'length',
+    'width',
+    
+    // Legacy path formats (for backward compatibility)
     'attributes.gender',
     'attributes.ageGroup',
+    'attributes.age_group',
     'attributes.primaryColor',
+    'attributes.primary_color',
     'attributes.secondaryColor',
+    'attributes.secondary_color',
     'attributes.brand',
     'attributes.mpn',
     'attributes.category',
@@ -174,7 +202,13 @@ function getStaticWhitelist(): Set<string> {
     'attributes.dept',
     'attributes.material',
     'attributes.closureType',
+    'attributes.closure_type',
     'attributes.heelType',
+    'attributes.heel_type',
+    'attributes.weight',
+    'attributes.height',
+    'attributes.length',
+    'attributes.width',
     
     // Descriptive namespace
     'descriptive.gender',

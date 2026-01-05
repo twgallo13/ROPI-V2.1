@@ -1,5 +1,11 @@
 # GOVERNANCE.md — Repository Governance / Execution Contract
 
+> **Canonical Workflow Authority**
+>
+> This document (`GOVERNANCE.md`) is the **single authoritative workflow** for this repository.
+> Any workflow rule, process, or convention not present in this document is **non-authoritative**.
+> `docs/WORKFLOW.md` is deprecated for governance; it remains for reference only.
+
 **Purpose:**  
 This document is the single authoritative reference describing how work is proposed, executed, validated and completed in this repository. It maps the project-level governance you provided into repository artifacts and enforcement points so humans and AIs can operate deterministically.
 
@@ -96,6 +102,12 @@ Checklist: [ ] Phase readiness satisfied
 
 ## Phase completion & cleanup
 - After merge & staging verified, the actor must add `cleanup:done`, remove temporary branches, and produce a final HES marking the phase `VERIFIED SUCCESS`.
+
+---
+
+## Execution Rules
+
+If no new evidence is discovered after one complete repo scan, execution must stop and escalate for direction. Re-running searches without new inputs is not allowed.
 
 ---
 

@@ -949,7 +949,7 @@ export function documentToForm(doc: SmartRuleDocument): SmartRuleForm {
     action: {
       targetField: doc.action?.targetField || '',
       valueTemplate: doc.action?.valueTemplate || '',
-      setOnlyIfEmpty: false, // Default - not stored in original schema
+      setOnlyIfEmpty: doc.action?.setOnlyIfEmpty ?? false, // Read from document, default to false
       confidenceModifier: doc.action?.confidenceModifier,
     },
     autoApply: doc.autoApply || false,
@@ -977,7 +977,7 @@ export async function getExportableAttributes(): Promise<Array<{ id: string; lab
   for (const [id, config] of Object.entries(registry)) {
     if (!config.internalOnly) {
       attributes.push({
-        id: `attributes.${id}`,
+        id: id, // Use registry attribute ID directly (e.g., 'department', not 'attributes.department')
         label: id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
         group: config.exportable ? 'Exportable' : 'Standard',
       });

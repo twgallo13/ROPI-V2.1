@@ -25,6 +25,7 @@ import { z } from 'zod';
 export const ActionSchema = z.object({
   targetField: z.string().min(1),
   valueTemplate: z.string().default(''),
+  setOnlyIfEmpty: z.boolean().default(false),
   confidenceModifier: z.number().optional(),
 });
 

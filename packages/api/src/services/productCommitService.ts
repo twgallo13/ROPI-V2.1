@@ -318,11 +318,18 @@ async function processRow(
   
   // Apply Smart Rules updates to product (if not skipped)
   if (!smartRulesResult.skipped && Object.keys(smartRulesResult.updates).length > 0) {
-    // Merge Smart Rules attribute updates
-    if (smartRulesResult.updates.attributes) {
+    // Merge Smart Rules attribute updates (flat field names from registry)
+    // Extract attribute fields (exclude metadata fields like provenance, _appliedRules, etc.)
+    const attributeUpdates: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(smartRulesResult.updates)) {
+      if (!key.startsWith('_') && !key.startsWith('provenance')) {
+        attributeUpdates[key] = value;
+      }
+    }
+    if (Object.keys(attributeUpdates).length > 0) {
       product.attributes = {
         ...product.attributes,
-        ...(smartRulesResult.updates.attributes as ProductAttributes),
+        ...(attributeUpdates as ProductAttributes),
       };
     }
     
@@ -446,16 +453,22 @@ export async function processImportBatch(
         }
       }
 
-      // Update row meta with importOutcome
-      await batchRef
-        .collection('rows')
-        .doc(row.rowId)
-        .update({
-          'meta.importOutcome': result.outcome,
-          // S3: Store Smart Rules result per row
-          'meta.smartRulesResult': result.smartRules || null,
-        });
+      // Update row meta with importOutcome (non-blocking - don't fail entire import if this errors)
+      try {
+        await batchRef
+          .collection('rows')
+          .doc(row.rowId)
+          .update({
+            'meta.importOutcome': result.outcome,
+            // S3: Store Smart Rules result per row
+            'meta.smartRulesResult': result.smartRules || null,
+          });
+      } catch (updateError) {
+        // Log but don't fail - product was already created/updated successfully
+        console.warn(`Failed to update row ${row.rowId} importOutcome (product ${result.outcome} successfully):`, updateError);
+      }
     } catch (error) {
+      // Only count as blocked if processRow itself failed (validation errors, missing ID, etc.)
       console.error(`Error processing row ${row.rowId}:`, error);
       blockedCount++;
       results.push({
@@ -464,6 +477,19 @@ export async function processImportBatch(
         outcome: 'skipped_validation_error',
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      
+      // Try to update row status even on error (non-blocking)
+      try {
+        await batchRef
+          .collection('rows')
+          .doc(row.rowId)
+          .update({
+            'meta.importOutcome': 'skipped_validation_error',
+            'meta.error': error instanceof Error ? error.message : 'Unknown error',
+          });
+      } catch (updateError) {
+        console.warn(`Failed to update row ${row.rowId} error status:`, updateError);
+      }
     }
   }
 

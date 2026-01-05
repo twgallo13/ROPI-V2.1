@@ -1,5 +1,13 @@
 # Development Workflow Policy
 
+> ⚠️ **DEPRECATED — Superseded by GOVERNANCE.md**
+>
+> This document is retained for historical reference only.
+> For authoritative workflow rules, see [`GOVERNANCE.md`](../GOVERNANCE.md).
+> Deprecation date: 2026-01-05
+
+---
+
 > **Version:** aoss.v0.3.0  
 > **Last Updated:** 2024-12-05  
 > **Maintainer:** Homer (AI Agent)

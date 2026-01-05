@@ -3623,6 +3623,7 @@ var AttributeSchema = zod.z.object({
 var ActionSchema = zod.z.object({
   targetField: zod.z.string().min(1),
   valueTemplate: zod.z.string().default(""),
+  setOnlyIfEmpty: zod.z.boolean().default(false),
   confidenceModifier: zod.z.number().optional()
 });
 var SmartRuleAction = ActionSchema;
