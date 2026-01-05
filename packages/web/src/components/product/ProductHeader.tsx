@@ -3,7 +3,7 @@ import { formatForDisplayYYYYMMDD } from '../../utils/dateUtils';
 import './ProductHeader.css';
 
 /**
- * Product Header Component — LP-0.4.1.1, LP-export-unlock-1.0.0
+ * Product Header Component — LP-0.4.1.1, LP-export-unlock-1.0.0, LP-export-completion-fix-1.0.0
  * 
  * Persistent sticky header bar displaying read-only product metadata.
  * All fields in this component are read-only as they represent metadata
@@ -11,6 +11,9 @@ import './ProductHeader.css';
  * 
  * LP-export-unlock-1.0.0: Publish button gating now uses completion.ready
  * passed via canPublish prop, replacing legacy product.exportReadiness?.overall.
+ * 
+ * LP-export-completion-fix-1.0.0: Added actionable guidance banner for
+ * "No sites selected" blocking reason with link to edit sites in Core Information tab.
  * 
  * LP-0.4.1.1: websites field displays values from Firestore document.
  * If a product shows unexpected website values (e.g., "shiekhshoes.com"),
@@ -32,6 +35,16 @@ import './ProductHeader.css';
  * - Section 1 — Navigation & Page Index: https://www.notion.so/eba3cfdc44fd49ef98c38b183642cc7b
  */
 
+/**
+ * LP-export-completion-fix-1.0.0: Blocking reason structure
+ */
+interface BlockingReason {
+  type: string;
+  severity: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
 interface ProductHeaderProps {
   product: Product;
   onSave: () => void;
@@ -46,6 +59,16 @@ interface ProductHeaderProps {
   canPublish?: boolean;
   /** Loading state for publish readiness check */
   publishReadinessLoading?: boolean;
+  /**
+   * LP-export-completion-fix-1.0.0: Optional blocking reasons for actionable guidance.
+   * When the product is blocked due to "No sites selected", shows banner with link to edit.
+   */
+  blockingReasons?: BlockingReason[];
+  /**
+   * LP-export-completion-fix-1.0.0: Callback to navigate to site selection in editor.
+   * Called when user clicks "Select Sites" action button.
+   */
+  onSelectSites?: () => void;
 }
 
 /**
@@ -81,6 +104,8 @@ function ProductHeader({
   onBack,
   canPublish,
   publishReadinessLoading,
+  blockingReasons,
+  onSelectSites,
 }: ProductHeaderProps) {
   const status = statusConfig[product.status] || statusConfig['draft'];
   // LP-1.4.2: Defensive fallback for unknown media_status values
@@ -104,8 +129,37 @@ function ProductHeader({
       : 'Publish blocked - completion requirements not met';
   const publishLabel = publishReadinessLoading ? 'Checking...' : 'Publish';
 
+  // LP-export-completion-fix-1.0.0: Check for "No sites selected" blocking reason
+  const noSitesBlocking = blockingReasons?.some(
+    reason => reason.message?.toLowerCase().includes('no sites selected')
+  );
+
   return (
     <header className="product-header" role="banner" aria-label="Product Header">
+      {/* LP-export-completion-fix-1.0.0: Actionable guidance banner for missing sites */}
+      {noSitesBlocking && (
+        <div 
+          className="product-header__guidance-banner product-header__guidance-banner--warning"
+          role="alert"
+          data-testid="sites-guidance-banner"
+        >
+          <span className="product-header__guidance-icon">⚠️</span>
+          <span className="product-header__guidance-message">
+            <strong>Export Blocked:</strong> No sites selected for this product. 
+            Select at least one website to enable export.
+          </span>
+          {onSelectSites && (
+            <button
+              className="product-header__guidance-action"
+              onClick={onSelectSites}
+              data-testid="select-sites-button"
+            >
+              Select Sites
+            </button>
+          )}
+        </div>
+      )}
+      
       {/* Navigation Row */}
       <div className="product-header__nav">
         <button 
