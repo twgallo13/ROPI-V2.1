@@ -291,3 +291,66 @@
     gap: 0.5rem;
   }
 }
+
+/* ============================================
+   LP-export-completion-fix-1.0.0: GUIDANCE BANNER
+   ============================================ */
+.product-header__guidance-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  border-bottom: 1px solid;
+}
+
+.product-header__guidance-banner--warning {
+  background: var(--color-warning-bg, #fef3c7);
+  border-color: var(--color-warning, #f59e0b);
+  color: var(--color-warning-text, #92400e);
+}
+
+.product-header__guidance-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.product-header__guidance-message {
+  flex: 1;
+}
+
+.product-header__guidance-message strong {
+  font-weight: 600;
+}
+
+.product-header__guidance-action {
+  flex-shrink: 0;
+  padding: 0.375rem 0.75rem;
+  background: var(--color-warning, #f59e0b);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.product-header__guidance-action:hover {
+  background: var(--color-warning-dark, #d97706);
+}
+
+@media (max-width: 768px) {
+  .product-header__guidance-banner {
+    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+  }
+  
+  .product-header__guidance-message {
+    flex-basis: calc(100% - 2rem);
+  }
+  
+  .product-header__guidance-action {
+    margin-left: auto;
+  }
+}

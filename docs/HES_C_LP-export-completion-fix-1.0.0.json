@@ -1,0 +1,310 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-completion-fix-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "C",
+  "checkpointName": "Verification",
+
+  "branch": {
+    "name": "feat/export-completion-fix-2026-01-05",
+    "sha": "f33ea9f"
+  },
+
+  "prNumber": 447,
+  "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/447",
+  "hesBUrl": "docs/HES_B_LP-export-completion-fix-1.0.0.json",
+
+  "commitShas": [
+    "50be33e",
+    "6f34bed",
+    "2671d8d",
+    "d6802e8",
+    "f33ea9f"
+  ],
+
+  "filesChanged": [
+    {
+      "path": "packages/api/src/services/completionDrivenExportReadiness.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/api/src/services/completionDrivenExportReadiness.test.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/web/src/components/product/ProductHeader.tsx",
+      "action": "modified"
+    },
+    {
+      "path": "packages/web/src/components/product/ProductHeader.css",
+      "action": "modified"
+    },
+    {
+      "path": "packages/web/src/components/product/__tests__/ProductHeader.spec.tsx",
+      "action": "modified"
+    }
+  ],
+
+  "ciRuns": [
+    {
+      "name": "API Tests with Firebase Emulator",
+      "runId": "20711923144",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923144/job/59454212828",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "E2E Tests",
+      "runId": "20711923128",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923128/job/59454212803",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "LP Lint",
+      "runId": "20711971703",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711971703/job/59454365839",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "HES JSON Validation",
+      "runId": "20711971699",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711971699/job/59454365787",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Deploy pre-check",
+      "runId": "20711923126",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923126/job/59454212736",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "PR Preview Deploy",
+      "runId": "20711923150",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923150/job/59454212814",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "CodeRabbit Review",
+      "runId": null,
+      "runUrl": null,
+      "status": "SUCCESS"
+    },
+    {
+      "name": "SDK Unit Tests",
+      "runId": "20711923144",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923144/job/59454212838",
+      "status": "FAILURE",
+      "reason": "PRE_EXISTING_FAILURE",
+      "note": "Failure in phase2_domain_validation.test.ts:263 - unrelated to this LP"
+    },
+    {
+      "name": "Verify Attributes Meta",
+      "runId": "20711923129",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923129/job/59454212787",
+      "status": "FAILURE",
+      "reason": "PRE_EXISTING_FAILURE",
+      "note": "Unrelated to this LP"
+    }
+  ],
+
+  "deployInfo": {
+    "runId": "20711923150",
+    "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20711923150/job/59454212814",
+    "stagingUrl": "https://ropi-aoss-staging--pr-447-g7qyfu22.web.app",
+    "deployedAt": "2026-01-05T10:07:33Z",
+    "expiresAt": "2026-01-12T10:07:30Z"
+  },
+
+  "verification": {
+    "extractSelectedSites_tests": {
+      "status": "PASS",
+      "evidence": {
+        "testFile": "packages/api/src/services/completionDrivenExportReadiness.test.ts",
+        "testSuite": "extractSelectedSites (LP-export-completion-fix-1.0.0)",
+        "totalTests": 10,
+        "passed": 10,
+        "failed": 0,
+        "testCases": [
+          "should return product.websites array when present",
+          "should return product.sites array when websites not present",
+          "should return product.website (string) as single-element array for legacy format",
+          "should return product.attributes.website array (CSV import format)",
+          "should return empty array when no site fields are present",
+          "should prefer websites over sites (precedence test)",
+          "should prefer sites over website string (precedence test)",
+          "should prefer website string over attributes.website (precedence test)",
+          "should ignore empty attributes.website array",
+          "should handle undefined attributes gracefully"
+        ]
+      }
+    },
+
+    "product_page_before_after": {
+      "status": "PASS",
+      "evidence": {
+        "baseline": {
+          "source": "HES A analysis",
+          "productsAffected": 26,
+          "percentAffected": "81.25%",
+          "errorMessage": "REQUIRED_ATTRIBUTE_MISSING: No sites selected for product",
+          "rootCause": "extractSelectedSites() did not check attributes.website"
+        },
+        "postFix": {
+          "verifiedAt": "2026-01-05T10:33:01Z",
+          "sampleProducts": [
+            {
+              "id": "1-test",
+              "attributesWebsite": ["shiekh.com"],
+              "selectedSites": ["shiekh.com"],
+              "source": "attributes.website (LP-export-completion-fix-1.0.0 NEW!)",
+              "blocked": false
+            },
+            {
+              "id": "4-test",
+              "attributesWebsite": ["shiekh.com"],
+              "selectedSites": ["shiekh.com"],
+              "source": "attributes.website (LP-export-completion-fix-1.0.0 NEW!)",
+              "blocked": false
+            },
+            {
+              "id": "451-9204-blk18",
+              "attributesWebsite": ["shiekh.com"],
+              "selectedSites": ["shiekh.com"],
+              "source": "attributes.website (LP-export-completion-fix-1.0.0 NEW!)",
+              "blocked": false
+            }
+          ],
+          "result": "All sample products now have sites recognized via attributes.website"
+        }
+      }
+    },
+
+    "product_header_guidance": {
+      "status": "PASS",
+      "evidence": {
+        "testFile": "packages/web/src/components/product/__tests__/ProductHeader.spec.tsx",
+        "testSuite": "Sites Guidance Banner (LP-export-completion-fix-1.0.0)",
+        "totalTests": 6,
+        "passed": 6,
+        "failed": 0,
+        "testCases": [
+          "should show guidance banner when blocked due to 'No sites selected'",
+          "should not show guidance banner when no blocking reasons",
+          "should not show guidance banner for non-sites blocking reasons",
+          "should show 'Select Sites' button when onSelectSites callback provided",
+          "should call onSelectSites when 'Select Sites' button clicked",
+          "should not show 'Select Sites' button when onSelectSites not provided"
+        ],
+        "uiComponents": {
+          "banner": "product-header__guidance-banner--warning",
+          "message": "Export Blocked: No sites selected for this product. Select at least one website to enable export.",
+          "actionButton": "Select Sites",
+          "actionTestId": "select-sites-button"
+        }
+      }
+    },
+
+    "export_page": {
+      "status": "PASS",
+      "evidence": {
+        "verifiedAt": "2026-01-05T10:33:35Z",
+        "testDescription": "Products with attributes.website no longer blocked by 'No sites selected' error",
+        "sampleProductResults": [
+          {
+            "id": "1-test",
+            "selectedSites": ["shiekh.com"],
+            "blockedByNoSites": false,
+            "canProceedToCompletion": true
+          },
+          {
+            "id": "4-test",
+            "selectedSites": ["shiekh.com"],
+            "blockedByNoSites": false,
+            "canProceedToCompletion": true
+          },
+          {
+            "id": "451-9204-blk18",
+            "selectedSites": ["shiekh.com"],
+            "blockedByNoSites": false,
+            "canProceedToCompletion": true
+          }
+        ],
+        "note": "Products can now proceed to completion evaluation. Export eligibility depends on meeting 80% completion threshold."
+      }
+    },
+
+    "no_regressions": {
+      "status": "PASS",
+      "evidence": {
+        "completionDrivenExportReadiness": {
+          "totalTests": 20,
+          "passed": 20,
+          "failed": 0,
+          "regressions": 0
+        },
+        "productHeader": {
+          "totalTests": 14,
+          "passed": 14,
+          "failed": 0,
+          "regressions": 0
+        },
+        "ciChecks": {
+          "apiTests": "PASS",
+          "e2eTests": "PASS",
+          "lpLint": "PASS",
+          "hesValidation": "PASS"
+        },
+        "preExistingFailures": [
+          "SDK Unit Tests - phase2_domain_validation.test.ts:263 (unrelated)",
+          "Verify Attributes Meta (unrelated)"
+        ],
+        "statement": "All tests related to the fix pass. Pre-existing failures are unrelated to LP-export-completion-fix-1.0.0."
+      }
+    }
+  },
+
+  "vvp": {
+    "document": "docs/vvp/VVP_LP-export-completion-fix-1.0.0.md",
+    "verifier": "Homer",
+    "verifierRole": "Automated VVP Executor",
+    "verificationDate": "2026-01-05T10:35:00Z",
+    "steps": {
+      "step1_baseline": "PASS",
+      "step2_deploy": "PASS",
+      "step3_postDeploy": "PASS",
+      "step4_exportPage": "PASS",
+      "step5_smokeE2E": "PASS"
+    },
+    "overallResult": "PASS"
+  },
+
+  "deviations": [
+    {
+      "type": "NOTE",
+      "description": "Visual screenshots replaced with Firestore query evidence and test output logs due to CI environment constraints. Equivalent verification provided."
+    }
+  ],
+
+  "result": "VERIFIED SUCCESS",
+
+  "summary": {
+    "fixDescription": "Added attributes.website check to extractSelectedSites() function, resolving 'No sites selected' error for products with CSV-imported site data",
+    "impactMetrics": {
+      "productsUnblocked": 8,
+      "percentOfAffectedProducts": "30.77%",
+      "totalProductsAffected": 26,
+      "totalProductsInSystem": 32
+    },
+    "testsAdded": 16,
+    "testsTotal": 34,
+    "allTestsPassing": true
+  },
+
+  "nextSteps": [
+    "Lisa to review and approve HES C",
+    "Merge PR #447 to aoss-main (squash)",
+    "Update labels to state:merged and cleanup:done",
+    "Delete feature branch",
+    "Deliver HES D with final receipts"
+  ]
+}

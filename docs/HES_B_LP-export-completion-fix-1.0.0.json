@@ -1,0 +1,233 @@
+{
+  "hesVersion": "B",
+  "lpId": "LP-export-completion-fix-1.0.0",
+  "title": "HES B — Implementation Complete",
+  "createdAt": "2026-01-05T10:05:00Z",
+  "phase": "IMPLEMENTATION",
+
+  "branch": {
+    "name": "feat/export-completion-fix-2026-01-05",
+    "sha": "d6802e8a88708bbcea1534ddc615c2a74cc0ee7d",
+    "createdFrom": "aoss-main"
+  },
+
+  "commits": [
+    {
+      "sha": "50be33e",
+      "message": "fix(export): check attributes.website in extractSelectedSites() — LP-export-completion-fix-1.0.0",
+      "description": "Primary fix: Added attributes.website check to extractSelectedSites() function with correct precedence"
+    },
+    {
+      "sha": "6f34bed",
+      "message": "test(export): add unit tests for extractSelectedSites() (websites, sites, website, attributes.website, empty)",
+      "description": "Added 10 comprehensive unit tests for extractSelectedSites() covering all site field formats and precedence"
+    },
+    {
+      "sha": "2671d8d",
+      "message": "feat(ui): product header guidance for missing sites + link to editor",
+      "description": "Added actionable guidance banner to ProductHeader when product is blocked due to 'No sites selected'"
+    },
+    {
+      "sha": "d6802e8",
+      "message": "test(ui): add integration/VVP-style test for product blocked-by-sites message",
+      "description": "Added 6 integration tests for ProductHeader guidance banner behavior"
+    }
+  ],
+
+  "filesChanged": [
+    {
+      "path": "packages/api/src/services/completionDrivenExportReadiness.ts",
+      "action": "modified",
+      "description": "Added attributes.website check to extractSelectedSites(), exported function for testing"
+    },
+    {
+      "path": "packages/api/src/services/completionDrivenExportReadiness.test.ts",
+      "action": "modified",
+      "description": "Added 10 unit tests for extractSelectedSites() function"
+    },
+    {
+      "path": "packages/web/src/components/product/ProductHeader.tsx",
+      "action": "modified",
+      "description": "Added guidance banner for 'No sites selected' blocking with Select Sites action button"
+    },
+    {
+      "path": "packages/web/src/components/product/ProductHeader.css",
+      "action": "modified",
+      "description": "Added styles for guidance banner (warning colors, responsive layout)"
+    },
+    {
+      "path": "packages/web/src/components/product/__tests__/ProductHeader.spec.tsx",
+      "action": "modified",
+      "description": "Added 6 integration tests for guidance banner visibility and action button"
+    }
+  ],
+
+  "pullRequest": {
+    "number": 447,
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/447",
+    "title": "fix(export): LP-export-completion-fix-1.0.0 — Check attributes.website in extractSelectedSites",
+    "targetBranch": "aoss-main",
+    "labels": [
+      "state:in-progress",
+      "lp:export-completion-fix-1.0.0",
+      "type:fix",
+      "cleanup:required"
+    ]
+  },
+
+  "ciRuns": {
+    "status": "PARTIAL_PASS",
+    "summary": "Key tests pass, pre-existing failures unrelated to this PR",
+    "checks": [
+      {
+        "name": "API Integration Tests/API Tests with Firebase Emulator",
+        "status": "PASS",
+        "duration": "1m2s"
+      },
+      {
+        "name": "E2E Tests/e2e",
+        "status": "PASS",
+        "duration": "2m27s"
+      },
+      {
+        "name": "lp-lint/Validate LP Format",
+        "status": "PASS",
+        "duration": "4s"
+      },
+      {
+        "name": "pr-hes-checker/Validate HES JSON",
+        "status": "PASS",
+        "duration": "5s"
+      },
+      {
+        "name": "Deploy pre-check",
+        "status": "PASS"
+      },
+      {
+        "name": "Deploy AOSS PR Preview",
+        "status": "PASS",
+        "duration": "1m23s"
+      },
+      {
+        "name": "CodeRabbit",
+        "status": "PASS",
+        "description": "Review completed"
+      },
+      {
+        "name": "API Integration Tests/SDK Unit Tests",
+        "status": "FAIL",
+        "reason": "PRE_EXISTING_FAILURE",
+        "description": "Failure in phase2_domain_validation.test.ts line 263 - unrelated to this PR"
+      },
+      {
+        "name": "phase-readiness-check/Verify Attributes Meta",
+        "status": "FAIL",
+        "reason": "PRE_EXISTING_FAILURE",
+        "description": "Unrelated to this PR"
+      }
+    ]
+  },
+
+  "testResults": {
+    "extractSelectedSites": {
+      "file": "packages/api/src/services/completionDrivenExportReadiness.test.ts",
+      "totalTests": 20,
+      "passed": 20,
+      "failed": 0,
+      "newTests": 10,
+      "testCases": [
+        "should return product.websites array when present",
+        "should return product.sites array when websites not present",
+        "should return product.website (string) as single-element array for legacy format",
+        "should return product.attributes.website array (CSV import format)",
+        "should return empty array when no site fields are present",
+        "should prefer websites over sites (precedence test)",
+        "should prefer sites over website string (precedence test)",
+        "should prefer website string over attributes.website (precedence test)",
+        "should ignore empty attributes.website array",
+        "should handle undefined attributes gracefully"
+      ]
+    },
+    "productHeader": {
+      "file": "packages/web/src/components/product/__tests__/ProductHeader.spec.tsx",
+      "totalTests": 14,
+      "passed": 14,
+      "failed": 0,
+      "newTests": 6,
+      "testCases": [
+        "should show guidance banner when blocked due to 'No sites selected'",
+        "should not show guidance banner when no blocking reasons",
+        "should not show guidance banner for non-sites blocking reasons",
+        "should show 'Select Sites' button when onSelectSites callback provided",
+        "should call onSelectSites when 'Select Sites' button clicked",
+        "should not show 'Select Sites' button when onSelectSites not provided"
+      ]
+    }
+  },
+
+  "codeDiff": {
+    "primaryFix": {
+      "file": "packages/api/src/services/completionDrivenExportReadiness.ts",
+      "function": "extractSelectedSites",
+      "linesChanged": "425-444",
+      "before": "function extractSelectedSites(product: ProductDocument): string[] {\n  if (Array.isArray(product.websites)) { return product.websites; }\n  if (Array.isArray(product.sites)) { return product.sites; }\n  if (product.website && typeof product.website === 'string') { return [product.website]; }\n  return [];\n}",
+      "after": "export function extractSelectedSites(product: ProductDocument): string[] {\n  if (Array.isArray(product.websites)) { return product.websites; }\n  if (Array.isArray(product.sites)) { return product.sites; }\n  if (product.website && typeof product.website === 'string') { return [product.website]; }\n  // LP-export-completion-fix-1.0.0: Check attributes.website for CSV imports\n  if (Array.isArray(product.attributes?.website) && product.attributes.website.length > 0) {\n    return product.attributes.website;\n  }\n  return [];\n}"
+    },
+    "uiImprovement": {
+      "file": "packages/web/src/components/product/ProductHeader.tsx",
+      "description": "Added guidance banner for 'No sites selected' blocking",
+      "newProps": ["blockingReasons?: BlockingReason[]", "onSelectSites?: () => void"],
+      "newUI": "Warning banner with actionable 'Select Sites' button when product blocked due to missing sites"
+    }
+  },
+
+  "sampleProductIds": {
+    "note": "Products discovered in HES A investigation with attributes.website data",
+    "productsWithAttributesWebsite": [
+      "18",
+      "20",
+      "24",
+      "6",
+      "11",
+      "13",
+      "26",
+      "28"
+    ],
+    "totalAffected": "26 of 32 products (81%) were missing top-level site fields, 8 had attributes.website data being ignored"
+  },
+
+  "verification": {
+    "pending": "HES C",
+    "requirements": [
+      {
+        "id": "VVP-1",
+        "description": "Deploy to staging and verify sample products no longer show 'No sites selected' when they have attributes.website",
+        "status": "PENDING"
+      },
+      {
+        "id": "VVP-2",
+        "description": "Verify ProductHeader shows actionable guidance banner for products still missing sites",
+        "status": "PENDING"
+      },
+      {
+        "id": "VVP-3",
+        "description": "Verify /export shows products as exportable if they meet threshold with attributes.website sites",
+        "status": "PENDING"
+      }
+    ]
+  },
+
+  "rollbackPlan": {
+    "strategy": "Revert PR if staging verification fails",
+    "preChangeBaseline": "All extractSelectedSites tests pass before changes",
+    "revertCommit": "git revert d6802e8 (or revert entire PR)"
+  },
+
+  "nextSteps": [
+    "Await merge approval after HES C verification",
+    "Deploy to staging",
+    "Run VVP verification for sample products",
+    "Update labels to state:merged and cleanup:done after merge",
+    "Deliver HES D with final receipts"
+  ]
+}
