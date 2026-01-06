@@ -1,0 +1,363 @@
+# Server Decision Evidence — siteStatus Generation
+
+**LP:** LP-export-global-1.0.0 HES A
+**Generated:** 2026-01-06
+**Command used:**
+```bash
+grep -rn "siteStatus" packages/api/src/services/completionDrivenExportReadiness.ts
+grep -rn "extractSelectedSites" packages/api/src/services/completionDrivenExportReadiness.ts
+```
+
+---
+
+## Summary
+
+The server generates `siteStatus[]` in the `operatorExplanation` field by:
+1. Extracting selected sites from the product document via `extractSelectedSites()`
+2. Evaluating completion per-site via `evaluateCompletion()` engine
+3. Mapping site-blocking reasons to `siteStatus[]` array in `generateOperatorExplanation()`
+
+The decision to include per-site evaluation is driven by the presence of `product.websites` / `product.sites` / `product.website` fields and the completion engine's per-site blocking logic.
+
+---
+
+## A. Core Server Function — evaluateProductCompletion()
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 327, 341-365
+
+### Code Citations
+
+**Line 327:** Extract selected sites from product
+```typescript
+const selectedSites = extractSelectedSites(product);
+```
+
+**Lines 341-365:** Run per-site completion evaluation
+```typescript
+// Run completion evaluation
+const completionResult = evaluateCompletion(
+  productSnapshot,
+  selectedSites,
+  attributeRegistry,
+  completionRules,
+  evaluationTimestamp
+);
+
+// Determine export readiness based on completion
+const isReady = determineExportReadiness(completionResult, completionRules);
+
+// PROMPT B: Single canonical gate - prioritize site blocking, force completion to 0
+const hasSiteBlocking = completionResult.hasBlockingSites;
+const reportedCompletion = hasSiteBlocking ? 0 : completionResult.totalCompletionPct;
+
+// Generate blocking reasons (site blocking takes priority - no threshold duplicate)
+const blockingReasons = generateBlockingReasons(completionResult, completionRules);
+const operatorExplanation = generateOperatorExplanation(completionResult, completionRules, selectedSites);
+
+return {
+  ready: isReady,
+  completionPct: reportedCompletion, // PROMPT B: Force 0 when site-blocked
+  threshold: completionRules.exportUnlockThresholdPct,
+  hasBlockingSites: completionResult.hasBlockingSites,
+  blockingReasons,
+  operatorExplanation,
+  evaluationTimestamp,
+  rulesVersion: completionRules.rulesVersion
+};
+```
+
+**Key decision points:**
+- `selectedSites` is extracted from the product (line 327)
+- `selectedSites` is passed to `evaluateCompletion()` (line 342-343)
+- `operatorExplanation` is generated including `selectedSites` (line 360)
+
+---
+
+## B. extractSelectedSites() — Site Discovery Logic
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 426-450
+
+### Code Citations
+
+**Lines 426-450:** Site extraction precedence
+```typescript
+/**
+ * Extract selected sites from product document
+ * Precedence: websites → sites → website (string) → attributes.website
+ * LP-export-completion-fix-1.0.0: Added attributes.website support for CSV imports
+ * @exported for testing
+ */
+export function extractSelectedSites(product: ProductDocument): string[] {
+  // LP-export-site-extract-1.0.0: Precedence order:
+  // 1. product.websites (array)
+  // 2. product.sites (array)
+  // 3. product.website (string)
+  // 4. product.attributes.website (array or string)
+  
+  if (Array.isArray(product.websites) && product.websites.length > 0) {
+    return product.websites;
+  }
+  if (Array.isArray(product.sites) && product.sites.length > 0) {
+    return product.sites;
+  }
+  if (product.website && typeof product.website === 'string' && product.website.trim()) {
+    return [product.website.trim()];
+  }
+  
+  // LP-export-completion-fix-1.0.0 + LP-export-site-extract-1.0.0:
+  // Support attributes.website as array or string (CSV imports)
+  const attrSite = product.attributes?.website;
+  if (Array.isArray(attrSite) && attrSite.length > 0) {
+    return attrSite;
+  }
+  if (typeof attrSite === 'string' && attrSite.trim()) {
+    return [attrSite.trim()];
+  }
+  
+  return [];
+}
+```
+
+**Behavior:**
+- Checks 4 possible product fields for site selection (precedence order)
+- Returns array of site strings
+- If no sites found, returns empty array `[]`
+
+**Implication:** Products without any site field set will return `[]`, which blocks export at line 330-336:
+```typescript
+// If no sites selected, export is blocked
+if (selectedSites.length === 0) {
+  return createBlockedReadiness(
+    'No sites selected for product',
+    [],
+    completionRules,
+    evaluationTimestamp,
+    productSnapshot
+  );
+}
+```
+
+---
+
+## C. generateOperatorExplanation() — siteStatus Array Generation
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 563-580
+
+### Code Citations
+
+**Lines 563-580:** siteStatus array construction
+```typescript
+siteStatus: selectedSites.map(site => {
+  const siteBlocking = completionResult.siteBlockingReasons.find(b => b.site === site);
+  if (siteBlocking) {
+    return {
+      site,
+      blocked: true,
+      reason: siteBlocking.reason,
+      missingAttributes: siteBlocking.missingAttributes
+    };
+  }
+  return {
+    site,
+    blocked: false
+  };
+}),
+```
+
+**Behavior:**
+- Iterates over `selectedSites` array (from `extractSelectedSites()`)
+- For each site, checks if there's a blocking reason from the completion engine
+- Constructs `siteStatus[]` with per-site blocking details
+- Each element contains: `{ site, blocked, reason?, missingAttributes? }`
+
+**Data flow:**
+1. `extractSelectedSites(product)` → `["ropi-web", "shiekh"]`
+2. `evaluateCompletion(..., selectedSites, ...)` → returns `completionResult.siteBlockingReasons[]`
+3. `generateOperatorExplanation()` maps `selectedSites` to `siteStatus[]`
+
+---
+
+## D. Completion Engine — evaluateCompletion()
+
+**File:** packages/api/src/services/completionEvaluationEngine.ts
+**Entry point:** packages/api/src/services/completionEvaluationEngineEntry.ts (lines 17-24)
+
+**Referenced from completionDrivenExportReadiness.ts:**
+- Line 17: `import { evaluateCompletion, ... } from './completionEvaluationEngineEntry'`
+- Line 167: `const result = evaluateCompletion(...)`
+- Line 341: `const completionResult = evaluateCompletion(...)`
+
+**Signature (from completionEvaluationEngineEntry.ts):**
+```typescript
+export function evaluateCompletion(
+  product: ProductSnapshot,
+  selectedSites: string[],
+  attributeRegistry: AttributeRegistry,
+  rules: CompletionRulesConfig,
+  evaluationTimestamp: string
+): CompletionEvaluationResult
+```
+
+**Behavior:**
+- Takes `selectedSites` as input
+- Returns `CompletionEvaluationResult` with `hasBlockingSites` and `siteBlockingReasons[]`
+- The engine evaluates site-specific attributes (e.g., `description_<site>`, `seo_title_<site>`)
+- If any site is missing required site-specific attributes, it's marked as blocking
+
+**Example return value:**
+```typescript
+{
+  totalCompletionPct: 75,
+  hasBlockingSites: true,
+  siteBlockingReasons: [
+    {
+      site: "ropi-web",
+      reason: "Missing site-specific Description/SEO attributes",
+      missingAttributes: ["description_ropi_web", "seo_title_ropi_web"]
+    }
+  ],
+  segmentResults: [...],
+  ...
+}
+```
+
+---
+
+## E. Catalog-Level Evaluation (per-product iteration)
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 163-180 (catalog evaluation loop)
+
+### Code Citations
+
+**Lines 163-180:** Catalog evaluation with per-site logic
+```typescript
+for (const doc of productsSnapshot.docs) {
+  const product = { id: doc.id, ...doc.data() } as ProductDocument;
+  const productSnapshot = convertToProductSnapshot(product);
+  const selectedSites = extractSelectedSites(product);
+  
+  if (selectedSites.length === 0) continue;
+  
+  const result = evaluateCompletion(
+    productSnapshot,
+    selectedSites,
+    attributeRegistry,
+    rules,
+    timestamp
+  );
+  
+  evaluations.push({
+    productId: product.id,
+    completionPct: result.totalCompletionPct,
+    hasBlockingSites: result.hasBlockingSites,
+    siteBlockingReasons: result.siteBlockingReasons,
+    isBelowThreshold: result.totalCompletionPct < rules.exportUnlockThresholdPct
+  });
+}
+```
+
+**Behavior:**
+- Catalog-level evaluation iterates over all products
+- Each product extracts its own `selectedSites`
+- Each product is evaluated with its own site context
+- Products without sites (`selectedSites.length === 0`) are skipped
+
+---
+
+## F. Why Exports Are Per-Site Today
+
+**Evidence:**
+
+1. **Site extraction is mandatory:** Lines 327-336 block export if no sites selected
+2. **Completion engine requires sites:** Line 341-343 passes `selectedSites` to engine
+3. **siteStatus is always generated:** Lines 563-580 map `selectedSites` to `siteStatus[]`
+4. **UI consumes siteStatus:** Frontend (ExportPage.tsx) renders per-site dropdown and panel shows per-site status
+
+**Causal chain:**
+```
+Product doc → extractSelectedSites() → selectedSites[]
+                                           ↓
+                                    evaluateCompletion(selectedSites)
+                                           ↓
+                                    siteBlockingReasons[]
+                                           ↓
+                                    generateOperatorExplanation()
+                                           ↓
+                                    siteStatus[] in API response
+                                           ↓
+                                    UI renders per-site UI
+```
+
+---
+
+## G. Where Product-Level Readiness Could Be Computed
+
+Currently, the server does NOT compute a product-level readiness independent of sites. The `ready` flag is derived from:
+- `hasBlockingSites` (line 355: if any site blocked, `completionPct` forced to 0)
+- Threshold comparison (implicit in `determineExportReadiness()`)
+
+**Potential product-level readiness location:**
+- After `evaluateCompletion()` returns (line 341-346)
+- Extract `totalCompletionPct` (product-level score across all segments, ignoring site-specific attributes)
+- Add a separate `productLevelReadiness` field to the response before `siteStatus`
+
+**Example target structure:**
+```typescript
+{
+  ready: true,  // product-level ready (ignores sites)
+  completionPct: 85,  // product-level completion
+  productLevelReadiness: {
+    ready: true,
+    completionPct: 85,
+    blockingReasons: []
+  },
+  siteStatus: [  // optional per-site details
+    { site: "ropi-web", blocked: false },
+    { site: "shiekh", blocked: true, reason: "Missing SEO", missingAttributes: ["seo_title_shiekh"] }
+  ]
+}
+```
+
+---
+
+## H. Conclusion
+
+**Server decision points for per-site evaluation:**
+
+1. **extractSelectedSites() (L426-450):** Determines which sites to evaluate (4-field precedence)
+2. **evaluateCompletion() (L341-346):** Passes `selectedSites` to completion engine, returns per-site blocking reasons
+3. **generateOperatorExplanation() (L563-580):** Maps `selectedSites` to `siteStatus[]` array in response
+4. **Blocking logic (L330-336):** Products with no sites are blocked immediately
+
+**Current contract:** The API always returns `siteStatus[]` if sites are selected. The `ready` flag is affected by `hasBlockingSites` (site-level blocking).
+
+**RetailOps implication:** For global export, we need to:
+- Compute product-level completion **ignoring site-specific attributes** (core + classification attributes only)
+- Add `productLevelReadiness` field to response (ready/completionPct/blockingReasons)
+- Keep `siteStatus[]` as optional (for non-RetailOps tenants)
+- Add a `mode` field (GLOBAL | SITE_SCOPED) to signal which contract is in use
+
+---
+
+## Files Examined
+
+- packages/api/src/services/completionDrivenExportReadiness.ts (649 lines)
+  - Main export readiness function (L320-376)
+  - extractSelectedSites() (L426-450)
+  - generateOperatorExplanation() (L547-580)
+  - Catalog evaluation loop (L163-180)
+- packages/api/src/services/completionEvaluationEngineEntry.ts (referenced)
+- packages/api/src/services/completionEvaluationEngine.ts (referenced)
+
+---
+
+## Next Steps (for design phase)
+
+1. Define how to compute product-level completion (which segments/attributes to include, which to exclude)
+2. Design `productLevelReadiness` response field structure
+3. Determine if `siteStatus[]` should remain optional or be removed entirely for RetailOps mode
+4. Decide on UI logic: check `mode` field first, render global or per-site accordingly

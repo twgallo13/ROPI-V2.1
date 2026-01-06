@@ -1,0 +1,77 @@
+[
+  {
+    "attribute_id": "sku",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "mpn",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "name",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "brand",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "category",
+    "category": "classification",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "class",
+    "category": "classification",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "department",
+    "category": "classification",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "website",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "product_is_active",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "gender",
+    "category": "identity_demographic",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "age_group",
+    "category": "identity_demographic",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "primary_color",
+    "category": "color",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "descriptive_color",
+    "category": "color",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "material",
+    "category": "materials_construction",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "fit",
+    "category": "materials_construction",
+    "source": "SDK registry"
+  }
+]

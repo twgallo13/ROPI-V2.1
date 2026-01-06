@@ -1,0 +1,7 @@
+attribute_id,source,notes
+gtin,SDK_ONLY,"In SDK registry as required_for_export but may not exist in Firestore settings/attributes"
+slug,SDK_ONLY,"In SDK registry as required_for_export but may not exist in Firestore settings/attributes"
+
+Note: Full delta requires Firestore access (blocked per access-blockers.txt).
+Registry-only analysis shows 25 attributes with required flags in SDK.
+Cannot determine Firestore discrepancies without credentials.

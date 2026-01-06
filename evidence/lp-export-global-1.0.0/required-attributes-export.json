@@ -1,0 +1,122 @@
+[
+  {
+    "attribute_id": "sku",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "mpn",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "gtin",
+    "category": "identifiers",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "name",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "slug",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "brand",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "category",
+    "category": "classification",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "class",
+    "category": "classification",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "department",
+    "category": "classification",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "website",
+    "category": "sku_core",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "gender",
+    "category": "identity_demographic",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "age_group",
+    "category": "identity_demographic",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "primary_color",
+    "category": "color",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "descriptive_color",
+    "category": "color",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "material",
+    "category": "materials_construction",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "fit",
+    "category": "materials_construction",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "tax_class",
+    "category": "product_flags",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "description_shiekh",
+    "category": "descriptions_sites",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "description_karmaloop",
+    "category": "descriptions_sites",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "description_mltd",
+    "category": "descriptions_sites",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "description_sangremia",
+    "category": "descriptions_sites",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "meta_name",
+    "category": "seo",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "meta_description",
+    "category": "seo",
+    "source": "SDK registry"
+  },
+  {
+    "attribute_id": "keywords",
+    "category": "seo",
+    "source": "SDK registry"
+  }
+]

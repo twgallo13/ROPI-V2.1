@@ -1,0 +1,274 @@
+# Site Gating Evidence — extractSelectedSites() Behavior
+
+**LP:** LP-export-global-1.0.0 HES A
+**Generated:** 2026-01-06
+
+---
+
+## Summary
+
+The `extractSelectedSites()` function determines which sites a product targets. If the function returns an empty array `[]`, the product is **immediately blocked** from export regardless of completion score. This implements a mandatory site-selection gate.
+
+---
+
+## A. Function Definition
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 426-450
+
+```typescript
+/**
+ * Extract selected sites from product document
+ * Precedence: websites → sites → website (string) → attributes.website
+ * LP-export-completion-fix-1.0.0: Added attributes.website support for CSV imports
+ * @exported for testing
+ */
+export function extractSelectedSites(product: ProductDocument): string[] {
+  // LP-export-site-extract-1.0.0: Precedence order:
+  // 1. product.websites (array)
+  // 2. product.sites (array)
+  // 3. product.website (string)
+  // 4. product.attributes.website (array or string)
+  
+  if (Array.isArray(product.websites) && product.websites.length > 0) {
+    return product.websites;
+  }
+  if (Array.isArray(product.sites) && product.sites.length > 0) {
+    return product.sites;
+  }
+  if (product.website && typeof product.website === 'string' && product.website.trim()) {
+    return [product.website.trim()];
+  }
+  
+  // LP-export-completion-fix-1.0.0 + LP-export-site-extract-1.0.0:
+  // Support attributes.website as array or string (CSV imports)
+  const attrSite = product.attributes?.website;
+  if (Array.isArray(attrSite) && attrSite.length > 0) {
+    return attrSite;
+  }
+  if (typeof attrSite === 'string' && attrSite.trim()) {
+    return [attrSite.trim()];
+  }
+  
+  return [];
+}
+```
+
+---
+
+## B. Call Stack — Where extractSelectedSites() Gates Export
+
+### B1. Product-Level Evaluation (evaluateProductCompletion)
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 327-336
+
+```typescript
+const selectedSites = extractSelectedSites(product);
+
+// If no sites selected, export is blocked
+if (selectedSites.length === 0) {
+  return createBlockedReadiness(
+    'No sites selected for product',
+    [],
+    completionRules,
+    evaluationTimestamp,
+    productSnapshot
+  );
+}
+```
+
+**Behavior:**
+- If `extractSelectedSites()` returns `[]`, the function returns immediately with `ready: false`
+- Completion evaluation is **not run** for products without sites
+- The blocking reason is `'No sites selected for product'`
+
+**Impact:** Products without any of the four site fields (`websites`, `sites`, `website`, `attributes.website`) cannot be exported.
+
+---
+
+### B2. Catalog-Level Evaluation (evaluateCatalogCompletion)
+
+**File:** packages/api/src/services/completionDrivenExportReadiness.ts
+**Lines:** 163-166
+
+```typescript
+for (const doc of productsSnapshot.docs) {
+  const product = { id: doc.id, ...doc.data() } as ProductDocument;
+  const productSnapshot = convertToProductSnapshot(product);
+  const selectedSites = extractSelectedSites(product);
+  
+  if (selectedSites.length === 0) continue;
+  
+  const result = evaluateCompletion(
+    productSnapshot,
+    selectedSites,
+    attributeRegistry,
+    rules,
+    timestamp
+  );
+  ...
+}
+```
+
+**Behavior:**
+- Catalog evaluation loop calls `extractSelectedSites()` for each product
+- Products with `selectedSites.length === 0` are **skipped** (not evaluated)
+- These products do not contribute to catalog stats or blocking reasons
+
+**Impact:** Products without sites are invisible to catalog-level export readiness checks.
+
+---
+
+### B3. Completion Engine Input (evaluateCompletion)
+
+**File:** packages/api/src/services/completionEvaluationEngine.ts
+**Lines:** 78-103
+
+```typescript
+export function evaluateCompletion(
+  product: ProductSnapshot,
+  selectedSites: string[],
+  registry: AttributeRegistry,
+  config: CompletionRulesConfig,
+  evaluatedAt?: string
+): CompletionEvaluationResult {
+  
+  ...
+  
+  // Validate inputs
+  if (selectedSites.length === 0) {
+    throw new Error('Cannot evaluate completion: no sites selected');
+  }
+  
+  ...
+}
+```
+
+**Behavior:**
+- The completion engine **throws an error** if `selectedSites` is empty
+- This ensures that `extractSelectedSites()` returning `[]` is caught at the calling layer (lines 330-336)
+
+---
+
+## C. Runtime Example (Simulated)
+
+### Product WITH Sites
+
+```json
+{
+  "id": "211737-90h1-8",
+  "websites": ["ropi-web", "shiekh"],
+  "attributes": {
+    "sku": "211737-90h1-8",
+    "name": "Test Product"
+  }
+}
+```
+
+**extractSelectedSites() returns:** `["ropi-web", "shiekh"]`  
+**Result:** Product is evaluated for completion with both sites checked
+
+---
+
+### Product WITHOUT Sites
+
+```json
+{
+  "id": "orphan-product",
+  "attributes": {
+    "sku": "orphan-sku",
+    "name": "Orphaned Product"
+  }
+}
+```
+
+**extractSelectedSites() returns:** `[]`  
+**Result:**  
+- At product level (line 330-336): Immediately blocked with reason `'No sites selected for product'`
+- At catalog level (line 166): Skipped from evaluation loop
+
+**Completion evaluation never runs** for this product.
+
+---
+
+## D. Why This Gates Export
+
+The site-selection gate serves two purposes:
+
+1. **Data Validation:** Ensures products have a valid `website` field (required for RetailOps export mapping)
+2. **Per-Site Evaluation Requirement:** The completion engine evaluates site-specific attributes (e.g., `description_ropi_web`, `seo_title_shiekh`) and requires `selectedSites[]` to know which sites to check
+
+**Current behavior:** Site selection is **mandatory** for export. Products without sites cannot pass the export gate.
+
+---
+
+## E. RetailOps Implication
+
+For RetailOps global export, this creates a problem:
+
+- **RetailOps does not care about per-site attributes** (no site-specific descriptions)
+- **RetailOps only exports to one destination** (RetailOps CSV feed)
+- **Products should be export-ready based on product-level attributes only** (sku, name, brand, category, class, department, etc.)
+
+**Current blocker:** Even if a product has perfect core/classification attributes, it will be blocked if it has no `website` field set.
+
+**Proposed solution:**
+- Add a `mode` field to the readiness config: `GLOBAL` or `SITE_SCOPED`
+- In `GLOBAL` mode:
+  - `extractSelectedSites()` returns a synthetic site list (e.g., `["global"]`) if product has no sites
+  - Completion engine evaluates **only product-level attributes** (not site-specific)
+  - siteStatus[] is not generated (or generated as empty array)
+- In `SITE_SCOPED` mode:
+  - Keep current behavior (require sites, evaluate per-site)
+
+---
+
+## F. Code Citation Summary
+
+**Decision points where extractSelectedSites() gates export:**
+
+1. **L327:** `const selectedSites = extractSelectedSites(product);`
+2. **L330-336:** `if (selectedSites.length === 0) { return createBlockedReadiness(...); }`
+3. **L163-166:** `if (selectedSites.length === 0) continue;` (catalog loop)
+4. **completionEvaluationEngine.ts L100-102:** `if (selectedSites.length === 0) { throw new Error(...); }`
+
+**Function definition:**
+- **L426-450:** `export function extractSelectedSites(product: ProductDocument): string[]`
+
+**Precedence order:**
+1. `product.websites` (array)
+2. `product.sites` (array)
+3. `product.website` (string)
+4. `product.attributes.website` (array or string)
+
+---
+
+## G. Conclusion
+
+**Site gating is absolute:** Products without sites cannot be evaluated or exported in the current implementation.
+
+**Why this matters for RetailOps:**
+- RetailOps export is **global** (not per-site)
+- Products should be ready based on **product-level completeness** (core + classification attributes)
+- The `website` field is currently **required**, but it's not semantically relevant for RetailOps (which exports to a single CSV feed)
+
+**Target design must address:**
+- How to evaluate products without `website` field in GLOBAL mode
+- How to compute product-level readiness (ignoring site-specific attributes like `description_<site>`)
+- How to preserve per-site evaluation for other tenants (non-RetailOps)
+
+---
+
+## Files Examined
+
+- packages/api/src/services/completionDrivenExportReadiness.ts (L327-336, L426-450, L163-166)
+- packages/api/src/services/completionEvaluationEngine.ts (L100-102)
+
+---
+
+## Next Steps (for design phase)
+
+1. Define GLOBAL mode behavior (synthetic site list or site-agnostic evaluation)
+2. Decide if `website` should remain required in GLOBAL mode
+3. Design how to filter out site-specific attributes in GLOBAL mode (segment-level config)

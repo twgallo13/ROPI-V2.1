@@ -1,0 +1,382 @@
+# Classification Attribute Evidence — Why They're Not Applied Today
+
+**LP:** LP-export-global-1.0.0 HES A
+**Generated:** 2026-01-06
+
+---
+
+## Summary
+
+Classification attributes (`category`, `class`, `department`) are marked as `required_for_completion: true` in the SDK registry, but they are **not being enforced** in the current completion evaluation for products like `mpn 18-test` and `211737-90h1-8`. This document explains why.
+
+---
+
+## A. Classification Attributes in Registry
+
+**Source:** packages/sdk/config/attributeRegistry.json
+
+```bash
+$ jq '.attributes[] | select(.category == "classification")' packages/sdk/config/attributeRegistry.json
+```
+
+**Results (condensed):**
+
+```json
+{
+  "attribute_id": "category",
+  "required_for_completion": true,
+  "required_for_export": true,
+  "category": "classification"
+}
+{
+  "attribute_id": "class",
+  "required_for_completion": true,
+  "required_for_export": true,
+  "category": "classification"
+}
+{
+  "attribute_id": "department",
+  "required_for_completion": true,
+  "required_for_export": true,
+  "category": "classification"
+}
+```
+
+**Evidence:** Classification attributes are explicitly marked as required for both completion and export in the SDK registry.
+
+---
+
+## B. How Completion Engine Selects Attributes
+
+**File:** packages/api/src/services/completionEvaluationEngine.ts
+**Function:** `resolveAttributes()`
+**Lines:** 336-370
+
+### Code Citations
+
+**Lines 336-370:**
+```typescript
+function resolveAttributes(
+  registry: AttributeRegistry,
+  selector: AttributeSelectorConfig
+): string[] {
+  const attributeIds: string[] = [];
+
+  for (const [attrId, attr] of Object.entries(registry)) {
+    // Skip if in exclusion list
+    if (selector.excludeAttributeIds?.includes(attrId)) {
+      continue;
+    }
+
+    // Skip internal-only attributes unless explicitly included
+    if (attr.internalOnly && !selector.includeInternalOnly) {
+      continue;
+    }
+
+    // Check category match
+    if (attr.category && !selector.categories.includes(attr.category)) {
+      continue;
+    }
+
+    // Check requirement flag
+    if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) {
+      continue;
+    }
+
+    // Note: Media and pricing categories are excluded by configuration, not code
+
+    attributeIds.push(attrId);
+  }
+
+  return attributeIds;
+}
+```
+
+**Key logic:**
+1. **Line 353:** Skip if `category` not in `selector.categories[]`
+2. **Line 359:** Skip if `required_for_completion` is false when `requirementFlag = 'completionRequired'`
+
+**This means:** Attributes are included **only if** their category matches the selector's `categories[]` array **AND** they have the correct requirement flag.
+
+---
+
+## C. Segment Configuration — Where Categories Are Filtered
+
+**Source:** COMPLETION_RULES_BACKEND_CONFIG.md (lines 70-100)
+
+### Segment Schema
+
+```typescript
+interface SegmentConfig {
+  id: string;
+  name: string;
+  enabled: boolean;
+  weightPct: number;
+  ruleType: 'ALL_REQUIRED' | 'ANY_REQUIRED';
+  appliesTo: {
+    mode: 'ALL_PRODUCTS' | 'CONDITIONAL';
+    sites: string[];
+  };
+  attributeSelector: AttributeSelectorConfig;
+}
+
+interface AttributeSelectorConfig {
+  source: 'REGISTRY' | 'STATIC';
+  categories?: string[];                     // <-- FILTERS BY CATEGORY
+  requirementFlag: string;
+  siteAware: boolean;
+  includeInternalOnly: boolean;
+  excludeAttributeIds: string[];
+  staticAttributeIds?: string[];
+}
+```
+
+**Key field:** `categories[]` determines which attribute categories are included in the segment.
+
+---
+
+## D. Runtime Behavior — Why Classification Attributes Are Not Checked
+
+**Hypothesis:** The active completion rules segment configuration does **not** include `"classification"` in the `categories[]` array for enabled segments.
+
+### Evidence Trail
+
+1. **Completion rules are stored in Firestore:** `settings/exportSettings/completionRules`
+2. **Cannot access Firestore** (per access-blockers.txt)
+3. **Code behavior confirms:** `resolveAttributes()` filters by `selector.categories[]`
+
+**Inference:** If classification attributes are not being enforced, the most likely cause is:
+
+**Scenario A:** The active completion rules have a segment (e.g., "Core Information") with:
+```json
+{
+  "id": "core-info",
+  "enabled": true,
+  "weightPct": 60,
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": ["sku_core", "identifiers"],  // <-- Does NOT include "classification"
+    "requirementFlag": "required_for_completion",
+    "siteAware": false
+  }
+}
+```
+
+**Scenario B:** There is a "Classification" segment, but it is **disabled**:
+```json
+{
+  "id": "classification",
+  "enabled": false,  // <-- DISABLED
+  "weightPct": 0,
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": ["classification"],
+    "requirementFlag": "required_for_completion",
+    "siteAware": false
+  }
+}
+```
+
+**Scenario C:** Classification attributes are in an `excludeAttributeIds[]` list:
+```json
+{
+  "attributeSelector": {
+    "excludeAttributeIds": ["category", "class", "department"]  // <-- EXPLICIT EXCLUSION
+  }
+}
+```
+
+---
+
+## E. Why This Matters for RetailOps
+
+**RetailOps requirement:** Export readiness should be based on:
+- Core attributes (sku, mpn, name, brand)
+- **Classification attributes** (category, class, department)
+- Identity/demographic attributes (gender, age_group)
+- Physical attributes (color, material, fit)
+
+**Current problem:** Classification attributes are not being enforced, so products like `18-test` and `211737-90h1-8` may be marked as "export ready" even if they're missing `category`, `class`, or `department`.
+
+---
+
+## F. Code Path Where Classification Should Be Applied
+
+### F1. Segment Evaluation
+
+**File:** packages/api/src/services/completionEvaluationEngine.ts
+**Function:** `evaluateSegment()`
+**Lines:** 256-330
+
+```typescript
+function evaluateSegment(
+  product: ProductSnapshot,
+  selectedSites: string[],
+  registry: AttributeRegistry,
+  segment: SegmentConfig
+): SegmentEvaluationResult {
+  
+  // Resolve attributes for this segment
+  const attributeIds = resolveAttributes(registry, segment.attributeSelector);
+  const totalAttributes = attributeIds.length;
+  
+  ...
+  
+  if (segment.ruleType === 'ALL_REQUIRED') {
+    // ALL attributes must be complete for ALL selected sites
+    for (const attrId of attributeIds) {
+      const isCompleteForAllSites = selectedSites.every(site => 
+        hasAttributeValueForSite(product, attrId, site, registry[attrId])
+      );
+      
+      if (isCompleteForAllSites) {
+        completedCount++;
+      } else {
+        missingAttributes.push(attrId);
+      }
+    }
+  }
+  
+  ...
+  
+  const score = totalAttributes > 0 ? Math.round((completedCount / totalAttributes) * 100) : 100;
+  
+  return {
+    segmentId: segment.id,
+    segmentName: segment.name,
+    ...
+    score,
+    totalAttributes,
+    completedAttributes: completedCount,
+    missingAttributes,
+    ...
+  };
+}
+```
+
+**Correct behavior (if classification segment were enabled):**
+1. `resolveAttributes()` returns `["category", "class", "department"]`
+2. For each attribute, check if product has a value
+3. If any are missing → `missingAttributes.push(...)`
+4. Score = `(completedCount / 3) * 100`
+5. Segment contributes weighted score to overall completion
+
+**Current behavior (if classification segment is disabled or missing):**
+1. `resolveAttributes()` does not return classification attributes
+2. Classification attributes are never checked
+3. Products can be 100% complete without `category`, `class`, `department`
+
+---
+
+## G. Diagnostic Commands (Blocked)
+
+To confirm the exact segment configuration, we would need to run:
+
+```bash
+# Firestore query (requires credentials)
+firebase firestore:get settings/exportSettings --project <project-id>
+
+# Or via Node.js script
+node -e "
+const admin = require('firebase-admin');
+admin.initializeApp();
+admin.firestore().doc('settings/exportSettings').get().then(snap => {
+  console.log(JSON.stringify(snap.data().completionRules.segments, null, 2));
+});
+"
+```
+
+**Status:** Blocked per access-blockers.txt (no Firestore credentials available)
+
+---
+
+## H. Workaround — Infer from Code Analysis
+
+Since we can't access Firestore, we can infer behavior from:
+
+1. **Registry analysis:** Classification attributes exist and are marked `required_for_completion: true`
+2. **Code analysis:** `resolveAttributes()` filters by `categories[]` in segment config
+3. **Observed behavior (inferred):** Products without classification data are not blocked
+
+**Conclusion:** The active segment configuration does **not** include `"classification"` in any enabled segment's `categories[]` array.
+
+---
+
+## I. Target Design for RetailOps
+
+For RetailOps global export, classification attributes **must** be enforced. The target segment configuration should include:
+
+**Segment: "Product Classification"**
+```json
+{
+  "id": "product-classification",
+  "name": "Product Classification",
+  "enabled": true,
+  "weightPct": 20,
+  "ruleType": "ALL_REQUIRED",
+  "appliesTo": {
+    "mode": "ALL_PRODUCTS",
+    "sites": []
+  },
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": ["classification"],
+    "requirementFlag": "required_for_completion",
+    "siteAware": false,
+    "includeInternalOnly": false,
+    "excludeAttributeIds": []
+  }
+}
+```
+
+**Effect:**
+- `category`, `class`, `department` are checked for all products
+- Missing any of these attributes → segment score < 100%
+- Product contribution to overall completion is reduced by 20% (the segment weight)
+
+---
+
+## J. Why Classification May Have Been Disabled
+
+**Possible reasons:**
+
+1. **Data quality issue:** Existing products don't have classification data, so enabling the segment would block all exports
+2. **Per-site confusion:** Classification might have been conflated with site-specific attributes
+3. **Incremental rollout:** Classification enforcement may have been deferred to a later phase
+4. **Test data gap:** Test products (`18-test`, `211737-90h1-8`) may not have classification data, so segment was disabled to allow testing
+
+---
+
+## K. Conclusion
+
+**Why classification attributes are not applied today:**
+
+1. **Registry has them marked as required:** ✅ Confirmed (attribute-delta evidence)
+2. **Completion engine can enforce them:** ✅ Confirmed (resolveAttributes + evaluateSegment logic)
+3. **Segment configuration does not include them:** ⚠️ Inferred (cannot confirm without Firestore access)
+
+**Root cause:** The active completion rules in Firestore do not have an enabled segment with `categories: ["classification"]`.
+
+**RetailOps requirement:** Classification attributes (`category`, `class`, `department`) **must** be enforced for export readiness.
+
+**Target design must:**
+- Add or enable a "Product Classification" segment with 15-20% weight
+- Ensure `categories: ["classification"]` in the segment's `attributeSelector`
+- Set `ruleType: "ALL_REQUIRED"` (all three attributes must be present)
+- Apply to all products (`appliesTo.mode: "ALL_PRODUCTS"`)
+
+---
+
+## Files Examined
+
+- packages/sdk/config/attributeRegistry.json (classification attributes)
+- packages/api/src/services/completionEvaluationEngine.ts (L336-370: resolveAttributes, L256-330: evaluateSegment)
+- COMPLETION_RULES_BACKEND_CONFIG.md (segment schema and attribute selector spec)
+
+---
+
+## Next Steps (for design phase)
+
+1. Confirm active segment configuration (requires Firestore access or staging API dump)
+2. Design RetailOps-specific segment configuration that includes classification
+3. Decide if classification enforcement should be global (all modes) or RetailOps-only

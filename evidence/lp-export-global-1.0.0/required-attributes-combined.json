@@ -1,0 +1,152 @@
+[
+  {
+    "attribute_id": "sku",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "mpn",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "gtin",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "identifiers"
+  },
+  {
+    "attribute_id": "name",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "slug",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "brand",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "category",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "classification"
+  },
+  {
+    "attribute_id": "class",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "classification"
+  },
+  {
+    "attribute_id": "department",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "classification"
+  },
+  {
+    "attribute_id": "website",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "product_is_active",
+    "required_for_completion": true,
+    "required_for_export": false,
+    "category": "sku_core"
+  },
+  {
+    "attribute_id": "gender",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "identity_demographic"
+  },
+  {
+    "attribute_id": "age_group",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "identity_demographic"
+  },
+  {
+    "attribute_id": "primary_color",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "color"
+  },
+  {
+    "attribute_id": "descriptive_color",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "color"
+  },
+  {
+    "attribute_id": "material",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "materials_construction"
+  },
+  {
+    "attribute_id": "fit",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "category": "materials_construction"
+  },
+  {
+    "attribute_id": "tax_class",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "product_flags"
+  },
+  {
+    "attribute_id": "description_shiekh",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "descriptions_sites"
+  },
+  {
+    "attribute_id": "description_karmaloop",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "descriptions_sites"
+  },
+  {
+    "attribute_id": "description_mltd",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "descriptions_sites"
+  },
+  {
+    "attribute_id": "description_sangremia",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "descriptions_sites"
+  },
+  {
+    "attribute_id": "meta_name",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "seo"
+  },
+  {
+    "attribute_id": "meta_description",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "seo"
+  },
+  {
+    "attribute_id": "keywords",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "category": "seo"
+  }
+]

@@ -1,0 +1,109 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-global-1.0.0",
+  "date": "2026-01-07T00:00:00Z",
+  "checkpoint": "A",
+  "checkpointName": "HES A - Diagnostic Evidence Pack (Planning)",
+  "executiveSummary": "HES A COMPLETE. Current system evaluates export readiness per-site (site selection mandatory, per-site UI/API). Classification attributes (category/class/department) are NOT enforced despite being marked required_for_completion=true in registry (likely due to segment config excluding classification category). Target design: Add 'mode' field (GLOBAL/SITE_SCOPED), productLevelReadiness object for RetailOps, preserve siteStatus[] for other tenants. Migration: 5-phase rollout with instant rollback. All evidence files delivered. Runtime API evidence blocked (no staging credentials). Design and migration plan ready for HES B approval.",
+  "tasksPlanned": [
+    {
+      "id": "A-current-contract",
+      "title": "Current readiness contract",
+      "description": "Collect runtime readiness and product-completion responses for mpn 18-test and product 211737-90h1-8, describe current API contract."
+    },
+    {
+      "id": "B-ui-decision",
+      "title": "UI decision point",
+      "description": "Identify exact frontend code path that decides per-site rendering and capture code lines."
+    },
+    {
+      "id": "C-server-decision",
+      "title": "Server-side decision point",
+      "description": "Identify server-side code producing siteStatus and point where product-level vs site-level decisions are made."
+    },
+    {
+      "id": "D-required-attributes",
+      "title": "Attributes considered required",
+      "description": "Produce runtime lists for attributes required for completion and for export, and show source (registry vs settings)."
+    },
+    {
+      "id": "E-site-gating",
+      "title": "Site gating",
+      "description": "Show exactly where extractSelectedSites affects gating and provide runtime examples."
+    },
+    {
+      "id": "F-classification-evidence",
+      "title": "Why classification attributes ignored",
+      "description": "Trace mapping of classification/core attributes into segments and why they are not applied today."
+    },
+    {
+      "id": "G-target-contract",
+      "title": "Target contract & migration plan",
+      "description": "Propose a product-level readiness contract for RetailOps, with migration plan and VVP."
+    }
+  ],
+  "evidenceFilesDelivered": [
+    "evidence/lp-export-global-1.0.0/README.md",
+    "evidence/lp-export-global-1.0.0/access-blockers.txt",
+    "evidence/lp-export-global-1.0.0/ui-decision-evidence.txt",
+    "evidence/lp-export-global-1.0.0/server-decision-evidence.txt",
+    "evidence/lp-export-global-1.0.0/required-attributes-completion.json",
+    "evidence/lp-export-global-1.0.0/required-attributes-export.json",
+    "evidence/lp-export-global-1.0.0/required-attributes-combined.json",
+    "evidence/lp-export-global-1.0.0/attribute-delta.csv",
+    "evidence/lp-export-global-1.0.0/site-gating-evidence.txt",
+    "evidence/lp-export-global-1.0.0/classification-evidence.txt",
+    "evidence/lp-export-global-1.0.0/target-contract.md",
+    "evidence/lp-export-global-1.0.0/migration-plan.md",
+    "evidence/lp-export-global-1.0.0/vvp-retailops-global.md"
+  ],
+  "evidenceFilesBlocked": [
+    "evidence/lp-export-global-1.0.0/readiness-staging-<ts>.json (no staging credentials)",
+    "evidence/lp-export-global-1.0.0/product-18-test-completion.json (no staging credentials)",
+    "evidence/lp-export-global-1.0.0/product-211737-completion.json (no staging credentials)"
+  ],
+  "commandsRun": [
+    "jq '[.attributes[] | select(.required_for_completion == true) | {attribute_id, category, source: \"SDK registry\"}]' packages/sdk/config/attributeRegistry.json > evidence/lp-export-global-1.0.0/required-attributes-completion.json",
+    "jq '[.attributes[] | select(.required_for_export == true) | {attribute_id, category, source: \"SDK registry\"}]' packages/sdk/config/attributeRegistry.json > evidence/lp-export-global-1.0.0/required-attributes-export.json",
+    "jq '[.attributes[] | select(.required_for_completion == true or .required_for_export == true) | {attribute_id, required_for_completion, required_for_export, category}]' packages/sdk/config/attributeRegistry.json > evidence/lp-export-global-1.0.0/required-attributes-combined.json",
+    "grep -rn 'siteStatus' packages/web/src/ (searched for UI decision points)",
+    "grep -rn 'extractSelectedSites' packages/api/src/services/ (searched for server gating logic)",
+    "grep -rn 'resolveAttributes' packages/api/src/services/completionEvaluationEngine.ts (searched for attribute filtering logic)"
+  ],
+  "stopConditions": [
+    "No privileged access to staging Firestore or admin tokens (list exact missing permissions)",
+    "Evidence requires runtime logs that cannot be exported without infra changes",
+    "Any request to change registry, rules, or product data without explicit LP"
+  ],
+  "accessNotes": "Homer must list any access issues in evidence/access-blockers.txt",
+  "manifestGeneratedAt": "2026-01-06T18:00:00Z",
+  "signature": "Homer: HES A complete. All evidence delivered except staging runtime responses (blocked by credentials). No code changes made per LP constraints.",
+  "findings": {
+    "currentBehavior": {
+      "exportScoping": "Per-site (mandatory site selection via extractSelectedSites)",
+      "uiRendering": "Per-site dropdown (ExportPage.tsx L169-189), per-site accordion (CompletionExportGatePanel.tsx L200-227)",
+      "apiContract": "siteStatus[] array populated, product-level readiness not computed independently",
+      "siteGating": "Products without website field are immediately blocked (L330-336 in completionDrivenExportReadiness.ts)"
+    },
+    "classificationAttributeIssue": {
+      "registryStatus": "category, class, department marked required_for_completion=true (15 total completion attributes found)",
+      "runtimeBehavior": "Classification attributes NOT enforced (inferred from code analysis)",
+      "rootCause": "Segment configuration likely excludes 'classification' category (cannot confirm without Firestore access)",
+      "impact": "Products can be export-ready without classification data"
+    },
+    "targetDesign": {
+      "newFields": "mode (GLOBAL/SITE_SCOPED), productLevelReadiness {ready, completionPct, threshold, blockingReasons, missingAttributes}",
+      "backwardCompatibility": "Preserve siteStatus[] for SITE_SCOPED mode, add productCompletionBreakdown for GLOBAL mode",
+      "migrationStrategy": "5-phase rollout with instant rollback at each phase",
+      "testability": "Non-developer VVP provided (browser UI + DevTools, no code required)"
+    }
+  },
+  "recommendations": {
+    "phase1": "Extend API response with new fields (non-breaking)",
+    "phase2": "Add GLOBAL mode backend logic (tenant-scoped)",
+    "phase3": "Update UI conditional rendering (check mode field)",
+    "phase4": "Enable Product Classification segment (20% weight, categories: ['classification'])",
+    "phase5": "Update export API to accept optional site parameter"
+  }
+}

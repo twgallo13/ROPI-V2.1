@@ -1,0 +1,77 @@
+# Access Blockers for LP-export-global-1.0.0 HES A
+
+Generated: 2026-01-06
+
+## Blocked Access Items
+
+### 1. Staging API Endpoints - Admin Authentication Required
+
+**Resource:** GET https://<staging>/api/admin/exports/readiness
+**Blocker:** No admin authentication token available in dev container environment
+**Required to obtain:**
+- Admin user credentials for staging environment
+- Valid JWT/session token with admin scope
+- Staging environment URL (production URL is known but staging URL not specified)
+
+**Impact:** Cannot collect runtime readiness API responses (readiness-staging-<ts>.json)
+
+### 2. Staging Product Completion Endpoints
+
+**Resource:** GET https://<staging>/api/products/18-test/completion
+**Resource:** GET https://<staging>/api/products/211737-90h1-8/completion
+**Blocker:** Same authentication issue as above; also need exact staging URL
+**Required to obtain:**
+- Admin authentication token
+- Staging base URL
+
+**Impact:** Cannot collect product completion responses (product-18-test-completion.json, product-211737-completion.json)
+
+### 3. Firestore Production Attributes Collection
+
+**Resource:** settings/attributes collection in Firestore
+**Blocker:** No Firestore access credentials configured in dev container
+**Required to obtain:**
+- Service account key or Firebase admin credentials
+- Project ID and appropriate IAM permissions (firestore.documents.read)
+
+**Impact:** Cannot compare SDK registry with live Firestore attributes (attribute-delta.csv will be partial - registry only)
+
+## Workarounds Attempted
+
+1. Searched for stored API responses in workspace - none found
+2. Checked for test fixtures or mock data - not applicable for runtime evidence
+3. Examined git history for previous API snapshots - none found
+
+## Evidence That CAN Be Collected Without Privileged Access
+
+- UI decision code citations (file/line analysis)
+- Server decision code citations (file/line analysis)
+- SDK registry attribute analysis
+- Code path tracing for extractSelectedSites
+- Code path tracing for classification attribute handling
+- Target contract design (design artifact)
+- Migration plan (design artifact)
+- VVP (design artifact)
+
+## Next Steps
+
+If staging credentials and Firestore access can be provided:
+1. Set environment variables: STAGING_URL, ADMIN_TOKEN, FIREBASE_PROJECT_ID, GOOGLE_APPLICATION_CREDENTIALS
+2. Re-run evidence collection with:
+   ```bash
+   curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+     $STAGING_URL/api/admin/exports/readiness \
+     -o evidence/lp-export-global-1.0.0/readiness-staging-$(date +%s).json
+   
+   curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+     $STAGING_URL/api/products/18-test/completion \
+     -o evidence/lp-export-global-1.0.0/product-18-test-completion.json
+   
+   curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+     $STAGING_URL/api/products/211737-90h1-8/completion \
+     -o evidence/lp-export-global-1.0.0/product-211737-completion.json
+   ```
+
+## Status
+
+PARTIAL HES A - Proceeding with code analysis and design artifacts. Runtime API evidence blocked pending credentials.
