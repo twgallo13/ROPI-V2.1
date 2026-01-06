@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { getAuthHeaders } from '../lib/authHeaders';
 
 /**
  * Product completion evaluation result from API

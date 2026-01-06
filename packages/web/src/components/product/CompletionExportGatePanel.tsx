@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { getAuthHeaders } from '../../../lib/authHeaders';
+import { getAuthHeaders } from '../../lib/authHeaders';
 import './CompletionExportGatePanel.css';
 
 export interface CompletionEvaluationResult {
