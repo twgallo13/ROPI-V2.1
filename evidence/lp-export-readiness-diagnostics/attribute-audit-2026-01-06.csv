@@ -1,0 +1,66 @@
+attribute_id,location,label,status,source,export,requiredForExport,exportable,data_type,createdAt
+sku,sdk_only,SKU,active,sdk,N/A,N/A,N/A,text,N/A
+style_id,sdk_only,Style ID,active,sdk,N/A,N/A,N/A,text,N/A
+mpn,sdk_only,MPN,active,sdk,N/A,N/A,N/A,text,N/A
+gtin,sdk_only,GTIN/UPC,active,sdk,N/A,N/A,N/A,text,N/A
+name,sdk_only,Product Name,active,sdk,N/A,N/A,N/A,text,N/A
+slug,sdk_only,URL Slug,active,sdk,N/A,N/A,N/A,text,N/A
+brand,sdk_only,Brand,active,sdk,N/A,N/A,N/A,text,N/A
+category,sdk_only,Category,active,sdk,N/A,N/A,N/A,select,N/A
+class,sdk_only,Class,active,sdk,N/A,N/A,N/A,select,N/A
+department,sdk_only,Department,active,sdk,N/A,N/A,N/A,select,N/A
+rics_category,sdk_only,RICS Category,active,sdk,N/A,N/A,N/A,text,N/A
+website,sdk_only,Websites (Multi-select),active,sdk,N/A,N/A,N/A,multiSelect,N/A
+product_is_active,sdk_only,Product Is Active,active,sdk,N/A,N/A,N/A,boolean,N/A
+status,sdk_only,Status,active,sdk,N/A,N/A,N/A,text,N/A
+launch_date,sdk_only,Launch Date,active,sdk,N/A,N/A,N/A,date,N/A
+kl_post_date,sdk_only,KL Post Date,active,sdk,N/A,N/A,N/A,date,N/A
+family_sizing,sdk_only,Family Sizing,active,sdk,N/A,N/A,N/A,boolean,N/A
+hype,sdk_only,HYPE,active,sdk,N/A,N/A,N/A,boolean,N/A
+first_received,sdk_only,First Received,active,sdk,N/A,N/A,N/A,date,N/A
+last_received,sdk_only,Last Received,active,sdk,N/A,N/A,N/A,date,N/A
+height,sdk_only,Height,active,sdk,N/A,N/A,N/A,number,N/A
+length,sdk_only,Length,active,sdk,N/A,N/A,N/A,number,N/A
+width,sdk_only,Width,active,sdk,N/A,N/A,N/A,number,N/A
+shoe_width,sdk_only,Shoe Width,active,sdk,N/A,N/A,N/A,select,N/A
+weight,sdk_only,Weight (oz),active,sdk,N/A,N/A,N/A,number,N/A
+gender,sdk_only,Gender,active,sdk,N/A,N/A,N/A,select,N/A
+age_group,sdk_only,Age Group,active,sdk,N/A,N/A,N/A,select,N/A
+primary_color,sdk_only,Primary Color,active,sdk,N/A,N/A,N/A,select,N/A
+descriptive_color,sdk_only,Descriptive Color,active,sdk,N/A,N/A,N/A,text,N/A
+material,sdk_only,Material(s),active,sdk,N/A,N/A,N/A,multiSelect,N/A
+outsole_material,sdk_only,Outsole Material,active,sdk,N/A,N/A,N/A,select,N/A
+closure_type,sdk_only,Closure Type,active,sdk,N/A,N/A,N/A,select,N/A
+cut_type,sdk_only,Cut Type,active,sdk,N/A,N/A,N/A,select,N/A
+fit,sdk_only,Fit,active,sdk,N/A,N/A,N/A,select,N/A
+heel_height,sdk_only,Heel Height,active,sdk,N/A,N/A,N/A,select,N/A
+platform_height,sdk_only,Platform Height,active,sdk,N/A,N/A,N/A,select,N/A
+heel_type,sdk_only,Heel Type,active,sdk,N/A,N/A,N/A,select,N/A
+shoe_height_map,sdk_only,Shoe Height Map,active,sdk,N/A,N/A,N/A,select,N/A
+made_in,sdk_only,Made In,active,sdk,N/A,N/A,N/A,text,N/A
+league,sdk_only,League,active,sdk,N/A,N/A,N/A,select,N/A
+sports_team,sdk_only,Sports Team,active,sdk,N/A,N/A,N/A,text,N/A
+collection_name,sdk_only,Collection Name,active,sdk,N/A,N/A,N/A,text,N/A
+fast_fashion,sdk_only,Fast Fashion,active,sdk,N/A,N/A,N/A,boolean,N/A
+tax_class,sdk_only,Tax Class,active,sdk,N/A,N/A,N/A,select,N/A
+description_shiekh,sdk_only,Description – Shiekh.com,active,sdk,N/A,N/A,N/A,longText,N/A
+description_karmaloop,sdk_only,Description – Karmaloop,active,sdk,N/A,N/A,N/A,longText,N/A
+description_mltd,sdk_only,Description – MLTD,active,sdk,N/A,N/A,N/A,longText,N/A
+description_sangremia,sdk_only,Description – Sangremia,active,sdk,N/A,N/A,N/A,longText,N/A
+meta_name,sdk_only,Meta Name,active,sdk,N/A,N/A,N/A,text,N/A
+meta_description,sdk_only,Meta Description,active,sdk,N/A,N/A,N/A,longText,N/A
+keywords,sdk_only,Keywords,active,sdk,N/A,N/A,N/A,multiSelect,N/A
+rics_long_desc,sdk_only,RICS Long Description,active,sdk,N/A,N/A,N/A,longText,N/A
+rics_short_description,sdk_only,RICS Short Description,active,sdk,N/A,N/A,N/A,text,N/A
+media_status,sdk_only,Media Status,active,sdk,N/A,N/A,N/A,text,N/A
+hide_image_date,sdk_only,Hide Image Date,active,sdk,N/A,N/A,N/A,date,N/A
+map,sdk_only,MAP,active,sdk,N/A,N/A,N/A,money,N/A
+promo,sdk_only,Promo,active,sdk,N/A,N/A,N/A,boolean,N/A
+custom_message,sdk_only,Custom Message (Internal),active,sdk,N/A,N/A,N/A,longText,N/A
+total_inv,sdk_only,Total Inv,active,sdk,N/A,N/A,N/A,number,N/A
+warehouse_inv,sdk_only,WHS Inv,active,sdk,N/A,N/A,N/A,number,N/A
+store_inv,sdk_only,Store Inv,active,sdk,N/A,N/A,N/A,number,N/A
+pattern,sdk_only,Pattern,active,sdk,N/A,N/A,N/A,text,N/A
+sustainable,sdk_only,Sustainable,active,sdk,N/A,N/A,N/A,boolean,N/A
+waterproof,sdk_only,Waterproof,active,sdk,N/A,N/A,N/A,boolean,N/A
+dept,sdk_only,Department,active,sdk,N/A,N/A,N/A,string,N/A

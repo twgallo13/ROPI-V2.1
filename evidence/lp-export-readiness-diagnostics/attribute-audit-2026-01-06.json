@@ -1,0 +1,347 @@
+{
+  "audit_timestamp": "2026-01-06T08:26:21.252Z",
+  "lp": "LP-export-readiness-diagnostics-1.0.0",
+  "task": "HES B - Task 3",
+  "summary": {
+    "sdk_count": 69,
+    "firestore_count": 4,
+    "in_both": 4,
+    "missing_in_sdk": 0,
+    "missing_in_firestore": 65,
+    "delta": -65
+  },
+  "missing_in_sdk": [],
+  "missing_in_firestore": [
+    {
+      "attribute_id": "sku",
+      "label": "SKU",
+      "status": "active"
+    },
+    {
+      "attribute_id": "style_id",
+      "label": "Style ID",
+      "status": "active"
+    },
+    {
+      "attribute_id": "mpn",
+      "label": "MPN",
+      "status": "active"
+    },
+    {
+      "attribute_id": "gtin",
+      "label": "GTIN/UPC",
+      "status": "active"
+    },
+    {
+      "attribute_id": "name",
+      "label": "Product Name",
+      "status": "active"
+    },
+    {
+      "attribute_id": "slug",
+      "label": "URL Slug",
+      "status": "active"
+    },
+    {
+      "attribute_id": "brand",
+      "label": "Brand",
+      "status": "active"
+    },
+    {
+      "attribute_id": "category",
+      "label": "Category",
+      "status": "active"
+    },
+    {
+      "attribute_id": "class",
+      "label": "Class",
+      "status": "active"
+    },
+    {
+      "attribute_id": "department",
+      "label": "Department",
+      "status": "active"
+    },
+    {
+      "attribute_id": "rics_category",
+      "label": "RICS Category",
+      "status": "active"
+    },
+    {
+      "attribute_id": "website",
+      "label": "Websites (Multi-select)",
+      "status": "active"
+    },
+    {
+      "attribute_id": "product_is_active",
+      "label": "Product Is Active",
+      "status": "active"
+    },
+    {
+      "attribute_id": "status",
+      "label": "Status",
+      "status": "active"
+    },
+    {
+      "attribute_id": "launch_date",
+      "label": "Launch Date",
+      "status": "active"
+    },
+    {
+      "attribute_id": "kl_post_date",
+      "label": "KL Post Date",
+      "status": "active"
+    },
+    {
+      "attribute_id": "family_sizing",
+      "label": "Family Sizing",
+      "status": "active"
+    },
+    {
+      "attribute_id": "hype",
+      "label": "HYPE",
+      "status": "active"
+    },
+    {
+      "attribute_id": "first_received",
+      "label": "First Received",
+      "status": "active"
+    },
+    {
+      "attribute_id": "last_received",
+      "label": "Last Received",
+      "status": "active"
+    },
+    {
+      "attribute_id": "height",
+      "label": "Height",
+      "status": "active"
+    },
+    {
+      "attribute_id": "length",
+      "label": "Length",
+      "status": "active"
+    },
+    {
+      "attribute_id": "width",
+      "label": "Width",
+      "status": "active"
+    },
+    {
+      "attribute_id": "shoe_width",
+      "label": "Shoe Width",
+      "status": "active"
+    },
+    {
+      "attribute_id": "weight",
+      "label": "Weight (oz)",
+      "status": "active"
+    },
+    {
+      "attribute_id": "gender",
+      "label": "Gender",
+      "status": "active"
+    },
+    {
+      "attribute_id": "age_group",
+      "label": "Age Group",
+      "status": "active"
+    },
+    {
+      "attribute_id": "primary_color",
+      "label": "Primary Color",
+      "status": "active"
+    },
+    {
+      "attribute_id": "descriptive_color",
+      "label": "Descriptive Color",
+      "status": "active"
+    },
+    {
+      "attribute_id": "material",
+      "label": "Material(s)",
+      "status": "active"
+    },
+    {
+      "attribute_id": "outsole_material",
+      "label": "Outsole Material",
+      "status": "active"
+    },
+    {
+      "attribute_id": "closure_type",
+      "label": "Closure Type",
+      "status": "active"
+    },
+    {
+      "attribute_id": "cut_type",
+      "label": "Cut Type",
+      "status": "active"
+    },
+    {
+      "attribute_id": "fit",
+      "label": "Fit",
+      "status": "active"
+    },
+    {
+      "attribute_id": "heel_height",
+      "label": "Heel Height",
+      "status": "active"
+    },
+    {
+      "attribute_id": "platform_height",
+      "label": "Platform Height",
+      "status": "active"
+    },
+    {
+      "attribute_id": "heel_type",
+      "label": "Heel Type",
+      "status": "active"
+    },
+    {
+      "attribute_id": "shoe_height_map",
+      "label": "Shoe Height Map",
+      "status": "active"
+    },
+    {
+      "attribute_id": "made_in",
+      "label": "Made In",
+      "status": "active"
+    },
+    {
+      "attribute_id": "league",
+      "label": "League",
+      "status": "active"
+    },
+    {
+      "attribute_id": "sports_team",
+      "label": "Sports Team",
+      "status": "active"
+    },
+    {
+      "attribute_id": "collection_name",
+      "label": "Collection Name",
+      "status": "active"
+    },
+    {
+      "attribute_id": "fast_fashion",
+      "label": "Fast Fashion",
+      "status": "active"
+    },
+    {
+      "attribute_id": "tax_class",
+      "label": "Tax Class",
+      "status": "active"
+    },
+    {
+      "attribute_id": "description_shiekh",
+      "label": "Description – Shiekh.com",
+      "status": "active"
+    },
+    {
+      "attribute_id": "description_karmaloop",
+      "label": "Description – Karmaloop",
+      "status": "active"
+    },
+    {
+      "attribute_id": "description_mltd",
+      "label": "Description – MLTD",
+      "status": "active"
+    },
+    {
+      "attribute_id": "description_sangremia",
+      "label": "Description – Sangremia",
+      "status": "active"
+    },
+    {
+      "attribute_id": "meta_name",
+      "label": "Meta Name",
+      "status": "active"
+    },
+    {
+      "attribute_id": "meta_description",
+      "label": "Meta Description",
+      "status": "active"
+    },
+    {
+      "attribute_id": "keywords",
+      "label": "Keywords",
+      "status": "active"
+    },
+    {
+      "attribute_id": "rics_long_desc",
+      "label": "RICS Long Description",
+      "status": "active"
+    },
+    {
+      "attribute_id": "rics_short_description",
+      "label": "RICS Short Description",
+      "status": "active"
+    },
+    {
+      "attribute_id": "media_status",
+      "label": "Media Status",
+      "status": "active"
+    },
+    {
+      "attribute_id": "hide_image_date",
+      "label": "Hide Image Date",
+      "status": "active"
+    },
+    {
+      "attribute_id": "map",
+      "label": "MAP",
+      "status": "active"
+    },
+    {
+      "attribute_id": "promo",
+      "label": "Promo",
+      "status": "active"
+    },
+    {
+      "attribute_id": "custom_message",
+      "label": "Custom Message (Internal)",
+      "status": "active"
+    },
+    {
+      "attribute_id": "total_inv",
+      "label": "Total Inv",
+      "status": "active"
+    },
+    {
+      "attribute_id": "warehouse_inv",
+      "label": "WHS Inv",
+      "status": "active"
+    },
+    {
+      "attribute_id": "store_inv",
+      "label": "Store Inv",
+      "status": "active"
+    },
+    {
+      "attribute_id": "pattern",
+      "label": "Pattern",
+      "status": "active"
+    },
+    {
+      "attribute_id": "sustainable",
+      "label": "Sustainable",
+      "status": "active"
+    },
+    {
+      "attribute_id": "waterproof",
+      "label": "Waterproof",
+      "status": "active"
+    },
+    {
+      "attribute_id": "dept",
+      "label": "Department",
+      "status": "active"
+    }
+  ],
+  "in_both": [
+    "expedited_override_shipping",
+    "scom_regular_price",
+    "scom_sale_price",
+    "standard_shipping_override"
+  ]
+}
