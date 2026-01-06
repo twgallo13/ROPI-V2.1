@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "body": {
+    "success": true,
+    "readiness": {
+      "ready": true,
+      "completionPct": 80,
+      "threshold": 80,
+      "hasBlockingSites": false,
+      "blockingReasons": [],
+      "operatorExplanation": {
+        "summary": "Export ready: all 6 products meet requirements (min completion: 80%)",
+        "blockingIssues": [],
+        "completionBreakdown": [],
+        "siteStatus": [],
+        "actionRequired": []
+      },
+      "catalogStats": {
+        "totalProducts": 6,
+        "blockedByCompletionCount": 0,
+        "blockedBySiteCount": 0,
+        "readyCount": 6
+      },
+      "evaluationTimestamp": "2026-01-06T09:07:45.904Z",
+      "rulesVersion": 3
+    }
+  }
+}

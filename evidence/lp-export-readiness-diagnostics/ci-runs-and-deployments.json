@@ -1,0 +1,126 @@
+{
+  "ciRuns": [
+    {
+      "runId": 20743389686,
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20743389686",
+      "commit": "596a607e34135ad434fca9c23dc1e226d5645c2d",
+      "commitMessage": "fix: correct authHeaders import paths in merged code",
+      "conclusion": "success",
+      "createdAt": "2026-01-06T09:03:00Z",
+      "workflowName": "Deploy AOSS Staging",
+      "status": "completed",
+      "note": "First successful deployment after fixing import paths"
+    },
+    {
+      "runId": 20743401378,
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20743401378",
+      "commit": "90dfae4699d6b8dbd2f1a3199e287bca6782957d",
+      "commitMessage": "docs: HES D deployment failure incident report and recovery",
+      "conclusion": "success",
+      "createdAt": "2026-01-06T09:03:30Z",
+      "workflowName": "Deploy AOSS Staging",
+      "status": "completed"
+    },
+    {
+      "runId": 20743405351,
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20743405351",
+      "commit": "1676e287b1d82c20f426d1e1826016d7776187a9",
+      "commitMessage": "docs: quick reference summary for deployment fix",
+      "conclusion": "success",
+      "createdAt": "2026-01-06T09:03:41Z",
+      "workflowName": "Deploy AOSS Staging",
+      "status": "completed"
+    }
+  ],
+  "failedDeployments": [
+    {
+      "runId": 20743266446,
+      "commit": "2e908c0ce0e400abb2663ff777db7419481ab9c4",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T08:57:59Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    },
+    {
+      "runId": 20743268303,
+      "commit": "6b4b09f3b38374754a797ba64d847363c52c869a",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T08:58:04Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    },
+    {
+      "runId": 20743269965,
+      "commit": "77ec5eaee1ce7326f9fd517a89902478e5422d14",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T08:58:09Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    },
+    {
+      "runId": 20743271349,
+      "commit": "2f988a1190ab9f07a5b3966373a874ce1c7b0128",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T08:58:13Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    },
+    {
+      "runId": 20743287633,
+      "commit": "1642d9846456bbb0159b15b1364547872e2df1c1",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T08:58:55Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    },
+    {
+      "runId": 20743302066,
+      "commit": "243d2c94ea1cd6398ebf7665b968d53b4da624fb",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T08:59:32Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    },
+    {
+      "runId": 20743314566,
+      "commit": "531e709be5d1b9a125bd18fa7c5a90800066837f",
+      "conclusion": "failure",
+      "createdAt": "2026-01-06T09:00:02Z",
+      "error": "TypeScript compilation failure - missing/incorrect imports"
+    }
+  ],
+  "mergedPRs": [
+    {
+      "prNumber": 453,
+      "title": "fix(web): replace localStorage firebase_token with getAuthHeaders()",
+      "mergeCommit": "2e908c0ce0e400abb2663ff777db7419481ab9c4",
+      "mergedAt": "2026-01-06T22:00:00Z",
+      "mergeMethod": "squash"
+    },
+    {
+      "prNumber": 452,
+      "title": "fix: Allow boolean OR object for attribute.export field",
+      "mergeCommit": "6b4b09f3b38374754a797ba64d847363c52c869a",
+      "mergedAt": "2026-01-06T22:02:00Z",
+      "mergeMethod": "squash"
+    },
+    {
+      "prNumber": 451,
+      "title": "fix: Remove legacy ExportReadinessPanel from ProductEditorPage",
+      "mergeCommit": "77ec5eaee1ce7326f9fd517a89902478e5422d14",
+      "mergedAt": "2026-01-06T22:04:00Z",
+      "mergeMethod": "squash"
+    },
+    {
+      "prNumber": 454,
+      "title": "audit: SDK vs product attribute usage analysis",
+      "mergeCommit": "2f988a1190ab9f07a5b3966373a874ce1c7b0128",
+      "mergedAt": "2026-01-06T22:06:00Z",
+      "mergeMethod": "squash"
+    }
+  ],
+  "fixCommit": {
+    "sha": "596a607e34135ad434fca9c23dc1e226d5645c2d",
+    "message": "fix: correct authHeaders import paths in merged code",
+    "timestamp": "2026-01-06T09:03:00Z",
+    "files": [
+      "packages/web/src/components/product/CompletionExportGatePanel.tsx",
+      "packages/web/src/hooks/useProductCompletion.ts"
+    ]
+  },
+  "summary": "All 4 PRs merged successfully, but 7 deployments failed due to broken import paths introduced during merge. Fix commit 596a607 corrected the paths, and subsequent deployments succeeded."
+}
