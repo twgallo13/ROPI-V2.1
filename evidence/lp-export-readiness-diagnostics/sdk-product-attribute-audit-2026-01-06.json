@@ -1,0 +1,479 @@
+{
+  "audit_timestamp": "2026-01-06T08:27:36.129Z",
+  "lp": "LP-export-readiness-diagnostics-1.0.0",
+  "task": "HES B - Task 3",
+  "scope": "Sampled 32 products",
+  "summary": {
+    "sdk_registry_count": 69,
+    "product_attributes_found": 55,
+    "used_and_in_sdk": 41,
+    "used_not_in_sdk": 14,
+    "in_sdk_never_used": 28,
+    "delta": -14
+  },
+  "sdk_export_formats": {
+    "boolean": 0,
+    "object": 12,
+    "undefined": 57
+  },
+  "used_but_not_in_sdk": [
+    {
+      "attribute_id": "_meta",
+      "usage_count": 5,
+      "impact": "MEDIUM"
+    },
+    {
+      "attribute_id": "_normalizedAt",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "ageGroup",
+      "usage_count": 8,
+      "impact": "MEDIUM"
+    },
+    {
+      "attribute_id": "color",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "cushioning",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "descriptive.heelType",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "drawing",
+      "usage_count": 4,
+      "impact": "MEDIUM"
+    },
+    {
+      "attribute_id": "launch",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "overall",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "primaryColor",
+      "usage_count": 5,
+      "impact": "MEDIUM"
+    },
+    {
+      "attribute_id": "rics_color",
+      "usage_count": 25,
+      "impact": "HIGH"
+    },
+    {
+      "attribute_id": "silhouette",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "technical",
+      "usage_count": 1,
+      "impact": "LOW"
+    },
+    {
+      "attribute_id": "upper_material",
+      "usage_count": 1,
+      "impact": "LOW"
+    }
+  ],
+  "in_sdk_never_used": [
+    {
+      "attribute_id": "custom_message",
+      "label": "Custom Message (Internal)",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "dept",
+      "label": "Department",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "description_karmaloop",
+      "label": "Description – Karmaloop",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "description_mltd",
+      "label": "Description – MLTD",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "description_sangremia",
+      "label": "Description – Sangremia",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "description_shiekh",
+      "label": "Description – Shiekh.com",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "expedited_override_shipping",
+      "label": "Expedited Override Shipping",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "family_sizing",
+      "label": "Family Sizing",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "gtin",
+      "label": "GTIN/UPC",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "made_in",
+      "label": "Made In",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "map",
+      "label": "MAP",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "meta_description",
+      "label": "Meta Description",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "meta_name",
+      "label": "Meta Name",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "name",
+      "label": "Product Name",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "outsole_material",
+      "label": "Outsole Material",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "scom_regular_price",
+      "label": "SCOM Regular Price",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "scom_sale_price",
+      "label": "SCOM Sale Price",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "shoe_width",
+      "label": "Shoe Width",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "sku",
+      "label": "SKU",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "slug",
+      "label": "URL Slug",
+      "status": "active",
+      "required_for_export": true
+    },
+    {
+      "attribute_id": "standard_shipping_override",
+      "label": "Standard Shipping Override",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "status",
+      "label": "Status",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "store_inv",
+      "label": "Store Inv",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "style_id",
+      "label": "Style ID",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "sustainable",
+      "label": "Sustainable",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "total_inv",
+      "label": "Total Inv",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "warehouse_inv",
+      "label": "WHS Inv",
+      "status": "active",
+      "required_for_export": false
+    },
+    {
+      "attribute_id": "waterproof",
+      "label": "Waterproof",
+      "status": "active",
+      "required_for_export": false
+    }
+  ],
+  "used_and_in_sdk": [
+    {
+      "attribute_id": "age_group",
+      "usage_count": 15
+    },
+    {
+      "attribute_id": "brand",
+      "usage_count": 11
+    },
+    {
+      "attribute_id": "category",
+      "usage_count": 9
+    },
+    {
+      "attribute_id": "class",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "closure_type",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "collection_name",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "cut_type",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "department",
+      "usage_count": 12
+    },
+    {
+      "attribute_id": "descriptive_color",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "fast_fashion",
+      "usage_count": 9
+    },
+    {
+      "attribute_id": "first_received",
+      "usage_count": 2
+    },
+    {
+      "attribute_id": "fit",
+      "usage_count": 9
+    },
+    {
+      "attribute_id": "gender",
+      "usage_count": 11
+    },
+    {
+      "attribute_id": "heel_height",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "heel_type",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "height",
+      "usage_count": 1
+    },
+    {
+      "attribute_id": "hide_image_date",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "hype",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "keywords",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "kl_post_date",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "last_received",
+      "usage_count": 2
+    },
+    {
+      "attribute_id": "launch_date",
+      "usage_count": 3
+    },
+    {
+      "attribute_id": "league",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "length",
+      "usage_count": 1
+    },
+    {
+      "attribute_id": "material",
+      "usage_count": 9
+    },
+    {
+      "attribute_id": "media_status",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "mpn",
+      "usage_count": 9
+    },
+    {
+      "attribute_id": "pattern",
+      "usage_count": 1
+    },
+    {
+      "attribute_id": "platform_height",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "primary_color",
+      "usage_count": 9
+    },
+    {
+      "attribute_id": "product_is_active",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "promo",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "rics_category",
+      "usage_count": 25
+    },
+    {
+      "attribute_id": "rics_long_desc",
+      "usage_count": 25
+    },
+    {
+      "attribute_id": "rics_short_description",
+      "usage_count": 25
+    },
+    {
+      "attribute_id": "shoe_height_map",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "sports_team",
+      "usage_count": 8
+    },
+    {
+      "attribute_id": "tax_class",
+      "usage_count": 7
+    },
+    {
+      "attribute_id": "website",
+      "usage_count": 10
+    },
+    {
+      "attribute_id": "weight",
+      "usage_count": 10
+    },
+    {
+      "attribute_id": "width",
+      "usage_count": 10
+    }
+  ],
+  "top_10_most_used": [
+    {
+      "attribute_id": "rics_color",
+      "usage_count": 25,
+      "in_sdk": false
+    },
+    {
+      "attribute_id": "rics_long_desc",
+      "usage_count": 25,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "rics_category",
+      "usage_count": 25,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "rics_short_description",
+      "usage_count": 25,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "age_group",
+      "usage_count": 15,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "department",
+      "usage_count": 12,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "gender",
+      "usage_count": 11,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "brand",
+      "usage_count": 11,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "website",
+      "usage_count": 10,
+      "in_sdk": true
+    },
+    {
+      "attribute_id": "width",
+      "usage_count": 10,
+      "in_sdk": true
+    }
+  ]
+}

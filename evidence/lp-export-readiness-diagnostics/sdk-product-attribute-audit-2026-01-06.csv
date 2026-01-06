@@ -1,0 +1,84 @@
+attribute_id,location,usage_count,in_sdk,label,status,impact
+_meta,product_only,5,false,N/A,N/A,MEDIUM
+_normalizedAt,product_only,1,false,N/A,N/A,LOW
+ageGroup,product_only,8,false,N/A,N/A,MEDIUM
+color,product_only,1,false,N/A,N/A,LOW
+cushioning,product_only,1,false,N/A,N/A,LOW
+descriptive.heelType,product_only,1,false,N/A,N/A,LOW
+drawing,product_only,4,false,N/A,N/A,MEDIUM
+launch,product_only,1,false,N/A,N/A,LOW
+overall,product_only,1,false,N/A,N/A,LOW
+primaryColor,product_only,5,false,N/A,N/A,MEDIUM
+rics_color,product_only,25,false,N/A,N/A,HIGH
+silhouette,product_only,1,false,N/A,N/A,LOW
+technical,product_only,1,false,N/A,N/A,LOW
+upper_material,product_only,1,false,N/A,N/A,LOW
+custom_message,sdk_only,0,true,Custom Message (Internal),active,LOW
+dept,sdk_only,0,true,Department,active,LOW
+description_karmaloop,sdk_only,0,true,Description – Karmaloop,active,LOW
+description_mltd,sdk_only,0,true,Description – MLTD,active,LOW
+description_sangremia,sdk_only,0,true,Description – Sangremia,active,LOW
+description_shiekh,sdk_only,0,true,Description – Shiekh.com,active,LOW
+expedited_override_shipping,sdk_only,0,true,Expedited Override Shipping,active,LOW
+family_sizing,sdk_only,0,true,Family Sizing,active,LOW
+gtin,sdk_only,0,true,GTIN/UPC,active,LOW
+made_in,sdk_only,0,true,Made In,active,LOW
+map,sdk_only,0,true,MAP,active,LOW
+meta_description,sdk_only,0,true,Meta Description,active,LOW
+meta_name,sdk_only,0,true,Meta Name,active,LOW
+name,sdk_only,0,true,Product Name,active,LOW
+outsole_material,sdk_only,0,true,Outsole Material,active,LOW
+scom_regular_price,sdk_only,0,true,SCOM Regular Price,active,LOW
+scom_sale_price,sdk_only,0,true,SCOM Sale Price,active,LOW
+shoe_width,sdk_only,0,true,Shoe Width,active,LOW
+sku,sdk_only,0,true,SKU,active,LOW
+slug,sdk_only,0,true,URL Slug,active,LOW
+standard_shipping_override,sdk_only,0,true,Standard Shipping Override,active,LOW
+status,sdk_only,0,true,Status,active,LOW
+store_inv,sdk_only,0,true,Store Inv,active,LOW
+style_id,sdk_only,0,true,Style ID,active,LOW
+sustainable,sdk_only,0,true,Sustainable,active,LOW
+total_inv,sdk_only,0,true,Total Inv,active,LOW
+warehouse_inv,sdk_only,0,true,WHS Inv,active,LOW
+waterproof,sdk_only,0,true,Waterproof,active,LOW
+age_group,both,15,true,Age Group,active,N/A
+brand,both,11,true,Brand,active,N/A
+category,both,9,true,Category,active,N/A
+class,both,8,true,Class,active,N/A
+closure_type,both,8,true,Closure Type,active,N/A
+collection_name,both,8,true,Collection Name,active,N/A
+cut_type,both,7,true,Cut Type,active,N/A
+department,both,12,true,Department,active,N/A
+descriptive_color,both,7,true,Descriptive Color,active,N/A
+fast_fashion,both,9,true,Fast Fashion,active,N/A
+first_received,both,2,true,First Received,active,N/A
+fit,both,9,true,Fit,active,N/A
+gender,both,11,true,Gender,active,N/A
+heel_height,both,8,true,Heel Height,active,N/A
+heel_type,both,7,true,Heel Type,active,N/A
+height,both,1,true,Height,active,N/A
+hide_image_date,both,7,true,Hide Image Date,active,N/A
+hype,both,7,true,HYPE,active,N/A
+keywords,both,7,true,Keywords,active,N/A
+kl_post_date,both,8,true,KL Post Date,active,N/A
+last_received,both,2,true,Last Received,active,N/A
+launch_date,both,3,true,Launch Date,active,N/A
+league,both,8,true,League,active,N/A
+length,both,1,true,Length,active,N/A
+material,both,9,true,Material(s),active,N/A
+media_status,both,7,true,Media Status,active,N/A
+mpn,both,9,true,MPN,active,N/A
+pattern,both,1,true,Pattern,active,N/A
+platform_height,both,7,true,Platform Height,active,N/A
+primary_color,both,9,true,Primary Color,active,N/A
+product_is_active,both,7,true,Product Is Active,active,N/A
+promo,both,7,true,Promo,active,N/A
+rics_category,both,25,true,RICS Category,active,N/A
+rics_long_desc,both,25,true,RICS Long Description,active,N/A
+rics_short_description,both,25,true,RICS Short Description,active,N/A
+shoe_height_map,both,7,true,Shoe Height Map,active,N/A
+sports_team,both,8,true,Sports Team,active,N/A
+tax_class,both,7,true,Tax Class,active,N/A
+website,both,10,true,Websites (Multi-select),active,N/A
+weight,both,10,true,Weight (oz),active,N/A
+width,both,10,true,Width,active,N/A
