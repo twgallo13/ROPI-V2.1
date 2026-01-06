@@ -1,0 +1,162 @@
+# Evidence: Auth Middleware Excerpt
+# LP: LP-export-readiness-diagnostics-1.0.0
+# Task: 1 - Auth/401 Readiness Endpoint Investigation
+# Date: 2026-01-06
+
+## File: packages/api/src/middleware/auth.ts
+
+### Key Auth Functions
+
+#### 1. verifyAuthToken (lines 64-113)
+```typescript
+export async function verifyAuthToken(req: ExpressRequest): Promise<AuthContext | null> {
+  // Extract token from Authorization header
+  const authHeader = req.headers.authorization;
+  let token: string | null = null;
+  let tokenSource: string = 'none';
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    tokenSource = 'header';
+  } else {
+    // Cookie fallback for browser flows
+    const cookies = req.cookies || {};
+    if (cookies.__session) {
+      token = cookies.__session;
+      tokenSource = 'cookie';
+    }
+  }
+  
+  if (!token) {
+    // ... returns null → triggers 401
+  }
+  
+  // Verify token with Firebase Admin
+  const decodedToken = await admin.auth().verifyIdToken(token);
+  return {
+    uid: decodedToken.uid,
+    email: decodedToken.email,
+    role: decodedToken.role as string | undefined,
+    roles: decodedToken.roles as string[] | undefined,
+    emailVerified: decodedToken.email_verified || false,
+  };
+}
+```
+
+#### 2. isAdmin (lines 56-62)
+```typescript
+export function isAdmin(auth: AuthContext): boolean {
+  if (isAdminRole(auth.role)) {
+    return true;
+  }
+  return Array.isArray(auth.roles) && auth.roles.includes(ROPI_ROLES.ADMIN);
+}
+```
+
+#### 3. requireAdmin middleware (lines 171-211)
+```typescript
+export async function requireAdmin(
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: () => void
+): Promise<void> {
+  const auth = await verifyAuthToken(req);
+  
+  if (!auth) {
+    res.status(401).json({
+      error: 'INVALID_AUTH_TOKEN',
+      reason: 'missing_or_invalid_token',
+      message: 'Valid authentication token required...'
+    });
+    return;
+  }
+  
+  const hasAdminClaim = isAdmin(auth);
+  const hasAdminAllowlist = hasAdminClaim ? false : await isAdminAllowlisted(auth.email);
+
+  if (!hasAdminClaim && !hasAdminAllowlist) {
+    res.status(403).json({
+      error: 'Forbidden',
+      message: 'Admin role required for this operation',
+    });
+    return;
+  }
+  
+  (req as AuthenticatedRequest).auth = auth;
+  next();
+}
+```
+
+### Token Sources (Priority Order)
+1. `Authorization: Bearer <token>` header (preferred)
+2. `__session` cookie (Firebase Hosting convention)
+
+### Admin Check Logic
+1. Check `auth.role` via `isAdminRole()` function
+2. Check `auth.roles[]` array includes 'admin'
+3. Fallback to Firestore allow-list (`metadata/admins` document)
+
+### Error Responses
+| HTTP | Error Code | Reason | Cause |
+|------|------------|--------|-------|
+| 401 | INVALID_AUTH_TOKEN | missing_or_invalid_token | No token or token verification failed |
+| 403 | Forbidden | - | Token valid but no admin role |
+
+## Frontend Token Attachment
+
+### useExportCompletion.ts (lines 88-102)
+```typescript
+async function fetchExportCompletion(): Promise<CompletionEvaluationResult | null> {
+  const token = localStorage.getItem('firebase_token') || '';
+
+  const response = await fetch('/api/admin/exports/readiness', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  // ...
+}
+```
+
+### CRITICAL BUG FOUND: firebase_token Never Written
+
+**Files that READ `localStorage.getItem('firebase_token')`:**
+1. `packages/web/src/hooks/useExportCompletion.ts:96`
+2. `packages/web/src/hooks/useProductCompletion.ts:64`
+3. `packages/web/src/pages/ExportPage.tsx:36`
+4. `packages/web/src/components/product/CompletionExportGatePanel.tsx:54`
+
+**Files that WRITE `localStorage.setItem('firebase_token', ...)`:**
+- **NONE** - grep search across entire codebase returned no matches
+
+### Root Cause Analysis
+
+The code reads `firebase_token` from localStorage, but this key is **never written**.
+Result: `localStorage.getItem('firebase_token')` always returns `null`.
+With the `|| ''` fallback, this becomes an empty string.
+The Authorization header becomes: `Bearer ` (no token).
+Server receives empty Bearer token → 401 Unauthorized.
+
+### Verification Commands Used
+```bash
+cd /workspaces/ROPI-V2.1 && git grep -n "setItem.*firebase_token" --include='*.ts' --include='*.tsx' --include='*.js'
+# Result: NO MATCHES
+
+cd /workspaces/ROPI-V2.1 && grep -rn "firebase_token" packages/web/src/
+# Result: Only getItem calls, no setItem calls
+```
+
+### Correct Approach (in authHeaders.ts)
+```typescript
+const auth = getAuth();
+const idToken = await auth.currentUser.getIdToken(true);
+return { Authorization: `Bearer ${idToken}` };
+```
+
+### Fix Required
+Replace all `localStorage.getItem('firebase_token')` usages with proper
+`getAuthHeaders()` calls or inline `getAuth().currentUser?.getIdToken(true)`.
+
+This is a **blocking bug** for users without cached token from legacy code.

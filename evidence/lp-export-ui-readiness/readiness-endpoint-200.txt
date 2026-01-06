@@ -1,0 +1,43 @@
+Creating admin token...
+Exchanging for ID token...
+
+=== Testing GET /api/admin/exports/readiness ===
+
+HTTP Status: 200
+
+Response Body:
+{
+  "success": true,
+  "readiness": {
+    "ready": true,
+    "completionPct": 80,
+    "threshold": 80,
+    "hasBlockingSites": false,
+    "blockingReasons": [],
+    "operatorExplanation": {
+      "summary": "Export ready: all 6 products meet requirements (min completion: 80%)",
+      "blockingIssues": [],
+      "completionBreakdown": [],
+      "siteStatus": [],
+      "actionRequired": []
+    },
+    "catalogStats": {
+      "totalProducts": 6,
+      "blockedByCompletionCount": 0,
+      "blockedBySiteCount": 0,
+      "readyCount": 6
+    },
+    "evaluationTimestamp": "2026-01-06T07:24:01.907Z",
+    "rulesVersion": 3
+  }
+}
+
+=== Field Verification ===
+- ready: true
+- completionPct: 80
+- threshold: 80
+- hasBlockingSites: false
+- blockingReasons count: 0
+- siteStatus count: 0
+
+=== Site Status ===

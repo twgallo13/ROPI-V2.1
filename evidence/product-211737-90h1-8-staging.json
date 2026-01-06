@@ -1,0 +1,12 @@
+[eval]:26
+    hasAttributes: cd /workspaces/ROPI-V2.1 && node scripts/fetch-product-211737.js 2>&1 | tee /tmp/product-211737-90h1-8-staging.jsondata.attributes,
+                                         ^^
+Expected ',', got 'numeric literal (0.1, .1)'
+
+SyntaxError: Unexpected number
+    at makeContextifyScript (node:internal/vm:194:14)
+    at compileScript (node:internal/process/execution:388:10)
+    at evalTypeScript (node:internal/process/execution:260:22)
+    at node:internal/main/eval_string:71:3
+
+Node.js v24.12.0

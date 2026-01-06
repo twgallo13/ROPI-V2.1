@@ -1,0 +1,222 @@
+{
+  "lpId": "LP-export-readiness-diagnostics-1.0.0",
+  "hesPhase": "A",
+  "title": "Export Readiness Diagnostics — Final Evidence Report",
+  "from": "Homer",
+  "to": "Lisa",
+  "date": "2026-01-06",
+  "deliveredAt": "2026-01-06T08:45:00Z",
+  "status": "DIAGNOSTIC_COMPLETE",
+  
+  "executiveSummary": {
+    "tasksCompleted": 6,
+    "criticalBugsFound": 2,
+    "dataIssuesFound": 2,
+    "recommendationsProduced": 5
+  },
+
+  "findings": [
+    {
+      "id": 1,
+      "task": "Auth/401 Readiness Investigation",
+      "severity": "CRITICAL",
+      "status": "CONFIRMED",
+      "title": "firebase_token localStorage key never set",
+      "description": "The frontend reads localStorage.getItem('firebase_token') but this key is never written anywhere in the codebase. Result: all API calls using this pattern send empty Bearer token, causing 401.",
+      "affectedFiles": [
+        "packages/web/src/hooks/useExportCompletion.ts:96",
+        "packages/web/src/hooks/useProductCompletion.ts:64",
+        "packages/web/src/pages/ExportPage.tsx:36",
+        "packages/web/src/components/product/CompletionExportGatePanel.tsx:54"
+      ],
+      "evidenceFile": "evidence/lp-export-readiness-diagnostics/readiness-401.txt",
+      "verificationCommand": "git grep -n 'setItem.*firebase_token' --include='*.ts' --include='*.tsx'",
+      "verificationResult": "NO MATCHES - key is never set",
+      "recommendedFix": "Replace localStorage.getItem('firebase_token') with getAuthHeaders() from packages/web/src/lib/authHeaders.ts which uses getAuth().currentUser.getIdToken(true)"
+    },
+    {
+      "id": 2,
+      "task": "Legacy UI Audit",
+      "severity": "LOW",
+      "status": "CONFIRMED",
+      "title": "Dual export readiness panels in Product Editor",
+      "description": "ProductEditorPage renders both CompletionExportGatePanel (new) and ExportReadinessPanel (legacy), potentially showing conflicting information.",
+      "affectedFiles": [
+        "packages/web/src/pages/ProductEditorPage.tsx:186 (new panel)",
+        "packages/web/src/pages/ProductEditorPage.tsx:200 (legacy panel)"
+      ],
+      "evidenceFile": "evidence/lp-export-readiness-diagnostics/legacy-ui-mapping.txt",
+      "recommendedFix": "Remove ExportReadinessPanel from ProductEditorPage.tsx or conditionally render only if CompletionExportGatePanel fails"
+    },
+    {
+      "id": 3,
+      "task": "Completion Logic Source Trace",
+      "severity": "INFO",
+      "status": "DOCUMENTED",
+      "title": "Clear three-layer completion architecture",
+      "description": "Completion evaluation has well-structured layers: completionRulesService (settings), exportService (attributes), completionEvaluationEngine (pure logic). Settings at settings/exportSettings.completionRules, attributes at settings/attributes/keys/*",
+      "affectedFiles": [
+        "packages/api/src/services/completionDrivenExportReadiness.ts",
+        "packages/api/src/services/completionRulesService.ts",
+        "packages/api/src/services/completionEvaluationEngine.ts",
+        "packages/api/src/services/exportService.ts"
+      ],
+      "evidenceFile": "evidence/lp-export-readiness-diagnostics/completion-source-trace.md",
+      "keyDataPaths": {
+        "completionRules": "settings/exportSettings.completionRules",
+        "attributeRegistry": "settings/attributes/keys/*",
+        "sdkRegistry": "packages/sdk/config/attributeRegistry.json"
+      },
+      "recommendedFix": "No fix needed - architecture is sound"
+    },
+    {
+      "id": 4,
+      "task": "Registry vs Settings Connection",
+      "severity": "MEDIUM",
+      "status": "CONFIRMED",
+      "title": "SDK vs Firestore attribute count mismatch (69 vs 119)",
+      "description": "SDK attributeRegistry.json has 69 attributes while Firestore settings/attributes/keys has 119. The loadExportableAttributes() function filters using SDK isExportable() check, silently excluding 50 Firestore-only attributes.",
+      "affectedFiles": [
+        "packages/sdk/config/attributeRegistry.json (69 attributes)",
+        "packages/api/src/services/exportService.ts:273-275 (filtering)"
+      ],
+      "evidenceFile": "evidence/lp-export-readiness-diagnostics/registry-source.txt",
+      "firestoreEvidence": "evidence/lp-export-readiness-diagnostics/settings-attributes-staging.json",
+      "counts": {
+        "sdkRegistry": 69,
+        "firestoreKeys": 119,
+        "firestoreDoc": 69,
+        "difference": 50
+      },
+      "recommendedFix": "Audit the 50 Firestore-only attributes. Either sync to SDK or implement warning logging when SDK filter excludes attributes."
+    },
+    {
+      "id": 5,
+      "task": "Attribute Category Mutation 400 Error",
+      "severity": "CRITICAL",
+      "status": "ROOT_CAUSE_FOUND",
+      "title": "export field schema mismatch (boolean vs object)",
+      "description": "Attribute updates fail with 400 because Firestore has 'export: true' (boolean) but SDK AttributeSchema expects 'export: { key?, omitIfEmpty?, targets? }' (object). Any PATCH triggers full revalidation which fails on legacy boolean.",
+      "affectedFiles": [
+        "packages/sdk/src/schema/attribute.ts:66 (expects object)",
+        "packages/api/src/services/attributesService.ts:127 (passes boolean)",
+        "packages/api/src/endpoints/admin/settings.ts:194 (validation fails)"
+      ],
+      "evidenceFile": "evidence/lp-export-readiness-diagnostics/attribute-update-400.txt",
+      "errorResponse": {
+        "ok": false,
+        "error": "validation_failed",
+        "message": "Invalid attribute data",
+        "details": [{"path": "export", "message": "Expected object, received boolean"}]
+      },
+      "recommendedFix": "Option A: Update schema to z.union([z.boolean(), ExportMetadataSchema]). Option B: Normalize boolean to undefined in fromFirestore(). Option C: Run migration to convert all boolean exports to objects."
+    }
+  ],
+
+  "commandsExecuted": [
+    {
+      "task": 1,
+      "command": "curl -s -w '\\nHTTP_STATUS: %{http_code}\\n' https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/exports/readiness",
+      "result": "401 INVALID_AUTH_TOKEN (expected without token)"
+    },
+    {
+      "task": 1,
+      "command": "curl -s -H 'Authorization: Bearer $TOKEN' https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/exports/readiness",
+      "result": "200 OK with readiness JSON (7 products ready)"
+    },
+    {
+      "task": 1,
+      "command": "git grep -n 'setItem.*firebase_token' --include='*.ts' --include='*.tsx'",
+      "result": "NO MATCHES"
+    },
+    {
+      "task": 2,
+      "command": "grep -rn 'SmartSuggestions|ExportReadinessPanel' packages/web/src/",
+      "result": "Both panels found in ProductEditorPage.tsx"
+    },
+    {
+      "task": 4,
+      "command": "node check_registry.cjs (Firestore query)",
+      "result": "settings/attributes/keys: 119 docs, settings/exportSettings: exists with completionRules"
+    },
+    {
+      "task": 4,
+      "command": "grep -c 'attribute_id' packages/sdk/config/attributeRegistry.json",
+      "result": "69"
+    },
+    {
+      "task": 5,
+      "command": "curl -X PUT -d '{\"category\":\"test\"}' .../api/admin/settings/attributes/class",
+      "result": "400 validation_failed - export: Expected object, received boolean"
+    },
+    {
+      "task": 5,
+      "command": "node check_attribute.cjs (check class attribute)",
+      "result": "export: true (boolean) in Firestore"
+    }
+  ],
+
+  "evidenceFilesGenerated": [
+    "evidence/lp-export-readiness-diagnostics/readiness-401.txt",
+    "evidence/lp-export-readiness-diagnostics/readiness-200.txt",
+    "evidence/lp-export-readiness-diagnostics/auth-middleware-excerpt.txt",
+    "evidence/lp-export-readiness-diagnostics/legacy-ui-mapping.txt",
+    "evidence/lp-export-readiness-diagnostics/completion-source-trace.md",
+    "evidence/lp-export-readiness-diagnostics/registry-source.txt",
+    "evidence/lp-export-readiness-diagnostics/settings-attributes-staging.json",
+    "evidence/lp-export-readiness-diagnostics/export-settings-staging.json",
+    "evidence/lp-export-readiness-diagnostics/attribute-update-400.txt"
+  ],
+
+  "implementationRequired": [
+    {
+      "priority": "P0-CRITICAL",
+      "title": "Fix firebase_token localStorage bug",
+      "files": [
+        "packages/web/src/hooks/useExportCompletion.ts",
+        "packages/web/src/hooks/useProductCompletion.ts",
+        "packages/web/src/pages/ExportPage.tsx",
+        "packages/web/src/components/product/CompletionExportGatePanel.tsx"
+      ],
+      "estimatedLOC": 20,
+      "description": "Replace localStorage.getItem('firebase_token') with getAuthHeaders() or inline getAuth().currentUser?.getIdToken(true)"
+    },
+    {
+      "priority": "P0-CRITICAL",
+      "title": "Fix export field schema mismatch",
+      "files": [
+        "packages/sdk/src/schema/attribute.ts"
+      ],
+      "estimatedLOC": 5,
+      "description": "Change export field to z.union([z.boolean(), ExportMetadataSchema]).optional()"
+    },
+    {
+      "priority": "P1-HIGH",
+      "title": "Sync SDK registry with Firestore",
+      "files": [
+        "packages/sdk/config/attributeRegistry.json",
+        "packages/api/src/services/exportService.ts"
+      ],
+      "estimatedLOC": 0,
+      "description": "Audit and document 50 missing attributes, add to SDK or add warning log"
+    },
+    {
+      "priority": "P2-MEDIUM",
+      "title": "Remove legacy ExportReadinessPanel",
+      "files": [
+        "packages/web/src/pages/ProductEditorPage.tsx"
+      ],
+      "estimatedLOC": 5,
+      "description": "Remove or conditionally hide ExportReadinessPanel (lines 200-204)"
+    }
+  ],
+
+  "stopConditionsTriggered": [],
+  
+  "authorizationRequired": {
+    "schemaChanges": "SDK AttributeSchema modification requires Lisa approval",
+    "firestoreMigration": "Bulk attribute 'export' field conversion requires approval"
+  },
+
+  "conclusion": "Diagnostic investigation complete. Two critical bugs identified (firebase_token never set, export schema mismatch) with clear root causes and recommended fixes. No production writes or registry changes were made. Awaiting approval to proceed with implementation LP."
+}

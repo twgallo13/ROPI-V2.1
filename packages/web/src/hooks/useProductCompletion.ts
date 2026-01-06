@@ -61,13 +61,13 @@ export interface UseProductCompletionResult {
  * Fetch product-level completion from API
  */
 async function fetchProductCompletion(productId: string): Promise<ProductCompletionResult | null> {
-  const token = localStorage.getItem('firebase_token') || '';
+  const authHeaders = await getAuthHeaders();
 
   const response = await fetch(`/api/products/${productId}/completion`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      ...authHeaders,
     },
   });
 

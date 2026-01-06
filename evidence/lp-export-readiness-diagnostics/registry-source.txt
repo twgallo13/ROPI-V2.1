@@ -1,0 +1,198 @@
+# Evidence: Registry vs Settings Connection
+# LP: LP-export-readiness-diagnostics-1.0.0
+# Task: 4 - Registry vs Settings Connection
+# Date: 2026-01-06
+
+## Summary
+
+The system has **THREE separate attribute stores**, with different counts and purposes:
+
+| Store | Location | Count | Purpose |
+|-------|----------|-------|---------|
+| SDK Registry | `packages/sdk/config/attributeRegistry.json` | 69 attributes | Static, version-controlled |
+| Firestore Keys | `settings/attributes/keys/*` | 119 documents | Dynamic, includes runtime metadata |
+| Firestore Doc | `settings/attributes` | 69 fields | Legacy flat structure |
+
+---
+
+## Firestore Query Results
+
+### settings/attributes (Document)
+- **Exists**: true
+- **Field count**: 69
+- **Structure**: Flat object with attribute_id as keys
+- **Sample fields**: `total_inv`, `mpn`, `league`, `primary_color`, `category`, etc.
+
+### settings/attributes/keys (Subcollection)
+- **Document count**: 119
+- **Structure**: Each doc is an attribute definition
+- **Sample docs**: `_meta`, `_migratedAt`, `_migratedVersion`, `_normalizedAt`, `a_i_generated.descriptionBlocks`
+
+### settings/exportSettings
+- **Exists**: true
+- **Fields**: `completionRules`
+- **completionRules.schemaVersion**: 1.0.0
+- **completionRules.rulesVersion**: 3
+- **completionRules.exportUnlockThresholdPct**: 80
+- **completionRules.segments**: 3 configured segments
+
+---
+
+## Commands Used
+
+```bash
+cd /workspaces/ROPI-V2.1 && node check_registry.cjs
+# Output:
+# settings/attributes exists: true
+# settings/attributes/keys count: 119
+# settings/exportSettings exists: true
+# completionRules.exportUnlockThresholdPct: 80
+# completionRules.segments count: 3
+
+# Count SDK attributes
+cat packages/sdk/config/attributeRegistry.json | grep -c "attribute_id"
+# Output: 69
+```
+
+---
+
+## Data Source Analysis
+
+### SDK Registry (Static)
+**File**: `packages/sdk/config/attributeRegistry.json`
+**Count**: 69 attributes
+
+Used by SDK helper functions:
+- `isExportable(id)` - Check exportability
+- `isInternalOnly(id)` - Check internal-only flag
+- `getAttributesForTarget(target)` - Channel-specific filtering
+
+### Firestore Keys (Dynamic)
+**Path**: `settings/attributes/keys/{attributeId}`
+**Count**: 119 documents
+
+Loaded by `attributeValidator.loadRegistryMap()` for:
+- Import validation
+- Export attribute resolution
+- Runtime attribute lookups
+
+### Firestore Doc (Legacy)
+**Path**: `settings/attributes`
+**Count**: 69 fields
+
+Appears to be a legacy flat structure, possibly pre-migration format.
+Not actively used by completion engine.
+
+---
+
+## Count Discrepancy Analysis
+
+| Source | Count | Notes |
+|--------|-------|-------|
+| SDK Registry | 69 | Version-controlled |
+| Firestore Keys | 119 | Includes runtime metadata (_meta, _migratedAt, etc.) |
+| Firestore Doc | 69 | Legacy flat structure |
+
+**Difference**: 119 - 69 = 50 extra documents in Firestore keys
+
+Extra documents include:
+- Migration metadata: `_meta`, `_migratedAt`, `_migratedVersion`, `_normalizedAt`
+- AI-generated: `a_i_generated.descriptionBlocks`
+- Runtime-created attributes from imports
+
+---
+
+## Completion Engine Data Flow
+
+```
+completionDrivenExportReadiness.ts
+       │
+       ▼
+loadAttributeRegistryForCompletion()
+       │
+       ▼
+loadExportableAttributes()  [exportService.ts]
+       │
+       ├─► loadRegistryMap()  [attributeValidator.ts]
+       │         │
+       │         ▼
+       │   Firestore: settings/attributes/keys/*
+       │         │
+       │         ▼
+       │   Map<string, AttributeDefinition>
+       │
+       └─► isExportable(id)  [SDK]
+                 │
+                 ▼
+           SDK: attributeRegistry.json
+```
+
+### Issue Identified
+
+The `loadExportableAttributes()` function:
+1. Loads ALL 119 attributes from Firestore
+2. Filters using `isExportable(id)` from SDK (which only knows 69)
+3. Attributes in Firestore but NOT in SDK are filtered out!
+
+This means **50 Firestore-only attributes are silently excluded** from exports.
+
+---
+
+## Completion Rules Source
+
+**Path**: `settings/exportSettings.completionRules`
+
+### Current Configuration (Staging)
+```json
+{
+  "schemaVersion": "1.0.0",
+  "rulesVersion": 3,
+  "exportUnlockThresholdPct": 80,
+  "segments": [/* 3 segments */]
+}
+```
+
+Rules are loaded by `completionRulesService.loadCompletionRules()`.
+
+---
+
+## Findings
+
+### Finding 1: SDK vs Firestore Mismatch
+- SDK has 69 attributes
+- Firestore has 119 attributes
+- 50 attributes exist only in Firestore
+
+### Finding 2: Silent Filtering
+The `isExportable(id)` SDK check silently filters out attributes not in SDK.
+This may cause:
+- Missing required attributes in completion evaluation
+- Inconsistent export column lists
+- Attributes visible in UI but not in exports
+
+### Finding 3: No Sync Mechanism
+There is no automatic sync between SDK registry and Firestore.
+They can diverge without warning.
+
+---
+
+## Recommendation (for follow-up LP)
+
+1. **Audit attribute mismatch**
+   - List 50 attributes in Firestore not in SDK
+   - Determine if they should be added to SDK or removed from Firestore
+
+2. **Consider single source of truth**
+   - Either SDK-only (version-controlled) OR Firestore-only (dynamic)
+   - Not both with filtering
+
+3. **Add validation/warning**
+   - Log warning when Firestore attribute not found in SDK
+   - Prevent silent data loss
+
+---
+
+## Evidence Files Generated
+
+- `evidence/lp-export-readiness-diagnostics/settings-attributes-staging.json` (69 fields)
+- `evidence/lp-export-readiness-diagnostics/export-settings-staging.json` (completionRules)

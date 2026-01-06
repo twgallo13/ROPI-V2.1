@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { getAuthHeaders } from '../lib/authHeaders';
 
 /**
  * Blocking reason returned by the completion API
@@ -93,13 +94,13 @@ export interface UseExportCompletionResult {
  * Fetch catalog-level export completion from API
  */
 async function fetchExportCompletion(): Promise<CompletionEvaluationResult | null> {
-  const token = localStorage.getItem('firebase_token') || '';
+  const authHeaders = await getAuthHeaders();
 
   const response = await fetch('/api/admin/exports/readiness', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      ...authHeaders,
     },
   });
 

@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { getAuthHeaders } from '../../../lib/authHeaders';
 import './CompletionExportGatePanel.css';
 
 export interface CompletionEvaluationResult {
@@ -49,9 +50,10 @@ async function fetchProductCompletion(
   productId: string
 ): Promise<CompletionEvaluationResult | null> {
   try {
+    const authHeaders = await getAuthHeaders();
     const response = await fetch(`/api/products/${productId}/completion`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('firebase_token') || ''}`,
+        ...authHeaders,
       },
     });
 

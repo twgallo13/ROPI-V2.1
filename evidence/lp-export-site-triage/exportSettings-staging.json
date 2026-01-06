@@ -1,0 +1,112 @@
+=== settings/exportSettings ===
+{
+  "completionRules": {
+    "builtInSegments": {
+      "core-attributes": {
+        "lockedSemantics": true,
+        "segmentId": "core-attributes"
+      },
+      "media-attributes": {
+        "segmentId": "media-attributes",
+        "lockedSemantics": false
+      },
+      "seo-attributes": {
+        "lockedSemantics": false,
+        "segmentId": "seo-attributes"
+      },
+      "description-seo": {
+        "segmentId": "description-seo",
+        "lockedSemantics": true
+      }
+    },
+    "exclusions": {
+      "pricing": {
+        "affectsCompletion": false,
+        "reason": "Pricing managed by ERP integration"
+      },
+      "media": {
+        "reason": "Media completion tracked separately",
+        "affectsCompletion": false
+      }
+    },
+    "exportUnlockThresholdPct": 80,
+    "updatedBy": "homer-media-disable-2026-01-04",
+    "schemaVersion": "1.0.0",
+    "rulesVersion": 3,
+    "updatedAt": "2026-01-04T23:48:11.666Z",
+    "segments": [
+      {
+        "name": "Core Product Attributes",
+        "id": "core-attributes",
+        "ruleType": "ALL_REQUIRED",
+        "attributeSelector": {
+          "source": "REGISTRY",
+          "categories": [
+            "classification"
+          ],
+          "requirementFlag": "required_for_completion",
+          "siteAware": false,
+          "includeInternalOnly": true,
+          "excludeAttributeIds": [],
+          "staticAttributeIds": []
+        },
+        "weightPct": 80,
+        "enabled": true,
+        "appliesTo": {
+          "mode": "ALL_PRODUCTS",
+          "sites": []
+        }
+      },
+      {
+        "name": "SEO & Marketing",
+        "enabled": true,
+        "weightPct": 20,
+        "ruleType": "ALL_REQUIRED",
+        "appliesTo": {
+          "mode": "CONDITIONAL",
+          "sites": [
+            "shiekh",
+            "karmaloop",
+            "mltd"
+          ]
+        },
+        "id": "seo-attributes",
+        "attributeSelector": {
+          "source": "REGISTRY",
+          "categories": [
+            "description"
+          ],
+          "requirementFlag": "required_for_export",
+          "siteAware": true,
+          "includeInternalOnly": false,
+          "excludeAttributeIds": [],
+          "staticAttributeIds": []
+        }
+      },
+      {
+        "enabled": false,
+        "id": "media-attributes",
+        "attributeSelector": {
+          "source": "STATIC",
+          "categories": [],
+          "requirementFlag": "",
+          "siteAware": false,
+          "includeInternalOnly": false,
+          "excludeAttributeIds": [],
+          "staticAttributeIds": [
+            "primary_image",
+            "images",
+            "hero_image"
+          ]
+        },
+        "name": "Media & Images",
+        "appliesTo": {
+          "mode": "ALL_PRODUCTS",
+          "sites": []
+        },
+        "ruleType": "ANY_REQUIRED",
+        "weightPct": 0
+      }
+    ]
+  }
+}

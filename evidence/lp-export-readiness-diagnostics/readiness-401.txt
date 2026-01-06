@@ -1,0 +1,82 @@
+# Evidence: Readiness Endpoint 401 Response
+# LP: LP-export-readiness-diagnostics-1.0.0
+# Task: 1 - Auth/401 Readiness Endpoint Investigation
+# Date: 2026-01-06
+
+## Command Run
+```bash
+curl -s -w '\nHTTP_STATUS: %{http_code}\n' \
+  https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/exports/readiness
+```
+
+## Response
+```json
+{
+  "error": "INVALID_AUTH_TOKEN",
+  "reason": "missing_or_invalid_token",
+  "message": "Valid authentication token required. Include Authorization: Bearer <token> header or __session cookie."
+}
+```
+
+## HTTP Status
+401
+
+## Analysis
+
+The 401 response is **correct and expected behavior** when no authentication is provided.
+
+### Auth Flow Trace
+
+1. **Backend middleware**: `packages/api/src/middleware/auth.ts:171-189` (requireAdmin)
+   - Calls `verifyAuthToken(req)` to extract token
+   - Checks `req.headers.authorization` for `Bearer ` prefix
+   - Falls back to `req.cookies.__session` cookie
+   - Returns 401 with structured error if no token found
+
+2. **Token extraction logic** (auth.ts:64-92):
+   ```typescript
+   if (authHeader && authHeader.startsWith('Bearer ')) {
+     token = authHeader.substring(7);
+     tokenSource = 'header';
+   } else {
+     const cookies = req.cookies || {};
+     if (cookies.__session) {
+       token = cookies.__session;
+       tokenSource = 'cookie';
+     }
+   }
+   ```
+
+3. **401 response structure** (auth.ts:128-133):
+   ```typescript
+   res.status(401).json({
+     error: 'INVALID_AUTH_TOKEN',
+     reason: 'missing_or_invalid_token',
+     message: 'Valid authentication token required...'
+   });
+   ```
+
+### Root Cause for User-Facing 401 Errors
+
+The frontend hook `useExportCompletion.ts` has **two different token sources**:
+
+1. **useExportCompletion.ts:88** (fetchExportCompletion):
+   - Uses `localStorage.getItem('firebase_token')` directly
+   - Returns empty string if not set: `|| ''`
+   - **Issue**: Empty Bearer token will still fail auth
+
+2. **apiFetch.ts** (via getAuthHeaders):
+   - Uses `getAuth().currentUser.getIdToken(true)` for fresh token
+   - Waits up to 8s for auth state if user not immediately available
+   - **More robust** but not used by useExportCompletion
+
+### Likely User-Facing 401 Scenarios
+
+1. User logged out but page still cached
+2. Token expired and not refreshed (localStorage stale)
+3. Auth state race condition on page load
+4. `localStorage.getItem('firebase_token')` returns empty/null
+
+### Recommendation (for follow-up LP)
+Consider using `getAuthHeaders()` from authHeaders.ts in useExportCompletion.ts
+instead of localStorage lookup, to ensure token freshness and proper auth state waiting.
