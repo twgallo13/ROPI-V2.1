@@ -16,7 +16,7 @@ vi.mock('firebase-admin', () => ({
     collection: vi.fn((name) => ({
       doc: vi.fn((id) => ({
         get: vi.fn(),
-      }),
+      })),
     })),
   })),
 }));
@@ -407,6 +407,124 @@ describe('GET /api/products/:productId/completion', () => {
       expect(mockJson).toHaveBeenCalledWith(
         expect.objectContaining({
           error: 'INTERNAL_ERROR',
+        })
+      );
+    });
+  });
+
+  // LP-export-site-triage-1.0.0: Verify handler passes ProductDocument, not productId string
+  describe('LP-export-site-triage-1.0.0: Parameter Passing Verification', () => {
+    it('should pass ProductDocument (not productId string) to calculateCompletionDrivenExportReadiness', async () => {
+      const mockProductData = {
+        id: 'test-product-123',
+        mpn: 'TEST-MPN',
+        websites: ['shiekh.com'],
+        attributes: {
+          website: ['shiekh.com'],
+          brand: 'TestBrand'
+        }
+      };
+
+      const mockProductDoc = {
+        exists: true,
+        data: vi.fn().mockReturnValue(mockProductData),
+      };
+      const mockProductRef = { get: vi.fn().mockResolvedValue(mockProductDoc) };
+      vi.mocked(mockFirestore.collection).mockReturnValue({
+        doc: vi.fn().mockReturnValue(mockProductRef),
+      } as any);
+
+      const mockReadiness = {
+        ready: true,
+        completionPct: 100,
+        threshold: 80,
+        hasBlockingSites: false,
+        blockingReasons: [],
+        operatorExplanation: {
+          summary: 'Product ready for export',
+          blockingIssues: [],
+          completionBreakdown: [],
+          siteStatus: [{ site: 'shiekh.com', blocked: false }],
+          actionRequired: [],
+        },
+        evaluationTimestamp: '2026-01-06T00:00:00Z',
+        rulesVersion: 1,
+      };
+
+      vi.mocked(calculateCompletionDrivenExportReadiness).mockResolvedValue(mockReadiness);
+
+      await getProductCompletionHandler(mockReq as Request, mockRes as Response);
+
+      // CRITICAL: Verify the FIRST argument is the ProductDocument object, not a string
+      expect(calculateCompletionDrivenExportReadiness).toHaveBeenCalledTimes(1);
+      
+      const callArgs = vi.mocked(calculateCompletionDrivenExportReadiness).mock.calls[0];
+      const firstArg = callArgs[0];
+      
+      // First argument must be an object (ProductDocument), NOT a string (productId)
+      expect(typeof firstArg).toBe('object');
+      expect(typeof firstArg).not.toBe('string');
+      
+      // Verify the object contains the expected product data
+      expect(firstArg).toEqual(mockProductData);
+      
+      // Ensure we're not passing productId as first arg (the bug we fixed)
+      expect(firstArg).not.toBe('test-product-123');
+    });
+
+    it('should return selectedSites when product has websites field', async () => {
+      const mockProductData = {
+        id: '211737-90h1-8',
+        mpn: '211737-90H1-8',
+        websites: ['shiekh.com'],
+        attributes: {
+          website: ['shiekh.com']
+        }
+      };
+
+      const mockProductDoc = {
+        exists: true,
+        data: vi.fn().mockReturnValue(mockProductData),
+      };
+      const mockProductRef = { get: vi.fn().mockResolvedValue(mockProductDoc) };
+      vi.mocked(mockFirestore.collection).mockReturnValue({
+        doc: vi.fn().mockReturnValue(mockProductRef),
+      } as any);
+
+      // Mock readiness with sites recognized
+      const mockReadiness = {
+        ready: true,
+        completionPct: 100,
+        threshold: 80,
+        hasBlockingSites: false,
+        blockingReasons: [],
+        operatorExplanation: {
+          summary: 'Product ready for export',
+          blockingIssues: [],
+          completionBreakdown: [],
+          siteStatus: [{ site: 'shiekh.com', blocked: false }],
+          actionRequired: [],
+        },
+        evaluationTimestamp: '2026-01-06T00:00:00Z',
+        rulesVersion: 1,
+      };
+
+      vi.mocked(calculateCompletionDrivenExportReadiness).mockResolvedValue(mockReadiness);
+
+      mockReq.params = { productId: '211737-90h1-8' };
+      await getProductCompletionHandler(mockReq as Request, mockRes as Response);
+
+      // Verify success response (not blocked for "No sites selected")
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ready: true,
+          hasBlockingSites: false,
+          operatorExplanation: expect.objectContaining({
+            siteStatus: expect.arrayContaining([
+              expect.objectContaining({ site: 'shiekh.com' })
+            ])
+          })
         })
       );
     });
