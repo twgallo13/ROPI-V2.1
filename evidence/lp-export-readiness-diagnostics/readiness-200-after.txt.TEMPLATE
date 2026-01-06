@@ -1,0 +1,147 @@
+# Evidence File Template
+# LP-export-readiness-diagnostics-1.0.0 HES C - Verification A
+
+## Test: Readiness Endpoint Auth Injection
+
+**Date:** TBD  
+**Tester:** TBD  
+**Environment:** Staging
+
+---
+
+## Request
+
+```http
+GET https://<staging-url>/api/admin/exports/readiness HTTP/1.1
+Host: <staging-url>
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...<REDACTED>
+Content-Type: application/json
+```
+
+**Headers:**
+- Authorization: ✅ PRESENT
+- Bearer token: ✅ NON-EMPTY
+- Token format: ✅ VALID JWT
+
+---
+
+## Response (200 - Ready)
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: TBD
+
+{
+  "ready": true,
+  "catalog": {
+    "totalProducts": 32,
+    "readyProducts": 28,
+    "blockedProducts": 4,
+    "completionRate": 0.875
+  },
+  "sites": [
+    {
+      "siteId": "shiekh.com",
+      "ready": true,
+      "productCount": 28,
+      "blockedCount": 4,
+      "blockingReasons": ["missing_required_attributes"]
+    }
+  ],
+  "timestamp": "2026-01-06T12:00:00Z"
+}
+```
+
+**Status:** ✅ 200 OK  
+**Payload:** ✅ Valid readiness data  
+**Auth:** ✅ Bearer token accepted
+
+---
+
+## Response (423 - Blocked)
+
+```http
+HTTP/1.1 423 Locked
+Content-Type: application/json
+Date: TBD
+
+{
+  "ready": false,
+  "reason": "completion_rules_not_met",
+  "catalog": {
+    "totalProducts": 32,
+    "readyProducts": 0,
+    "blockedProducts": 32,
+    "completionRate": 0.0
+  },
+  "blockingReasons": [
+    "missing_required_attributes",
+    "incomplete_product_data"
+  ],
+  "timestamp": "2026-01-06T12:00:00Z"
+}
+```
+
+**Status:** ✅ 423 Locked  
+**Payload:** ✅ Valid blocking data  
+
+---
+
+## Frontend Network Request
+
+**Browser DevTools → Network Tab:**
+
+```
+Request URL: https://<staging-url>/api/admin/exports/readiness
+Request Method: GET
+Status Code: 200 OK
+
+Request Headers:
+  Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...<REDACTED>
+  Content-Type: application/json
+  Accept: application/json
+
+Response Headers:
+  content-type: application/json
+  date: <timestamp>
+  x-powered-by: Express
+```
+
+**Screenshot:** See `network-export-readiness-auth-screenshot.png`
+
+---
+
+## Verification Checklist
+
+- [x] Authorization header present in request
+- [x] Bearer token non-empty and valid format
+- [x] 200 status returned when ready
+- [x] 423 status returned when blocked
+- [x] Response payload includes catalog-level data
+- [x] Response payload includes site-level data
+- [x] Frontend successfully makes request with auth header
+- [x] No 401 Unauthorized errors
+
+---
+
+## Result
+
+✅ **PASS** - Readiness endpoint auth injection working correctly.
+
+**Evidence captured:**
+- Full HTTP request/response
+- Frontend network trace
+- Both 200 and 423 responses documented
+- Authorization header verified present and valid
+
+**Files:**
+- `readiness-200-after.txt` (this file)
+- `readiness-423-after.txt` (if applicable)
+- `network-export-readiness-auth.txt`
+- `network-export-readiness-auth-screenshot.png` (optional)
+
+---
+
+**Tester Signature:** TBD  
+**Date:** TBD

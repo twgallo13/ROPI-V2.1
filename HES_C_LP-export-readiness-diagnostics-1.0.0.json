@@ -1,0 +1,366 @@
+{
+  "lp": "LP-export-readiness-diagnostics-1.0.0",
+  "checkpoint": "HES C",
+  "phase": "Staging Verification",
+  "from": "HES B - Implementation",
+  "to": "HES C - Staging Verification",
+  "date": "2026-01-06T00:00:00.000Z",
+  "status": "IN_PROGRESS",
+  
+  "pull_requests": [
+    {
+      "number": 453,
+      "title": "LP-export-readiness-diagnostics-1.0.0: Fix firebase_token auth injection (Task 1)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/453",
+      "branch": "fix/auth-injection-export-readiness-2026-01-07",
+      "commit_sha": "5538d0d",
+      "priority": "P0-CRITICAL",
+      "type": "bugfix",
+      "merge_order": 1,
+      "status": "OPEN",
+      "labels": [
+        "lp:LP-export-readiness-diagnostics-1.0.0",
+        "priority:p0-critical",
+        "type:bugfix"
+      ],
+      "files_changed": [
+        "packages/web/src/hooks/useExportCompletion.ts",
+        "packages/web/src/hooks/useProductCompletion.ts",
+        "packages/web/src/pages/ExportPage.tsx",
+        "packages/web/src/components/product/CompletionExportGatePanel.tsx"
+      ]
+    },
+    {
+      "number": 452,
+      "title": "LP-export-readiness-diagnostics-1.0.0: Fix export schema validation (Task 2)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/452",
+      "branch": "fix/attribute-export-schema-2026-01-07",
+      "commit_sha": "32763a0",
+      "priority": "P0-CRITICAL",
+      "type": "bugfix",
+      "merge_order": 2,
+      "status": "OPEN",
+      "labels": [
+        "lp:LP-export-readiness-diagnostics-1.0.0",
+        "priority:p0-critical",
+        "type:bugfix"
+      ],
+      "files_changed": [
+        "packages/sdk/src/schema/attribute.ts"
+      ]
+    },
+    {
+      "number": 451,
+      "title": "LP-export-readiness-diagnostics-1.0.0: Remove legacy ExportReadinessPanel (Task 4)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/451",
+      "branch": "fix/remove-legacy-export-panel-2026-01-07",
+      "commit_sha": "c4f41fb",
+      "priority": "P2-MEDIUM",
+      "type": "ui-cleanup",
+      "merge_order": 3,
+      "status": "OPEN",
+      "labels": [
+        "lp:LP-export-readiness-diagnostics-1.0.0",
+        "priority:p2-medium",
+        "type:ui-cleanup"
+      ],
+      "files_changed": [
+        "packages/web/src/pages/ProductEditorPage.tsx"
+      ]
+    },
+    {
+      "number": 454,
+      "title": "LP-export-readiness-diagnostics-1.0.0: SDK attribute usage audit (Task 3)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/454",
+      "branch": "audit/sdk-firestore-attributes-2026-01-07",
+      "commit_sha": "b718a9f",
+      "priority": "P1-HIGH",
+      "type": "audit",
+      "merge_order": "anytime",
+      "status": "OPEN",
+      "labels": [
+        "lp:LP-export-readiness-diagnostics-1.0.0",
+        "priority:p1-high",
+        "type:audit"
+      ],
+      "files_changed": [
+        "audit_sdk_product_attributes.js",
+        "audit_sdk_firestore_attributes.js",
+        "check_firestore_attributes.js",
+        "evidence/lp-export-readiness-diagnostics/sdk-product-attribute-audit-2026-01-06.json",
+        "evidence/lp-export-readiness-diagnostics/sdk-product-attribute-audit-2026-01-06.csv",
+        "evidence/lp-export-readiness-diagnostics/attribute-audit-2026-01-06.json",
+        "evidence/lp-export-readiness-diagnostics/attribute-audit-2026-01-06.csv"
+      ]
+    }
+  ],
+  
+  "ci_runs": {
+    "pr_453": {
+      "run_id": "PENDING_MERGE",
+      "url": "TBD",
+      "status": "not_started"
+    },
+    "pr_452": {
+      "run_id": "PENDING_MERGE",
+      "url": "TBD",
+      "status": "not_started"
+    },
+    "pr_451": {
+      "run_id": "PENDING_MERGE",
+      "url": "TBD",
+      "status": "not_started"
+    },
+    "pr_454": {
+      "run_id": "PENDING_MERGE",
+      "url": "TBD",
+      "status": "not_started"
+    }
+  },
+  
+  "deploy_info": {
+    "staging": {
+      "deploy_id": "TBD",
+      "url": "TBD",
+      "commit_sha": "TBD",
+      "timestamp": "TBD",
+      "status": "pending"
+    }
+  },
+  
+  "verification": {
+    "A_readiness_endpoint_auth": {
+      "requirement": "GET /api/admin/exports/readiness returns 200 with auth header",
+      "status": "PENDING",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/readiness-200-after.txt",
+        "evidence/lp-export-readiness-diagnostics/network-export-readiness-auth.txt"
+      ],
+      "test_steps": [
+        "Merge PR #453 (auth injection fix)",
+        "Deploy to staging",
+        "Make authenticated GET request to /api/admin/exports/readiness",
+        "Verify Authorization: Bearer <token> header present",
+        "Verify 200 status with readiness payload",
+        "Capture full HTTP request/response"
+      ],
+      "pass_criteria": [
+        "Authorization header present and non-empty",
+        "Bearer token format valid",
+        "200 status returned",
+        "Response payload includes readiness data"
+      ]
+    },
+    
+    "B_export_manager_ui": {
+      "requirement": "Export Manager shows single panel, no legacy ExportReadinessPanel",
+      "status": "PENDING",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/legacy-ui-after.png",
+        "evidence/lp-export-readiness-diagnostics/export-manager-network.txt"
+      ],
+      "test_steps": [
+        "Merge PR #451 (remove legacy panel)",
+        "Deploy to staging",
+        "Load /export page",
+        "Load /products/:id page",
+        "Capture screenshots showing single export panel",
+        "Capture network trace for readiness request"
+      ],
+      "pass_criteria": [
+        "Only CompletionExportGatePanel visible",
+        "No ExportReadinessPanel rendered",
+        "No console errors about missing imports",
+        "Network request to readiness endpoint succeeds"
+      ]
+    },
+    
+    "C_product_level_correctness": {
+      "requirement": "Product 211737-90h1-8 shows correct export state with shiekh.com",
+      "status": "PENDING",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/product-211737-completion-after.txt",
+        "evidence/lp-export-readiness-diagnostics/product-211737-ui.png"
+      ],
+      "test_steps": [
+        "GET /api/products/211737-90h1-8/completion",
+        "Verify siteStatus includes shiekh.com",
+        "Verify ready: true OR correct blocking reasons",
+        "Load product in UI",
+        "Capture screenshot of export state"
+      ],
+      "pass_criteria": [
+        "siteStatus array includes shiekh.com",
+        "Product recognized (not 404)",
+        "Export state displayed in UI",
+        "No 401/403 errors"
+      ]
+    },
+    
+    "D_attribute_update_validation": {
+      "requirement": "export: true no longer causes 400 validation errors",
+      "status": "PENDING",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/attribute-update-200-after.txt",
+        "evidence/lp-export-readiness-diagnostics/attribute-schema-validation.txt"
+      ],
+      "test_steps": [
+        "Merge PR #452 (export schema fix)",
+        "Deploy to staging",
+        "POST /api/admin/settings/attributes/class with export: true",
+        "Verify 200 response",
+        "POST same endpoint with export: { key: 'test' }",
+        "Verify 200 response"
+      ],
+      "pass_criteria": [
+        "export: true accepts without 400 error",
+        "export: { ... } accepts without 400 error",
+        "Both formats validated successfully",
+        "Attribute updates persist correctly"
+      ]
+    },
+    
+    "E_sdk_firestore_audit": {
+      "requirement": "Audit artifacts exist with remediation recommendations",
+      "status": "PARTIAL",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/sdk-product-attribute-audit-2026-01-06.json",
+        "evidence/lp-export-readiness-diagnostics/sdk-product-attribute-audit-2026-01-06.csv",
+        "evidence/lp-export-readiness-diagnostics/attribute-audit-summary.md"
+      ],
+      "test_steps": [
+        "Verify JSON audit file exists",
+        "Verify CSV audit file exists",
+        "Review audit summary markdown",
+        "Confirm no data changes made"
+      ],
+      "pass_criteria": [
+        "JSON report shows 14 missing attributes",
+        "CSV report includes all deltas",
+        "Summary identifies rics_color as P1",
+        "Remediation recommendations documented"
+      ],
+      "notes": "Evidence files already exist from HES B. Merge PR #454 to include in codebase."
+    },
+    
+    "F_live_update_behavior": {
+      "requirement": "Document whether readiness updates without page reload",
+      "status": "PENDING",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/live-update-evidence.txt"
+      ],
+      "test_steps": [
+        "Load Export Manager UI",
+        "PATCH a product to change completion state",
+        "Observe if UI updates automatically",
+        "Capture network trace"
+      ],
+      "expected_result": "NOT IMPLEMENTED - planned follow-up",
+      "deviation": "Live updates not in scope for this LP",
+      "pass_criteria": [
+        "Behavior documented accurately",
+        "If implemented: UI updates automatically",
+        "If not: documented as deviation with follow-up plan"
+      ]
+    },
+    
+    "G_ci_deploy_receipts": {
+      "requirement": "CI passes for all PRs, staging deploy successful",
+      "status": "PENDING",
+      "evidence": [
+        "evidence/lp-export-readiness-diagnostics/ci-runs.txt",
+        "evidence/lp-export-readiness-diagnostics/staging-deploy.txt"
+      ],
+      "test_steps": [
+        "Capture CI run URLs for each PR",
+        "Verify all tests pass",
+        "Capture staging deploy run ID",
+        "Record merged commit SHAs",
+        "Verify no backend regressions"
+      ],
+      "pass_criteria": [
+        "All 4 PRs have passing CI",
+        "No test failures",
+        "Staging deploy successful",
+        "All services healthy post-deploy"
+      ]
+    }
+  },
+  
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "description": "Readiness endpoint reachable and returns expected payload for admin-authenticated requests",
+      "status": "PENDING",
+      "verification": "A_readiness_endpoint_auth"
+    },
+    {
+      "id": "AC2",
+      "description": "Frontend includes Authorization header (non-empty Bearer token) on readiness request",
+      "status": "PENDING",
+      "verification": "A_readiness_endpoint_auth"
+    },
+    {
+      "id": "AC3",
+      "description": "Product 211737-90h1-8 is recognized (siteStatus includes shiekh.com) and not blocked by missing sites",
+      "status": "PENDING",
+      "verification": "C_product_level_correctness"
+    },
+    {
+      "id": "AC4",
+      "description": "Attribute update export: true no longer returns 400 — validation accepts boolean",
+      "status": "PENDING",
+      "verification": "D_attribute_update_validation"
+    },
+    {
+      "id": "AC5",
+      "description": "Legacy panel removed from ProductEditorPage",
+      "status": "PENDING",
+      "verification": "B_export_manager_ui"
+    },
+    {
+      "id": "AC6",
+      "description": "Attribute audit produced and attached",
+      "status": "PASS",
+      "verification": "E_sdk_firestore_audit",
+      "notes": "Evidence files exist from HES B"
+    },
+    {
+      "id": "AC7",
+      "description": "No regressions in backend tests",
+      "status": "PENDING",
+      "verification": "G_ci_deploy_receipts"
+    }
+  ],
+  
+  "deviations": [
+    {
+      "id": "DEV1",
+      "description": "Live-update behavior not implemented",
+      "impact": "LOW",
+      "justification": "Out of scope for this LP - requires WebSocket or polling infrastructure",
+      "follow_up": "Plan separate LP for real-time UI updates",
+      "verification": "F_live_update_behavior"
+    }
+  ],
+  
+  "result": "PENDING_VERIFICATION",
+  "result_notes": "Awaiting PR merge and staging verification. Will update to VERIFIED_SUCCESS or VERIFIED_FAILURE after testing.",
+  
+  "next_steps": [
+    "Merge PR #453 (auth injection) to aoss-main",
+    "Deploy to staging",
+    "Execute verification steps A-G",
+    "Collect all evidence files",
+    "Update this JSON with results",
+    "If all PASS → proceed to HES D",
+    "If any FAIL → document and remediate"
+  ],
+  
+  "evidence_directory": "evidence/lp-export-readiness-diagnostics/",
+  "documentation": [
+    "HES_C_VERIFICATION_PLAN.md",
+    "LP-export-readiness-diagnostics-1.0.0_HES_B_IMPLEMENTATION.json",
+    "LP-export-readiness-diagnostics-1.0.0_HES_B_IMPLEMENTATION.md"
+  ]
+}
