@@ -1,0 +1,148 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-completion-fix-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "A",
+  "checkpointName": "Planning",
+  "firestoreRead": {
+    "document": "settings/exportSettings",
+    "readAt": "2026-01-05T09:35:00Z",
+    "completionRules": {
+      "exportUnlockThresholdPct": 80,
+      "rulesVersion": 3,
+      "schemaVersion": "1.0.0",
+      "updatedAt": "2026-01-04T23:48:11.666Z",
+      "updatedBy": "homer-media-disable-2026-01-04",
+      "segments": [
+        {
+          "id": "core-attributes",
+          "name": "Core Product Attributes",
+          "enabled": true,
+          "weightPct": 70,
+          "ruleType": "ALL_REQUIRED",
+          "appliesTo": { "mode": "ALL_PRODUCTS", "sites": [] },
+          "attributeSelector": {
+            "source": "REGISTRY",
+            "categories": ["product_identity", "description"],
+            "requirementFlag": "required_for_completion",
+            "siteAware": false
+          }
+        },
+        {
+          "id": "seo-attributes",
+          "name": "SEO & Marketing",
+          "enabled": true,
+          "weightPct": 30,
+          "ruleType": "ALL_REQUIRED",
+          "appliesTo": { "mode": "CONDITIONAL", "sites": ["shiekh", "karmaloop", "mltd"] },
+          "attributeSelector": {
+            "source": "REGISTRY",
+            "categories": ["seo", "marketing"],
+            "requirementFlag": "required_for_export",
+            "siteAware": true
+          }
+        },
+        {
+          "id": "media-attributes",
+          "name": "Media & Images",
+          "enabled": false,
+          "weightPct": 0,
+          "ruleType": "ANY_REQUIRED",
+          "appliesTo": { "mode": "ALL_PRODUCTS", "sites": [] }
+        }
+      ],
+      "exclusions": {
+        "pricing": { "affectsCompletion": false },
+        "media": { "affectsCompletion": false }
+      }
+    }
+  },
+  "productAnalysis": {
+    "queryExecutedAt": "2026-01-05T09:40:00Z",
+    "totalProducts": 32,
+    "siteFieldAnalysis": {
+      "hasWebsitesArrayTopLevel": 6,
+      "hasSitesArrayTopLevel": 0,
+      "hasWebsiteStringTopLevel": 0,
+      "hasAttributesWebsite": 8,
+      "noSiteFieldAtTopLevel": 26,
+      "emptyWebsitesArray": 5
+    },
+    "productsEffectivelyMissingSites": 26,
+    "productsMissingSitesPct": "81.25%",
+    "sampleProductsWithNoSites": [
+      { "id": "1-test", "attributesWebsite": ["shiekh.com"], "topLevelWebsites": null },
+      { "id": "10-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "13-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "14-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "15-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "16-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "17-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "18-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "19-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "2-test", "attributesWebsite": null, "topLevelWebsites": [] },
+      { "id": "20-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "3-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "4-test", "attributesWebsite": ["shiekh.com"], "topLevelWebsites": null },
+      { "id": "451-9103-blk18", "attributesWebsite": null, "topLevelWebsites": [] },
+      { "id": "451-9103-blk18a", "attributesWebsite": null, "topLevelWebsites": [] },
+      { "id": "451-9201-blk18", "attributesWebsite": null, "topLevelWebsites": [] },
+      { "id": "451-9201-blk18a", "attributesWebsite": null, "topLevelWebsites": [] },
+      { "id": "451-9204-blk18", "attributesWebsite": ["shiekh.com"], "topLevelWebsites": null },
+      { "id": "5-test", "attributesWebsite": null, "topLevelWebsites": null },
+      { "id": "7-test", "attributesWebsite": null, "topLevelWebsites": null }
+    ]
+  },
+  "rootCauseAnalysis": {
+    "summary": "The extractSelectedSites() function in completionDrivenExportReadiness.ts does NOT check attributes.website, only top-level websites/sites/website fields",
+    "affectedFunction": "extractSelectedSites",
+    "file": "packages/api/src/services/completionDrivenExportReadiness.ts",
+    "lineNumber": 423,
+    "currentBehavior": "Only checks: product.websites, product.sites, product.website (string)",
+    "missingCheck": "Does NOT check product.attributes.website which is where CSV imports store site data",
+    "evidence": [
+      "8 products have attributes.website data that is NOT being read",
+      "Product editor (CoreInformationTab.tsx) uses attributes.website for site selection",
+      "Test files (useProduct.mergeFields.test.ts) verify attributes.website handling"
+    ]
+  },
+  "proposedRemediation": {
+    "type": "CODE_FIX",
+    "notDataFix": true,
+    "notRulesFix": true,
+    "rationale": "The problem is in the site extraction logic, not the completion rules or product data. Products correctly have site data in attributes.website, but the code doesn't read it.",
+    "fix": {
+      "file": "packages/api/src/services/completionDrivenExportReadiness.ts",
+      "function": "extractSelectedSites",
+      "change": "Add check for product.attributes?.website array before returning empty",
+      "proposedCode": "function extractSelectedSites(product: ProductDocument): string[] {\n  if (Array.isArray(product.websites) && product.websites.length > 0) {\n    return product.websites;\n  }\n  if (Array.isArray(product.sites) && product.sites.length > 0) {\n    return product.sites;\n  }\n  // Legacy format support\n  if (product.website && typeof product.website === 'string') {\n    return [product.website];\n  }\n  // LP-export-completion-fix-1.0.0: Check attributes.website (where CSV imports store sites)\n  if (Array.isArray(product.attributes?.website) && product.attributes.website.length > 0) {\n    return product.attributes.website;\n  }\n  return [];\n}"
+    },
+    "uiImprovement": {
+      "description": "Add actionable guidance in ProductHeader when no sites selected",
+      "file": "packages/web/src/components/product/ProductHeader.tsx",
+      "change": "Show clear message with link to site selection when blocked by missing sites"
+    },
+    "testsRequired": [
+      "Add test case for extractSelectedSites with attributes.website",
+      "Add test case for export readiness when sites in attributes.website",
+      "Add E2E test for product page showing actionable guidance"
+    ]
+  },
+  "stopConditionCheck": {
+    "canAccessFirestore": true,
+    "productCountUnder100": true,
+    "affectedProductCount": 26,
+    "requiresApproval": false,
+    "requiresBackendCodeChange": true,
+    "backendChangeScope": "Minimal - single function modification in existing service",
+    "changeIsWithinScope": true,
+    "note": "While this is a code change, it is within scope because it fixes a bug in how completion rules are applied, not the rules themselves"
+  },
+  "approvalStatus": {
+    "dataFixApprovalNeeded": false,
+    "ruleFixApprovalNeeded": false,
+    "codeFixApprovalNeeded": "PROCEED - Bug fix in site extraction logic, within LP scope"
+  },
+  "result": "PLANNING COMPLETE - CODE FIX RECOMMENDED"
+}

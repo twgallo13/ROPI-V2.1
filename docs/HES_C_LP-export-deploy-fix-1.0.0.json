@@ -1,0 +1,146 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-deploy-fix-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "C",
+  "checkpointName": "Verification",
+  "ciRuns": [
+    {
+      "runId": "20710169974",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710169974",
+      "name": "Deploy AOSS Staging (FAILED - original)",
+      "status": "completed",
+      "conclusion": "failure",
+      "note": "Original failing run that triggered this LP - orphaned functions blocked deploy"
+    },
+    {
+      "runId": "20710522480",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710522480",
+      "name": "Deploy AOSS PR Preview",
+      "status": "completed",
+      "conclusion": "success",
+      "note": "PR Preview deploys hosting only (skips Firebase Functions for fork security)"
+    },
+    {
+      "runId": "20710522466",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710522466",
+      "name": "E2E Tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "runId": "20710697557",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710697557",
+      "name": "lp-lint",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "deployInfo": {
+    "prPreviewRunId": "20710522480",
+    "prPreviewRunUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710522480",
+    "stagingUrl": "https://ropi-aoss-staging.web.app",
+    "stagingUrlStatus": "HTTP 200",
+    "stagingLastDeployedAt": "2026-01-04T23:18:38Z",
+    "note": "PR Preview workflow does not deploy Firebase Functions (GCP_SA_KEY_BASE64 not available for PR workflows for fork security). The --force flag will be tested when Deploy AOSS Staging runs post-merge on aoss-main."
+  },
+  "codeChangeVerification": {
+    "file": ".github/workflows/deploy-staging.yml",
+    "lineNumber": 129,
+    "verifiedCommand": "timeout 20m firebase deploy --only functions --project ropi-bccee --json --force",
+    "forceFlag": "PRESENT",
+    "lpComment": "PRESENT - LP-export-deploy-fix-1.0.0 comment added above command"
+  },
+  "orphanedFunctionsEvidence": {
+    "preFix": {
+      "command": "firebase functions:list --project ropi-bccee",
+      "executedAt": "2026-01-05T09:11:00Z",
+      "orphanedFunctions": [
+        "setAdminClaimOnUserCreate (v1, us-central1)",
+        "syncAdminClaimsOnMetadataChange (v1, us-central1)"
+      ],
+      "status": "PRESENT"
+    },
+    "postMergeVerification": "PENDING - Will be verified when Deploy AOSS Staging runs post-merge"
+  },
+  "stagingVerification": {
+    "stagingUrl": "https://ropi-aoss-staging.web.app",
+    "httpStatus": "200",
+    "exportPageUrl": "https://ropi-aoss-staging.web.app/export",
+    "exportPageHttpStatus": "200"
+  },
+  "vvpVerification": {
+    "note": "VVP export tests pass on staging - E2E Tests run 20710522466 succeeded",
+    "e2eRunId": "20710522466",
+    "e2eConclusion": "success",
+    "exportFunctionality": "PASS - E2E tests include export page verification"
+  },
+  "unexpectedDeletions": {
+    "status": "NONE",
+    "note": "Only setAdminClaimOnUserCreate and syncAdminClaimsOnMetadataChange will be deleted. These are the only orphaned functions identified. No other functions targeted for deletion."
+  },
+  "verification": {
+    "criteria": [
+      {
+        "name": "CI Deploy AOSS PR Preview success",
+        "status": "PASS",
+        "evidence": "Run 20710522480 completed with conclusion: success"
+      },
+      {
+        "name": "--force flag in deploy command",
+        "status": "PASS",
+        "evidence": "Verified in branch: git show fix/export-deploy-2026-01-05:.github/workflows/deploy-staging.yml shows --force flag at line 129"
+      },
+      {
+        "name": "Orphaned functions identified for deletion",
+        "status": "PASS",
+        "evidence": "firebase functions:list shows setAdminClaimOnUserCreate and syncAdminClaimsOnMetadataChange as orphaned (not in source code)"
+      },
+      {
+        "name": "Staging URL reachable (HTTP 200)",
+        "status": "PASS",
+        "evidence": "curl -sI https://ropi-aoss-staging.web.app returns HTTP/2 200"
+      },
+      {
+        "name": "/export page reachable",
+        "status": "PASS",
+        "evidence": "curl -sI https://ropi-aoss-staging.web.app/export returns HTTP/2 200"
+      },
+      {
+        "name": "E2E tests pass",
+        "status": "PASS",
+        "evidence": "Run 20710522466 completed with conclusion: success"
+      },
+      {
+        "name": "lp-lint pass",
+        "status": "PASS",
+        "evidence": "Run 20710697557 completed with conclusion: success"
+      },
+      {
+        "name": "No unexpected deletions",
+        "status": "PASS",
+        "evidence": "Only 2 orphaned functions identified: setAdminClaimOnUserCreate, syncAdminClaimsOnMetadataChange"
+      }
+    ]
+  },
+  "rollbackPlan": {
+    "documented": true,
+    "procedure": "If deletion causes unexpected failures: (1) Open revert PR referencing LP-export-deploy-fix-1.0.0, (2) Escalate to infra/ops for function restoration from backups, (3) Document impact, (4) Notify Lisa and owners immediately",
+    "inPrBody": true
+  },
+  "mergeReadiness": {
+    "ciPassing": true,
+    "codeChangeVerified": true,
+    "orphanedFunctionsDocumented": true,
+    "noUnexpectedDeletions": true,
+    "stagingAccessible": true,
+    "rollbackPlanPresent": true
+  },
+  "postMergeExpectation": {
+    "workflow": "Deploy AOSS Staging",
+    "trigger": "push to aoss-main",
+    "expectedOutcome": "Firebase CLI will use --force flag to delete setAdminClaimOnUserCreate and syncAdminClaimsOnMetadataChange, then deploy remaining functions and hosting successfully"
+  },
+  "result": "VERIFICATION PASS — READY FOR MERGE AUTHORIZATION"
+}

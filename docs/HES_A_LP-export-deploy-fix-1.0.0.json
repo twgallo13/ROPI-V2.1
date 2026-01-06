@@ -1,0 +1,83 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-deploy-fix-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "A",
+  "checkpointName": "Planning",
+  "runMetadata": {
+    "runId": "20710169974",
+    "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710169974",
+    "workflowName": "Deploy AOSS Staging",
+    "event": "push",
+    "headBranch": "aoss-main",
+    "headSha": "93eef8959ae5d1426d83d153f507267e038a5267",
+    "displayTitle": "LP-export-unlock-1.0.0: Export Unlock & Routing (#445)",
+    "status": "completed",
+    "conclusion": "failure",
+    "createdAt": "2026-01-05T08:59:00Z",
+    "updatedAt": "2026-01-05T09:00:34Z"
+  },
+  "failingJob": {
+    "name": "deploy-staging",
+    "jobId": "59448686579",
+    "jobUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710169974/job/59448686579",
+    "failingStep": {
+      "number": 13,
+      "name": "Deploy to stable staging site",
+      "conclusion": "failure",
+      "startedAt": "2026-01-05T09:00:07Z",
+      "completedAt": "2026-01-05T09:00:31Z"
+    }
+  },
+  "rootCause": {
+    "summary": "Firebase CLI aborts function deployment in non-interactive mode when orphaned functions exist in the project",
+    "errorMessage": "The following functions are found in your project but do not exist in your local source code:\n\tapi:setAdminClaimOnUserCreate(us-central1)\n\tapi:syncAdminClaimsOnMetadataChange(us-central1)\n\nAborting because deletion cannot proceed in non-interactive mode.",
+    "orphanedFunctions": [
+      "api:setAdminClaimOnUserCreate(us-central1)",
+      "api:syncAdminClaimsOnMetadataChange(us-central1)"
+    ],
+    "explanation": "These functions were previously deployed but have since been removed from the codebase. Firebase CLI requires explicit deletion or --force flag to proceed.",
+    "relatedToVerifyAttributesMeta": false,
+    "relatedToVerifyAttributesMetaNote": "The Verify Attributes Meta failure (run 20709996154) is a separate repo-wide Firestore registry_version mismatch issue. It does NOT cause this deployment failure."
+  },
+  "proposedFix": {
+    "approach": "Add --force flag to firebase deploy --only functions command in deploy-staging.yml",
+    "file": ".github/workflows/deploy-staging.yml",
+    "lineNumber": 129,
+    "currentCommand": "timeout 20m firebase deploy --only functions --project ropi-bccee --json",
+    "fixedCommand": "timeout 20m firebase deploy --only functions --project ropi-bccee --json --force",
+    "alternative": "Manually delete orphaned functions via 'firebase functions:delete setAdminClaimOnUserCreate syncAdminClaimsOnMetadataChange --region us-central1 --project ropi-bccee'"
+  },
+  "investigativeSteps": [
+    "1. Fetched run 20710169974 metadata — confirmed failure in deploy-staging job",
+    "2. Retrieved failing step logs — identified 'Deploy to stable staging site' step 13 as failing",
+    "3. Parsed error message — Firebase CLI aborting due to orphaned functions",
+    "4. Verified functions not in source code — grep confirms setAdminClaimOnUserCreate/syncAdminClaimsOnMetadataChange removed from codebase",
+    "5. Identified fix — add --force flag to allow Firebase CLI to delete orphaned functions"
+  ],
+  "expectedFilesToChange": [
+    {
+      "path": ".github/workflows/deploy-staging.yml",
+      "action": "modified",
+      "reason": "Add --force flag to firebase deploy functions command"
+    }
+  ],
+  "branchName": "fix/export-deploy-fix-2026-01-05",
+  "accessConfirmation": {
+    "canAccessRunLogs": true,
+    "canCreatePR": true,
+    "canRunDeploys": true,
+    "credentials": "GCP_SA_KEY_BASE64 secret present in staging environment",
+    "blockers": []
+  },
+  "relatedRuns": [
+    {
+      "name": "Verify Attributes Meta",
+      "runId": "20709996154",
+      "status": "fail",
+      "relation": "UNRELATED - pre-existing repo-wide Firestore registry_version mismatch, does not block deploy"
+    }
+  ],
+  "result": "PLANNING COMPLETE - READY TO IMPLEMENT"
+}
