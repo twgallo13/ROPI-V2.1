@@ -1,445 +1,284 @@
-# VVP — RetailOps Global Export Mode (Non-Developer Runnable)
-
-**LP:** LP-export-global-1.0.0 HES A  
-**Version:** 1.0.0  
+# VVP: RetailOps Global Export Mode (HES B)
+**LP-export-global-1.0.0 | HES B Deliverable**  
+**Author:** Homer (AI Agent)  
 **Date:** 2026-01-06  
-**Target:** QA / Non-Developer Users
+**Status:** Design Ready  
+**Supersedes:** vvp-retailops-global-hes-a.md
 
 ---
 
-## Purpose
+## Test Products
 
-This VVP (Verification & Validation Plan) provides **step-by-step instructions** for QA users to verify that RetailOps global export mode works correctly. All steps can be performed via browser UI and simple API calls (using browser DevTools or curl).
+**Product A (Partial Classification):** mpn `18-test` (product ID 18)
+- Has: sku, mpn, name, brand, category
+- Missing: class, department
+- Expected GLOBAL completion: ~72% (classification segment incomplete)
 
----
-
-## Prerequisites
-
-- **Access to staging environment:** https://staging.example.com (replace with actual URL)
-- **Admin credentials** for staging
-- **Browser:** Chrome or Firefox (with DevTools)
-- **Test products:**
-  - `mpn 18-test`
-  - Product ID `211737-90h1-8`
+**Product B (Full Classification):** mpn `211737-90h1-8`
+- Has: All core attributes + full classification (category, class, department)
+- Expected GLOBAL completion: 100%
 
 ---
 
-## VVP Test Cases
+## Test Case 1: GLOBAL Mode API Response
 
-### Test Case 1: Verify Product-Level Readiness API (GLOBAL Mode)
-
-**Goal:** Confirm that the completion API returns `mode: "GLOBAL"` and `productLevelReadiness` for RetailOps tenant.
+**Goal:** Verify `/api/products/:id/completion` returns GLOBAL mode structure.
 
 **Steps:**
-
-1. **Open browser DevTools:**
-   - Press `F12` or `Cmd+Option+I` (Mac)
-   - Go to **Network** tab
-
-2. **Navigate to product editor:**
-   - Login to staging as admin user
-   - Go to **Products** page
-   - Search for product `mpn 18-test` or product ID `211737-90h1-8`
-   - Click **Edit** to open product editor
-
-3. **Capture API request:**
-   - In DevTools Network tab, find request to `/api/products/:id/completion`
-   - Click on the request
-   - Go to **Response** tab
-   - Copy the JSON response
-
-4. **Verify response structure:**
-
-   **Expected fields:**
-   ```json
-   {
-     "mode": "GLOBAL",
-     "productLevelReadiness": {
-       "ready": true,  // or false
-       "completionPct": 85,  // example value
-       "threshold": 80,
-       "blockingReasons": [],  // or array of reasons
-       "missingAttributes": []  // or array of attribute IDs
-     },
-     "operatorExplanation": {
-       "summary": "Product is export-ready (85% complete)",
-       "mode": "GLOBAL",
-       "productCompletionBreakdown": [...],
-       "siteStatus": []  // Should be empty in GLOBAL mode
-     }
-   }
-   ```
-
-5. **Pass/Fail Criteria:**
-   - ✅ **PASS:** Response includes `mode: "GLOBAL"` and `productLevelReadiness` object
-   - ❌ **FAIL:** Missing fields or `mode: "SITE_SCOPED"`
-
-**Screenshot:** Capture DevTools Response tab showing `mode: "GLOBAL"`
-
----
-
-### Test Case 2: Verify Classification Attributes Are Enforced
-
-**Goal:** Confirm that products without classification attributes (`category`, `class`, `department`) are blocked from export.
-
-**Test 2a: Product WITH Classification Attributes**
-
-1. **Select a product with complete classification data:**
-   - Navigate to product `211737-90h1-8`
-   - Open product editor
-   - Verify in **Core Information** tab:
-     - `category` field is filled
-     - `class` field is filled (if visible)
-     - `department` field is filled (if visible)
-
-2. **Check completion panel:**
-   - Scroll to bottom of product editor
-   - Look for **Completion / Export Gate Panel**
-   - Verify status: ✅ **Product is Export-Ready**
-   - Verify completion percentage: >= 80%
-
-3. **Pass/Fail Criteria:**
-   - ✅ **PASS:** Product shows as export-ready with >= 80% completion
-   - ❌ **FAIL:** Product blocked even though all attributes are present
-
-**Test 2b: Product WITHOUT Classification Attributes**
-
-1. **Create or select a test product missing classification:**
-   - Go to **Products** page
-   - Click **+ Add Product**
-   - Fill in:
-     - SKU: `test-no-classification-001`
-     - MPN: `test-mpn-001`
-     - Name: `Test Product No Classification`
-     - Brand: `Test Brand`
-     - **Leave `category`, `class`, `department` EMPTY**
-   - Click **Save**
-
-2. **Check completion panel:**
-   - Verify panel shows: 🚫 **Export Blocked**
-   - Verify completion percentage: < 80%
-   - Check **Completion by Segment** section:
-     - Look for "Product Classification" segment
-     - Verify it shows missing attributes: `category`, `class`, `department`
-
-3. **Pass/Fail Criteria:**
-   - ✅ **PASS:** Product is blocked, completion < 80%, missing classification attributes listed
-   - ❌ **FAIL:** Product is marked export-ready despite missing classification
-
-**Screenshot:** Capture completion panel showing blocked status and missing classification attributes
-
----
-
-### Test Case 3: Verify Product-Level UI (No Per-Site Dropdown)
-
-**Goal:** Confirm that RetailOps tenant sees product-level export UI (no per-site dropdown).
-
-**Steps:**
-
-1. **Navigate to Export Manager:**
-   - Login as RetailOps admin user
-   - Go to **Export Manager** page (usually in main navigation)
-
-2. **Verify UI elements:**
-   - ✅ **Should NOT see:** Per-site dropdown (ropi-web, shiekh, karmaloop, mltd)
-   - ✅ **Should see:** Product-level export card:
-     ```
-     ✅ Export Ready
-     Product Completion: 85% (threshold: 80%)
-     [Start Export] button
-     ```
-
-3. **Pass/Fail Criteria:**
-   - ✅ **PASS:** No site dropdown, product-level completion card visible
-   - ❌ **FAIL:** Site dropdown present (indicates SITE_SCOPED mode)
-
-**Screenshot:** Capture Export Manager page showing product-level UI
-
----
-
-### Test Case 4: Verify Per-Site UI for Non-RetailOps Tenant
-
-**Goal:** Confirm that non-RetailOps tenants still see per-site export UI (unchanged behavior).
-
-**Steps:**
-
-1. **Login as non-RetailOps user** (if multi-tenant setup available)
-   - Or: Manually set tenant config `exportMode: "SITE_SCOPED"` and repeat test
-
-2. **Navigate to Export Manager:**
-   - Go to **Export Manager** page
-
-3. **Verify UI elements:**
-   - ✅ **Should see:** Per-site dropdown (ropi-web, shiekh, karmaloop, mltd)
-   - ✅ **Should see:** Site-specific export options
-
-4. **Navigate to product editor:**
-   - Open any product
-   - Scroll to **Completion / Export Gate Panel**
-   - ✅ **Should see:** Per-site accordion with site status (✅/❌ per site)
-
-5. **Pass/Fail Criteria:**
-   - ✅ **PASS:** Site dropdown and per-site panels visible
-   - ❌ **FAIL:** Product-level UI shown (indicates incorrect mode)
-
-**Screenshot:** Capture Export Manager and product panel showing per-site UI
-
----
-
-### Test Case 5: Execute Global Export
-
-**Goal:** Verify that global export executes without site selection.
-
-**Steps:**
-
-1. **Navigate to Export Manager** (RetailOps tenant)
-
-2. **Click "Start Export" button**
-
-3. **Check DevTools Network tab:**
-   - Find POST request to `/api/admin/exports/dry-run`
-   - Click on request
-   - Go to **Payload** or **Request** tab
-   - Verify request body:
-     ```json
-     {
-       "format": "csv",
-       "limit": 100,
-       "includeMeta": true
-       // NOTE: NO 'site' field should be present
-     }
-     ```
-
-4. **Verify export result:**
-   - After export completes, check success message
-   - Download CSV (if applicable)
-   - Verify CSV contains products from all sites (not filtered by site)
-
-5. **Pass/Fail Criteria:**
-   - ✅ **PASS:** Export executes, request body has no `site` field, CSV contains expected products
-   - ❌ **FAIL:** Export fails or request includes `site` parameter
-
-**Screenshot:** Capture DevTools Payload tab showing request body without `site` field
-
----
-
-### Test Case 6: Verify API Response for Blocked Product
-
-**Goal:** Confirm that blocked products return correct blocking reasons.
-
-**Steps:**
-
-1. **Create a product with missing attributes:**
-   - Create product `test-blocked-001` with:
-     - SKU: `test-blocked-001`
-     - MPN: `test-blocked-mpn`
-     - Name: `Test Blocked Product`
-     - **Missing:** `category`, `class`, `department`, `brand`
-
-2. **Open product editor and capture API response:**
-   - Open DevTools Network tab
-   - Navigate to product editor for `test-blocked-001`
-   - Find `/api/products/:id/completion` request
-   - Copy JSON response
-
-3. **Verify response:**
-   ```json
-   {
-     "mode": "GLOBAL",
-     "productLevelReadiness": {
-       "ready": false,
-       "completionPct": 45,  // example value < threshold
-       "threshold": 80,
-       "blockingReasons": [
-         "Missing classification attributes",
-         "Completion below threshold"
-       ],
-       "missingAttributes": ["category", "class", "department", "brand"]
-     }
-   }
-   ```
-
-4. **Pass/Fail Criteria:**
-   - ✅ **PASS:** `ready: false`, `blockingReasons` populated, `missingAttributes` lists expected IDs
-   - ❌ **FAIL:** `ready: true` or missing blocking details
-
-**Screenshot:** Capture API response showing blocked product details
-
----
-
-## Summary Checklist
-
-| Test Case | Description | Status |
-|-----------|-------------|--------|
-| TC1       | Product-level readiness API (GLOBAL mode) | ⬜ |
-| TC2a      | Product WITH classification = export-ready | ⬜ |
-| TC2b      | Product WITHOUT classification = blocked | ⬜ |
-| TC3       | Product-level UI (no site dropdown) | ⬜ |
-| TC4       | Per-site UI for non-RetailOps tenant | ⬜ |
-| TC5       | Execute global export (no site param) | ⬜ |
-| TC6       | Blocked product API response | ⬜ |
-
----
-
-## Expected Results Summary
-
-**RetailOps Tenant (GLOBAL Mode):**
-- ✅ API returns `mode: "GLOBAL"`
-- ✅ `productLevelReadiness` field present
-- ✅ `siteStatus` is empty or omitted
-- ✅ UI shows product-level completion (no site dropdown)
-- ✅ Export executes without site parameter
-- ✅ Classification attributes enforced (category, class, department)
-
-**Non-RetailOps Tenant (SITE_SCOPED Mode):**
-- ✅ API returns `mode: "SITE_SCOPED"`
-- ✅ `siteStatus` array populated
-- ✅ UI shows per-site dropdown and per-site panels
-- ✅ Export requires site selection
-
----
-
-## Troubleshooting
-
-### Issue: API returns `mode: "SITE_SCOPED"` for RetailOps tenant
-
-**Possible causes:**
-1. Tenant config `exportMode` not set to `"GLOBAL"`
-2. Backend not deployed with GLOBAL mode logic
-
-**Resolution:**
-- Check Firestore `settings/tenantConfig` or `tenants/retailops`
-- Verify `exportMode: "GLOBAL"` is set
-- If missing, update config manually
-
----
-
-### Issue: Classification attributes not enforced
-
-**Possible causes:**
-1. "Product Classification" segment is disabled in completion rules
-2. Segment weight is 0%
-3. Segment `categories` does not include `"classification"`
-
-**Resolution:**
-- Check Firestore `settings/exportSettings/completionRules`
-- Verify "Product Classification" segment is enabled
-- Verify `categories: ["classification"]` in segment config
-
----
-
-### Issue: UI still shows per-site dropdown for RetailOps tenant
-
-**Possible causes:**
-1. UI not deployed with conditional rendering logic
-2. Browser cache not cleared
-3. API returning incorrect `mode`
-
-**Resolution:**
-- Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
-- Check API response in DevTools (verify `mode: "GLOBAL"`)
-- Verify UI deployment (check build hash or version)
-
----
-
-## Test Data Requirements
-
-**Products needed for testing:**
-
-1. **Complete product** (all attributes including classification):
-   - SKU: `211737-90h1-8`
-   - Category: `Apparel`
-   - Class: `Footwear`
-   - Department: `Men's Shoes`
-
-2. **Incomplete product** (missing classification):
-   - SKU: `18-test` (or create new)
-   - Missing: `category`, `class`, `department`
-
-3. **Test product** (create new for blocking test):
-   - SKU: `test-blocked-001`
-   - Minimal attributes only (sku, mpn, name)
-
----
-
-## Sign-Off
-
-**QA Tester Name:** _______________________  
-**Date:** _______________________  
-**All Tests Passed:** ⬜ Yes ⬜ No (see notes below)
-
-**Notes:**
-_________________________________________________________________
-_________________________________________________________________
-_________________________________________________________________
-
----
-
-## Appendix: Manual API Testing (Alternative to UI)
-
-If UI is not available, QA can test API endpoints directly using curl:
-
-**A. Get Product Completion (GLOBAL mode)**
-```bash
-curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://staging.example.com/api/products/211737-90h1-8/completion \
-  | jq '.mode, .productLevelReadiness'
-```
-
-**Expected output:**
+1. Open browser DevTools (F12) → Network tab
+2. Navigate to `https://staging.ropi.ai/products/18`
+3. Find request to `/api/products/18/completion`
+4. Copy JSON response
+
+**Expected Response (Product 18):**
 ```json
-"GLOBAL"
 {
-  "ready": true,
-  "completionPct": 85,
+  "mode": "GLOBAL",
+  "ready": false,
+  "completionPct": 72,
   "threshold": 80,
-  "blockingReasons": [],
-  "missingAttributes": []
+  "hasBlockingSites": false,
+  "productLevelReadiness": {
+    "aggregatedCompletionPct": 72,
+    "segmentScores": [
+      { "segmentId": "core-attributes", "score": 100, "weightPct": 50 },
+      { "segmentId": "product-classification", "score": 33, "weightPct": 20, "missingAttributes": ["class", "department"] }
+    ],
+    "missingGlobalAttributes": ["class", "department"],
+    "websiteOptional": false,
+    "sitesEvaluated": ["ropi-web", "ropi-app"]
+  },
+  "operatorExplanation": {
+    "summary": "Export blocked: product 72% complete (threshold: 80%)",
+    "siteStatus": []
+  }
 }
 ```
 
-**B. Get Export Readiness (catalog-level)**
-```bash
-curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://staging.example.com/api/admin/exports/readiness \
-  | jq '.mode, .ready, .catalogStats'
-```
-
-**Expected output:**
-```json
-"GLOBAL"
-true
-{
-  "totalProducts": 150,
-  "blockedByCompletionCount": 12,
-  "blockedBySiteCount": 0,
-  "readyCount": 138
-}
-```
-
-**C. Execute Dry-Run Export (GLOBAL mode)**
-```bash
-curl -X POST \
-  -H "Authorization: Bearer $ADMIN_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"format":"csv","limit":10,"includeMeta":true}' \
-  https://staging.example.com/api/admin/exports/dry-run \
-  | jq '.summary, .exportedProducts'
-```
-
-**Expected output:**
-```json
-{
-  "exportedProducts": 10,
-  "totalCandidates": 138,
-  "blockedByCompletion": 12
-}
-```
+**Pass/Fail:**
+- ✅ PASS: Response has `mode: "GLOBAL"`, `productLevelReadiness` object, `siteStatus` empty
+- ❌ FAIL: `mode: "SITE_SCOPED"` or missing `productLevelReadiness`
 
 ---
 
-## Summary
+## Test Case 2: UI Site Dropdown Hidden in GLOBAL Mode
 
-This VVP provides **non-developer runnable** test cases for verifying RetailOps global export mode. All steps can be performed via browser UI and DevTools, with optional curl commands for API-level testing.
+**Goal:** Verify ExportPage hides site dropdown in GLOBAL mode.
 
-**Next steps:** Run VVP in staging after implementation is complete (post-HES B).
+**Steps:**
+1. Navigate to `https://staging.ropi.ai/export`
+2. Inspect page UI
+
+**Expected UI:**
+- ✅ "🌍 Global Export Mode" badge visible
+- ✅ "Product-level evaluation" help text visible
+- ✅ Website dropdown HIDDEN
+- ✅ Format dropdown visible (CSV/JSON)
+
+**Pass/Fail:**
+- ✅ PASS: Site dropdown hidden, GLOBAL badge visible
+- ❌ FAIL: Site dropdown visible
+
+**Screenshot:** global-export-ui.png
+
+---
+
+## Test Case 3: Export Request Has NO Site Parameter
+
+**Goal:** Verify export API call excludes `site` field in GLOBAL mode.
+
+**Steps:**
+1. On Export page, select format (CSV)
+2. Click "Export Products"
+3. In DevTools Network tab, find POST to `/api/admin/exports/dry-run`
+4. Inspect Request Payload
+
+**Expected Request Body:**
+```json
+{
+  "format": "csv",
+  "limit": 100,
+  "includeMeta": true
+}
+```
+
+**Note:** NO `site` field present.
+
+**Pass/Fail:**
+- ✅ PASS: Request body has NO `site` field
+- ❌ FAIL: Request includes `{ "site": "..." }`
+
+---
+
+## Test Case 4: Classification Segment Enforced
+
+**Goal:** Verify classification attributes (category/class/department) contribute 20% to completion.
+
+**Test 4a: Product 18 (Missing class, department)**
+
+**API Call:**
+```bash
+curl https://staging.ropi.ai/api/products/18/completion \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+**Expected:**
+- `completionPct`: ~72% (down from ~85% without classification)
+- `productLevelReadiness.segmentScores` includes:
+  ```json
+  {
+    "segmentId": "product-classification",
+    "score": 33,
+    "weightPct": 20,
+    "missingAttributes": ["class", "department"]
+  }
+  ```
+
+**Test 4b: Product 211737-90h1-8 (Full classification)**
+
+**Expected:**
+- `completionPct`: 100%
+- `productLevelReadiness.segmentScores` includes:
+  ```json
+  {
+    "segmentId": "product-classification",
+    "score": 100,
+    "weightPct": 20,
+    "missingAttributes": []
+  }
+  ```
+
+**Pass/Fail:**
+- ✅ PASS: Classification segment present with 20% weight
+- ❌ FAIL: Classification segment missing or 0% weight
+
+---
+
+## Test Case 5: Feature Flag Toggle (Instant Rollback)
+
+**Goal:** Verify mode toggle via Firestore instantly switches UI/API behavior.
+
+**Steps:**
+
+**5a: Enable GLOBAL mode**
+```javascript
+// Run in Firebase Console or Node.js
+await admin.firestore()
+  .collection('settings')
+  .doc('default')
+  .collection('exportSettings')
+  .doc('config')
+  .update({ mode: 'GLOBAL' });
+```
+
+**Verify:** Refresh Export page → site dropdown hidden, GLOBAL badge visible
+
+**5b: Disable GLOBAL mode (rollback)**
+```javascript
+await admin.firestore()
+  .collection('settings')
+  .doc('default')
+  .collection('exportSettings')
+  .doc('config')
+  .update({ mode: 'SITE_SCOPED' });
+```
+
+**Verify:** Refresh Export page → site dropdown visible, GLOBAL badge hidden
+
+**Pass/Fail:**
+- ✅ PASS: UI toggles within 5 minutes (no code deployment needed)
+- ❌ FAIL: UI requires code deployment to switch modes
+
+**Time to Rollback:** < 5 minutes
+
+---
+
+## Test Case 6: Backward Compatibility (Existing Clients)
+
+**Goal:** Verify existing clients (not checking `mode` field) continue working.
+
+**Steps:**
+1. Make API call to `/api/products/18/completion`
+2. Parse response, ignore `mode` and `productLevelReadiness` fields
+3. Use only `ready`, `completionPct`, `threshold` fields (existing contract)
+
+**Expected:**
+- Old clients see standard fields (ready, completionPct, threshold)
+- New fields are optional (backward compatible)
+
+**Pass/Fail:**
+- ✅ PASS: Response includes all legacy fields
+- ❌ FAIL: Legacy fields missing or changed
+
+---
+
+## Test Case 7: Website Optional in GLOBAL Mode
+
+**Goal:** Verify products without `website` field are NOT blocked in GLOBAL mode.
+
+**Steps:**
+1. Create test product with NO website field
+2. Call `/api/products/:id/completion` (GLOBAL mode)
+
+**Expected:**
+- `productLevelReadiness.websiteOptional`: true
+- `productLevelReadiness.sitesEvaluated`: ["__GLOBAL__"]
+- `ready`: Based on completion% only (NOT blocked by missing website)
+
+**Pass/Fail:**
+- ✅ PASS: Product evaluated despite missing website
+- ❌ FAIL: Product blocked with "No sites selected" error
+
+---
+
+## Test Case 8: CompletionExportGatePanel (Product Detail)
+
+**Goal:** Verify product detail page shows product-level completion in GLOBAL mode.
+
+**Steps:**
+1. Navigate to `https://staging.ropi.ai/products/18`
+2. Scroll to "Completion / Export" panel
+
+**Expected UI:**
+- ✅ "🌍 Completion / Export (GLOBAL)" header
+- ✅ Completion gauge: 72%
+- ✅ Segment breakdown visible (Core: 100%, Classification: 33%)
+- ✅ "Missing Attributes (Product-Level)" section: class, department
+- ✅ "Sites Evaluated: ropi-web, ropi-app" info text
+- ✅ NO per-site accordion (siteStatus empty)
+
+**Pass/Fail:**
+- ✅ PASS: Product-level view, no per-site breakdown
+- ❌ FAIL: Per-site accordion visible
+
+**Screenshot:** global-completion-panel.png
+
+---
+
+## Summary: Pass/Fail Criteria
+
+| Test Case | Pass Criteria | Fail Criteria |
+|-----------|---------------|---------------|
+| 1: API Response | `mode: "GLOBAL"`, `productLevelReadiness` present | Missing fields or `mode: "SITE_SCOPED"` |
+| 2: UI Dropdown | Site dropdown HIDDEN, badge visible | Site dropdown visible |
+| 3: Export Request | NO `site` field in request body | `site` field present |
+| 4: Classification | 20% weight, missing attrs detected | Segment missing or 0% weight |
+| 5: Feature Toggle | UI switches within 5 min (no deploy) | Requires code deployment |
+| 6: Backward Compat | All legacy fields present | Legacy fields missing |
+| 7: Website Optional | Products without website evaluated | Blocked with "No sites" error |
+| 8: Product Panel | Product-level view, no site accordion | Per-site accordion visible |
+
+---
+
+## Access Requirements
+
+- Staging credentials (see [access-blockers.txt](access-blockers.txt) if blocked)
+- Firestore Admin SDK access (for feature flag toggle tests)
+- Browser DevTools access
+- Product edit permissions
+
+---
+
+**Document Status:** ✅ Ready for QA  
+**Approval Required:** Lisa (LP Governance Lead)  
+**Next Artifact:** tests-plan.md

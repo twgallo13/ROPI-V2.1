@@ -1,6 +1,7 @@
-# Access Blockers for LP-export-global-1.0.0 HES A
+# Access Blockers for LP-export-global-1.0.0 HES A & HES B
 
-Generated: 2026-01-06
+Generated: 2026-01-06  
+Updated: 2026-01-06 (HES B)
 
 ## Blocked Access Items
 
@@ -48,6 +49,98 @@ Generated: 2026-01-06
 - Server decision code citations (file/line analysis)
 - SDK registry attribute analysis
 - Code path tracing for extractSelectedSites
+
+---
+
+## HES B Update: Additional Access Requirements for Implementation
+
+### 4. Firestore Write Access (Phase 2-4 Deployment)
+
+**Resource:** settings/{tenant}/exportSettings/config  
+**Resource:** settings/{tenant}/completionRules/config  
+**Blocker:** No Firestore write permissions in dev environment  
+**Required IAM Permissions:**
+- `firestore.documents.create`
+- `firestore.documents.update`
+- Read access to verify writes
+
+**Required for:**
+- Phase 2: Create exportSettings config document with mode field
+- Phase 4: Add product-classification segment to completionRules
+- All phases: Feature flag toggles for testing and rollback
+
+**Impact:** Cannot execute migration scripts (create_export_config.js, apply_classification_segment.js)
+
+**Workaround:** Use Firebase Console UI to manually create/update Firestore documents:
+1. Navigate to Firestore → settings/{tenant}/exportSettings/config
+2. Manually add field: `mode: "SITE_SCOPED"` (default)
+3. For Phase 4: Navigate to completionRules/config → Add segment object to `segments[]` array
+
+### 5. Staging Environment Deployment Access
+
+**Resource:** Staging deployment pipeline (npm run deploy:api, deploy:web)  
+**Blocker:** No CI/CD credentials in dev container  
+**Required:**
+- GitHub Actions deployment secrets
+- Firebase hosting deployment token
+- API server deployment credentials
+
+**Impact:** Cannot deploy Phases 1-4 to staging for VVP testing
+
+**Workaround:** Coordinate with DevOps team for deployment:
+1. Submit PR with Phase changes
+2. Request DevOps to deploy to staging
+3. Run VVP tests manually after deployment
+
+### 6. Firebase Admin SDK Initialization
+
+**Resource:** Firebase service account key for admin.initializeApp()  
+**Blocker:** Service account key not available in dev environment  
+**Required:**
+- `serviceAccountKey.json` with Firestore access
+- Firebase project ID
+
+**Impact:** Migration scripts (all `evidence/lp-export-global-1.0.0/scripts/*.js`) cannot run
+
+**Workaround:** 
+- Use Firebase Console UI for config updates (manual)
+- OR request service account key from DevOps (store securely, do NOT commit)
+
+---
+
+## Exact Permissions Required (for DevOps Request)
+
+### Firestore IAM Roles
+```
+roles/datastore.user (read/write to settings collection)
+OR custom role with:
+- firestore.documents.get
+- firestore.documents.list
+- firestore.documents.create
+- firestore.documents.update
+```
+
+### Firebase Deployment
+```
+firebase login:ci (generates token)
+OR GitHub Actions secret: FIREBASE_TOKEN
+```
+
+### Service Account Key
+```
+gcloud iam service-accounts keys create serviceAccountKey.json \
+  --iam-account=<service-account-email>
+```
+
+---
+
+## Status: HES B Access Blockers
+
+- **HES B Design Phase:** ✅ COMPLETE (no runtime access needed)
+- **HES B Implementation Phase (Post-Acceptance):** ⚠️ BLOCKED without Firestore write + deployment access
+- **VVP Execution:** ⚠️ BLOCKED without staging credentials + deployed code
+
+**Recommendation:** Request all permissions listed above BEFORE starting Phase 1 implementation.
 - Code path tracing for classification attribute handling
 - Target contract design (design artifact)
 - Migration plan (design artifact)
