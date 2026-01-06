@@ -42,6 +42,15 @@ export const ExportMetadataSchema = z.object({
 
 export type ExportMetadata = z.infer<typeof ExportMetadataSchema>;
 
+/**
+ * Combined export field schema - accepts legacy boolean or new object format
+ * LP-export-readiness-diagnostics-1.0.0: Added boolean support for legacy attributes
+ */
+export const ExportFieldSchema = z.union([
+  z.boolean(),          // Legacy format: export: true/false
+  ExportMetadataSchema, // New format: export: { key, omitIfEmpty, targets }
+]).optional();
+
 export const AttributeSchema = z.object({
   attribute_id: z.string().min(1).regex(/^[a-z0-9-_.]+$/),
   label: z.string().min(1),
@@ -65,8 +74,8 @@ export const AttributeSchema = z.object({
   requiredForExport: z.boolean().optional().default(false),
   /** Whether this attribute is for internal use only and should never be exposed to external channels */
   internalOnly: z.boolean().optional().default(false),
-  /** Channel-specific export configuration */
-  export: ExportMetadataSchema,
+  /** Channel-specific export configuration - accepts boolean OR object */
+  export: ExportFieldSchema,
   
   createdBy: z.string().optional(),
   createdAt: z.union([z.string(), z.object({}).passthrough()]).optional(),
