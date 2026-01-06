@@ -115,6 +115,9 @@ import {
   importDryRunHandler,
 } from './endpoints/import';
 
+// LP-export-ui-readiness-1.0.0: Export readiness endpoint
+import { readinessHandler } from './endpoints/export';
+
 // LP-registry-health-1.0.0: Registry health check
 import {
   registryHealthHandler,
@@ -281,6 +284,8 @@ api.post('/processImportBatch', requireAdmin, processImportBatchHandler);
 api.get('/importBatchStatus', getBatchStatusHandler);
 // PVS-0.3.1 Import preview with mapping support
 api.post('/admin/imports/preview', importPreviewHandler);
+// LP-export-ui-readiness-1.0.0: Export readiness endpoint
+api.get('/admin/exports/readiness', requireAdmin, readinessHandler);
 // LP-1.1.0: Protect syncAttributeRegistry endpoint (require admin + dryRun default true)
 api.post('/syncAttributeRegistry', requireAdmin, async (req, res) => {
   try {

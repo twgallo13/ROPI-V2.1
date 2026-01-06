@@ -239,6 +239,55 @@ export async function previewExportHandler(
   }
 }
 
+/**
+ * GET /api/admin/exports/readiness
+ * LP-export-ui-readiness-1.0.0
+ * 
+ * Check catalog-level export readiness status.
+ * Returns CompletionDrivenExportReadiness JSON:
+ * - 200: Export is ready (ready === true)
+ * - 423: Export is blocked (ready === false)
+ */
+export async function readinessHandler(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
+  try {
+    // GOVERNANCE: Capture timestamp at request start for deterministic evaluation
+    const evaluatedAt = new Date().toISOString();
+    console.log('[Export] Checking export readiness...', { evaluatedAt });
+
+    const readinessResult = await calculateCompletionDrivenExportReadiness(
+      undefined,  // No specific product - catalog-level
+      false,      // Don't force rules refresh
+      evaluatedAt
+    );
+
+    console.log('[Export] Readiness check complete:', {
+      ready: readinessResult.ready,
+      completionPct: readinessResult.completionPct,
+      threshold: readinessResult.threshold,
+      blockingReasons: readinessResult.blockingReasons.length
+    });
+
+    // Return 200 when ready, 423 when blocked
+    const statusCode = readinessResult.ready ? 200 : 423;
+    
+    res.status(statusCode).json({
+      success: readinessResult.ready,
+      readiness: readinessResult
+    });
+  } catch (error) {
+    console.error('[Export] Readiness check error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({
+      success: false,
+      error: 'EXPORT_READINESS_CHECK_FAILED',
+      message
+    });
+  }
+}
+
 // ============================================================================
 // Routes
 // ============================================================================
@@ -256,6 +305,11 @@ app.post('/', (req, res) => {
 // Preview endpoint
 app.get('/preview', (req, res) => {
   requireAdmin(req, res, () => previewExportHandler(req, res));
+});
+
+// Readiness endpoint (LP-export-ui-readiness-1.0.0)
+app.get('/readiness', (req, res) => {
+  requireAdmin(req, res, () => readinessHandler(req, res));
 });
 
 // ============================================================================
