@@ -952,7 +952,10 @@ export async function getProductCompletionHandler(req: Request, res: Response) {
     const productData = productDoc.data();
 
     // Calculate completion-driven export readiness
-    const readiness = await calculateCompletionDrivenExportReadiness(productId, productData);
+    // LP-export-site-triage-1.0.0: Pass ProductDocument (not productId string)
+    // Ensure id is included as ProductDocument requires it
+    const productWithId = { id: productId, ...productData } as import('../services/exportService').ProductDocument;
+    const readiness = await calculateCompletionDrivenExportReadiness(productWithId);
 
     // Return readiness payload
     res.status(200).json(readiness);
