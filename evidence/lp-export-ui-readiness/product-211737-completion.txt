@@ -1,0 +1,67 @@
+Creating admin token...
+Exchanging for ID token...
+
+=== Testing GET /api/products/211737-90h1-8/completion ===
+
+HTTP Status: 200
+
+Response Body:
+{
+  "ready": true,
+  "completionPct": 80,
+  "threshold": 80,
+  "hasBlockingSites": false,
+  "blockingReasons": [],
+  "operatorExplanation": {
+    "summary": "Export ready: product 80% complete (threshold: 80%)",
+    "blockingIssues": [],
+    "completionBreakdown": [
+      {
+        "segmentId": "core-attributes",
+        "segmentName": "Core Product Attributes",
+        "score": 100,
+        "weightPct": 80,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "seo-attributes",
+        "segmentName": "SEO & Marketing",
+        "score": 0,
+        "weightPct": 20,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "media-attributes",
+        "segmentName": "Media & Images",
+        "score": 0,
+        "weightPct": 0,
+        "missingAttributes": []
+      }
+    ],
+    "siteStatus": [
+      {
+        "site": "shiekh.com",
+        "blocked": false
+      },
+      {
+        "site": "Karmaloop.com",
+        "blocked": false
+      }
+    ],
+    "actionRequired": []
+  },
+  "evaluationTimestamp": "2026-01-06T07:24:36.120Z",
+  "rulesVersion": 3
+}
+
+=== Verification ===
+- ready: true
+- completionPct: 80
+
+=== Site Status for 211737-90h1-8 ===
+  - shiekh.com: blocked=false, reason=none
+  - Karmaloop.com: blocked=false, reason=none
+
+✅ shiekh.com found in siteStatus: {"site":"shiekh.com","blocked":false}
+
+✅ PASS: No "No sites selected" error

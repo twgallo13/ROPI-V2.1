@@ -1,0 +1,171 @@
+{
+  "lpId": "LP-export-ui-readiness-1.0.0",
+  "hesPhase": "B",
+  "title": "Add GET /api/admin/exports/readiness endpoint",
+  "deliveredAt": "2026-01-07T07:10:00Z",
+  "branch": {
+    "name": "fix/admin-exports-readiness-endpoint-2026-01-07",
+    "sha": "21703f98509aec5a7610a5f59505a75a82dfe7fb",
+    "baseBranch": "aoss-main"
+  },
+  "pullRequest": {
+    "number": 450,
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/450",
+    "title": "feat(api): add GET /api/admin/exports/readiness endpoint — LP-export-ui-readiness-1.0.0",
+    "labels": ["bugfix", "api", "backend", "p1-high"],
+    "mergePlan": "Squash merge to aoss-main after CI passes and Lisa approval"
+  },
+  "commits": [
+    {
+      "sha": "21703f98509aec5a7610a5f59505a75a82dfe7fb",
+      "message": "feat(api): add GET /api/admin/exports/readiness endpoint"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "packages/api/src/endpoints/export.ts",
+      "action": "modified",
+      "description": "Add readinessHandler function (lines 242-295)"
+    },
+    {
+      "path": "packages/api/src/apiApp.ts",
+      "action": "modified",
+      "description": "Add import for readinessHandler and route registration"
+    },
+    {
+      "path": "packages/api/src/endpoints/export.readiness.test.ts",
+      "action": "created",
+      "description": "Add 6 integration tests for readiness endpoint"
+    }
+  ],
+  "implementation": {
+    "handler": {
+      "file": "packages/api/src/endpoints/export.ts",
+      "function": "readinessHandler",
+      "signature": "(req: express.Request, res: express.Response) => Promise<void>",
+      "behavior": {
+        "200": "When calculateCompletionDrivenExportReadiness returns ready: true",
+        "423": "When calculateCompletionDrivenExportReadiness returns ready: false",
+        "500": "When service throws an error"
+      }
+    },
+    "route": {
+      "file": "packages/api/src/apiApp.ts",
+      "path": "/admin/exports/readiness",
+      "method": "GET",
+      "middleware": ["requireAdmin"],
+      "fullPath": "/api/admin/exports/readiness"
+    }
+  },
+  "tests": {
+    "file": "packages/api/src/endpoints/export.readiness.test.ts",
+    "framework": "vitest",
+    "count": 6,
+    "results": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cases": [
+      {
+        "name": "returns 200 with success:true when readiness.ready === true",
+        "status": "passed"
+      },
+      {
+        "name": "returns 423 with success:false when readiness.ready === false",
+        "status": "passed"
+      },
+      {
+        "name": "returns 423 when blocked by site Description/SEO requirements",
+        "status": "passed"
+      },
+      {
+        "name": "returns 500 when service throws error",
+        "status": "passed"
+      },
+      {
+        "name": "calls calculateCompletionDrivenExportReadiness with correct parameters",
+        "status": "passed"
+      },
+      {
+        "name": "includes siteStatus in response when product has selected sites",
+        "status": "passed"
+      }
+    ],
+    "output": "Test Files  1 passed (1)\n     Tests  6 passed (6)\n  Duration  1.39s"
+  },
+  "verification": {
+    "status": "PENDING_MERGE_AND_DEPLOY",
+    "stagingChecks": {
+      "readinessEndpoint": {
+        "url": "https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/exports/readiness",
+        "expectedStatus": [200, 423],
+        "result": "PENDING"
+      },
+      "exportUIMount": {
+        "url": "https://ropi-aoss-staging.web.app/export",
+        "expectedBehavior": "Export Manager UI mounts without 404 error",
+        "result": "PENDING"
+      },
+      "product211737Check": {
+        "productId": "211737-90h1-8",
+        "expectedBehavior": "Appears in siteStatus, not blocked for 'No sites selected'",
+        "result": "PENDING"
+      }
+    },
+    "ciRun": {
+      "status": "PENDING",
+      "runId": null,
+      "runUrl": null
+    },
+    "deployRun": {
+      "status": "PENDING",
+      "runId": null,
+      "runUrl": null
+    }
+  },
+  "responseContract": {
+    "success": {
+      "statusCode": 200,
+      "body": {
+        "success": true,
+        "readiness": {
+          "ready": true,
+          "completionPct": "<number>",
+          "threshold": "<number>",
+          "hasBlockingSites": false,
+          "blockingReasons": [],
+          "operatorExplanation": "<OperatorExplanation>",
+          "catalogStats": "<CatalogStats>",
+          "evaluationTimestamp": "<ISO string>",
+          "rulesVersion": "<number>"
+        }
+      }
+    },
+    "blocked": {
+      "statusCode": 423,
+      "body": {
+        "success": false,
+        "readiness": {
+          "ready": false,
+          "completionPct": "<number>",
+          "threshold": "<number>",
+          "hasBlockingSites": "<boolean>",
+          "blockingReasons": "<ExportBlockingReason[]>",
+          "operatorExplanation": "<OperatorExplanation>",
+          "catalogStats": "<CatalogStats>",
+          "evaluationTimestamp": "<ISO string>",
+          "rulesVersion": "<number>"
+        }
+      }
+    },
+    "error": {
+      "statusCode": 500,
+      "body": {
+        "success": false,
+        "error": "EXPORT_READINESS_CHECK_FAILED",
+        "message": "<error message>"
+      }
+    }
+  }
+}

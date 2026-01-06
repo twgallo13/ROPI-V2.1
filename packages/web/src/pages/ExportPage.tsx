@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PageLayout from '@/components/common/PageLayout';
 import { ExportBlockedModal } from '@/components/export/ExportBlockedModal';
 import { useExportCompletion } from '@/hooks/useExportCompletion';
+import { getAuthHeaders } from '@/lib/authHeaders';
 
 /**
  * Export Manager Page
@@ -28,12 +29,13 @@ function ExportPage() {
 
     try {
       setExporting(true);
+      const authHeaders = await getAuthHeaders();
 
       const response = await fetch('/api/admin/exports/dry-run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('firebase_token') || ''}`,
+          ...authHeaders,
         },
         body: JSON.stringify({
           site: selectedSite,

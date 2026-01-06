@@ -1,0 +1,82 @@
+# Evidence: Readiness Endpoint 200 Response
+# LP: LP-export-readiness-diagnostics-1.0.0
+# Task: 1 - Auth/401 Readiness Endpoint Investigation
+# Date: 2026-01-06
+
+## Command Run (Token Generation)
+```bash
+# Generate admin ID token via service account
+cd /workspaces/ROPI-V2.1 && node get_token_local.cjs
+# Token saved to /tmp/admin_token.txt
+```
+
+## Command Run (Authenticated Request)
+```bash
+TOKEN=$(cat /tmp/admin_token.txt)
+curl -s -w '\nHTTP_STATUS: %{http_code}\n' \
+  -H "Authorization: Bearer $TOKEN" \
+  https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/exports/readiness
+```
+
+## Response
+```json
+{
+  "success": true,
+  "readiness": {
+    "ready": true,
+    "completionPct": 80,
+    "threshold": 80,
+    "hasBlockingSites": false,
+    "blockingReasons": [],
+    "operatorExplanation": {
+      "summary": "Export ready: all 7 products meet requirements (min completion: 80%)",
+      "blockingIssues": [],
+      "completionBreakdown": [],
+      "siteStatus": [],
+      "actionRequired": []
+    },
+    "catalogStats": {
+      "totalProducts": 7,
+      "blockedByCompletionCount": 0,
+      "blockedBySiteCount": 0,
+      "readyCount": 7
+    },
+    "evaluationTimestamp": "2026-01-06T08:03:55.420Z",
+    "rulesVersion": 3
+  }
+}
+```
+
+## HTTP Status
+200
+
+## Analysis
+
+The endpoint works correctly with a valid admin token:
+- Returns 200 status when catalog is export-ready
+- Returns structured readiness data with:
+  - `ready: true` - export gate unlocked
+  - `completionPct: 80` - meets threshold
+  - `threshold: 80` - configured minimum
+  - `catalogStats` showing 7/7 products ready
+
+### Auth Success Path
+
+1. Token passed in `Authorization: Bearer <token>` header
+2. `auth.ts:verifyAuthToken()` extracts token from header (line 69)
+3. `admin.auth().verifyIdToken(token)` validates Firebase token (line 96)
+4. Custom claims extracted: `role: 'admin'` (line 105)
+5. `requireAdmin` checks `isAdmin(auth)` → true (line 184)
+6. Request proceeds to `readinessHandler` in export.ts
+
+### Token Details
+- Token generated via `admin.auth().createCustomToken()` with `role: 'admin'`
+- Exchanged for ID token via `identitytoolkit.googleapis.com` REST API
+- Valid for ~1 hour (Firebase default)
+
+## Conclusion
+
+The readiness endpoint is functioning correctly:
+- Returns 401 without token (expected)
+- Returns 200 with valid admin token (expected)
+- Returns properly structured readiness data

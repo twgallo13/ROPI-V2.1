@@ -1,0 +1,245 @@
+{
+  "lpId": "LP-export-readiness-diagnostics-1.0.0",
+  "hesPhase": "A",
+  "title": "Export Readiness Diagnostics — Planning",
+  "from": "Homer",
+  "to": "Lisa",
+  "date": "2026-01-07",
+  "deliveredAt": "2026-01-07T07:35:00Z",
+  "scope": "Read-only diagnostics in repo/staging. No code changes except temporary instrumentation (only with explicit approval).",
+  "priority": "Immediate",
+  
+  "accessVerification": {
+    "stagingFirestore": {
+      "status": "VERIFIED",
+      "project": "ropi-bccee",
+      "serviceAccount": "service-account.json present",
+      "method": "Admin SDK with service account credentials"
+    },
+    "stagingCloudFunctions": {
+      "status": "VERIFIED",
+      "endpoint": "us-central1-ropi-bccee.cloudfunctions.net",
+      "method": "HTTPS with admin token"
+    },
+    "repositoryAccess": {
+      "status": "VERIFIED",
+      "branch": "aoss-main"
+    }
+  },
+
+  "tasksPlanned": [
+    {
+      "id": 1,
+      "name": "Auth/401 Readiness Endpoint Investigation",
+      "description": "Reproduce 401, trace auth flow, identify token attachment failure",
+      "filesToInspect": [
+        {
+          "path": "packages/api/src/middleware/auth.ts",
+          "purpose": "requireAdmin middleware, token verification logic, custom claim checks"
+        },
+        {
+          "path": "packages/api/src/apiApp.ts",
+          "purpose": "Route registration for /admin/exports/readiness"
+        },
+        {
+          "path": "packages/web/src/hooks/useExportCompletion.ts",
+          "purpose": "Frontend token attachment (localStorage.getItem('firebase_token'))"
+        },
+        {
+          "path": "packages/web/src/lib/apiFetch.ts",
+          "purpose": "Global API fetch wrapper, auth header injection"
+        }
+      ],
+      "commands": [
+        "curl -s -w '\\nHTTP: %{http_code}' https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/exports/readiness",
+        "node scripts/test-readiness-endpoint.js (authenticated call)"
+      ],
+      "evidenceFiles": [
+        "evidence/lp-export-readiness-diagnostics/readiness-401.txt",
+        "evidence/lp-export-readiness-diagnostics/readiness-200.txt",
+        "evidence/lp-export-readiness-diagnostics/auth-middleware-excerpt.txt"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Legacy UI Audit",
+      "description": "Locate legacy panel components, determine mounting conditions",
+      "filesToInspect": [
+        {
+          "path": "packages/web/src/pages/ExportPage.tsx",
+          "purpose": "Current Export Manager page implementation"
+        },
+        {
+          "path": "packages/web/src/components/product/*",
+          "purpose": "Product-level export/suggestion panels"
+        }
+      ],
+      "commands": [
+        "git grep -n 'Smart Suggestions'",
+        "git grep -n 'LegacyExport'",
+        "git grep -n 'SmartSuggestions'",
+        "git grep -n 'ExportReadinessPanel'"
+      ],
+      "evidenceFiles": [
+        "evidence/lp-export-readiness-diagnostics/legacy-ui-mapping.txt"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Completion Logic Source-of-Truth Trace",
+      "description": "Trace required attribute enforcement from API to registry",
+      "filesToInspect": [
+        {
+          "path": "packages/api/src/services/completionDrivenExportReadiness.ts",
+          "purpose": "Entry point for catalog/product readiness"
+        },
+        {
+          "path": "packages/api/src/services/completionRulesService.ts",
+          "purpose": "loadCompletionRules() implementation"
+        },
+        {
+          "path": "packages/api/src/services/completionEvaluationEngineEntry.ts",
+          "purpose": "evaluateCompletion() logic"
+        },
+        {
+          "path": "packages/api/src/services/exportService.ts",
+          "purpose": "loadExportableAttributes() data source"
+        },
+        {
+          "path": "packages/sdk/config/attributeRegistry.json",
+          "purpose": "Canonical attribute registry"
+        }
+      ],
+      "commands": [
+        "grep -n 'website' packages/api/src/services/completionDrivenExportReadiness.ts",
+        "grep -n 'website' packages/api/src/services/completionEvaluationEngineEntry.ts",
+        "grep -n 'extractSelectedSites' packages/api/src/services/*.ts"
+      ],
+      "evidenceFiles": [
+        "evidence/lp-export-readiness-diagnostics/attribute-enforcement-map.csv",
+        "evidence/lp-export-readiness-diagnostics/completion-source-trace.md"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Attribute Registry vs Settings Connection",
+      "description": "Determine if engine reads from Firestore settings or static JSON",
+      "filesToInspect": [
+        {
+          "path": "packages/api/src/services/attributesService.ts",
+          "purpose": "getAttribute, loadAttributeRegistry implementation"
+        },
+        {
+          "path": "packages/api/src/services/exportService.ts",
+          "purpose": "loadExportableAttributes data source"
+        },
+        {
+          "path": "packages/api/src/services/completionRulesService.ts",
+          "purpose": "Firestore vs static source"
+        }
+      ],
+      "commands": [
+        "grep -n 'settings/attributes' packages/api/src/services/*.ts",
+        "grep -n 'attributeRegistry' packages/api/src/services/*.ts",
+        "node -e \"require('firebase-admin').initializeApp({...}); admin.firestore().doc('settings/attributes').get()...\""
+      ],
+      "evidenceFiles": [
+        "evidence/lp-export-readiness-diagnostics/registry-source.txt",
+        "evidence/lp-export-readiness-diagnostics/settings-attributes-staging.json"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Attribute Category Mutation Error (400) Root Cause",
+      "description": "Reproduce 400 on category change, identify validation logic",
+      "filesToInspect": [
+        {
+          "path": "packages/api/src/endpoints/admin/settings.ts",
+          "purpose": "Attribute update handler"
+        },
+        {
+          "path": "packages/api/src/services/attributesService.ts",
+          "purpose": "Validation logic, allowed categories"
+        }
+      ],
+      "commands": [
+        "curl -X PUT -H 'Authorization: Bearer $TOKEN' -H 'Content-Type: application/json' -d '{...}' .../api/admin/settings/attributes/class",
+        "grep -n 'category' packages/api/src/services/attributesService.ts",
+        "grep -n 'ATTRIBUTE_CATEGORIES' packages/api/src/**/*.ts"
+      ],
+      "evidenceFiles": [
+        "evidence/lp-export-readiness-diagnostics/attribute-update-400.txt"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Final Evidence-Based Report",
+      "description": "Consolidate findings into final HES A report",
+      "evidenceFiles": [
+        "docs/HES_A_report_export_readiness_diagnostics.json"
+      ]
+    }
+  ],
+
+  "evidenceFiles": [
+    "evidence/lp-export-readiness-diagnostics/readiness-401.txt",
+    "evidence/lp-export-readiness-diagnostics/readiness-200.txt",
+    "evidence/lp-export-readiness-diagnostics/auth-middleware-excerpt.txt",
+    "evidence/lp-export-readiness-diagnostics/legacy-ui-mapping.txt",
+    "evidence/lp-export-readiness-diagnostics/attribute-enforcement-map.csv",
+    "evidence/lp-export-readiness-diagnostics/completion-source-trace.md",
+    "evidence/lp-export-readiness-diagnostics/registry-source.txt",
+    "evidence/lp-export-readiness-diagnostics/settings-attributes-staging.json",
+    "evidence/lp-export-readiness-diagnostics/attribute-update-400.txt",
+    "docs/HES_A_report_export_readiness_diagnostics.json"
+  ],
+
+  "stopConditions": [
+    "Any action requiring changes to attribute registry or completion rules",
+    "Missing credentials/RBAC/infra needed for reproduction",
+    "Reproduction requires production data change or high-privilege secret",
+    "Diagnosis reveals need for backend change (report and pause)"
+  ],
+
+  "permissionBlockers": [],
+  
+  "temporaryInstrumentationRequest": {
+    "status": "NOT_REQUESTED",
+    "reason": "Initial investigation can be completed with existing logging. If additional instrumentation is needed during execution, will request explicitly with specific branch name and code changes."
+  },
+
+  "readiness": {
+    "canProceed": true,
+    "blockers": [],
+    "notes": [
+      "All required files exist in repository",
+      "Firebase staging access verified via service account",
+      "Admin token generation working (test-admin-user with role claim)",
+      "No temporary instrumentation needed for HES A planning phase"
+    ]
+  },
+
+  "keyObservations": {
+    "authFlow": {
+      "frontendTokenSource": "localStorage.getItem('firebase_token') in useExportCompletion.ts:96",
+      "headerFormat": "Authorization: Bearer ${token} in useExportCompletion.ts:102",
+      "potentialIssue": "If user not logged in, localStorage returns empty string, causing 401"
+    },
+    "routeRegistration": {
+      "file": "packages/api/src/apiApp.ts",
+      "expectedLine": "api.get('/admin/exports/readiness', requireAdmin, readinessHandler)",
+      "needsVerification": true
+    }
+  },
+
+  "approvalRequest": {
+    "requestedBy": "Homer",
+    "requestedAction": "Approval to proceed with investigation tasks 1-6 as planned",
+    "constraints": [
+      "Read-only diagnostics only",
+      "No code changes",
+      "No registry/rules modifications",
+      "Will request explicit approval before any temporary instrumentation"
+    ]
+  }
+}

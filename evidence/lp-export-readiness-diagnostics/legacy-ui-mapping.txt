@@ -1,0 +1,165 @@
+# Evidence: Legacy UI Mapping
+# LP: LP-export-readiness-diagnostics-1.0.0
+# Task: 2 - Legacy UI Audit
+# Date: 2026-01-06
+
+## Summary
+
+**Finding**: There are two distinct UI systems for export readiness:
+1. **ExportReadinessPanel** (legacy, per-product view)
+2. **CompletionExportGatePanel** (new completion-driven system)
+
+Both are currently rendered in the Product Editor sidebar.
+
+---
+
+## Components Identified
+
+### 1. SmartSuggestionsPanel (ACTIVE)
+**Location**: `packages/web/src/components/product/SmartSuggestionsPanel.tsx`
+**Mounted in**: `packages/web/src/pages/ProductEditorPage.tsx:194`
+**Purpose**: Display AI-generated attribute suggestions
+**Status**: Active but non-functional (TODO comment indicates not wired to AI service)
+
+### 2. ExportReadinessPanel (LEGACY)
+**Location**: `packages/web/src/components/product/ExportReadinessPanel.tsx`
+**Mounted in**: `packages/web/src/pages/ProductEditorPage.tsx:200`
+**Purpose**: Display legacy export readiness score with per-website checklist
+**Data source**: `product.exportReadiness` object from product document
+**Status**: **LEGACY** - superseded by CompletionExportGatePanel
+
+#### ExportReadinessPanel Structure
+```tsx
+interface ExportReadinessPanelProps {
+  readiness: ExportReadiness;  // product.exportReadiness
+  websites: string[];          // product.websites
+  onJumpToTab: (tab: string) => void;
+}
+```
+
+#### ExportReadiness Type (legacy)
+```typescript
+interface ExportReadiness {
+  overall: number;  // 0-100 percentage
+  byWebsite: {
+    [site: string]: {
+      score: number;
+      checklist: {
+        coreInfo: boolean;
+        attributes: boolean;
+        descriptions: boolean;
+        media: boolean;
+        pricing: boolean;
+      };
+      missingAttributes: Array<{ id: string; label: string }>;
+    };
+  };
+}
+```
+
+### 3. CompletionExportGatePanel (NEW)
+**Location**: `packages/web/src/components/product/CompletionExportGatePanel.tsx`
+**Mounted in**: `packages/web/src/pages/ProductEditorPage.tsx:186`
+**Purpose**: Display completion evaluation results with blocking reasons
+**Data source**: `/api/products/{productId}/completion` endpoint
+**Status**: **CURRENT** - uses completion-driven export readiness system
+
+#### CompletionExportGatePanel Structure
+```tsx
+interface CompletionExportGatePanelProps {
+  productId: string;
+}
+// Fetches from: /api/products/{productId}/completion
+// Uses: localStorage.getItem('firebase_token') - BROKEN (see Task 1)
+```
+
+### 4. ExportPage (NEW)
+**Location**: `packages/web/src/pages/ExportPage.tsx`
+**Purpose**: Catalog-level export with completion gate
+**Data source**: `/api/admin/exports/readiness` endpoint via useExportCompletion hook
+**Status**: **CURRENT** - uses completion-driven export readiness system
+
+---
+
+## UI Component Hierarchy in ProductEditorPage
+
+```tsx
+<ProductEditorPage>
+  <ProductHeader canPublish={completion?.ready} />  // NEW: completion-driven
+  
+  <div className="product-sidebar">
+    <CompletionExportGatePanel productId={id} />    // NEW: completion panel
+    <ObservationsPanel productId={id} />             // ACTIVE
+    <SmartSuggestionsPanel suggestions={...} />      // ACTIVE (stub)
+    <ExportReadinessPanel readiness={...} />         // LEGACY: still rendered!
+  </div>
+</ProductEditorPage>
+```
+
+---
+
+## Commands Used
+
+```bash
+# Find legacy UI components
+git grep -n 'Smart Suggestions|SmartSuggestions|LegacyExport|ExportReadinessPanel' --include='*.ts' --include='*.tsx'
+
+# Find legacy/deprecated export references
+grep -rn "legacy|Legacy|deprecated|Deprecated" packages/web/src/ | grep -i export
+```
+
+---
+
+## Findings
+
+### Issue 1: ExportReadinessPanel Still Rendered
+The legacy `ExportReadinessPanel` is still rendered in ProductEditorPage.tsx:200
+alongside the new `CompletionExportGatePanel` (line 186).
+
+This creates **two different export readiness indicators** that may show
+conflicting information:
+- ExportReadinessPanel shows legacy `product.exportReadiness.overall`
+- CompletionExportGatePanel shows API-driven `completion.ready`
+
+### Issue 2: ExportReadinessPanel Uses Different Data Source
+- Legacy: `product.exportReadiness` (document field, local computation)
+- New: API call to `/api/products/{id}/completion` (server-side evaluation)
+
+### Issue 3: auth token bug affects both new panels
+Both `CompletionExportGatePanel` (line 54) and `ExportPage` (line 36) use:
+```typescript
+Authorization: `Bearer ${localStorage.getItem('firebase_token') || ''}`
+```
+This key is never set (see Task 1), causing 401 errors.
+
+---
+
+## Recommendation (for follow-up LP)
+
+1. **Remove ExportReadinessPanel** from ProductEditorPage.tsx:200-204
+   - It shows legacy data inconsistent with the new completion system
+   - OR conditionally render only if CompletionExportGatePanel fails
+
+2. **Fix auth token bug** (see Task 1)
+   - Replace `localStorage.getItem('firebase_token')` with `getAuthHeaders()`
+
+3. **Remove SmartSuggestionsPanel** or wire to actual AI service
+   - Currently renders empty "No pending suggestions" message
+   - TODO comment indicates not implemented
+
+---
+
+## DOM Snapshot Locations
+
+### Before (Current State)
+Product Editor sidebar renders 4 panels:
+1. CompletionExportGatePanel - NEW (may show error due to 401)
+2. ObservationsPanel - ACTIVE
+3. SmartSuggestionsPanel - STUB (shows "No pending suggestions")
+4. ExportReadinessPanel - LEGACY (shows product.exportReadiness)
+
+### After (Recommended)
+Product Editor sidebar should render 2-3 panels:
+1. CompletionExportGatePanel - NEW (with auth fix)
+2. ObservationsPanel - ACTIVE
+3. (Optional) SmartSuggestionsPanel - only when AI service available

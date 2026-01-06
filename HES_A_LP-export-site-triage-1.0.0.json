@@ -1,0 +1,140 @@
+{
+  "hes": "A",
+  "lpId": "LP-export-site-triage-1.0.0",
+  "phaseName": "Export Site Triage & Remediation",
+  "phaseSlug": "export-site-triage",
+  "version": "1.0.0",
+  "createdAt": "2026-01-06T05:53:00.000Z",
+  "status": "COMPLETED",
+  "result": "ROOT_CAUSE_IDENTIFIED",
+  
+  "summary": {
+    "finding": "CRITICAL BUG: Function signature mismatch in getProductCompletionHandler",
+    "rootCause": "Handler passes (productId, productData) but function expects (product?, forceRulesRefresh?, evaluatedAt?)",
+    "impact": "extractSelectedSites() receives string productId instead of product document, always returns []",
+    "remediationRequired": "Fix function call in packages/api/src/endpoints/products.ts line 955"
+  },
+  
+  "rootCauseAnalysis": {
+    "bugLocation": "packages/api/src/endpoints/products.ts:955",
+    "bugCode": "const readiness = await calculateCompletionDrivenExportReadiness(productId, productData);",
+    "expectedSignature": "calculateCompletionDrivenExportReadiness(product?: ProductDocument, forceRulesRefresh = false, evaluatedAt?: string)",
+    "actualCall": "calculateCompletionDrivenExportReadiness(productId, productData)",
+    "parameterMismatch": {
+      "param1_expected": "product?: ProductDocument",
+      "param1_actual": "productId (string '211737-90h1-8')",
+      "param2_expected": "forceRulesRefresh = false",
+      "param2_actual": "productData (the actual product document)",
+      "param3_expected": "evaluatedAt?: string",
+      "param3_actual": "undefined"
+    },
+    "consequence": "extractSelectedSites(product) called with string '211737-90h1-8' instead of document object, returns []"
+  },
+  
+  "evidenceChecks": {
+    "productDocDump": {
+      "status": "COMPLETED",
+      "finding": "Product HAS websites: [\"shiekh.com\"] at top level",
+      "evidenceFile": "evidence/lp-export-site-triage/product-211737-90h1-8-staging.json",
+      "keyFields": {
+        "websites": ["shiekh.com"],
+        "website": ["shiekh.com"],
+        "attributes.website": ["shiekh.com"],
+        "mpn": "211737-90H1-8"
+      }
+    },
+    "serverSideExtraction": {
+      "status": "COMPLETED",
+      "finding": "Local simulation returns [\"shiekh.com\"] correctly",
+      "evidenceFile": "scripts/debug-product-sites.js",
+      "result": "extractSelectedSites(product) → [\"shiekh.com\"] when called with correct product object"
+    },
+    "stagingApiResponse": {
+      "status": "COMPLETED",
+      "finding": "Staging API returns blocked with empty selectedSites",
+      "endpoint": "https://us-central1-ropi-bccee.cloudfunctions.net/api/products/211737-90h1-8/completion",
+      "response": {
+        "ready": false,
+        "completionPct": 0,
+        "hasBlockingSites": true,
+        "blockingReasons": [{"type": "REQUIRED_ATTRIBUTE_MISSING", "message": "No sites selected for product"}]
+      }
+    },
+    "completionRules": {
+      "status": "COMPLETED",
+      "finding": "Rules configured correctly with required_for_completion and required_for_export flags",
+      "evidenceFile": "evidence/lp-export-site-triage/exportSettings-staging.json",
+      "exportUnlockThresholdPct": 80,
+      "rulesVersion": 3
+    },
+    "attributeRegistry": {
+      "status": "COMPLETED",
+      "finding": "website attribute correctly defined with shiekh.com in allowed_values",
+      "evidenceFile": "evidence/lp-export-site-triage/registry-website.json",
+      "websiteAttribute": {
+        "attribute_id": "website",
+        "required_for_completion": true,
+        "required_for_export": true,
+        "allowed_values_includes_shiekh": true
+      }
+    },
+    "deployRun": {
+      "status": "COMPLETED",
+      "runId": "20736286010",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20736286010",
+      "headSha": "ee9318425a96b3c2a130cea82f146351ab6cf687",
+      "conclusion": "success",
+      "deployedAt": "2026-01-06T02:53:04Z"
+    }
+  },
+  
+  "dataFix": {
+    "required": false,
+    "reason": "Product data is correct. Bug is in API code, not data."
+  },
+  
+  "codeFix": {
+    "required": true,
+    "priority": "CRITICAL",
+    "file": "packages/api/src/endpoints/products.ts",
+    "line": 955,
+    "currentCode": "const readiness = await calculateCompletionDrivenExportReadiness(productId, productData);",
+    "fixedCode": "const readiness = await calculateCompletionDrivenExportReadiness(productData);",
+    "explanation": "Remove productId parameter - function expects product document as first param",
+    "branch": "fix/completion-handler-param-mismatch-2026-01-06",
+    "testRequired": true
+  },
+  
+  "defensiveExtractor": {
+    "required": true,
+    "reason": "Additional hardening to handle mis-keyed attributes and case variants",
+    "branch": "fix/attributes-website-robust-extract-2026-01-06",
+    "prLabels": ["state:in-progress", "lp:LP-export-site-extract-1.0.0", "type:fix", "cleanup:required"]
+  },
+  
+  "stopConditions": {
+    "cannotAccessFirestore": false,
+    "cannotRunServerScript": false,
+    "registryChangeRequired": false,
+    "massDataFixRequired": false
+  },
+  
+  "nextSteps": [
+    "HES B: Implement code fix for parameter mismatch (PRIORITY 1)",
+    "HES B: Implement defensive extractor with case-insensitive fallbacks",
+    "HES B: Add unit tests for handler parameter passing",
+    "HES C: Deploy to staging and verify product 211737-90h1-8 unblocked",
+    "HES D: Final merge receipts and VVP evidence"
+  ],
+  
+  "evidenceFiles": [
+    "evidence/lp-export-site-triage/product-211737-90h1-8-staging.json",
+    "evidence/lp-export-site-triage/exportSettings-staging.json",
+    "evidence/lp-export-site-triage/registry-website.json",
+    "scripts/debug-product-sites.js"
+  ],
+  
+  "approvalRequired": false,
+  "blockers": [],
+  "readyForHESB": true
+}

@@ -1,0 +1,161 @@
+{
+  "hes": "B",
+  "lpId": "LP-export-site-triage-1.0.0",
+  "phaseName": "Export Site Triage & Remediation",
+  "phaseSlug": "export-site-triage",
+  "version": "1.0.0",
+  "createdAt": "2026-01-06T06:10:00.000Z",
+  "status": "COMPLETED",
+  "result": "VERIFIED_SUCCESS",
+  
+  "summary": {
+    "finding": "Bug fix deployed and verified on staging",
+    "fix": "Handler now passes ProductDocument (not productId string) to calculateCompletionDrivenExportReadiness",
+    "verification": "Product 211737-90h1-8 now returns ready:true with siteStatus showing shiekh.com recognized"
+  },
+  
+  "branch": {
+    "name": "fix/calc-readiness-pass-product-2026-01-06",
+    "sha": "038ab385af47b7f78898ceceee9f46b6789abdf0",
+    "mergedSha": "6f4f4f50a55b0b99ca22a085a8605c03f53357d3"
+  },
+  
+  "pullRequest": {
+    "number": 449,
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/449",
+    "title": "fix(api): pass ProductDocument to calculateCompletionDrivenExportReadiness — LP-export-site-triage-1.0.0",
+    "state": "MERGED",
+    "labels": ["state:in-progress", "type:fix"],
+    "mergedAt": "2026-01-06T06:06:00.000Z"
+  },
+  
+  "codeChanges": {
+    "filesChanged": [
+      {
+        "path": "packages/api/src/endpoints/products.ts",
+        "action": "modified",
+        "description": "Fix parameter order in calculateCompletionDrivenExportReadiness call, include id in product object"
+      },
+      {
+        "path": "packages/api/src/endpoints/products.completion.test.ts",
+        "action": "modified",
+        "description": "Add LP-export-site-triage-1.0.0 tests verifying correct parameter passing"
+      }
+    ],
+    "commitShas": [
+      "038ab385af47b7f78898ceceee9f46b6789abdf0"
+    ],
+    "lineChanges": {
+      "additions": 123,
+      "deletions": 2
+    }
+  },
+  
+  "bugFix": {
+    "location": "packages/api/src/endpoints/products.ts:955-958",
+    "before": "const readiness = await calculateCompletionDrivenExportReadiness(productId, productData);",
+    "after": "const productWithId = { id: productId, ...productData } as ProductDocument;\nconst readiness = await calculateCompletionDrivenExportReadiness(productWithId);",
+    "rootCause": "Handler passed productId (string) as first arg instead of ProductDocument object"
+  },
+  
+  "unitTests": {
+    "testsAdded": 2,
+    "testFile": "packages/api/src/endpoints/products.completion.test.ts",
+    "testNames": [
+      "should pass ProductDocument (not productId string) to calculateCompletionDrivenExportReadiness",
+      "should return selectedSites when product has websites field"
+    ],
+    "results": {
+      "completionHandlerTests": "10 passed",
+      "extractSelectedSitesTests": "27 passed",
+      "total": "37 passed"
+    }
+  },
+  
+  "ci": {
+    "prChecks": {
+      "prPreviewDeploy": {
+        "runId": "20739669734",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20739669734",
+        "conclusion": "success"
+      },
+      "hesJsonValidation": {
+        "runId": "20739669740",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20739669740",
+        "conclusion": "success"
+      },
+      "deployPreCheck": {
+        "runId": "20739669733",
+        "url": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20739669733",
+        "conclusion": "success"
+      }
+    },
+    "preExistingFailures": [
+      {
+        "name": "SDK Unit Tests",
+        "reason": "Pre-existing failure in phase2_domain_validation.test.ts",
+        "notRelatedToThisFix": true
+      },
+      {
+        "name": "lp-lint",
+        "reason": "Pre-existing LP format validation failure",
+        "notRelatedToThisFix": true
+      }
+    ]
+  },
+  
+  "stagingDeploy": {
+    "runId": "20739727229",
+    "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20739727229",
+    "deployedCommitSha": "6f4f4f50a55b0b99ca22a085a8605c03f53357d3",
+    "conclusion": "success",
+    "deployedAt": "2026-01-06T06:08:00.000Z"
+  },
+  
+  "serverSideVerification": {
+    "endpoint": "https://us-central1-ropi-bccee.cloudfunctions.net/api/products/211737-90h1-8/completion",
+    "preFixResponse": {
+      "ready": false,
+      "completionPct": 0,
+      "hasBlockingSites": true,
+      "blockingReasons": [{"type": "REQUIRED_ATTRIBUTE_MISSING", "message": "No sites selected for product"}]
+    },
+    "postFixResponse": {
+      "ready": true,
+      "completionPct": 80,
+      "threshold": 80,
+      "hasBlockingSites": false,
+      "blockingReasons": [],
+      "siteStatus": [
+        {"site": "shiekh.com", "blocked": false},
+        {"site": "Karmaloop.com", "blocked": false}
+      ],
+      "operatorExplanation": {
+        "summary": "Export ready: product 80% complete (threshold: 80%)"
+      }
+    },
+    "verification": "PASSED - No longer reports 'No sites selected for product'"
+  },
+  
+  "evidenceFiles": [
+    "evidence/lp-export-site-triage/product-211737-90h1-8-staging.json",
+    "evidence/lp-export-site-triage/exportSettings-staging.json",
+    "evidence/lp-export-site-triage/registry-website.json",
+    "evidence/lp-export-site-triage/completion-post-fix.json"
+  ],
+  
+  "stopConditions": {
+    "otherCallSitesFound": false,
+    "unitTestsFailed": false,
+    "stagingDeployFailed": false,
+    "readinessStillReturnsEmpty": false
+  },
+  
+  "nextSteps": [
+    "HES C: Frontend verification - reload product page, confirm ProductHeader shows no blocker",
+    "HES C: Run E2E smoke tests for export page",
+    "HES D: Final merge receipts and VVP evidence"
+  ],
+  
+  "readyForHESC": true
+}

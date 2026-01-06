@@ -1,0 +1,177 @@
+# Evidence: Attribute Category Mutation 400 Error
+# LP: LP-export-readiness-diagnostics-1.0.0
+# Task: 5 - Category Mutation 400 Error Root Cause
+# Date: 2026-01-06
+
+## Summary
+
+The 400 error on attribute category update is **NOT caused by category validation**.
+The actual cause is a **schema mismatch on the `export` field**:
+
+- **Firestore data**: `"export": true` (boolean)
+- **SDK Schema**: `export: ExportMetadataSchema` (object with keys, omitIfEmpty, targets)
+
+---
+
+## Reproduction
+
+### Command Run
+```bash
+TOKEN=$(cat /tmp/admin_token.txt)
+curl -s -X PUT \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"category": "test_category_change"}' \
+  "https://us-central1-ropi-bccee.cloudfunctions.net/api/admin/settings/attributes/class"
+```
+
+### Response
+```json
+{
+  "ok": false,
+  "error": "validation_failed",
+  "message": "Invalid attribute data",
+  "details": [
+    {
+      "path": "export",
+      "message": "Expected object, received boolean"
+    }
+  ]
+}
+```
+
+### HTTP Status
+400
+
+---
+
+## Root Cause Analysis
+
+### 1. Firestore Data Structure
+The `class` attribute in Firestore has:
+```json
+{
+  "attribute_id": "class",
+  "label": "Class",
+  "category": "classification",
+  "data_type": "enum",
+  "export": true,  // ⚠️ BOOLEAN, not object
+  "exportable": true,
+  "requiredForExport": true,
+  "internalOnly": false,
+  // ... other fields
+}
+```
+
+### 2. SDK Schema Definition
+**File**: `packages/sdk/src/schema/attribute.ts:33-41`
+```typescript
+export const ExportMetadataSchema = z.object({
+  key: z.string().optional(),
+  omitIfEmpty: z.boolean().optional().default(false),
+  targets: z.array(z.enum(['shopify', 'google', 'amazon', 'magento', 'csv'])).optional(),
+}).optional();
+
+// In AttributeSchema (line 66):
+export: ExportMetadataSchema,  // Expects object, not boolean
+```
+
+### 3. Update Flow (settings.ts:113-201)
+
+```typescript
+// 1. User sends PATCH with { category: "test_category_change" }
+
+// 2. Server fetches existing attribute (line 184)
+const existing = await getAttribute(attributeId);
+// existing.export = true (boolean from Firestore)
+
+// 3. Server merges patch into existing (line 188-191)
+const merged = { ...existing, ...payload };
+// merged.export = true (still boolean)
+
+// 4. Server validates merged object (line 194)
+const validation = validateAttributeData(merged);
+// ❌ FAILS: export field is boolean, schema expects object
+```
+
+### 4. Why This Happens
+
+The `fromFirestore()` function in `attributesService.ts:127` passes through:
+```typescript
+export: data.export,  // Passes boolean through unchanged
+```
+
+The SDK schema expects `export` to be either:
+- `undefined` (optional)
+- An object: `{ key?: string, omitIfEmpty?: boolean, targets?: string[] }`
+
+But Firestore has legacy data with `export: true` (boolean).
+
+---
+
+## Files Involved
+
+| File | Line | Issue |
+|------|------|-------|
+| `packages/sdk/src/schema/attribute.ts` | 66 | `export: ExportMetadataSchema` expects object |
+| `packages/api/src/services/attributesService.ts` | 127 | `export: data.export` passes boolean through |
+| `packages/api/src/endpoints/admin/settings.ts` | 194 | `validateAttributeData(merged)` fails on boolean |
+
+---
+
+## Affected Attributes
+
+Any attribute in Firestore with `"export": true` or `"export": false` (boolean)
+will fail validation on update.
+
+Based on the `class` attribute sample, this affects at least attributes synced
+before the `ExportMetadataSchema` was introduced.
+
+---
+
+## Commands Used
+
+```bash
+# Test category update
+curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"category": "test_category_change"}' \
+  ".../api/admin/settings/attributes/class"
+
+# Check Firestore data
+node check_attribute.cjs
+# Shows: "export": true (boolean)
+```
+
+---
+
+## Recommendation (for follow-up LP)
+
+### Option 1: Fix Schema to Accept Both Types
+```typescript
+// In attribute.ts
+export: z.union([
+  z.boolean(),  // Legacy format
+  ExportMetadataSchema  // New format
+]).optional(),
+```
+
+### Option 2: Migration Script
+```typescript
+// Convert all "export": true/false to "export": { omitIfEmpty: false }
+// Run one-time migration on Firestore
+```
+
+### Option 3: Normalize in fromFirestore()
+```typescript
+// In attributesService.ts fromFirestore():
+export: typeof data.export === 'boolean' 
+  ? undefined  // Drop legacy boolean
+  : data.export,
+```
+
+---
+
+## Evidence Files Generated
+
+- This file: `attribute-update-400.txt`
+- Firestore attribute sample shown above
