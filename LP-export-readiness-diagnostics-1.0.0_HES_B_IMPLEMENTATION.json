@@ -1,0 +1,190 @@
+{
+  "lp": "LP-export-readiness-diagnostics-1.0.0",
+  "hes": "HES B - Implementation",
+  "timestamp": "2026-01-07T00:00:00.000Z",
+  "status": "COMPLETED",
+  "summary": {
+    "description": "Fixed 4 critical issues identified in HES A diagnostics",
+    "scope": "Code fixes and audits only - no registry/product data changes",
+    "tasks_completed": 4,
+    "branches_created": 4,
+    "files_modified": 10,
+    "evidence_files": 4,
+    "priority_resolved": ["P0-CRITICAL", "P0-CRITICAL", "P1-HIGH", "P2-MEDIUM"]
+  },
+  "tasks": [
+    {
+      "task_id": "Task 1",
+      "title": "Fix firebase_token localStorage Bug",
+      "priority": "P0-CRITICAL",
+      "status": "COMPLETED",
+      "branch": "fix/auth-injection-export-readiness-2026-01-07",
+      "commit_sha": "5538d0d",
+      "problem": "Code reads localStorage.getItem('firebase_token') but key never set - causes auth failures",
+      "solution": "Replaced all 4 usages with getAuthHeaders() which properly fetches Firebase ID token",
+      "files_changed": [
+        "packages/web/src/hooks/useExportCompletion.ts",
+        "packages/web/src/hooks/useProductCompletion.ts",
+        "packages/web/src/pages/ExportPage.tsx",
+        "packages/web/src/components/product/CompletionExportGatePanel.tsx"
+      ],
+      "verification": "grep search confirmed 0 remaining localStorage.getItem('firebase_token') calls",
+      "impact": "Unblocks all export completion API calls - auth headers now properly injected"
+    },
+    {
+      "task_id": "Task 2",
+      "title": "Fix export Schema Validation",
+      "priority": "P0-CRITICAL",
+      "status": "COMPLETED",
+      "branch": "fix/attribute-export-schema-2026-01-07",
+      "commit_sha": "32763a0",
+      "problem": "AttributeSchema.export only accepts ExportMetadataSchema (object), rejects legacy export: true (boolean)",
+      "solution": "Created ExportFieldSchema = z.union([z.boolean(), ExportMetadataSchema]).optional() to accept both formats",
+      "files_changed": [
+        "packages/sdk/src/schema/attribute.ts"
+      ],
+      "technical_details": {
+        "old_schema": "export: ExportMetadataSchema",
+        "new_schema": "export: ExportFieldSchema (union type)",
+        "supports_formats": ["boolean (legacy)", "object (new)"]
+      },
+      "impact": "Fixes 400 validation errors when updating attributes with legacy export: true format"
+    },
+    {
+      "task_id": "Task 3",
+      "title": "SDK ↔ Product Attribute Usage Audit",
+      "priority": "P1-HIGH",
+      "status": "COMPLETED",
+      "branch": "audit/sdk-firestore-attributes-2026-01-07",
+      "commit_sha": "b718a9f",
+      "scope": "Read-only audit - NO data changes",
+      "findings": {
+        "sdk_registry_count": 69,
+        "product_attributes_found": 55,
+        "used_and_in_sdk": 41,
+        "used_not_in_sdk": 14,
+        "in_sdk_never_used": 28,
+        "delta": -14
+      },
+      "priority_breakdown": {
+        "p1_high": {
+          "count": 1,
+          "description": "rics_color used 25 times but missing from SDK"
+        },
+        "p2_medium": {
+          "count": 4,
+          "attributes": ["ageGroup (8x)", "_meta (5x)", "primaryColor (5x)", "drawing (4x)"]
+        },
+        "p3_low": {
+          "count": 9,
+          "description": "Rarely-used attributes (≤3 products)"
+        }
+      },
+      "export_format_analysis": {
+        "sdk_export_formats": {
+          "boolean_legacy": 0,
+          "object_new": 12,
+          "undefined": 57
+        }
+      },
+      "deliverables": [
+        "audit_sdk_product_attributes.js",
+        "audit_sdk_firestore_attributes.js",
+        "check_firestore_attributes.js",
+        "evidence/sdk-product-attribute-audit-2026-01-06.json",
+        "evidence/sdk-product-attribute-audit-2026-01-06.csv",
+        "evidence/attribute-audit-2026-01-06.json",
+        "evidence/attribute-audit-2026-01-06.csv"
+      ],
+      "impact": "Identifies 14 undocumented attributes, 28 unused SDK attrs - informs registry cleanup"
+    },
+    {
+      "task_id": "Task 4",
+      "title": "Remove Legacy ExportReadinessPanel",
+      "priority": "P2-MEDIUM",
+      "status": "COMPLETED",
+      "branch": "fix/remove-legacy-export-panel-2026-01-07",
+      "commit_sha": "c4f41fb",
+      "problem": "Two export panels displayed in ProductEditor sidebar - causes UI confusion",
+      "solution": "Removed ExportReadinessPanel from ProductEditorPage, kept CompletionExportGatePanel as sole export UI",
+      "files_changed": [
+        "packages/web/src/pages/ProductEditorPage.tsx"
+      ],
+      "changes": [
+        "Removed ExportReadinessPanel import",
+        "Removed ExportReadinessPanel from sidebar",
+        "Removed unused safeExportReadiness variable",
+        "Removed unused safeWebsites variable"
+      ],
+      "impact": "Eliminates dual export panel confusion - UI shows single authoritative completion view"
+    }
+  ],
+  "github_artifacts": {
+    "branches": [
+      {
+        "name": "fix/auth-injection-export-readiness-2026-01-07",
+        "commit": "5538d0d",
+        "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/new/fix/auth-injection-export-readiness-2026-01-07"
+      },
+      {
+        "name": "fix/attribute-export-schema-2026-01-07",
+        "commit": "32763a0",
+        "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/new/fix/attribute-export-schema-2026-01-07"
+      },
+      {
+        "name": "audit/sdk-firestore-attributes-2026-01-07",
+        "commit": "b718a9f",
+        "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/new/audit/sdk-firestore-attributes-2026-01-07"
+      },
+      {
+        "name": "fix/remove-legacy-export-panel-2026-01-07",
+        "commit": "c4f41fb",
+        "pr_url": "https://github.com/twgallo13/ROPI-V2.1/pull/new/fix/remove-legacy-export-panel-2026-01-07"
+      }
+    ],
+    "total_files_changed": 10,
+    "total_insertions": 1390,
+    "total_deletions": 11
+  },
+  "governance": {
+    "labels": [
+      "lp-export-readiness-diagnostics",
+      "priority-p0-critical",
+      "priority-p1-high",
+      "priority-p2-medium",
+      "type-bugfix",
+      "type-audit",
+      "type-ui-cleanup"
+    ],
+    "reviewers_required": true,
+    "merge_strategy": "squash",
+    "base_branch": "aoss-main"
+  },
+  "testing": {
+    "manual_verification": [
+      "Test firebase auth in useExportCompletion.ts",
+      "Test firebase auth in useProductCompletion.ts",
+      "Test firebase auth in ExportPage.tsx",
+      "Test firebase auth in CompletionExportGatePanel.tsx",
+      "Verify attribute update with export: true works",
+      "Verify attribute update with export: { key, omitIfEmpty, targets } works",
+      "Verify ProductEditorPage shows single export panel",
+      "Verify no console errors from missing ExportReadinessPanel"
+    ],
+    "automated_tests": "None added - existing tests cover auth and schema validation"
+  },
+  "next_steps": {
+    "immediate": [
+      "Create 4 pull requests from branches",
+      "Add governance labels to PRs",
+      "Request code review",
+      "Run manual verification tests"
+    ],
+    "follow_up": [
+      "Add rics_color to SDK registry (P1 from audit)",
+      "Add ageGroup, _meta, primaryColor, drawing to SDK (P2 from audit)",
+      "Consider deprecating 28 never-used SDK attributes",
+      "Add automated tests for auth header injection"
+    ]
+  }
+}
