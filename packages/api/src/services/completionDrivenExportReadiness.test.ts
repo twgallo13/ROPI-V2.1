@@ -819,4 +819,98 @@ describe('extractSelectedSites (LP-export-completion-fix-1.0.0)', () => {
     const result = extractSelectedSites(product);
     expect(result).toEqual([]);
   });
+
+  // LP-export-site-extract-1.0.0: New tests for attributes.website string support
+  it('should extract sites from attributes.website when string', () => {
+    const product: ProductDocument = {
+      id: '211737-90h1-8',
+      mpn: 'MPN-string-test',
+      attributes: {
+        website: 'shiekh.com'  // String case (CSV import)
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['shiekh.com']);
+  });
+
+  it('should trim attributes.website string value', () => {
+    const product: ProductDocument = {
+      id: 'test-trim-1',
+      mpn: 'MPN-trim',
+      attributes: {
+        website: '  shiekh.com  '  // String with whitespace
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['shiekh.com']);
+  });
+
+  it('should return empty array when attributes.website is empty string', () => {
+    const product: ProductDocument = {
+      id: 'test-empty-string',
+      mpn: 'MPN-empty',
+      attributes: {
+        website: ''  // Empty string
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual([]);
+  });
+
+  it('should return empty array when attributes.website is whitespace-only string', () => {
+    const product: ProductDocument = {
+      id: 'test-whitespace',
+      mpn: 'MPN-whitespace',
+      attributes: {
+        website: '   '  // Whitespace only
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual([]);
+  });
+
+  it('should prefer websites array over attributes.website string', () => {
+    const product: ProductDocument = {
+      id: 'test-precedence-1',
+      mpn: 'MPN-precedence',
+      websites: ['us', 'uk'],
+      attributes: {
+        website: 'shiekh.com'
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['us', 'uk']);
+  });
+
+  it('should prefer top-level website string over attributes.website string', () => {
+    const product: ProductDocument = {
+      id: 'test-precedence-2',
+      mpn: 'MPN-precedence-2',
+      website: 'karmaloop.com',
+      attributes: {
+        website: 'shiekh.com'
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['karmaloop.com']);
+  });
+
+  it('should handle attributes.website as array (existing behavior)', () => {
+    const product: ProductDocument = {
+      id: 'test-array-1',
+      mpn: 'MPN-array',
+      attributes: {
+        website: ['us', 'uk', 'eu']  // Array case (existing)
+      }
+    };
+    
+    const result = extractSelectedSites(product);
+    expect(result).toEqual(['us', 'uk', 'eu']);
+  });
 });

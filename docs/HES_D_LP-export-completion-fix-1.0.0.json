@@ -1,0 +1,119 @@
+{
+  "envelope": {
+    "from": "Homer",
+    "to": "Lisa",
+    "lp": "LP-export-completion-fix-1.0.0",
+    "hesPhase": "D",
+    "title": "Final Merge & Deployment Receipt",
+    "date": "2026-01-05"
+  },
+  "mergeReceipt": {
+    "prNumber": 447,
+    "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/447",
+    "mergeCommitSha": "5daa00e7c56419c0acf57bdc6f785416f95c0bd4",
+    "mergedAt": "2026-01-05T11:19:17Z",
+    "mergedBy": "twgallo13",
+    "mergeStrategy": "squash",
+    "targetBranch": "aoss-main",
+    "sourceBranch": "feat/export-completion-fix-2026-01-05",
+    "branchDeleted": true,
+    "labelsApplied": ["state:merged", "cleanup:done", "priority:high", "type:bug"]
+  },
+  "deploymentReceipt": {
+    "workflowName": "deploy-staging.yml",
+    "runId": 20714567287,
+    "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20714567287",
+    "status": "success",
+    "stagingUrl": "https://ropi-aoss-staging.web.app",
+    "firebaseProject": "ropi-bccee",
+    "deployedAt": "2026-01-05T11:20:XX"
+  },
+  "postMergeVerification": {
+    "stagingAccessible": {
+      "url": "https://ropi-aoss-staging.web.app",
+      "httpStatus": 200,
+      "result": "PASS"
+    },
+    "unitTests": {
+      "file": "completionDrivenExportReadiness.test.ts",
+      "totalTests": 20,
+      "passed": 20,
+      "failed": 0,
+      "result": "PASS"
+    },
+    "integrationTests": {
+      "file": "ProductHeader.spec.tsx",
+      "totalTests": 14,
+      "passed": 14,
+      "failed": 0,
+      "result": "PASS"
+    },
+    "preExistingFailures": [
+      {
+        "workflow": "sdk-unit-tests.yml",
+        "reason": "Pre-existing - unrelated to this LP",
+        "status": "KNOWN_ISSUE"
+      },
+      {
+        "workflow": "verify-attributes-meta.yml",
+        "reason": "Pre-existing - unrelated to this LP",
+        "status": "KNOWN_ISSUE"
+      }
+    ]
+  },
+  "fixSummary": {
+    "rootCause": "extractSelectedSites() did not check product.attributes.website where CSV imports store site data",
+    "impactedProducts": "81% of products (26/32) were marked BLOCKED_FROM_EXPORT despite having valid site selections",
+    "solution": "Added attributes.website check with correct precedence: websites → sites → website → attributes.website",
+    "filesChanged": [
+      {
+        "file": "packages/api/src/services/completionDrivenExportReadiness.ts",
+        "action": "Added attributes.website extraction logic"
+      },
+      {
+        "file": "packages/api/src/services/completionDrivenExportReadiness.test.ts",
+        "action": "Added 10 unit tests for site extraction scenarios"
+      },
+      {
+        "file": "packages/web/src/components/product/ProductHeader.tsx",
+        "action": "Added guidance banner for missing site selection"
+      },
+      {
+        "file": "packages/web/src/components/product/ProductHeader.css",
+        "action": "Added banner styles"
+      },
+      {
+        "file": "packages/web/src/components/product/__tests__/ProductHeader.spec.tsx",
+        "action": "Added 6 integration tests for banner behavior"
+      }
+    ],
+    "testCoverage": {
+      "newUnitTests": 10,
+      "newIntegrationTests": 6,
+      "totalNewTests": 16
+    }
+  },
+  "verificationMatrix": [
+    { "check": "PR merged to aoss-main", "result": "PASS" },
+    { "check": "Merge commit SHA recorded", "result": "PASS" },
+    { "check": "Source branch deleted", "result": "PASS" },
+    { "check": "Labels updated (state:merged, cleanup:done)", "result": "PASS" },
+    { "check": "Deploy workflow succeeded", "result": "PASS" },
+    { "check": "Staging URL accessible (HTTP 200)", "result": "PASS" },
+    { "check": "Unit tests pass (20/20)", "result": "PASS" },
+    { "check": "Integration tests pass (14/14)", "result": "PASS" },
+    { "check": "No regressions introduced", "result": "PASS" }
+  ],
+  "result": "VERIFIED SUCCESS",
+  "disposition": {
+    "lpStatus": "COMPLETE",
+    "nextSteps": [
+      "Monitor production for any edge cases",
+      "Consider extending attributes.website check to other services if similar patterns exist"
+    ],
+    "relatedLPs": [
+      "LP-export-unlock-1.0.0 (PR #445 - merged)",
+      "LP-export-deploy-fix-1.0.0 (PR #446 - merged)"
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-export-deploy-fix-1.0.0",
+  "date": "2026-01-05",
+  "checkpoint": "B",
+  "checkpointName": "Implementation",
+  "branch": {
+    "name": "fix/export-deploy-2026-01-05",
+    "sha": "1791a92ebaaaa0d7607e350bc9c1362a0b389278",
+    "baseBranch": "aoss-main"
+  },
+  "commitShas": [
+    {
+      "sha": "1791a92ebaaaa0d7607e350bc9c1362a0b389278",
+      "message": "fix(deploy): allow firebase CLI to remove orphaned functions (--force) — LP-export-deploy-fix-1.0.0",
+      "committedAt": "2026-01-05T09:08:08Z"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": ".github/workflows/deploy-staging.yml",
+      "action": "modified",
+      "changeDescription": "Added --force flag to firebase deploy --only functions command at line 129, with LP comment"
+    }
+  ],
+  "prNumber": 446,
+  "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/446",
+  "prTitle": "LP-export-deploy-fix-1.0.0 — Remove orphaned cloud functions in deploy",
+  "prLabels": [
+    "state:in-progress",
+    "lp:LP-export-deploy-fix-1.0.0",
+    "type:fix",
+    "cleanup:required"
+  ],
+  "ciRuns": [
+    {
+      "runId": "20710522480",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710522480",
+      "name": "Deploy AOSS PR Preview",
+      "status": "in_progress",
+      "conclusion": null,
+      "note": "PR preview deploy - will test the --force flag"
+    },
+    {
+      "runId": "20710522487",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710522487",
+      "name": "Deploy pre-check",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "runId": "20710522466",
+      "runUrl": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20710522466",
+      "name": "E2E Tests",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ],
+  "orphanedFunctionsEvidence": {
+    "command": "firebase functions:list --project ropi-bccee",
+    "executedAt": "2026-01-05T09:11:00Z",
+    "orphanedFunctions": [
+      {
+        "name": "setAdminClaimOnUserCreate",
+        "version": "v1",
+        "trigger": "providers/firebase.auth/eventTypes/user.create",
+        "location": "us-central1"
+      },
+      {
+        "name": "syncAdminClaimsOnMetadataChange",
+        "version": "v1",
+        "trigger": "providers/cloud.firestore/eventTypes/document.write",
+        "location": "us-central1"
+      }
+    ],
+    "verifiedNotInSource": true,
+    "sourceSearchCommand": "grep -rE 'setAdminClaimOnUserCreate|syncAdminClaimsOnMetadataChange' packages/api/src/",
+    "sourceSearchResult": "No matches found in source TypeScript files"
+  },
+  "justification": "--force flag used to allow deletion of orphaned functions (setAdminClaimOnUserCreate, syncAdminClaimsOnMetadataChange) in non-interactive CI environment",
+  "codeChangeDiff": {
+    "file": ".github/workflows/deploy-staging.yml",
+    "before": "timeout 20m firebase deploy --only functions --project ropi-bccee --json",
+    "after": "timeout 20m firebase deploy --only functions --project ropi-bccee --json --force",
+    "lineNumber": 129
+  },
+  "rollbackPlan": {
+    "procedure": "If deletion causes unexpected failures: (1) Open revert PR referencing LP-export-deploy-fix-1.0.0, (2) Escalate to infra/ops for function restoration, (3) Document impact, (4) Notify Lisa and owners",
+    "documented": true,
+    "prBodyIncludesRollback": true
+  },
+  "result": "IMPLEMENTATION COMPLETE — AWAITING CI/DEPLOY VERIFICATION"
+}

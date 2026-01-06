@@ -1,0 +1,554 @@
+[
+  {
+    "attribute_id": "sku",
+    "category": "sku_core",
+    "label": "SKU",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "style_id",
+    "category": "sku_core",
+    "label": "Style ID",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "mpn",
+    "category": "sku_core",
+    "label": "MPN",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "gtin",
+    "category": "identifiers",
+    "label": "GTIN/UPC",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "name",
+    "category": "sku_core",
+    "label": "Product Name",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "slug",
+    "category": "sku_core",
+    "label": "URL Slug",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "brand",
+    "category": "sku_core",
+    "label": "Brand",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "category",
+    "category": "classification",
+    "label": "Category",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "class",
+    "category": "classification",
+    "label": "Class",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "department",
+    "category": "classification",
+    "label": "Department",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "rics_category",
+    "category": "classification",
+    "label": "RICS Category",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "website",
+    "category": "sku_core",
+    "label": "Websites (Multi-select)",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "product_is_active",
+    "category": "sku_core",
+    "label": "Product Is Active",
+    "required_for_completion": true,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "status",
+    "category": "sku_core",
+    "label": "Status",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "launch_date",
+    "category": "lifecycle",
+    "label": "Launch Date",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "kl_post_date",
+    "category": "lifecycle",
+    "label": "KL Post Date",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "family_sizing",
+    "category": "lifecycle",
+    "label": "Family Sizing",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "hype",
+    "category": "lifecycle",
+    "label": "HYPE",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "first_received",
+    "category": "lifecycle",
+    "label": "First Received",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "last_received",
+    "category": "lifecycle",
+    "label": "Last Received",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "height",
+    "category": "dimensions",
+    "label": "Height",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "length",
+    "category": "dimensions",
+    "label": "Length",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "width",
+    "category": "dimensions",
+    "label": "Width",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "shoe_width",
+    "category": "measurements",
+    "label": "Shoe Width",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "weight",
+    "category": "measurements",
+    "label": "Weight (oz)",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "gender",
+    "category": "identity_demographic",
+    "label": "Gender",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "age_group",
+    "category": "identity_demographic",
+    "label": "Age Group",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "primary_color",
+    "category": "color",
+    "label": "Primary Color",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "descriptive_color",
+    "category": "color",
+    "label": "Descriptive Color",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "material",
+    "category": "materials_construction",
+    "label": "Material(s)",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "outsole_material",
+    "category": "materials_construction",
+    "label": "Outsole Material",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "closure_type",
+    "category": "materials_construction",
+    "label": "Closure Type",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "cut_type",
+    "category": "materials_construction",
+    "label": "Cut Type",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "fit",
+    "category": "materials_construction",
+    "label": "Fit",
+    "required_for_completion": true,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "heel_height",
+    "category": "materials_construction",
+    "label": "Heel Height",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "platform_height",
+    "category": "materials_construction",
+    "label": "Platform Height",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "heel_type",
+    "category": "materials_construction",
+    "label": "Heel Type",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "shoe_height_map",
+    "category": "materials_construction",
+    "label": "Shoe Height Map",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "made_in",
+    "category": "compliance",
+    "label": "Made In",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "league",
+    "category": "sport_league",
+    "label": "League",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "sports_team",
+    "category": "sport_league",
+    "label": "Sports Team",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "collection_name",
+    "category": "product_flags",
+    "label": "Collection Name",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "fast_fashion",
+    "category": "product_flags",
+    "label": "Fast Fashion",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "tax_class",
+    "category": "product_flags",
+    "label": "Tax Class",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "description_shiekh",
+    "category": "descriptions_sites",
+    "label": "Description – Shiekh.com",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "description_karmaloop",
+    "category": "descriptions_sites",
+    "label": "Description – Karmaloop",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "description_mltd",
+    "category": "descriptions_sites",
+    "label": "Description – MLTD",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "description_sangremia",
+    "category": "descriptions_sites",
+    "label": "Description – Sangremia",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "meta_name",
+    "category": "seo",
+    "label": "Meta Name",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "meta_description",
+    "category": "seo",
+    "label": "Meta Description",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "keywords",
+    "category": "seo",
+    "label": "Keywords",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "rics_long_desc",
+    "category": "rics_reference",
+    "label": "RICS Long Description",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "rics_short_description",
+    "category": "rics_reference",
+    "label": "RICS Short Description",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "media_status",
+    "category": "launch_media",
+    "label": "Media Status",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "hide_image_date",
+    "category": "launch_media",
+    "label": "Hide Image Date",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "map",
+    "category": "launch_media_pricing",
+    "label": "MAP",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "scom_regular_price",
+    "category": "launch_media_pricing",
+    "label": "SCOM Regular Price",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "scom_sale_price",
+    "category": "launch_media_pricing",
+    "label": "SCOM Sale Price",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "promo",
+    "category": "launch_media_pricing",
+    "label": "Promo",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "standard_shipping_override",
+    "category": "launch_media_shipping",
+    "label": "Standard Shipping Override",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "expedited_override_shipping",
+    "category": "launch_media_shipping",
+    "label": "Expedited Override Shipping",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "custom_message",
+    "category": "launch_media_message",
+    "label": "Custom Message (Internal)",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "total_inv",
+    "category": "core_header_meta",
+    "label": "Total Inv",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "warehouse_inv",
+    "category": "core_header_meta",
+    "label": "WHS Inv",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "store_inv",
+    "category": "core_header_meta",
+    "label": "Store Inv",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "pattern",
+    "category": "material_design",
+    "label": "Pattern",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "sustainable",
+    "category": "attributes",
+    "label": "Sustainable",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "waterproof",
+    "category": "material_performance",
+    "label": "Waterproof",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": false
+  },
+  {
+    "attribute_id": "dept",
+    "category": "",
+    "label": "Department",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "has_camelCase_only": true
+  }
+]

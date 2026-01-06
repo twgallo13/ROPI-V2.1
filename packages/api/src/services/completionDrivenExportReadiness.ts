@@ -424,20 +424,32 @@ function convertToProductSnapshot(product: ProductDocument): ProductSnapshot {
  * @exported for testing
  */
 export function extractSelectedSites(product: ProductDocument): string[] {
-  if (Array.isArray(product.websites)) {
+  // LP-export-site-extract-1.0.0: Precedence order:
+  // 1. product.websites (array)
+  // 2. product.sites (array)
+  // 3. product.website (string)
+  // 4. product.attributes.website (array or string)
+  
+  if (Array.isArray(product.websites) && product.websites.length > 0) {
     return product.websites;
   }
-  if (Array.isArray(product.sites)) {
+  if (Array.isArray(product.sites) && product.sites.length > 0) {
     return product.sites;
   }
-  // Legacy format support
-  if (product.website && typeof product.website === 'string') {
-    return [product.website];
+  if (product.website && typeof product.website === 'string' && product.website.trim()) {
+    return [product.website.trim()];
   }
-  // LP-export-completion-fix-1.0.0: Check attributes.website for CSV imports
-  if (Array.isArray(product.attributes?.website) && product.attributes.website.length > 0) {
-    return product.attributes.website;
+  
+  // LP-export-completion-fix-1.0.0 + LP-export-site-extract-1.0.0:
+  // Support attributes.website as array or string (CSV imports)
+  const attrSite = product.attributes?.website;
+  if (Array.isArray(attrSite) && attrSite.length > 0) {
+    return attrSite;
   }
+  if (typeof attrSite === 'string' && attrSite.trim()) {
+    return [attrSite.trim()];
+  }
+  
   return [];
 }
 
