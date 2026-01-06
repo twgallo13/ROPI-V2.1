@@ -12,7 +12,6 @@ import AIActionsTab from '../components/product/AIActionsTab';
 import DescriptionsTab from '../components/product/DescriptionsTab';
 import ObservationsPanel from '../components/product/ObservationsPanel';
 import SmartSuggestionsPanel from '../components/product/SmartSuggestionsPanel';
-import ExportReadinessPanel from '../components/product/ExportReadinessPanel';
 import { CompletionExportGatePanel } from '../components/product/CompletionExportGatePanel';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { safeArray } from '../lib/productUtils';
@@ -115,8 +114,6 @@ function ProductEditorPage() {
   }
 
   // LP-3.0.7: Ensure safe defaults for product data
-  const safeExportReadiness = product.exportReadiness ?? { overall: 0, byWebsite: {} };
-  const safeWebsites = safeArray(product.websites);
   const safeSuggestions = safeArray(product.smartSuggestions);
 
   // LP-0.4.2: Updated tab order - Technical (4), AI Actions (5), Descriptions (6)
@@ -195,12 +192,6 @@ function ProductEditorPage() {
               suggestions={safeSuggestions}
               onApplySuggestion={applySuggestion}
               onIgnoreSuggestion={ignoreSuggestion}
-            />
-            
-            <ExportReadinessPanel
-              readiness={safeExportReadiness}
-              websites={safeWebsites}
-              onJumpToTab={handleTabChange}
             />
           </div>
         </div>
