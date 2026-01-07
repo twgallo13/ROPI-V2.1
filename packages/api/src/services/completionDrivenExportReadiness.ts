@@ -38,6 +38,15 @@ export interface CompletionDrivenExportReadiness {
   hasBlockingSites: boolean;
   blockingReasons: ExportBlockingReason[];
   operatorExplanation: OperatorExplanation;
+  // Phase 1 extension (feature-flagged, non-breaking)
+  // mode indicates exposure context only; does not change evaluation semantics
+  mode?: 'GLOBAL' | 'SITE_SCOPED';
+  productLevelReadiness?: {
+    ready: boolean;
+    completionPct: number;
+    threshold: number;
+    hasBlockingSites: boolean;
+  };
   catalogStats?: {
     totalProducts: number;
     blockedByCompletionCount: number;
@@ -316,10 +325,32 @@ export async function calculateCompletionDrivenExportReadiness(
     
     // Load attribute registry
     const attributeRegistry = await loadAttributeRegistryForCompletion();
+
+    // Phase 1 feature flag: expose mode + productLevelReadiness without changing semantics
+    const featureMode = await detectExportModeFeatureFlag().catch(() => 'SITE_SCOPED' as const);
     
     // If no product provided, evaluate catalog-level completion
     if (!product) {
-      return await evaluateCatalogCompletion(completionRules, attributeRegistry, evaluationTimestamp);
+      const result = await evaluateCatalogCompletion(completionRules, attributeRegistry, evaluationTimestamp);
+      if (featureMode === 'GLOBAL') {
+        // Add Phase 1 fields (non-breaking)
+        const extended: CompletionDrivenExportReadiness = {
+          ...result,
+          mode: 'GLOBAL',
+          productLevelReadiness: {
+            ready: result.ready,
+            completionPct: result.completionPct,
+            threshold: result.threshold,
+            hasBlockingSites: result.hasBlockingSites
+          }
+        };
+        // Temporary logging for staging verification (set EXPORT_GLOBAL_LOGS=true to enable)
+        if (process.env.EXPORT_GLOBAL_LOGS === 'true') {
+          console.info('[ExportReadiness:Phase1] mode=GLOBAL (catalog), productLevelReadiness=', extended.productLevelReadiness);
+        }
+        return extended;
+      }
+      return result;
     }
     
     // Convert product to completion engine format
@@ -357,7 +388,7 @@ export async function calculateCompletionDrivenExportReadiness(
     const blockingReasons = generateBlockingReasons(completionResult, completionRules);
     const operatorExplanation = generateOperatorExplanation(completionResult, completionRules, selectedSites);
     
-    return {
+    const base: CompletionDrivenExportReadiness = {
       ready: isReady,
       completionPct: reportedCompletion, // PROMPT B: Force 0 when site-blocked
       threshold: completionRules.exportUnlockThresholdPct,
@@ -367,6 +398,26 @@ export async function calculateCompletionDrivenExportReadiness(
       evaluationTimestamp,
       rulesVersion: completionRules.rulesVersion
     };
+
+    // Attach Phase 1 fields when feature flag is enabled
+    if (featureMode === 'GLOBAL') {
+      const extended: CompletionDrivenExportReadiness = {
+        ...base,
+        mode: 'GLOBAL',
+        productLevelReadiness: {
+          ready: base.ready,
+          completionPct: base.completionPct,
+          threshold: base.threshold,
+          hasBlockingSites: base.hasBlockingSites
+        }
+      };
+      // Temporary logging for staging verification (set EXPORT_GLOBAL_LOGS=true to enable)
+      if (process.env.EXPORT_GLOBAL_LOGS === 'true') {
+        console.info('[ExportReadiness:Phase1] mode=GLOBAL (product), productLevelReadiness=', extended.productLevelReadiness);
+      }
+      return extended;
+    }
+    return base;
     
   } catch (error) {
     console.error('[CompletionDrivenExportReadiness] Evaluation failed:', error);
@@ -451,6 +502,55 @@ export function extractSelectedSites(product: ProductDocument): string[] {
   }
   
   return [];
+}
+
+/**
+ * Phase 1 feature flag detection — detects GLOBAL export mode exposure
+ * 
+ * Canonical Firestore form:
+ *   settings/exportSettings.exportGlobalMode = { enabled: boolean, mode: "GLOBAL" | "SITE_SCOPED" }
+ * 
+ * Legacy/compatibility keys (normalized):
+ *   - globalExportModeEnabled, enableGlobalFields, mode at root level
+ * 
+ * Fallback: env var EXPORT_GLOBAL_MODE_FEATURE=true (local/CI convenience only)
+ * 
+ * Logs: temporary console.info behind this flag; set EXPORT_GLOBAL_LOGS=true to enable,
+ * or set EXPORT_GLOBAL_MODE_FEATURE=true (logs enabled by default when feature active).
+ * 
+ * Returns 'GLOBAL' when enabled, otherwise 'SITE_SCOPED'
+ */
+async function detectExportModeFeatureFlag(): Promise<'GLOBAL' | 'SITE_SCOPED'> {
+  try {
+    const admin = require('firebase-admin');
+    if (admin?.apps?.length === 0 && admin?.initializeApp) {
+      // Best-effort init in non-functions context
+      admin.initializeApp();
+    }
+    const db = admin.firestore();
+    const doc = await db.collection('settings').doc('exportSettings').get();
+    const data = doc.exists ? doc.data() || {} : {};
+    
+    // Canonical form: exportGlobalMode.enabled
+    const canonical = data.exportGlobalMode;
+    if (canonical && typeof canonical === 'object') {
+      const enabled = !!(canonical.enabled === true);
+      return enabled ? 'GLOBAL' : 'SITE_SCOPED';
+    }
+    
+    // Legacy/compatibility keys (normalize to canonical)
+    const legacyEnabled = !!(
+      data.globalExportModeEnabled === true ||
+      data.enableGlobalFields === true ||
+      data.mode === 'GLOBAL'
+    );
+    return legacyEnabled ? 'GLOBAL' : 'SITE_SCOPED';
+  } catch {
+    // Fallback to env var (local/CI convenience)
+    const fromEnv = (process.env.EXPORT_GLOBAL_MODE_FEATURE || '').toLowerCase();
+    const enabled = fromEnv === '1' || fromEnv === 'true' || fromEnv === 'yes';
+    return enabled ? 'GLOBAL' : 'SITE_SCOPED';
+  }
 }
 
 /**
