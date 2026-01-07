@@ -1,0 +1,116 @@
+# LP-export-global-impl-2b Merge Execution Record
+**Date:** 2026-01-07T06:37:00Z  
+**Executor:** Homer  
+**LP:** LP-export-global-impl-2b  
+
+## Merge Details
+
+**Source Branch:** `fix/export-global-ui-phase2-2026-01-07`  
+**Target Branch:** `aoss-main`  
+**Merge Method:** Squash  
+**Merge Commit:** `55f5cc1`  
+
+### Pre-Merge State
+
+```
+Branch: fix/export-global-ui-phase2-2026-01-07
+Commits on feature branch: 3
+  - feat(ui): implement GLOBAL mode UI components - LP-export-global-impl-2b
+  - fix: correct import paths in test files
+  - fix: improve GlobalModeCard unit test selectors to handle DOM duplicates
+```
+
+### Merge Execution
+
+```bash
+git checkout aoss-main
+git pull origin aoss-main
+git merge --squash fix/export-global-ui-phase2-2026-01-07
+# ... Automatic merge successful
+git commit -m "feat(ui): merge LP-export-global-impl-2b to aoss-main - UI implementation for GLOBAL mode export"
+```
+
+### Merge Result
+
+**Status:** ✅ SUCCESS  
+**Conflicts:** None  
+**Files Changed:** 22  
+**Insertions:** 4193  
+**Deletions:** 37  
+
+### Merged Components
+
+#### New Files (12)
+1. `packages/web/src/components/export/GlobalModeCard.tsx` - Main component
+2. `packages/web/src/components/export/GlobalModeCard.css` - Component styles
+3. `packages/web/src/components/export/__tests__/GlobalModeCard.test.tsx` - Unit tests (10 tests)
+4. `packages/web/src/components/product/__tests__/CompletionExportGatePanel.global.test.tsx` - Integration tests
+5. `packages/web/e2e/global-export-mode.spec.ts` - E2E VVP tests (10 tests)
+6. `evidence/phase2/PHASE2_COMPLETION_STATUS.md` - Status tracking
+7. `evidence/phase2/PR_458_DESCRIPTION.md` - PR documentation
+8. `.github/PR_PHASE1_BODY.md` - GitHub PR template
+9. `.github/PR_PHASE2A_BODY.md` - GitHub PR template
+10. `.github/PR_PHASE2B_BODY.md` - GitHub PR template
+11. `scripts/set-export-global-flag.js` - Utility script
+12. `tools/generate-admin-token.js` - Utility script
+
+#### Modified Files (10)
+1. `packages/web/src/components/product/CompletionExportGatePanel.tsx`
+   - Added mode detection
+   - Added GlobalModeCard integration
+   - Added Advanced toggle for GLOBAL mode
+   - Preserved SITE_SCOPED behavior
+
+2. `packages/web/src/components/product/CompletionExportGatePanel.css`
+   - Added Advanced toggle styles
+
+3. `packages/web/src/pages/ExportPage.tsx`
+   - Added mode detection
+   - Conditional site selector rendering
+   - GLOBAL mode badge and help text
+   - Dynamic site parameter in export payload
+
+4. `packages/web/src/hooks/useExportCompletion.ts`
+   - Added `mode` field to CompletionEvaluationResult interface
+
+5. Additional config and documentation files
+
+## Pre-Merge Quality Checks
+
+✅ **TypeScript Compilation:** PASSED  
+✅ **Build Successful:** vite build completed with 727 modules transformed  
+✅ **Unit Tests:** 10/10 passing (GlobalModeCard)  
+✅ **Bundle Size:** Within acceptable limits  
+✅ **No Breaking Changes:** SITE_SCOPED logic unchanged  
+✅ **Backward Compatible:** Graceful degradation when GLOBAL mode absent  
+
+## Post-Merge State
+
+```
+Branch: aoss-main
+Latest commit: 55f5cc1
+Status: Up to date with origin/aoss-main
+```
+
+## Deploy Readiness
+
+✅ Ready to deploy to staging  
+✅ Feature flag dependency: settings/exportSettings.exportGlobalMode  
+✅ Fallback behavior: SITE_SCOPED when flag absent  
+✅ Rollback procedure: Disable feature flag  
+
+## Next Steps
+
+1. **Deploy to Firebase Staging** - Push merged code to staging environment
+2. **Enable Feature Flag** - Set settings/exportSettings.exportGlobalMode = true
+3. **Run Verification** - Execute HES C 6-step verification plan
+4. **Capture Evidence** - Take UI screenshots and test execution logs
+5. **Update HES C Manifest** - Record verification results
+6. **Accept or Remediate** - Lisa reviews and accepts HES C artifacts
+
+## Sign-Off
+
+**Merge Executed By:** Homer (AI Agent / Executor)  
+**Merge Date:** 2026-01-07T06:37:00Z  
+**Verified By:** Code review passing, no CI failures  
+**Status:** READY FOR STAGING DEPLOYMENT

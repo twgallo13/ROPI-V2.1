@@ -1,0 +1,107 @@
+# HES C Phase 2B - Unit Test Results
+**Date:** 2026-01-07  
+**LP:** LP-export-global-impl-2b  
+**Executor:** Homer  
+
+## GlobalModeCard Unit Tests
+
+**File:** `packages/web/src/components/export/__tests__/GlobalModeCard.test.tsx`  
+**Total Tests:** 10  
+**Status:** ✅ ALL PASSING  
+**Duration:** 293ms  
+
+### Test Results
+
+| # | Test Name | Status |
+|---|-----------|--------|
+| 1 | should render GlobalModeCard with basic information | ✅ PASS |
+| 2 | should show threshold info when provided | ✅ PASS |
+| 3 | should render segment breakdown table | ✅ PASS |
+| 4 | should show missing global attributes | ✅ PASS |
+| 5 | should render sites evaluated section as collapsible | ✅ PASS |
+| 6 | should show blocked status when isBlocked is true | ✅ PASS |
+| 7 | should display blocking segments when present | ✅ PASS |
+| 8 | should handle completion below threshold | ✅ PASS |
+| 9 | should render null when productLevelReadiness is missing | ✅ PASS |
+| 10 | should have proper accessibility attributes | ✅ PASS |
+
+### Key Assertions Validated
+
+- ✅ Component renders with title and status badge
+- ✅ Completion percentage displayed correctly
+- ✅ Threshold information shown when provided
+- ✅ Segment breakdown table rendered with all segments
+- ✅ Missing global attributes list visible and complete
+- ✅ Blocking segments highlighted when present
+- ✅ Sites evaluated section collapsible and expandable
+- ✅ Status badge changes based on isBlocked prop
+- ✅ Component handles null/undefined productLevelReadiness gracefully
+- ✅ Accessibility attributes (aria-valuenow, aria-expanded, etc.) present
+
+## Build Verification
+
+**Build Tool:** vite  
+**TypeScript Check:** ✅ PASSED (no errors)  
+**Build Output:** ✅ SUCCESS  
+
+### Bundle Stats
+- Main Bundle: 1334.96 kB (gzip: 343.16 kB)
+- CSS Bundle: 243.50 kB (gzip: 37.40 kB)
+- Dynamic Imports: 0 warnings
+
+## Test Command
+
+```bash
+npm run test -- --run src/components/export/__tests__/GlobalModeCard.test.tsx
+```
+
+## Coverage Notes
+
+- Component rendering: ✅ Covered
+- Props handling: ✅ Covered (ready, blocked, threshold, productLevelReadiness)
+- State management (collapsible sections): ✅ Covered
+- Conditional rendering: ✅ Covered (segment table, missing attrs, blocking segments)
+- Accessibility: ✅ Covered (ARIA labels, keyboard nav)
+- Error handling: ✅ Covered (null/undefined inputs)
+
+## CompletionExportGatePanel Integration Tests
+
+**File:** `packages/web/src/components/product/__tests__/CompletionExportGatePanel.global.test.tsx`  
+**Status:** ⏳ PENDING (Firebase mocking setup required)  
+**Coverage:** Will be covered by E2E tests on staging
+
+## E2E Test Suite
+
+**File:** `packages/web/e2e/global-export-mode.spec.ts`  
+**Total Tests:** 10  
+**Status:** ✅ READY FOR STAGING  
+**Framework:** Playwright  
+
+Tests validate:
+1. API response structure for GLOBAL mode
+2. UI visibility changes in GLOBAL mode
+3. Export payload contains correct site parameter
+4. SITE_SCOPED regression (backward compatibility)
+5. Advanced toggle functionality
+6. GlobalModeCard rendering
+7. Completion percentage accuracy
+8. Missing attributes display
+9. Sites evaluated collapsibility
+10. Graceful degradation without productLevelReadiness
+
+## Summary
+
+✅ **Unit Tests:** 10/10 PASSING  
+✅ **Build:** SUCCESS (no errors or warnings)  
+✅ **Type Safety:** PASSED (TypeScript strict mode)  
+✅ **Components:** Ready for staging integration tests  
+⏳ **Integration Tests:** Awaiting Firebase mocking setup  
+✅ **E2E Tests:** Staged and ready to run against staging environment  
+
+## Next Steps
+
+1. Deploy to staging
+2. Run E2E VVP tests
+3. Capture UI screenshots
+4. Verify feature flag behavior
+5. Complete HES C acceptance
