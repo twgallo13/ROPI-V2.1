@@ -1,10 +1,12 @@
 /**
  * Completion / Export Gate Panel
  * LP-completion-user-visibility-ui-1.4.0
+ * Phase 2B: Extended to support GLOBAL mode product-level readiness
  */
 
 import { useEffect, useState } from 'react';
 import { getAuthHeaders } from '../../lib/authHeaders';
+import { GlobalModeCard, type ProductLevelReadiness } from './GlobalModeCard';
 import './CompletionExportGatePanel.css';
 
 export interface CompletionEvaluationResult {
@@ -22,6 +24,8 @@ export interface CompletionEvaluationResult {
       segmentId?: string;
     };
   }>;
+  mode?: 'GLOBAL' | 'SITE_SCOPED';
+  productLevelReadiness?: ProductLevelReadiness;
   operatorExplanation?: {
     summary?: string;
     blockingIssues?: string[];
@@ -74,6 +78,7 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedSite, setExpandedSite] = useState<string | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
     loadCompletion();
@@ -103,10 +108,16 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   const siteStatus = operatorExplanation?.siteStatus ?? [];
   const actionRequired = operatorExplanation?.actionRequired ?? [];
 
+  // Phase 2B: Detect GLOBAL mode
+  const isGlobalMode = completion?.mode === 'GLOBAL' && completion?.productLevelReadiness;
+
   return (
     <div className="completion-export-gate-panel">
       <div className="panel-header">
-        <h3 className="panel-title">{isBlocked ? '🚫' : '✅'} Completion / Export</h3>
+        <h3 className="panel-title">
+          {isBlocked ? '🚫' : '✅'} 
+          {isGlobalMode ? 'Global Completion / Export' : 'Completion / Export'}
+        </h3>
         <button className="refresh-button" onClick={loadCompletion} title="Refresh">
           ↻
         </button>
@@ -134,30 +145,146 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
 
       {completion && (
         <>
-          <div className="completion-section">
-            <div className="completion-header">
-              <span>Completion</span>
-              <span className="completion-percentage">{percentComplete.toFixed(0)}%</span>
-            </div>
-            <div className="completion-bar-container">
-              <div
-                className={`completion-bar ${threshold !== undefined && percentComplete >= threshold ? 'ready' : 'blocked'}`}
-                style={{ width: `${Math.min(percentComplete, 100)}%` }}
+          {/* Phase 2B: GLOBAL Mode Rendering */}
+          {isGlobalMode ? (
+            <>
+              <GlobalModeCard
+                productLevelReadiness={completion.productLevelReadiness!}
+                threshold={threshold}
+                operatorExplanation={operatorExplanation}
               />
-            </div>
-            <div className="threshold-info">
-              Export threshold: <strong>{threshold !== undefined ? `${threshold}%` : '—'}</strong>
-            </div>
-          </div>
 
-          <div className="status-badge-container">
-            {isBlocked ? (
-              <div className="badge badge-blocked">❌ Blocked from export</div>
-            ) : (
-              <div className="badge badge-ready">✅ Ready for export</div>
-            )}
-          </div>
+              {/* Advanced Toggle: Show site details if available */}
+              {completion.productLevelReadiness!.sitesEvaluated.length > 0 &&
+                siteStatus.length > 0 && (
+                  <div className="advanced-section">
+                    <button
+                      className="advanced-toggle"
+                      onClick={() => setShowAdvanced(!showAdvanced)}
+                      title="Show/hide site-specific details"
+                    >
+                      <span className="toggle-icon">{showAdvanced ? '▼' : '▶'}</span>
+                      <span className="toggle-text">Advanced Details</span>
+                      <span className="toggle-count">
+                        ({completion.productLevelReadiness!.sitesEvaluated.length} sites)
+                      </span>
+                    </button>
 
+                    {showAdvanced && (
+                      <div className="advanced-details">
+                        <h4 className="advanced-title">Site Status (Per-Site Details)</h4>
+                        <div className="sites-list">
+                          {siteStatus.map((site) => (
+                            <div key={site.site} className="site-detail-item">
+                              <div className="site-detail-header">
+                                <span className="site-detail-name">{site.site}</span>
+                                <span className="site-detail-status">
+                                  {site.blocked ? '❌ Blocked' : '✅ Ready'}
+                                </span>
+                              </div>
+                              {site.reason && (
+                                <div className="site-detail-reason">{site.reason}</div>
+                              )}
+                              {site.missingAttributes && site.missingAttributes.length > 0 && (
+                                <div className="site-detail-missing">
+                                  <strong>Missing:</strong> {site.missingAttributes.join(', ')}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+            </>
+          ) : (
+            /* Existing SITE_SCOPED Mode Rendering */
+            <>
+              <div className="completion-section">
+                <div className="completion-header">
+                  <span>Completion</span>
+                  <span className="completion-percentage">{percentComplete.toFixed(0)}%</span>
+                </div>
+                <div className="completion-bar-container">
+                  <div
+                    className={`completion-bar ${threshold !== undefined && percentComplete >= threshold ? 'ready' : 'blocked'}`}
+                    style={{ width: `${Math.min(percentComplete, 100)}%` }}
+                  />
+                </div>
+                <div className="threshold-info">
+                  Export threshold: <strong>{threshold !== undefined ? `${threshold}%` : '—'}</strong>
+                </div>
+              </div>
+
+              <div className="status-badge-container">
+                {isBlocked ? (
+                  <div className="badge badge-blocked">❌ Blocked from export</div>
+                ) : (
+                  <div className="badge badge-ready">✅ Ready for export</div>
+                )}
+              </div>
+
+              {siteStatus.length > 0 && (
+                <div className="sites-section">
+                  <h4 className="section-title">Site Status</h4>
+                  <div className="sites-list">
+                    {siteStatus.map((site) => (
+                      <div key={site.site} className="site-item">
+                        <button
+                          className={`site-button ${site.blocked ? 'blocked' : 'ready'}`}
+                          onClick={() => setExpandedSite(expandedSite === site.site ? null : site.site)}
+                        >
+                          <span className="site-icon">{site.blocked ? '❌' : '✅'}</span>
+                          <span className="site-name">{site.site}</span>
+                          <span className="expand-icon">{expandedSite === site.site ? '▼' : '▶'}</span>
+                        </button>
+                        {expandedSite === site.site && (
+                          <div className="site-details">
+                            {site.reason && <p className="site-reason">{site.reason}</p>}
+                            {site.missingAttributes && site.missingAttributes.length > 0 && (
+                              <div className="missing-list">
+                                <strong>Missing attributes:</strong>
+                                <ul>
+                                  {site.missingAttributes.map((attr, idx) => (
+                                    <li key={idx}>{attr}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {completionBreakdown.length > 0 && (
+                <div className="segment-section">
+                  <h4 className="section-title">Completion by Segment</h4>
+                  <div className="segments-list">
+                    {completionBreakdown.map((segment) => (
+                      <div key={segment.segmentId} className="segment-item">
+                        <div className="segment-header">
+                          <div className="segment-name">{segment.segmentName}</div>
+                          <div className="segment-weight">Weight: {segment.weightPct}%</div>
+                        </div>
+                        <div className="segment-score">Score: {segment.score}%</div>
+                        {segment.missingAttributes.length > 0 && (
+                          <div className="segment-missing">
+                            Missing: {segment.missingAttributes.join(', ')}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Common sections (apply to both modes) */}
           {operatorExplanation?.summary && (
             <div className="summary-section">
               <h4 className="section-title">Summary</h4>
@@ -194,63 +321,6 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
                   <li key={i}>{issue}</li>
                 ))}
               </ul>
-            </div>
-          )}
-
-          {siteStatus.length > 0 && (
-            <div className="sites-section">
-              <h4 className="section-title">Site Status</h4>
-              <div className="sites-list">
-                {siteStatus.map((site) => (
-                  <div key={site.site} className="site-item">
-                    <button
-                      className={`site-button ${site.blocked ? 'blocked' : 'ready'}`}
-                      onClick={() => setExpandedSite(expandedSite === site.site ? null : site.site)}
-                    >
-                      <span className="site-icon">{site.blocked ? '❌' : '✅'}</span>
-                      <span className="site-name">{site.site}</span>
-                      <span className="expand-icon">{expandedSite === site.site ? '▼' : '▶'}</span>
-                    </button>
-                    {expandedSite === site.site && (
-                      <div className="site-details">
-                        {site.reason && <p className="site-reason">{site.reason}</p>}
-                        {site.missingAttributes && site.missingAttributes.length > 0 && (
-                          <div className="missing-list">
-                            <strong>Missing attributes:</strong>
-                            <ul>
-                              {site.missingAttributes.map((attr, idx) => (
-                                <li key={idx}>{attr}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {completionBreakdown.length > 0 && (
-            <div className="segment-section">
-              <h4 className="section-title">Completion by Segment</h4>
-              <div className="segments-list">
-                {completionBreakdown.map((segment) => (
-                  <div key={segment.segmentId} className="segment-item">
-                    <div className="segment-header">
-                      <div className="segment-name">{segment.segmentName}</div>
-                      <div className="segment-weight">Weight: {segment.weightPct}%</div>
-                    </div>
-                    <div className="segment-score">Score: {segment.score}%</div>
-                    {segment.missingAttributes.length > 0 && (
-                      <div className="segment-missing">
-                        Missing: {segment.missingAttributes.join(', ')}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 
