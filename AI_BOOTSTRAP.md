@@ -1,142 +1,253 @@
-# AI_BOOTSTRAP.md — AI & cold-start entry contract
+Purpose
 
-**Purpose (one-paragraph):**  
-This file is the deterministic, pointer-only AI bootstrap for the ROPI AOSS repository. It allows a new chat or agent to orient itself from GitHub as the source-of-truth before taking action. It is intentionally short and non-prescriptive — it only points to canonical artifacts and gives a minimal "how to resume" checklist.
+This file is the mandatory entry contract for any AI or cold-start chat operating in the ROPI AOSS repository.
 
-## Canonical repo description (one line)
-ROPI AOSS — Admin Order & Staging System. Monorepo: `packages/cli`, `packages/sdk`, `packages/api`, `packages/web`. The product attribute registry lives in `packages/sdk/config/attributeRegistry.json` and is the JSON source-of-truth that syncs to Firestore at `settings/attributes/keys/{attributeId}`.
+Its sole purpose is to:
 
-## Canonical sources of truth (links only)
-- `README.md` — Top-level orientation and links  
-- `GOVERNANCE.md` — Repository governance (authoritative)  
-- `docs/DEPLOYMENT.md` — Deployment runbook (SA, workflows)  
-- `docs/ATTRIBUTE-REGISTRY.md` — Registry reference & sync flow  
-- `packages/sdk/config/attributeRegistry.json` — Registry JSON (canonical)
+Prevent cross-project or random context searching
 
-## How to resume work in a new chat (MANDATORY)
-1. Read `AI_BOOTSTRAP.md` (this file).  
-2. Read `GOVERNANCE.md` (authoritative). Do not skip.  
-3. List open PRs with `lp:*` labels and identify active PhaseSlug.  
-4. Ask: "Which phase is active?" — wait for human/Lisa to confirm before any action.  
-5. If asked to act, require explicit Phase Readiness evidence (see GOVERNANCE.md Phase Readiness Gate).
+Enforce repo-first execution
 
-## Explicit prohibitions
-- No assumptions about intent or environment.  
-- No code changes without an LP-compliant PR and required HES.  
-- Do not bypass `GOVERNANCE.md` rules.
+Align all agents to the phase-based workflow
 
-## Minimal machine-readable hints (for agents)
-- `registry_path`: `packages/sdk/config/attributeRegistry.json`  
-- `registry_firestore_meta`: `settings/attributesMeta`  
-- `lp_label_prefix`: `lp:` (labels start `lp:<PhaseSlug>-<SemVer>`)
+Enable autonomous execution within a phase
 
----
+If any rule below cannot be followed, STOP immediately.
 
-## Quick Prompts (copy/paste for chat)
+Canonical Repository Description
 
-Use these prompts to start or resume phases without terminal commands.
+ROPI AOSS — Admin Order & Staging System
 
-### 1. Start a New Phase
+Monorepo structure:
 
-```
-Start phase "<PhaseSlug>" version <SemVer>.
+packages/cli
 
-Before any action:
-1. Read AI_BOOTSTRAP.md and GOVERNANCE.md.
-2. List open PRs with lp:* labels — confirm no conflicting phase.
-3. Request explicit Phase Readiness (PRD link, acceptance criteria, scope).
-4. Do NOT create branches or PRs until I approve the PRD.
+packages/sdk
 
-Output: Draft PRD for my review.
-```
+packages/api
 
-### 2. Resume an Existing Chat
+packages/web
 
-```
-Resume phase "<PhaseSlug>-<SemVer>".
+The canonical product attribute registry is:
 
-Steps:
-1. Read AI_BOOTSTRAP.md and GOVERNANCE.md.
-2. List open PRs with label lp:<PhaseSlug>-<SemVer>.
-3. Summarize: current step, last HES, pending actions.
-4. Wait for my instruction before any new action.
+packages/sdk/config/attributeRegistry.json
 
-Output: Status summary and next recommended action.
-```
 
-### 3. Request a HES (Handoff Evidence Summary)
+This JSON is the source of truth and syncs to Firestore at:
 
-```
-Produce a HES for step <StepLetter> of phase "<PhaseSlug>-<SemVer>".
+settings/attributes/keys/{attributeId}
 
-Include:
-- Branch and commit SHA
-- PR number and URL
-- Files changed (with line counts)
-- CI status (gh pr checks output)
-- Labels applied
-- Any verification evidence (grep, curl, Firestore checks)
-- Final line: "Phase step <StepLetter>: VERIFIED SUCCESS" or "BLOCKED: <reason>"
-```
+Source-of-Truth Hierarchy (Strict)
+Canonical (Authoritative)
 
-### 4. Request a PRD (Phase Requirements Document)
+GitHub Repository
 
-```
-Draft a PRD for phase "<PhaseSlug>-<SemVer>".
+https://github.com/twgallo13/ROPI-V2.1
 
-Include:
-- Phase title and slug
-- Problem statement (one paragraph)
-- Acceptance criteria (numbered list)
-- Scope: files, packages, Firestore paths affected
-- Out of scope (explicit exclusions)
-- Steps (A, B, C, ...) with HES checkpoints
-- Rollback plan
 
-Output: PRD for my approval before any implementation.
-```
+Required documents:
 
-### 5. Quick Tests / Verification
+README.md — Orientation
 
-```
-Run verification for phase "<PhaseSlug>-<SemVer>".
+GOVERNANCE.md — Workflow, authority, enforcement (authoritative)
 
-Checks:
-1. Confirm branch exists and is up to date with aoss-main.
-2. Run CI checks (gh pr checks <PR_NUMBER>).
-3. Verify Firestore paths if applicable (settings/attributesMeta, etc.).
-4. Grep for known patterns to confirm changes applied.
-5. Curl staging endpoint if applicable.
+docs/DEPLOYMENT.md — Deployment runbook
 
-Output: Pass/fail summary with evidence.
-```
+docs/ATTRIBUTE-REGISTRY.md — Registry semantics
 
-### 6. Merge Authorization
+packages/sdk/config/attributeRegistry.json — Canonical registry
 
-```
-I authorize merging PR #<NUMBER>.
+Human-Readable Mirror (Non-Authoritative)
 
-Use squash merge and delete the branch:
-gh pr merge <NUMBER> --squash --delete-branch --body "<commit message>"
+Notion — Prompt: Start Phase Workflow V5.1 — Consolidation & Verification
 
-After merge:
-1. Update labels: remove state:in-progress, cleanup:required; add state:merged, cleanup:done.
-2. Confirm branch deleted.
-3. Return merge commit SHA and final PR state as evidence.
-```
+https://www.notion.so/Prompt-Start-Phase-Workflow-V5-1-Consolidation-Verification-2df45ee1ec5a806bbec8ddd52baf6a58
 
-### 7. Close / Archive a Phase
 
-```
-Close phase "<PhaseSlug>-<SemVer>".
+Notion mirrors repo intent.
 
-Steps:
-1. Confirm all PRs with lp:<PhaseSlug>-<SemVer> are merged or closed.
-2. Update any remaining labels to state:merged or state:closed.
-3. Summarize: PRs merged, commits, deploy status, Firestore verification.
-4. Output: Final phase closure HES.
-```
+If Notion and repo diverge, the repo always wins.
 
----
+Notion must never override or invent rules.
 
-This file is the AI re-entry contract. Any AI session must follow it before taking actions.
+Forbidden Sources (Unless Explicitly Authorized)
+
+Google Drive
+
+Other GitHub repositories
+
+Other projects
+
+Prior chats
+
+Memory or “similar systems”
+
+If another source appears required:
+→ STOP
+→ Name the exact source
+→ Wait for authorization
+
+Phase Model (Non-Versioned)
+
+A Phase is a bounded execution container.
+
+A phase starts once and ends once.
+
+Phases are NOT versioned.
+
+Identifiers:
+
+PhaseName — descriptive, human-readable
+
+PhaseSlug — stable kebab-case identifier
+
+All work (fixes, retries, verification, follow-ups) lives inside the same phase until closure.
+
+LP (Lisa Protocol) Model — Sequential
+
+LPs are the only authorization mechanism for work.
+
+Format
+
+LP-<PhaseSlug>-001
+LP-<PhaseSlug>-002
+LP-<PhaseSlug>-003
+
+
+Rules:
+
+Numeric and sequential
+
+Never reset while the phase is open
+
+SemVer (1.0.0, v1, etc.) is forbidden inside phases
+
+LP number scopes all prompts, PRs, and HES artifacts
+
+Roles & Authority (Hard Boundaries)
+Lisa — Phase Owner / Orchestrator
+
+Owns phase scope and sequencing
+
+Issues LPs
+
+Coordinates work autonomously with Homer
+
+Does not execute code
+
+Does not merge PRs
+
+Does not advance HES states
+
+Homer — Executor
+
+Executes LPs exactly as written
+
+Opens PRs
+
+Runs CI
+
+Uses Firebase, GitHub, Cloud, staging
+
+Produces HES and evidence
+
+Has access to secrets (verified)
+
+Acceptance Authority (Human, Non-Developer)
+
+Verifies observable behavior only (UI, staging reality)
+
+Accepts or rejects evidence
+
+Does not execute
+
+Does not merge
+
+Does not manage GitHub
+
+Merge Authority
+
+Executor (Homer) or designated repo maintainer
+
+Merge authority is NOT the Acceptance Authority
+
+Prompting Rules (Lisa → Homer)
+
+Every directive must include:
+
+PhaseSlug
+
+LP ID
+
+Example header:
+
+Phase: export-global
+LP: LP-export-global-004
+
+
+Rules:
+
+Prompts are LP-scoped, not versioned
+
+Unlabeled prompts are invalid
+
+If scope is unclear → STOP and ask
+
+HES (Homer Execution Summary)
+
+HES is evidence for a specific LP
+
+HES inherits the LP number
+
+Example:
+
+HES-LP-export-global-004-B.json
+HES-LP-export-global-004-C.json
+
+
+Rules:
+
+JSON-only
+
+Evidence-only
+
+Reproducible
+
+No speculative narrative
+
+How to Resume in a New Chat (MANDATORY)
+
+Read this file (AI_BOOTSTRAP.md).
+
+Read GOVERNANCE.md (authoritative).
+
+Identify the active PhaseSlug (ask if unclear).
+
+Identify the highest LP number issued.
+
+Do not act until an LP is explicitly issued.
+
+Explicit Prohibitions
+
+No cross-project inference
+
+No assumption-based fixes
+
+No execution without an LP
+
+No bypassing GOVERNANCE.md
+
+If blocked:
+→ Document the blocker
+→ Stop
+→ Return control to Lisa
+
+Final Rule
+
+When uncertain, pause.
+Never guess.
+
+End of Contract
+
+This file is the single AI re-entry contract.
+Any AI session must comply before taking action.
