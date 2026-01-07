@@ -1,0 +1,176 @@
+# Attribute Registry Mapping Logic
+**LP:** LP-export-ui-attr-triage-1.0.0  
+**Evidence Type:** Attribute Selection & Mapping  
+**Date:** 2026-01-07T07:53:00Z  
+
+## Attribute Resolution Flow
+
+### 1. Attribute Registry Loading
+
+**File:** `packages/api/src/services/completionDrivenExportReadiness.ts`  
+**Function:** `loadAttributeRegistryForCompletion()`  
+**Lines:** 622-639  
+
+```typescript
+async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> {
+  const exportableAttributes = await loadExportableAttributes();
+  const registry: AttributeRegistry = {};
+  
+  for (const [id, def] of exportableAttributes) {
+    // Convert export attribute definition to completion format
+    registry[id] = {
+      attribute_id: id,
+      label: def.label,
+      category: def.category || 'general',
+      data_type: def.data_type || 'string',
+      required_for_completion: def.required_for_export || def.requiredForExport || false,
+      exportable: true,
+      internalOnly: def.internalOnly || false
+    } as AttributeType;
+  }
+  
+  return registry;
+}
+```
+
+**Key Mapping:**
+- `required_for_completion` is mapped from `required_for_export` or `requiredForExport`
+- This appears to be legacy mapping logic
+
+---
+
+### 2. Attribute Selection from Registry
+
+**File:** `packages/api/src/services/completionEvaluationEngine.ts`  
+**Function:** `resolveAttributes(registry, selector)`  
+**Lines:** 336-372  
+
+```typescript
+function resolveAttributes(
+  registry: AttributeRegistry,
+  selector: AttributeSelectorConfig
+): string[] {
+  const attributeIds: string[] = [];
+
+  for (const [attrId, attr] of Object.entries(registry)) {
+    // Skip if in exclusion list
+    if (selector.excludeAttributeIds?.includes(attrId)) {
+      continue;
+    }
+
+    // Skip internal-only attributes unless explicitly included
+    if (attr.internalOnly && !selector.includeInternalOnly) {
+      continue;
+    }
+
+    // Check category match
+    if (attr.category && !selector.categories.includes(attr.category)) {
+      continue;
+    }
+
+    // Check requirement flag
+    if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) {
+      continue;
+    }
+
+    // Note: Media and pricing categories are excluded by configuration, not code
+
+    attributeIds.push(attrId);
+  }
+
+  return attributeIds;
+}
+```
+
+**Selection Criteria (in order):**
+1. **Not in exclusion list** - `selector.excludeAttributeIds`
+2. **Internal-only handling** - Skip if `attr.internalOnly` and `!selector.includeInternalOnly`
+3. **Category match** - Attribute category must be in `selector.categories` array
+4. **Requirement flag** - If `selector.requirementFlag === 'completionRequired'`, attribute must have `required_for_completion: true`
+
+---
+
+### 3. Completion Rules Configuration
+
+Completion rules in Firestore define which attributes are required via `attributeSelector` config:
+
+**Interface** (from `completionRulesService.ts`):
+```typescript
+export interface AttributeSelectorConfig {
+  source: 'REGISTRY' | 'STATIC';
+  categories: string[];              // e.g., ['sku_core', 'classification']
+  requirementFlag: string;           // e.g., 'required_for_completion'
+  siteAware: boolean;
+  includeInternalOnly: boolean;
+  excludeAttributeIds: string[];
+  staticAttributeIds: string[];
+}
+```
+
+**Example from Firestore (Core Attributes segment):**
+```json
+{
+  "id": "core-attributes",
+  "name": "Core Product Attributes",
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": ["sku_core", "classification"],
+    "requirementFlag": "required_for_completion",
+    "siteAware": false,
+    "includeInternalOnly": true,
+    "excludeAttributeIds": [],
+    "staticAttributeIds": []
+  },
+  "ruleType": "ALL_REQUIRED",
+  "weightPct": 50,
+  "enabled": true
+}
+```
+
+---
+
+## KEY FINDING: Classification Attributes Not Required
+
+### Issue: Classification attributes (gender, category, class, department) not affecting readiness
+
+**Root Cause Chain:**
+
+1. **Attribute Registry Definition**
+   - Classification attributes have `category: 'classification'`
+   - But they likely have `required_for_completion: false` in the registry
+
+2. **Completion Rules Selector**
+   - Core attributes segment uses: `categories: ['sku_core', 'classification']`
+   - Uses: `requirementFlag: 'required_for_completion'`
+
+3. **Attribute Resolution Logic**
+   - `resolveAttributes()` checks: `if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) { continue; }`
+   - **MISMATCH:** Selector uses `requirementFlag: 'required_for_completion'` but code checks for `'completionRequired'`
+   - This means the requirement flag check may NEVER pass!
+
+4. **Result**
+   - Even though classification attributes are in the right category
+   - They get filtered out because requirement flag doesn't match
+   - Only attributes with `required_for_completion: true` would be included IF the flag matched
+
+---
+
+## Code Citation Summary
+
+| Component | File | Lines | Purpose |
+|-----------|------|-------|---------|
+| Load Registry | completionDrivenExportReadiness.ts | 622-639 | Maps exportable attributes to completion format |
+| Resolve Attributes | completionEvaluationEngine.ts | 336-372 | Selects attributes from registry based on selector config |
+| Has Attribute Value | completionEvaluationEngine.ts | 374-398 | Checks if product has value for attribute on site |
+| Attribute Selector Config | completionRulesService.ts | 46-54 | Defines how attributes are selected (interface) |
+
+---
+
+## Next Investigation Required
+
+1. **Check actual attribute registry** - Are classification attributes marked as `required_for_completion: true`?
+2. **Check requirementFlag mismatch** - Why does selector use `'required_for_completion'` but code checks `'completionRequired'`?
+3. **Verify Firestore settings** - What's the actual completion rules config in Firestore?
+
+**Evidence File:** attribute-mapping-citations.txt  
+**Created:** 2026-01-07T07:53:00Z

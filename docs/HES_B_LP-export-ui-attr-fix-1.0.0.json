@@ -1,0 +1,30 @@
+{
+  "manifest": {
+    "lpId": "LP-export-ui-attr-fix-1.0.0",
+    "title": "Normalize attribute required flags (snake_case + camelCase)",
+    "executor": "Homer",
+    "reviewer": "Lisa",
+    "version": "1.0.0",
+    "hesLevel": "HES B",
+    "status": "IN_PROGRESS",
+    "createdAt": "2026-01-07T09:05:00Z"
+  },
+  "changes": [
+    {
+      "file": "packages/api/src/services/completionEvaluationEngine.ts",
+      "summary": "Normalize requirementFlag handling to accept snake_case, camelCase, and legacy keys for completion/export enforcement"
+    },
+    {
+      "file": "packages/api/src/services/completionEvaluationEngine.test.ts",
+      "summary": "Add unit tests covering snake_case and camelCase/legacy requirement flags for classification attributes"
+    }
+  ],
+  "tests": [
+    {
+      "command": "pnpm --filter @ropi-aoss/api test",
+      "status": "FAILED",
+      "details": "Existing suite has prior failures (attributeValidator, import pipeline, registry bridge, smart engine) unrelated to this LP; normalization tests added in this LP pass but overall suite fails in shared mocks"
+    }
+  ],
+  "notes": "Minimal, reversible change scoped to requirement flag normalization. No data or registry writes."
+}

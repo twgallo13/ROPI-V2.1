@@ -1,0 +1,24 @@
+pnpm --filter @ropi-aoss/api exec vitest run src/services/completionEvaluationEngine.test.ts
+-----------------------------------------------------------------
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ src/services/completionEvaluationEngine.test.ts (7)
+   ✓ Completion Evaluation Engine (7)
+     ✓ should calculate 100% completion for complete product
+     ✓ should detect site blocking for missing description/SEO attributes
+     ✓ should return 0% completion for empty product
+     ✓ should handle deterministic evaluation without timestamp
+     ✓ should validate input requirements
+     ✓ normalizes snake_case requirement flag and ignores non-required classification attributes
+     ✓ normalizes camelCase/legacy requirement flags for classification attributes
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  09:00:17
+   Duration  364ms (transform 64ms, setup 35ms, collect 33ms, tests 6ms, environment 0ms, prepare 77ms)

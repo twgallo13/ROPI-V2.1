@@ -1,0 +1,2561 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/api@0.0.0 test /workspaces/ROPI-V2.1/packages/api
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.6.1 /workspaces/ROPI-V2.1/packages/api
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/exportService.unit.test.ts  (42 tests) 41ms
+stderr | test/smartEngineV2.test.ts > S2.3: Guardrails & Validation > validateRuleTarget() > should accept allowed target fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Guardrails & Validation > validateRuleTarget() > should reject non-whitelisted fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Guardrails & Validation > validateRuleTarget() > should reject system fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Guardrails & Validation > isAllowedTargetField() > should recognize exact matches
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Guardrails & Validation > isAllowedTargetField() > should recognize nested prefixes
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Guardrails & Validation > isAllowedTargetField() > should reject unknown fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Set-Only-If-Empty Enforcement > should auto-apply when field is empty
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Set-Only-If-Empty Enforcement > should NOT auto-apply when field has existing value
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.3: Set-Only-If-Empty Enforcement > should NOT auto-apply when user edited the field
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > Determinism: Identical outputs for identical inputs > should produce identical suggestions on repeated evaluations
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > Determinism: Identical outputs for identical inputs > should produce identical auto-applies on repeated evaluations
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > Determinism: Identical outputs for identical inputs > should maintain rule priority ordering deterministically
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.4: Provenance Model > should include provenance in updates for auto-applied suggestions
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.4: Provenance Model > should include input context in provenance
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.4: Provenance Model > should include reason in provenance
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.4: Provenance Model > should track applied rule in _appliedRules
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.6: Conflict Detection > should detect conflicts when two rules propose different values for same field
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.6: Conflict Detection > should NOT create conflict when values are identical
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > S2.6: Conflict Detection > should include priority in conflict candidates
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > Activity Log Generation > should generate activity log entries for auto-applied suggestions
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > Activity Log Generation > should NOT generate activity log for suggestions not auto-applied
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+ ❯ test/smartEngineV2.test.ts  (70 tests | 1 failed) 64ms
+   ❯ test/smartEngineV2.test.ts > S2.3: Set-Only-If-Empty Enforcement > should NOT auto-apply when field has existing value
+     → expected 1 to be +0 // Object.is equality
+stderr | test/smartEngineV2.test.ts > Error Handling > should capture errors for rules targeting internalOnly attributes
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.test.ts > Error Handling > should capture errors for rules targeting non-whitelisted fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ❯ test/exportService.s4.unit.test.ts  (25 tests | 1 failed) 27ms
+   ❯ test/exportService.s4.unit.test.ts > LP-smart-rules-exporter-1.0.0: S4 Export Service > validation.fails_for_missing_requiredForExport > should use calculateExportReadiness for ready status
+     → expected [ { id: 'gender', label: 'Gender' } ] to include 'gender'
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ❯ test/smartEngineV2.integration.test.ts  (14 tests | 2 failed) 43ms
+   ❯ test/smartEngineV2.integration.test.ts > Integration: Import Pipeline End-to-End > should handle multiple rules triggering for same import row
+     → expected false to be true // Object.is equality
+   ❯ test/smartEngineV2.integration.test.ts > Integration: Idempotency > should NOT auto-apply on re-import when field already has value
+     → expected 2 to be +0 // Object.is equality
+stderr | test/smartEngineV2.integration.test.ts > Integration: Import Pipeline End-to-End > should process import row and produce suggestions + auto-applies
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Import Pipeline End-to-End > should update product doc with provenance and attribute values
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Import Pipeline End-to-End > should handle multiple rules triggering for same import row
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Idempotency > should produce identical results on re-evaluation
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Idempotency > should NOT auto-apply on re-import when field already has value
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Conflict Scenarios > should detect and store conflicts when rules propose different values
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Conflict Scenarios > should include conflict candidate priorities
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Provenance Persistence > should generate provenance structure per Lisa's S2.4 spec
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Provenance Persistence > should generate provenance for all auto-applied fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Activity Audit Trail > should generate activity log entries for each auto-apply
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Activity Audit Trail > should include rule details in activity log
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngineV2.integration.test.ts > Integration: Batch Processing > should process multiple import rows efficiently
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stdout | test/smartEngineV2.integration.test.ts > HES Example: Product Doc with Provenance > should produce example product doc for HES documentation
+
+=== EXAMPLE PRODUCT DOC FOR HES ===
+{
+  "mpn": "NIKE-AM90-001",
+  "core": {
+    "sku": "NIKE-AM90-BLK-10",
+    "title": "Air Max 90",
+    "brand": "Nike"
+  },
+  "attributes": {
+    "gender": "Men's",
+    "category": "Footwear"
+  },
+  "source": {
+    "rics": {
+      "category": "Footwear | Men's | Athletic | Running",
+      "color": "Black/White",
+      "shortDescription": "Nike Air Max 90 Black/White"
+    }
+  },
+  "provenance": {
+    "attributes.gender": {
+      "source": "smartRule",
+      "ruleId": "gender-men",
+      "ruleName": "Gender - Men Detection",
+      "appliedAt": "2026-01-07T09:00:41.709Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Athletic | Running",
+        "matchedValue": "Men's",
+        "matchedTokens": [
+          "Men's",
+          "men's",
+          "Men's"
+        ]
+      },
+      "reason": "token match 'Men's', 'men's', 'Men's'"
+    },
+    "attributes.category": {
+      "source": "smartRule",
+      "ruleId": "category-footwear",
+      "ruleName": "Category - Footwear Detection",
+      "appliedAt": "2026-01-07T09:00:41.709Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Athletic | Running",
+        "matchedValue": "footwear",
+        "matchedTokens": [
+          "footwear",
+          "Footwear"
+        ]
+      },
+      "reason": "token match 'footwear', 'Footwear'"
+    }
+  },
+  "_appliedRules": {
+    "attributes_gender": {
+      "ruleId": "gender-men",
+      "confidence": 0.95,
+      "appliedAt": "2026-01-07T09:00:41.709Z"
+    },
+    "attributes_category": {
+      "ruleId": "category-footwear",
+      "confidence": 0.8999999999999999,
+      "appliedAt": "2026-01-07T09:00:41.709Z"
+    }
+  },
+  "_smartRulesRanAt": "2026-01-07T09:00:41.709Z",
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-07T09:00:41.709Z",
+      "details": {
+        "ruleId": "gender-men",
+        "ruleName": "Gender - Men Detection",
+        "targetField": "attributes.gender",
+        "value": "Men's",
+        "confidence": 0.95,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Athletic | Running",
+          "matchedValue": "Men's",
+          "matchedTokens": [
+            "Men's",
+            "men's",
+            "Men's"
+          ]
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-07T09:00:41.709Z",
+      "details": {
+        "ruleId": "category-footwear",
+        "ruleName": "Category - Footwear Detection",
+        "targetField": "attributes.category",
+        "value": "Footwear",
+        "confidence": 0.8999999999999999,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Athletic | Running",
+          "matchedValue": "footwear",
+          "matchedTokens": [
+            "footwear",
+            "Footwear"
+          ]
+        }
+      }
+    }
+  ]
+}
+=== END EXAMPLE ===
+
+
+stderr | test/smartEngineV2.integration.test.ts > HES Example: Product Doc with Provenance > should produce example product doc for HES documentation
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.1: Import Pipeline Integration > Engine evaluation during import > should evaluate Smart Rules for import row
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.1: Import Pipeline Integration > Engine evaluation during import > should produce correct attribute values
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.1: Import Pipeline Integration > Provenance per-field persistence > should include provenance for each auto-applied field
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.1: Import Pipeline Integration > Provenance per-field persistence > should include input context in provenance
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.1: Import Pipeline Integration > Provenance per-field persistence > should include reason in provenance
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.1: Import Pipeline Integration > _appliedRules tracking > should track applied rules per field
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should produce identical results on re-evaluation
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should NOT auto-apply when field already has value
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should NOT auto-apply when user has edited the field
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.3: Skip-Window Loop Prevention > should set _smartRulesRanAt timestamp
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.3: Skip-Window Loop Prevention > should set _smartRulesSkipUntil for loop prevention
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.3: Skip-Window Loop Prevention > should skip evaluation when within skip window
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.3: Skip-Window Loop Prevention > should NOT skip when skip window has expired
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.4: Activity Log / Audit Trail > should generate activity log entries for auto-applies
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.4: Activity Log / Audit Trail > should include correct actor in activity log
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.4: Activity Log / Audit Trail > should include correct action type in activity log
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.4: Activity Log / Audit Trail > should include rule details in activity log
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.4: Activity Log / Audit Trail > should include timestamp in activity log
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.4: Activity Log / Audit Trail > should generate one activity log entry per auto-applied field
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stdout | test/smartRulesImportIntegration.test.ts > S3.5: Full Integration Scenario > should produce complete product doc with all S3 fields
+
+=== EXAMPLE PRODUCT DOC FOR S3 HES ===
+{
+  "mpn": "TEST-MPN-001",
+  "core": {
+    "sku": "TEST-SKU-001",
+    "title": "Test Product",
+    "brand": "TestBrand"
+  },
+  "attributes": {
+    "category": "Footwear",
+    "gender": "Men's"
+  },
+  "provenance": {
+    "attributes_category": {
+      "source": "smartRule",
+      "ruleId": "category-footwear",
+      "ruleName": "Category - Footwear Detection",
+      "appliedAt": "2026-01-07T09:00:41.898Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Sneakers",
+        "matchedValue": "footwear",
+        "matchedTokens": [
+          "footwear",
+          "Footwear"
+        ]
+      },
+      "reason": "token match 'footwear', 'Footwear'"
+    },
+    "attributes_gender": {
+      "source": "smartRule",
+      "ruleId": "gender-men",
+      "ruleName": "Gender - Men's Detection",
+      "appliedAt": "2026-01-07T09:00:41.898Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Sneakers",
+        "matchedValue": "Men's",
+        "matchedTokens": [
+          "Men's",
+          "men's",
+          "Men's"
+        ]
+      },
+      "reason": "token match 'Men's', 'men's', 'Men's'"
+    }
+  },
+  "_appliedRules": {
+    "attributes_category": {
+      "ruleId": "category-footwear",
+      "confidence": 0.8999999999999999,
+      "appliedAt": "2026-01-07T09:00:41.898Z"
+    },
+    "attributes_gender": {
+      "ruleId": "gender-men",
+      "confidence": 0.95,
+      "appliedAt": "2026-01-07T09:00:41.898Z"
+    }
+  },
+  "_smartRulesRanAt": "2026-01-07T09:00:41.898Z",
+  "_smartRulesSkipUntil": 1767776451899,
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-07T09:00:41.898Z",
+      "details": {
+        "ruleId": "category-footwear",
+        "ruleName": "Category - Footwear Detection",
+        "targetField": "attributes.category",
+        "value": "Footwear",
+        "confidence": 0.8999999999999999,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Sneakers",
+          "matchedValue": "footwear",
+          "matchedTokens": [
+            "footwear",
+            "Footwear"
+          ]
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-07T09:00:41.898Z",
+      "details": {
+        "ruleId": "gender-men",
+        "ruleName": "Gender - Men's Detection",
+        "targetField": "attributes.gender",
+        "value": "Men's",
+        "confidence": 0.95,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Sneakers",
+          "matchedValue": "Men's",
+          "matchedTokens": [
+            "Men's",
+            "men's",
+            "Men's"
+          ]
+        }
+      }
+    }
+  ]
+}
+=== END EXAMPLE ===
+
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.5: Full Integration Scenario > should produce complete product doc with all S3 fields
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stdout | test/smartRulesImportIntegration.test.ts > S3.5: Full Integration Scenario > should demonstrate before/after for HES documentation
+
+=== S3 HES: BEFORE IMPORT ===
+{
+  "mpn": "NIKE-AM90-001",
+  "core": {
+    "sku": "NIKE-AM90-BLK-10",
+    "title": "Air Max 90",
+    "brand": "Nike"
+  },
+  "attributes": {},
+  "source": {
+    "rics": {
+      "category": "Footwear | Men's | Running",
+      "color": "Black/White"
+    }
+  }
+}
+
+=== S3 HES: AFTER IMPORT ===
+{
+  "mpn": "NIKE-AM90-001",
+  "core": {
+    "sku": "NIKE-AM90-BLK-10",
+    "title": "Air Max 90",
+    "brand": "Nike"
+  },
+  "attributes": {
+    "category": "Footwear",
+    "gender": "Men's"
+  },
+  "source": {
+    "rics": {
+      "category": "Footwear | Men's | Running",
+      "color": "Black/White"
+    }
+  },
+  "provenance": {
+    "attributes_category": {
+      "source": "smartRule",
+      "ruleId": "category-footwear",
+      "ruleName": "Category - Footwear Detection",
+      "appliedAt": "2026-01-07T09:00:41.899Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Running",
+        "matchedValue": "footwear",
+        "matchedTokens": [
+          "footwear",
+          "Footwear"
+        ]
+      },
+      "reason": "token match 'footwear', 'Footwear'"
+    },
+    "attributes_gender": {
+      "source": "smartRule",
+      "ruleId": "gender-men",
+      "ruleName": "Gender - Men's Detection",
+      "appliedAt": "2026-01-07T09:00:41.899Z",
+      "input": {
+        "ricsCategory": "Footwear | Men's | Running",
+        "matchedValue": "Men's",
+        "matchedTokens": [
+          "Men's",
+          "men's",
+          "Men's"
+        ]
+      },
+      "reason": "token match 'Men's', 'men's', 'Men's'"
+    }
+  },
+  "_appliedRules": {
+    "attributes_category": {
+      "ruleId": "category-footwear",
+      "confidence": 0.8999999999999999,
+      "appliedAt": "2026-01-07T09:00:41.899Z"
+    },
+    "attributes_gender": {
+      "ruleId": "gender-men",
+      "confidence": 0.95,
+      "appliedAt": "2026-01-07T09:00:41.899Z"
+    }
+  },
+  "_smartRulesRanAt": "2026-01-07T09:00:41.899Z",
+  "_smartRulesSkipUntil": 1767776451900,
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-07T09:00:41.899Z",
+      "details": {
+        "ruleId": "category-footwear",
+        "ruleName": "Category - Footwear Detection",
+        "targetField": "attributes.category",
+        "value": "Footwear",
+        "confidence": 0.8999999999999999,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Running",
+          "matchedValue": "footwear",
+          "matchedTokens": [
+            "footwear",
+            "Footwear"
+          ]
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-07T09:00:41.899Z",
+      "details": {
+        "ruleId": "gender-men",
+        "ruleName": "Gender - Men's Detection",
+        "targetField": "attributes.gender",
+        "value": "Men's",
+        "confidence": 0.95,
+        "input": {
+          "ricsCategory": "Footwear | Men's | Running",
+          "matchedValue": "Men's",
+          "matchedTokens": [
+            "Men's",
+            "men's",
+            "Men's"
+          ]
+        }
+      }
+    }
+  ]
+}
+=== END ===
+
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.5: Full Integration Scenario > should demonstrate before/after for HES documentation
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.6: Edge Cases > should handle empty RICS category gracefully
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.6: Edge Cases > should handle missing source data gracefully
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.6: Edge Cases > should handle no matching rules gracefully
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartRulesImportIntegration.test.ts > S3.6: Edge Cases > should handle disabled rules correctly
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+ ❯ test/smartRulesImportIntegration.test.ts  (25 tests | 3 failed) 38ms
+   ❯ test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should NOT auto-apply when field already has value
+     → expected { …(10) } to be undefined
+   ❯ test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should NOT auto-apply when user has edited the field
+     → expected { …(10) } to be undefined
+   ❯ test/smartRulesImportIntegration.test.ts > S3.3: Skip-Window Loop Prevention > should skip evaluation when within skip window
+     → expected 2 to be +0 // Object.is equality
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | src/endpoints/admin/users.test.ts > Users Endpoints > createUserHandler > should return 400 for invalid role
+⚠️ Failed to normalize role input: invalid-role
+
+stdout | src/endpoints/admin/users.test.ts > Users Endpoints > updateUserHandler > should create profile doc if missing (create-or-merge behavior)
+📝 Creating missing profile doc for user test-uid-no-profile
+
+stdout | src/endpoints/admin/users.test.ts > Users Endpoints > resetPasswordHandler > should generate password reset link
+Password reset link for test@test.com: https://reset.link
+
+ ✓ src/endpoints/admin/users.test.ts  (15 tests) 18ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | src/endpoints/products.completion.test.ts > GET /api/products/:productId/completion > Error Handling > returns 500 on Firestore error
+Error evaluating product completion: Error: Firestore error
+    at /workspaces/ROPI-V2.1/packages/api/src/endpoints/products.completion.test.ts:374:40
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+stderr | src/endpoints/products.completion.test.ts > GET /api/products/:productId/completion > Error Handling > returns 500 on completion evaluation error
+Error evaluating product completion: Error: Evaluation failed
+    at /workspaces/ROPI-V2.1/packages/api/src/endpoints/products.completion.test.ts:401:9
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+ ✓ src/endpoints/products.completion.test.ts  (10 tests) 20ms
+stderr | test/admin-users-enhanced.test.ts > Role Normalization > POST /admin/settings/users - createUserHandler with role normalization > should reject invalid role
+⚠️ Failed to normalize role input: invalid_role
+
+stderr | test/admin-users-enhanced.test.ts > Role Normalization > POST /admin/settings/users - createUserHandler with role normalization > should reject legacy role "user"
+⚠️ Failed to normalize role input: user
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | test/admin-users-enhanced.test.ts > Role Normalization > PATCH /admin/settings/users/:uid - updateUserHandler with role normalization > should reject invalid role in update
+⚠️ Failed to normalize role input: invalid
+
+stderr | src/services/completionDrivenExportReadiness.test.ts > Completion-Driven Export Readiness > should handle system errors gracefully
+[CompletionDrivenExportReadiness] Evaluation failed: Error: Firestore connection failed
+    at /workspaces/ROPI-V2.1/packages/api/src/services/completionDrivenExportReadiness.test.ts:515:52
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+ ✓ test/admin-users-enhanced.test.ts  (20 tests) 87ms
+ ✓ test/exportService.integration.test.ts  (20 tests) 15ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ src/services/completionDrivenExportReadiness.test.ts  (27 tests) 2583ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log eval result when rule matches and auto-applies
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+ ✓ test/importValidation.unit.test.ts  (28 tests) 24ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log apply event when value is written
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log suggestion when rule matches but does not auto-apply
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | test/users-profile.unit.test.ts > GET /users/me > should handle user not found gracefully
+User profile endpoint error: Error: User not found
+    at /workspaces/ROPI-V2.1/packages/api/test/users-profile.unit.test.ts:136:27
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5) {
+  code: 'auth/user-not-found'
+}
+
+ ✓ test/users-profile.unit.test.ts  (15 tests) 17ms
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should use consistent traceId across eval and apply events
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > error logging > should log error when validation fails
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+ ❯ test/productCommitService.test.ts  (6 tests | 5 failed) 19ms
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+     → Import batch test-batch-001 not found
+   ❯ test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+     → Import batch test-batch-001 not found
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > summary logging > should log summary with eval counts
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stderr | test/smartEngine.logging.test.ts > Smart Engine Logging Integration > sampling behavior > should respect LOG_SAMPLING_RATE environment variable
+[allowedTargetFields] Cache miss - returning empty set. Call initializeAllowedFieldsCache() during engine initialization.
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ src/services/completionEvaluationEngine.test.ts  (7 tests) 7ms
+ ❯ test/smartEngine.logging.test.ts  (7 tests | 5 failed) 734ms
+   ❯ test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log eval result when rule matches and auto-applies
+     → expected "spy" to be called at least once
+   ❯ test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log apply event when value is written
+     → expected "spy" to be called at least once
+   ❯ test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log suggestion when rule matches but does not auto-apply
+     → expected "spy" to be called at least once
+   ❯ test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should use consistent traceId across eval and apply events
+     → expected undefined to be truthy
+   ❯ test/smartEngine.logging.test.ts > Smart Engine Logging Integration > summary logging > should log summary with eval counts
+     → expected "spy" to be called at least once
+ ❯ test/attributes.service.spec.ts  (20 tests | 11 failed) 66ms
+   ❯ test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+     → promise resolved "{ …(7) }" instead of rejecting
+   ❯ test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+     → Attribute 'test-color-primary' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+     → expected +0 to be 3 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+     → expected +0 to be 2 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+     → expected +0 to be 1 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+     → expected +0 to be 2 // Object.is equality
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should return top values sorted by count
+     → Attribute 'department' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect limit parameter
+     → Attribute 'department' not found
+   ❯ test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect minCount parameter
+     → Attribute 'department' not found
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ src/lib/export/ExportGateEnforcer.test.ts  (11 tests) 19ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/unit/observations.validateFieldLink.spec.ts  (40 tests) 14ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/attributeMeta.test.ts  (18 tests) 13ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stderr | test/smartEngine.validation.test.ts > SmartRulesEngine Domain Validation > should NOT return suggestion for invalid enum value
+Smart Rule 'invalid-gender-rule' generated invalid value for 'attributes.gender': Value 'Martian' not in allowed values for 'gender': [Men's, Women's, Unisex, Kids]
+
+stderr | test/smartEngine.validation.test.ts > SmartRulesEngine Domain Validation > should handle multiple rules with mixed valid/invalid values
+Smart Rule 'invalid-rule' generated invalid value for 'attributes.primaryColor': Value 'Chartreuse' not in allowed values for 'primaryColor': [Black, White, Blue, Red, Green]
+
+stderr | test/smartEngine.validation.test.ts > SmartRulesEngine Domain Validation > should set registry via setRegistry method
+Smart Rule 'test-rule-001' generated invalid value for 'attributes.gender': Value 'Invalid' not in allowed values for 'gender': [Men's, Women's, Unisex, Kids]
+
+ ✓ test/smartEngine.validation.test.ts  (16 tests) 23ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | src/endpoints/export.423.test.ts > Export Endpoint 423 Response Schema > dry-run endpoint returns locked 423 schema when blocked by threshold
+[Export] Running dry-run with options: {
+  site: 'us',
+  limit: 100,
+  includeMeta: false,
+  format: 'ro_csv',
+  multiSelectDelimiter: '|'
+}
+[Export] Checking completion-driven export readiness... { evaluatedAt: '2026-01-07T09:00:45.343Z' }
+[Export] BLOCKED: Export not ready due to completion requirements: { ready: false, completionPct: 75, threshold: 80, blockingReasons: 1 }
+
+stdout | src/endpoints/export.423.test.ts > Export Endpoint 423 Response Schema > run endpoint returns identical 423 schema when blocked by site
+[Export] Running full export with options: {
+  site: 'us',
+  limit: 100,
+  includeMeta: false,
+  format: 'ro_csv',
+  multiSelectDelimiter: '|',
+  pageSize: 1000
+}
+[Export] Checking completion-driven export readiness... { evaluatedAt: '2026-01-07T09:00:45.348Z' }
+[Export] BLOCKED: Export not ready due to completion requirements: { ready: false, completionPct: 0, threshold: 80, blockingReasons: 1 }
+
+stdout | src/endpoints/export.423.test.ts > Export Endpoint 423 Response Schema > verifies catalogStats are present in 423 payload
+[Export] Running dry-run with options: {
+  site: 'us',
+  limit: 100,
+  includeMeta: false,
+  format: 'ro_csv',
+  multiSelectDelimiter: '|'
+}
+[Export] Checking completion-driven export readiness... { evaluatedAt: '2026-01-07T09:00:45.350Z' }
+[Export] BLOCKED: Export not ready due to completion requirements: { ready: false, completionPct: 70, threshold: 80, blockingReasons: 0 }
+
+stdout | src/endpoints/export.423.test.ts > Export Endpoint 423 Response Schema > allows export when completion is ready even if unknown values exist (reported, not blocking)
+[Export] Running full export with options: {
+  site: 'us',
+  limit: 100,
+  includeMeta: false,
+  format: 'ro_csv',
+  multiSelectDelimiter: '|',
+  pageSize: 1000
+}
+[Export] Checking completion-driven export readiness... { evaluatedAt: '2026-01-07T09:00:45.351Z' }
+[Export] Completion gate passed - proceeding with full export
+[Export] Export complete: { totalProducts: 10, exportedProducts: 10, exportReady: 10 }
+
+stderr | src/endpoints/export.423.test.ts > Export Endpoint 423 Response Schema > allows export when completion is ready even if unknown values exist (reported, not blocking)
+[Export] Could not save files: Error: [vitest] No "saveExportToFile" export is defined on the "../services/exportService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:79:19)
+    at Object.get (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:153:22)
+    at Module.runExportHandler (/workspaces/ROPI-V2.1/packages/api/src/endpoints/export.ts:167:27)
+    at /workspaces/ROPI-V2.1/packages/api/src/endpoints/export.423.test.ts:281:5
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:11)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7 {
+  codeFrame: 'vi.mock("../services/exportService", async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+ ✓ src/endpoints/export.423.test.ts  (4 tests) 19ms
+stdout | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > returns 200 with success:true when readiness.ready === true
+[Export] Checking export readiness... { evaluatedAt: '2026-01-07T09:00:45.396Z' }
+[Export] Readiness check complete: { ready: true, completionPct: 85, threshold: 80, blockingReasons: 0 }
+
+stdout | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > returns 423 with success:false when readiness.ready === false
+[Export] Checking export readiness... { evaluatedAt: '2026-01-07T09:00:45.401Z' }
+[Export] Readiness check complete: { ready: false, completionPct: 75, threshold: 80, blockingReasons: 1 }
+
+stdout | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > returns 423 when blocked by site Description/SEO requirements
+[Export] Checking export readiness... { evaluatedAt: '2026-01-07T09:00:45.402Z' }
+[Export] Readiness check complete: { ready: false, completionPct: 90, threshold: 80, blockingReasons: 1 }
+
+stdout | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > returns 500 when service throws error
+[Export] Checking export readiness... { evaluatedAt: '2026-01-07T09:00:45.403Z' }
+
+stderr | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > returns 500 when service throws error
+[Export] Readiness check error: Error: Firestore connection failed
+    at /workspaces/ROPI-V2.1/packages/api/src/endpoints/export.readiness.test.ts:185:9
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///workspaces/ROPI-V2.1/node_modules/.pnpm/@vitest+runner@1.6.1/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///workspaces/ROPI-V2.1/node_modules/.pnpm/vitest@1.6.1_@types+node@18.19.130_jsdom@27.4.0/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+stdout | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > calls calculateCompletionDrivenExportReadiness with correct parameters
+[Export] Checking export readiness... { evaluatedAt: '2026-01-07T09:00:45.406Z' }
+[Export] Readiness check complete: { ready: true, completionPct: 85, threshold: 80, blockingReasons: 0 }
+
+stdout | src/endpoints/export.readiness.test.ts > Export Readiness Endpoint (LP-export-ui-readiness-1.0.0) > GET /api/admin/exports/readiness > includes siteStatus in response when product has selected sites
+[Export] Checking export readiness... { evaluatedAt: '2026-01-07T09:00:45.408Z' }
+[Export] Readiness check complete: { ready: true, completionPct: 80, threshold: 80, blockingReasons: 0 }
+
+ ✓ src/endpoints/export.readiness.test.ts  (6 tests) 15ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/normalizeFieldPath.test.ts  (22 tests) 14ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/logger.test.ts  (18 tests) 10ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/smartRuleServerValidation.test.ts  (13 tests) 13ms
+ ✓ test/mappingService.spec.ts  (18 tests) 11ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ↓ src/endpoints/__tests__/suggestions.integration.test.ts  (10 tests | 10 skipped)
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/trace.test.ts  (25 tests) 28ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | logRegisteredRoutes (/workspaces/ROPI-V2.1/packages/api/src/apiApp.ts:338:11)
+🚀 API Routes Registered:
+
+stdout | src/apiApp.ts:347:15
+  [MOUNT] Router mounted at: ^/api/?(?=/|$)
+  [MOUNT] Router mounted at: ^/?(?=/|$)
+
+stdout | logRegisteredRoutes (/workspaces/ROPI-V2.1/packages/api/src/apiApp.ts:352:11)
+  📍 API Router routes available at both /api/<path> and /<path>:
+
+stdout | src/apiApp.ts:361:15
+    [SUBROUTER] ^/admin/reconcile-attributes/?(?=/|$)
+
+stdout | src/apiApp.ts:358:15
+    GET /api/admin/settings/attributes OR /admin/settings/attributes
+    GET /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    POST /api/admin/settings/attributes OR /admin/settings/attributes
+    PUT /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    DELETE /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    GET /api/admin/settings/attributes/:id/usage OR /admin/settings/attributes/:id/usage
+    GET /api/admin/settings/attributes/:id/top-values OR /admin/settings/attributes/:id/top-values
+    GET /api/admin/settings/attributes/:id/audit OR /admin/settings/attributes/:id/audit
+    GET /api/admin/settings/attributes/:id/audit/:eventId OR /admin/settings/attributes/:id/audit/:eventId
+    POST /api/admin/settings/attributes/:id/revert OR /admin/settings/attributes/:id/revert
+    GET /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    PUT /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    DELETE /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    GET /api/admin/settings/attributes/:id/mapping/sources OR /admin/settings/attributes/:id/mapping/sources
+    GET /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    PUT /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    DELETE /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    GET /api/admin/settings/mappings OR /admin/settings/mappings
+    PUT /api/admin/settings/mappings OR /admin/settings/mappings
+    GET /api/admin/settings/lists OR /admin/settings/lists
+    GET /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    POST /api/admin/settings/lists OR /admin/settings/lists
+    PUT /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    DELETE /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    GET /api/admin/settings/users OR /admin/settings/users
+    GET /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    POST /api/admin/settings/users OR /admin/settings/users
+    PATCH /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    DELETE /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    POST /api/admin/settings/users/:uid/reset-password OR /admin/settings/users/:uid/reset-password
+    GET /api/admin/settings/roles OR /admin/settings/roles
+    GET /api/admin/permissions OR /admin/permissions
+    PATCH /api/admin/permissions OR /admin/permissions
+    POST /api/admin/permissions/reset OR /admin/permissions/reset
+    POST /api/admin/validateSmartRule OR /admin/validateSmartRule
+    POST /api/admin/normalizeSmartRule OR /admin/normalizeSmartRule
+    GET /api/admin/import-eval/:productId OR /admin/import-eval/:productId
+    POST /api/admin/rules OR /admin/rules
+    PUT /api/admin/rules/:ruleId OR /admin/rules/:ruleId
+    GET /api/registry/health OR /registry/health
+    GET /api/registry/registry-version OR /registry/registry-version
+    POST /api/registry/refresh OR /registry/refresh
+    GET /api/smartrules/verification/latest OR /smartrules/verification/latest
+    POST /api/smartrules/verification/run OR /smartrules/verification/run
+    GET /api/users/me OR /users/me
+    PATCH /api/users/me OR /users/me
+    GET /api/products OR /products
+    GET /api/products/search-mpn OR /products/search-mpn
+    GET /api/products/by-mpn/:mpn OR /products/by-mpn/:mpn
+    GET /api/products/:productId/completion OR /products/:productId/completion
+    GET /api/products/:productId OR /products/:productId
+    PATCH /api/products/:productId/attributes OR /products/:productId/attributes
+    POST /api/products/:productId/suggestions OR /products/:productId/suggestions
+    POST /api/products/:productId/apply-suggestion OR /products/:productId/apply-suggestion
+    POST /api/products/:productId/describe OR /products/:productId/describe
+    POST /api/products/:productId/apply OR /products/:productId/apply
+    GET /api/products/:productId/observation OR /products/:productId/observation
+    PATCH /api/products/:productId/observation OR /products/:productId/observation
+    DELETE /api/products/:productId/observation OR /products/:productId/observation
+    GET /api/observations OR /observations
+    POST /api/observations OR /observations
+    POST /api/observations/analyze-image OR /observations/analyze-image
+    GET /api/observations/:id OR /observations/:id
+    PATCH /api/observations/:id OR /observations/:id
+    POST /api/observations/:id/tags/remove OR /observations/:id/tags/remove
+    POST /api/observations/:id/analyze-image OR /observations/:id/analyze-image
+    POST /api/importCSV OR /importCSV
+    POST /api/importDryRun OR /importDryRun
+    POST /api/processImportBatch OR /processImportBatch
+    GET /api/importBatchStatus OR /importBatchStatus
+    POST /api/admin/imports/preview OR /admin/imports/preview
+    GET /api/admin/exports/readiness OR /admin/exports/readiness
+    POST /api/syncAttributeRegistry OR /syncAttributeRegistry
+    POST /api/retailops/import-preview OR /retailops/import-preview
+    GET /api/healthz OR /healthz
+
+stdout | logRegisteredRoutes (/workspaces/ROPI-V2.1/packages/api/src/apiApp.ts:365:11)
+✅ Route registration complete
+
+ ↓ src/endpoints/__tests__/products.integration.test.ts  (14 tests | 14 skipped)
+ ✓ src/endpoints/__tests__/describe.integration.test.ts  (14 tests) 63ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ❯ src/services/__tests__/phase2_engine.test.ts  (10 tests | 5 failed) 3284ms
+   ❯ src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should aggregate segment scores using BEST-score-per-segment algorithm
+     → expected undefined to be 'GLOBAL' // Object.is equality
+   ❯ src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should collect union of missing attributes across segments
+     → Cannot read properties of undefined (reading 'missingGlobalAttributes')
+   ❯ src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should identify blocking segments (score < 100)
+     → Cannot read properties of undefined (reading 'blockingSegments')
+   ❯ src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should handle product with no sites (website optional)
+     → Cannot read properties of undefined (reading 'websiteOptional')
+   ❯ src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should exclude description-seo site-blocking segment from aggregation
+     → Cannot read properties of undefined (reading 'segmentScores')
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/migrateProductsToAttributes.test.ts  (6 tests) 6ms
+ ✓ test/auditService.spec.ts  (16 tests) 30ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/importService.integration.test.ts  (7 tests) 11ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/roles.unit.test.ts  (20 tests) 12ms
+ ❯ test/importService.test.ts  (7 tests | 2 failed) 96ms
+   ❯ test/importService.test.ts > Import Service Integration > parseCSV > should parse numeric values
+     → expected 'string' to be 'number' // Object.is equality
+   ❯ test/importService.test.ts > Import Service Integration > CSV to Import Rows > should build valid import rows from sample CSV with MPN
+     → expected undefined to be 'Nike Air Max 270 - Black' // Object.is equality
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/normalizeProductAttributeValues.test.ts  (7 tests) 7ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/import.cors.test.ts  (8 tests) 24ms
+ ✓ test/convertRowToProduct.unit.test.ts  (10 tests) 8ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/endpoints/retailopsImportPreview.test.ts  (7 tests) 71ms
+ ❯ test/attributeValidator.unit.test.ts  (12 tests | 11 failed) 19ms
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry-driven required field validation > should require only MPN (import_required: true)
+     → expected 'invalid' to be 'valid' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry-driven required field validation > should NOT require Product Name (import_required: false)
+     → expected 'invalid' to be 'valid' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry-driven required field validation > should NOT require Brand (import_required: false)
+     → expected 'invalid' to be 'valid' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "Product Name" column to "name" attribute
+     → expected undefined to be 'My Product' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "title" column to "name" attribute
+     → expected undefined to be 'Title Product' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "Title" column to "name" attribute
+     → expected undefined to be 'Capitalized Title' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "name" column to "name" attribute
+     → expected undefined to be 'Direct Name' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Mixed validation scenarios > should validate row with MPN and optional fields
+     → expected 'invalid' to be 'valid' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Mixed validation scenarios > should validate MPN-only row without blocking errors
+     → expected 'invalid' to be 'valid' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry attribute flags > should respect import: true flag
+     → expected 'invalid' to be 'valid' // Object.is equality
+   ❯ test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry attribute flags > should check allowed_values for enum types
+     → expected 'invalid' to be 'valid_with_warnings' // Object.is equality
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/migrateAttributeRegistry.test.ts  (9 tests) 35ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/validateImportRows.test.ts  (4 tests) 5ms
+ ❯ test/registry.bridge.test.ts  (6 tests | 6 failed) 12ms
+   ❯ test/registry.bridge.test.ts > registryBridge > loadRegistrySnapshot > should load attributes from Firestore
+     → Cannot read properties of undefined (reading 'forEach')
+   ❯ test/registry.bridge.test.ts > registryBridge > loadRegistrySnapshot > should return cached snapshot on subsequent calls
+     → Cannot read properties of undefined (reading 'forEach')
+   ❯ test/registry.bridge.test.ts > registryBridge > loadRegistrySnapshot > should force refresh when requested
+     → Cannot read properties of undefined (reading 'forEach')
+   ❯ test/registry.bridge.test.ts > registryBridge > clearRegistrySnapshotCache > should clear the cached snapshot
+     → Cannot read properties of undefined (reading 'forEach')
+   ❯ test/registry.bridge.test.ts > registryBridge > getRegistrySyncStatus > should return sync status with version info
+     → db.doc is not a function
+   ❯ test/registry.bridge.test.ts > registryBridge > attribute lookup > should resolve attribute by ID with fallback to SDK
+     → Cannot read properties of undefined (reading 'forEach')
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ src/controllers/ExportController.test.ts  (5 tests) 12ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/admin.settings.attributeUpdate.test.ts  (12 tests) 6ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/unit/products.searchMpn.spec.ts  (5 tests) 8ms
+stdout | test/syncAttributeRegistry.test.ts > LP-1.1.0: /syncAttributeRegistry Endpoint Protection > should allow admin to invoke endpoint
+[syncAttributeRegistry] Invoked by uid=test-admin-uid email=admin@example.com dryRun=true
+
+stdout | test/syncAttributeRegistry.test.ts > LP-1.1.0: /syncAttributeRegistry Endpoint Protection > should default dryRun to true when not specified
+[syncAttributeRegistry] Invoked by uid=test-admin-uid email=admin@example.com dryRun=true
+
+stdout | test/syncAttributeRegistry.test.ts > LP-1.1.0: /syncAttributeRegistry Endpoint Protection > should respect explicit dryRun=false
+[syncAttributeRegistry] Invoked by uid=test-admin-uid email=admin@example.com dryRun=false
+
+stdout | test/syncAttributeRegistry.test.ts > LP-1.1.0: /syncAttributeRegistry Endpoint Protection > should capture caller uid and email in logs
+[syncAttributeRegistry] Invoked by uid=test-admin-uid email=admin@example.com dryRun=true
+
+ ✓ test/syncAttributeRegistry.test.ts  (5 tests) 75ms
+stdout | logRegisteredRoutes (/workspaces/ROPI-V2.1/packages/api/src/apiApp.ts:338:11)
+🚀 API Routes Registered:
+
+stdout | src/apiApp.ts:347:15
+  [MOUNT] Router mounted at: ^/api/?(?=/|$)
+  [MOUNT] Router mounted at: ^/?(?=/|$)
+
+stdout | logRegisteredRoutes (/workspaces/ROPI-V2.1/packages/api/src/apiApp.ts:352:11)
+  📍 API Router routes available at both /api/<path> and /<path>:
+
+stdout | src/apiApp.ts:361:15
+    [SUBROUTER] ^/admin/reconcile-attributes/?(?=/|$)
+
+stdout | src/apiApp.ts:358:15
+    GET /api/admin/settings/attributes OR /admin/settings/attributes
+    GET /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    POST /api/admin/settings/attributes OR /admin/settings/attributes
+    PUT /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    DELETE /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    GET /api/admin/settings/attributes/:id/usage OR /admin/settings/attributes/:id/usage
+    GET /api/admin/settings/attributes/:id/top-values OR /admin/settings/attributes/:id/top-values
+    GET /api/admin/settings/attributes/:id/audit OR /admin/settings/attributes/:id/audit
+    GET /api/admin/settings/attributes/:id/audit/:eventId OR /admin/settings/attributes/:id/audit/:eventId
+    POST /api/admin/settings/attributes/:id/revert OR /admin/settings/attributes/:id/revert
+    GET /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    PUT /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    DELETE /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    GET /api/admin/settings/attributes/:id/mapping/sources OR /admin/settings/attributes/:id/mapping/sources
+    GET /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    PUT /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    DELETE /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    GET /api/admin/settings/mappings OR /admin/settings/mappings
+    PUT /api/admin/settings/mappings OR /admin/settings/mappings
+    GET /api/admin/settings/lists OR /admin/settings/lists
+    GET /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    POST /api/admin/settings/lists OR /admin/settings/lists
+    PUT /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    DELETE /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    GET /api/admin/settings/users OR /admin/settings/users
+    GET /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    POST /api/admin/settings/users OR /admin/settings/users
+    PATCH /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    DELETE /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    POST /api/admin/settings/users/:uid/reset-password OR /admin/settings/users/:uid/reset-password
+    GET /api/admin/settings/roles OR /admin/settings/roles
+    GET /api/admin/permissions OR /admin/permissions
+    PATCH /api/admin/permissions OR /admin/permissions
+    POST /api/admin/permissions/reset OR /admin/permissions/reset
+    POST /api/admin/validateSmartRule OR /admin/validateSmartRule
+    POST /api/admin/normalizeSmartRule OR /admin/normalizeSmartRule
+    GET /api/admin/import-eval/:productId OR /admin/import-eval/:productId
+    POST /api/admin/rules OR /admin/rules
+    PUT /api/admin/rules/:ruleId OR /admin/rules/:ruleId
+    GET /api/registry/health OR /registry/health
+    GET /api/registry/registry-version OR /registry/registry-version
+    POST /api/registry/refresh OR /registry/refresh
+    GET /api/smartrules/verification/latest OR /smartrules/verification/latest
+    POST /api/smartrules/verification/run OR /smartrules/verification/run
+    GET /api/users/me OR /users/me
+    PATCH /api/users/me OR /users/me
+    GET /api/products OR /products
+    GET /api/products/search-mpn OR /products/search-mpn
+    GET /api/products/by-mpn/:mpn OR /products/by-mpn/:mpn
+    GET /api/products/:productId/completion OR /products/:productId/completion
+    GET /api/products/:productId OR /products/:productId
+    PATCH /api/products/:productId/attributes OR /products/:productId/attributes
+    POST /api/products/:productId/suggestions OR /products/:productId/suggestions
+    POST /api/products/:productId/apply-suggestion OR /products/:productId/apply-suggestion
+    POST /api/products/:productId/describe OR /products/:productId/describe
+    POST /api/products/:productId/apply OR /products/:productId/apply
+    GET /api/products/:productId/observation OR /products/:productId/observation
+    PATCH /api/products/:productId/observation OR /products/:productId/observation
+    DELETE /api/products/:productId/observation OR /products/:productId/observation
+    GET /api/observations OR /observations
+    POST /api/observations OR /observations
+    POST /api/observations/analyze-image OR /observations/analyze-image
+    GET /api/observations/:id OR /observations/:id
+    PATCH /api/observations/:id OR /observations/:id
+    POST /api/observations/:id/tags/remove OR /observations/:id/tags/remove
+    POST /api/observations/:id/analyze-image OR /observations/:id/analyze-image
+    POST /api/importCSV OR /importCSV
+    POST /api/importDryRun OR /importDryRun
+    POST /api/processImportBatch OR /processImportBatch
+    GET /api/importBatchStatus OR /importBatchStatus
+    POST /api/admin/imports/preview OR /admin/imports/preview
+    GET /api/admin/exports/readiness OR /admin/exports/readiness
+    POST /api/syncAttributeRegistry OR /syncAttributeRegistry
+    POST /api/retailops/import-preview OR /retailops/import-preview
+    GET /api/healthz OR /healthz
+
+stdout | logRegisteredRoutes (/workspaces/ROPI-V2.1/packages/api/src/apiApp.ts:365:11)
+✅ Route registration complete
+
+ ✓ src/endpoints/__tests__/productObservation.integration.test.ts  (9 tests) 70ms
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ✓ test/cleanObject.test.ts  (8 tests) 11ms
+ ❯ test/phase1_import_verification.test.ts  (6 tests | 4 failed) 13ms
+   ❯ test/phase1_import_verification.test.ts > Phase 1 Import Verification > RICS Field Mappings (LP-0.2.0) > should map RICS Category to ricsCategory
+     → expected undefined to be 'Footwear' // Object.is equality
+   ❯ test/phase1_import_verification.test.ts > Phase 1 Import Verification > RICS Field Mappings (LP-0.2.0) > should map RICS Color to ricsColor
+     → expected undefined to be 'Black/Red' // Object.is equality
+   ❯ test/phase1_import_verification.test.ts > Phase 1 Import Verification > RICS Field Mappings (LP-0.2.0) > should map snake_case rics_category and rics_color
+     → expected undefined to be 'Apparel' // Object.is equality
+   ❯ test/phase1_import_verification.test.ts > Phase 1 Import Verification > Combined MPN + RICS Validation > should correctly parse and normalize all fields from CSV
+     → expected undefined to be 'Footwear' // Object.is equality
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+stdout | vitest.setup.unit.ts:12:9
+[vitest.setup.unit] Loading unit test setup with mocks
+
+stdout | vitest.setup.unit.ts:93:9
+[vitest.setup.unit] Unit test mocks initialized
+
+ ❯ test/svs.test.ts  (1 test | 1 failed) 7ms
+   ❯ test/svs.test.ts > SVS Verification Service > should ensure protected test rule exists without error
+     → promise rejected "TypeError: Cannot read properties of unde…" instead of resolving
+ ✓ test/ensure-mock.test.ts  (1 test) 100ms
+ ❯ src/services/__tests__/phase1_extension.test.ts  (2 tests | 1 failed) 1395ms
+   ❯ src/services/__tests__/phase1_extension.test.ts > Phase 1 Readiness Extension > exposes mode and productLevelReadiness when feature enabled (product)
+     → expected undefined to be 'GLOBAL' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 58 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry-driven required field validation > should require only MPN (import_required: true)
+AssertionError: expected 'invalid' to be 'valid' // Object.is equality
+
+- Expected
++ Received
+
+- valid
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:99:29
+     97|       const result = validateRow(row, 1, registryMap);
+     98|       
+     99|       expect(result.status).toBe('valid');
+       |                             ^
+    100|       expect(result.errors.length).toBe(0);
+    101|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry-driven required field validation > should NOT require Product Name (import_required: false)
+AssertionError: expected 'invalid' to be 'valid' // Object.is equality
+
+- Expected
++ Received
+
+- valid
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:115:29
+    113|       const result = validateRow(row, 1, registryMap);
+    114|       
+    115|       expect(result.status).toBe('valid');
+       |                             ^
+    116|       expect(result.errors.length).toBe(0);
+    117|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry-driven required field validation > should NOT require Brand (import_required: false)
+AssertionError: expected 'invalid' to be 'valid' // Object.is equality
+
+- Expected
++ Received
+
+- valid
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:123:29
+    121|       const result = validateRow(row, 1, registryMap);
+    122|       
+    123|       expect(result.status).toBe('valid');
+       |                             ^
+    124|       expect(result.errors.length).toBe(0);
+    125|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "Product Name" column to "name" attribute
+AssertionError: expected undefined to be 'My Product' // Object.is equality
+
+- Expected: 
+"My Product"
+
++ Received: 
+undefined
+
+ ❯ test/attributeValidator.unit.test.ts:133:47
+    131|       const result = validateRow(row, 1, registryMap);
+    132|       
+    133|       expect(result.normalizedValues['name']).toBe('My Product');
+       |                                               ^
+    134|     });
+    135|     
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "title" column to "name" attribute
+AssertionError: expected undefined to be 'Title Product' // Object.is equality
+
+- Expected: 
+"Title Product"
+
++ Received: 
+undefined
+
+ ❯ test/attributeValidator.unit.test.ts:140:47
+    138|       const result = validateRow(row, 1, registryMap);
+    139|       
+    140|       expect(result.normalizedValues['name']).toBe('Title Product');
+       |                                               ^
+    141|     });
+    142|     
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "Title" column to "name" attribute
+AssertionError: expected undefined to be 'Capitalized Title' // Object.is equality
+
+- Expected: 
+"Capitalized Title"
+
++ Received: 
+undefined
+
+ ❯ test/attributeValidator.unit.test.ts:147:47
+    145|       const result = validateRow(row, 1, registryMap);
+    146|       
+    147|       expect(result.normalizedValues['name']).toBe('Capitalized Title'…
+       |                                               ^
+    148|     });
+    149|     
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Column-to-attribute mapping (title → name) > should map "name" column to "name" attribute
+AssertionError: expected undefined to be 'Direct Name' // Object.is equality
+
+- Expected: 
+"Direct Name"
+
++ Received: 
+undefined
+
+ ❯ test/attributeValidator.unit.test.ts:154:47
+    152|       const result = validateRow(row, 1, registryMap);
+    153|       
+    154|       expect(result.normalizedValues['name']).toBe('Direct Name');
+       |                                               ^
+    155|     });
+    156|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Mixed validation scenarios > should validate row with MPN and optional fields
+AssertionError: expected 'invalid' to be 'valid' // Object.is equality
+
+- Expected
++ Received
+
+- valid
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:168:29
+    166|       const result = validateRow(row, 1, registryMap);
+    167|       
+    168|       expect(result.status).toBe('valid');
+       |                             ^
+    169|       expect(result.normalizedValues).toMatchObject({
+    170|         mpn: 'TEST-001',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Mixed validation scenarios > should validate MPN-only row without blocking errors
+AssertionError: expected 'invalid' to be 'valid' // Object.is equality
+
+- Expected
++ Received
+
+- valid
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:181:29
+    179|       const result = validateRow(row, 1, registryMap);
+    180|       
+    181|       expect(result.status).toBe('valid');
+       |                             ^
+    182|       expect(result.errors.length).toBe(0);
+    183|       expect(result.normalizedValues).toEqual({ mpn: 'MPNA-001' });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry attribute flags > should respect import: true flag
+AssertionError: expected 'invalid' to be 'valid' // Object.is equality
+
+- Expected
++ Received
+
+- valid
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:192:29
+    190|       const result = validateRow(row, 1, registryMap);
+    191|       
+    192|       expect(result.status).toBe('valid');
+       |                             ^
+    193|       expect(result.normalizedValues['category']).toBe('Footwear');
+    194|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/58]⎯
+
+ FAIL  test/attributeValidator.unit.test.ts > LP-ATTR-1.3.0: Attribute Validator Unit Tests > Registry attribute flags > should check allowed_values for enum types
+AssertionError: expected 'invalid' to be 'valid_with_warnings' // Object.is equality
+
+- Expected
++ Received
+
+- valid_with_warnings
++ invalid
+
+ ❯ test/attributeValidator.unit.test.ts:201:29
+    199|       
+    200|       // Should have warning for invalid enum value
+    201|       expect(result.status).toBe('valid_with_warnings');
+       |                             ^
+    202|       expect(result.warnings.some(w => w.code === 'enum_unknown')).toB…
+    203|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > createAttribute > should throw 409 on duplicate attribute_id
+AssertionError: promise resolved "{ …(7) }" instead of rejecting
+
+- Expected
++ Received
+
+- [Error: rejected promise]
++ Object {
++   "attribute_id": "test-color-primary",
++   "createdAt": "2026-01-07T09:00:43.822Z",
++   "createdBy": "test-user-123",
++   "data_type": "string",
++   "label": "Color Primary",
++   "updatedAt": "2026-01-07T09:00:43.822Z",
++   "updatedBy": "test-user-123",
++ }
+
+ ❯ test/attributes.service.spec.ts:137:57
+    135|       
+    136|       // Try to create duplicate
+    137|       await expect(createAttribute(attribute, testActor))
+       |                                                         ^
+    138|         .rejects
+    139|         .toThrow(ServiceError);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getAttribute > should retrieve an existing attribute
+ServiceError: Attribute 'test-color-primary' not found
+ ❯ Module.getAttribute src/services/attributesService.ts:231:11
+    229|   const attribute = fromFirestore(doc);
+    230|   if (!attribute) {
+    231|     throw new ServiceError(
+       |           ^
+    232|       `Attribute '${attributeId}' not found`,
+    233|       404,
+ ❯ test/attributes.service.spec.ts:161:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > updateAttribute > should update an existing attribute
+ServiceError: Attribute 'test-color-primary' not found
+ ❯ Module.updateAttribute src/services/attributesService.ts:314:11
+    312|   const existing = await docRef.get();
+    313|   if (!existing.exists) {
+    314|     throw new ServiceError(
+       |           ^
+    315|       `Attribute '${attributeId}' not found`,
+    316|       404,
+ ❯ test/attributes.service.spec.ts:194:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > deleteAttribute > should delete an existing attribute
+ServiceError: Attribute 'test-color-primary' not found
+ ❯ Module.deleteAttribute src/services/attributesService.ts:381:11
+    379|   const existing = await docRef.get();
+    380|   if (!existing.exists) {
+    381|     throw new ServiceError(
+       |           ^
+    382|       `Attribute '${attributeId}' not found`,
+    383|       404,
+ ❯ test/attributes.service.spec.ts:225:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should list all attributes
+AssertionError: expected +0 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ test/attributes.service.spec.ts:264:35
+    262|       const result = await listAttributes();
+    263|       
+    264|       expect(result.items.length).toBe(3);
+       |                                   ^
+    265|       expect(result.total).toBe(3);
+    266|       expect(result.hasMore).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should respect limit parameter
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/attributes.service.spec.ts:272:35
+    270|       const result = await listAttributes({ limit: 2 });
+    271|       
+    272|       expect(result.items.length).toBe(2);
+       |                                   ^
+    273|       expect(result.hasMore).toBe(true);
+    274|       expect(result.pageToken).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should filter by search query
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/attributes.service.spec.ts:280:35
+    278|       const result = await listAttributes({ q: 'color' });
+    279|       
+    280|       expect(result.items.length).toBe(1);
+       |                                   ^
+    281|       expect(result.items[0].attribute_id).toBe('color-primary');
+    282|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > listAttributes > should paginate correctly
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ test/attributes.service.spec.ts:286:34
+    284|     it('should paginate correctly', async () => {
+    285|       const page1 = await listAttributes({ limit: 2 });
+    286|       expect(page1.items.length).toBe(2);
+       |                                  ^
+    287|       expect(page1.hasMore).toBe(true);
+    288|       
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getTopValues > should return top values sorted by count
+ServiceError: Attribute 'department' not found
+ ❯ Module.getTopValues src/services/attributesService.ts:465:11
+    463|   const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attri…
+    464|   if (!attrDoc.exists) {
+    465|     throw new ServiceError(
+       |           ^
+    466|       `Attribute '${attributeId}' not found`,
+    467|       404,
+ ❯ test/attributes.service.spec.ts:333:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect limit parameter
+ServiceError: Attribute 'department' not found
+ ❯ Module.getTopValues src/services/attributesService.ts:465:11
+    463|   const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attri…
+    464|   if (!attrDoc.exists) {
+    465|     throw new ServiceError(
+       |           ^
+    466|       `Attribute '${attributeId}' not found`,
+    467|       404,
+ ❯ test/attributes.service.spec.ts:352:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/58]⎯
+
+ FAIL  test/attributes.service.spec.ts > Attributes Service > getTopValues > should respect minCount parameter
+ServiceError: Attribute 'department' not found
+ ❯ Module.getTopValues src/services/attributesService.ts:465:11
+    463|   const attrDoc = await db.collection(ATTRIBUTES_COLLECTION).doc(attri…
+    464|   if (!attrDoc.exists) {
+    465|     throw new ServiceError(
+       |           ^
+    466|       `Attribute '${attributeId}' not found`,
+    467|       404,
+ ❯ test/attributes.service.spec.ts:360:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { statusCode: 404, code: 'ATTRIBUTE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/58]⎯
+
+ FAIL  test/exportService.s4.unit.test.ts > LP-smart-rules-exporter-1.0.0: S4 Export Service > validation.fails_for_missing_requiredForExport > should use calculateExportReadiness for ready status
+AssertionError: expected [ { id: 'gender', label: 'Gender' } ] to include 'gender'
+ ❯ test/exportService.s4.unit.test.ts:459:48
+    457|       
+    458|       expect(notReadyResult.ready).toBe(false);
+    459|       expect(notReadyResult.missingAttributes).toContain('gender');
+       |                                                ^
+    460|     });
+    461|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/58]⎯
+
+ FAIL  test/importService.test.ts > Import Service Integration > parseCSV > should parse numeric values
+AssertionError: expected 'string' to be 'number' // Object.is equality
+
+- Expected
++ Received
+
+- number
++ string
+
+ ❯ test/importService.test.ts:35:38
+     33|       const rows = parseCSV(csvContent);
+     34|       
+     35|       expect(typeof rows[0]['MSRP']).toBe('number');
+       |                                      ^
+     36|       expect(rows[0]['MSRP']).toBe(159.99);
+     37|       expect(typeof rows[0]['Quantity']).toBe('number');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/58]⎯
+
+ FAIL  test/importService.test.ts > Import Service Integration > CSV to Import Rows > should build valid import rows from sample CSV with MPN
+AssertionError: expected undefined to be 'Nike Air Max 270 - Black' // Object.is equality
+
+- Expected: 
+"Nike Air Max 270 - Black"
+
++ Received: 
+undefined
+
+ ❯ test/importService.test.ts:56:40
+     54|       expect(nikeRow.normalized.mpn).toBe('DZ5485-410');
+     55|       expect(nikeRow.normalized.sku).toBe('NK-AIR-MAX-270');
+     56|       expect(nikeRow.normalized.title).toBe('Nike Air Max 270 - Black'…
+       |                                        ^
+     57|       expect(nikeRow.normalized.brand).toBe('Nike');
+     58|       expect(nikeRow.normalized.msrp).toBe(159.99);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/58]⎯
+
+ FAIL  test/phase1_import_verification.test.ts > Phase 1 Import Verification > RICS Field Mappings (LP-0.2.0) > should map RICS Category to ricsCategory
+AssertionError: expected undefined to be 'Footwear' // Object.is equality
+
+- Expected: 
+"Footwear"
+
++ Received: 
+undefined
+
+ ❯ test/phase1_import_verification.test.ts:59:39
+     57|       
+     58|       // Verify RICS Category is mapped to ricsCategory
+     59|       expect(normalized.ricsCategory).toBe('Footwear');
+       |                                       ^
+     60|     });
+     61| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/58]⎯
+
+ FAIL  test/phase1_import_verification.test.ts > Phase 1 Import Verification > RICS Field Mappings (LP-0.2.0) > should map RICS Color to ricsColor
+AssertionError: expected undefined to be 'Black/Red' // Object.is equality
+
+- Expected: 
+"Black/Red"
+
++ Received: 
+undefined
+
+ ❯ test/phase1_import_verification.test.ts:70:36
+     68|       
+     69|       // Verify RICS Color is mapped to ricsColor
+     70|       expect(normalized.ricsColor).toBe('Black/Red');
+       |                                    ^
+     71|     });
+     72| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/58]⎯
+
+ FAIL  test/phase1_import_verification.test.ts > Phase 1 Import Verification > RICS Field Mappings (LP-0.2.0) > should map snake_case rics_category and rics_color
+AssertionError: expected undefined to be 'Apparel' // Object.is equality
+
+- Expected: 
+"Apparel"
+
++ Received: 
+undefined
+
+ ❯ test/phase1_import_verification.test.ts:80:39
+     78|       const normalized = normalizeImportRow(parsed[0], DEFAULT_COLUMN_…
+     79|       
+     80|       expect(normalized.ricsCategory).toBe('Apparel');
+       |                                       ^
+     81|       expect(normalized.ricsColor).toBe('Navy Blue');
+     82|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/58]⎯
+
+ FAIL  test/phase1_import_verification.test.ts > Phase 1 Import Verification > Combined MPN + RICS Validation > should correctly parse and normalize all fields from CSV
+AssertionError: expected undefined to be 'Footwear' // Object.is equality
+
+- Expected: 
+"Footwear"
+
++ Received: 
+undefined
+
+ ❯ test/phase1_import_verification.test.ts:100:39
+     98|       expect(typeof parsed[0]['MPN']).toBe('string');
+     99|       expect(normalized.mpn).toBe('3');
+    100|       expect(normalized.ricsCategory).toBe('Footwear');
+       |                                       ^
+    101|       expect(normalized.ricsColor).toBe('Black/Red');
+    102|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/58]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should create product from valid row
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:406:11
+    404|   
+    405|   if (!batchDoc.exists) {
+    406|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    407|   }
+    408| 
+ ❯ test/productCommitService.test.ts:109:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/58]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should skip row with blocking validation errors
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:406:11
+    404|   
+    405|   if (!batchDoc.exists) {
+    406|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    407|   }
+    408| 
+ ❯ test/productCommitService.test.ts:181:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/58]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update existing product
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:406:11
+    404|   
+    405|   if (!batchDoc.exists) {
+    406|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    407|   }
+    408| 
+ ❯ test/productCommitService.test.ts:266:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/58]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > processImportBatch > should update batch counters
+Error: Import batch test-batch-001 not found
+ ❯ Module.processImportBatch src/services/productCommitService.ts:406:11
+    404|   
+    405|   if (!batchDoc.exists) {
+    406|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    407|   }
+    408| 
+ ❯ test/productCommitService.test.ts:373:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/58]⎯
+
+ FAIL  test/productCommitService.test.ts > Product Commit Service > getBatchStatus > should return batch status
+Error: Import batch test-batch-001 not found
+ ❯ Module.getBatchStatus src/services/productCommitService.ts:552:11
+    550| 
+    551|   if (!batchDoc.exists) {
+    552|     throw new Error(`Import batch ${batchId} not found`);
+       |           ^
+    553|   }
+    554| 
+ ❯ test/productCommitService.test.ts:412:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/58]⎯
+
+ FAIL  test/registry.bridge.test.ts > registryBridge > loadRegistrySnapshot > should load attributes from Firestore
+TypeError: Cannot read properties of undefined (reading 'forEach')
+ ❯ Module.loadRegistrySnapshot src/services/registryBridge.ts:83:8
+     81|   const attributes = new Map<string, FirestoreAttributeDefinition>();
+     82|   
+     83|   snap.forEach(doc => {
+       |        ^
+     84|     const data = doc.data();
+     85|     const def: FirestoreAttributeDefinition = {
+ ❯ test/registry.bridge.test.ts:60:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/58]⎯
+
+ FAIL  test/registry.bridge.test.ts > registryBridge > loadRegistrySnapshot > should return cached snapshot on subsequent calls
+TypeError: Cannot read properties of undefined (reading 'forEach')
+ ❯ Module.loadRegistrySnapshot src/services/registryBridge.ts:83:8
+     81|   const attributes = new Map<string, FirestoreAttributeDefinition>();
+     82|   
+     83|   snap.forEach(doc => {
+       |        ^
+     84|     const data = doc.data();
+     85|     const def: FirestoreAttributeDefinition = {
+ ❯ test/registry.bridge.test.ts:85:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/58]⎯
+
+ FAIL  test/registry.bridge.test.ts > registryBridge > loadRegistrySnapshot > should force refresh when requested
+TypeError: Cannot read properties of undefined (reading 'forEach')
+ ❯ Module.loadRegistrySnapshot src/services/registryBridge.ts:83:8
+     81|   const attributes = new Map<string, FirestoreAttributeDefinition>();
+     82|   
+     83|   snap.forEach(doc => {
+       |        ^
+     84|     const data = doc.data();
+     85|     const def: FirestoreAttributeDefinition = {
+ ❯ test/registry.bridge.test.ts:112:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/58]⎯
+
+ FAIL  test/registry.bridge.test.ts > registryBridge > clearRegistrySnapshotCache > should clear the cached snapshot
+TypeError: Cannot read properties of undefined (reading 'forEach')
+ ❯ Module.loadRegistrySnapshot src/services/registryBridge.ts:83:8
+     81|   const attributes = new Map<string, FirestoreAttributeDefinition>();
+     82|   
+     83|   snap.forEach(doc => {
+       |        ^
+     84|     const data = doc.data();
+     85|     const def: FirestoreAttributeDefinition = {
+ ❯ test/registry.bridge.test.ts:134:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/58]⎯
+
+ FAIL  test/registry.bridge.test.ts > registryBridge > getRegistrySyncStatus > should return sync status with version info
+TypeError: db.doc is not a function
+ ❯ Module.getRegistrySyncStatus src/services/registryBridge.ts:272:28
+    270|   
+    271|   // Get registry metadata
+    272|   const metaDoc = await db.doc('settings/attributesMeta').get();
+       |                            ^
+    273|   const meta = metaDoc.exists ? metaDoc.data() : null;
+    274|   
+ ❯ test/registry.bridge.test.ts:163:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/58]⎯
+
+ FAIL  test/registry.bridge.test.ts > registryBridge > attribute lookup > should resolve attribute by ID with fallback to SDK
+TypeError: Cannot read properties of undefined (reading 'forEach')
+ ❯ Module.loadRegistrySnapshot src/services/registryBridge.ts:83:8
+     81|   const attributes = new Map<string, FirestoreAttributeDefinition>();
+     82|   
+     83|   snap.forEach(doc => {
+       |        ^
+     84|     const data = doc.data();
+     85|     const def: FirestoreAttributeDefinition = {
+ ❯ test/registry.bridge.test.ts:186:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/58]⎯
+
+ FAIL  test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log eval result when rule matches and auto-applies
+AssertionError: expected "spy" to be called at least once
+ ❯ test/smartEngine.logging.test.ts:92:33
+     90|       
+     91|       // Verify logEvalResult was called
+     92|       expect(mockLogEvalResult).toHaveBeenCalled();
+       |                                 ^
+     93|       
+     94|       const evalCall = mockLogEvalResult.mock.calls[0];
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/58]⎯
+
+ FAIL  test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log apply event when value is written
+AssertionError: expected "spy" to be called at least once
+ ❯ test/smartEngine.logging.test.ts:151:28
+    149|       
+    150|       // Verify logApply was called
+    151|       expect(mockLogApply).toHaveBeenCalled();
+       |                            ^
+    152|       
+    153|       const applyCall = mockLogApply.mock.calls[0];
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/58]⎯
+
+ FAIL  test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should log suggestion when rule matches but does not auto-apply
+AssertionError: expected "spy" to be called at least once
+ ❯ test/smartEngine.logging.test.ts:211:33
+    209|       
+    210|       // Verify logSuggestion was called
+    211|       expect(mockLogSuggestion).toHaveBeenCalled();
+       |                                 ^
+    212|       
+    213|       const suggestionCall = mockLogSuggestion.mock.calls[0];
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/58]⎯
+
+ FAIL  test/smartEngine.logging.test.ts > Smart Engine Logging Integration > rule evaluation logging > should use consistent traceId across eval and apply events
+AssertionError: expected undefined to be truthy
+
+- Expected: 
+undefined
+
++ Received: 
+false
+
+ ❯ test/smartEngine.logging.test.ts:269:27
+    267|       const applyTraceId = mockLogApply.mock.calls[0]?.[4]; // traceId…
+    268|       
+    269|       expect(evalTraceId).toBeTruthy();
+       |                           ^
+    270|       expect(applyTraceId).toBeTruthy();
+    271|       expect(evalTraceId).toBe(applyTraceId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/58]⎯
+
+ FAIL  test/smartEngine.logging.test.ts > Smart Engine Logging Integration > summary logging > should log summary with eval counts
+AssertionError: expected "spy" to be called at least once
+ ❯ test/smartEngine.logging.test.ts:361:24
+    359|       
+    360|       // Summary logging uses structuredLogger.info() directly
+    361|       expect(mockInfo).toHaveBeenCalled();
+       |                        ^
+    362|       
+    363|       // Find the summary info call (first param = 'smartrule.eval', s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/58]⎯
+
+ FAIL  test/smartEngineV2.integration.test.ts > Integration: Import Pipeline End-to-End > should handle multiple rules triggering for same import row
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/smartEngineV2.integration.test.ts:207:56
+    205|     expect(targetFields.has('attributes.gender')).toBe(true);
+    206|     expect(targetFields.has('attributes.category')).toBe(true);
+    207|     expect(targetFields.has('attributes.subcategory')).toBe(true);
+       |                                                        ^
+    208|   });
+    209| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/58]⎯
+
+ FAIL  test/smartEngineV2.integration.test.ts > Integration: Idempotency > should NOT auto-apply on re-import when field already has value
+AssertionError: expected 2 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ test/smartEngineV2.integration.test.ts:280:40
+    278|     
+    279|     // But should NOT auto-apply (set only if empty)
+    280|     expect(result2.autoApplied.length).toBe(0);
+       |                                        ^
+    281|     
+    282|     // Suggestions should indicate they won't auto-apply
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/58]⎯
+
+ FAIL  test/smartEngineV2.test.ts > S2.3: Set-Only-If-Empty Enforcement > should NOT auto-apply when field has existing value
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/smartEngineV2.test.ts:303:39
+    301|     // Should produce suggestion but NOT auto-apply
+    302|     expect(result.suggestions.length).toBe(1);
+    303|     expect(result.autoApplied.length).toBe(0);
+       |                                       ^
+    304|     expect(result.suggestions[0].autoApply).toBe(false);
+    305|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/58]⎯
+
+ FAIL  test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should NOT auto-apply when field already has value
+AssertionError: expected { …(10) } to be undefined
+ ❯ test/smartRulesImportIntegration.test.ts:231:31
+    229|     // Gender should NOT be auto-applied (set-only-if-empty)
+    230|     const genderAutoApplied = result.autoApplied.find(s => s.targetFie…
+    231|     expect(genderAutoApplied).toBeUndefined();
+       |                               ^
+    232|     
+    233|     // Should still suggest, just not auto-apply
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/58]⎯
+
+ FAIL  test/smartRulesImportIntegration.test.ts > S3.2: Idempotency > should NOT auto-apply when user has edited the field
+AssertionError: expected { …(10) } to be undefined
+ ❯ test/smartRulesImportIntegration.test.ts:262:31
+    260|     // Gender should NOT be auto-applied
+    261|     const genderAutoApplied = result.autoApplied.find(s => s.targetFie…
+    262|     expect(genderAutoApplied).toBeUndefined();
+       |                               ^
+    263|   });
+    264| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/58]⎯
+
+ FAIL  test/smartRulesImportIntegration.test.ts > S3.3: Skip-Window Loop Prevention > should skip evaluation when within skip window
+AssertionError: expected 2 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ test/smartRulesImportIntegration.test.ts:310:39
+    308|     
+    309|     // Should be skipped due to skip window - no auto-applies because …
+    310|     expect(result.autoApplied.length).toBe(0);
+       |                                       ^
+    311|   });
+    312|   
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/58]⎯
+
+ FAIL  test/svs.test.ts > SVS Verification Service > should ensure protected test rule exists without error
+AssertionError: promise rejected "TypeError: Cannot read properties of unde…" instead of resolving
+ ❯ test/svs.test.ts:17:43
+     15| 
+     16|   it('should ensure protected test rule exists without error', async (…
+     17|     await expect(ensureProtectedTestRule()).resolves.not.toThrow();
+       |                                           ^
+     18|   });
+     19| });
+
+Caused by: TypeError: Cannot read properties of undefined (reading 'doc')
+ ❯ Module.ensureProtectedTestRule src/services/ensureTestRule.ts:41:21
+ ❯ test/svs.test.ts:17:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/58]⎯
+
+ FAIL  src/services/__tests__/phase1_extension.test.ts > Phase 1 Readiness Extension > exposes mode and productLevelReadiness when feature enabled (product)
+AssertionError: expected undefined to be 'GLOBAL' // Object.is equality
+
+- Expected: 
+"GLOBAL"
+
++ Received: 
+undefined
+
+ ❯ src/services/__tests__/phase1_extension.test.ts:44:25
+     42| 
+     43|     // Phase 1 fields
+     44|     expect(result.mode).toBe('GLOBAL');
+       |                         ^
+     45|     expect(result.productLevelReadiness).toBeDefined();
+     46|     expect(result.productLevelReadiness?.ready).toBe(result.ready);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/58]⎯
+
+ FAIL  src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should aggregate segment scores using BEST-score-per-segment algorithm
+AssertionError: expected undefined to be 'GLOBAL' // Object.is equality
+
+- Expected: 
+"GLOBAL"
+
++ Received: 
+undefined
+
+ ❯ src/services/__tests__/phase2_engine.test.ts:69:27
+     67|       const result = await calculateCompletionDrivenExportReadiness(pr…
+     68| 
+     69|       expect(result.mode).toBe('GLOBAL');
+       |                           ^
+     70|       expect(result.productLevelReadiness).toBeDefined();
+     71|       const pLR = result.productLevelReadiness as any;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/58]⎯
+
+ FAIL  src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should collect union of missing attributes across segments
+TypeError: Cannot read properties of undefined (reading 'missingGlobalAttributes')
+ ❯ src/services/__tests__/phase2_engine.test.ts:108:18
+    106| 
+    107|       const pLR = result.productLevelReadiness as any;
+    108|       expect(pLR.missingGlobalAttributes).toContain('attrA');
+       |                  ^
+    109|       expect(pLR.missingGlobalAttributes).toContain('attrB');
+    110|       expect(pLR.missingGlobalAttributes).toContain('attrC');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/58]⎯
+
+ FAIL  src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should identify blocking segments (score < 100)
+TypeError: Cannot read properties of undefined (reading 'blockingSegments')
+ ❯ src/services/__tests__/phase2_engine.test.ts:129:18
+    127| 
+    128|       const pLR = result.productLevelReadiness as any;
+    129|       expect(pLR.blockingSegments).toEqual(['seg2']);
+       |                  ^
+    130|     });
+    131| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/58]⎯
+
+ FAIL  src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should handle product with no sites (website optional)
+TypeError: Cannot read properties of undefined (reading 'websiteOptional')
+ ❯ src/services/__tests__/phase2_engine.test.ts:146:18
+    144| 
+    145|       const pLR = result.productLevelReadiness as any;
+    146|       expect(pLR.websiteOptional).toBe(true);
+       |                  ^
+    147|       expect(pLR.sitesEvaluated).toEqual(['__GLOBAL__']);
+    148|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/58]⎯
+
+ FAIL  src/services/__tests__/phase2_engine.test.ts > Phase 2: Product-Level Aggregation (GLOBAL Mode) > aggregateProductLevelReadiness > should exclude description-seo site-blocking segment from aggregation
+TypeError: Cannot read properties of undefined (reading 'segmentScores')
+ ❯ src/services/__tests__/phase2_engine.test.ts:206:18
+    204|       const pLR = result.productLevelReadiness as any;
+    205|       // Should only have seg1 (90% × 100 / 100 = 90%)
+    206|       expect(pLR.segmentScores.map((s: any) => s.segmentId)).not.toCon…
+       |                  ^
+    207|       expect(pLR.aggregatedCompletionPct).toBe(90);
+    208|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/58]⎯
+
+ Test Files  14 failed | 38 passed | 2 skipped (54)
+      Tests  58 failed | 681 passed | 24 skipped (763)
+   Start at  09:00:39
+   Duration  12.40s (transform 1.54s, setup 970ms, collect 8.94s, tests 9.36s, environment 14ms, prepare 6.11s)
+
+/workspaces/ROPI-V2.1/packages/api:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @ropi-aoss/api@0.0.0 test: `vitest run`
+Exit status 1
