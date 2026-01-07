@@ -31,6 +31,23 @@ import type { AttributeType } from '../../../sdk/src/schema/attribute';
 // Enhanced Export Readiness Types
 // ============================================================================
 
+export interface SegmentScore {
+  segmentId: string;
+  segmentName: string;
+  score: number;
+  weightPct: number;
+  missingAttributes: string[];
+}
+
+export interface ProductLevelReadiness {
+  aggregatedCompletionPct: number;
+  segmentScores: SegmentScore[];
+  missingGlobalAttributes: string[];
+  websiteOptional: boolean;
+  sitesEvaluated: string[];
+  blockingSegments: string[];
+}
+
 export interface CompletionDrivenExportReadiness {
   ready: boolean;
   completionPct: number;
@@ -46,7 +63,7 @@ export interface CompletionDrivenExportReadiness {
     completionPct: number;
     threshold: number;
     hasBlockingSites: boolean;
-  };
+  } | ProductLevelReadiness; // Phase 2: Extended for full aggregation
   catalogStats?: {
     totalProducts: number;
     blockedByCompletionCount: number;
@@ -294,6 +311,133 @@ async function evaluateCatalogCompletion(
 }
 
 // ============================================================================
+// Phase 2: Product-Level Aggregation (GLOBAL Mode)
+// ============================================================================
+
+/**
+ * Aggregate product-level readiness across all sites (GLOBAL mode)
+ * 
+ * Per HES B design: evaluates all sites product is associated with,
+ * computes BEST score per segment, then weighted average aggregation.
+ * Excludes site-specific Description/SEO blocking (global attributes only).
+ * 
+ * @param product - Product document with sites
+ * @param completionRules - Threshold and segment configuration
+ * @param attributeRegistry - Global attribute registry
+ * @param evaluationTimestamp - Evaluation timestamp for logs
+ * @returns ProductLevelReadiness with aggregated completion and segment scores
+ */
+async function aggregateProductLevelReadiness(
+  product: ProductDocument,
+  completionRules: CompletionRulesConfig,
+  attributeRegistry: AttributeRegistry,
+  evaluationTimestamp: string
+): Promise<ProductLevelReadiness> {
+  
+  // Extract ALL sites product is associated with
+  const allSites = extractSelectedSites(product);
+  const sitesEvaluated = allSites.length > 0 ? allSites : ['__GLOBAL__'];
+  
+  // Evaluate completion for each site, collect global segment scores only
+  const segmentScoresPerSite: SegmentScore[][] = [];
+  
+  for (const site of sitesEvaluated) {
+    const productSnapshot = convertToProductSnapshot(product);
+    
+    try {
+      const completionResult = evaluateCompletion(
+        productSnapshot,
+        [site],
+        attributeRegistry,
+        completionRules,
+        evaluationTimestamp
+      );
+      
+      // Filter to global attributes only (exclude site-specific Description/SEO)
+      const globalSegments = completionResult.segmentResults
+        .filter(seg => seg.segmentId !== 'description-seo') // Exclude site-blocking
+        .map(seg => ({
+          segmentId: seg.segmentId,
+          segmentName: seg.segmentName,
+          score: seg.score,
+          weightPct: seg.weightPct,
+          missingAttributes: seg.missingAttributes
+        }));
+      
+      segmentScoresPerSite.push(globalSegments);
+    } catch (error) {
+      console.warn(`[ProductLevelAgg] Site ${site} evaluation failed:`, error);
+      // Continue with empty scores for this site
+      segmentScoresPerSite.push([]);
+    }
+  }
+  
+  // Aggregate: Take BEST score per segment across all sites (HES B algorithm)
+  const segmentScoresAggregated = aggregateSegmentScoresBest(segmentScoresPerSite);
+  
+  // Calculate weighted average completion
+  const totalWeight = segmentScoresAggregated.reduce((sum, seg) => sum + seg.weightPct, 0);
+  const weightedSum = segmentScoresAggregated.reduce(
+    (sum, seg) => sum + (seg.score * seg.weightPct / 100),
+    0
+  );
+  const aggregatedCompletionPct = totalWeight > 0 
+    ? Math.round((weightedSum / totalWeight) * 100) 
+    : 0;
+  
+  // Collect all missing attributes across segments (union)
+  const missingGlobalAttributes = Array.from(
+    new Set(
+      segmentScoresAggregated.flatMap(seg => seg.missingAttributes)
+    )
+  ).sort();
+  
+  // Identify blocking segments (score < 100)
+  const blockingSegments = segmentScoresAggregated
+    .filter(seg => seg.score < 100)
+    .map(seg => seg.segmentId);
+  
+  // Phase 2 staging log
+  if (process.env.EXPORT_GLOBAL_LOGS === 'true') {
+    console.info('[ProductLevelAgg:Phase2] Aggregation result:', {
+      aggregatedCompletionPct,
+      segmentCount: segmentScoresAggregated.length,
+      sitesEvaluated,
+      blockingSegmentCount: blockingSegments.length
+    });
+  }
+  
+  return {
+    aggregatedCompletionPct,
+    segmentScores: segmentScoresAggregated,
+    missingGlobalAttributes,
+    websiteOptional: allSites.length === 0,
+    sitesEvaluated,
+    blockingSegments
+  };
+}
+
+/**
+ * Aggregate segment scores: take BEST score per segment across all sites
+ * Per HES B design algorithm
+ */
+function aggregateSegmentScoresBest(scoresPerSite: SegmentScore[][]): SegmentScore[] {
+  const segmentMap = new Map<string, SegmentScore>();
+  
+  for (const siteScores of scoresPerSite) {
+    for (const score of siteScores) {
+      const existing = segmentMap.get(score.segmentId);
+      // Keep the BEST (highest) score per segment
+      if (!existing || score.score > existing.score) {
+        segmentMap.set(score.segmentId, { ...score });
+      }
+    }
+  }
+  
+  return Array.from(segmentMap.values());
+}
+
+// ============================================================================
 // Main Export Readiness Function
 // ============================================================================
 
@@ -305,6 +449,8 @@ async function evaluateCatalogCompletion(
  * 
  * When product is provided: evaluates that specific product's completion
  * When product is omitted: evaluates catalog-level completion (queries all products)
+ * 
+ * Phase 2: Supports GLOBAL mode with product-level aggregation via feature flag
  * 
  * @param product - Optional product document. If omitted, evaluates full catalog
  * @param forceRulesRefresh - Force reload of completion rules from Firestore
@@ -356,6 +502,42 @@ export async function calculateCompletionDrivenExportReadiness(
     // Convert product to completion engine format
     const productSnapshot = convertToProductSnapshot(product);
     const selectedSites = extractSelectedSites(product);
+    
+    // Phase 2: GLOBAL mode path (product-level aggregation)
+    if (featureMode === 'GLOBAL') {
+      const productLevelReadiness = await aggregateProductLevelReadiness(
+        product,
+        completionRules,
+        attributeRegistry,
+        evaluationTimestamp
+      );
+      
+      const isReady = productLevelReadiness.aggregatedCompletionPct >= completionRules.exportUnlockThresholdPct;
+      
+      return {
+        mode: 'GLOBAL',
+        ready: isReady,
+        completionPct: productLevelReadiness.aggregatedCompletionPct,
+        threshold: completionRules.exportUnlockThresholdPct,
+        hasBlockingSites: false, // No site-specific blocking in GLOBAL mode
+        blockingReasons: isReady ? [] : [{
+          type: 'COMPLETION_BELOW_THRESHOLD',
+          severity: 'BLOCKING',
+          message: `Product ${productLevelReadiness.aggregatedCompletionPct}% complete (threshold: ${completionRules.exportUnlockThresholdPct}%)`,
+          details: {
+            currentCompletion: productLevelReadiness.aggregatedCompletionPct,
+            requiredCompletion: completionRules.exportUnlockThresholdPct,
+            missingAttributes: productLevelReadiness.missingGlobalAttributes
+          }
+        }],
+        operatorExplanation: generateGlobalOperatorExplanation(productLevelReadiness, completionRules),
+        productLevelReadiness,
+        evaluationTimestamp,
+        rulesVersion: completionRules.rulesVersion
+      };
+    }
+    
+    // SITE_SCOPED mode path (existing logic)
     
     // If no sites selected, export is blocked
     if (selectedSites.length === 0) {
@@ -571,6 +753,34 @@ function determineExportReadiness(
   }
   
   return true;
+}
+
+/**
+ * Generate operator explanation for GLOBAL mode
+ */
+function generateGlobalOperatorExplanation(
+  productReadiness: ProductLevelReadiness,
+  rules: CompletionRulesConfig
+): OperatorExplanation {
+  const isReady = productReadiness.aggregatedCompletionPct >= rules.exportUnlockThresholdPct;
+  
+  return {
+    summary: isReady 
+      ? `Export ready: product ${productReadiness.aggregatedCompletionPct}% complete (GLOBAL mode)`
+      : `Export blocked: product ${productReadiness.aggregatedCompletionPct}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`,
+    blockingIssues: isReady ? [] : [
+      `Product completion ${productReadiness.aggregatedCompletionPct}% below threshold ${rules.exportUnlockThresholdPct}%`,
+      ...productReadiness.blockingSegments.map(seg => `Segment ${seg} incomplete`)
+    ],
+    completionBreakdown: productReadiness.segmentScores,
+    siteStatus: productReadiness.sitesEvaluated.map(site => ({
+      site,
+      blocked: false // No site-level blocking in GLOBAL mode
+    })),
+    actionRequired: isReady ? [] : [
+      `Complete missing attributes: ${productReadiness.missingGlobalAttributes.join(', ')}`
+    ]
+  };
 }
 
 /**
