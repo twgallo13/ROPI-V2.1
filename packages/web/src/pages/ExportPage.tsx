@@ -7,8 +7,13 @@ import { getAuthHeaders } from '@/lib/authHeaders';
 /**
  * Export Manager Page
  * LP-export-unlock-1.0.0
+ * LP-export-global-impl-2b | HES B/C Enhancement
  *
  * Handles product data exports with completion gate enforcement.
+ * Supports both SITE_SCOPED and GLOBAL modes:
+ * - SITE_SCOPED: Site dropdown shown, site param sent in export request
+ * - GLOBAL: Site dropdown hidden, "🌍 Global Export Mode" badge shown, site='GLOBAL' sent
+ *
  * Export is gated solely by completion.ready:
  * - completion not loaded → disabled + loading indicator
  * - completion.ready === true → export enabled, UI interactive
@@ -21,6 +26,9 @@ function ExportPage() {
   const [selectedSite, setSelectedSite] = useState('ropi-web');
   const [selectedFormat, setSelectedFormat] = useState('csv');
 
+  // Detect mode from completion data (defaults to SITE_SCOPED if not specified)
+  const exportMode = completion?.mode ?? 'SITE_SCOPED';
+
   async function handleExport() {
     // Guard: only allow export when completion.ready === true
     if (!exportReady) {
@@ -31,6 +39,9 @@ function ExportPage() {
       setExporting(true);
       const authHeaders = await getAuthHeaders();
 
+      // In GLOBAL mode, send site: 'GLOBAL'; in SITE_SCOPED, send selected site
+      const siteValue = exportMode === 'GLOBAL' ? 'GLOBAL' : selectedSite;
+
       const response = await fetch('/api/admin/exports/dry-run', {
         method: 'POST',
         headers: {
@@ -38,7 +49,7 @@ function ExportPage() {
           ...authHeaders,
         },
         body: JSON.stringify({
-          site: selectedSite,
+          site: siteValue,
           format: selectedFormat,
           limit: 100,
           includeMeta: true,
@@ -155,6 +166,28 @@ function ExportPage() {
 
             <div style={{ marginBottom: '2rem' }}>
               <h4>Export Options</h4>
+
+              {/* GLOBAL Mode Badge */}
+              {exportMode === 'GLOBAL' && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '0.75rem 1rem',
+                    backgroundColor: '#e3f2fd',
+                    borderRadius: '4px',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <span style={{ fontSize: '1.25rem' }}>🌍</span>
+                  <div>
+                    <div style={{ fontWeight: 600, color: '#1565c0' }}>Global Export Mode</div>
+                    <div style={{ fontSize: '0.85rem', color: '#0d47a1' }}>Product-level evaluation</div>
+                  </div>
+                </div>
+              )}
+
               <div
                 style={{
                   display: 'grid',
@@ -163,27 +196,31 @@ function ExportPage() {
                   marginBottom: '1rem',
                 }}
               >
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                    Site
-                  </label>
-                  <select
-                    value={selectedSite}
-                    onChange={(e) => setSelectedSite(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.5rem',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '4px',
-                    }}
-                    data-testid="export-site-select"
-                  >
-                    <option value="ropi-web">ropi-web</option>
-                    <option value="shiekh">shiekh</option>
-                    <option value="karmaloop">karmaloop</option>
-                    <option value="mltd">mltd</option>
-                  </select>
-                </div>
+                {/* Site Selector - Hidden in GLOBAL Mode */}
+                {exportMode !== 'GLOBAL' && (
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                      Site
+                    </label>
+                    <select
+                      value={selectedSite}
+                      onChange={(e) => setSelectedSite(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: '4px',
+                      }}
+                      data-testid="export-site-select"
+                    >
+                      <option value="ropi-web">ropi-web</option>
+                      <option value="shiekh">shiekh</option>
+                      <option value="karmaloop">karmaloop</option>
+                      <option value="mltd">mltd</option>
+                    </select>
+                  </div>
+                )}
+
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
                     Format

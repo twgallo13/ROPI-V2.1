@@ -66,6 +66,7 @@ export interface CompletionEvaluationResult {
   completionPct: number;
   threshold: number;
   hasBlockingSites: boolean;
+  mode?: 'GLOBAL' | 'SITE_SCOPED';
   blockingReasons: ExportBlockingReason[];
   operatorExplanation?: OperatorExplanation;
   catalogStats?: CatalogStats;

@@ -1,17 +1,42 @@
 /**
  * Completion / Export Gate Panel
  * LP-completion-user-visibility-ui-1.4.0
+ * LP-export-global-impl-2b | HES B/C Enhancement
+ *
+ * Supports both SITE_SCOPED and GLOBAL modes:
+ * - SITE_SCOPED: Shows per-site accordion (original behavior)
+ * - GLOBAL: Shows GlobalModeCard with product-level aggregated data + Advanced toggle for siteStatus
  */
 
 import { useEffect, useState } from 'react';
 import { getAuthHeaders } from '../../lib/authHeaders';
+import { GlobalModeCard } from '../export/GlobalModeCard';
 import './CompletionExportGatePanel.css';
+
+export interface SegmentScore {
+  segmentId: string;
+  score: number;
+  weightPct: number;
+  missingAttributes?: string[];
+  segmentName?: string;
+}
+
+export interface ProductLevelReadiness {
+  aggregatedCompletionPct: number;
+  segmentScores: SegmentScore[];
+  missingGlobalAttributes: string[];
+  blockingSegments: string[];
+  sitesEvaluated: string[];
+  websiteOptional?: boolean;
+}
 
 export interface CompletionEvaluationResult {
   ready: boolean;
   completionPct: number;
   threshold: number;
   hasBlockingSites: boolean;
+  mode?: 'GLOBAL' | 'SITE_SCOPED';
+  productLevelReadiness?: ProductLevelReadiness;
   blockingReasons: Array<{
     type: string;
     severity: string;
@@ -74,6 +99,7 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedSite, setExpandedSite] = useState<string | null>(null);
+  const [advancedExpanded, setAdvancedExpanded] = useState(false);
 
   useEffect(() => {
     loadCompletion();
@@ -97,6 +123,8 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   const isBlocked = completion ? !completion.ready : false;
   const percentComplete = completion?.completionPct ?? 0;
   const threshold = completion?.threshold;
+  const mode = completion?.mode ?? 'SITE_SCOPED';
+  const productLevelReadiness = completion?.productLevelReadiness;
   const operatorExplanation = completion?.operatorExplanation;
   const blockingIssues = operatorExplanation?.blockingIssues ?? [];
   const completionBreakdown = operatorExplanation?.completionBreakdown ?? [];
@@ -134,21 +162,33 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
 
       {completion && (
         <>
-          <div className="completion-section">
-            <div className="completion-header">
-              <span>Completion</span>
-              <span className="completion-percentage">{percentComplete.toFixed(0)}%</span>
+          {/* GLOBAL Mode: Show GlobalModeCard instead of standard gauge */}
+          {mode === 'GLOBAL' && productLevelReadiness && (
+            <GlobalModeCard
+              productLevelReadiness={productLevelReadiness}
+              threshold={threshold}
+              isBlocked={isBlocked}
+            />
+          )}
+
+          {/* SITE_SCOPED Mode: Show standard completion gauge (original behavior) */}
+          {mode !== 'GLOBAL' && (
+            <div className="completion-section">
+              <div className="completion-header">
+                <span>Completion</span>
+                <span className="completion-percentage">{percentComplete.toFixed(0)}%</span>
+              </div>
+              <div className="completion-bar-container">
+                <div
+                  className={`completion-bar ${threshold !== undefined && percentComplete >= threshold ? 'ready' : 'blocked'}`}
+                  style={{ width: `${Math.min(percentComplete, 100)}%` }}
+                />
+              </div>
+              <div className="threshold-info">
+                Export threshold: <strong>{threshold !== undefined ? `${threshold}%` : '—'}</strong>
+              </div>
             </div>
-            <div className="completion-bar-container">
-              <div
-                className={`completion-bar ${threshold !== undefined && percentComplete >= threshold ? 'ready' : 'blocked'}`}
-                style={{ width: `${Math.min(percentComplete, 100)}%` }}
-              />
-            </div>
-            <div className="threshold-info">
-              Export threshold: <strong>{threshold !== undefined ? `${threshold}%` : '—'}</strong>
-            </div>
-          </div>
+          )}
 
           <div className="status-badge-container">
             {isBlocked ? (
@@ -197,7 +237,59 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
             </div>
           )}
 
-          {siteStatus.length > 0 && (
+          {/* GLOBAL Mode: Advanced toggle to show siteStatus */}
+          {mode === 'GLOBAL' && siteStatus.length > 0 && (
+            <div className="advanced-section">
+              <button
+                className="advanced-toggle"
+                onClick={() => setAdvancedExpanded(!advancedExpanded)}
+                aria-expanded={advancedExpanded}
+                aria-controls="advanced-content"
+              >
+                <span className="toggle-icon">{advancedExpanded ? '▼' : '▶'}</span>
+                <span className="toggle-text">Advanced: Site-Level Details</span>
+              </button>
+              {advancedExpanded && (
+                <div id="advanced-content" className="advanced-content">
+                  <h4 className="section-title">Site Status (Advanced)</h4>
+                  <div className="sites-list">
+                    {siteStatus.map((site) => (
+                      <div key={site.site} className="site-item">
+                        <button
+                          className={`site-button ${site.blocked ? 'blocked' : 'ready'}`}
+                          onClick={() =>
+                            setExpandedSite(expandedSite === site.site ? null : site.site)
+                          }
+                        >
+                          <span className="site-icon">{site.blocked ? '❌' : '✅'}</span>
+                          <span className="site-name">{site.site}</span>
+                          <span className="expand-icon">{expandedSite === site.site ? '▼' : '▶'}</span>
+                        </button>
+                        {expandedSite === site.site && (
+                          <div className="site-details">
+                            {site.reason && <p className="site-reason">{site.reason}</p>}
+                            {site.missingAttributes && site.missingAttributes.length > 0 && (
+                              <div className="missing-list">
+                                <strong>Missing attributes:</strong>
+                                <ul>
+                                  {site.missingAttributes.map((attr, idx) => (
+                                    <li key={idx}>{attr}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* SITE_SCOPED Mode: Show site accordion as before */}
+          {mode !== 'GLOBAL' && siteStatus.length > 0 && (
             <div className="sites-section">
               <h4 className="section-title">Site Status</h4>
               <div className="sites-list">
