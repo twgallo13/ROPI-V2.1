@@ -1,0 +1,143 @@
+# HES C Access and Deployment Status
+**Date:** 2026-01-07T06:50:00Z  
+**Executor:** Homer  
+**Status:** Partial access - some verification possible, staging required for full VVP  
+
+## Current Access Status
+
+### ✅ Available Access
+
+1. **Firebase Admin SDK** - ✅ FULL ACCESS
+   - Can read/write Firestore settings
+   - Can toggle feature flag: settings/exportSettings.exportGlobalMode
+   - Service account authenticated
+
+2. **Code Repository** - ✅ FULL ACCESS
+   - aoss-main branch with Phase 2B merged (commit 55f5cc1)
+   - All source code accessible
+   - Git operations available
+
+3. **Local Testing** - ✅ AVAILABLE
+   - Unit tests can run locally
+   - Build verification possible
+   - TypeScript compilation checks
+
+4. **Firebase Firestore** - ✅ READ/WRITE
+   - Feature flag toggleable
+   - Settings document accessible
+   - Can capture flag state for evidence
+
+### ⏳ Limited/Pending Access
+
+1. **Staging Environment** - ⏳ DEPLOYMENT NEEDED
+   - Firebase hosting target: `ropi-aoss-staging`
+   - Last known deploy: 2025-12-02 (pre-Phase 2B)
+   - **Status:** Code merged to aoss-main but not yet deployed to staging
+   - **Required:** Infrastructure team to deploy aoss-main to staging
+
+2. **Live Production** - ⏳ NOT FOR VERIFICATION
+   - Firebase hosting target: `ropi-bccee` (live channel)
+   - Last deploy: 2025-12-02
+   - **Status:** Not appropriate for HES C verification (use staging only)
+
+### ❌ Blocked for Full VVP
+
+1. **Browser-based VVP** - ❌ REQUIRES STAGING DEPLOY
+   - Cannot capture UI screenshots without deployed app
+   - Cannot verify real API responses in browser
+   - Cannot test export flow end-to-end
+
+2. **E2E Playwright Tests** - ❌ REQUIRES STAGING URL
+   - Tests configured to run against staging environment
+   - Need deployed application URL
+   - Cannot execute without staging deployment
+
+## What Can Be Verified NOW (Local)
+
+✅ **Step 1: Merge Evidence** - COMPLETE
+- File: evidence/phase2/merge-pr-458.txt
+- Contains commit SHA, timestamp, files changed
+
+✅ **Step 6a: Unit Tests** - COMPLETE
+- 10/10 GlobalModeCard tests passing
+- Build verification passed
+- TypeScript compilation successful
+- Evidence: evidence/phase2/ui-tests.txt
+
+✅ **Step 7: Logs Status** - CAN VERIFY
+- Can check EXPORT_GLOBAL_LOGS environment variable
+- Can document log configuration
+- Can create LOGS_STATUS.md
+
+## What REQUIRES Staging Deployment
+
+❌ **Step 2: Staging Deploy Evidence** - BLOCKED
+- Needs: Deploy aoss-main to ropi-aoss-staging
+- Blocker: Infrastructure/deploy pipeline access
+
+❌ **Step 3: Flag OFF Baseline** - BLOCKED
+- Needs: Staging URL to load /export page
+- Blocker: Staging deployment
+
+❌ **Step 4: Flag ON Verification** - BLOCKED  
+- Needs: Staging URL with GLOBAL mode enabled
+- Blocker: Staging deployment
+
+❌ **Step 5: Functional VVP** - BLOCKED
+- Needs: Staging environment with test products
+- Blocker: Staging deployment
+
+❌ **Step 6b: E2E VVP Tests** - BLOCKED
+- Needs: Staging URL for Playwright
+- Blocker: Staging deployment
+
+## Recommended Path Forward
+
+### Option A: Homer Deploys to Staging (if permitted)
+If Lisa/infrastructure authorizes Homer to deploy:
+
+```bash
+# Build the web app
+cd /workspaces/ROPI-V2.1
+npm run build --workspace=@ropi-aoss/web
+
+# Deploy to staging target
+firebase deploy --only hosting:aoss-staging
+
+# Capture deployment info for evidence
+```
+
+### Option B: Wait for Infrastructure (Lisa's directive)
+Per Lisa's instructions, Homer should NOT deploy:
+1. Lisa coordinates infrastructure deployment
+2. Infrastructure deploys aoss-main to staging
+3. Infrastructure provides staging URL
+4. Homer executes verification steps 3-6 once deployed
+
+## Current Recommendation
+
+**Homer requests Lisa/infrastructure to:**
+1. ✅ Approve staging deployment of aoss-main (commit f8919da or later)
+2. ✅ Execute Firebase deploy to `ropi-aoss-staging`
+3. ✅ Provide staging URL for verification
+4. ✅ Confirm feature flag is accessible on staging Firestore
+
+**Once staging is ready, Homer will:**
+- Execute full 7-step HES C verification
+- Capture all required screenshots and network traces
+- Run E2E VVP tests
+- Document all evidence in manifest
+
+## Interim Evidence Homer Can Prepare
+
+While waiting for staging:
+1. ✅ Unit test results - CAPTURED (evidence/phase2/ui-tests.txt)
+2. ✅ Merge record - CAPTURED (evidence/phase2/merge-pr-458.txt)
+3. ✅ Build verification - CAPTURED (in ui-tests.txt)
+4. ✅ Logs status documentation - CAN CREATE
+5. ✅ Flag state verification script - CAN CREATE
+6. ⏳ VVP folder structure - CAN PREPARE
+7. ⏳ HES C manifest template - CAN UPDATE with pending status
+
+**Status:** Homer is ready to execute full VVP immediately upon staging deployment.
+

@@ -6,9 +6,11 @@
     "date": "2026-01-07T00:00:00Z",
     "phase": "Phase 2B",
     "hesLevel": "HES C",
-    "status": "IN_PROGRESS",
+    "status": "VERIFICATION_IN_PROGRESS",
     "executor": "Homer",
-    "reviewer": "Lisa"
+    "reviewer": "Lisa",
+    "last_updated": "2026-01-07T06:50:00Z",
+    "verification_status": "PARTIAL - Local tests complete, staging deployment required for full VVP"
   },
 
   "preconditions": {
@@ -245,5 +247,114 @@
     "backward_compatibility": "Preserved - SITE_SCOPED mode unchanged",
     "feature_flag_ready": "Yes - graceful degradation when flag absent",
     "ready_for_staging": "Yes - build passes, tests pass, merge to aoss-main complete"
+  },
+
+  "verification_execution": {
+    "start_date": "2026-01-07T06:47:00Z",
+    "executor": "Homer",
+    "current_status": "PARTIAL_COMPLETE",
+    
+    "completed_steps": {
+      "step_1_merge_evidence": {
+        "status": "COMPLETED",
+        "date": "2026-01-07T06:37:00Z",
+        "evidence_file": "evidence/phase2/merge-pr-458.txt",
+        "notes": "Merge commit 55f5cc1, timestamp captured, 22 files changed"
+      },
+      "step_6a_unit_tests": {
+        "status": "COMPLETED",
+        "date": "2026-01-07T06:48:00Z",
+        "test_count": 10,
+        "result": "ALL_PASSING",
+        "duration": "296ms",
+        "evidence_file": "evidence/phase2/ui-tests.txt",
+        "notes": "GlobalModeCard component tests, TypeScript strict mode passed, build successful"
+      },
+      "step_7a_logs_verification": {
+        "status": "COMPLETED",
+        "date": "2026-01-07T06:50:00Z",
+        "evidence_file": "evidence/phase2/LOGS_STATUS.md",
+        "notes": "EXPORT_GLOBAL_LOGS flag documented, disabled by default, no production impact"
+      },
+      "feature_flag_access_verified": {
+        "status": "COMPLETED",
+        "date": "2026-01-07T06:50:00Z",
+        "current_flag_state": {
+          "exportGlobalMode": {
+            "enabled": false,
+            "mode": "SITE_SCOPED"
+          }
+        },
+        "notes": "Firebase Admin SDK accessible, flag toggleable, starting state is SITE_SCOPED"
+      }
+    },
+
+    "blocked_steps": {
+      "step_2_staging_deploy": {
+        "status": "BLOCKED",
+        "blocker": "Staging deployment not yet executed",
+        "required_action": "Infrastructure must deploy aoss-main to ropi-aoss-staging",
+        "evidence_file_pending": "evidence/phase2/deploy-run-<id>.json",
+        "notes": "Code ready on aoss-main (commit f8919da), needs Firebase hosting deploy"
+      },
+      "step_3_flag_off_baseline": {
+        "status": "BLOCKED",
+        "blocker": "Requires staging URL",
+        "required_action": "Load /export page on staging with flag disabled",
+        "evidence_files_pending": [
+          "evidence/phase2/ui-site-scoped-screenshot.png",
+          "evidence/phase2/readiness-flag-off.json",
+          "evidence/phase2/product-18-test-flag-off.json",
+          "evidence/phase2/product-211737-flag-off.json"
+        ],
+        "notes": "Will verify SITE_SCOPED UX unchanged once staging deployed"
+      },
+      "step_4_flag_on_verification": {
+        "status": "BLOCKED",
+        "blocker": "Requires staging URL",
+        "required_action": "Enable flag, load /export page, verify GLOBAL mode UI",
+        "evidence_files_pending": [
+          "evidence/phase2/ui-global-screenshot.png",
+          "evidence/phase2/ui-advanced-toggle.png",
+          "evidence/phase2/readiness-flag-on.json",
+          "evidence/phase2/product-18-test-flag-on.json",
+          "evidence/phase2/product-211737-flag-on.json"
+        ],
+        "notes": "Will verify GlobalModeCard rendering, Advanced toggle, API responses once staging deployed"
+      },
+      "step_5_functional_vvp": {
+        "status": "BLOCKED",
+        "blocker": "Requires staging URL and test products",
+        "required_action": "Execute VVP from vvp-retailops-global.md for mpn 18-test and 211737-90h1-8",
+        "evidence_folder_pending": "evidence/phase2/vvp-ui-global/",
+        "notes": "Full VVP with attribute updates, screenshots, export payload verification once staging deployed"
+      },
+      "step_6b_e2e_tests": {
+        "status": "BLOCKED",
+        "blocker": "Requires staging URL",
+        "required_action": "Run Playwright E2E tests against staging",
+        "test_file": "packages/web/e2e/global-export-mode.spec.ts",
+        "test_count": 10,
+        "evidence_file_pending": "evidence/phase2/e2e-vvp-tests.txt",
+        "notes": "Tests ready, awaiting staging deployment for execution"
+      }
+    },
+
+    "access_report": {
+      "firebase_admin": "ACCESSIBLE",
+      "firestore_flag": "ACCESSIBLE_AND_TOGGLEABLE",
+      "local_testing": "ACCESSIBLE",
+      "staging_environment": "NOT_YET_DEPLOYED",
+      "blocker_summary": "Staging deployment is the critical path blocker for completing HES C verification"
+    },
+
+    "next_steps_for_lisa": [
+      "Review partial verification results (merge, unit tests, logs)",
+      "Coordinate staging deployment of aoss-main to ropi-aoss-staging",
+      "Provide staging URL to Homer for VVP execution",
+      "Homer will execute steps 2-6 and capture all remaining evidence",
+      "Homer will update manifest with VERIFIED_SUCCESS or deviations",
+      "Lisa reviews complete HES C artifacts and accepts or requests remediation"
+    ]
   }
 }
