@@ -1,0 +1,213 @@
+# Backend Mode Detection Logic - Feature Flag Analysis
+**LP:** LP-export-ui-attr-triage-1.0.0  
+**Evidence Type:** Backend Code Analysis  
+**Date:** 2026-01-07T07:50:00Z  
+
+## Feature Flag Detection Function
+
+**File:** `packages/api/src/services/completionDrivenExportReadiness.ts`  
+**Function:** `detectExportModeFeatureFlag()`  
+**Lines:** 705-736  
+
+### Detection Logic Flow
+
+```typescript
+async function detectExportModeFeatureFlag(): Promise<'GLOBAL' | 'SITE_SCOPED'> {
+  try {
+    const admin = require('firebase-admin');
+    if (admin?.apps?.length === 0 && admin?.initializeApp) {
+      admin.initializeApp();
+    }
+    const db = admin.firestore();
+    const doc = await db.collection('settings').doc('exportSettings').get();
+    const data = doc.exists ? doc.data() || {} : {};
+    
+    // Canonical form: exportGlobalMode.enabled
+    const canonical = data.exportGlobalMode;
+    if (canonical && typeof canonical === 'object') {
+      const enabled = !!(canonical.enabled === true);
+      return enabled ? 'GLOBAL' : 'SITE_SCOPED';
+    }
+    
+    // Legacy/compatibility keys (normalize to canonical)
+    const legacyEnabled = !!(
+      data.globalExportModeEnabled === true ||
+      data.enableGlobalFields === true ||
+      data.mode === 'GLOBAL'
+    );
+    return legacyEnabled ? 'GLOBAL' : 'SITE_SCOPED';
+  } catch {
+    // Fallback to env var (local/CI convenience)
+    const fromEnv = (process.env.EXPORT_GLOBAL_MODE_FEATURE || '').toLowerCase();
+    const enabled = fromEnv === '1' || fromEnv === 'true' || fromEnv === 'yes';
+    return enabled ? 'GLOBAL' : 'SITE_SCOPED';
+  }
+}
+```
+
+### Detection Priority
+
+1. **Canonical Form (Highest Priority):**
+   - Location: `settings/exportSettings.exportGlobalMode`
+   - Check: `exportGlobalMode.enabled === true`
+   - Returns: `'GLOBAL'` if true, `'SITE_SCOPED'` if false
+
+2. **Legacy Compatibility Keys:**
+   - `data.globalExportModeEnabled === true`
+   - `data.enableGlobalFields === true`
+   - `data.mode === 'GLOBAL'`
+
+3. **Environment Variable Fallback:**
+   - `process.env.EXPORT_GLOBAL_MODE_FEATURE`
+   - Values: '1', 'true', 'yes' (case-insensitive)
+
+---
+
+## Current Feature Flag State (Captured)
+
+**Source:** Firestore `settings/exportSettings` document  
+**Captured:** 2026-01-07T07:48:00Z  
+
+```json
+{
+  "mode": "SITE_SCOPED",
+  "enabled": false
+}
+```
+
+**Analysis:**
+- `exportGlobalMode.enabled` = `false`
+- Detection function returns: `'SITE_SCOPED'`
+- **Result:** Backend operates in SITE_SCOPED mode
+
+---
+
+## Mode Integration in calculateCompletionDrivenExportReadiness
+
+**File:** `packages/api/src/services/completionDrivenExportReadiness.ts`  
+**Function:** `calculateCompletionDrivenExportReadiness()`  
+**Lines:** 476-520  
+
+### Feature Mode Detection (Line 476)
+```typescript
+const featureMode = await detectExportModeFeatureFlag().catch(() => 'SITE_SCOPED' as const);
+```
+
+### Catalog-Level Evaluation (Lines 478-499)
+```typescript
+// If no product provided, evaluate catalog-level completion
+if (!product) {
+  const result = await evaluateCatalogCompletion(completionRules, attributeRegistry, evaluationTimestamp);
+  if (featureMode === 'GLOBAL') {
+    // Add Phase 1 fields (non-breaking)
+    const extended: CompletionDrivenExportReadiness = {
+      ...result,
+      mode: 'GLOBAL',
+      productLevelReadiness: {
+        ready: result.ready,
+        completionPct: result.completionPct,
+        threshold: result.threshold,
+        hasBlockingSites: result.hasBlockingSites
+      }
+    };
+    // Temporary logging for staging verification (set EXPORT_GLOBAL_LOGS=true to enable)
+    if (process.env.EXPORT_GLOBAL_LOGS === 'true') {
+      console.info('[ExportReadiness:Phase1] mode=GLOBAL (catalog), productLevelReadiness=', extended.productLevelReadiness);
+    }
+    return extended;
+  }
+  return result; // SITE_SCOPED: no mode field added
+}
+```
+
+### Product-Level GLOBAL Mode (Lines 507-530)
+```typescript
+// Phase 2: GLOBAL mode path (product-level aggregation)
+if (featureMode === 'GLOBAL') {
+  const productLevelReadiness = await aggregateProductLevelReadiness(
+    product,
+    completionRules,
+    attributeRegistry,
+    evaluationTimestamp
+  );
+  
+  const isReady = productLevelReadiness.aggregatedCompletionPct >= completionRules.exportUnlockThresholdPct;
+  
+  return {
+    mode: 'GLOBAL',
+    ready: isReady,
+    completionPct: productLevelReadiness.aggregatedCompletionPct,
+    threshold: completionRules.exportUnlockThresholdPct,
+    hasBlockingSites: false, // No site-specific blocking in GLOBAL mode
+    blockingReasons: [...],
+    operatorExplanation: {...},
+    productLevelReadiness: productLevelReadiness
+  };
+}
+```
+
+### Product-Level SITE_SCOPED Mode (Lines 585-605)
+```typescript
+// Phase 1 enhancement: add mode + productLevelReadiness in SITE_SCOPED if featureMode=GLOBAL
+if (featureMode === 'GLOBAL') {
+  const extended: CompletionDrivenExportReadiness = {
+    ...result,
+    mode: 'GLOBAL',
+    productLevelReadiness: {
+      ready: result.ready,
+      completionPct: result.completionPct,
+      threshold: result.threshold,
+      hasBlockingSites: result.hasBlockingSites
+    }
+  };
+  // Temporary logging for staging verification (set EXPORT_GLOBAL_LOGS=true to enable)
+  if (process.env.EXPORT_GLOBAL_LOGS === 'true') {
+    console.info('[ExportReadiness:Phase1] mode=GLOBAL (product), productLevelReadiness=', extended.productLevelReadiness);
+  }
+  return extended;
+}
+// Default path: SITE_SCOPED, no mode field
+return result;
+```
+
+---
+
+## KEY FINDING: Why UI Shows Legacy Panel
+
+**Root Cause:** Feature flag `exportGlobalMode.enabled` is **false**
+
+**Flow:**
+1. Frontend calls `/api/products/:id/completion`
+2. Backend calls `calculateCompletionDrivenExportReadiness()`
+3. Backend calls `detectExportModeFeatureFlag()` → returns `'SITE_SCOPED'`
+4. Backend returns response **WITHOUT `mode` field** (SITE_SCOPED path doesn't add mode)
+5. Frontend defaults to SITE_SCOPED: `completion?.mode ?? 'SITE_SCOPED'`
+6. Frontend renders legacy panel + site selector
+
+**Expected Behavior When Flag Enabled:**
+1. Flag: `exportGlobalMode.enabled = true`
+2. Backend returns: `mode: 'GLOBAL'` + `productLevelReadiness` object
+3. Frontend detects: `mode === 'GLOBAL'`
+4. Frontend renders: GlobalModeCard + GLOBAL badge + hidden site selector
+
+---
+
+## Code Citation Summary
+
+| Component | File | Lines | Purpose |
+|-----------|------|-------|---------|
+| Feature Flag Detection | completionDrivenExportReadiness.ts | 705-736 | Reads Firestore flag, returns GLOBAL or SITE_SCOPED |
+| Mode Integration | completionDrivenExportReadiness.ts | 476 | Calls detectExportModeFeatureFlag() |
+| GLOBAL Catalog Response | completionDrivenExportReadiness.ts | 481-497 | Adds mode + productLevelReadiness for catalog |
+| GLOBAL Product Response | completionDrivenExportReadiness.ts | 507-530 | Returns full GLOBAL mode structure |
+| SITE_SCOPED Fallback | completionDrivenExportReadiness.ts | 540-605 | Returns original structure without mode field |
+| Frontend Mode Detection | ExportPage.tsx | 28-29 | Defaults to SITE_SCOPED if mode absent |
+| UI Rendering Decision | CompletionExportGatePanel.tsx | 165-192 | Renders GlobalModeCard if mode=GLOBAL, else legacy |
+
+---
+
+**Diagnosis:** UI shows legacy panel because feature flag is disabled. This is **expected behavior** per governance - flag must be explicitly enabled to activate GLOBAL mode UI.
+
+**Evidence File:** backend-mode-logic.txt  
+**Created:** 2026-01-07T07:50:00Z  
+**Next Step:** Capture actual API responses with flag OFF and ON to confirm

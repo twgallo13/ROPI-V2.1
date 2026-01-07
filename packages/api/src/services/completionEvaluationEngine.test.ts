@@ -196,6 +196,145 @@ const PRODUCT_EMPTY: ProductSnapshot = {
   sites: ['us', 'uk']
 };
 
+// Classification-focused fixtures to validate requirement flag normalization
+const FLAG_REGISTRY_SNAKE: AttributeRegistry = {
+  classification_category: {
+    attribute_id: 'classification_category',
+    label: 'Category',
+    category: 'classification',
+    data_type: 'string',
+    required_for_completion: true,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
+  classification_style: {
+    attribute_id: 'classification_style',
+    label: 'Style',
+    category: 'classification',
+    data_type: 'string',
+    required_for_completion: false,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType
+};
+
+const FLAG_REGISTRY_CAMEL: AttributeRegistry = {
+  classification_group: {
+    attribute_id: 'classification_group',
+    label: 'Group',
+    category: 'classification',
+    data_type: 'string',
+    requiredForCompletion: true,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType,
+  classification_subgroup: {
+    attribute_id: 'classification_subgroup',
+    label: 'Subgroup',
+    category: 'classification',
+    data_type: 'string',
+    completionRequired: false,
+    exportable: true,
+    internalOnly: false
+  } as AttributeType
+};
+
+const FLAG_RULES_SNAKE: CompletionRulesConfig = {
+  schemaVersion: '1.0',
+  rulesVersion: 1,
+  updatedAt: '2025-01-02T00:00:00Z',
+  updatedBy: 'test-system',
+  exportUnlockThresholdPct: 80,
+  segments: [
+    {
+      id: 'classification',
+      name: 'Classification',
+      enabled: true,
+      weightPct: 100,
+      ruleType: 'ALL_REQUIRED',
+      appliesTo: {
+        mode: 'ALL_PRODUCTS',
+        sites: []
+      },
+      attributeSelector: {
+        source: 'REGISTRY',
+        categories: ['classification'],
+        requirementFlag: 'required_for_completion',
+        siteAware: false,
+        includeInternalOnly: false,
+        excludeAttributeIds: []
+      }
+    }
+  ],
+  builtInSegments: {},
+  exclusions: {
+    media: {
+      affectsCompletion: false,
+      reason: 'test'
+    },
+    pricing: {
+      affectsCompletion: false,
+      reason: 'test'
+    }
+  }
+};
+
+const FLAG_RULES_CAMEL: CompletionRulesConfig = {
+  schemaVersion: '1.0',
+  rulesVersion: 1,
+  updatedAt: '2025-01-02T00:00:00Z',
+  updatedBy: 'test-system',
+  exportUnlockThresholdPct: 80,
+  segments: [
+    {
+      id: 'classification-camel',
+      name: 'Classification (CamelCase)',
+      enabled: true,
+      weightPct: 100,
+      ruleType: 'ALL_REQUIRED',
+      appliesTo: {
+        mode: 'ALL_PRODUCTS',
+        sites: []
+      },
+      attributeSelector: {
+        source: 'REGISTRY',
+        categories: ['classification'],
+        requirementFlag: 'completionRequired',
+        siteAware: false,
+        includeInternalOnly: false,
+        excludeAttributeIds: []
+      }
+    }
+  ],
+  builtInSegments: {},
+  exclusions: {
+    media: {
+      affectsCompletion: false,
+      reason: 'test'
+    },
+    pricing: {
+      affectsCompletion: false,
+      reason: 'test'
+    }
+  }
+};
+
+const PRODUCT_CLASSIFICATION_COMPLETE: ProductSnapshot = {
+  productId: 'classification-complete',
+  attributes: {
+    classification_category: 'Shoes'
+  },
+  sites: ['us']
+};
+
+const PRODUCT_CLASSIFICATION_CAMEL_COMPLETE: ProductSnapshot = {
+  productId: 'classification-camel-complete',
+  attributes: {
+    classification_group: 'Footwear'
+  },
+  sites: ['us']
+};
+
 describe('Completion Evaluation Engine', () => {
   it('should calculate 100% completion for complete product', () => {
     const result = evaluateCompletion(
@@ -278,5 +417,31 @@ describe('Completion Evaluation Engine', () => {
         { ...TEST_COMPLETION_RULES, segments: [] } // Empty segments
       );
     }).toThrow('Cannot evaluate completion: no segments configured');
+  });
+
+  it('normalizes snake_case requirement flag and ignores non-required classification attributes', () => {
+    const result = evaluateCompletion(
+      PRODUCT_CLASSIFICATION_COMPLETE,
+      ['us'],
+      FLAG_REGISTRY_SNAKE,
+      FLAG_RULES_SNAKE
+    );
+
+    expect(result.totalCompletionPct).toBe(100);
+    expect(result.segmentResults[0].totalAttributes).toBe(1);
+    expect(result.segmentResults[0].missingAttributes).toEqual([]);
+  });
+
+  it('normalizes camelCase/legacy requirement flags for classification attributes', () => {
+    const result = evaluateCompletion(
+      PRODUCT_CLASSIFICATION_CAMEL_COMPLETE,
+      ['us'],
+      FLAG_REGISTRY_CAMEL,
+      FLAG_RULES_CAMEL
+    );
+
+    expect(result.totalCompletionPct).toBe(100);
+    expect(result.segmentResults[0].totalAttributes).toBe(1);
+    expect(result.segmentResults[0].missingAttributes).toEqual([]);
   });
 });

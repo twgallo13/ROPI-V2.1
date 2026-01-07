@@ -1,0 +1,35 @@
+=== Completion Rules Segments ===
+
+Segment: Core Product Attributes (ID: core-attributes)
+  Enabled: true
+  Weight: 80%
+  Rule Type: ALL_REQUIRED
+  Attribute Selector:
+    - Source: REGISTRY
+    - Categories: [sku_core, classification]
+    - Requirement Flag: required_for_completion
+    - Site Aware: false
+    - Include Internal Only: true
+
+Segment: SEO & Marketing (ID: seo-attributes)
+  Enabled: true
+  Weight: 20%
+  Rule Type: ALL_REQUIRED
+  Attribute Selector:
+    - Source: REGISTRY
+    - Categories: [description]
+    - Requirement Flag: required_for_export
+    - Site Aware: false
+    - Include Internal Only: false
+
+Segment: Media & Images (ID: media-attributes)
+  Enabled: false
+  Weight: 0%
+  Rule Type: ANY_REQUIRED
+  Attribute Selector:
+    - Source: STATIC
+    - Categories: []
+    - Requirement Flag: 
+    - Site Aware: false
+    - Include Internal Only: false
+

@@ -1,0 +1,30 @@
+=== Classification Attributes Sample ===
+
+ID: 7
+  Label: Category
+  Category: classification
+  Required for Completion: true
+  Required for Export: true
+  Internal Only: false
+
+ID: 8
+  Label: Class
+  Category: classification
+  Required for Completion: true
+  Required for Export: true
+  Internal Only: false
+
+ID: 9
+  Label: Department
+  Category: classification
+  Required for Completion: true
+  Required for Export: true
+  Internal Only: false
+
+ID: 10
+  Label: RICS Category
+  Category: classification
+  Required for Completion: false
+  Required for Export: false
+  Internal Only: false
+

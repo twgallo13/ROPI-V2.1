@@ -1,0 +1,269 @@
+# CRITICAL FINDING: requirementFlag Mismatch Bug
+**LP:** LP-export-ui-attr-triage-1.0.0  
+**Evidence Type:** Root Cause Analysis  
+**Date:** 2026-01-07T07:56:00Z  
+**Severity:** HIGH - Classification attributes not being enforced  
+
+## Bug Summary
+
+Classification attributes (category, class, department) are **NOT being enforced** for completion despite being marked as `required_for_completion: true` in the registry and being included in the Core Attributes segment configuration.
+
+---
+
+## Root Cause: String Literal Mismatch
+
+### The Mismatch
+
+**Firestore Configuration:**
+```json
+{
+  "attributeSelector": {
+    "requirementFlag": "required_for_completion"
+  }
+}
+```
+
+**Code Implementation:**
+```typescript
+// File: packages/api/src/services/completionEvaluationEngine.ts
+// Lines: 359-361
+
+if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) {
+  continue;
+}
+```
+
+**Problem:**
+- Config uses: `"required_for_completion"` (snake_case)
+- Code checks for: `"completionRequired"` (camelCase)
+- **These strings NEVER match!**
+
+---
+
+## Impact Analysis
+
+### What This Bug Causes
+
+1. **Requirement Flag Check Never Triggers**
+   - Code: `if (selector.requirementFlag === 'completionRequired')`
+   - Actual value: `'required_for_completion'`
+   - Result: Condition is ALWAYS false, requirement flag is NEVER checked
+
+2. **ALL Attributes in Category Selected**
+   - Without the requirement flag filter, `resolveAttributes()` selects ALL attributes in the specified categories
+   - This includes attributes with `required_for_completion: false`
+   - Creates false positives and incorrect required attribute lists
+
+3. **Classification Attributes Included But Not Required**
+   - Classification attributes (ID 7, 8, 9) are in category `'classification'`
+   - Core segment specifies `categories: ['sku_core', 'classification']`
+   - Attributes ARE selected because category matches
+   - But `required_for_completion: true` flag is NOT being enforced
+   - **Result: Attributes appear in the list but aren't actually required**
+
+---
+
+## Code Evidence
+
+### Attribute Resolution Logic
+
+**File:** `packages/api/src/services/completionEvaluationEngine.ts`  
+**Function:** `resolveAttributes(registry, selector)`  
+**Lines:** 336-372  
+
+```typescript
+function resolveAttributes(
+  registry: AttributeRegistry,
+  selector: AttributeSelectorConfig
+): string[] {
+  const attributeIds: string[] = [];
+
+  for (const [attrId, attr] of Object.entries(registry)) {
+    // Skip if in exclusion list
+    if (selector.excludeAttributeIds?.includes(attrId)) {
+      continue;
+    }
+
+    // Skip internal-only attributes unless explicitly included
+    if (attr.internalOnly && !selector.includeInternalOnly) {
+      continue;
+    }
+
+    // Check category match
+    if (attr.category && !selector.categories.includes(attr.category)) {
+      continue; // ✅ This filter WORKS - checks if category in list
+    }
+
+    // Check requirement flag
+    if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) {
+      continue; // ❌ This filter NEVER WORKS - string literals don't match
+    }
+
+    attributeIds.push(attrId);
+  }
+
+  return attributeIds;
+}
+```
+
+---
+
+## Firestore Configuration Evidence
+
+**Source:** `settings/exportSettings.completionRules.segments`  
+**Captured:** 2026-01-07T07:55:00Z  
+
+### Core Attributes Segment
+
+```json
+{
+  "id": "core-attributes",
+  "name": "Core Product Attributes",
+  "enabled": true,
+  "weightPct": 80,
+  "ruleType": "ALL_REQUIRED",
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": ["sku_core", "classification"],
+    "requirementFlag": "required_for_completion", // ❌ Never matches code check
+    "siteAware": false,
+    "includeInternalOnly": true,
+    "excludeAttributeIds": [],
+    "staticAttributeIds": []
+  }
+}
+```
+
+### SEO & Marketing Segment
+
+```json
+{
+  "id": "seo-attributes",
+  "name": "SEO & Marketing",
+  "enabled": true,
+  "weightPct": 20,
+  "ruleType": "ALL_REQUIRED",
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": ["description"],
+    "requirementFlag": "required_for_export", // ❌ Also never matches
+    "siteAware": false,
+    "includeInternalOnly": false
+  }
+}
+```
+
+---
+
+## Attribute Registry Evidence
+
+**Source:** `packages/sdk/config/attributeRegistry.json`  
+**Sample Classification Attributes:**
+
+```json
+{
+  "7": {
+    "label": "Category",
+    "category": "classification",
+    "required_for_completion": true,  // ✅ Marked as required
+    "required_for_export": true
+  },
+  "8": {
+    "label": "Class", 
+    "category": "classification",
+    "required_for_completion": true,  // ✅ Marked as required
+    "required_for_export": true
+  },
+  "9": {
+    "label": "Department",
+    "category": "classification",
+    "required_for_completion": true,  // ✅ Marked as required
+    "required_for_export": true
+  }
+}
+```
+
+---
+
+## Behavioral Outcome
+
+### Current Behavior (Bug Present)
+
+1. Core segment selector specifies `categories: ['sku_core', 'classification']`
+2. `resolveAttributes()` finds all attributes with those categories
+3. Requirement flag check: `'required_for_completion' === 'completionRequired'` → FALSE
+4. ALL attributes in sku_core and classification categories selected (not just required ones)
+5. Classification attributes included but flag is not enforced
+6. Products may show as complete even if classification attributes missing
+
+### Expected Behavior (Bug Fixed)
+
+1. Core segment selector specifies `categories: ['sku_core', 'classification']`
+2. `resolveAttributes()` finds all attributes with those categories
+3. Requirement flag check: `'required_for_completion' === 'required_for_completion'` → TRUE
+4. Only attributes with `required_for_completion: true` selected
+5. Classification attributes (7, 8, 9) properly enforced as required
+6. Products blocked if classification attributes missing
+
+---
+
+## Possible Fixes
+
+### Option A: Fix Code to Match Config (Recommended)
+
+**File:** `packages/api/src/services/completionEvaluationEngine.ts`  
+**Line:** 359  
+
+```typescript
+// BEFORE (broken)
+if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) {
+  continue;
+}
+
+// AFTER (fixed)
+if (selector.requirementFlag && !attr[selector.requirementFlag]) {
+  continue;
+}
+```
+
+**Rationale:** Use the config value directly as attribute property name (dynamic property access)
+
+### Option B: Fix Config to Match Code
+
+**Firestore:** `settings/exportSettings.completionRules.segments`
+
+```json
+{
+  "attributeSelector": {
+    "requirementFlag": "completionRequired"  // Changed from "required_for_completion"
+  }
+}
+```
+
+**Problem:** This requires registry to have `completionRequired` property instead of `required_for_completion` (breaking change)
+
+---
+
+## Related Bug: Attribute Persistence
+
+This mismatch may also explain attribute persistence issues:
+- If classification attributes aren't being enforced
+- UI may not properly validate their presence
+- Attribute save operations may not recognize them as required
+- Frontend may allow empty/null values
+
+---
+
+## Recommendations
+
+1. **Immediate:** Document this bug in HES A manifest
+2. **Next LP:** Fix requirementFlag check to use dynamic property access
+3. **Verification:** Re-test classification attribute enforcement after fix
+4. **Regression:** Check SEO segment (`required_for_export` flag) - same bug affects it
+
+---
+
+**Evidence File:** requirement-flag-mismatch-bug.txt  
+**Created:** 2026-01-07T07:56:00Z  
+**Impact:** HIGH - Core completion logic not working as designed  
+**Fix Required:** Code change in completionEvaluationEngine.ts

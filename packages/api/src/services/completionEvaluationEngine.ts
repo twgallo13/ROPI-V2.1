@@ -339,6 +339,8 @@ function resolveAttributes(
 ): string[] {
   const attributeIds: string[] = [];
 
+  const canonicalRequirementFlag = normalizeRequirementFlag(selector.requirementFlag);
+
   for (const [attrId, attr] of Object.entries(registry)) {
     // Skip if in exclusion list
     if (selector.excludeAttributeIds?.includes(attrId)) {
@@ -356,7 +358,7 @@ function resolveAttributes(
     }
 
     // Check requirement flag
-    if (selector.requirementFlag === 'completionRequired' && !attr.required_for_completion) {
+    if (canonicalRequirementFlag && !getNormalizedRequirementFlagValue(attr, canonicalRequirementFlag)) {
       continue;
     }
 
@@ -366,6 +368,42 @@ function resolveAttributes(
   }
 
   return attributeIds;
+}
+
+function normalizeRequirementFlag(flag?: string): 'required_for_completion' | 'required_for_export' | null {
+  if (!flag) return null;
+
+  switch (flag) {
+    case 'required_for_completion':
+    case 'requiredForCompletion':
+    case 'completionRequired':
+      return 'required_for_completion';
+    case 'required_for_export':
+    case 'requiredForExport':
+      return 'required_for_export';
+    default:
+      return null;
+  }
+}
+
+function getNormalizedRequirementFlagValue(
+  attr: AttributeRegistryEntry,
+  canonicalFlag: 'required_for_completion' | 'required_for_export'
+): boolean {
+  const attribute = attr as Record<string, any>;
+
+  if (canonicalFlag === 'required_for_completion') {
+    return Boolean(
+      attribute.required_for_completion ??
+      attribute.requiredForCompletion ??
+      attribute.completionRequired
+    );
+  }
+
+  return Boolean(
+    attribute.required_for_export ??
+    attribute.requiredForExport
+  );
 }
 
 /**
