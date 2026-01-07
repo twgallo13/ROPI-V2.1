@@ -28,7 +28,7 @@ ROPI AOSS — Admin Order & Staging System. Monorepo: `packages/cli`, `packages/
 ## Minimal machine-readable hints (for agents)
 - `registry_path`: `packages/sdk/config/attributeRegistry.json`  
 - `registry_firestore_meta`: `settings/attributesMeta`  
-- `lp_label_prefix`: `lp:` (labels start `lp:<PhaseSlug>-<SemVer>`)
+- `lp_label_prefix`: `lp:` (labels formatted as `lp:<PhaseSlug>-<NNN>`, e.g., `lp:export-global-001`)
 
 ---
 
@@ -39,13 +39,14 @@ Use these prompts to start or resume phases without terminal commands.
 ### 1. Start a New Phase
 
 ```
-Start phase "<PhaseSlug>" version <SemVer>.
+Start phase "<PhaseName>" (slug: <PhaseSlug>).
 
 Before any action:
 1. Read AI_BOOTSTRAP.md and GOVERNANCE.md.
 2. List open PRs with lp:* labels — confirm no conflicting phase.
 3. Request explicit Phase Readiness (PRD link, acceptance criteria, scope).
 4. Do NOT create branches or PRs until I approve the PRD.
+5. LP numbering starts at LP-<PhaseSlug>-001.
 
 Output: Draft PRD for my review.
 ```
@@ -53,45 +54,47 @@ Output: Draft PRD for my review.
 ### 2. Resume an Existing Chat
 
 ```
-Resume phase "<PhaseSlug>-<SemVer>".
+Resume phase "<PhaseSlug>".
 
 Steps:
 1. Read AI_BOOTSTRAP.md and GOVERNANCE.md.
-2. List open PRs with label lp:<PhaseSlug>-<SemVer>.
-3. Summarize: current step, last HES, pending actions.
+2. List open PRs with label lp:<PhaseSlug>-* (any LP number).
+3. Summarize: current step, last HES, next LP number, pending actions.
 4. Wait for my instruction before any new action.
 
 Output: Status summary and next recommended action.
 ```
 
-### 3. Request a HES (Handoff Evidence Summary)
+### 3. Request a HES (Homer Execution Summary)
 
 ```
-Produce a HES for step <StepLetter> of phase "<PhaseSlug>-<SemVer>".
+Produce a HES for LP-<PhaseSlug>-<NNN>.
 
 Include:
 - Branch and commit SHA
 - PR number and URL
 - Files changed (with line counts)
 - CI status (gh pr checks output)
-- Labels applied
+- Labels applied (especially lp:<PhaseSlug>-<NNN>)
 - Any verification evidence (grep, curl, Firestore checks)
-- Final line: "Phase step <StepLetter>: VERIFIED SUCCESS" or "BLOCKED: <reason>"
+- Final line: "LP-<PhaseSlug>-<NNN>: VERIFIED SUCCESS" or "BLOCKED: <reason>"
 ```
 
-### 4. Request a PRD (Phase Requirements Document)
+### 4. Request a PRD (Phase Readiness Document)
 
 ```
-Draft a PRD for phase "<PhaseSlug>-<SemVer>".
+Draft a PRD for phase "<PhaseSlug>".
 
 Include:
-- Phase title and slug
+- PhaseName (human-readable)
+- PhaseSlug (kebab-case, immutable)
 - Problem statement (one paragraph)
 - Acceptance criteria (numbered list)
 - Scope: files, packages, Firestore paths affected
 - Out of scope (explicit exclusions)
-- Steps (A, B, C, ...) with HES checkpoints
+- LPs planned (A, B, C, ...) with HES checkpoints
 - Rollback plan
+- Note: First LP will be LP-<PhaseSlug>-001
 
 Output: PRD for my approval before any implementation.
 ```
@@ -127,13 +130,15 @@ After merge:
 
 ### 7. Close / Archive a Phase
 
+### 7. Close / Archive a Phase
+
 ```
-Close phase "<PhaseSlug>-<SemVer>".
+Close phase "<PhaseSlug>".
 
 Steps:
-1. Confirm all PRs with lp:<PhaseSlug>-<SemVer> are merged or closed.
+1. Confirm all PRs with lp:<PhaseSlug>-* are merged or closed.
 2. Update any remaining labels to state:merged or state:closed.
-3. Summarize: PRs merged, commits, deploy status, Firestore verification.
+3. Summarize: all LPs completed, PRs merged, deploy status, Firestore verification.
 4. Output: Final phase closure HES.
 ```
 
