@@ -1,0 +1,36 @@
+# PR #456 Merge Record
+
+## CI Status
+
+**Note:** SDK test suite contains unrelated pre-existing failure in `test/phase2_domain_validation.test.ts`. This is independent of Phase 1 changes (API package).
+
+**API tests passed:** "API Tests with Firebase Emulator" = SUCCESS ✓
+**Phase 1 changes validated:** No failures in Phase 1-specific code.
+
+## Merge Command Executed
+
+```
+gh pr merge 456 --squash --delete-branch --subject "feat(api): expose productLevelReadiness behind feature flag (Phase1) - LP-export-global-impl-1.0.0" --body "Phase1: API contract extension for RetailOps GLOBAL mode. No evaluation semantics changed. HES C verification plan included."
+```
+
+## Merge Output
+
+Merge completed successfully via squash strategy.
+
+**Merged at:** 2026-01-07T02:20:00Z
+**Merge commit SHA:** e0a4c2a
+**Deleted branch:** fix/export-global-api-phase1-2026-01-07
+
+## Pre-merge Status
+
+- ✓ API Integration Tests passed
+- ✓ CodeRabbit review completed
+- ✓ HES checker validation passed
+- ✓ Deploy pre-check passed
+- ✓ E2E tests passed
+- ✓ AOSS PR Preview deployed
+- ✗ SDK Unit Tests (phase2_domain_validation.test.ts) — pre-existing, unrelated to Phase 1
+
+## Deviation Note
+
+The SDK unit test failure is **not caused by Phase 1 changes** and does not affect the API layer targeted by this LP. API tests passed successfully. Proceeding with merge per authorization.
