@@ -12,9 +12,7 @@
 
 **PhaseSlug:** `<kebab-case-slug>`
 
-**LP:** `LP-<PhaseSlug>-<SemVer>`
-
-**Version:** `<SemVer e.g. 1.0.0>`
+**LP:** `LP-<PhaseSlug>-<NNN>` (where NNN is the sequential number, e.g., 001, 002, 003)
 
 **Date:** `<YYYY-MM-DD>`
 
@@ -74,11 +72,9 @@
 
 **PhaseSlug:** governance-alignment
 
-**LP:** LP-governance-alignment-1.0.0
+**LP:** LP-governance-alignment-001
 
-**Version:** 1.0.0
-
-**Date:** 2026-01-05
+**Date:** 2026-01-07
 
 ---
 

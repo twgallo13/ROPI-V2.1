@@ -21,7 +21,7 @@ VVP (Visual Verification Protocol) is a step-by-step guide for non-technical use
 ```markdown
 # VVP: <Feature Name>
 
-**LP:** LP-<PhaseSlug>-<SemVer>
+**LP:** LP-<PhaseSlug>-<NNN>
 **Date:** <YYYY-MM-DD>
 **Verifier:** <Name or role>
 **Environment:** <staging URL or local>
@@ -97,8 +97,8 @@ VVP (Visual Verification Protocol) is a step-by-step guide for non-technical use
 ```markdown
 # VVP: Export Page Button Visibility
 
-**LP:** LP-export-gate-1.0.0
-**Date:** 2026-01-05
+**LP:** LP-export-global-001
+**Date:** 2026-01-07
 **Verifier:** QA Team
 **Environment:** https://ropi-aoss-staging.web.app
 

@@ -14,7 +14,7 @@
 {
   "from": "Homer",
   "to": "Lisa",
-  "lp": "LP-<PhaseSlug>-<SemVer>",
+  "lp": "LP-<PhaseSlug>-<NNN>",
   "date": "<YYYY-MM-DD>",
   "branch": "<branch-name>",
   "prNumber": <number>,
@@ -100,36 +100,43 @@
 {
   "from": "Homer",
   "to": "Lisa",
-  "lp": "LP-governance-alignment-1.0.0",
-  "date": "2026-01-05",
-  "branch": "governance-alignment-2026-01-05",
+  "lp": "LP-governance-alignment-001",
+  "date": "2026-01-07",
+  "branch": "governance-alignment-2026-01-07",
   "prNumber": 443,
   "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/443",
   "mergeCommitSha": null,
   "mergedAt": null,
   "filesChanged": [
     { "path": "GOVERNANCE.md", "action": "modified" },
-    { "path": "PHASE_INDEX.md", "action": "modified" },
-    { "path": "docs/DIRECTIVE_TEMPLATE.md", "action": "created" },
-    { "path": "docs/HES_FORMAT.md", "action": "created" },
-    { "path": "docs/VVP_TEMPLATE.md", "action": "created" },
-    { "path": "docs/WORKFLOW.md", "action": "modified" }
+    { "path": "AI_BOOTSTRAP.md", "action": "modified" },
+    { "path": "docs/DIRECTIVE_TEMPLATE.md", "action": "modified" },
+    { "path": "docs/HES_FORMAT.md", "action": "modified" },
+    { "path": "docs/VVP_TEMPLATE.md", "action": "modified" }
   ],
   "commitShas": ["abc1234"],
   "ciRuns": [],
   "deployInfo": null,
   "verification": {
-    "canonical_declaration": {
-      "status": "PASS",
-      "evidence": "GOVERNANCE.md contains canonical workflow authority statement"
-    },
     "phase_identity": {
       "status": "PASS",
-      "evidence": "PHASE_INDEX.md contains PhaseName, PhaseSlug, LP Prefix registry"
+      "evidence": "GOVERNANCE.md defines Phase Identity with PhaseName, PhaseSlug as immutable containers (not versioned)"
+    },
+    "lp_sequencing": {
+      "status": "PASS",
+      "evidence": "LP format changed from SemVer to sequential: LP-<PhaseSlug>-<NNN>"
     },
     "directive_template": {
       "status": "PASS",
-      "evidence": "docs/DIRECTIVE_TEMPLATE.md created with all required fields"
+      "evidence": "docs/DIRECTIVE_TEMPLATE.md removes Version field, requires LP-<PhaseSlug>-<NNN>"
+    },
+    "hes_format": {
+      "status": "PASS",
+      "evidence": "docs/HES_FORMAT.md examples and schema updated to sequential LP numbering"
+    },
+    "authority_clarity": {
+      "status": "PASS",
+      "evidence": "GOVERNANCE.md Section: Authority Boundaries defines Lisa, Homer, Acceptance Authority, Merge Authority"
     }
   },
   "deviations": [],
