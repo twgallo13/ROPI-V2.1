@@ -145,6 +145,92 @@ Checklist: [ ] Phase readiness satisfied
 
 ---
 
+## Execution Safety Model
+
+### Non-Destructive Work Never Blocks
+
+Non-destructive activities proceed regardless of missing inputs or blockers:
+- **Inventory** — cataloging files, branches, artifacts, configurations
+- **Labeling** — classification and tagging of existing items
+- **Classification** — analysis and categorization of repository state
+- **Proposals** — candidate outputs that do not alter state
+
+When required inputs are unavailable, execution downgrades to **proposal-only mode** rather than stopping entirely.
+
+### Destructive Actions Are Gated by Verification
+
+Destructive operations require complete inputs and verification before proceeding:
+- **Merges** — combining code branches
+- **Deploys** — pushing code to environments
+- **File deletion** — removing repository artifacts
+- **State changes** — modifying Firestore, databases, or production state
+
+Missing evidence or unverified inputs halt destructive actions but do not block non-destructive work.
+
+### Missing Inputs Downgrade Execution
+
+When verification evidence is incomplete:
+- Continue inventory, classification, and analysis
+- Produce proposal or candidate outputs
+- Mark outputs clearly as **UNVERIFIED** or **PROPOSAL**
+- Document what evidence is missing
+- Do NOT proceed with state-changing operations
+
+## Blocker Behavior
+
+### Blockers Halt Destructive Actions Only
+
+When a blocker is encountered:
+- **Destructive work stops** — no merges, deploys, deletions, or state changes
+- **Non-destructive work continues** — inventory, labeling, classification, and proposals proceed
+- **Clear marking required** — all outputs produced under blockers must be explicitly labeled as unverified
+
+### Blocker Documentation
+
+All blockers must include:
+- **Blocker type** — missing input, failed verification, platform restriction, dependency unavailable
+- **Impact scope** — what specific actions are blocked
+- **What continues** — what non-destructive work can proceed
+- **Resolution path** — what evidence or action removes the blocker
+
+## LP Clarification
+
+### LPs May Produce Candidate or Proposal Outputs
+
+LPs operate in two modes:
+- **Full execution mode** — all inputs present, verification possible, state changes authorized
+- **Proposal mode** — incomplete inputs, producing candidate outputs for review
+
+### State Change Requires Evidence
+
+To move from proposal to accepted state:
+- Verification evidence must be provided
+- Acceptance criteria must be met
+- Immutable references (SHAs, URLs, run IDs) required
+
+Proposals do not require the same evidence bar as accepted work.
+
+## Phase Definition
+
+### Phases Are Containers, Not Completion Gates
+
+A phase is a bounded execution container:
+- **Phases contain work** — they do not gate or block progress
+- **LP completion** — each LP completes independently
+- **Phase closure** — administrative, marks all LP work complete
+
+### Open LPs Do Not Block Progress Unless Destructive
+
+An open LP in a phase does not prevent:
+- Starting new LPs in the same phase
+- Producing proposals or candidates
+- Performing non-destructive inventory or analysis
+
+Open LPs only block:
+- Merging subsequent PRs that depend on the open LP
+- Deploying changes that require the open LP's outputs
+- Phase closure (all LPs must reach terminal state)
+
 ## Execution Rules
 
 If no new evidence is discovered after one complete repo scan, execution must stop and escalate for direction. Re-running searches without new inputs is not allowed.

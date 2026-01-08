@@ -193,6 +193,50 @@ If a task requires unavailable permissions:
 - Clearly name the GitHub platform restriction
 - Continue all non-blocked verification work
 
+## Execution Safety Model
+
+### Non-Destructive Work Never Blocks
+
+Non-destructive activities always proceed:
+- **Inventory** — cataloging files, branches, configurations
+- **Labeling** — classification and tagging
+- **Classification** — analysis and categorization
+- **Proposals** — candidate outputs that don't alter state
+
+Missing inputs downgrade execution to **proposal-only mode**, not full stop.
+
+### Destructive Actions Are Gated
+
+Destructive operations require complete verification:
+- Merges
+- Deploys
+- File deletion
+- State changes (Firestore, production data)
+
+Missing evidence halts destructive actions but does **NOT** block non-destructive work.
+
+### Blocker Behavior
+
+When a blocker is encountered:
+- **Destructive work stops**
+- **Non-destructive work continues**
+- **Outputs marked clearly** as UNVERIFIED or PROPOSAL
+- **Document the blocker** with type, impact, and resolution path
+
+### LP Output Modes
+
+LPs produce outputs in two modes:
+- **Full execution** — all inputs present, state changes authorized
+- **Proposal mode** — incomplete inputs, producing candidates only
+
+State change requires evidence. Proposals do not.
+
+### Phases Are Containers, Not Gates
+
+- Phases contain work; they do not block progress
+- Open LPs do not prevent new LPs from starting
+- Open LPs only block: dependent merges, dependent deploys, phase closure
+
 Prompting Rules (Lisa → Homer)
 
 Every directive must include:
