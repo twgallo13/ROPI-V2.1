@@ -159,6 +159,8 @@ Verifies observable behavior only (UI, staging reality)
 
 Accepts or rejects evidence
 
+Does NOT approve PRD / does NOT gate execution start
+
 Does not execute
 
 Does not merge
