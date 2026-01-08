@@ -1,0 +1,217 @@
+{
+  "hes_version": "1.0",
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-cleanup-002",
+  "phase": "cleanup",
+  "phase_slug": "cleanup",
+  "generated_at": "2026-01-08T20:40:51.461Z",
+  "ai_reentry_confirmation": {
+    "lisa_confirm": "Lisa read and confirms AI_BOOTSTRAP.md and GOVERNANCE.md",
+    "homer_confirm": "Homer read and will comply with AI_BOOTSTRAP.md and GOVERNANCE.md",
+    "ai_bootstrap_sha": "8d0393228ef27f7b2fcff27485cfce361338b672",
+    "governance_sha": "8d0393228ef27f7b2fcff27485cfce361338b672"
+  },
+  "scope": {
+    "task": "Standardize PR and issue labels across repository",
+    "no_merges": true,
+    "no_closures": true,
+    "no_deletions": true,
+    "label_operations_only": true
+  },
+  "execution_summary": {
+    "canonical_labels_created": 7,
+    "prs_processed": 50,
+    "prs_updated": 46,
+    "issues_processed": 0,
+    "total_labels_added": 54,
+    "total_comments_added": 0,
+    "errors_encountered": 0
+  },
+  "labels_created": [
+    {
+      "name": "state:changes-requested",
+      "color": "d93f0b",
+      "description": "PR has changes requested"
+    },
+    {
+      "name": "state:closed",
+      "color": "d73a4a",
+      "description": "PR has been closed without merging"
+    },
+    {
+      "name": "blocked:decision-needed",
+      "color": "d93f0b",
+      "description": "Blocked awaiting decision"
+    },
+    {
+      "name": "blocked:dependency",
+      "color": "d93f0b",
+      "description": "Blocked by dependency"
+    },
+    {
+      "name": "blocked:external",
+      "color": "d93f0b",
+      "description": "Blocked by external factor"
+    },
+    {
+      "name": "stale-candidate",
+      "color": "ededed",
+      "description": "Item may be stale (LP-cleanup-002)"
+    },
+    {
+      "name": "needs-info",
+      "color": "d93f0b",
+      "description": "Needs more information or clarification"
+    }
+  ],
+  "classification_rules_applied": {
+    "rule_lp_extraction": "For PRs with LP identifier in title/body but missing lp: label, extract and add exact lp: label",
+    "rule_state_inference": "For PRs missing state:*, infer state using: draft=planned, recent(<7d)=in-progress, older(>=14d)=review, default=in-progress",
+    "rule_stale_marker": "For PRs >90 days old with no activity and missing lp: label, add stale-candidate + needs-info (no closure)",
+    "thresholds": {
+      "active_pr_days": 7,
+      "review_pr_days": 14,
+      "stale_pr_days": 90
+    },
+    "deterministic": true
+  },
+  "sample_checks": [
+    {
+      "type": "pr",
+      "number": 463,
+      "title": "LP-deploy-authority-model-001: Add Deploy Authority Model and Copilot Execution Constraints",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/463",
+      "actions": [
+        "lp:deploy-authority-model-001"
+      ],
+      "rationale": "LP label extracted from PR text: lp:deploy-authority-model-001"
+    },
+    {
+      "type": "pr",
+      "number": 458,
+      "title": "LP-export-global-impl-2b: Implement productLevelReadiness (UI)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/458",
+      "actions": [
+        "lp-export-global-1.0.0",
+        "state:in-progress"
+      ],
+      "rationale": "LP label extracted from PR text: lp-export-global-1.0.0; State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    },
+    {
+      "type": "pr",
+      "number": 442,
+      "title": "ci: deploy Firestore rules to staging",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/442",
+      "actions": [
+        "state:in-progress"
+      ],
+      "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    },
+    {
+      "type": "pr",
+      "number": 429,
+      "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/429",
+      "actions": [
+        "state:in-progress"
+      ],
+      "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    },
+    {
+      "type": "pr",
+      "number": 428,
+      "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/428",
+      "actions": [
+        "state:in-progress"
+      ],
+      "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    },
+    {
+      "type": "pr",
+      "number": 427,
+      "title": "feat: Complete Completion Model Implementation (Persistence + Evaluation Engine)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/427",
+      "actions": [
+        "state:in-progress"
+      ],
+      "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    },
+    {
+      "type": "pr",
+      "number": 426,
+      "title": "docs: Add authoritative Completion → Export Gate documentation",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/426",
+      "actions": [
+        "state:in-progress"
+      ],
+      "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    },
+    {
+      "type": "pr",
+      "number": 416,
+      "title": "chore(migration): remove legacy observations fallback and deprecated helpers",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/416",
+      "actions": [
+        "lp-remove-legacy-observations-fallback-1.0.0",
+        "state:planned"
+      ],
+      "rationale": "LP label extracted from PR text: lp-remove-legacy-observations-fallback-1.0.0; State inferred: state:planned (PR is in draft mode)"
+    },
+    {
+      "type": "pr",
+      "number": 404,
+      "title": "feat(observations): LP-1.2.0 inline tags-first Add/Edit UX (no navigation)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/404",
+      "actions": [
+        "lp:observations-consolidation-1.2.0",
+        "state:in-progress"
+      ],
+      "rationale": "LP label extracted from PR text: lp:observations-consolidation-1.2.0; State inferred: state:in-progress (Default state for active PR)"
+    },
+    {
+      "type": "pr",
+      "number": 403,
+      "title": "feat(observations): LP-observations-consolidation-1.1.0 - Mobile/Desktop parity",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/403",
+      "actions": [
+        "lp:observations-consolidation-1.1.0",
+        "state:in-progress"
+      ],
+      "rationale": "LP label extracted from PR text: lp:observations-consolidation-1.1.0; State inferred: state:in-progress (Default state for active PR)"
+    }
+  ],
+  "artifacts_generated": {
+    "existing_labels": "./existing_labels.json",
+    "labels_to_create": "./labels_to_create.json",
+    "label_actions": "./label_actions.json",
+    "application_results": "./application_results.json",
+    "sample_checks": "./sample_checks.json",
+    "execution_log": "./execution_log.txt",
+    "application_output": "./application_output.txt"
+  },
+  "evidence_links": {
+    "label_creation_log": "./execution_log.txt",
+    "application_output": "./application_output.txt",
+    "pr_inventory_source": "../LP-cleanup-001/evidence/open_prs_raw.json"
+  },
+  "safety_compliance": {
+    "no_merges_performed": true,
+    "no_prs_closed": true,
+    "no_branches_deleted": true,
+    "no_issues_closed": true,
+    "label_operations_only": true,
+    "comments_added_for_stale_markers": 0
+  },
+  "repository_state": {
+    "owner": "twgallo13",
+    "name": "ROPI-V2.1",
+    "default_branch": "aoss-main",
+    "active_branch_at_execution": "aoss-main",
+    "execution_commit_sha": "8d0393228ef27f7b2fcff27485cfce361338b672"
+  },
+  "blockers": [],
+  "result": "VERIFIED SUCCESS",
+  "result_details": "Standardized labels across 46 open PRs. Created 7 canonical labels. Applied deterministic rules for lp: and state: label inference. No stale PRs identified (none >90d without lp:). No merges, closures, or deletions performed. All operations completed successfully."
+}

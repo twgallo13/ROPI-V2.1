@@ -1,0 +1,16 @@
+{
+  "STALE_THRESHOLD_DAYS": 180,
+  "MERGED_THRESHOLD_DAYS": 90,
+  "NEVER_DELETE_PATTERNS": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "KEEP_IF_RECENT_ACTIVITY_DAYS": 30
+}

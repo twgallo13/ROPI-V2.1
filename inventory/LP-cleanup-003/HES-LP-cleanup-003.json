@@ -1,0 +1,151 @@
+{
+  "hes_version": "1.0",
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-cleanup-003",
+  "phase": "cleanup",
+  "phase_slug": "cleanup",
+  "generated_at": "2026-01-08T20:47:58.422Z",
+  "ai_reentry_confirmation": {
+    "lisa_confirm": "Lisa read and confirms AI_BOOTSTRAP.md and GOVERNANCE.md",
+    "homer_confirm": "Homer read and will comply with AI_BOOTSTRAP.md and GOVERNANCE.md",
+    "ai_bootstrap_sha": "8d0393228ef27f7b2fcff27485cfce361338b672",
+    "governance_sha": "8d0393228ef27f7b2fcff27485cfce361338b672"
+  },
+  "scope": {
+    "task": "PR hygiene only - close abandoned/superseded PRs and normalize remaining PR titles/labels",
+    "no_merges": true,
+    "no_branch_deletions": true,
+    "no_force_pushes": true,
+    "hygiene_operations_only": true
+  },
+  "execution_summary": {
+    "total_prs_analyzed": 50,
+    "prs_requiring_action": 7,
+    "prs_closed": 0,
+    "mixed_intent_flagged": 7,
+    "total_comments_added": 7,
+    "total_labels_added": 7,
+    "errors_encountered": 0
+  },
+  "hygiene_rules_applied": {
+    "CLOSE_ABANDONED": {
+      "description": "Close if: no activity >180 days AND no LP label AND not approved",
+      "threshold_days": 180,
+      "prs_matched": 0,
+      "prs_closed": 0
+    },
+    "CLOSE_SUPERSEDED": {
+      "description": "Close if explicitly marked as superseded or duplicate (PR-level, not technical use)",
+      "patterns_used": [
+        "/this pr (is|has been) superseded/i",
+        "/superseded by #\\d+/i",
+        "/duplicate of #\\d+/i",
+        "/replaced by #\\d+/i"
+      ],
+      "prs_matched": 0,
+      "prs_closed": 0
+    },
+    "MIXED_INTENT": {
+      "description": "Flag if: PR title/body suggests multiple unrelated intents (feat+fix, docs+refactor spanning multiple packages)",
+      "detection_criteria": [
+        "Multiple conventional commit types in title (e.g., feat + fix)",
+        "Multiple packages (>2) with multiple intent keywords (>1)"
+      ],
+      "prs_matched": 7,
+      "action_taken": "Added mixed-intent label and advisory comment (no split performed)"
+    }
+  },
+  "sample_checks": [
+    {
+      "pr_number": 458,
+      "title": "LP-export-global-impl-2b: Implement productLevelReadiness (UI)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/458",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple packages (14) with multiple intents (4)",
+      "rule": "MIXED_INTENT"
+    },
+    {
+      "pr_number": 429,
+      "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/429",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple packages (3) with multiple intents (2)",
+      "rule": "MIXED_INTENT"
+    },
+    {
+      "pr_number": 402,
+      "title": "feat(LP-observations-consolidation-1.0.0): Make product.observation canonical SRoT",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/402",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple packages (6) with multiple intents (2)",
+      "rule": "MIXED_INTENT"
+    },
+    {
+      "pr_number": 339,
+      "title": "LP-ATTR-1.3.2: Fix JSON parse errors on DELETE 204 with parseResponseSafely",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/339",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple packages (4) with multiple intents (3)",
+      "rule": "MIXED_INTENT"
+    },
+    {
+      "pr_number": 312,
+      "title": "LP-2.0.3: Tasks — per-key updates and attribute provenance",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/312",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple packages (3) with multiple intents (2)",
+      "rule": "MIXED_INTENT"
+    },
+    {
+      "pr_number": 297,
+      "title": "LP-1.1.11: Unify ObservationsPanel with mobile capture flow",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/297",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple packages (4) with multiple intents (3)",
+      "rule": "MIXED_INTENT"
+    },
+    {
+      "pr_number": 290,
+      "title": "[LP-1.1.5] Test: Fix API integration tests - emulator setup and vitest mock hoisting",
+      "url": "https://github.com/twgallo13/ROPI-V2.1/pull/290",
+      "action": "COMMENT",
+      "reason": "**Detected issue:** Multiple commit types in title: fix, test",
+      "rule": "MIXED_INTENT"
+    }
+  ],
+  "artifacts_generated": {
+    "pr_actions_json": "./pr_actions.json",
+    "pr_actions_csv": "./pr_actions.csv",
+    "hygiene_rules": "./hygiene_rules.json",
+    "application_results": "./application_results.json",
+    "pr_closure_comments": "./pr_closure_comments.md",
+    "sample_checks": "./sample_checks.json",
+    "execution_log": "./execution_log.txt",
+    "application_output": "./application_output.txt"
+  },
+  "evidence_links": {
+    "application_output": "./application_output.txt",
+    "pr_inventory_source": "../LP-cleanup-001/evidence/open_prs_raw.json",
+    "closure_comments": "./pr_closure_comments.md"
+  },
+  "safety_compliance": {
+    "no_merges_performed": true,
+    "no_prs_merged": true,
+    "no_branches_deleted": true,
+    "no_force_pushes": true,
+    "comments_only_for_guidance": true,
+    "prs_closed_count": 0,
+    "prs_closed_reasons": []
+  },
+  "repository_state": {
+    "owner": "twgallo13",
+    "name": "ROPI-V2.1",
+    "default_branch": "aoss-main",
+    "active_branch_at_execution": "aoss-main",
+    "execution_commit_sha": "8d0393228ef27f7b2fcff27485cfce361338b672"
+  },
+  "blockers": [],
+  "result": "VERIFIED SUCCESS",
+  "result_details": "Analyzed 50 open PRs for hygiene issues. Identified 7 PRs with mixed-intent (multiple unrelated changes). Added mixed-intent label and advisory comments to guide PR authors toward splitting. No PRs were closed (0 matched abandonment or superseded criteria with high-confidence patterns). No merges, branch deletions, or force-pushes performed. All operations completed successfully."
+}

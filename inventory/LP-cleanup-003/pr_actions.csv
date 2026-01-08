@@ -1,0 +1,8 @@
+pr_number,title,action,reason,days_since_update,url
+458,"LP-export-global-impl-2b: Implement productLevelReadiness (UI)",COMMENT,"Mixed intent detected",1,https://github.com/twgallo13/ROPI-V2.1/pull/458
+429,"feat: Completion Evaluation Engine (Pure Math + Scoring)",COMMENT,"Mixed intent detected",5,https://github.com/twgallo13/ROPI-V2.1/pull/429
+402,"feat(LP-observations-consolidation-1.0.0): Make product.observation canonical SRoT",COMMENT,"Mixed intent detected",7,https://github.com/twgallo13/ROPI-V2.1/pull/402
+339,"LP-ATTR-1.3.2: Fix JSON parse errors on DELETE 204 with parseResponseSafely",COMMENT,"Mixed intent detected",15,https://github.com/twgallo13/ROPI-V2.1/pull/339
+312,"LP-2.0.3: Tasks — per-key updates and attribute provenance",COMMENT,"Mixed intent detected",18,https://github.com/twgallo13/ROPI-V2.1/pull/312
+297,"LP-1.1.11: Unify ObservationsPanel with mobile capture flow",COMMENT,"Mixed intent detected",3,https://github.com/twgallo13/ROPI-V2.1/pull/297
+290,"[LP-1.1.5] Test: Fix API integration tests - emulator setup and vitest mock hoisting",COMMENT,"Mixed intent detected",20,https://github.com/twgallo13/ROPI-V2.1/pull/290
