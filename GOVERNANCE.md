@@ -29,6 +29,11 @@ Before any LP is issued, Lisa must confirm Phase Readiness with these evidence i
 5. **CI & workflows:** Deploy workflow configured to use the SA; PR status checks exist.  
 If any item is missing, the phase cannot start and Lisa must require evidence or pause.
 
+### PRD (Phase Readiness Document) Authority & Acceptance Authority Role
+- **PRD authorship & publication:** PRD is authored and published by Lisa as the Phase Owner.  
+- **Execution gate:** PRD does **NOT** require Acceptance Authority approval to start LP execution.  
+- **Acceptance Authority scope:** Limited to verifying observable outcomes (VVP + receipts) and accepting/rejecting phase completion. Acceptance Authority does not approve PRD, does not gate execution start, and does not merge or manage GitHub workflows.
+
 ## Phase Identity & LP Numbering (MANDATORY)
 
 ### Phase Identity (Immutable Once Started)
