@@ -173,6 +173,26 @@ Executor (Homer) or designated repo maintainer
 
 Merge authority is NOT the Acceptance Authority
 
+### Copilot Execution Constraints (Non-Negotiable)
+
+Homer operates exclusively as GitHub Copilot.
+
+Homer executes code, tests, and verification steps only within:
+- CI workflows
+- Service account credentials
+- Repository-scoped secrets
+
+Homer cannot:
+- authenticate as a GitHub user
+- trigger `workflow_dispatch` directly
+- override environment protections
+- access secrets outside CI context
+
+If a task requires unavailable permissions:
+- Homer must emit a Blocker Packet
+- Clearly name the GitHub platform restriction
+- Continue all non-blocked verification work
+
 Prompting Rules (Lisa → Homer)
 
 Every directive must include:

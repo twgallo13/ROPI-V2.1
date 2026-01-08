@@ -97,6 +97,31 @@ Absence of evidence = non-verifiable = phase hold.
 - **Acceptance Authority (Human):** Verifies VVP and final receipts. Does NOT merge. Does NOT issue LPs.  
 - **Merge Authority:** Homer or designated repo maintainer (never Acceptance Authority).
 
+### Deploy Authority Model (Canonical)
+
+Homer is an execution agent (GitHub Copilot), not a GitHub user.
+
+Homer does NOT have:
+- a GitHub username
+- a GitHub email
+- personal access tokens
+- the ability to manually trigger GitHub Actions workflows
+
+All deploys and privileged operations occur through one of the following canonical paths:
+
+1. **Automatic deploys**
+   - Triggered by merge or push to protected branches (e.g., `aoss-main`)
+   - Executed via GitHub Actions using repository secrets and service accounts
+
+2. **Maintainer-triggered deploys**
+   - Executed manually by a human maintainer via the GitHub Actions UI
+   - Used when GitHub platform security blocks automated dispatch (e.g., `workflow_dispatch`)
+
+GitHub platform restrictions (such as HTTP 403 on workflow dispatch from GITHUB_TOKEN)
+are infrastructure constraints, not governance or execution failures.
+
+Homer must never assume user-level deploy authority.
+
 ## Phase Readiness quick checklist (for PR templates)
 - `packages/sdk/config/attributeRegistry.json` present and versioned  
 - `settings/attributesMeta` Firestore doc either matches local version or sync scheduled  
