@@ -1,0 +1,54 @@
+=== LP-cleanup-001 Command Log ===
+2026-01-08T20:02:59+00:00
+
+=== 1. Branches Collection ===
+Command: gh api -X GET /repos/twgallo13/ROPI-V2.1/branches --paginate
+Branches collected: 169
+
+=== 2. Open Pull Requests Collection ===
+Command: gh api -X GET '/repos/twgallo13/ROPI-V2.1/pulls?state=open&per_page=100' --paginate
+Open PRs collected: 50
+
+=== 3. Open Issues Collection ===
+Command: gh api -X GET '/repos/twgallo13/ROPI-V2.1/issues?state=open&per_page=100' --paginate
+Open issues collected: 30
+
+=== 4. Tags/Releases Collection ===
+Command: gh api -X GET /repos/twgallo13/ROPI-V2.1/tags --paginate
+Tags collected: 43
+
+=== 5. Repository Metadata Collection ===
+Command: gh api -X GET /repos/twgallo13/ROPI-V2.1
+Repo metadata collected
+
+=== 6. Branch Protection Rules Collection ===
+Command: gh api -X GET /repos/twgallo13/ROPI-V2.1/branches/aoss-main/protection
+node:internal/modules/package_json_reader:314
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'json2csv' imported from /workspaces/ROPI-V2.1/inventory/LP-cleanup-001/process_inventory.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+    at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v22.21.1
+<anonymous_script>:1
+{"message":"Resource not accessible by integration","documentation_url":"https://docs.github.com/rest/branches/branch-protection#get-branch-protection","status":"403"}gh: Resource not accessible by integration (HTTP 403)
+                                                                                                                                                                       ^
+
+SyntaxError: Unexpected non-whitespace character after JSON at position 167 (line 1 column 168)
+    at JSON.parse (<anonymous>)
+    at file:///workspaces/ROPI-V2.1/inventory/LP-cleanup-001/process_inventory.mjs:11:31
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.21.1

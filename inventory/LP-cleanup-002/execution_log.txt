@@ -1,0 +1,40 @@
+=== LP-cleanup-002 Execution Log ===
+2026-01-08T20:35:52+00:00
+Existing labels collected: 107
+=== Label Creation Analysis ===
+
+Already exists: 14
+To create: 7
+
+Labels to create:
+  - state:changes-requested (d93f0b): PR has changes requested
+  - state:closed (d73a4a): PR has been closed without merging
+  - blocked:decision-needed (d93f0b): Blocked awaiting decision
+  - blocked:dependency (d93f0b): Blocked by dependency
+  - blocked:external (d93f0b): Blocked by external factor
+  - stale-candidate (ededed): Item may be stale (LP-cleanup-002)
+  - needs-info (d93f0b): Needs more information or clarification
+
+✅ Analysis complete. 7 labels need creation.
+state:changes-requested
+state:closed
+blocked:decision-needed
+blocked:dependency
+blocked:external
+stale-candidate
+needs-info
+=== LP-cleanup-002: Label Application ===
+
+Processing 50 open PRs
+
+
+=== Processing Summary ===
+PRs processed: 50
+PRs requiring label changes: 46
+Sample checks collected: 10
+
+✅ Action plan generated
+   - label_actions.json: Full action plan
+   - sample_checks.json: Sample evidence
+
+Ready to apply 46 label updates

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "state:changes-requested",
+    "color": "d93f0b",
+    "description": "PR has changes requested"
+  },
+  {
+    "name": "state:closed",
+    "color": "d73a4a",
+    "description": "PR has been closed without merging"
+  },
+  {
+    "name": "blocked:decision-needed",
+    "color": "d93f0b",
+    "description": "Blocked awaiting decision"
+  },
+  {
+    "name": "blocked:dependency",
+    "color": "d93f0b",
+    "description": "Blocked by dependency"
+  },
+  {
+    "name": "blocked:external",
+    "color": "d93f0b",
+    "description": "Blocked by external factor"
+  },
+  {
+    "name": "stale-candidate",
+    "color": "ededed",
+    "description": "Item may be stale (LP-cleanup-002)"
+  },
+  {
+    "name": "needs-info",
+    "color": "d93f0b",
+    "description": "Needs more information or clarification"
+  }
+]
