@@ -1,0 +1,21 @@
+{
+  "product_id": "product-0007",
+  "input_snapshot": "inventory/LP-phase2a-001/tests/inputs/product-0007.json",
+  "evaluation_timestamp": "2026-01-08T21:45:00Z",
+  "completion_result": {
+    "completionPct": 40,
+    "status": "blocked",
+    "ready": false,
+    "threshold": 80,
+    "hasBlockingSites": true,
+    "blockingReasons": [
+      "Insufficient attributes"
+    ],
+    "missingAttributes": []
+  },
+  "deterministic_factors": {
+    "commit_sha": "d5103ea",
+    "random_seed": 13045,
+    "rules_version": 1
+  }
+}
