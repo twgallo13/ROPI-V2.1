@@ -1,0 +1,71 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-009",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/api/src/services/attributesService.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/api/src/services/completionEvaluationEngine.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/api/src/services/attributesService.test.ts",
+      "action": "created"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": null,
+    "deployedAt": null
+  },
+  "verification": {
+    "normalization_audit": {
+      "status": "PENDING",
+      "evidence": "Audit of attributesService.fromFirestore normalization showing canonical fields are set from legacy fields"
+    },
+    "normalized_flag_usage": {
+      "status": "PENDING",
+      "evidence": "Completion engine uses getNormalizedRequirementFlagValue for all flag reads"
+    },
+    "no_silent_fallbacks": {
+      "status": "PENDING",
+      "evidence": "Code review confirms no silent legacy fallback behavior (all fallbacks are explicit and logged)"
+    },
+    "legacy_field_tests": {
+      "status": "PENDING",
+      "evidence": "Tests added toggling legacy fields (required, requiredForExport) to confirm evaluations use canonical fields (required_for_completion, required_for_export)"
+    },
+    "test_output": {
+      "status": "PENDING",
+      "evidence": "Test execution output showing tests pass when legacy fields are set but canonical fields control behavior"
+    },
+    "code_pointers": {
+      "status": "PENDING",
+      "evidence": "File paths and line numbers for normalization code and normalized flag usage"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-009: No-legacy-fallbacks enforcement & normalization check",
+    "Goal: Verify no silent legacy fallback behavior; ensure normalization code paths and normalized flag usage",
+    "Tasks:",
+    "  1. Audit attributesService.fromFirestore normalization",
+    "  2. Ensure completion engine uses normalized flags (getNormalizedRequirementFlagValue)",
+    "  3. Add tests toggling legacy fields to confirm evaluations use canonical fields",
+    "Acceptance:",
+    "  - HES demonstrating normalization and evaluation using normalized flags"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-004",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/web/src/hooks/useProductCompletion.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/api/src/endpoints/products.ts",
+      "action": "modified"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": "https://staging.yourapp.com",
+    "deployedAt": null
+  },
+  "verification": {
+    "api_contract_verified": {
+      "status": "PENDING",
+      "evidence": "GET /api/products/{id}/completion returns ProductCompletionResult with ready, completionPct, blockingReasons, operatorExplanation"
+    },
+    "api_sample_response": {
+      "status": "PENDING",
+      "evidence": "Sample API response JSON stored showing complete ProductCompletionResult structure"
+    },
+    "ui_displays_ready": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing product page displaying completion.ready status"
+    },
+    "ui_displays_completion_pct": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing product page displaying completionPct"
+    },
+    "ui_displays_explanation": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing product page displaying operatorExplanation"
+    },
+    "publish_export_gating": {
+      "status": "PENDING",
+      "evidence": "VVP demonstrating publish/export buttons disabled when completion.ready === false, enabled when true"
+    },
+    "useProductCompletion_integration": {
+      "status": "PENDING",
+      "evidence": "Product UI code consumes useProductCompletion hook correctly"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-004: Product completion API & product page UX",
+    "Goal: Ensure GET /api/products/{id}/completion returns full completion payload and UI displays it",
+    "Tasks:",
+    "  1. Confirm API contract returns ProductCompletionResult",
+    "  2. Verify Product UI consumes useProductCompletion and gates publish/export",
+    "Acceptance:",
+    "  - API sample response stored in HES",
+    "  - VVP shows operator explanation and publish/export control state changes"
+  ]
+}

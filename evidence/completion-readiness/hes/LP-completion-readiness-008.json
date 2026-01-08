@@ -1,0 +1,102 @@
+{
+  "lp_id": "LP-completion-readiness-008",
+  "lp_title": "HES + VVP compliance & final sign-off process",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "hes_templates": {
+      "description": "HES templates for each LP verification step",
+      "templates_location": "evidence/completion-readiness/hes/",
+      "templates_count": 9,
+      "templates_list": [
+        "LP-completion-readiness-001.json",
+        "LP-completion-readiness-002.json",
+        "LP-completion-readiness-003.json",
+        "LP-completion-readiness-004.json",
+        "LP-completion-readiness-005.json",
+        "LP-completion-readiness-006.json",
+        "LP-completion-readiness-007.json",
+        "LP-completion-readiness-008.json",
+        "LP-completion-readiness-009.json"
+      ],
+      "schema_reference": "docs/HES_FORMAT.md",
+      "timestamp": ""
+    },
+    "vvp_templates": {
+      "description": "VVP templates for Product, Export UI, Attributes console, Export Settings",
+      "templates_location": "evidence/completion-readiness/vvp/",
+      "templates_list": [
+        "product-page-completion-display.md",
+        "export-settings-persistence.md",
+        "attributes-console-toggles.md",
+        "export-ui-blocked.md",
+        "export-ui-ready.md",
+        "live-update-attribute-change.md",
+        "live-update-rule-change.md"
+      ],
+      "schema_reference": "docs/VVP_TEMPLATE.md",
+      "timestamp": ""
+    },
+    "schema_validation": {
+      "description": "Sample HES and VVP schema validation",
+      "artifact_file": "artifacts/LP-completion-readiness-008/hes-schema-validation.txt",
+      "hes_validation": {
+        "sample_file": "",
+        "validation_command": "jq empty evidence/completion-readiness/hes/*.json",
+        "validation_result": "",
+        "passes_schema": false,
+        "timestamp": ""
+      },
+      "vvp_validation": {
+        "sample_file": "",
+        "artifact_file": "artifacts/LP-completion-readiness-008/vvp-schema-validation.txt",
+        "validation_command": "",
+        "validation_result": "",
+        "passes_schema": false,
+        "timestamp": ""
+      }
+    },
+    "dry_run_sign_off": {
+      "description": "Dry-run sign-off for one LP",
+      "lp_id": "",
+      "hes_result": "",
+      "vvp_result": "",
+      "combined_result": "",
+      "sign_off_criteria_met": false,
+      "timestamp": ""
+    },
+    "final_sign_off_checklist": {
+      "description": "Final sign-off checklist",
+      "checklist_location": "evidence/completion-readiness/SIGN_OFF_CHECKLIST.md",
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "Sample HES and VVP that pass schema validation and a dry-run sign-off",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "docs/HES_FORMAT.md",
+    "docs/VVP_TEMPLATE.md"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

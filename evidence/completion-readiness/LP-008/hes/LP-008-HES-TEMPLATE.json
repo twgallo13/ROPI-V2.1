@@ -1,0 +1,76 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-008",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "evidence/completion-readiness/LP-001/hes/LP-001-HES-TEMPLATE.json",
+      "action": "created"
+    },
+    {
+      "path": "evidence/completion-readiness/LP-001/vvp/LP-001-VVP-TEMPLATE.md",
+      "action": "created"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": null,
+    "deployedAt": null
+  },
+  "verification": {
+    "hes_templates_created": {
+      "status": "PENDING",
+      "evidence": "HES templates created for each LP verification step (LP-001 through LP-009)"
+    },
+    "vvp_templates_created": {
+      "status": "PENDING",
+      "evidence": "VVP templates created for Product, Export UI, Attributes console, Export Settings"
+    },
+    "hes_format_compliance": {
+      "status": "PENDING",
+      "evidence": "All HES templates conform to docs/HES_FORMAT.md schema"
+    },
+    "vvp_format_compliance": {
+      "status": "PENDING",
+      "evidence": "All VVP templates conform to docs/VVP_TEMPLATE.md structure"
+    },
+    "sample_hes_validation": {
+      "status": "PENDING",
+      "evidence": "Sample HES JSON passes schema validation (jq or JSON schema validator)"
+    },
+    "sample_vvp_validation": {
+      "status": "PENDING",
+      "evidence": "Sample VVP markdown passes template validation"
+    },
+    "sign_off_checklist": {
+      "status": "PENDING",
+      "evidence": "Final sign-off checklist defined: HES result='VERIFIED SUCCESS' + VVP PASS"
+    },
+    "dry_run_sign_off": {
+      "status": "PENDING",
+      "evidence": "Dry-run sign-off completed for at least one LP"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-008: HES + VVP compliance & final sign-off process",
+    "Goal: Ensure all verification artifacts conform to docs/HES_FORMAT.md and docs/VVP_TEMPLATE.md",
+    "Tasks:",
+    "  1. Provide HES templates for each LP verification step",
+    "  2. Provide VVP templates for Product, Export UI, Attributes console, Export Settings",
+    "  3. Define final sign-off: HES result='VERIFIED SUCCESS' + VVP PASS",
+    "Acceptance:",
+    "  - Sample HES and VVP that pass schema validation",
+    "  - Dry-run sign-off"
+  ]
+}
