@@ -485,23 +485,23 @@
     {
       "item_id": 8,
       "item_type": "tag",
-      "item_name": "v0.8.0",
+      "item_name": "v3.3.0",
       "classification": "release-tag",
       "rule_applied": "SEMANTIC_VERSION_TAG",
-      "exact_command": "gh api /repos/twgallo13/ROPI-V2.1/tags | jq '.[] | select(.name==\"v0.8.0\")'",
+      "exact_command": "gh api /repos/twgallo13/ROPI-V2.1/tags | jq '.[] | select(.name==\"v3.3.0\")'",
       "evidence_path": "./evidence/tags_raw.json",
-      "evidence_line": "tag.name === \"v0.8.0\"",
+      "evidence_line": "tag.name === \"v3.3.0\"",
       "verdict": "VERIFIED - Release tag, immutable"
     },
     {
       "item_id": 9,
       "item_type": "tag",
-      "item_name": "v0.7.0",
+      "item_name": "v2.3.0",
       "classification": "release-tag",
       "rule_applied": "SEMANTIC_VERSION_TAG",
-      "exact_command": "gh api /repos/twgallo13/ROPI-V2.1/tags | jq '.[] | select(.name==\"v0.7.0\")'",
+      "exact_command": "gh api /repos/twgallo13/ROPI-V2.1/tags | jq '.[] | select(.name==\"v2.3.0\")'",
       "evidence_path": "./evidence/tags_raw.json",
-      "evidence_line": "tag.name === \"v0.7.0\"",
+      "evidence_line": "tag.name === \"v2.3.0\"",
       "verdict": "VERIFIED - Release tag, immutable"
     },
     {
