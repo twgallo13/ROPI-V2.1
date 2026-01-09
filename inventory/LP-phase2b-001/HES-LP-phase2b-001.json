@@ -7,6 +7,12 @@
   "branch": "feature/lp-phase2b-001-ui-export-gate",
   "prNumber": 470,
   "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/470",
+  "governance_policies": {
+    "mpn_display_rule": "UI must display product_identifiers.mpn and must not display product_id in any user-facing surface. MPN is the canonical identifier shown and reasoned about in the UI. Any product_id used in API calls is an internal lookup key only and must not replace or obscure MPN anywhere user-facing.",
+    "staging_authoritative": "Staging is the single authoritative environment for Phase 2B; all evidence is captured directly from staging.",
+    "no_falsification": "Do not invent or mock evidence. Real API responses, real E2E test runs, real accessibility audits required.",
+    "automated_evidence": "All evidence must be machine-readable and reproducible. Manual screenshots acceptable only when supplementing automated checks."
+  },
   "ai_reentry_confirmation": {
     "lisa_confirm": "Lisa read and confirms AI_BOOTSTRAP.md and GOVERNANCE.md and authorizes Phase 2B start per LP-phase2a-001 completion.",
     "homer_confirm": "Homer read AI_BOOTSTRAP.md and GOVERNANCE.md and will comply with AI re-entry constraints for LP-phase2b-001.",
@@ -82,7 +88,9 @@
     "screenshots": "inventory/LP-phase2b-001/evidence/screenshots/",
     "ci_runs": "inventory/LP-phase2b-001/evidence/ci_links.txt",
     "preview_url": "inventory/LP-phase2b-001/evidence/preview_deployment.txt",
-    "i18n_strings": "inventory/LP-phase2b-001/evidence/i18n_strings.json"
+    "i18n_strings": "inventory/LP-phase2b-001/evidence/i18n_strings.json",
+    "api_mpn_verification": "inventory/LP-phase2b-001/evidence/api_mpn_verification.log",
+    "ui_mpn_checks": "inventory/LP-phase2b-001/evidence/ui_mpn_checks.log"
   },
   "sample_checks": [
     {
@@ -91,14 +99,25 @@
       "steps": [
         "Navigate to product with 100% completion (product-0001 from Phase 2A tests)",
         "Verify CompletionCard displays 100%, status 'ready'",
+        "Verify CompletionCard displays MPN (not product_id) in header badge",
         "Verify ExportGatePanel shows 'Export Ready' with no blocking reasons",
-        "Click 'Export' button and confirm no errors"
+        "Verify ExportGatePanel displays same MPN as CompletionCard",
+        "Verify product_id does NOT appear in body text, tooltips, or aria-labels",
+        "Click 'Export' button and confirm no errors",
+        "Verify API response included productIdentifiers.mpn matching UI display"
       ],
       "screenshot_paths": [
         "inventory/LP-phase2b-001/evidence/screenshots/flow1_ready_product.png",
-        "inventory/LP-phase2b-001/evidence/screenshots/flow1_export_panel.png"
+        "inventory/LP-phase2b-001/evidence/screenshots/flow1_export_panel.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/mpn-display-product-0001.png"
       ],
       "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow ready product'",
+      "mpn_verification": {
+        "api_mpn_present": "REQUIRED",
+        "ui_mpn_displayed": "REQUIRED",
+        "product_id_not_visible": "REQUIRED",
+        "mpn_matches_api": "REQUIRED"
+      },
       "verdict": "PENDING"
     },
     {
@@ -107,6 +126,8 @@
       "steps": [
         "Navigate to product with 60% completion (product-0005 from Phase 2A tests)",
         "Verify CompletionCard displays 60%, status 'partial'",
+        "Verify MPN displayed in CompletionCard (not product_id)",
+        "Verify product_id does NOT appear anywhere visible to user",
         "Verify ExportGatePanel shows blocking reasons (e.g., 'Missing required attributes')",
         "Verify 'Export' button is disabled",
         "Hover over disabled button to see tooltip with reason"
