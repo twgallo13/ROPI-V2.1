@@ -9,9 +9,6 @@
     "name": "rics_short_description"
   },
   {
-    "name": "rics_category"
-  },
-  {
     "name": "age_group"
   },
   {
@@ -27,6 +24,39 @@
     "name": "ageGroup"
   },
   {
+    "name": "product_is_active"
+  },
+  {
+    "name": "website"
+  },
+  {
+    "name": "name"
+  },
+  {
+    "name": "rics_category"
+  },
+  {
+    "name": "category"
+  },
+  {
+    "name": "department"
+  },
+  {
+    "name": "sku"
+  },
+  {
+    "name": "style_id"
+  },
+  {
     "name": "brand"
+  },
+  {
+    "name": "class"
+  },
+  {
+    "name": "slug"
+  },
+  {
+    "name": "status"
   }
 ]

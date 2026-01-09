@@ -1,0 +1,271 @@
+{
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "inventory": {
+    "store_inv": 0,
+    "warehouse_inv": 8
+  },
+  "roUploadBatchId": null,
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0
+  },
+  "dimensions": {
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0
+  },
+  "core": {
+    "createdAt": "2026-01-03T21:25:42.447Z",
+    "normalized_mpn": "15-TEST",
+    "lastReceived": "12/24/2025",
+    "mpn": "15-test",
+    "sku": "SKU-15-test",
+    "title": "b359bd97-d460-4082-9707-b3bc01653c38",
+    "brand": "ICE CREAM",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2026-01-03T21:59:12.955Z"
+  },
+  "provenance": {
+    "age_group": {
+      "reason": "matched on 'Apparel||Mens||Pants||Casual'",
+      "input": {
+        "matchedValue": "Apparel||Mens||Pants||Casual",
+        "ricsCategory": "Apparel||Mens||Pants||Casual"
+      },
+      "ruleName": "Men 2 Gender",
+      "source": "smartRule",
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "appliedAt": "2026-01-03T21:59:12.955Z"
+    },
+    "department": {
+      "reason": "matched on 'Apparel||Mens||Pants||Casual'",
+      "input": {
+        "matchedValue": "Apparel||Mens||Pants||Casual",
+        "ricsCategory": "Apparel||Mens||Pants||Casual"
+      },
+      "ruleName": "Apparel",
+      "source": "smartRule",
+      "ruleId": "rule_1767350520854_xpfska",
+      "appliedAt": "2026-01-03T21:59:12.955Z"
+    }
+  },
+  "_appliedRules": {
+    "age_group": {
+      "confidence": 0.9,
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "appliedAt": "2026-01-03T21:59:12.955Z"
+    },
+    "department": {
+      "confidence": 0.9,
+      "ruleId": "rule_1767350520854_xpfska",
+      "appliedAt": "2026-01-03T21:59:12.955Z"
+    }
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2026-01-03T21:59:10.262Z",
+    "normalizedAt": "2026-01-03T21:59:12.955Z",
+    "validatedAt": "2026-01-03T21:59:12.955Z"
+  },
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:25:42.447Z",
+      "details": {
+        "ruleId": "rule_1767350520854_xpfska",
+        "ruleName": "Apparel",
+        "targetField": "department",
+        "value": "Clothing",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:25:42.447Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:52:40.680Z",
+      "details": {
+        "ruleId": "rule_1767350520854_xpfska",
+        "ruleName": "Apparel",
+        "targetField": "department",
+        "value": "Clothing",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:52:40.680Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:53:23.581Z",
+      "details": {
+        "ruleId": "rule_1767350520854_xpfska",
+        "ruleName": "Apparel",
+        "targetField": "department",
+        "value": "Clothing",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:53:23.581Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:59:12.955Z",
+      "details": {
+        "ruleId": "rule_1767350520854_xpfska",
+        "ruleName": "Apparel",
+        "targetField": "department",
+        "value": "Clothing",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:59:12.955Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Mens||Pants||Casual",
+          "matchedValue": "Apparel||Mens||Pants||Casual"
+        }
+      }
+    }
+  ],
+  "attributes": {
+    "rics_color": "BLACK",
+    "rics_long_desc": "running sweatpants",
+    "rics_short_description": "running sweatpants",
+    "website": [
+      "shiekh.com"
+    ],
+    "mpn": "15-test",
+    "product_is_active": true,
+    "name": "Test Product 15 - Performance Runner",
+    "rics_category": "Men's Footwear > Performance",
+    "category": "footwear",
+    "department": "Men's",
+    "sku": "SKU-15-TEST",
+    "style_id": "STYLE-15",
+    "brand": "Test Brand Pro",
+    "class": "Performance",
+    "slug": "test-product-15-performance-runner",
+    "status": "active"
+  },
+  "_smartRulesErrors": [
+    {
+      "error": "Target field not allowed: department",
+      "ruleId": "rule_1767344587339_38yo9y"
+    },
+    {
+      "ruleId": "rule_1767350520854_xpfska",
+      "error": "Target field not allowed: department"
+    },
+    {
+      "error": "Target field not allowed: age_group",
+      "ruleId": "rule_1767353025831_ap2zq7"
+    },
+    {
+      "error": "Target field not allowed: age_group",
+      "ruleId": "rule_1767479194034_712nhw"
+    },
+    {
+      "ruleId": "rule_1767495440275_5f8bpr",
+      "error": "Target field not allowed: department"
+    },
+    {
+      "error": "Target field not allowed: height",
+      "ruleId": "6xM28ocd281iw2D6KK4P"
+    },
+    {
+      "error": "Target field not allowed: length",
+      "ruleId": "H53rfxHqZ8h7j4abYctd"
+    },
+    {
+      "error": "Target field not allowed: weight",
+      "ruleId": "JiYQZ6PxwjKBHsWiF1gI"
+    },
+    {
+      "error": "Target field not allowed: width",
+      "ruleId": "YyhUxSJOCzOOW8ZuAW0z"
+    }
+  ],
+  "_smartRulesSkipUntil": 1767956546272,
+  "_smartRulesRanAt": {
+    "_seconds": 1767956536,
+    "_nanoseconds": 292000000
+  }
+}

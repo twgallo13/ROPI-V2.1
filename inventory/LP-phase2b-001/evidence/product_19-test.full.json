@@ -129,18 +129,6 @@
   "name": "Mens Accy",
   "width": 0,
   "websites": [],
-  "attributes": {
-    "rics_color": "BLACK",
-    "rics_long_desc": "running sweatpants",
-    "rics_short_description": "running sweatpants",
-    "rics_category": "Accessories||Mens||Pants||Casual",
-    "age_group": "Adult",
-    "width": 0,
-    "weight": 0,
-    "mpn": "19-test",
-    "ageGroup": "Adult",
-    "brand": "ICE CREAM"
-  },
   "firstReceived": "12/26/2025",
   "status": "draft",
   "_smartRulesErrors": [
@@ -181,9 +169,33 @@
       "ruleId": "YyhUxSJOCzOOW8ZuAW0z"
     }
   ],
-  "_smartRulesSkipUntil": 1767908312517,
+  "attributes": {
+    "rics_color": "BLACK",
+    "rics_long_desc": "running sweatpants",
+    "rics_short_description": "running sweatpants",
+    "age_group": "Adult",
+    "width": 0,
+    "weight": 0,
+    "mpn": "19-test",
+    "ageGroup": "Adult",
+    "product_is_active": true,
+    "website": [
+      "shiekh.com"
+    ],
+    "name": "Test Product 19 - Athletic Sneaker",
+    "rics_category": "Men's Footwear > Athletic",
+    "category": "footwear",
+    "department": "Men's",
+    "sku": "SKU-19-TEST",
+    "style_id": "STYLE-19",
+    "brand": "Test Brand",
+    "class": "Athletic",
+    "slug": "test-product-19-athletic-sneaker",
+    "status": "active"
+  },
+  "_smartRulesSkipUntil": 1767956546250,
   "_smartRulesRanAt": {
-    "_seconds": 1767908302,
-    "_nanoseconds": 547000000
+    "_seconds": 1767956536,
+    "_nanoseconds": 289000000
   }
 }

@@ -1,14 +1,14 @@
 {
   "productId": "16-test",
-  "rulesVersion": 3,
+  "rulesVersion": 4,
   "segments": [
     {
       "segmentId": "core-attributes",
       "segmentName": "Core Product Attributes",
       "weightPct": 80,
       "requiredAttributesCount": 13,
-      "completedAttributesCount": 4,
-      "completionPct": 31,
+      "completedAttributesCount": 13,
+      "completionPct": 100,
       "requiredAttributes": [
         "mpn",
         "category",
@@ -23,19 +23,36 @@
       ],
       "completedAttributes": [
         "mpn",
+        "category",
         "website",
+        "status",
         "department",
-        "brand"
+        "product_is_active",
+        "slug",
+        "name",
+        "rics_category",
+        "sku",
+        "style_id",
+        "brand",
+        "class"
       ]
     },
     {
       "segmentId": "seo-attributes",
       "segmentName": "SEO & Marketing",
       "weightPct": 20,
-      "requiredAttributesCount": 0,
+      "requiredAttributesCount": 7,
       "completedAttributesCount": 0,
       "completionPct": 0,
-      "requiredAttributes": [],
+      "requiredAttributes": [
+        "description_shiekh",
+        "keywords",
+        "description_karmaloop",
+        "meta_name",
+        "description_sangremia",
+        "description_mltd",
+        "meta_description"
+      ],
       "completedAttributes": []
     },
     {
@@ -53,5 +70,5 @@
       "completedAttributes": []
     }
   ],
-  "overallCompletionPct": 25
+  "overallCompletionPct": 80
 }

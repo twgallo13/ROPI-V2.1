@@ -1,0 +1,13 @@
+mpn
+category
+website
+status
+department
+product_is_active
+slug
+name
+rics_category
+sku
+style_id
+brand
+class

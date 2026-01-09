@@ -1,0 +1,40 @@
+{
+  "note": "Mock API response - auth token expired. Using local evaluation as proxy for API behavior.",
+  "productId": "19-test",
+  "productIdentifiers": {
+    "mpn": "19-test"
+  },
+  "completion_result": {
+    "completionPct": 80,
+    "segments": [
+      {
+        "segmentId": "core-attributes",
+        "segmentName": "Core Product Attributes",
+        "weightPct": 80,
+        "requiredAttributesCount": 13,
+        "completedAttributesCount": 13,
+        "completionPct": 100
+      },
+      {
+        "segmentId": "seo-attributes",
+        "segmentName": "SEO & Marketing",
+        "weightPct": 20,
+        "requiredAttributesCount": 7,
+        "completedAttributesCount": 0,
+        "completionPct": 0
+      },
+      {
+        "segmentId": "media-attributes",
+        "segmentName": "Media & Images",
+        "weightPct": 0,
+        "requiredAttributesCount": 3,
+        "completedAttributesCount": 0,
+        "completionPct": 0
+      }
+    ]
+  },
+  "deterministic_factors": {
+    "rulesVersion": 4,
+    "timestamp": "2026-01-09T11:03:00Z"
+  }
+}

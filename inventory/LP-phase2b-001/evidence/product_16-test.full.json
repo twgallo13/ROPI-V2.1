@@ -330,11 +330,6 @@
   "age_group": "Adult",
   "ageGroup": "Adult",
   "department": "Footwear",
-  "_smartRulesSkipUntil": 1767927328339,
-  "_smartRulesRanAt": {
-    "_seconds": 1767927318,
-    "_nanoseconds": 357000000
-  },
   "exportReadiness": {
     "overall": 20,
     "byWebsite": {
@@ -355,16 +350,31 @@
     "shiekh.com"
   ],
   "attributes": {
-    "department": "Footwear",
     "width": 0,
     "weight": 0,
     "mpn": "16-test",
-    "brand": "ICE CREAM/ROC",
     "age_group": "Adult",
     "gender": "Men's",
     "ageGroup": "Adult",
+    "product_is_active": true,
     "website": [
-      "shiekh.com"
-    ]
+      "shiekh.com",
+      "karmaloop.com"
+    ],
+    "name": "Test Product 16 - Casual Boot",
+    "rics_category": "Women's Footwear > Casual",
+    "category": "footwear",
+    "department": "Women's",
+    "sku": "SKU-16-TEST",
+    "style_id": "STYLE-16",
+    "brand": "Test Brand",
+    "class": "Casual",
+    "slug": "test-product-16-casual-boot",
+    "status": "active"
+  },
+  "_smartRulesSkipUntil": 1767956546264,
+  "_smartRulesRanAt": {
+    "_seconds": 1767956536,
+    "_nanoseconds": 299000000
   }
 }

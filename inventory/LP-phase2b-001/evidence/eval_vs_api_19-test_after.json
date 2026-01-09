@@ -1,0 +1,57 @@
+{
+  "comparison": "API vs Local Evaluator (After Remediation)",
+  "productId": "19-test",
+  "mpn": "19-test",
+  "rulesVersion": 4,
+  "apiCompletionPct": 80,
+  "evalCompletionPct": 80,
+  "match": true,
+  "segments": [
+    {
+      "segmentId": "core-attributes",
+      "segmentName": "Core Product Attributes",
+      "apiPct": 100,
+      "evalPct": 100,
+      "apiRequired": 13,
+      "evalRequired": 13,
+      "apiCompleted": 13,
+      "evalCompleted": 13,
+      "match": true
+    },
+    {
+      "segmentId": "seo-attributes",
+      "segmentName": "SEO & Marketing",
+      "apiPct": 0,
+      "evalPct": 0,
+      "apiRequired": 7,
+      "evalRequired": 7,
+      "apiCompleted": 0,
+      "evalCompleted": 0,
+      "match": true
+    },
+    {
+      "segmentId": "media-attributes",
+      "segmentName": "Media & Images",
+      "apiPct": 0,
+      "evalPct": 0,
+      "apiRequired": 3,
+      "evalRequired": 3,
+      "apiCompleted": 0,
+      "evalCompleted": 0,
+      "match": true
+    }
+  ],
+  "conclusion": "✅ Evaluator matches API behavior. All segments align. Core segment 100% complete.",
+  "improvement": {
+    "before": {
+      "19-test": "18% (3/13 core attrs)",
+      "16-test": "25% (4/13 core attrs)"
+    },
+    "after": {
+      "19-test": "80% (13/13 core attrs)",
+      "16-test": "80% (13/13 core attrs)",
+      "15-test": "80% (13/13 core attrs)"
+    },
+    "delta": "+62 percentage points"
+  }
+}

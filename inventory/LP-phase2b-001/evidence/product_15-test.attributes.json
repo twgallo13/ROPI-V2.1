@@ -1,27 +1,21 @@
 [
   {
-    "name": "width"
+    "name": "rics_color"
   },
   {
-    "name": "weight"
+    "name": "rics_long_desc"
+  },
+  {
+    "name": "rics_short_description"
+  },
+  {
+    "name": "website"
   },
   {
     "name": "mpn"
   },
   {
-    "name": "age_group"
-  },
-  {
-    "name": "gender"
-  },
-  {
-    "name": "ageGroup"
-  },
-  {
     "name": "product_is_active"
-  },
-  {
-    "name": "website"
   },
   {
     "name": "name"
