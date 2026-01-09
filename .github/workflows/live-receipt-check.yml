@@ -1,0 +1,42 @@
+# Phase Workflow v2 Enforcement - live-receipt-check
+# Validates that "live" claims have valid Live Receipts
+
+name: live-receipt-check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  live-receipt-check:
+    name: Validate Live Receipt
+    runs-on: ubuntu-latest
+    # Only run on PRs, not all issue comments
+    if: github.event_name == 'pull_request' || (github.event.issue.pull_request != null)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get PR Body
+        id: pr-body
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR_BODY<<EOF" >> $GITHUB_ENV
+          echo "${{ github.event.pull_request.body }}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Run Live Receipt Check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ env.PR_BODY || github.event.comment.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: node .github/scripts/live-receipt-check.js

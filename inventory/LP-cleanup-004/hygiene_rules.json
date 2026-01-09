@@ -1,0 +1,21 @@
+{
+  "STALE_THRESHOLD_DAYS": 180,
+  "MERGED_THRESHOLD_DAYS": 90,
+  "NEVER_DELETE_PATTERNS": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "KEEP_IF_RECENT_ACTIVITY_DAYS": 30,
+  "classification_rules_reference": {
+    "source": "LP-cleanup-001",
+    "file": "../LP-cleanup-001/classification_rules.json",
+    "version": "1.0.0"
+  }
+}

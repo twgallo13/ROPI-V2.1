@@ -1,0 +1,106 @@
+[
+  {
+    "type": "pr",
+    "number": 463,
+    "title": "LP-deploy-authority-model-001: Add Deploy Authority Model and Copilot Execution Constraints",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/463",
+    "actions": [
+      "lp:deploy-authority-model-001"
+    ],
+    "rationale": "LP label extracted from PR text: lp:deploy-authority-model-001"
+  },
+  {
+    "type": "pr",
+    "number": 458,
+    "title": "LP-export-global-impl-2b: Implement productLevelReadiness (UI)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/458",
+    "actions": [
+      "lp-export-global-1.0.0",
+      "state:in-progress"
+    ],
+    "rationale": "LP label extracted from PR text: lp-export-global-1.0.0; State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+  },
+  {
+    "type": "pr",
+    "number": 442,
+    "title": "ci: deploy Firestore rules to staging",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/442",
+    "actions": [
+      "state:in-progress"
+    ],
+    "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+  },
+  {
+    "type": "pr",
+    "number": 429,
+    "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/429",
+    "actions": [
+      "state:in-progress"
+    ],
+    "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+  },
+  {
+    "type": "pr",
+    "number": 428,
+    "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/428",
+    "actions": [
+      "state:in-progress"
+    ],
+    "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+  },
+  {
+    "type": "pr",
+    "number": 427,
+    "title": "feat: Complete Completion Model Implementation (Persistence + Evaluation Engine)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/427",
+    "actions": [
+      "state:in-progress"
+    ],
+    "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+  },
+  {
+    "type": "pr",
+    "number": 426,
+    "title": "docs: Add authoritative Completion → Export Gate documentation",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/426",
+    "actions": [
+      "state:in-progress"
+    ],
+    "rationale": "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+  },
+  {
+    "type": "pr",
+    "number": 416,
+    "title": "chore(migration): remove legacy observations fallback and deprecated helpers",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/416",
+    "actions": [
+      "lp-remove-legacy-observations-fallback-1.0.0",
+      "state:planned"
+    ],
+    "rationale": "LP label extracted from PR text: lp-remove-legacy-observations-fallback-1.0.0; State inferred: state:planned (PR is in draft mode)"
+  },
+  {
+    "type": "pr",
+    "number": 404,
+    "title": "feat(observations): LP-1.2.0 inline tags-first Add/Edit UX (no navigation)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/404",
+    "actions": [
+      "lp:observations-consolidation-1.2.0",
+      "state:in-progress"
+    ],
+    "rationale": "LP label extracted from PR text: lp:observations-consolidation-1.2.0; State inferred: state:in-progress (Default state for active PR)"
+  },
+  {
+    "type": "pr",
+    "number": 403,
+    "title": "feat(observations): LP-observations-consolidation-1.1.0 - Mobile/Desktop parity",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/403",
+    "actions": [
+      "lp:observations-consolidation-1.1.0",
+      "state:in-progress"
+    ],
+    "rationale": "LP label extracted from PR text: lp:observations-consolidation-1.1.0; State inferred: state:in-progress (Default state for active PR)"
+  }
+]

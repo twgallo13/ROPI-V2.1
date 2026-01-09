@@ -1,0 +1,182 @@
+[
+  {
+    "sample_id": 1,
+    "branch_name": "aoss-main",
+    "classification": "NEVER_DELETE",
+    "delete_candidate": false,
+    "reason": "Matches never-delete pattern: aoss-main",
+    "last_activity_days": null,
+    "last_commit_date": null,
+    "last_commit_sha": "8d0393228ef27f7b2fcff27485cfce361338b672",
+    "protection_status": "unknown",
+    "protection_error": "permission_or_not_protected",
+    "recommendation": "Keep - matches never-delete criteria",
+    "verification": {
+      "rule_applied": "NEVER_DELETE_PATTERN",
+      "threshold_met": false,
+      "manual_review_required": true
+    }
+  },
+  {
+    "sample_id": 2,
+    "branch_name": "main",
+    "classification": "NEVER_DELETE",
+    "delete_candidate": false,
+    "reason": "Matches never-delete pattern: main",
+    "last_activity_days": null,
+    "last_commit_date": null,
+    "last_commit_sha": "de7dc9c93e8ed120ed950d32264ad45b1d72a3e7",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Keep - matches never-delete criteria",
+    "verification": {
+      "rule_applied": "NEVER_DELETE_PATTERN",
+      "threshold_met": false,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 3,
+    "branch_name": "ATTR/LP-ATTR-1.3.1/delete-clear-selection",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "c2ac336a68e281cfaa8d625c0032452be87b0663",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 4,
+    "branch_name": "LP-deploy-authority-model-001",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "c553422ce1d820c3227608cd134fdbf0dd4ba027",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 5,
+    "branch_name": "revert/27f41da-20251211",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "6ab74409037aa854964dba93f568000083e4cf8a",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 6,
+    "branch_name": "twgallo13-patch-1",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "df45ee0c7ea69427eebf2e1a20a31f643d530cbf",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 7,
+    "branch_name": "docs/completion-contract-authoritative",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "2382de54396c1d65748f994f381b0c45991c93dd",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 8,
+    "branch_name": "docs/service-account-ropi-deploy",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "e370b585b0363dc4aa3c68535147e5df68eadb12",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 9,
+    "branch_name": "feat/completion-admin-rules-ui-1.3.0",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "5e29db272d451bc64e3488444a552a1213dfa9ca",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  },
+  {
+    "sample_id": 10,
+    "branch_name": "feat/completion-engine-canonical-gate",
+    "classification": "STALE_CANDIDATE",
+    "delete_candidate": true,
+    "reason": "No activity for 9999 days (threshold: 180)",
+    "last_activity_days": 9999,
+    "last_commit_date": null,
+    "last_commit_sha": "65475b11d6f2fa2d56e37526bb28ffdc7ff5ff38",
+    "protection_status": "not_protected",
+    "protection_error": null,
+    "recommendation": "Review for deletion - stale branch with no recent activity",
+    "verification": {
+      "rule_applied": "STALE_THRESHOLD_DAYS >= 180",
+      "threshold_met": true,
+      "manual_review_required": false
+    }
+  }
+]

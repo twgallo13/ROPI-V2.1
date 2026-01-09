@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-01-08T20:08:02.968Z",
+  "lp": "LP-cleanup-001",
+  "phase": "cleanup",
+  "repository": {
+    "owner": "twgallo13",
+    "name": "ROPI-V2.1",
+    "default_branch": "aoss-main",
+    "visibility": "public"
+  },
+  "counts": {
+    "branches": 169,
+    "open_prs": 50,
+    "open_issues": 30,
+    "tags": 43
+  },
+  "classifications": {
+    "total": 292,
+    "by_risk": {
+      "HIGH": 45,
+      "MEDIUM": 27,
+      "LOW": 219,
+      "NONE": 1
+    }
+  },
+  "classification_rules": {
+    "branch": {
+      "ACTIVE_MAIN": "Branch is default branch (aoss-main)",
+      "ACTIVE_PROTECTED": "Branch is protected and not default",
+      "ACTIVE_PR_OPEN": "Branch has open PR associated",
+      "STALE_NO_PR": "Branch has no open PR and last commit > 30 days ago",
+      "RECENT_NO_PR": "Branch has no open PR but last commit < 30 days ago",
+      "ORPHANED": "Branch author inactive or pattern suggests abandonment"
+    },
+    "pr": {
+      "ACTIVE_IN_PROGRESS": "PR has state:in-progress label or recent activity < 7 days",
+      "ACTIVE_REVIEW": "PR has state:review or state:approved label",
+      "STALE_NO_ACTIVITY": "PR has no activity > 14 days",
+      "BLOCKED": "PR has blocked:* label",
+      "MISSING_LP": "PR missing lp:* label",
+      "READY_TO_MERGE": "PR approved and no blocking labels"
+    },
+    "issue": {
+      "ACTIVE_ASSIGNED": "Issue is assigned and updated < 14 days",
+      "STALE_ASSIGNED": "Issue is assigned but no activity > 14 days",
+      "UNASSIGNED_RECENT": "Issue unassigned but created/updated < 14 days",
+      "STALE_UNASSIGNED": "Issue unassigned and no activity > 14 days",
+      "TRACKING_ISSUE": "Issue used for phase tracking (label pattern)"
+    },
+    "tag": {
+      "RELEASE_TAG": "Tag associated with GitHub release",
+      "LIGHTWEIGHT_TAG": "Lightweight tag (no annotation)",
+      "ORPHANED_TAG": "Tag points to commit not in main branch history"
+    }
+  },
+  "evidence_files": {
+    "branches_raw": "./evidence/branches_raw.json",
+    "open_prs_raw": "./evidence/open_prs_raw.json",
+    "open_issues_raw": "./evidence/open_issues_raw.json",
+    "tags_raw": "./evidence/tags_raw.json",
+    "repo_metadata": "./evidence/repo_metadata.json",
+    "branch_protection": "./evidence/branch_protection.json"
+  },
+  "artifact_files": {
+    "branches_csv": "./branches.csv",
+    "open_prs_csv": "./open_prs.csv",
+    "open_issues_csv": "./open_issues.csv",
+    "tags_csv": "./tags.csv",
+    "classification_report": "./classification_report.json",
+    "label_report": "./label_report.json",
+    "summary": "./current_repo_state_summary.md"
+  }
+}

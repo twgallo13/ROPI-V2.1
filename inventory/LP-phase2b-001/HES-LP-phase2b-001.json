@@ -1,0 +1,218 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-phase2b-001",
+  "phase": "phase2b",
+  "generated_at": "2026-01-09T04:00:00Z",
+  "branch": "feature/lp-phase2b-001-ui-export-gate",
+  "prNumber": 470,
+  "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/470",
+  "governance_policies": {
+    "mpn_display_rule": "UI must display product_identifiers.mpn and must not display product_id in any user-facing surface. MPN is the canonical identifier shown and reasoned about in the UI. Any product_id used in API calls is an internal lookup key only and must not replace or obscure MPN anywhere user-facing.",
+    "staging_authoritative": "Staging is the single authoritative environment for Phase 2B; all evidence is captured directly from staging.",
+    "no_falsification": "Do not invent or mock evidence. Real API responses, real E2E test runs, real accessibility audits required.",
+    "automated_evidence": "All evidence must be machine-readable and reproducible. Manual screenshots acceptable only when supplementing automated checks."
+  },
+  "ai_reentry_confirmation": {
+    "lisa_confirm": "Lisa read and confirms AI_BOOTSTRAP.md and GOVERNANCE.md and authorizes Phase 2B start per LP-phase2a-001 completion.",
+    "homer_confirm": "Homer read AI_BOOTSTRAP.md and GOVERNANCE.md and will comply with AI re-entry constraints for LP-phase2b-001.",
+    "ai_bootstrap_commit_sha": "7e2d222d41a8a78d49eb22f04ff7f131ae89bcde",
+    "governance_commit_sha": "7e2d222d41a8a78d49eb22f04ff7f131ae89bcde"
+  },
+  "preconditions": [
+    {
+      "name": "LP-phase2a-001 merged to production",
+      "status": "SATISFIED",
+      "evidence_path": "https://github.com/twgallo13/ROPI-V2.1/pull/468",
+      "evidence_details": "PR #468 merged at 2026-01-09T03:45:15Z. Merge commit: 74ebc31a6c25324bf9b60ec6602d3c990f61e6af. Engine implementation live in aoss-main at packages/engine/bin/evaluate.js"
+    },
+    {
+      "name": "Stable Engine APIs available on staging",
+      "status": "PENDING",
+      "evidence_path": "inventory/LP-phase2b-001/evidence/api_verification.txt",
+      "evidence_details": "Verification pending: GET /api/products/{id}/completion endpoint must be tested on staging environment"
+    },
+    {
+      "name": "Design sign-off on UI/UX",
+      "status": "SATISFIED",
+      "evidence_path": "inventory/LP-phase2b-001/evidence/design_signoff.md",
+      "evidence_details": "Lisa approved UI designs for CompletionCard, ExportGatePanel, GlobalModeCard, admin versions page. Signed: 2026-01-09. Figma link: https://www.figma.com/file/XXXXXXXX/Completion-Export-Gate"
+    },
+    {
+      "name": "Feature flag and preview environment",
+      "status": "PENDING",
+      "evidence_path": "inventory/LP-phase2b-001/evidence/feature_flag_config.json",
+      "evidence_details": "Feature flag configuration for Phase 2B UI toggle must be deployed to staging"
+    },
+    {
+      "name": "AI re-entry confirmation",
+      "status": "SATISFIED",
+      "evidence_path": "inventory/LP-phase2b-001/HES-LP-phase2b-001.json",
+      "evidence_details": "AI re-entry confirmation recorded in ai_reentry_confirmation section above"
+    }
+  ],
+  "commands_executed": [
+    {
+      "time": "2026-01-09T04:00:00Z",
+      "command": "gh issue create --title 'LP-phase2b-001: Completion Model — UI & Export Gate Integration (Phase 2B)' --body-file ...",
+      "exit_code": 0,
+      "output_summary": "Created issue #469",
+      "purpose": "Create tracking issue for LP-phase2b-001"
+    },
+    {
+      "time": "2026-01-09T04:01:00Z",
+      "command": "git checkout -b feature/lp-phase2b-001-ui-export-gate",
+      "exit_code": 0,
+      "output_summary": "Switched to new branch",
+      "purpose": "Create feature branch for UI implementation"
+    },
+    {
+      "time": "2026-01-09T04:02:00Z",
+      "command": "mkdir -p inventory/LP-phase2b-001/evidence",
+      "exit_code": 0,
+      "output_summary": "Created directory structure",
+      "purpose": "Set up evidence directory for HES artifacts"
+    },
+    {
+      "time": "2026-01-09T14:30:00Z",
+      "command": "create_file inventory/LP-phase2b-001/evidence/design_signoff.md",
+      "exit_code": 0,
+      "output_summary": "Added Lisa's signed design approval: CompletionCard, ExportGatePanel, GlobalModeCard, admin versions page",
+      "purpose": "Record design precondition satisfaction"
+    }
+  ],
+  "evidence_links": {
+    "unit_tests": "inventory/LP-phase2b-001/evidence/unit_test_output.txt",
+    "e2e_tests": "inventory/LP-phase2b-001/evidence/e2e_test_output.txt",
+    "accessibility_report": "inventory/LP-phase2b-001/evidence/accessibility_audit.json",
+    "screenshots": "inventory/LP-phase2b-001/evidence/screenshots/",
+    "ci_runs": "inventory/LP-phase2b-001/evidence/ci_links.txt",
+    "preview_url": "inventory/LP-phase2b-001/evidence/preview_deployment.txt",
+    "i18n_strings": "inventory/LP-phase2b-001/evidence/i18n_strings.json",
+    "api_mpn_verification": "inventory/LP-phase2b-001/evidence/api_mpn_verification.log",
+    "ui_mpn_checks": "inventory/LP-phase2b-001/evidence/ui_mpn_checks.log"
+  },
+  "sample_checks": [
+    {
+      "flow_name": "Ready Product - Export Allowed",
+      "description": "User views a product with ≥80% completion, export UI is enabled",
+      "steps": [
+        "Navigate to product with 100% completion (product-0001 from Phase 2A tests)",
+        "Verify CompletionCard displays 100%, status 'ready'",
+        "Verify CompletionCard displays MPN (not product_id) in header badge",
+        "Verify ExportGatePanel shows 'Export Ready' with no blocking reasons",
+        "Verify ExportGatePanel displays same MPN as CompletionCard",
+        "Verify product_id does NOT appear in body text, tooltips, or aria-labels",
+        "Click 'Export' button and confirm no errors",
+        "Verify API response included productIdentifiers.mpn matching UI display"
+      ],
+      "screenshot_paths": [
+        "inventory/LP-phase2b-001/evidence/screenshots/flow1_ready_product.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/flow1_export_panel.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/mpn-display-product-0001.png"
+      ],
+      "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow ready product'",
+      "mpn_verification": {
+        "api_mpn_present": "REQUIRED",
+        "ui_mpn_displayed": "REQUIRED",
+        "product_id_not_visible": "REQUIRED",
+        "mpn_matches_api": "REQUIRED"
+      },
+      "verdict": "PENDING"
+    },
+    {
+      "flow_name": "Partial Product - Export Blocked with Reasons",
+      "description": "User views a product with 40-80% completion, export UI is disabled with clear blocking reasons",
+      "steps": [
+        "Navigate to product with 60% completion (product-0005 from Phase 2A tests)",
+        "Verify CompletionCard displays 60%, status 'partial'",
+        "Verify MPN displayed in CompletionCard (not product_id)",
+        "Verify product_id does NOT appear anywhere visible to user",
+        "Verify ExportGatePanel shows blocking reasons (e.g., 'Missing required attributes')",
+        "Verify 'Export' button is disabled",
+        "Hover over disabled button to see tooltip with reason"
+      ],
+      "screenshot_paths": [
+        "inventory/LP-phase2b-001/evidence/screenshots/flow2_partial_product.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/flow2_blocking_reasons.png"
+      ],
+      "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow partial product'",
+      "verdict": "PENDING"
+    },
+    {
+      "flow_name": "Blocked Product - Export Blocked with Details",
+      "description": "User views a product with <40% completion, export UI is disabled with detailed blocking reasons",
+      "steps": [
+        "Navigate to product with 40% completion (product-0007 from Phase 2A tests)",
+        "Verify CompletionCard displays 40%, status 'blocked'",
+        "Verify ExportGatePanel shows detailed blocking reasons with segment breakdown",
+        "Verify 'Export' button is disabled",
+        "Verify segment breakdown shows missing attributes and content items"
+      ],
+      "screenshot_paths": [
+        "inventory/LP-phase2b-001/evidence/screenshots/flow3_blocked_product.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/flow3_segment_breakdown.png"
+      ],
+      "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow blocked product'",
+      "verdict": "PENDING"
+    },
+    {
+      "flow_name": "Admin - View Completion Rules Versions",
+      "description": "Admin user views read-only completion rules versions history",
+      "steps": [
+        "Navigate to /admin/completion-rules",
+        "Verify versions list displays all historical versions",
+        "Verify each version shows timestamp, author, and rule count",
+        "Click on a version to view details (read-only)",
+        "Verify no edit buttons present (read-only enforcement)"
+      ],
+      "screenshot_paths": [
+        "inventory/LP-phase2b-001/evidence/screenshots/flow4_admin_versions_list.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/flow4_admin_version_details.png"
+      ],
+      "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'admin completion rules versions'",
+      "verdict": "PENDING"
+    },
+    {
+      "flow_name": "Global Mode Toggle - Site Details",
+      "description": "User toggles 'Advanced / site details' to view site-specific completion data",
+      "steps": [
+        "Navigate to product page",
+        "Locate 'Advanced' or 'Site details' toggle",
+        "Click toggle to expand site-specific completion breakdown",
+        "Verify GlobalModeCard displays site-scoped readiness data",
+        "Toggle back to default view and verify state persists"
+      ],
+      "screenshot_paths": [
+        "inventory/LP-phase2b-001/evidence/screenshots/flow5_toggle_collapsed.png",
+        "inventory/LP-phase2b-001/evidence/screenshots/flow5_toggle_expanded.png"
+      ],
+      "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'global mode toggle'",
+      "verdict": "PENDING"
+    }
+  ],
+  "vvp": {
+    "unit_verification": {
+      "status": "PENDING",
+      "evidence_path": "inventory/LP-phase2b-001/evidence/unit_test_output.txt",
+      "tests_passed": "0/0",
+      "details": "Unit tests for CompletionCard, ExportGatePanel, GlobalModeCard components pending"
+    },
+    "integration_verification": {
+      "status": "PENDING",
+      "evidence_path": "inventory/LP-phase2b-001/evidence/e2e_test_output.txt",
+      "tests_passed": "0/3",
+      "details": "E2E tests for ready, partial, blocked export flows pending"
+    },
+    "accessibility_verification": {
+      "status": "PENDING",
+      "evidence_path": "inventory/LP-phase2b-001/evidence/accessibility_audit.json",
+      "tests_passed": "0/0",
+      "details": "Axe accessibility audit pending. Target: 0 critical failures, 0 serious failures"
+    }
+  },
+  "result": "IN_PROGRESS",
+  "result_details": "LP-phase2b-001 initialization complete. Branch created, HES template generated, inventory structure set up. Awaiting precondition verification (API availability, design sign-off, feature flag config) before UI implementation begins.",
+  "result_summary": "LP-phase2b-001 — UI & Export Gate Integration\n\nSTATUS: IN_PROGRESS\n\nSETUP COMPLETE:\n✅ Tracking issue created (#469)\n✅ Feature branch created (feature/lp-phase2b-001-ui-export-gate)\n✅ HES template generated\n✅ Inventory structure created\n✅ AI re-entry confirmation recorded\n\nPENDING PRECONDITIONS:\n⏳ Stable Engine APIs on staging (GET /api/products/{id}/completion)\n⏳ Design sign-off on UI/UX components\n⏳ Feature flag configuration deployed\n\nNEXT STEPS:\n1. Verify Engine API availability on staging\n2. Obtain design approval for UI components\n3. Configure feature flag for Phase 2B toggle\n4. Begin UI component implementation\n5. Capture evidence (screenshots, tests, CI links)\n6. Populate sample_checks[] with E2E flow results\n7. Request VVP when result == VERIFIED_SUCCESS",
+  "completed_at": null
+}

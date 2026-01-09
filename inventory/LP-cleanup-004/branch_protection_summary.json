@@ -1,0 +1,44 @@
+{
+  "summary_version": "1.0",
+  "generated_at": "2026-01-08T20:56:39.942Z",
+  "source": "Manual export via gh api (Option 2)",
+  "total_branches_analyzed": 169,
+  "protection_data_source": "./evidence/branch_protection_manual.json",
+  "protection_overview": {
+    "total_protected_branches": 0,
+    "protected_with_errors": 1,
+    "branches_marked_protected": 1,
+    "branches_with_readable_rules": 0
+  },
+  "protected_branches": [
+    {
+      "branch": "aoss-main",
+      "has_protection_rules": false,
+      "error": "permission_or_not_protected",
+      "required_status_checks": null,
+      "enforce_admins": null,
+      "required_pull_request_reviews": null,
+      "restrictions": null,
+      "allow_force_pushes": null,
+      "allow_deletions": null
+    }
+  ],
+  "classification_impact": {
+    "branches_classified_protected": 0,
+    "branches_with_unknown_protection": 1,
+    "branches_confirmed_not_protected": 168
+  },
+  "api_access_status": {
+    "can_read_branch_list": true,
+    "can_read_protection_rules": false,
+    "error_encountered": "permission_or_not_protected",
+    "workaround_applied": "Manual export with fallback error handling"
+  },
+  "notes": [
+    "Token cannot read branch protection rules (HTTP 403)",
+    "All protected branches show 'permission_or_not_protected' error",
+    "Branch protection status inferred from branch list API",
+    "Delete candidates exclude all branches marked as protected",
+    "Manual verification recommended before any deletion"
+  ]
+}

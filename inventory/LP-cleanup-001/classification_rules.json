@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2025-01-08T00:00:00.000Z",
+  "lp": "LP-cleanup-001",
+  "rules": {
+    "branch": {
+      "DEFAULT_BRANCH": "Never delete default branch (aoss-main, main, master)",
+      "PROTECTED_BRANCH": "Never delete protected branches",
+      "ACTIVE_PR_OPEN": "Branch has open PR - keep (low risk)",
+      "RECENT_NO_PR": "Last commit < 30 days, no PR - keep (low risk)",
+      "STALE_NO_PR": "Last commit > 90 days, no PR - review for deletion (medium risk)",
+      "RECENT_PR_MERGED": "PR merged recently (< 30 days) - delete soon (low risk)",
+      "OLD_PR_MERGED": "PR merged > 30 days ago - delete candidate (medium risk)"
+    },
+    "pull_request": {
+      "OPEN_PR": "Open PR - requires attention",
+      "DRAFT_PR": "Draft PR - in progress",
+      "REVIEW_REQUESTED": "Review requested - active",
+      "CHANGES_REQUESTED": "Changes requested - blocked",
+      "APPROVED": "Approved - ready to merge",
+      "STALE_PR": "No activity > 90 days - review for closure"
+    },
+    "issue": {
+      "OPEN_ISSUE": "Open issue - active tracking",
+      "STALE_ISSUE": "No activity > 90 days - review for closure",
+      "BLOCKED_ISSUE": "Blocked by external dependency"
+    },
+    "tag": {
+      "RELEASE_TAG": "Release tag (semantic version) - immutable",
+      "OTHER_TAG": "Non-release tag - review retention policy"
+    }
+  },
+  "thresholds": {
+    "RECENT_ACTIVITY_DAYS": 30,
+    "STALE_THRESHOLD_DAYS": 90,
+    "BRANCH_DELETE_AFTER_MERGE_DAYS": 30
+  }
+}

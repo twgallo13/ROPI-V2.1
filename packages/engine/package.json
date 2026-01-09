@@ -1,0 +1,17 @@
+{
+  "name": "@ropi/engine",
+  "version": "0.1.0",
+  "description": "ROPI Completion Evaluation Engine - Deterministic CLI tool",
+  "main": "src/index.js",
+  "bin": {
+    "evaluate": "./bin/evaluate.js"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

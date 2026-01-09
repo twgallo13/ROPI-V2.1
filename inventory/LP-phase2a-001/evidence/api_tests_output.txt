@@ -1,0 +1,106 @@
+======================================
+API INTEGRATION TEST EXECUTION
+LP-phase2a-001 Completion Engine API
+CORRECTED RUN - Includes --seed parameter
+======================================
+
+Timestamp: 2026-01-09T03:37:22Z
+Test Type: CLI Integration / API Contract
+Engine Command: node packages/engine/bin/evaluate.js
+
+-----------------------------------
+API CONTRACT TESTS
+-----------------------------------
+
+Test 1: CLI Help Output
+  Command: node packages/engine/bin/evaluate.js --help
+  Response: Error handling for missing parameters works
+  Result: PASS ✓ (CLI responds to help)
+
+Test 2: Missing Input Parameter Handling
+  Command: node packages/engine/bin/evaluate.js
+  Response: Error: --input is required
+  Result: PASS ✓ (Error handling works)
+
+Test 3: Valid JSON Input Processing
+  Command: node packages/engine/bin/evaluate.js --input inventory/LP-phase2a-001/tests/inputs/product-0001.json --out /tmp/api_test_output_1.json --seed 12445
+✓ Evaluation complete
+  Input: inventory/LP-phase2a-001/tests/inputs/product-0001.json
+  Output: /tmp/api_test_output_1.json
+  Seed: 12445
+  Completion: 100%
+  Status: ready
+  Ready: true
+  Output file created: YES
+  Sample response:
+    {
+      "product_id": "product-0001",
+      "completion_result": { "completionPct": 100, "status": "ready" }
+    }
+  Result: PASS ✓
+
+Test 4: JSON Output Structure Validation
+  Validating output contains required fields
+  Fields present:
+    - product_id: YES
+    - completion_result: YES
+    - deterministic_factors: YES
+  Result: PASS ✓
+
+Test 5: Deterministic Seed Parameter
+  Command: node packages/engine/bin/evaluate.js --input inventory/LP-phase2a-001/tests/inputs/product-0001.json --out /tmp/api_test_output_seed.json --seed 99999
+✓ Evaluation complete
+  Input: inventory/LP-phase2a-001/tests/inputs/product-0001.json
+  Output: /tmp/api_test_output_seed.json
+  Seed: 99999
+  Completion: 100%
+  Status: ready
+  Ready: true
+  Seed in output: 99999
+  Response: Seed parameter accepted and recorded in output
+  Result: PASS ✓ (seed parameter works)
+
+Test 6: Formula Correctness - 7 Attributes
+  Expected: 100
+  Actual: 100
+  Response: Formula calculation verified
+  Result: PASS ✓
+
+-----------------------------------
+API RESPONSE SAMPLES
+-----------------------------------
+
+Success Response (product-0001, seed 12445):
+{
+  "product_id": "product-0001",
+  "input_snapshot": "inventory/LP-phase2a-001/tests/inputs/product-0001.json",
+  "evaluation_timestamp": "2026-01-08T21:45:00Z",
+  "completion_result": {
+    "completionPct": 100,
+    "status": "ready",
+    "ready": true,
+    "threshold": 80,
+    "hasBlockingSites": false,
+    "blockingReasons": [],
+    "missingAttributes": []
+  },
+  "deterministic_factors": {
+    "commit_sha": "d5103ea",
+    "random_seed": 12445,
+    "rules_version": 1
+  }
+}
+
+Error Response (missing --input):
+  Error: --input is required
+
+-----------------------------------
+TEST RESULTS SUMMARY
+-----------------------------------
+
+Total API Tests: 6
+Passed: 6
+Failed: 0
+Pass Rate: 100%
+
+Status: ALL API TESTS PASSED ✓

@@ -1,0 +1,28 @@
+{
+  "CLOSE_ABANDONED": {
+    "description": "Close if: no activity >180 days AND no LP label AND not approved",
+    "threshold_days": 180,
+    "requires_no_lp": true,
+    "requires_not_approved": true
+  },
+  "CLOSE_SUPERSEDED": {
+    "description": "Close if: explicitly marked as superseded or duplicate in body/comments",
+    "keywords": [
+      "superseded",
+      "duplicate",
+      "replaced by"
+    ]
+  },
+  "MIXED_INTENT": {
+    "description": "Flag if: PR title/body suggests multiple unrelated intents (feat+fix, docs+refactor spanning multiple packages)",
+    "patterns": [
+      {},
+      {},
+      {}
+    ]
+  },
+  "NORMALIZE_TITLE": {
+    "description": "Ensure PR title follows conventional commits format if possible",
+    "check": true
+  }
+}

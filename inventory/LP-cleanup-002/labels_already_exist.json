@@ -1,0 +1,16 @@
+[
+  "state:planned",
+  "state:in-progress",
+  "state:review",
+  "state:approved",
+  "state:merged",
+  "blocked:ci-failure",
+  "blocked:coderabbit-review",
+  "cleanup:required",
+  "cleanup:done",
+  "type:docs",
+  "type:infra",
+  "type:feature",
+  "type:fix",
+  "type:chore"
+]
