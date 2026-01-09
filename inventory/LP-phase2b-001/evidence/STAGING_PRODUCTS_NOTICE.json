@@ -1,0 +1,12 @@
+{
+  "staging_host": "PENDING",
+  "products": ["product-0001", "product-0004", "product-0007"],
+  "product_states": {
+    "product-0001": "ready (≥80% completion)",
+    "product-0004": "partial (40-80% completion)",
+    "product-0007": "blocked (<40% completion)"
+  },
+  "provided_by": "AWAITING_LISA",
+  "timestamp": "PENDING",
+  "note": "Template created by Homer. Lisa will populate with actual staging host and confirm product availability."
+}
