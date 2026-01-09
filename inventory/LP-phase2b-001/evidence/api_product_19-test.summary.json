@@ -1,0 +1,9 @@
+{
+  "product_id": "19-test",
+  "mpn": "19-test",
+  "pct": 0,
+  "ready": false,
+  "threshold": 80,
+  "hasBlockingSites": true,
+  "rulesVersion": 3
+}

@@ -1,0 +1,303 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - heading "ROPI AOSS" [level=1] [ref=e6]
+      - generic [ref=e7]: Staging
+    - searchbox "Global search (non-functional stub)" [disabled] [ref=e9]
+    - button "T Theo (Admin E2E) Admin ▼" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: T
+      - generic [ref=e14]:
+        - text: Theo (Admin E2E)
+        - generic [ref=e15]: Admin
+      - generic [ref=e16]: ▼
+  - generic [ref=e17]:
+    - complementary [ref=e18]:
+      - navigation [ref=e19]:
+        - link "🏠 Home" [ref=e20] [cursor=pointer]:
+          - /url: /home
+          - generic [ref=e21]: 🏠
+          - generic [ref=e22]: Home
+        - link "📦 Products" [ref=e23] [cursor=pointer]:
+          - /url: /products
+          - generic [ref=e24]: 📦
+          - generic [ref=e25]: Products
+        - link "📅 Launch Calendar" [ref=e26] [cursor=pointer]:
+          - /url: /launch-calendar
+          - generic [ref=e27]: 📅
+          - generic [ref=e28]: Launch Calendar
+        - link "📥 Import" [ref=e29] [cursor=pointer]:
+          - /url: /import
+          - generic [ref=e30]: 📥
+          - generic [ref=e31]: Import
+        - link "📤 Export" [ref=e32] [cursor=pointer]:
+          - /url: /export
+          - generic [ref=e33]: 📤
+          - generic [ref=e34]: Export
+        - link "👁️ Observations" [ref=e35] [cursor=pointer]:
+          - /url: /observations
+          - generic [ref=e36]: 👁️
+          - generic [ref=e37]: Observations
+        - link "⚡ Smart Rules" [ref=e38] [cursor=pointer]:
+          - /url: /smart-rules
+          - generic [ref=e39]: ⚡
+          - generic [ref=e40]: Smart Rules
+        - link "⚙️ Settings" [ref=e41] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e42]: ⚙️
+          - generic [ref=e43]: Settings
+    - main [ref=e44]:
+      - generic [ref=e45]:
+        - banner "Product Header" [ref=e46]:
+          - generic [ref=e47]:
+            - button "Back to Products List" [ref=e48] [cursor=pointer]: ← Back to Products
+            - generic [ref=e49]:
+              - button "Save Draft" [ref=e50] [cursor=pointer]
+              - button "Publish" [disabled] [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: Status
+              - status [ref=e55]: In Progress
+            - generic [ref=e56]:
+              - generic [ref=e57]: MPN
+              - generic [ref=e58]: NK-AIR-MAX-270-BLK-10
+            - generic [ref=e59]:
+              - generic [ref=e60]: Active
+              - status "Product is inactive" [ref=e61]: Inactive
+            - generic [ref=e62]:
+              - generic [ref=e63]: Last Received
+              - generic [ref=e64]: —
+            - generic [ref=e65]:
+              - generic [ref=e66]: Inventory
+              - generic [ref=e67]:
+                - generic "Total Inventory" [ref=e68]:
+                  - generic [ref=e69]: "Total:"
+                  - generic [ref=e70]: —
+                - generic "Warehouse Inventory" [ref=e71]:
+                  - generic [ref=e72]: "WHS:"
+                  - generic [ref=e73]: —
+                - generic "Store Inventory" [ref=e74]:
+                  - generic [ref=e75]: "Store:"
+                  - generic [ref=e76]: —
+            - generic [ref=e77]:
+              - generic [ref=e78]: Media
+              - status "No Media" [ref=e79]:
+                - generic [ref=e80]: ○
+            - generic [ref=e81]:
+              - generic [ref=e82]: Websites
+              - generic [ref=e84]: shiekh.com
+        - generic [ref=e85]:
+          - button "Core Information" [ref=e86] [cursor=pointer]
+          - button "Product Attributes" [ref=e87] [cursor=pointer]
+          - button "Launch & Media" [ref=e88] [cursor=pointer]
+          - button "Technical" [ref=e89] [cursor=pointer]
+          - button "AI Actions" [ref=e90] [cursor=pointer]
+          - button "Descriptions & SEO" [ref=e91] [cursor=pointer]
+        - generic [ref=e92]:
+          - generic [ref=e94]:
+            - generic [ref=e95]:
+              - heading "Product Identification" [level=3] [ref=e96]
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - generic [ref=e99]: Product Name *
+                  - textbox "Enter product name" [ref=e100]: Nike Air Max 270 - Black/White
+                - generic [ref=e101]:
+                  - generic [ref=e102]: Brand *
+                  - textbox "Enter brand name" [ref=e103]: Nike
+            - generic [ref=e104]:
+              - heading "Classification" [level=3] [ref=e105]
+              - generic [ref=e106]:
+                - generic [ref=e107]:
+                  - generic [ref=e108]: Department *
+                  - combobox [ref=e109]:
+                    - option "Select Department..." [selected]
+                    - option "Footwear"
+                    - option "Clothing"
+                    - option "Accessories"
+                - generic [ref=e110]:
+                  - generic [ref=e111]: Class *
+                  - combobox [ref=e112]:
+                    - option "Select Class..." [selected]
+                    - option "Athletic"
+                    - option "Casual"
+                    - option "Formal"
+                    - option "Outdoor"
+                    - option "Performance"
+                    - option "Fashion"
+                    - option "Comfort"
+                    - option "Work"
+                    - option "Sport"
+                - generic [ref=e113]:
+                  - generic [ref=e114]: Category *
+                  - combobox [ref=e115]:
+                    - option "Select Category..." [selected]
+                    - option "Footwear"
+                    - option "Apparel"
+                    - option "Accessories"
+                    - option "Athletic"
+                    - option "Casual"
+                    - option "Dress"
+                    - option "Boots"
+                    - option "Sandals"
+                    - option "Sneakers"
+                    - option "Slippers"
+                - generic [ref=e116]:
+                  - generic [ref=e117]: Gender *
+                  - combobox [ref=e118]:
+                    - option "Select Gender..." [selected]
+                    - option "Men's"
+                    - option "Women's"
+                    - option "Unisex"
+                    - option "Boys"
+                    - option "Girls"
+                    - option "Kids"
+                - generic [ref=e119]:
+                  - generic [ref=e120]: Age Group *
+                  - combobox [ref=e121]:
+                    - option "Select Age Group..." [selected]
+                    - option "Adult"
+                    - option "Grade-School"
+                    - option "Infant"
+                    - option "Kids"
+                    - option "Pre-School"
+                    - option "Toddler"
+            - generic [ref=e122]:
+              - heading "Website Assignment" [level=3] [ref=e123]
+              - paragraph [ref=e124]: Select websites where this product will be available. This drives site-specific descriptions and AI logic.
+              - generic [ref=e125]:
+                - generic [ref=e126]: Active Websites *
+                - generic [ref=e127]:
+                  - generic [ref=e128] [cursor=pointer]:
+                    - checkbox "shiekh.com" [checked] [ref=e129]
+                    - text: shiekh.com
+                  - generic [ref=e130] [cursor=pointer]:
+                    - checkbox "Karmaloop.com" [ref=e131]
+                    - text: Karmaloop.com
+                  - generic [ref=e132] [cursor=pointer]:
+                    - checkbox "mltd.com" [ref=e133]
+                    - text: mltd.com
+                  - generic [ref=e134] [cursor=pointer]:
+                    - checkbox "sangremia.com" [ref=e135]
+                    - text: sangremia.com
+                  - generic [ref=e136] [cursor=pointer]:
+                    - checkbox "plndr.com" [ref=e137]
+                    - text: plndr.com
+                  - generic [ref=e138] [cursor=pointer]:
+                    - checkbox "fbrkclothing.com" [ref=e139]
+                    - text: fbrkclothing.com
+                  - generic [ref=e140] [cursor=pointer]:
+                    - checkbox "Vnds.com" [ref=e141]
+                    - text: Vnds.com
+                  - generic [ref=e142] [cursor=pointer]:
+                    - checkbox "Kazbah.com" [ref=e143]
+                    - text: Kazbah.com
+                  - generic [ref=e144] [cursor=pointer]:
+                    - checkbox "Tiltedsole.com" [ref=e145]
+                    - text: Tiltedsole.com
+                  - generic [ref=e146] [cursor=pointer]:
+                    - checkbox "NOT FOR WEB" [ref=e147]
+                    - text: NOT FOR WEB
+            - paragraph [ref=e149]:
+              - strong [ref=e150]: "Note:"
+              - text: Fields marked with * are required for export readiness. SKU and Style ID have been moved to the Identifiers tab.
+          - generic [ref=e151]:
+            - generic [ref=e152]:
+              - generic [ref=e153]:
+                - heading "✅ Completion / Export" [level=3] [ref=e154]
+                - button "↻" [ref=e155] [cursor=pointer]
+              - generic [ref=e156]:
+                - generic [ref=e157]:
+                  - generic [ref=e158]: Completion
+                  - generic [ref=e159]: 80%
+                - generic [ref=e162]:
+                  - text: "Export threshold:"
+                  - strong [ref=e163]: 80%
+              - generic [ref=e165]: ✅ Ready for export
+              - generic [ref=e166]:
+                - heading "Summary" [level=4] [ref=e167]
+                - paragraph [ref=e168]: "Export ready: product 80% complete (threshold: 80%)"
+              - generic [ref=e169]:
+                - heading "Site Status" [level=4] [ref=e170]
+                - generic [ref=e171]:
+                  - button "✅ Karmaloop.com ▶" [ref=e173] [cursor=pointer]:
+                    - generic [ref=e174]: ✅
+                    - generic [ref=e175]: Karmaloop.com
+                    - generic [ref=e176]: ▶
+                  - button "✅ shiekh.com ▶" [ref=e178] [cursor=pointer]:
+                    - generic [ref=e179]: ✅
+                    - generic [ref=e180]: shiekh.com
+                    - generic [ref=e181]: ▶
+              - generic [ref=e182]:
+                - heading "Completion by Segment" [level=4] [ref=e183]
+                - generic [ref=e184]:
+                  - generic [ref=e185]:
+                    - generic [ref=e186]:
+                      - generic [ref=e187]: Core Product Attributes
+                      - generic [ref=e188]: "Weight: 80%"
+                    - generic [ref=e189]: "Score: 100%"
+                  - generic [ref=e190]:
+                    - generic [ref=e191]:
+                      - generic [ref=e192]: SEO & Marketing
+                      - generic [ref=e193]: "Weight: 20%"
+                    - generic [ref=e194]: "Score: 0%"
+                  - generic [ref=e195]:
+                    - generic [ref=e196]:
+                      - generic [ref=e197]: Media & Images
+                      - generic [ref=e198]: "Weight: 0%"
+                    - generic [ref=e199]: "Score: 0%"
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - heading "Observations" [level=4] [ref=e202]
+                - generic [ref=e203]: "0"
+              - generic [ref=e204]:
+                - paragraph [ref=e205]: No open observations
+                - button "+ Add Observation" [ref=e206] [cursor=pointer]
+            - generic [ref=e207]:
+              - generic [ref=e208]:
+                - heading "Smart Suggestions" [level=4] [ref=e209]
+                - generic [ref=e210]: "3"
+              - generic [ref=e211]:
+                - generic [ref=e212]:
+                  - generic [ref=e213]:
+                    - generic [ref=e214]: Cushioning
+                    - generic [ref=e215]: 95%
+                  - generic [ref=e217]:
+                    - generic [ref=e218]: "Suggested:"
+                    - generic [ref=e219]: Air Max
+                  - paragraph [ref=e220]: Detected from product name and visible Air unit in images
+                  - generic [ref=e221]:
+                    - button "Ignore" [ref=e222] [cursor=pointer]
+                    - button "Apply" [ref=e223] [cursor=pointer]
+                - generic [ref=e224]:
+                  - generic [ref=e225]:
+                    - generic [ref=e226]: Upper Material
+                    - generic [ref=e227]: 78%
+                  - generic [ref=e228]:
+                    - generic [ref=e229]:
+                      - generic [ref=e230]: "Current:"
+                      - generic [ref=e231]: Mesh
+                    - generic [ref=e232]:
+                      - generic [ref=e233]: "Suggested:"
+                      - generic [ref=e234]: Engineered Mesh
+                  - paragraph [ref=e235]: Image analysis shows structured mesh pattern typical of engineered construction
+                  - generic [ref=e236]:
+                    - button "Ignore" [ref=e237] [cursor=pointer]
+                    - button "Apply" [ref=e238] [cursor=pointer]
+                - generic [ref=e239]:
+                  - generic [ref=e240]:
+                    - generic [ref=e241]: Main
+                    - generic [ref=e242]: 88%
+                  - generic [ref=e243]:
+                    - generic [ref=e244]:
+                      - generic [ref=e245]: "Current:"
+                      - generic [ref=e246]: Experience ultimate comfort with the Nike Air Max 270...
+                    - generic [ref=e247]:
+                      - generic [ref=e248]: "Suggested:"
+                      - generic [ref=e249]: Experience ultimate comfort with the Nike Air Max 270. Featuring Nike's largest heel Air unit yet for incredible cushioning, plus a sleek mesh and synthetic upper for breathability and support.
+                  - paragraph [ref=e250]: Enhanced description based on visible product features and brand guidelines
+                  - generic [ref=e251]:
+                    - button "Ignore" [ref=e252] [cursor=pointer]
+                    - button "Apply" [ref=e253] [cursor=pointer]
+```

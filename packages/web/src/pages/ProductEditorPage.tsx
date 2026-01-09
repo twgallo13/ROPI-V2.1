@@ -42,6 +42,7 @@ function ProductEditorPage() {
 
   // Debug: Log product ID from URL
   console.debug('[ProductEditorPage] Product ID from URL:', id);
+  console.debug('[ProductEditorPage] CODE VERSION: 2026-01-09-v3-MPN-FIX');
 
   // Defensive: Require product ID in URL
   if (!id) {
@@ -181,7 +182,7 @@ function ProductEditorPage() {
           {/* Right Sidebar with Panels */}
           <div className="product-sidebar">
             <CompletionExportGatePanel
-              productId={product.id}
+              productId={id}
             />
             
             <ObservationsPanel

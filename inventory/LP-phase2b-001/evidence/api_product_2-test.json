@@ -1,0 +1,27 @@
+{
+  "ready": false,
+  "completionPct": 0,
+  "threshold": 80,
+  "hasBlockingSites": true,
+  "blockingReasons": [
+    {
+      "type": "REQUIRED_ATTRIBUTE_MISSING",
+      "severity": "BLOCKING",
+      "message": "No sites selected for product",
+      "details": {}
+    }
+  ],
+  "operatorExplanation": {
+    "summary": "Export blocked: No sites selected for product",
+    "blockingIssues": [
+      "No sites selected for product"
+    ],
+    "completionBreakdown": [],
+    "siteStatus": [],
+    "actionRequired": [
+      "Fix completion rules configuration or product data"
+    ]
+  },
+  "evaluationTimestamp": "2026-01-09T08:25:06.006Z",
+  "rulesVersion": 3
+}

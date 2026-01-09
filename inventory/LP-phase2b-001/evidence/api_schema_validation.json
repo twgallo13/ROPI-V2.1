@@ -1,0 +1,46 @@
+{
+  "validation_timestamp": "2026-01-09T10:15:00Z",
+  "api_endpoint": "GET /api/products/{mpn}/completion",
+  "schema_compliance": {
+    "productIdentifiers": {
+      "present": true,
+      "fields": ["mpn", "productId"],
+      "status": "PASS"
+    },
+    "completion_result": {
+      "present": true,
+      "fields": ["completionPct", "ready", "threshold", "hasBlockingSites", "blockingReasons"],
+      "status": "PASS"
+    },
+    "segments": {
+      "present": true,
+      "location": "operatorExplanation.completionBreakdown[]",
+      "required_fields": ["segmentId", "segmentName", "score", "weightPct", "missingAttributes"],
+      "status": "PASS"
+    },
+    "deterministic_factors": {
+      "present": true,
+      "fields": ["rulesVersion", "evaluationTimestamp"],
+      "missing_fields": ["commit_sha", "seed"],
+      "status": "PARTIAL - commit_sha and seed not in API response"
+    }
+  },
+  "sample_products_validated": [
+    {
+      "mpn": "16-test",
+      "segments_found": 3,
+      "segment_ids": ["core-attributes", "seo-attributes", "media-attributes"]
+    },
+    {
+      "mpn": "19-test",
+      "segments_found": 3,
+      "segment_ids": ["core-attributes", "seo-attributes", "media-attributes"]
+    },
+    {
+      "mpn": "15-test",
+      "segments_found": 3,
+      "segment_ids": ["core-attributes", "seo-attributes", "media-attributes"]
+    }
+  ],
+  "verdict": "PASS - Core schema compliant, segments present with missingAttributes"
+}

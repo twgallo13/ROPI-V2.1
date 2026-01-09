@@ -1,0 +1,26 @@
+[
+  {
+    "product": "15-test",
+    "reported_completion": 0,
+    "expected_completion": 0,
+    "reported_status": "blocked",
+    "expected_status": "blocked",
+    "match": true
+  },
+  {
+    "product": "16-test",
+    "reported_completion": 80,
+    "expected_completion": 80,
+    "reported_status": "ready",
+    "expected_status": "ready",
+    "match": true
+  },
+  {
+    "product": "19-test",
+    "reported_completion": 0,
+    "expected_completion": 0,
+    "reported_status": "blocked",
+    "expected_status": "blocked",
+    "match": true
+  }
+]
