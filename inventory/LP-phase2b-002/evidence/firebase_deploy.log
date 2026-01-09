@@ -1,0 +1,206 @@
+
+=== Deploying to 'ropi-bccee'...
+
+i  deploying functions
+Running command: pnpm --filter @ropi-aoss/api build
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/api@0.0.0 build /workspaces/ROPI-V2.1/packages/api
+> node esbuild.config.js
+
+
+  dist/index.js      2.3mb ⚠️
+  dist/index.js.map  4.4mb
+
+⚡ Done in 215ms
+Running command: node -e "const fs=require('fs');const path=require('path');const src=path.resolve('packages/sdk/config/attributeRegistry.json');const destDir=path.resolve('packages/api/dist/config');if(!fs.existsSync(src)){console.error('❌ Authoritative registry missing at',src);process.exit(1);}if(!fs.existsSync(destDir))fs.mkdirSync(destDir,{recursive:true});fs.copyFileSync(src,path.join(destDir,'attributeRegistry.json'));console.log('✅ Copied registry to',path.join(destDir,'attributeRegistry.json'))"
+⚠  Warning: Your command contains '=', it may result in the command not running. Please consider removing it.
+✔  functions: Finished running predeploy script.
+i  functions: preparing codebase api for deployment
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled...
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled...
+⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory.
+⚠  functions: Please note that there will be breaking changes when you upgrade.
+i  functions: Loading and analyzing source code for codebase api to determine what to deploy
+Serving at port 8838
+
+🚀 API Routes Registered:
+
+  [MOUNT] Router mounted at: ^/api/?(?=/|$)
+  [MOUNT] Router mounted at: ^/?(?=/|$)
+  📍 API Router routes available at both /api/<path> and /<path>:
+    GET /api/admin/settings/attributes OR /admin/settings/attributes
+    GET /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    POST /api/admin/settings/attributes OR /admin/settings/attributes
+    PUT /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+    DELETE /api/admin/settings/attributes/:id OR /admin/settings/attributes/:id
+
+    GET /api/admin/settings/attributes/:id/usage OR /admin/settings/attributes/:id/usage
+    GET /api/admin/settings/attributes/:id/top-values OR /admin/settings/attributes/:id/top-values
+    GET /api/admin/settings/attributes/:id/audit OR /admin/settings/attributes/:id/audit
+    GET /api/admin/settings/attributes/:id/audit/:eventId OR /admin/settings/attributes/:id/audit/:eventId
+    POST /api/admin/settings/attributes/:id/revert OR /admin/settings/attributes/:id/revert
+    GET /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    PUT /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    DELETE /api/admin/settings/attributes/:id/mapping OR /admin/settings/attributes/:id/mapping
+    GET /api/admin/settings/attributes/:id/mapping/sources OR /admin/settings/attributes/:id/mapping/sources
+    GET /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+
+    PUT /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    DELETE /api/admin/settings/attributes/:id/mapping/sources/:sourceId OR /admin/settings/attributes/:id/mapping/sources/:sourceId
+    GET /api/admin/settings/mappings OR /admin/settings/mappings
+    PUT /api/admin/settings/mappings OR /admin/settings/mappings
+    GET /api/admin/settings/lists OR /admin/settings/lists
+    GET /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    POST /api/admin/settings/lists OR /admin/settings/lists
+    PUT /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    DELETE /api/admin/settings/lists/:listId OR /admin/settings/lists/:listId
+    GET /api/admin/settings/users OR /admin/settings/users
+    GET /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    POST /api/admin/settings/users OR /admin/settings/users
+    PATCH /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    DELETE /api/admin/settings/users/:uid OR /admin/settings/users/:uid
+    POST /api/admin/settings/users/:uid/reset-password OR /admin/settings/users/:uid/reset-password
+
+    GET /api/admin/settings/roles OR /admin/settings/roles
+    GET /api/admin/permissions OR /admin/permissions
+    PATCH /api/admin/permissions OR /admin/permissions
+    POST /api/admin/permissions/reset OR /admin/permissions/reset
+    [SUBROUTER] ^/admin/settings/segments/?(?=/|$)
+    POST /api/admin/validateSmartRule OR /admin/validateSmartRule
+    POST /api/admin/normalizeSmartRule OR /admin/normalizeSmartRule
+    GET /api/admin/import-eval/:productId OR /admin/import-eval/:productId
+    POST /api/admin/rules OR /admin/rules
+    PUT /api/admin/rules/:ruleId OR /admin/rules/:ruleId
+    GET /api/registry/health OR /registry/health
+    GET /api/registry/registry-version OR /registry/registry-version
+    POST /api/registry/refresh OR /registry/refresh
+    GET /api/smartrules/verification/latest OR /smartrules/verification/latest
+    POST /api/smartrules/verification/run OR /smartrules/verification/run
+    GET /api/users/me OR /users/me
+    PATCH /api/users/me OR /users/me
+
+    GET /api/products OR /products
+    GET /api/products/search-mpn OR /products/search-mpn
+    GET /api/products/by-mpn/:mpn OR /products/by-mpn/:mpn
+    POST /api/products/bulk-delete OR /products/bulk-delete
+    GET /api/products/:productId/completion OR /products/:productId/completion
+    GET /api/products/:productId OR /products/:productId
+    PATCH /api/products/:productId/attributes OR /products/:productId/attributes
+    POST /api/products/:productId/suggestions OR /products/:productId/suggestions
+    POST /api/products/:productId/apply-suggestion OR /products/:productId/apply-suggestion
+    POST /api/products/:productId/describe OR /products/:productId/describe
+    POST /api/products/:productId/apply OR /products/:productId/apply
+    GET /api/products/:productId/observation OR /products/:productId/observation
+    PATCH /api/products/:productId/observation OR /products/:productId/observation
+    DELETE /api/products/:productId/observation OR /products/:productId/observation
+    DELETE /api/products/:productId OR /products/:productId
+    GET /api/observations OR /observations
+
+    POST /api/observations OR /observations
+    POST /api/observations/analyze-image OR /observations/analyze-image
+    GET /api/observations/:id OR /observations/:id
+    PATCH /api/observations/:id OR /observations/:id
+    POST /api/observations/:id/tags/remove OR /observations/:id/tags/remove
+    POST /api/observations/:id/analyze-image OR /observations/:id/analyze-image
+    POST /api/importCSV OR /importCSV
+    POST /api/importDryRun OR /importDryRun
+    POST /api/processImportBatch OR /processImportBatch
+    GET /api/importBatchStatus OR /importBatchStatus
+    POST /api/admin/imports/preview OR /admin/imports/preview
+    GET /api/admin/exports/readiness OR /admin/exports/readiness
+    POST /api/syncAttributeRegistry OR /syncAttributeRegistry
+    POST /api/retailops/import-preview OR /retailops/import-preview
+    [SUBROUTER] ^/admin/reconcile-attributes/?(?=/|$)
+    GET /api/healthz OR /healthz
+✅ Route registration complete
+
+Failed to load attribute aliases, continuing without aliases: Error: ENOENT: no such file or directory, open '/workspaces/ROPI-V2.1/sdk/config/attributeAliases.json'
+    at readFileSync (node:fs:440:20)
+    at loadAliases (/workspaces/ROPI-V2.1/packages/api/dist/index.js:34558:48)
+    at initializeAllowedFieldsCache (/workspaces/ROPI-V2.1/packages/api/dist/index.js:34588:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspaces/ROPI-V2.1/sdk/config/attributeAliases.json'
+}
+
+[allowedTargetFields] Initialized cache with 238 allowed target fields from registry
+
+i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled...
+i  functions: preparing packages/api directory for uploading...
+i  functions: packaged /workspaces/ROPI-V2.1/packages/api (2 MB) for uploading
+⚠ DEPRECATION NOTICE: Action required before March 2026
+
+The functions.config() API and the Cloud Runtime Config service are deprecated. Deploys that rely on functions.config() will fail once Runtime Config shuts down in March 2026.
+
+The legacy functions:config:* CLI commands are deprecated and will be removed before March 2026.
+
+Learn how to migrate from functions.config() to the params package:
+
+https://firebase.google.com/docs/functions/config-env#migrate-config
+
+To convert existing functions.config() values to params, try the interactive migration command:
+
+  firebase functions:config:export
+
+i  functions: packaged /workspaces/ROPI-V2.1/packages/api (2 MB) for uploading
+i  functions: ensuring required API run.googleapis.com is enabled...
+i  functions: ensuring required API eventarc.googleapis.com is enabled...
+i  functions: ensuring required API pubsub.googleapis.com is enabled...
+i  functions: ensuring required API storage.googleapis.com is enabled...
+i  functions: generating the service identity for pubsub.googleapis.com...
+i  functions: generating the service identity for eventarc.googleapis.com...
+✔  functions: packages/api source uploaded successfully
+i  functions: updating Node.js 20 (1st Gen) function api:api(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:exportApi(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:exportDryRun(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:exportRun(us-central1)...
+i  functions: updating Node.js 20 (1st Gen) function api:getProduct(us-central1)...
+i  functions: updating Node.js 20 (1st Gen) function api:importBatchStatus(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:importCSV(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:importDryRun(us-central1)...
+i  functions: updating Node.js 20 (1st Gen) function api:listProducts(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:onProductWrite(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:onSmartRuleUpdate(us-central1)...
+i  functions: updating Node.js 20 (1st Gen) function api:processImportBatch(us-central1)...
+i  functions: updating Node.js 20 (1st Gen) function api:syncAttributeRegistry(us-central1)...
+i  functions: updating Node.js 20 (1st Gen) function api:updateProductAttributes(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:applySuggestions(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:getProductSuggestions(us-central1)...
+i  functions: updating Node.js 20 (2nd Gen) function api:resolveConflict(us-central1)...
+✔  functions[api:onSmartRuleUpdate(us-central1)] Successful update operation.
+✔  functions[api:applySuggestions(us-central1)] Successful update operation.
+✔  functions[api:onProductWrite(us-central1)] Successful update operation.
+✔  functions[api:exportApi(us-central1)] Successful update operation.
+✔  functions[api:exportDryRun(us-central1)] Successful update operation.
+✔  functions[api:exportRun(us-central1)] Successful update operation.
+✔  functions[api:getProductSuggestions(us-central1)] Successful update operation.
+✔  functions[api:importCSV(us-central1)] Successful update operation.
+✔  functions[api:resolveConflict(us-central1)] Successful update operation.
+✔  functions[api:importDryRun(us-central1)] Successful update operation.
+✔  functions[api:processImportBatch(us-central1)] Successful update operation.
+✔  functions[api:getProduct(us-central1)] Successful update operation.
+✔  functions[api:listProducts(us-central1)] Successful update operation.
+✔  functions[api:api(us-central1)] Successful update operation.
+✔  functions[api:syncAttributeRegistry(us-central1)] Successful update operation.
+✔  functions[api:importBatchStatus(us-central1)] Successful update operation.
+✔  functions[api:updateProductAttributes(us-central1)] Successful update operation.
+Function URL (api:api(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/api
+Function URL (api:exportApi(us-central1)): https://exportapi-ofrc5r2g3q-uc.a.run.app
+Function URL (api:exportDryRun(us-central1)): https://exportdryrun-ofrc5r2g3q-uc.a.run.app
+Function URL (api:exportRun(us-central1)): https://exportrun-ofrc5r2g3q-uc.a.run.app
+Function URL (api:getProduct(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/getProduct
+Function URL (api:importBatchStatus(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/importBatchStatus
+Function URL (api:importCSV(us-central1)): https://importcsv-ofrc5r2g3q-uc.a.run.app
+Function URL (api:importDryRun(us-central1)): https://importdryrun-ofrc5r2g3q-uc.a.run.app
+Function URL (api:listProducts(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/listProducts
+Function URL (api:processImportBatch(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/processImportBatch
+Function URL (api:syncAttributeRegistry(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/syncAttributeRegistry
+Function URL (api:updateProductAttributes(us-central1)): https://us-central1-ropi-bccee.cloudfunctions.net/updateProductAttributes
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/ropi-bccee/overview

@@ -1,0 +1,22 @@
+Evaluator runs in Firebase Functions - checking config
+
+packages/api/src/endpoints/admin/mappings.ts: * - GET/PUT/DELETE /admin/settings/attributes/{id}/mapping — Attribute-level mapping
+packages/api/src/endpoints/admin/mappings.ts: * - GET /admin/settings/attributes/{id}/mapping/sources — List source overrides
+packages/api/src/endpoints/admin/mappings.ts: * - PUT/DELETE /admin/settings/attributes/{id}/mapping/sources/{sourceId} — Source overrides
+packages/api/src/endpoints/admin/mappings.ts: * GET /admin/settings/attributes/:id/mapping
+packages/api/src/endpoints/admin/mappings.ts: * PUT /admin/settings/attributes/:id/mapping
+packages/api/src/endpoints/admin/mappings.ts: * DELETE /admin/settings/attributes/:id/mapping
+packages/api/src/endpoints/admin/mappings.ts: * GET /admin/settings/attributes/:id/mapping/sources
+packages/api/src/endpoints/admin/mappings.ts: * GET /admin/settings/attributes/:id/mapping/sources/:sourceId
+packages/api/src/endpoints/admin/mappings.ts: * PUT /admin/settings/attributes/:id/mapping/sources/:sourceId
+packages/api/src/endpoints/admin/mappings.ts: * DELETE /admin/settings/attributes/:id/mapping/sources/:sourceId
+packages/api/src/endpoints/admin/settings.ts: * GET /admin/settings/attributes
+packages/api/src/endpoints/admin/settings.ts: * GET /admin/settings/attributes/:id
+packages/api/src/endpoints/admin/settings.ts: * POST /admin/settings/attributes
+packages/api/src/endpoints/admin/settings.ts: * PUT /admin/settings/attributes/:id
+packages/api/src/endpoints/admin/settings.ts: * DELETE /admin/settings/attributes/:id
+packages/api/src/endpoints/admin/settings.ts: * GET /admin/settings/attributes/:id/usage
+packages/api/src/endpoints/admin/settings.ts: * GET /admin/settings/attributes/:id/top-values
+packages/api/src/endpoints/admin/settings.ts: * GET /admin/settings/attributes/:id/audit
+packages/api/src/endpoints/admin/settings.ts: * GET /admin/settings/attributes/:id/audit/:eventId
+packages/api/src/endpoints/admin/settings.ts: * POST /admin/settings/attributes/:id/revert

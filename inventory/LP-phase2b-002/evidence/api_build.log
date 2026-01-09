@@ -1,0 +1,10 @@
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/api@0.0.0 build /workspaces/ROPI-V2.1/packages/api
+> node esbuild.config.js
+
+
+  dist/index.js      2.3mb ⚠️
+  dist/index.js.map  4.4mb
+
+⚡ Done in 213ms
