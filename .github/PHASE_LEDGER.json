@@ -1,0 +1,9 @@
+{
+  "phaseName": "Workflow Enforcement",
+  "phaseSlug": "workflow-enforcement",
+  "nextLp": 1,
+  "state": "READY",
+  "lockedAt": "2026-01-05T00:00:00Z",
+  "lockedBy": "Homer",
+  "description": "Phase Workflow v2 enforcement - mechanically enforceable workflow resistant to drift"
+}

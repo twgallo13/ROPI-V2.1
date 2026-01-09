@@ -5,6 +5,8 @@
  * Displays per-product completion percentage, status, and blocking reasons.
  * Design approved by Lisa 2026-01-09.
  *
+ * LP-phase2b-001 MPN Display Rule: UI must display MPN for every product and never expose product_id to users.
+ *
  * States: loading, success (ready/partial/blocked), error, empty
  * Accessibility: WCAG AA compliant, keyboard navigable, screen reader optimized
  * i18n: All strings externalized to i18n/en.json
@@ -18,7 +20,7 @@ export interface BlockingReason {
   severity: 'critical' | 'warning' | 'info';
   message: string;
   details?: {
-    product Id?: string;
+    productId?: string; // Internal only, never displayed in UI
     site?: string;
     missingAttributes?: string[];
     currentCompletion?: number;
@@ -38,6 +40,8 @@ export interface CompletionData {
 }
 
 export interface CompletionCardProps {
+  /** MPN (Manufacturer Part Number) - canonical product identifier displayed to users */
+  mpn: string;
   /** Completion data from API */
   completion: CompletionData | null;
   /** Loading state */
@@ -52,6 +56,7 @@ export interface CompletionCardProps {
  * CompletionCard - Display product completion status
  *
  * Features:
+ * - MPN display (user-facing product identifier)
  * - Large completion percentage with color-coded status badge
  * - Expandable segment breakdown (attributes, content)
  * - Loading skeleton with shimmer animation
@@ -62,6 +67,7 @@ export interface CompletionCardProps {
  * - ARIA roles and labels for accessibility
  */
 export function CompletionCard({
+  mpn,
   completion,
   loading = false,
   error = null,
@@ -181,6 +187,10 @@ export function CompletionCard({
         <h3 id="completion-card-title" className="completion-card__title">
           Completion
         </h3>
+        {/* LP-phase2b-001: Display MPN (never product_id) */}
+        <div className="completion-card__mpn" data-testid="completion-card-mpn">
+          {mpn}
+        </div>
       </div>
 
       <div className="completion-card__body">

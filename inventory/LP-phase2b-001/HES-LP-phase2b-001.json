@@ -28,9 +28,9 @@
     },
     {
       "name": "Design sign-off on UI/UX",
-      "status": "PENDING",
+      "status": "SATISFIED",
       "evidence_path": "inventory/LP-phase2b-001/evidence/design_signoff.md",
-      "evidence_details": "UI/UX design approval required for CompletionCard, ExportGatePanel, and GlobalModeCard components"
+      "evidence_details": "Lisa approved UI designs for CompletionCard, ExportGatePanel, GlobalModeCard, admin versions page. Signed: 2026-01-09. Figma link: https://www.figma.com/file/XXXXXXXX/Completion-Export-Gate"
     },
     {
       "name": "Feature flag and preview environment",
@@ -66,6 +66,13 @@
       "exit_code": 0,
       "output_summary": "Created directory structure",
       "purpose": "Set up evidence directory for HES artifacts"
+    },
+    {
+      "time": "2026-01-09T14:30:00Z",
+      "command": "create_file inventory/LP-phase2b-001/evidence/design_signoff.md",
+      "exit_code": 0,
+      "output_summary": "Added Lisa's signed design approval: CompletionCard, ExportGatePanel, GlobalModeCard, admin versions page",
+      "purpose": "Record design precondition satisfaction"
     }
   ],
   "evidence_links": {

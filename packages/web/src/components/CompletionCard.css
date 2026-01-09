@@ -26,6 +26,9 @@
   margin-bottom: 16px;
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .completion-card__title {
@@ -33,6 +36,17 @@
   font-weight: 600;
   color: #1f2937;
   margin: 0;
+}
+
+/* MPN Display - LP-phase2b-001: User-facing product identifier */
+.completion-card__mpn {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  font-family: 'Courier New', monospace;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 /* Body */

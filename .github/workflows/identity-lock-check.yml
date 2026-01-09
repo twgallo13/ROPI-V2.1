@@ -1,0 +1,28 @@
+# Phase Workflow v2 Enforcement - identity-lock-check
+# Validates PhaseName and PhaseSlug match PHASE_LEDGER.json
+
+name: identity-lock-check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  identity-check:
+    name: Validate Phase Identity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Identity Lock Check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node .github/scripts/identity-lock-check.js

@@ -49,6 +49,12 @@ export interface ProductLevelReadiness {
 }
 
 export interface CompletionDrivenExportReadiness {
+  // LP-phase2b-001: Product identification (MPN-first, product_id internal only)
+  // Optional for catalog-level calls, required for product-level calls
+  productIdentifiers?: {
+    mpn: string;           // Canonical user-facing identifier (REQUIRED in product context)
+    productId: string;     // Internal lookup key (for admin debug only)
+  };
   ready: boolean;
   completionPct: number;
   threshold: number;
@@ -442,6 +448,19 @@ function aggregateSegmentScoresBest(scoresPerSite: SegmentScore[][]): SegmentSco
 // ============================================================================
 
 /**
+ * Extract product identifiers for API response
+ * LP-phase2b-001: MPN is canonical, product_id is internal only
+ */
+function extractProductIdentifiers(product: ProductDocument): {
+  mpn: string;
+  productId: string;
+} {
+  const mpn = product.mpn || 'UNKNOWN-MPN';
+  const productId = product.id;
+  return { mpn, productId };
+}
+
+/**
  * Calculate completion-driven export readiness
  * 
  * Replaces the legacy calculateExportReadiness function with completion-based evaluation
@@ -515,6 +534,7 @@ export async function calculateCompletionDrivenExportReadiness(
       const isReady = productLevelReadiness.aggregatedCompletionPct >= completionRules.exportUnlockThresholdPct;
       
       return {
+        productIdentifiers: extractProductIdentifiers(product),
         mode: 'GLOBAL',
         ready: isReady,
         completionPct: productLevelReadiness.aggregatedCompletionPct,
@@ -571,6 +591,7 @@ export async function calculateCompletionDrivenExportReadiness(
     const operatorExplanation = generateOperatorExplanation(completionResult, completionRules, selectedSites);
     
     const base: CompletionDrivenExportReadiness = {
+      productIdentifiers: extractProductIdentifiers(product),
       ready: isReady,
       completionPct: reportedCompletion, // PROMPT B: Force 0 when site-blocked
       threshold: completionRules.exportUnlockThresholdPct,

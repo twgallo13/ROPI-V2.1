@@ -5,6 +5,8 @@
  * Export button with blocking reasons display.
  * Design approved by Lisa 2026-01-09.
  *
+ * LP-phase2b-001 MPN Display Rule: UI must display MPN for every product and never expose product_id to users.
+ *
  * States:
  * - Ready: Green button enabled, export allowed
  * - Partial/Blocked: Gray button disabled, blocking reasons shown
@@ -23,7 +25,7 @@ export interface BlockingReason {
   severity: 'critical' | 'warning' | 'info';
   message: string;
   details?: {
-    productId?: string;
+    productId?: string; // Internal only, never displayed in UI
     site?: string;
     missingAttributes?: string[];
     segmentId?: string;
@@ -31,6 +33,8 @@ export interface BlockingReason {
 }
 
 export interface ExportGatePanelProps {
+  /** MPN (Manufacturer Part Number) - canonical product identifier displayed to users */
+  mpn: string;
   /** Whether export is ready (status === 'ready') */
   exportReady: boolean;
   /** Blocking reasons if not ready */
@@ -49,6 +53,7 @@ export interface ExportGatePanelProps {
  * ExportGatePanel - Display export button with blocking reasons
  *
  * Features:
+ * - MPN display (user-facing product identifier)
  * - Green "Export to RetailOps" button when ready
  * - Disabled button with blocking reasons when not ready
  * - Tooltip on disabled button explaining why
@@ -59,6 +64,7 @@ export interface ExportGatePanelProps {
  * - Focus management for accessibility
  */
 export function ExportGatePanel({
+  mpn,
   exportReady,
   blockingReasons = [],
   loading = false,
@@ -150,6 +156,10 @@ export function ExportGatePanel({
           <h3 id="export-gate-title" className="export-gate-panel__title">
             Export to RetailOps
           </h3>
+          {/* LP-phase2b-001: Display MPN (never product_id) */}
+          <div className="export-gate-panel__mpn" data-testid="export-gate-mpn">
+            {mpn}
+          </div>
         </div>
         <div className="export-gate-panel__body">
           <p className="export-gate-panel__ready-message">
@@ -188,6 +198,10 @@ export function ExportGatePanel({
         <h3 id="export-gate-title" className="export-gate-panel__title">
           Export to RetailOps
         </h3>
+        {/* LP-phase2b-001: Display MPN (never product_id) */}
+        <div className="export-gate-panel__mpn" data-testid="export-gate-mpn">
+          {mpn}
+        </div>
       </div>
       <div className="export-gate-panel__body">
         <button
