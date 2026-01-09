@@ -1,0 +1,33 @@
+🧪 Testing Registry Hot-Reload
+
+Step 1: Check initial Firestore state
+  ✓ Created test attribute: hot_reload_test
+    Label: "Hot Reload Test - Initial"
+    Version: 1
+
+Step 2: Update test attribute in Firestore
+  ✓ Updated test attribute
+    Label: "Hot Reload Test - Updated"
+    Version: 2
+
+Step 3: Timing information for hot-reload test
+  Cache TTL: 30 seconds (REGISTRY_CACHE_TTL_MS)
+  Update timestamp: 2026-01-09T23:50:56.949Z
+  Expected cache refresh: 2026-01-09T23:51:26.949Z
+
+✅ Hot-reload test setup complete
+
+To verify hot-reload:
+1. Call completion API now (will use old cache)
+2. Wait 30+ seconds
+3. Call completion API again (should load fresh from Firestore with updated attribute)
+4. Check evaluator status endpoint for registry metadata
+
+📊 Test Result:
+{
+  "testAttributeId": "hot_reload_test",
+  "initialLabel": "Hot Reload Test - Initial",
+  "updatedLabel": "Hot Reload Test - Updated",
+  "updateTimestamp": "2026-01-09T23:50:56.950Z",
+  "cacheTTL": 30000
+}

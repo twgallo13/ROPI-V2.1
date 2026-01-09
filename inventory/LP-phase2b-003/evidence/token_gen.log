@@ -1,0 +1,12 @@
+
+🔧 Firebase Admin Token Generator (REST API)
+Project: ropi-bccee
+Admin Email: theo@shiekh.com
+
+
+❌ Error: VITE_E2E_ADMIN_PASSWORD not set
+
+Set the password via environment variable:
+  export VITE_E2E_ADMIN_PASSWORD="<password>"
+  node scripts/generate-admin-token-rest.js
+

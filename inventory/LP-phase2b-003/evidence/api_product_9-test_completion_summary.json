@@ -1,0 +1,26 @@
+{
+  "mpn": "9-test",
+  "rulesVersion": 7,
+  "segments": [
+    {
+      "segmentId": "core-identifiers",
+      "score": 0,
+      "missingCount": 2
+    },
+    {
+      "segmentId": "classification",
+      "score": 0,
+      "missingCount": 3
+    },
+    {
+      "segmentId": "demographics-color",
+      "score": 0,
+      "missingCount": 4
+    },
+    {
+      "segmentId": "materials-fit",
+      "score": 0,
+      "missingCount": 2
+    }
+  ]
+}

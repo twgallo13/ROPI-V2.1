@@ -1,0 +1,11 @@
+🔄 Loading attribute registry from SDK...
+📦 Found 69 attributes in registry (version: 1.1.0)
+  Committing final batch (69 attributes)...
+✅ Successfully populated 69 attributes to settings/attributes/keys
+
+📊 Sample documents (first 3):
+  - _meta:  Meta (undefined)
+  - _migratedAt:  MigratedAt (undefined)
+  - _migratedVersion:  MigratedVersion (undefined)
+
+🎉 Registry population complete: 69 attributes

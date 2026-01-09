@@ -26,6 +26,12 @@ import {
   revertAttributeHandler,
 } from './endpoints/admin/settings';
 
+// LP-phase2b-003: Evaluator admin endpoints
+import {
+  getEvaluatorStatus,
+  refreshEvaluatorRegistry,
+} from './endpoints/admin/evaluator';
+
 // LP-smart-rules-server-validation-1.0.0: Smart Rules validation endpoint
 import {
   validateSmartRuleHandler,
@@ -165,6 +171,13 @@ app.use((req, res, next) => {
   // Apply JSON parsing for all other requests
   express.json({ limit: '2mb' })(req, res, next);
 });
+
+/**
+ * Admin Evaluator endpoints
+ * LP-phase2b-003: Registry observability and control
+ */
+api.get('/admin/evaluator/status', getEvaluatorStatus);
+api.post('/admin/evaluator/refresh', refreshEvaluatorRegistry);
 
 /**
  * Admin Settings endpoints

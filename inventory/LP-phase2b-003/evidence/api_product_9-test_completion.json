@@ -1,0 +1,83 @@
+{
+  "productIdentifiers": {
+    "mpn": "9-test",
+    "productId": "9-test"
+  },
+  "ready": false,
+  "completionPct": 0,
+  "threshold": 75,
+  "hasBlockingSites": false,
+  "blockingReasons": [
+    {
+      "type": "COMPLETION_BELOW_THRESHOLD",
+      "severity": "BLOCKING",
+      "message": "Product completion 0% is below export threshold 75%",
+      "details": {
+        "currentCompletion": 0,
+        "requiredCompletion": 75
+      }
+    }
+  ],
+  "operatorExplanation": {
+    "summary": "Export blocked: product 0% complete (threshold: 75%)",
+    "blockingIssues": [
+      "Product completion 0% is below export threshold 75%"
+    ],
+    "completionBreakdown": [
+      {
+        "segmentId": "core-identifiers",
+        "segmentName": "Product Core",
+        "score": 0,
+        "weightPct": 25,
+        "missingAttributes": [
+          "name",
+          "sku"
+        ]
+      },
+      {
+        "segmentId": "classification",
+        "segmentName": "Attribute Details",
+        "score": 0,
+        "weightPct": 25,
+        "missingAttributes": [
+          "category",
+          "class",
+          "department"
+        ]
+      },
+      {
+        "segmentId": "demographics-color",
+        "segmentName": "AI Describe",
+        "score": 0,
+        "weightPct": 25,
+        "missingAttributes": [
+          "age_group",
+          "descriptive_color",
+          "gender",
+          "primary_color"
+        ]
+      },
+      {
+        "segmentId": "materials-fit",
+        "segmentName": "Technical",
+        "score": 0,
+        "weightPct": 25,
+        "missingAttributes": [
+          "fit",
+          "material"
+        ]
+      }
+    ],
+    "siteStatus": [
+      {
+        "site": "shiekh.com",
+        "blocked": false
+      }
+    ],
+    "actionRequired": [
+      "Increase product completion to 75% or higher"
+    ]
+  },
+  "evaluationTimestamp": "2026-01-09T23:50:30.969Z",
+  "rulesVersion": 7
+}
