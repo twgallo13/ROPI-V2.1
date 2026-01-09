@@ -1,0 +1,5 @@
+Fetching settings/attributes...
+Found 0 attributes in registry
+✅ Saved to: /workspaces/ROPI-V2.1/inventory/LP-phase2b-001/evidence/attributes_registry.json
+
+📋 Attributes by category:

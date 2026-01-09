@@ -1,0 +1,29 @@
+Loading completion rules...
+Loading product 19-test...
+Loading attributes registry...
+
+📊 Product: 19-test
+   Total product attributes: 10
+   Total registry attributes: 4
+
+🔍 Evaluating segment: Core Product Attributes (core-attributes)
+   Looking for categories: sku_core, classification
+   Required: 0
+   Completed: 0
+   Completion: 0%
+
+🔍 Evaluating segment: SEO & Marketing (seo-attributes)
+   Looking for categories: description
+   Required: 0
+   Completed: 0
+   Completion: 0%
+
+🔍 Evaluating segment: Media & Images (media-attributes)
+   Looking for static IDs: primary_image, images, hero_image
+   Required: 3
+   Completed: 0
+   Completion: 0%
+
+📈 Overall Completion: 0%
+
+✅ Saved evaluation to: /workspaces/ROPI-V2.1/inventory/LP-phase2b-001/evidence/eval_expected_19-test.json

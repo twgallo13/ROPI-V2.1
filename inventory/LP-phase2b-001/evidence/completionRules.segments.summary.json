@@ -1,0 +1,33 @@
+{
+  "name": "Core Product Attributes",
+  "id": "core-attributes",
+  "requiredAttributeCategories": [
+    "sku_core",
+    "classification"
+  ],
+  "staticAttributeIds": [],
+  "source": "REGISTRY",
+  "weightPct": 80
+}
+{
+  "name": "SEO & Marketing",
+  "id": "seo-attributes",
+  "requiredAttributeCategories": [
+    "description"
+  ],
+  "staticAttributeIds": [],
+  "source": "REGISTRY",
+  "weightPct": 20
+}
+{
+  "name": "Media & Images",
+  "id": "media-attributes",
+  "requiredAttributeCategories": [],
+  "staticAttributeIds": [
+    "primary_image",
+    "images",
+    "hero_image"
+  ],
+  "source": "STATIC",
+  "weightPct": 0
+}

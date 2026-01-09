@@ -1,0 +1,32 @@
+[
+  {
+    "name": "rics_color"
+  },
+  {
+    "name": "rics_long_desc"
+  },
+  {
+    "name": "rics_short_description"
+  },
+  {
+    "name": "rics_category"
+  },
+  {
+    "name": "age_group"
+  },
+  {
+    "name": "width"
+  },
+  {
+    "name": "weight"
+  },
+  {
+    "name": "mpn"
+  },
+  {
+    "name": "ageGroup"
+  },
+  {
+    "name": "brand"
+  }
+]

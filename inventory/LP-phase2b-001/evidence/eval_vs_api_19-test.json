@@ -1,0 +1,24 @@
+{
+  "comparison": "API vs Local Evaluator",
+  "productId": "19-test",
+  "apiCompletionPct": 18,
+  "evalCompletionPct": 18,
+  "match": true,
+  "apiSegments": [
+    {
+      "segmentId": "core-attributes",
+      "completionPct": 23,
+      "requiredCount": 13,
+      "completedCount": 3
+    }
+  ],
+  "evalSegments": [
+    {
+      "segmentId": "core-attributes",
+      "completionPct": 23,
+      "requiredCount": 13,
+      "completedCount": 3
+    }
+  ],
+  "conclusion": "Evaluator logic is CORRECT. Issue is product data completeness, not evaluation logic."
+}

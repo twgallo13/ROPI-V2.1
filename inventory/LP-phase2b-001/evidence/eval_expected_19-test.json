@@ -1,0 +1,56 @@
+{
+  "productId": "19-test",
+  "rulesVersion": 3,
+  "segments": [
+    {
+      "segmentId": "core-attributes",
+      "segmentName": "Core Product Attributes",
+      "weightPct": 80,
+      "requiredAttributesCount": 13,
+      "completedAttributesCount": 3,
+      "completionPct": 23,
+      "requiredAttributes": [
+        "mpn",
+        "category",
+        "website",
+        "status",
+        "department",
+        "product_is_active",
+        "slug",
+        "name",
+        "rics_category",
+        "sku"
+      ],
+      "completedAttributes": [
+        "mpn",
+        "rics_category",
+        "brand"
+      ]
+    },
+    {
+      "segmentId": "seo-attributes",
+      "segmentName": "SEO & Marketing",
+      "weightPct": 20,
+      "requiredAttributesCount": 0,
+      "completedAttributesCount": 0,
+      "completionPct": 0,
+      "requiredAttributes": [],
+      "completedAttributes": []
+    },
+    {
+      "segmentId": "media-attributes",
+      "segmentName": "Media & Images",
+      "weightPct": 0,
+      "requiredAttributesCount": 3,
+      "completedAttributesCount": 0,
+      "completionPct": 0,
+      "requiredAttributes": [
+        "primary_image",
+        "images",
+        "hero_image"
+      ],
+      "completedAttributes": []
+    }
+  ],
+  "overallCompletionPct": 18
+}

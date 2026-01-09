@@ -1,0 +1,189 @@
+{
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "inventory": {
+    "store_inv": 0,
+    "warehouse_inv": 8
+  },
+  "roUploadBatchId": null,
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0
+  },
+  "dimensions": {
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0
+  },
+  "core": {
+    "createdAt": "2026-01-03T22:30:23.144Z",
+    "normalized_mpn": "19-TEST",
+    "lastReceived": "12/24/2025",
+    "mpn": "19-test",
+    "sku": "SKU-15-test",
+    "title": "Mens Accy",
+    "brand": "ICE CREAM",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2026-01-03T22:48:53.452Z"
+  },
+  "provenance": {
+    "age_group": {
+      "reason": "matched on 'Accessories||Mens||Pants||Casual'",
+      "input": {
+        "matchedValue": "Accessories||Mens||Pants||Casual",
+        "ricsCategory": "Accessories||Mens||Pants||Casual"
+      },
+      "ruleName": "Men 2 Gender",
+      "source": "smartRule",
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "appliedAt": "2026-01-03T22:48:53.614Z"
+    }
+  },
+  "_appliedRules": {
+    "age_group": {
+      "confidence": 0.9,
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "appliedAt": "2026-01-03T22:48:53.614Z"
+    }
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2026-01-03T22:48:51.495Z",
+    "normalizedAt": "2026-01-03T22:48:53.452Z",
+    "validatedAt": "2026-01-03T22:48:53.452Z"
+  },
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T22:30:23.233Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Accessories||Mens||Pants||Casual",
+          "matchedValue": "Accessories||Mens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T22:48:53.614Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Accessories||Mens||Pants||Casual",
+          "matchedValue": "Accessories||Mens||Pants||Casual"
+        }
+      }
+    }
+  ],
+  "rics_color": "BLACK",
+  "ricsColor": "BLACK",
+  "exportReadiness": {
+    "byWebsite": {},
+    "overall": 0
+  },
+  "media": {
+    "gallery": []
+  },
+  "title": "Mens Accy",
+  "descriptions": {},
+  "store_inv": 0,
+  "ricsLongDesc": "running sweatpants",
+  "createdAt": "2026-01-03T22:30:23.144Z",
+  "rics_long_desc": "running sweatpants",
+  "observations": [],
+  "rics_category": "Accessories||Mens||Pants||Casual",
+  "id": "19-test",
+  "ricsShortDescription": "running sweatpants",
+  "sku": "SKU-15-test",
+  "brand": "ICE CREAM",
+  "height": 0,
+  "updatedAt": "2026-01-03T22:48:53.452Z",
+  "warehouse_inv": 8,
+  "rics_short_description": "running sweatpants",
+  "age_group": "Adult",
+  "lastReceived": "12/24/2025",
+  "length": 0,
+  "weight": 0,
+  "mpn": "19-test",
+  "ageGroup": "Adult",
+  "ricsCategory": "Accessories||Mens||Pants||Casual",
+  "smartSuggestions": [],
+  "name": "Mens Accy",
+  "width": 0,
+  "websites": [],
+  "attributes": {
+    "rics_color": "BLACK",
+    "rics_long_desc": "running sweatpants",
+    "rics_short_description": "running sweatpants",
+    "rics_category": "Accessories||Mens||Pants||Casual",
+    "age_group": "Adult",
+    "width": 0,
+    "weight": 0,
+    "mpn": "19-test",
+    "ageGroup": "Adult",
+    "brand": "ICE CREAM"
+  },
+  "firstReceived": "12/26/2025",
+  "status": "draft",
+  "_smartRulesErrors": [
+    {
+      "error": "Target field not allowed: department",
+      "ruleId": "rule_1767344587339_38yo9y"
+    },
+    {
+      "error": "Target field not allowed: department",
+      "ruleId": "rule_1767350520854_xpfska"
+    },
+    {
+      "error": "Target field not allowed: age_group",
+      "ruleId": "rule_1767353025831_ap2zq7"
+    },
+    {
+      "error": "Target field not allowed: age_group",
+      "ruleId": "rule_1767479194034_712nhw"
+    },
+    {
+      "ruleId": "rule_1767495440275_5f8bpr",
+      "error": "Target field not allowed: department"
+    },
+    {
+      "error": "Target field not allowed: height",
+      "ruleId": "6xM28ocd281iw2D6KK4P"
+    },
+    {
+      "error": "Target field not allowed: length",
+      "ruleId": "H53rfxHqZ8h7j4abYctd"
+    },
+    {
+      "error": "Target field not allowed: weight",
+      "ruleId": "JiYQZ6PxwjKBHsWiF1gI"
+    },
+    {
+      "error": "Target field not allowed: width",
+      "ruleId": "YyhUxSJOCzOOW8ZuAW0z"
+    }
+  ],
+  "_smartRulesSkipUntil": 1767908312517,
+  "_smartRulesRanAt": {
+    "_seconds": 1767908302,
+    "_nanoseconds": 547000000
+  }
+}

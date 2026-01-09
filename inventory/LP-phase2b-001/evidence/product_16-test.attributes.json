@@ -1,0 +1,29 @@
+[
+  {
+    "name": "department"
+  },
+  {
+    "name": "width"
+  },
+  {
+    "name": "weight"
+  },
+  {
+    "name": "mpn"
+  },
+  {
+    "name": "brand"
+  },
+  {
+    "name": "age_group"
+  },
+  {
+    "name": "gender"
+  },
+  {
+    "name": "ageGroup"
+  },
+  {
+    "name": "website"
+  }
+]

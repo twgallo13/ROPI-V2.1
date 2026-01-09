@@ -1,0 +1,370 @@
+{
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "inventory": {
+    "store_inv": 0,
+    "warehouse_inv": 14
+  },
+  "roUploadBatchId": null,
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0
+  },
+  "dimensions": {
+    "length": 0,
+    "width": 0,
+    "weight": 0,
+    "height": 0
+  },
+  "core": {
+    "createdAt": "2026-01-03T21:25:42.593Z",
+    "normalized_mpn": "16-TEST",
+    "lastReceived": "12/24/2025",
+    "mpn": "16-test",
+    "sku": "SKU-16-test",
+    "title": "1df585bf-d341-4c0b-887d-b3bc0165f3c2",
+    "brand": "ICE CREAM/ROC",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2026-01-03T21:59:12.756Z"
+  },
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2026-01-03T21:59:10.263Z",
+    "normalizedAt": "2026-01-03T21:59:12.756Z",
+    "validatedAt": "2026-01-03T21:59:12.756Z"
+  },
+  "_smartRulesErrors": [
+    {
+      "ruleId": "rule_1767344587339_38yo9y",
+      "error": "Target field not allowed: department"
+    },
+    {
+      "error": "Target field not allowed: department",
+      "ruleId": "rule_1767350520854_xpfska"
+    },
+    {
+      "error": "Target field not allowed: age_group",
+      "ruleId": "rule_1767353025831_ap2zq7"
+    },
+    {
+      "ruleId": "rule_1767479194034_712nhw",
+      "error": "Target field not allowed: age_group"
+    },
+    {
+      "error": "Target field not allowed: department",
+      "ruleId": "rule_1767495440275_5f8bpr"
+    },
+    {
+      "error": "Target field not allowed: height",
+      "ruleId": "6xM28ocd281iw2D6KK4P"
+    },
+    {
+      "error": "Target field not allowed: length",
+      "ruleId": "H53rfxHqZ8h7j4abYctd"
+    },
+    {
+      "error": "Target field not allowed: weight",
+      "ruleId": "JiYQZ6PxwjKBHsWiF1gI"
+    },
+    {
+      "error": "Target field not allowed: width",
+      "ruleId": "YyhUxSJOCzOOW8ZuAW0z"
+    }
+  ],
+  "_appliedRules": {
+    "age_group": {
+      "appliedAt": "2026-01-08T21:40:49.878Z",
+      "confidence": 0.9,
+      "ruleId": "rule_1767353025831_ap2zq7"
+    },
+    "department": {
+      "ruleId": "rule_1767344587339_38yo9y",
+      "appliedAt": "2026-01-08T21:40:49.878Z",
+      "confidence": 0.9
+    }
+  },
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:25:42.593Z",
+      "details": {
+        "ruleId": "rule_1767344587339_38yo9y",
+        "ruleName": "Footwear",
+        "targetField": "department",
+        "value": "Footwear",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:25:42.593Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:52:41.082Z",
+      "details": {
+        "ruleId": "rule_1767344587339_38yo9y",
+        "ruleName": "Footwear",
+        "targetField": "department",
+        "value": "Footwear",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:52:41.082Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:53:23.213Z",
+      "details": {
+        "ruleId": "rule_1767344587339_38yo9y",
+        "ruleName": "Footwear",
+        "targetField": "department",
+        "value": "Footwear",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:53:23.213Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:59:12.756Z",
+      "details": {
+        "ruleId": "rule_1767344587339_38yo9y",
+        "ruleName": "Footwear",
+        "targetField": "department",
+        "value": "Footwear",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-03T21:59:12.756Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Footwear||Mens||Tops||T-short sleeve",
+          "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+        }
+      }
+    },
+    {
+      "actor": "sPgXgUARnVRmGzZOIS9hGCneX0G2",
+      "action": "smartrule_manual_apply",
+      "timestamp": "2026-01-08T21:40:49.878Z",
+      "details": {
+        "suggestionId": "sug-rule-1767344587339-38yo9y-department",
+        "ruleId": "rule_1767344587339_38yo9y",
+        "ruleName": "Footwear",
+        "targetField": "department",
+        "value": "Footwear",
+        "confidence": 0.9
+      }
+    },
+    {
+      "actor": "sPgXgUARnVRmGzZOIS9hGCneX0G2",
+      "action": "smartrule_manual_apply",
+      "timestamp": "2026-01-08T21:40:49.878Z",
+      "details": {
+        "suggestionId": "sug-rule-1767353025831-ap2zq7-age-group",
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9
+      }
+    }
+  ],
+  "height": "",
+  "provenance": {
+    "age_group": {
+      "input": {
+        "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+      },
+      "ruleName": "Men 2 Gender",
+      "source": "smartRule",
+      "appliedAt": "2026-01-08T21:40:49.878Z",
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "reason": "Manually applied by sPgXgUARnVRmGzZOIS9hGCneX0G2"
+    },
+    "department": {
+      "source": "human",
+      "appliedAt": "2026-01-08T21:41:22.465Z",
+      "actor": "theo@shiekhshoes.org"
+    }
+  },
+  "activityLog": [
+    {
+      "actor": "theo@shiekhshoes.org",
+      "action": "user_replaced_smartrule",
+      "timestamp": "2026-01-06T06:19:19.533Z",
+      "details": {
+        "fieldPath": "department",
+        "previousProvenance": {
+          "source": "smartRule",
+          "input": {
+            "matchedValue": "Footwear||Mens||Tops||T-short sleeve",
+            "ricsCategory": "Footwear||Mens||Tops||T-short sleeve"
+          },
+          "ruleId": "rule_1767344587339_38yo9y",
+          "reason": "matched on 'Footwear||Mens||Tops||T-short sleeve'",
+          "ruleName": "Footwear",
+          "appliedAt": "2026-01-03T21:59:12.756Z"
+        },
+        "newValue": "Footwear"
+      }
+    },
+    {
+      "actor": "theo@shiekhshoes.org",
+      "action": "user_replaced_smartrule",
+      "timestamp": "2026-01-08T21:41:22.465Z",
+      "details": {
+        "fieldPath": "department",
+        "previousProvenance": {
+          "ruleId": "rule_1767344587339_38yo9y",
+          "appliedAt": "2026-01-08T21:40:49.878Z",
+          "source": "smartRule",
+          "reason": "Manually applied by sPgXgUARnVRmGzZOIS9hGCneX0G2",
+          "input": {
+            "matchedValue": "Footwear||Mens||Tops||T-short sleeve"
+          },
+          "ruleName": "Footwear"
+        },
+        "newValue": ""
+      }
+    }
+  ],
+  "lastReceived": "12/24/2025",
+  "length": 0,
+  "weight": 0,
+  "mpn": "16-test",
+  "media": {
+    "gallery": []
+  },
+  "title": "1df585bf-d341-4c0b-887d-b3bc0165f3c2",
+  "descriptions": {},
+  "store_inv": 0,
+  "createdAt": "2026-01-03T21:25:42.593Z",
+  "smartSuggestions": [],
+  "observations": [],
+  "name": "1df585bf-d341-4c0b-887d-b3bc0165f3c2",
+  "width": 0,
+  "id": "16-test",
+  "sku": "SKU-16-test",
+  "brand": "ICE CREAM/ROC",
+  "firstReceived": "12/26/2025",
+  "updatedAt": "2026-01-03T21:59:12.756Z",
+  "warehouse_inv": 14,
+  "status": "draft",
+  "gender": "Men's",
+  "age_group": "Adult",
+  "ageGroup": "Adult",
+  "department": "Footwear",
+  "_smartRulesSkipUntil": 1767927328339,
+  "_smartRulesRanAt": {
+    "_seconds": 1767927318,
+    "_nanoseconds": 357000000
+  },
+  "exportReadiness": {
+    "overall": 20,
+    "byWebsite": {
+      "shiekh.com": {
+        "score": 20,
+        "checklist": {
+          "coreInfo": false,
+          "attributes": true,
+          "descriptions": false,
+          "media": false,
+          "pricing": false
+        },
+        "missingAttributes": []
+      }
+    }
+  },
+  "websites": [
+    "shiekh.com"
+  ],
+  "attributes": {
+    "department": "Footwear",
+    "width": 0,
+    "weight": 0,
+    "mpn": "16-test",
+    "brand": "ICE CREAM/ROC",
+    "age_group": "Adult",
+    "gender": "Men's",
+    "ageGroup": "Adult",
+    "website": [
+      "shiekh.com"
+    ]
+  }
+}
