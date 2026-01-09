@@ -193,6 +193,9 @@
   "result_details": "Remediation complete. Root cause identified and fixed. All test products now have complete Core attributes (13/13) yielding 80% overall completion. SEO segment configuration corrected. Reactivity and determinism verified. System working as designed.",
   "result_summary": "LP-phase2b-001 Remediation — Completion Model Fix\n\nSTATUS: ✅ VERIFIED_SUCCESS\n\n## ROOT CAUSE\nTest products had insufficient data (9-10 attrs vs 13+ required). 'Website-only' effect was sparse data amplifying individual attribute impact.\n\n## FIXES APPLIED\n1. ✅ Populated 3 test products with complete Core attributes\n2. ✅ Fixed SEO segment category mapping (description → descriptions_sites)\n3. ✅ Incremented rulesVersion (3 → 4)\n\n## RESULTS\n- Before: 18-25% completion (3-4/13 core attrs)\n- After: 80% completion (13/13 core attrs) for ALL products\n- Improvement: +62 percentage points\n\n## VERIFICATION\n✅ Evaluator matches API behavior\n✅ Reactivity < 2s SLA (323ms removal, 346ms restore)\n✅ Stability: 3 identical runs (hash-verified)\n✅ Rules: Core correct, SEO fixed\n\n## EVIDENCE\n40+ files in inventory/LP-phase2b-001/evidence/\n- Rules: before/after with changelog\n- Products: full snapshots for 3 MPNs\n- Evaluations: all show 80% completion\n- Tests: reactivity + stability proofs\n\n## CONCLUSION\nSystem is working correctly. No code changes to evaluator needed.\nIssue was data quality. Fix: populate products with complete attributes.\n\nReady for VVP and handoff.",
   "completed_at": "2026-01-09T11:05:00Z",
+  "merge_commit_sha": "7965a67",
+  "merged_at": "2026-01-09T23:47:00Z",
+  "merged_by": "theo",
   "next_steps": [
     "Lisa review all evidence files",
     "Verify completionRules_after_seo_fix.json shows correct SEO categories",
