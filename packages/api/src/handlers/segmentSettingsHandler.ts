@@ -338,7 +338,7 @@ export async function loadSegmentSettings(): Promise<SegmentSettings> {
 // Router Setup
 // ============================================================================
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/', getSegmentSettingsHandler);
 router.put('/:segmentId', updateSegmentSettingHandler);

@@ -145,6 +145,9 @@ import {
   importPreviewHandler,
 } from './endpoints/admin/mappings';
 
+// Segment Settings Handler (Option A - Binary Segment Evaluator)
+import segmentSettingsRouter from './handlers/segmentSettingsHandler';
+
 const app: Application = express();
 const api: Router = Router();
 
@@ -213,6 +216,11 @@ api.get('/admin/settings/roles', getRolesHandler);
 api.get('/admin/permissions', requireAdmin, getPermissionsHandler);
 api.patch('/admin/permissions', requireAdmin, updatePermissionsHandler);
 api.post('/admin/permissions/reset', requireAdmin, resetPermissionsHandler);
+
+/**
+ * Segment Settings endpoints (Option A - Binary Segment Evaluator)
+ */
+api.use('/admin/settings/segments', segmentSettingsRouter);
 
 /**
  * Admin Smart Rules validation endpoints (LP-smart-rules-server-validation-1.0.0)

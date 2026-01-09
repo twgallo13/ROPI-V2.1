@@ -287,7 +287,9 @@ function evaluateSegment(
   const blockingReasons: string[] = [];
 
   if (segment.ruleType === 'ALL_REQUIRED') {
-    // ALL attributes must be complete for ALL selected sites
+    // BINARY SEGMENT SEMANTICS (Option A): ALL attributes must be complete for ALL selected sites
+    // If ANY attribute is missing → score = 0, status = blocked
+    // If ALL attributes present → score = 100, status = complete
     for (const attrId of attributeIds) {
       const isCompleteForAllSites = selectedSites.every(site => 
         hasAttributeValueForSite(product, attrId, site, registry[attrId])
@@ -314,7 +316,13 @@ function evaluateSegment(
     }
   }
 
-  const score = totalAttributes > 0 ? Math.round((completedCount / totalAttributes) * 100) : 100;
+  // BINARY SEGMENT SEMANTICS: All-or-nothing scoring per segment
+  // For ALL_REQUIRED: If completedCount === totalAttributes → 100, else → 0
+  const score = totalAttributes > 0 
+    ? (segment.ruleType === 'ALL_REQUIRED' 
+        ? (completedCount === totalAttributes ? 100 : 0)
+        : Math.round((completedCount / totalAttributes) * 100))
+    : 100;
 
   return {
     segmentId: segment.id,
