@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0",
+  "rulesVersion": 5,
+  "updatedAt": "2026-01-09T14:19:02.191Z",
+  "updatedBy": "binary-segment-semantics-option-a",
+  "exportUnlockThresholdPct": 80,
+  "segments": [
+    {
+      "id": "core-attributes",
+      "name": "Core Product Attributes",
+      "enabled": true,
+      "weightPct": 25,
+      "ruleType": "ALL_REQUIRED",
+      "appliesTo": {
+        "mode": "ALL_PRODUCTS",
+        "sites": []
+      },
+      "attributeSelector": {
+        "source": "REGISTRY",
+        "categories": [
+          "sku_core",
+          "classification"
+        ],
+        "requirementFlag": "required_for_completion",
+        "siteAware": false,
+        "includeInternalOnly": false,
+        "excludeAttributeIds": []
+      }
+    },
+    {
+      "id": "seo-attributes",
+      "name": "SEO & Marketing",
+      "enabled": true,
+      "weightPct": 25,
+      "ruleType": "ALL_REQUIRED",
+      "appliesTo": {
+        "mode": "ALL_PRODUCTS",
+        "sites": []
+      },
+      "attributeSelector": {
+        "source": "REGISTRY",
+        "categories": [
+          "description",
+          "seo"
+        ],
+        "requirementFlag": "required_for_completion",
+        "siteAware": true,
+        "includeInternalOnly": false,
+        "excludeAttributeIds": []
+      }
+    },
+    {
+      "id": "media-attributes",
+      "name": "Media & Images",
+      "enabled": true,
+      "weightPct": 25,
+      "ruleType": "ANY_REQUIRED",
+      "appliesTo": {
+        "mode": "ALL_PRODUCTS",
+        "sites": []
+      },
+      "attributeSelector": {
+        "source": "REGISTRY",
+        "categories": [
+          "media"
+        ],
+        "requirementFlag": "required_for_completion",
+        "siteAware": false,
+        "includeInternalOnly": false,
+        "excludeAttributeIds": []
+      }
+    },
+    {
+      "id": "technical-attributes",
+      "name": "Technical Specifications",
+      "enabled": true,
+      "weightPct": 25,
+      "ruleType": "ALL_REQUIRED",
+      "appliesTo": {
+        "mode": "ALL_PRODUCTS",
+        "sites": []
+      },
+      "attributeSelector": {
+        "source": "REGISTRY",
+        "categories": [
+          "technical"
+        ],
+        "requirementFlag": "required_for_completion",
+        "siteAware": false,
+        "includeInternalOnly": false,
+        "excludeAttributeIds": []
+      }
+    }
+  ],
+  "builtInSegments": {
+    "description-seo": {
+      "segmentId": "seo-attributes",
+      "lockedSemantics": true
+    }
+  },
+  "exclusions": {
+    "media": {
+      "affectsCompletion": false,
+      "reason": "Media attributes excluded by governance directive"
+    },
+    "pricing": {
+      "affectsCompletion": false,
+      "reason": "Pricing attributes excluded by governance directive"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-01-09T14:19:02.631Z",
+  "operation": "update_completion_rules_to_4_segments",
+  "oldRulesVersion": 4,
+  "newRulesVersion": 5,
+  "reason": "Binary segment semantics implementation (Option A) - 4 segments with equal 25% weights",
+  "changes": {
+    "segments": {
+      "removed": [],
+      "updated": [
+        "core-attributes",
+        "seo-attributes"
+      ],
+      "added": [
+        "media-attributes (enabled)",
+        "technical-attributes (enabled)"
+      ],
+      "weights": {
+        "old": "core-attributes=80%, seo-attributes=20%, media-attributes=0%",
+        "new": "core-attributes=25%, seo-attributes=25%, media-attributes=25%, technical-attributes=25%"
+      }
+    }
+  }
+}

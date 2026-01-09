@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0.0",
+  "segments": [
+    {
+      "ruleType": "ALL_REQUIRED",
+      "weightPct": 80,
+      "attributeSelector": {
+        "source": "REGISTRY",
+        "categories": [
+          "sku_core",
+          "classification"
+        ],
+        "siteAware": false,
+        "excludeAttributeIds": [],
+        "requirementFlag": "required_for_completion",
+        "staticAttributeIds": [],
+        "includeInternalOnly": true
+      },
+      "appliesTo": {
+        "sites": [],
+        "mode": "ALL_PRODUCTS"
+      },
+      "enabled": true,
+      "name": "Core Product Attributes",
+      "id": "core-attributes"
+    },
+    {
+      "enabled": true,
+      "appliesTo": {
+        "sites": [
+          "shiekh",
+          "karmaloop",
+          "mltd"
+        ],
+        "mode": "CONDITIONAL"
+      },
+      "attributeSelector": {
+        "includeInternalOnly": false,
+        "source": "REGISTRY",
+        "staticAttributeIds": [],
+        "categories": [
+          "descriptions_sites",
+          "seo"
+        ],
+        "requirementFlag": "required_for_export",
+        "excludeAttributeIds": [],
+        "siteAware": false
+      },
+      "ruleType": "ALL_REQUIRED",
+      "id": "seo-attributes",
+      "weightPct": 20,
+      "name": "SEO & Marketing"
+    },
+    {
+      "appliesTo": {
+        "sites": [],
+        "mode": "ALL_PRODUCTS"
+      },
+      "id": "media-attributes",
+      "name": "Media & Images",
+      "enabled": false,
+      "ruleType": "ANY_REQUIRED",
+      "attributeSelector": {
+        "requirementFlag": "",
+        "categories": [],
+        "source": "STATIC",
+        "excludeAttributeIds": [],
+        "staticAttributeIds": [
+          "primary_image",
+          "images",
+          "hero_image"
+        ],
+        "includeInternalOnly": false,
+        "siteAware": false
+      },
+      "weightPct": 0
+    }
+  ],
+  "exclusions": {
+    "pricing": {
+      "reason": "Pricing managed by ERP integration",
+      "affectsCompletion": false
+    },
+    "media": {
+      "affectsCompletion": false,
+      "reason": "Media completion tracked separately"
+    }
+  },
+  "builtInSegments": {
+    "seo-attributes": {
+      "lockedSemantics": false,
+      "segmentId": "seo-attributes"
+    },
+    "description-seo": {
+      "segmentId": "description-seo",
+      "lockedSemantics": true
+    },
+    "media-attributes": {
+      "lockedSemantics": false,
+      "segmentId": "media-attributes"
+    },
+    "core-attributes": {
+      "segmentId": "core-attributes",
+      "lockedSemantics": true
+    }
+  },
+  "exportUnlockThresholdPct": 80,
+  "updatedAt": "2026-01-09T11:03:00.535Z",
+  "rulesVersion": 4,
+  "updatedBy": "homer-remediation-lp-phase2b-001"
+}

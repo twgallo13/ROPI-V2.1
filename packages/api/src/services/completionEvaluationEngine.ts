@@ -267,6 +267,12 @@ function evaluateSegment(
   const attributeIds = resolveAttributes(registry, segment.attributeSelector);
   const totalAttributes = attributeIds.length;
   
+  // Debug logging for troubleshooting
+  const isDebugProduct = product.productId === '14-test';
+  if (isDebugProduct) {
+    console.error(`[EVAL_DEBUG] Segment ${segment.id}: resolved ${totalAttributes} attributes:`, attributeIds.slice(0, 10));
+  }
+  
   if (totalAttributes === 0) {
     return {
       segmentId: segment.id,
@@ -323,6 +329,11 @@ function evaluateSegment(
         ? (completedCount === totalAttributes ? 100 : 0)
         : Math.round((completedCount / totalAttributes) * 100))
     : 100;
+
+  const isDebugProduct = product.productId === '14-test';
+  if (isDebugProduct) {
+    console.error(`[EVAL_DEBUG] Segment ${segment.id} final: completedCount=${completedCount}/${totalAttributes}, score=${score}`);
+  }
 
   return {
     segmentId: segment.id,
@@ -426,6 +437,10 @@ function hasAttributeValueForSite(
   const value = product.attributes[attributeId];
   
   if (value === undefined || value === null || value === '') {
+    const isDebug = product.productId === '14-test';
+    if (isDebug) {
+      console.error(`[EVAL_DEBUG] ${attributeId}: missing (value=${value})`);
+    }
     return false;
   }
 
@@ -435,10 +450,18 @@ function hasAttributeValueForSite(
     const attributeSite = !isGlobalAttribute ? attributeConfig.attribute_id.split('_').pop() : null;
     
     if (attributeSite && attributeSite !== site) {
+      const isDebug = product.productId === '14-test';
+      if (isDebug) {
+        console.error(`[EVAL_DEBUG] ${attributeId}: not applicable to site ${site} (applies to ${attributeSite})`);
+      }
       return true; // Not applicable to this site, consider complete
     }
   }
 
+  const isDebug = product.productId === '14-test';
+  if (isDebug) {
+    console.error(`[EVAL_DEBUG] ${attributeId}: present (value=${value})`);
+  }
   // For non-site-aware attributes or site-aware attributes with scalar values
   return true;
 }
