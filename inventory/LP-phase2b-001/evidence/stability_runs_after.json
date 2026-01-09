@@ -1,0 +1,74 @@
+[
+  {
+    "runNumber": 1,
+    "timestamp": "2026-01-09T11:05:07.002Z",
+    "products": [
+      {
+        "mpn": "19-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "dfdcdc143508ed09"
+      },
+      {
+        "mpn": "16-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "abf99a98493c5943"
+      },
+      {
+        "mpn": "15-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "d2ce09f08ad4dc2c"
+      }
+    ]
+  },
+  {
+    "runNumber": 2,
+    "timestamp": "2026-01-09T11:05:10.043Z",
+    "products": [
+      {
+        "mpn": "19-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "dfdcdc143508ed09"
+      },
+      {
+        "mpn": "16-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "abf99a98493c5943"
+      },
+      {
+        "mpn": "15-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "d2ce09f08ad4dc2c"
+      }
+    ]
+  },
+  {
+    "runNumber": 3,
+    "timestamp": "2026-01-09T11:05:13.068Z",
+    "products": [
+      {
+        "mpn": "19-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "dfdcdc143508ed09"
+      },
+      {
+        "mpn": "16-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "abf99a98493c5943"
+      },
+      {
+        "mpn": "15-test",
+        "completionPct": 80,
+        "rulesVersion": 4,
+        "hash": "d2ce09f08ad4dc2c"
+      }
+    ]
+  }
+]

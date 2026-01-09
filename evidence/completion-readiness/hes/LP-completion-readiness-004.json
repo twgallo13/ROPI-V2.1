@@ -1,0 +1,97 @@
+{
+  "lp_id": "LP-completion-readiness-004",
+  "lp_title": "Product completion API & product page UX",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "api_contract_sample": {
+      "description": "GET /api/products/{id}/completion sample response",
+      "endpoint": "/api/products/{id}/completion",
+      "method": "GET",
+      "curl_command": "curl -i -H \"Authorization: Bearer <token>\" https://ropi-aoss-staging.web.app/api/products/<productId>/completion",
+      "artifact_file": "artifacts/LP-completion-readiness-004/api-product-completion-<id>.json",
+      "product_id": "",
+      "request_timestamp": "",
+      "response_status": null,
+      "response_body": {
+        "ready": false,
+        "completionPct": null,
+        "blockingReasons": [],
+        "operatorExplanation": "",
+        "segmentResults": [],
+        "evaluatedAt": ""
+      },
+      "response_headers": {},
+      "timestamp": ""
+    },
+    "api_contract_blocked_product": {
+      "description": "Sample response for blocked product",
+      "product_id": "",
+      "response_body": {
+        "ready": false,
+        "completionPct": null,
+        "blockingReasons": [],
+        "operatorExplanation": ""
+      },
+      "timestamp": ""
+    },
+    "api_contract_ready_product": {
+      "description": "Sample response for ready product",
+      "product_id": "",
+      "response_body": {
+        "ready": true,
+        "completionPct": null,
+        "blockingReasons": [],
+        "operatorExplanation": ""
+      },
+      "timestamp": ""
+    },
+    "product_ui_integration": {
+      "description": "Product UI useProductCompletion hook integration",
+      "vvp_reference": "evidence/completion-readiness/vvp/product-page-completion-display.md",
+      "screenshot_before": "artifacts/LP-completion-readiness-004/screenshots/product-page-<id>-before.png",
+      "screenshot_after": "artifacts/LP-completion-readiness-004/screenshots/product-page-<id>-after.png",
+      "hook_file": "packages/web/src/hooks/useProductCompletion.ts",
+      "verified_behaviors": {
+        "displays_ready_status": false,
+        "displays_completionPct": false,
+        "displays_operatorExplanation": false,
+        "gates_publish_on_ready": false,
+        "gates_export_on_ready": false
+      },
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "API sample response stored in HES",
+      "verified": false,
+      "notes": ""
+    },
+    {
+      "criterion": "VVP demonstrating product page shows operator explanation and publish/export control state change according to API",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/web/src/hooks/useProductCompletion.ts"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

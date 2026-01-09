@@ -1,0 +1,71 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-003",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/api/src/services/completionEvaluationEngine.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/api/src/services/completionEvaluationEngine.test.ts",
+      "action": "created"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": null,
+    "deployedAt": null
+  },
+  "verification": {
+    "deterministic_tests_created": {
+      "status": "PENDING",
+      "evidence": "Test suite invoking evaluateCompletion with registry snapshot, rules snapshot, sample product snapshots (including multi-site)"
+    },
+    "stable_completion_pct": {
+      "status": "PENDING",
+      "evidence": "Tests yield stable totalCompletionPct for given inputs across multiple runs"
+    },
+    "stable_segment_results": {
+      "status": "PENDING",
+      "evidence": "Tests yield stable segmentResults for given inputs across multiple runs"
+    },
+    "evaluatedAt_timestamp": {
+      "status": "PENDING",
+      "evidence": "evaluateCompletion includes evaluatedAt timestamp in results"
+    },
+    "site_blocking_description_seo": {
+      "status": "PENDING",
+      "evidence": "When Description/SEO built-in segment is missing on any selected site, result shows siteBlockingReasons and hasBlockingSites === true"
+    },
+    "test_commit_sha": {
+      "status": "PENDING",
+      "evidence": "Commit SHA for deterministic tests"
+    },
+    "test_output": {
+      "status": "PENDING",
+      "evidence": "Test execution output showing PASS status for all deterministic tests"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-003: Deterministic completion engine verification",
+    "Goal: Verify evaluateCompletion is deterministic, registry-driven, enforces required_for_completion",
+    "Tasks:",
+    "  1. Create deterministic tests with registry/rules/product snapshots",
+    "  2. Confirm failure/hasBlockingSites when Description/SEO missing on any site",
+    "Acceptance:",
+    "  - Tests yield stable totalCompletionPct and segmentResults",
+    "  - Site-level description/SEO missing → siteBlockingReasons and hasBlockingSites === true"
+  ]
+}

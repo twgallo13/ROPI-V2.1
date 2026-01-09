@@ -1,0 +1,27 @@
+{
+  "verification_type": "branch_protection_access",
+  "status": "PENDING_VERIFICATION",
+  "description": "Verification of branch protection configuration access",
+  "methods": [
+    {
+      "method": "github_api",
+      "endpoint": "GET /repos/twgallo13/ROPI-V2.1/branches/aoss-main/protection",
+      "status": "pending",
+      "note": "Requires appropriate GitHub API permissions"
+    },
+    {
+      "method": "manual_configuration",
+      "source": "branch_protection_manual.json",
+      "status": "pending",
+      "note": "Alternative if API access unavailable"
+    }
+  ],
+  "required_data": [
+    "protected branches list",
+    "branch protection rules",
+    "required status checks",
+    "required reviewers",
+    "merge restrictions"
+  ],
+  "evidence_location": "Will be populated after verification"
+}

@@ -1,0 +1,141 @@
+{
+  "lp_id": "LP-completion-readiness-005",
+  "lp_title": "Export readiness service & export gate enforcement",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "calculateCompletionDrivenExportReadiness_validation": {
+      "description": "Validation of calculateCompletionDrivenExportReadiness function",
+      "function_file": "packages/api/src/services/completionDrivenExportReadiness.ts",
+      "test_scenario_blocked": {
+        "description": "Catalog with at least one blocked product",
+        "catalog_summary": {
+          "total_products": 0,
+          "ready_products": 0,
+          "blocked_products": 0
+        },
+        "result": {
+          "catalogReady": false,
+          "catalogCompletionPct": null,
+          "blockedProductCount": 0,
+          "operatorExplanation": "",
+          "conservativePolicy": "ANY blocked product blocks export"
+        },
+        "timestamp": ""
+      },
+      "test_scenario_ready": {
+        "description": "Catalog with all products ready",
+        "catalog_summary": {
+          "total_products": 0,
+          "ready_products": 0,
+          "blocked_products": 0
+        },
+        "result": {
+          "catalogReady": true,
+          "catalogCompletionPct": null,
+          "blockedProductCount": 0,
+          "operatorExplanation": ""
+        },
+        "timestamp": ""
+      }
+    },
+    "export_dry_run_blocked": {
+      "description": "POST /api/admin/exports/dry-run with blocked catalog",
+      "endpoint": "/api/admin/exports/dry-run",
+      "method": "POST",
+      "curl_command": "curl -i -X POST -H \"Authorization: Bearer <token>\" -H \"Content-Type: application/json\" -d '{\"site\":\"shiekh\",\"limit\":10}' https://ropi-aoss-staging.web.app/api/admin/exports/dry-run",
+      "artifact_file": "artifacts/LP-completion-readiness-005/export-dryrun-blocked.log",
+      "request_body": {},
+      "response_status": 423,
+      "response_body": {
+        "readiness": {},
+        "message": ""
+      },
+      "timestamp": ""
+    },
+    "export_dry_run_ready": {
+      "description": "POST /api/admin/exports/dry-run with ready catalog",
+      "endpoint": "/api/admin/exports/dry-run",
+      "method": "POST",
+      "artifact_file": "artifacts/LP-completion-readiness-005/export-dryrun-ready.log",
+      "request_body": {},
+      "response_status": 200,
+      "response_body": {
+        "readiness": {},
+        "message": ""
+      },
+      "timestamp": ""
+    },
+    "export_readiness_endpoint_blocked": {
+      "description": "GET /api/admin/exports/readiness with blocked catalog",
+      "endpoint": "/api/admin/exports/readiness",
+      "method": "GET",
+      "curl_command": "curl -i -H \"Authorization: Bearer <token>\" https://ropi-aoss-staging.web.app/api/admin/exports/readiness",
+      "artifact_file": "artifacts/LP-completion-readiness-005/readiness-blocked.json",
+      "response_status": 423,
+      "response_body": {
+        "catalogReady": false,
+        "catalogCompletionPct": null,
+        "blockedProductCount": 0,
+        "operatorExplanation": "",
+        "evaluatedAt": "",
+        "rulesVersion": ""
+      },
+      "timestamp": ""
+    },
+    "export_readiness_endpoint_ready": {
+      "description": "GET /api/admin/exports/readiness with ready catalog",
+      "endpoint": "/api/admin/exports/readiness",
+      "method": "GET",
+      "artifact_file": "artifacts/LP-completion-readiness-005/readiness-ready.json",
+      "response_status": 200,
+      "response_body": {
+        "catalogReady": true,
+        "catalogCompletionPct": null,
+        "operatorExplanation": "",
+        "evaluatedAt": "",
+        "rulesVersion": ""
+      },
+      "timestamp": ""
+    },
+    "export_ui_integration": {
+      "description": "Export UI VVP showing Blocked vs Ready states",
+      "vvp_blocked": "evidence/completion-readiness/vvp/export-ui-blocked.md",
+      "vvp_ready": "evidence/completion-readiness/vvp/export-ui-ready.md",
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "readiness payload conforms to CompletionDrivenExportReadiness",
+      "verified": false,
+      "notes": ""
+    },
+    {
+      "criterion": "Endpoints return 423 with readiness when blocked and 200 when ready",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/api/src/services/completionDrivenExportReadiness.ts",
+    "packages/api/src/endpoints/export.ts"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "readiness": {
+    "ready": true,
+    "completionPct": 80,
+    "threshold": 80,
+    "hasBlockingSites": false,
+    "blockingReasons": [],
+    "operatorExplanation": {
+      "summary": "Export ready: all 9 products meet requirements (min completion: 80%)",
+      "blockingIssues": [],
+      "completionBreakdown": [],
+      "siteStatus": [],
+      "actionRequired": []
+    },
+    "catalogStats": {
+      "totalProducts": 9,
+      "blockedByCompletionCount": 0,
+      "blockedBySiteCount": 0,
+      "readyCount": 9
+    },
+    "evaluationTimestamp": "2026-01-08T11:03:35.094Z",
+    "rulesVersion": 3
+  }
+}

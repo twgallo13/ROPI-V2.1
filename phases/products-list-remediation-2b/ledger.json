@@ -1,0 +1,212 @@
+{
+  "phaseMetadata": {
+    "phaseName": "Products List Remediation",
+    "phaseSlug": "products-list-remediation-2b",
+    "createdDate": "2026-01-09",
+    "phaseOwner": "Lisa",
+    "status": "active",
+    "state": "READY",
+    "ambiguityResolved": true,
+    "noUserPromptsDuringExecution": true,
+    "executionAuthorized": true,
+    "executionAuthorizedBy": "Lisa",
+    "executionAuthorizedDate": "2026-01-09T00:00:00Z"
+  },
+  "linearPlans": [
+    {
+      "lpId": "LP-products-list-remediation-001",
+      "lpName": "Pagination Implementation",
+      "status": "not-started",
+      "assignedTo": null,
+      "startDate": null,
+      "completionDate": null,
+      "evidenceLinks": []
+    },
+    {
+      "lpId": "LP-products-list-remediation-002",
+      "lpName": "Column Configuration",
+      "status": "not-started",
+      "assignedTo": null,
+      "startDate": null,
+      "completionDate": null,
+      "evidenceLinks": []
+    },
+    {
+      "lpId": "LP-products-list-remediation-003",
+      "lpName": "Delete Functionality",
+      "status": "not-started",
+      "assignedTo": null,
+      "startDate": null,
+      "completionDate": null,
+      "evidenceLinks": []
+    },
+    {
+      "lpId": "LP-products-list-remediation-004",
+      "lpName": "Search Implementation",
+      "status": "not-started",
+      "assignedTo": null,
+      "startDate": null,
+      "completionDate": null,
+      "evidenceLinks": []
+    },
+    {
+      "lpId": "LP-products-list-remediation-005",
+      "lpName": "Data Refresh and Testing",
+      "status": "not-started",
+      "assignedTo": null,
+      "startDate": null,
+      "completionDate": null,
+      "evidenceLinks": []
+    }
+  ],
+  "definitionOfDone": {
+    "pagination": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "Cursor/page-based pagination with Next/Prev and rows-per-page (25/50/100)"
+    },
+    "columns": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "Table columns: MPN, Brand, Name, Department, Status, Updated, Import Date"
+    },
+    "delete": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "Bulk and single delete with confirmation, audit logging, and list refresh"
+    },
+    "search": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "Search by MPN and Name (case-insensitive, partial matches)"
+    },
+    "dataRefresh": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "Products page reflects imports and edits without manual refresh"
+    },
+    "tests": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "Unit, integration, and E2E tests with CI green"
+    },
+    "evidence": {
+      "completed": false,
+      "verifiedBy": null,
+      "verificationDate": null,
+      "evidenceUrl": null,
+      "notes": "All acceptance items have non-dev verification artifacts"
+    }
+  },
+  "environments": {
+    "staging": {
+      "url": "https://ropi-aoss-staging.web.app/products",
+      "lastDeployDate": null,
+      "deployedVersion": null,
+      "verificationStatus": "pending"
+    },
+    "production": {
+      "url": null,
+      "lastDeployDate": null,
+      "deployedVersion": null,
+      "verificationStatus": "not-deployed"
+    }
+  },
+  "risks": [
+    {
+      "riskId": "RISK-001",
+      "description": "Firestore composite index requirements for certain filter+sort combos",
+      "severity": "medium",
+      "mitigation": "Create indexes proactively and test in staging",
+      "status": "identified"
+    },
+    {
+      "riskId": "RISK-002",
+      "description": "Client-side search scaling beyond 5k products",
+      "severity": "medium",
+      "mitigation": "Implement pagination with search; recommend Algolia/Elasticsearch for future",
+      "status": "identified"
+    },
+    {
+      "riskId": "RISK-003",
+      "description": "Destructive delete operations",
+      "severity": "high",
+      "mitigation": "Mandatory confirmation, audit logging, batch size limits",
+      "status": "identified"
+    },
+    {
+      "riskId": "RISK-004",
+      "description": "Real-time listeners increasing Firestore costs",
+      "severity": "low",
+      "mitigation": "Scope listeners to visible items only",
+      "status": "identified"
+    }
+  ],
+  "requiredReceipts": [
+    {
+      "receiptType": "CI-Green",
+      "completed": false,
+      "artifactUrl": null,
+      "completionDate": null
+    },
+    {
+      "receiptType": "Staging-Deploy",
+      "completed": false,
+      "artifactUrl": null,
+      "completionDate": null
+    },
+    {
+      "receiptType": "VVP-Evidence",
+      "completed": false,
+      "artifactUrl": null,
+      "completionDate": null
+    },
+    {
+      "receiptType": "HES-JSON",
+      "completed": false,
+      "artifactUrl": null,
+      "completionDate": null
+    }
+  ],
+  "evidenceManifest": {
+    "screenshots": [],
+    "videos": [],
+    "ciLogs": [],
+    "deploymentReceipts": [],
+    "testReports": []
+  },
+  "machineChecks": {
+    "phaseNamePresent": true,
+    "phaseSlugKebabCase": true,
+    "ambiguityResolved": true,
+    "noUserPrompts": true,
+    "definitionOfDoneMinimum": true,
+    "lisaConfirmationPresent": true,
+    "allChecksPassed": true
+  },
+  "lisaConfirmation": {
+    "requestedBy": "Lisa",
+    "requestedOn": "2026-01-08T00:00:00Z",
+    "confirmationStatus": "confirmed"
+  },
+  "changelog": [
+    {
+      "date": "2026-01-09",
+      "action": "Phase created",
+      "details": "Initial phase setup with PRD and 5 Linear Plans",
+      "author": "GitHub Copilot"
+    }
+  ]
+}

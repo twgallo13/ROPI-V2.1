@@ -1,0 +1,21 @@
+{
+  "commit_sha": "d5103ea",
+  "random_seed": 13345,
+  "product_id": "product-0010",
+  "test_index": 10,
+  "snapshot_timestamp": "2026-01-08T21:45:00Z",
+  "snapshot": {
+    "id": "product-0010",
+    "title": "Test Product 10",
+    "attributes": {
+      "brand": "Test Brand",
+      "category": "Footwear",
+      "color": "Red"
+    },
+    "images": [
+      "image1.jpg"
+    ],
+    "description": "Partial product",
+    "price": 79.99
+  }
+}

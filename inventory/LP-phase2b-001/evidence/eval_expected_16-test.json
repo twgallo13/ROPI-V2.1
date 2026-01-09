@@ -1,0 +1,74 @@
+{
+  "productId": "16-test",
+  "rulesVersion": 4,
+  "segments": [
+    {
+      "segmentId": "core-attributes",
+      "segmentName": "Core Product Attributes",
+      "weightPct": 80,
+      "requiredAttributesCount": 13,
+      "completedAttributesCount": 13,
+      "completionPct": 100,
+      "requiredAttributes": [
+        "mpn",
+        "category",
+        "website",
+        "status",
+        "department",
+        "product_is_active",
+        "slug",
+        "name",
+        "rics_category",
+        "sku"
+      ],
+      "completedAttributes": [
+        "mpn",
+        "category",
+        "website",
+        "status",
+        "department",
+        "product_is_active",
+        "slug",
+        "name",
+        "rics_category",
+        "sku",
+        "style_id",
+        "brand",
+        "class"
+      ]
+    },
+    {
+      "segmentId": "seo-attributes",
+      "segmentName": "SEO & Marketing",
+      "weightPct": 20,
+      "requiredAttributesCount": 7,
+      "completedAttributesCount": 0,
+      "completionPct": 0,
+      "requiredAttributes": [
+        "description_shiekh",
+        "keywords",
+        "description_karmaloop",
+        "meta_name",
+        "description_sangremia",
+        "description_mltd",
+        "meta_description"
+      ],
+      "completedAttributes": []
+    },
+    {
+      "segmentId": "media-attributes",
+      "segmentName": "Media & Images",
+      "weightPct": 0,
+      "requiredAttributesCount": 3,
+      "completedAttributesCount": 0,
+      "completionPct": 0,
+      "requiredAttributes": [
+        "primary_image",
+        "images",
+        "hero_image"
+      ],
+      "completedAttributes": []
+    }
+  ],
+  "overallCompletionPct": 80
+}

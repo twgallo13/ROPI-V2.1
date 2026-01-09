@@ -1,0 +1,75 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-007",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/web/src/hooks/useExportCompletion.ts",
+      "action": "modified"
+    },
+    {
+      "path": "docs/OPERATOR_WORKFLOW.md",
+      "action": "created"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": "https://staging.yourapp.com",
+    "deployedAt": null
+  },
+  "verification": {
+    "live_update_workflow_documented": {
+      "status": "PENDING",
+      "evidence": "Live-update or refresh workflow documented in docs/OPERATOR_WORKFLOW.md or similar"
+    },
+    "live_update_workflow_implemented": {
+      "status": "PENDING",
+      "evidence": "Code changes implementing live-update workflow"
+    },
+    "operator_help_text_created": {
+      "status": "PENDING",
+      "evidence": "Operator help text explaining operatorExplanation actionable items"
+    },
+    "vvp_change_attribute_rule": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing attribute/rule change in UI"
+    },
+    "vvp_refresh_live_update": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing refresh/live update mechanism"
+    },
+    "vvp_product_reflects_change": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing product completion reflects change"
+    },
+    "vvp_export_reflects_change": {
+      "status": "PENDING",
+      "evidence": "VVP screenshot showing export readiness reflects change"
+    },
+    "timeline_hes": {
+      "status": "PENDING",
+      "evidence": "HES timeline showing T0: initial state, T1: change made, T2: refresh/update, T3: product/export reflect change"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-007: Live updates & operator explainability flow",
+    "Goal: Define and validate operator workflow for live updates when attributes/rules change",
+    "Tasks:",
+    "  1. Document the live-update or refresh workflow and implement/verify on staging",
+    "  2. Create operator help text explaining operatorExplanation actionable items",
+    "Acceptance:",
+    "  - VVP sequence: change attribute/rule → refresh/live update → product/export reflect change",
+    "  - operator explanation provides actions"
+  ]
+}

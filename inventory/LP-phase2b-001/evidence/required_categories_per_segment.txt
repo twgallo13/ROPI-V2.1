@@ -1,0 +1,3 @@
+Core Product Attributes -> categories:[sku_core,classification] staticIds:[]
+SEO & Marketing -> categories:[description] staticIds:[]
+Media & Images -> categories:[] staticIds:[primary_image,images,hero_image]

@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED_SUCCESS",
+  "service_account": "ropi-aoss-deployer@ropi-bccee.iam.gserviceaccount.com",
+  "project_id": "ropi-bccee",
+  "test_collection": "ropi_test",
+  "test_document": "lp_phase2a_staging_check",
+  "write_confirmed": true,
+  "read_confirmed": true,
+  "timestamp": 1767912636.3044782,
+  "environment": "staging"
+}

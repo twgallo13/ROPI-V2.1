@@ -1,0 +1,109 @@
+{
+  "lp_id": "LP-completion-readiness-003",
+  "lp_title": "Deterministic completion engine verification",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "test_suite": {
+      "description": "Deterministic tests for evaluateCompletion",
+      "test_file": "packages/api/test/evaluateCompletion.test.ts",
+      "test_command": "pnpm --filter @ropi-aoss/api test -- tests/evaluateCompletion.test.ts",
+      "log_file": "artifacts/LP-completion-readiness-003/jest-results.txt",
+      "commit_sha": "",
+      "test_results": {
+        "total_tests": 0,
+        "passed": 0,
+        "failed": 0,
+        "test_details": []
+      },
+      "timestamp": ""
+    },
+    "sample_test_case_1": {
+      "description": "Single-site product with complete data (deterministic test)",
+      "input_artifact": "artifacts/LP-completion-readiness-003/eval-sample-input.json",
+      "output_artifact": "artifacts/LP-completion-readiness-003/eval-sample-output.json",
+      "inputs": {
+        "registry_snapshot": {},
+        "rules_snapshot": {},
+        "product_snapshot": {},
+        "evaluatedAt": ""
+      },
+      "outputs": {
+        "totalCompletionPct": null,
+        "segmentResults": [],
+        "ready": false,
+        "blockingReasons": []
+      },
+      "determinism_check": {
+        "run_1_hash": "",
+        "run_2_hash": "",
+        "run_3_hash": "",
+        "all_identical": false
+      },
+      "timestamp": ""
+    },
+    "sample_test_case_2": {
+      "description": "Multi-site product missing Description/SEO on one site",
+      "inputs": {
+        "registry_snapshot": {},
+        "rules_snapshot": {},
+        "product_snapshot": {
+          "sites": ["site1", "site2"],
+          "site1_description": "present",
+          "site2_description": "missing"
+        },
+        "evaluatedAt": ""
+      },
+      "outputs": {
+        "totalCompletionPct": null,
+        "segmentResults": [],
+        "ready": false,
+        "hasBlockingSites": false,
+        "siteBlockingReasons": {},
+        "blockingReasons": []
+      },
+      "site_blocking_verified": false,
+      "timestamp": ""
+    },
+    "required_for_completion_enforcement": {
+      "description": "Test that required_for_completion flags are enforced",
+      "test_scenario": "Attribute with required_for_completion=true is missing",
+      "expected_behavior": "Product not ready, blocking reason present",
+      "actual_behavior": "",
+      "verified": false,
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "Tests yield stable totalCompletionPct and segmentResults for given inputs",
+      "verified": false,
+      "notes": ""
+    },
+    {
+      "criterion": "Site-level description/SEO missing → siteBlockingReasons and hasBlockingSites === true",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/api/src/services/completionEvaluationEngine.ts"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

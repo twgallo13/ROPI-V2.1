@@ -1,0 +1,75 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-006",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/web/src/pages/settings/ExportSettingsPage.tsx",
+      "action": "modified"
+    },
+    {
+      "path": "packages/web/src/components/AttributeDetailPanel.tsx",
+      "action": "modified"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": "https://staging.yourapp.com",
+    "deployedAt": null
+  },
+  "verification": {
+    "export_settings_persist": {
+      "status": "PENDING",
+      "evidence": "ExportSettingsPage persists validated rules to settings/exportSettings (before/after Firestore snapshots)"
+    },
+    "attribute_flag_toggle_completion": {
+      "status": "PENDING",
+      "evidence": "AttributeDetailPanel toggles required_for_completion and writes to settings/attributes/keys/{attributeId}"
+    },
+    "attribute_flag_toggle_export": {
+      "status": "PENDING",
+      "evidence": "AttributeDetailPanel toggles required_for_export and writes to settings/attributes/keys/{attributeId}"
+    },
+    "firestore_write_snapshot": {
+      "status": "PENDING",
+      "evidence": "Firestore snapshots showing document changes after UI edits"
+    },
+    "audit_events": {
+      "status": "PENDING",
+      "evidence": "Audit events logged for attribute flag changes"
+    },
+    "evaluation_outcome_changes": {
+      "status": "PENDING",
+      "evidence": "HES before/after showing attribute flag toggle changes evaluation outcome (e.g., completionPct changes)"
+    },
+    "export_settings_vvp": {
+      "status": "PENDING",
+      "evidence": "VVP showing Export Settings editor workflow"
+    },
+    "attributes_console_vvp": {
+      "status": "PENDING",
+      "evidence": "VVP showing Attributes Console flag toggle workflow"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-006: Admin UI: Export Settings editor & Attributes Console write-through",
+    "Goal: Ensure Export Settings editor and Attributes Console persist validated changes to Firestore",
+    "Tasks:",
+    "  1. Confirm ExportSettingsPage persists validated rules",
+    "  2. Confirm AttributeDetailPanel toggles flags and writes to Firestore with audit events",
+    "Acceptance:",
+    "  - UI edit → Firestore doc change",
+    "  - Attribute flag toggles change evaluation outcome"
+  ]
+}

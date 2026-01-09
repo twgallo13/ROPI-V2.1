@@ -1,0 +1,12 @@
+{
+  "id": "expedited_override_shipping",
+  "required_for_export": false,
+  "updated_at": {
+    "_seconds": 1767018208,
+    "_nanoseconds": 403000000
+  },
+  "import_required": false,
+  "data_type": "money",
+  "required_for_completion": false,
+  "status": "active"
+}

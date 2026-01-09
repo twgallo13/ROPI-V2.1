@@ -1,0 +1,82 @@
+{
+  "lp_id": "LP-completion-readiness-002",
+  "lp_title": "Completion rules validation & persistence",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "firestore_exportSettings_before": {
+      "description": "Firestore snapshot of settings/exportSettings (before UI edit)",
+      "artifact_file": "artifacts/LP-completion-readiness-002/exportSettings-before.json",
+      "collection": "settings",
+      "document": "exportSettings",
+      "timestamp": ""
+    },
+    "firestore_exportSettings_after": {
+      "description": "Firestore snapshot of settings/exportSettings (after UI edit)",
+      "artifact_file": "artifacts/LP-completion-readiness-002/exportSettings-after.json",
+      "collection": "settings",
+      "document": "exportSettings",
+      "timestamp": ""
+    },
+    "loadCompletionRules_execution": {
+      "description": "loadCompletionRules() execution log showing validation success",
+      "log_file": "artifacts/LP-completion-readiness-002/loadCompletionRules.log",
+      "function": "loadCompletionRules",
+      "result": {
+        "schemaVersion": "",
+        "rulesVersion": "",
+        "exportUnlockThresholdPct": null,
+        "segments": [],
+        "validation_status": ""
+      },
+      "timestamp": ""
+    },
+    "validation_checks": {
+      "description": "validateCompletionRulesConfig validation results",
+      "schemaVersion_present": false,
+      "rulesVersion_present": false,
+      "exportUnlockThresholdPct_valid": false,
+      "exportUnlockThresholdPct_range": "",
+      "segments_enabled_weight_sum": null,
+      "segments_enabled_weight_approximately_100": false,
+      "timestamp": ""
+    },
+    "ui_persistence_test": {
+      "description": "Export Settings UI persist to Firestore verification",
+      "vvp_reference": "evidence/completion-readiness/vvp/export-settings-persistence.md",
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "loadCompletionRules() returns valid CompletionRulesConfig (schemaVersion, rulesVersion, exportUnlockThresholdPct 0–100, enabled segments weight ≈100)",
+      "verified": false,
+      "notes": ""
+    },
+    {
+      "criterion": "Export Settings UI persist → Firestore settings/exportSettings",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/api/src/services/completionRulesService.ts"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

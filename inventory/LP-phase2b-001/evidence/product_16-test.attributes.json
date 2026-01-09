@@ -1,0 +1,56 @@
+[
+  {
+    "name": "width"
+  },
+  {
+    "name": "weight"
+  },
+  {
+    "name": "mpn"
+  },
+  {
+    "name": "age_group"
+  },
+  {
+    "name": "gender"
+  },
+  {
+    "name": "ageGroup"
+  },
+  {
+    "name": "product_is_active"
+  },
+  {
+    "name": "website"
+  },
+  {
+    "name": "name"
+  },
+  {
+    "name": "rics_category"
+  },
+  {
+    "name": "category"
+  },
+  {
+    "name": "department"
+  },
+  {
+    "name": "sku"
+  },
+  {
+    "name": "style_id"
+  },
+  {
+    "name": "brand"
+  },
+  {
+    "name": "class"
+  },
+  {
+    "name": "slug"
+  },
+  {
+    "name": "status"
+  }
+]

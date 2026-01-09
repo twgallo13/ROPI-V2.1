@@ -967,3 +967,116 @@ export async function getProductCompletionHandler(req: Request, res: Response) {
     });
   }
 }
+/**
+ * DELETE /products/:productId
+ * 
+ * Delete a single product by ID.
+ * Only admins can delete products.
+ */
+export async function deleteProductHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    const productId = req.params.productId;
+    
+    if (!productId) {
+      res.status(400).json({ 
+        error: 'MISSING_PRODUCT_ID', 
+        message: 'Product ID is required' 
+      });
+      return;
+    }
+
+    try {
+      const db = admin.firestore();
+      const productRef = db.collection('products').doc(productId);
+      const productDoc = await productRef.get();
+
+      if (!productDoc.exists) {
+        res.status(404).json({ 
+          error: 'PRODUCT_NOT_FOUND', 
+          message: `Product ${productId} not found` 
+        });
+        return;
+      }
+
+      // Delete the product
+      await productRef.delete();
+
+      res.status(200).json({ 
+        success: true,
+        message: `Product ${productId} deleted successfully`,
+        deletedId: productId
+      });
+    } catch (error) {
+      console.error('[deleteProduct] Error:', error);
+      res.status(500).json({ 
+        error: 'DELETE_FAILED', 
+        message: 'Failed to delete product',
+        details: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+}
+
+/**
+ * POST /products/bulk-delete
+ * 
+ * Delete multiple products by ID.
+ * Requires body: { productIds: string[] }
+ */
+export async function bulkDeleteProductsHandler(req: Request, res: Response) {
+  await requireAdmin(req, res, async () => {
+    const { productIds } = req.body;
+    
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+      res.status(400).json({ 
+        error: 'INVALID_PRODUCT_IDS', 
+        message: 'productIds must be a non-empty array' 
+      });
+      return;
+    }
+
+    if (productIds.length > 500) {
+      res.status(400).json({ 
+        error: 'TOO_MANY_IDS', 
+        message: 'Cannot delete more than 500 products at once' 
+      });
+      return;
+    }
+
+    try {
+      const db = admin.firestore();
+      const batch = db.batch();
+      const results = { success: 0, failed: 0, notFound: 0 };
+
+      // Add all deletes to batch
+      for (const id of productIds) {
+        const ref = db.collection('products').doc(id);
+        const doc = await ref.get();
+        
+        if (!doc.exists) {
+          results.notFound++;
+          continue;
+        }
+        
+        batch.delete(ref);
+        results.success++;
+      }
+
+      // Commit batch
+      await batch.commit();
+
+      res.status(200).json({ 
+        success: true,
+        message: `Deleted ${results.success} products`,
+        results
+      });
+    } catch (error) {
+      console.error('[bulkDeleteProducts] Error:', error);
+      res.status(500).json({ 
+        error: 'BULK_DELETE_FAILED', 
+        message: 'Failed to delete products',
+        details: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+}

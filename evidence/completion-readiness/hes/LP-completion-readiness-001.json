@@ -1,0 +1,112 @@
+{
+  "lp_id": "LP-completion-readiness-001",
+  "lp_title": "Registry sync & verification",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "registry_file_sha": {
+      "description": "SHA-256 hash of packages/sdk/config/attributeRegistry.json",
+      "command": "sha256sum packages/sdk/config/attributeRegistry.json",
+      "result": "",
+      "timestamp": ""
+    },
+    "registry_version": {
+      "description": "Version from attributeRegistry.json",
+      "path": "packages/sdk/config/attributeRegistry.json",
+      "value": "",
+      "timestamp": ""
+    },
+    "sync_execution": {
+      "description": "Sync registry to staging Firestore (non-dry-run)",
+      "command": "pnpm --filter @ropi-aoss/api run sync:attributes -- --dryRun=false",
+      "log_file": "artifacts/LP-completion-readiness-001/registry-sync.log",
+      "stdout": "",
+      "stderr": "",
+      "exit_code": null,
+      "timestamp": ""
+    },
+    "verification_script": {
+      "description": "scripts/verify-attributes-meta.js output",
+      "command": "node scripts/verify-attributes-meta.js path/to/service-account.json",
+      "log_file": "artifacts/LP-completion-readiness-001/verify-attributes-meta-output.txt",
+      "stdout": "",
+      "stderr": "",
+      "exit_code": null,
+      "timestamp": ""
+    },
+    "firestore_attributesMeta": {
+      "description": "Firestore snapshot of settings/attributesMeta",
+      "artifact_file": "artifacts/LP-completion-readiness-001/attributesMeta.json",
+      "collection": "settings",
+      "document": "attributesMeta",
+      "fields": {
+        "registry_version": "",
+        "last_synced_at": "",
+        "last_synced_by": ""
+      },
+      "timestamp": ""
+    },
+    "sample_attribute_docs": {
+      "description": "Sample docs from settings/attributes/keys/ showing definition_version, syncedAt, syncedBy",
+      "artifact_file": "artifacts/LP-completion-readiness-001/sample-attribute-keys.json",
+      "collection": "settings/attributes/keys",
+      "sample_document_ids": [],
+      "fields": {
+        "attribute_id": "",
+        "definition_version": "",
+        "syncedAt": "",
+        "syncedBy": ""
+      },
+      "timestamp": ""
+    }
+  },
+  "verification": {
+  "verification": {
+    "registry_version_match": {
+      "criterion": "settings/attributesMeta.registry_version equals packages/sdk/config/attributeRegistry.json version",
+      "verified": false,
+      "evidence_pointer": "evidence.firestore_attributesMeta.fields.registry_version vs evidence.registry_version.value",
+      "notes": ""
+    },
+    "sample_doc_has_metadata": {
+      "criterion": "At least one sample doc under settings/attributes/keys/ has definition_version === registry.version and syncedAt/syncedBy",
+      "verified": false,
+      "evidence_pointer": "evidence.sample_attribute_docs.artifact_file",
+      "notes": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "settings/attributesMeta.registry_version equals packages/sdk/config/attributeRegistry.json version",
+      "verified": false,
+      "notes": ""
+    },
+    {
+      "criterion": "At least one sample doc under settings/attributes/keys/ has definition_version === registry.version and syncedAt/syncedBy",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/sdk/config/attributeRegistry.json",
+    "packages/api/src/tasks/syncAttributeRegistry.ts",
+    "scripts/verify-attributes-meta.js"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

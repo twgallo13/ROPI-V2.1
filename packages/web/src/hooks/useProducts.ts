@@ -89,6 +89,8 @@ export interface UseProductsResult {
   setSortDir: (sortDir: 'asc' | 'desc') => void;
   refresh: () => Promise<void>;
   loadMore: () => Promise<void>;
+  deleteProduct: (productId: string) => Promise<void>;
+  bulkDeleteProducts: (productIds: string[]) => Promise<void>;
 }
 
 /**
@@ -268,7 +270,7 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
     if (autoLoad) {
       fetchProducts(true);
     }
-  }, [debouncedSearch, filters, sortBy, sortDir, autoLoad]); // Trigger on filter/sort changes
+  }, [debouncedSearch, filters, sortBy, sortDir, limit, autoLoad, fetchProducts]); // Trigger on filter/sort/limit changes
 
   /**
    * Custom filter setter that resets pagination
@@ -291,6 +293,67 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
     setPageToken(null);
   }, []);
 
+  /**
+   * Delete a single product
+   */
+  const deleteProduct = useCallback(async (productId: string): Promise<void> => {
+    try {
+      const headers = await getAuthHeaders();
+      const url = `${API_BASE}/api/products/${productId}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Product not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Unauthorized. Please sign in again.');
+        }
+        if (response.status === 403) {
+          throw new Error('You do not have permission to delete products.');
+        }
+        throw new Error(`Failed to delete product: ${response.status}`);
+      }
+
+      // Refresh list after delete
+      await refresh();
+    } catch (err) {
+      console.error('[useProducts] Delete error:', err);
+      throw err;
+    }
+  }, [refresh]);
+
+  /**
+   * Delete multiple products (bulk)
+   */
+  const bulkDeleteProducts = useCallback(async (productIds: string[]): Promise<void> => {
+    try {
+      const headers = await getAuthHeaders();
+      const url = `${API_BASE}/api/products/bulk-delete`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          ...headers,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productIds }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete products: ${response.status}`);
+      }
+
+      // Refresh list after bulk delete
+      await refresh();
+    } catch (err) {
+      console.error('[useProducts] Bulk delete error:', err);
+      throw err;
+    }
+  }, [refresh]);
+
   return {
     items,
     loading,
@@ -308,6 +371,8 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
     setSortDir: handleSetSortDir,
     refresh,
     loadMore,
+    deleteProduct,
+    bulkDeleteProducts,
   };
 }
 

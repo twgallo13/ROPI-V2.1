@@ -1,0 +1,43 @@
+{
+  "note": "Product IDs Homer will use for staging verification",
+  "description": "These IDs are embedded in all verification scripts and tests",
+  "product_ids": [
+    {
+      "id": "product-0001",
+      "expected_state": "ready",
+      "expected_completion": ">=80%",
+      "expected_export_enabled": true,
+      "used_in_scripts": [
+        "scripts/verify-api-mpn.sh",
+        "scripts/run_export_gate_three_times.sh",
+        "scripts/run_stability_check.js",
+        "packages/web/e2e/completion-mpn-display.spec.ts"
+      ]
+    },
+    {
+      "id": "product-0004",
+      "expected_state": "partial",
+      "expected_completion": "40-80%",
+      "expected_export_enabled": false,
+      "used_in_scripts": [
+        "scripts/verify-api-mpn.sh",
+        "scripts/run_stability_check.js",
+        "packages/web/e2e/completion-mpn-display.spec.ts"
+      ]
+    },
+    {
+      "id": "product-0007",
+      "expected_state": "blocked",
+      "expected_completion": "<40%",
+      "expected_export_enabled": false,
+      "used_in_scripts": [
+        "scripts/verify-api-mpn.sh",
+        "scripts/run_stability_check.js",
+        "packages/web/e2e/completion-mpn-display.spec.ts"
+      ]
+    }
+  ],
+  "verification_coverage": "All 3 states tested: ready (export enabled), partial (visible warnings), blocked (export disabled)",
+  "script_coordination": "These exact IDs hardcoded in 4 verification scripts - cannot be changed without updating all scripts",
+  "confirmation_needed_from_lisa": "Please confirm these 3 products exist on staging with expected completion states, or provide alternative product IDs and I will update all scripts"
+}

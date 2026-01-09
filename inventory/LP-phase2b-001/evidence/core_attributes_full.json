@@ -1,0 +1,93 @@
+[
+  {
+    "id": "mpn",
+    "name": "mpn",
+    "category": "sku_core",
+    "required": true,
+    "dataType": "text"
+  },
+  {
+    "id": "category",
+    "name": "category",
+    "category": "classification",
+    "required": true,
+    "dataType": "select"
+  },
+  {
+    "id": "website",
+    "name": "website",
+    "category": "sku_core",
+    "required": true,
+    "dataType": "multiSelect"
+  },
+  {
+    "id": "status",
+    "name": "status",
+    "category": "sku_core",
+    "required": false,
+    "dataType": "text"
+  },
+  {
+    "id": "department",
+    "name": "department",
+    "category": "classification",
+    "required": true,
+    "dataType": "select"
+  },
+  {
+    "id": "product_is_active",
+    "name": "product_is_active",
+    "category": "sku_core",
+    "required": true,
+    "dataType": "boolean"
+  },
+  {
+    "id": "slug",
+    "name": "slug",
+    "category": "sku_core",
+    "required": false,
+    "dataType": "text"
+  },
+  {
+    "id": "name",
+    "name": "name",
+    "category": "sku_core",
+    "required": true,
+    "dataType": "text"
+  },
+  {
+    "id": "rics_category",
+    "name": "rics_category",
+    "category": "classification",
+    "required": false,
+    "dataType": "text"
+  },
+  {
+    "id": "sku",
+    "name": "sku",
+    "category": "sku_core",
+    "required": true,
+    "dataType": "text"
+  },
+  {
+    "id": "style_id",
+    "name": "style_id",
+    "category": "sku_core",
+    "required": false,
+    "dataType": "text"
+  },
+  {
+    "id": "brand",
+    "name": "brand",
+    "category": "sku_core",
+    "required": true,
+    "dataType": "text"
+  },
+  {
+    "id": "class",
+    "name": "class",
+    "category": "classification",
+    "required": true,
+    "dataType": "select"
+  }
+]

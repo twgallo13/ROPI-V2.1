@@ -1,0 +1,111 @@
+{
+  "blocker_packet_version": "1.0",
+  "lp": "LP-cleanup-004",
+  "phase": "cleanup",
+  "generated_at": "2025-01-08T00:00:00.000Z",
+  "from": "Homer",
+  "to": "Lisa",
+  "blocker_type": "INSUFFICIENT_PERMISSIONS",
+  "blocker_severity": "BLOCKING",
+  "blocker_title": "Cannot Read Branch Protection Rules - HTTP 403",
+  "blocker_description": "LP-cleanup-004 requires reading branch protection data for all protected branches before proceeding with hygiene classification. The GitHub token (ghu_*) does not have permission to access branch protection rules.",
+  
+  "precondition_failed": {
+    "requirement": "Must be able to read branch protection for protected branches",
+    "test_performed": "gh api /repos/twgallo13/ROPI-V2.1/branches/aoss-main/protection",
+    "api_endpoint": "GET /repos/{owner}/{repo}/branches/{branch}/protection",
+    "http_status": 403,
+    "error_message": "Resource not accessible by integration",
+    "documentation_url": "https://docs.github.com/rest/branches/branch-protection#get-branch-protection"
+  },
+  
+  "evidence": {
+    "test_output_file": "./branch_protection_test.txt",
+    "test_branch": "aoss-main",
+    "timestamp": "2025-01-08T00:00:00.000Z",
+    "raw_error": "{\"message\":\"Resource not accessible by integration\",\"documentation_url\":\"https://docs.github.com/rest/branches/branch-protection#get-branch-protection\",\"status\":\"403\"}"
+  },
+  
+  "why_blocking": [
+    "Branch protection status is REQUIRED to classify branches safely",
+    "Cannot determine if a branch is protected before proposing deletion",
+    "Risk of proposing deletion of protected branches without protection data",
+    "LP-cleanup-004 specification requires protection data as precondition",
+    "Deterministic rules cannot be applied without knowing protection status"
+  ],
+  
+  "impact": {
+    "lp_blocked": "LP-cleanup-004",
+    "phase_blocked": "cleanup",
+    "deliverables_blocked": [
+      "branch_proposals.csv",
+      "branch_protection_summary.json",
+      "HES-LP-cleanup-004.json"
+    ],
+    "cannot_proceed_until": "GitHub token granted branch protection read access OR repo maintainer provides protection JSON"
+  },
+  
+  "required_permissions": {
+    "scope_needed": "read:org or admin:org (for branch protection)",
+    "current_scopes": "Unknown (GitHub Actions token ghu_* with default permissions)",
+    "api_permission": "Repository Administration: Read-only",
+    "documentation": "https://docs.github.com/rest/branches/branch-protection#get-branch-protection"
+  },
+  
+  "resolution_options": [
+    {
+      "option": "1",
+      "title": "Grant Token Read Access to Branch Protection",
+      "steps": [
+        "Navigate to GitHub Actions token settings",
+        "Add 'read:org' or 'admin:org' scope (read-only for branch protection)",
+        "Or use a PAT (Personal Access Token) with 'repo' scope",
+        "Update GITHUB_TOKEN in environment"
+      ],
+      "effort": "LOW",
+      "recommended": true,
+      "notes": "Preferred solution - allows automated branch protection checks"
+    },
+    {
+      "option": "2",
+      "title": "Manual Branch Protection Export",
+      "steps": [
+        "Repo maintainer exports branch protection rules manually",
+        "Generate JSON with: gh api /repos/twgallo13/ROPI-V2.1/branches/{branch}/protection > protection.json",
+        "Run for all protected branches (aoss-main, main, etc.)",
+        "Combine into single branch_protection_manual.json",
+        "Place in inventory/LP-cleanup-004/ directory",
+        "Homer continues with provided data"
+      ],
+      "effort": "MEDIUM",
+      "recommended": false,
+      "notes": "Workaround if token permissions cannot be changed"
+    },
+    {
+      "option": "3",
+      "title": "Skip Protection Verification (NOT RECOMMENDED)",
+      "steps": [
+        "Proceed without protection data",
+        "Mark all branches as 'unknown protection status'",
+        "Flag for manual review before any deletion"
+      ],
+      "effort": "LOW",
+      "recommended": false,
+      "notes": "UNSAFE - increases risk of proposing protected branch deletion"
+    }
+  ],
+  
+  "request_to_lisa": "Please authorize one of the resolution options:\n\n1. Grant read:org scope to GitHub token (RECOMMENDED)\n2. Provide manual branch protection export\n3. Authorize skip (NOT RECOMMENDED - unsafe)\n\nOnce resolved, I will immediately proceed with LP-cleanup-004 branch hygiene identification.",
+  
+  "related_artifacts": {
+    "access_verification_pack": "../ACCESS_VERIFICATION_PACK/README.md",
+    "previous_403_documentation": "../ACCESS_VERIFICATION_PACK/blocker_packet_github_actions_dispatch.json",
+    "test_output": "./branch_protection_test.txt"
+  },
+  
+  "status": "BLOCKED",
+  "next_action": "AWAIT_LISA_AUTHORIZATION",
+  "can_continue_without_resolution": false,
+  "workaround_available": true,
+  "workaround_description": "Option 2: Manual branch protection export by repo maintainer"
+}

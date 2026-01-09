@@ -1,0 +1,659 @@
+[
+  {
+    "number": 463,
+    "title": "LP-deploy-authority-model-001: Add Deploy Authority Model and Copilot Execution Constraints",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/463",
+    "current_labels": [
+      "state:in-progress",
+      "type:docs"
+    ],
+    "labels_to_add": [
+      "lp:deploy-authority-model-001"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:deploy-authority-model-001"
+    ]
+  },
+  {
+    "number": 458,
+    "title": "LP-export-global-impl-2b: Implement productLevelReadiness (UI)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/458",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp-export-global-1.0.0",
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp-export-global-1.0.0",
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 442,
+    "title": "ci: deploy Firestore rules to staging",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/442",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 429,
+    "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/429",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 428,
+    "title": "feat: Completion Evaluation Engine (Pure Math + Scoring)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/428",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 427,
+    "title": "feat: Complete Completion Model Implementation (Persistence + Evaluation Engine)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/427",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 426,
+    "title": "docs: Add authoritative Completion → Export Gate documentation",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/426",
+    "current_labels": [
+      "type:docs"
+    ],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 416,
+    "title": "chore(migration): remove legacy observations fallback and deprecated helpers",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/416",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp-remove-legacy-observations-fallback-1.0.0",
+      "state:planned"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp-remove-legacy-observations-fallback-1.0.0",
+      "State inferred: state:planned (PR is in draft mode)"
+    ]
+  },
+  {
+    "number": 404,
+    "title": "feat(observations): LP-1.2.0 inline tags-first Add/Edit UX (no navigation)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/404",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp:observations-consolidation-1.2.0",
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:observations-consolidation-1.2.0",
+      "State inferred: state:in-progress (Default state for active PR)"
+    ]
+  },
+  {
+    "number": 403,
+    "title": "feat(observations): LP-observations-consolidation-1.1.0 - Mobile/Desktop parity",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/403",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp:observations-consolidation-1.1.0",
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:observations-consolidation-1.1.0",
+      "State inferred: state:in-progress (Default state for active PR)"
+    ]
+  },
+  {
+    "number": 402,
+    "title": "feat(LP-observations-consolidation-1.0.0): Make product.observation canonical SRoT",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/402",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp:observations-consolidation-1.0.0",
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:observations-consolidation-1.0.0",
+      "State inferred: state:in-progress (Default state for active PR)"
+    ]
+  },
+  {
+    "number": 385,
+    "title": "test(e2e): stabilize auth sign-in on preview URLs",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/385",
+    "current_labels": [
+      "cleanup:required",
+      "lp:product-ordering-import-completeness-0.1.0"
+    ],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (Default state for active PR)"
+    ]
+  },
+  {
+    "number": 376,
+    "title": "LP-importer-mapping-recon-1.4.5 — canonicalize pricing.shipping and enable editability",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/376",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp:importer-mapping-recon-1.4.5",
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:importer-mapping-recon-1.4.5",
+      "State inferred: state:in-progress (Default state for active PR)"
+    ]
+  },
+  {
+    "number": 351,
+    "title": "LP-1.3.6: Fix Department Filter Showing Gender Values",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/351",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (Default state for active PR)"
+    ]
+  },
+  {
+    "number": 340,
+    "title": "LP-ATTR-1.3.0-FIX-REGISTRY-VALIDATION — registry-driven import required validation",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/340",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp:attr-1.3.0",
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:attr-1.3.0",
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 339,
+    "title": "LP-ATTR-1.3.2: Fix JSON parse errors on DELETE 204 with parseResponseSafely",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/339",
+    "current_labels": [],
+    "labels_to_add": [
+      "lp:attr-1.3.2",
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "LP label extracted from PR text: lp:attr-1.3.2",
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 336,
+    "title": "feat(web): LP-3.0.11 - Audit & add defensive logging to attribute create/save flow",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/336",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 314,
+    "title": "LP-2.0.5: Staging — acceptance checklist & orchestration",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/314",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 313,
+    "title": "LP-2.0.4: Repo — PR governance & branch protections",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/313",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 312,
+    "title": "LP-2.0.3: Tasks — per-key updates and attribute provenance",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/312",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 311,
+    "title": "LP-2.0.2: Sync — normalize data_type tokens & add definition_version",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/311",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 310,
+    "title": "LP-2.0.1: Firestore — restrict product writes to admin/server",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/310",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 309,
+    "title": "[LP-1.2.7] Add Scan & Capture CTA to Observations page",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/309",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 307,
+    "title": "LP-1.2.2: Diagnose/fix MPN 401 (auth header, logs, tests)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/307",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 303,
+    "title": "LP-0.8.0: attribute samples / audit evidence",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/303",
+    "current_labels": [
+      "lisa/pvs"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 302,
+    "title": "LP-0.8.0: backup attributes before attribute fixes",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/302",
+    "current_labels": [
+      "lisa/pvs"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 299,
+    "title": "LP-1.1.13: Full CRUD + fieldLink validation",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/299",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 298,
+    "title": "LP-1.1.12: Make Observation Title optional",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/298",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 297,
+    "title": "LP-1.1.11: Unify ObservationsPanel with mobile capture flow",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/297",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:in-progress"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:in-progress (PR updated within last 7 days, assumed active)"
+    ]
+  },
+  {
+    "number": 293,
+    "title": "[LP-1.1.7] CI: Fix e2e workflow YAML & E2E: lean admin login helper",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/293",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 290,
+    "title": "[LP-1.1.5] Test: Fix API integration tests - emulator setup and vitest mock hoisting",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/290",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 275,
+    "title": "[PVS-0.1.8] Generate unified attribute mapping CSV (imports → editor → PDP)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/275",
+    "current_labels": [
+      "lisa/pvs",
+      "area:attributes"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 274,
+    "title": "[PVS-0.1.7] Apply staging normalization, verify API, merge PR #271",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/274",
+    "current_labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 273,
+    "title": "[PVS-0.1.6] Normalize attributes — staging dry-run & detailed report",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/273",
+    "current_labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 272,
+    "title": "[PVS-0.1.5] Verify attribute update merge, add API test, document normalize dry-run",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/272",
+    "current_labels": [
+      "lisa/pvs",
+      "type:patch",
+      "area:attributes"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 270,
+    "title": "[PVS-0.1.3] Pilot: create lisa branches for nonconforming branches with PRs",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/270",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 269,
+    "title": "[PVS-0.1.2] Branch rename proposals & non-destructive plan",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/269",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 268,
+    "title": "[PVS-0.1.1] Repo inventory & proposed cleanup plan",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/268",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 267,
+    "title": "[PVS-0.1.0] Lisa governance: add PR template, docs, and PR metadata checks",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/267",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 262,
+    "title": "revert: revert regression commit 27f41da (user management regression)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/262",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 256,
+    "title": "report(attribute-inspection): staging unknown attributes 2025-12-10",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/256",
+    "current_labels": [
+      "audit",
+      "attributes",
+      "staging"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 243,
+    "title": "feat(auth): Admin auth debugging and E2E user setup tools",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/243",
+    "current_labels": [
+      "feature"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 240,
+    "title": "fix(api): use req.params.listId in lists handlers",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/240",
+    "current_labels": [
+      "bugfix"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 226,
+    "title": "ci: increase e2e timeout to 60min (temporary) — Lisa v0.2.0",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/226",
+    "current_labels": [],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 223,
+    "title": "ci: increase e2e timeout to 60min (temporary) — Lisa v0.2.0",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/223",
+    "current_labels": [
+      "infra",
+      "ci"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  },
+  {
+    "number": 220,
+    "title": "feat(admin): SmartRules & AITemplate persistence skeleton (Lisa v0.2.0-rc2)",
+    "url": "https://github.com/twgallo13/ROPI-V2.1/pull/220",
+    "current_labels": [
+      "feature",
+      "api",
+      "p1-high",
+      "admin"
+    ],
+    "labels_to_add": [
+      "state:review"
+    ],
+    "comments_to_add": [],
+    "rationale": [
+      "State inferred: state:review (PR older than 14 days, assumed awaiting review)"
+    ]
+  }
+]

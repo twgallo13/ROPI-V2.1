@@ -1,0 +1,16 @@
+{
+  "dryRun": false,
+  "registry_source": "json",
+  "git_sha": null,
+  "updatedAt": {
+    "_seconds": 1767412773,
+    "_nanoseconds": 930000000
+  },
+  "lastSyncedBy": "align_registry_version.mjs",
+  "lastSyncedAt": {
+    "_seconds": 1767433462,
+    "_nanoseconds": 168000000
+  },
+  "registry_version": "63f787312f56fbfc52d4f813f9755b0251629442",
+  "totalAttributes": 69
+}

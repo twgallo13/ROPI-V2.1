@@ -1,0 +1,68 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-002",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/api/src/services/completionRulesService.ts",
+      "action": "modified"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": "https://staging.yourapp.com",
+    "deployedAt": null
+  },
+  "verification": {
+    "firestore_settings_snapshot": {
+      "status": "PENDING",
+      "evidence": "Firestore snapshot of settings/exportSettings showing completionRules with all required fields"
+    },
+    "loadCompletionRules_validation": {
+      "status": "PENDING",
+      "evidence": "loadCompletionRules() log output showing valid CompletionRulesConfig with schemaVersion, rulesVersion, exportUnlockThresholdPct (0-100), enabled segments weight ≈100"
+    },
+    "schema_version_present": {
+      "status": "PENDING",
+      "evidence": "completionRules.schemaVersion field exists and is valid"
+    },
+    "rules_version_present": {
+      "status": "PENDING",
+      "evidence": "completionRules.rulesVersion field exists and is valid"
+    },
+    "threshold_pct_valid": {
+      "status": "PENDING",
+      "evidence": "completionRules.exportUnlockThresholdPct is between 0 and 100"
+    },
+    "segments_weight_valid": {
+      "status": "PENDING",
+      "evidence": "Sum of enabled segment weights approximately equals 100"
+    },
+    "ui_persist_validation": {
+      "status": "PENDING",
+      "evidence": "Export Settings UI persists validated rules to Firestore settings/exportSettings (VVP required)"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-002: Completion rules validation & persistence",
+    "Goal: Ensure Firestore settings/exportSettings.completionRules exists and is valid per validateCompletionRulesConfig",
+    "Tasks:",
+    "  1. Load rules via loadCompletionRules() against staging Firestore",
+    "  2. Fix/validate missing fields",
+    "  3. Ensure UI editing validates and persists only validated rules",
+    "Acceptance:",
+    "  - loadCompletionRules() returns valid CompletionRulesConfig",
+    "  - Export Settings UI persist → Firestore settings/exportSettings"
+  ]
+}

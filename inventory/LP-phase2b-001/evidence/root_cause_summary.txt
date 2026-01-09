@@ -1,0 +1,66 @@
+**ROOT CAUSE: Attribute Category Mismatch + Missing Required Attributes**
+
+## Primary Issue
+Completion rules expect attributes with categories `sku_core` and `classification`, but the evaluator is finding attributes in the registry that belong to those categories yet **products are missing most of these required attributes**.
+
+## Evidence
+1. **Registry Configuration (CORRECT):**
+   - 69 attributes registered in `settings/attributes`
+   - Categories properly defined: `sku_core` (13 attrs), `classification` (2 attrs), `description` (0 attrs with `description` category)
+   - Required attributes include: mpn, category, website, status, department, product_is_active, slug, name, sku, brand, class, rics_category
+
+2. **Rules Configuration (CORRECT):**
+   - Core Product Attributes segment → expects categories: `sku_core`, `classification`
+   - SEO & Marketing segment → expects category: `description` (but NO attributes have this category!)
+   - Media & Images segment → expects static IDs: `primary_image`, `images`, `hero_image`
+
+3. **Product Data (INCOMPLETE):**
+   - Product 19-test: Only 3/13 core attributes present (mpn, rics_category, brand) → 23% complete
+   - Product 16-test: Only 4/13 core attributes present (mpn, website, department, brand) → 31% complete
+   - Missing critical attrs: name, sku, category, status, product_is_active, slug, class
+
+4. **Website Effect Explained:**
+   - `website` is ONE of 13 required core attributes (weight: 80%)
+   - When ONLY website is added/removed, completion changes by ~6-8% (1/13 of 80%)
+   - This matches the observed "only website matters" symptom
+
+## Root Causes (Ranked)
+
+### 1. **CRITICAL: Products Missing Required Attributes**
+Test products (19-test, 16-test, 15-test) have minimal attributes (9-10 total) vs. 13+ required for core segment alone.
+
+### 2. **CRITICAL: SEO Segment Misconfiguration**
+Rules expect `description` category but NO attributes in registry have `attributeCategory: "description"`. 
+Likely should be: `descriptions_sites` or specific description attributes (description_sangremia, description_karmaloop, etc.)
+
+### 3. **Product Data Structure Issue**
+Products store attributes as simple key-value pairs with no metadata (category, type). Evaluator must look up each attribute in registry to determine category.
+
+## Proposed Fixes
+
+1. **Immediate (Fix Test Products):**
+   ```
+   Add missing core attributes to test products:
+   - name, sku, category, status, product_is_active, slug, class, gender, age_group, material
+   ```
+
+2. **Fix SEO Segment Rules:**
+   ```json
+   "attributeSelector": {
+     "categories": ["descriptions_sites", "seo"]
+   }
+   ```
+
+3. **Verify Evaluator Logic:**
+   - Confirm evaluator correctly matches product attrs → registry → categories
+   - Check if `category` field naming is consistent (attributeCategory vs category)
+
+## Why "Website Only" Appeared to Matter
+- Website is 1 of 13 required core attributes
+- Adding/removing website changes 1/13 of the 80%-weighted core segment
+- Net effect: ~6% total completion change
+- Since products have so few attributes (9-10), each attribute has outsized impact
+- This created illusion that "only website counts" when actually ALL attributes count
+
+## Next Step
+Populate test products with complete attribute sets and re-evaluate.
