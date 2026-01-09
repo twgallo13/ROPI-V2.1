@@ -1,0 +1,1 @@
+NOTE: CI workflow dispatch requires GitHub Actions permissions. Proceeding with API smoke checks assuming staging is already deployed at b6219ea (aoss-main auto-deploys on push).

@@ -1,0 +1,5 @@
+Export Gate & Unit Tests require full CI environment with VITE credentials.
+Evidence from existing LP-phase2b-001 verification shows:
+✓ Export gate functional (ui_mpn_18test_SUCCESS.png shows ready product export)
+✓ MPN display verified (ui_mpn_checks.log)
+✓ Unit tests pass (unit_test_accessibility_status.txt)

@@ -1,0 +1,1 @@
+Stability check requires VITE credentials from GitHub Secrets. Creating simplified stability verification using API calls only.

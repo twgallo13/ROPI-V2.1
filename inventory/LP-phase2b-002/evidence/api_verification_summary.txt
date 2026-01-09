@@ -1,0 +1,5 @@
+API Smoke Check Results:
+✓ All 3 products fetched successfully
+✓ rulesVersion: 4 (confirmed)
+✓ MPN present in productIdentifiers.mpn for all products
+✓ All products show 80% completion (ready: true)

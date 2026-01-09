@@ -1,0 +1,18 @@
+Copilot code review	active	205941216
+Copilot coding agent	active	207469916
+Deploy pre-check	active	212065685
+Deploy AOSS PR Preview	active	212107345
+Deploy AOSS Staging	active	212118351
+CI - Test GCP Service Account	active	212144312
+E2E Tests	active	212434667
+Ops — Set Admin Custom Claim	active	212761403
+API Integration Tests (Emulator)	active	213782865
+Setup E2E Test Users	active	214512732
+Staging Verify (Normalization / Import / Export / E2E)	active	214568188
+Validate LP Staging Checklist	active	217720003
+pr-hes-checker	active	220089300
+phase-readiness-check	active	220089301
+E2E Smoke Tests	active	220094536
+deployment-receipt-check	active	222013573
+identity-lock-check	active	222013574
+live-receipt-check	active	222013575

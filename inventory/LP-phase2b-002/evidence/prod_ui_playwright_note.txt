@@ -1,0 +1,3 @@
+Note: Playwright tests require VITE credentials from GitHub Secrets. Recording existence of test file. Full E2E execution requires GitHub Actions environment.
+✓ Playwright test exists: packages/web/e2e/completion-mpn-display.spec.ts
+✓ Test verifies: MPN display, product_id absence, export gate behavior

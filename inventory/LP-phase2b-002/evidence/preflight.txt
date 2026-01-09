@@ -1,0 +1,2 @@
+Preflight complete - b6219ea confirmed in history
+Workflow deploy-staging.yml exists and active

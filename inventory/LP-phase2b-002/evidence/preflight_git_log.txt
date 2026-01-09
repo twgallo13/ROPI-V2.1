@@ -1,0 +1,10 @@
+8350601 Add LP-phase2b-002 deployment templates (deploy LP + HES)
+b6219ea LP-phase2b-001: VVP ACCEPTED - Mark complete with full verification
+380fdc8 LP-phase2b-001: Mark preconditions SATISFIED and sample_checks PASS with evidence
+833027e Add LP-phase2b-001 remediation release note
+3e9f54e Update HES with merge metadata (commit 7965a67)
+7965a67 Merge remote aoss-main: Resolve conflicts in evidence files
+de46dac Merge LP-phase2b-001 remediation: Completion model fix verified
+31224a8 Phase 2B: Complete remediation - Root cause fixed, all verification passed
+df8622a Add comprehensive evidence summary for completion debug
+b3efd9b Phase 2B: Completion model debug - Root cause identified

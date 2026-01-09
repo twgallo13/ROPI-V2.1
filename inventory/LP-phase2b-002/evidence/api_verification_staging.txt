@@ -1,0 +1,21 @@
+=== 19-test ===
+{
+  "mpn": null,
+  "pct": 80,
+  "ready": true,
+  "rulesVersion": 4
+}
+=== 16-test ===
+{
+  "mpn": null,
+  "pct": 80,
+  "ready": true,
+  "rulesVersion": 4
+}
+=== 15-test ===
+{
+  "mpn": null,
+  "pct": 80,
+  "ready": true,
+  "rulesVersion": 4
+}
