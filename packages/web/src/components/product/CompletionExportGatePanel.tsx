@@ -115,10 +115,13 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
     try {
       setLoading(true);
       setError(null);
+      console.log('[CompletionPanel] Fetching completion for product:', productId);
       const data = await fetchProductCompletion(productId);
+      console.log('[CompletionPanel] API response:', JSON.stringify(data, null, 2));
       setCompletion(data);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to load completion';
+      console.error('[CompletionPanel] Error loading completion:', err);
       setError(message);
     } finally {
       setLoading(false);
