@@ -566,7 +566,8 @@ export async function calculateCompletionDrivenExportReadiness(
         [],
         completionRules,
         evaluationTimestamp,
-        productSnapshot
+        productSnapshot,
+        product  // LP-phase2b-001: Pass product for MPN extraction
       );
     }
     
@@ -918,10 +919,13 @@ function createBlockedReadiness(
   selectedSites: string[],
   rules: CompletionRulesConfig | null,
   timestamp: string,
-  productSnapshot?: ProductSnapshot
+  productSnapshot?: ProductSnapshot,
+  product?: ProductDocument
 ): CompletionDrivenExportReadiness {
   
   return {
+    // LP-phase2b-001: ALWAYS include productIdentifiers (binding MPN-first rule)
+    ...(product ? { productIdentifiers: extractProductIdentifiers(product) } : {}),
     ready: false,
     completionPct: 0,
     threshold: rules?.exportUnlockThresholdPct || 80,
