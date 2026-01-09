@@ -25,6 +25,7 @@ import {
   type CompletionRulesConfig
 } from './completionRulesService';
 import { loadExportableAttributes, type ProductDocument } from './exportService';
+import { loadRegistryMap } from './attributeValidator';
 import type { AttributeType } from '../../../sdk/src/schema/attribute';
 
 // ============================================================================
@@ -642,19 +643,22 @@ export async function calculateCompletionDrivenExportReadiness(
  * Load attribute registry formatted for completion evaluation
  */
 async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> {
-  const exportableAttributes = await loadExportableAttributes();
+  // Load the authoritative SDK attribute registry directly
+  // This preserves required_for_completion flags needed for completion evaluation
+  const registryMap = await loadRegistryMap();
   const registry: AttributeRegistry = {};
   
-  for (const [id, def] of exportableAttributes) {
-    // Convert export attribute definition to completion format
+  for (const [id, attr] of registryMap) {
+    // Convert to completion engine format, preserving required_for_completion flag
     registry[id] = {
       attribute_id: id,
-      label: def.label,
-      category: def.category || 'general',
-      data_type: def.data_type || 'string',
-      required_for_completion: def.required_for_export || def.requiredForExport || false,
-      exportable: true,
-      internalOnly: def.internalOnly || false
+      label: attr.label,
+      category: attr.category || 'general',
+      data_type: attr.data_type || 'string',
+      required_for_completion: attr.required_for_completion === true,
+      required_for_export: attr.required_for_export === true || attr.requiredForExport === true,
+      exportable: attr.exportable !== false,
+      internalOnly: attr.internalOnly === true
     } as AttributeType;
   }
   
