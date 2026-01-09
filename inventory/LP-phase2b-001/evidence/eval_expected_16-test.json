@@ -1,0 +1,19 @@
+{
+  "product_id": "16-test",
+  "input_snapshot": "api_completion_response",
+  "evaluation_timestamp": "2026-01-09T10:04:06.771Z",
+  "completion_result": {
+    "completionPct": 80,
+    "status": "ready",
+    "ready": true,
+    "threshold": 80,
+    "hasBlockingSites": false,
+    "blockingReasons": [],
+    "missingAttributes": []
+  },
+  "deterministic_factors": {
+    "commit_sha": "3370c1e",
+    "random_seed": 12345,
+    "rules_version": 3
+  }
+}

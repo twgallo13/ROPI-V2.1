@@ -1,0 +1,9 @@
+{
+  "product_id": "15-test",
+  "mpn": "UNKNOWN-MPN",
+  "pct": 0,
+  "ready": false,
+  "threshold": 80,
+  "hasBlockingSites": true,
+  "rulesVersion": 3
+}

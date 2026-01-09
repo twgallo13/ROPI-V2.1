@@ -1,0 +1,26 @@
+{
+  "product_id": "19-test",
+  "input_snapshot": "api_completion_response",
+  "evaluation_timestamp": "2026-01-09T10:04:06.284Z",
+  "completion_result": {
+    "completionPct": 0,
+    "status": "blocked",
+    "ready": false,
+    "threshold": 80,
+    "hasBlockingSites": true,
+    "blockingReasons": [
+      {
+        "type": "REQUIRED_ATTRIBUTE_MISSING",
+        "severity": "BLOCKING",
+        "message": "No sites selected for product",
+        "details": {}
+      }
+    ],
+    "missingAttributes": []
+  },
+  "deterministic_factors": {
+    "commit_sha": "3370c1e",
+    "random_seed": 12345,
+    "rules_version": 3
+  }
+}

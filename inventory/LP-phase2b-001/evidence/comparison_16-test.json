@@ -1,0 +1,8 @@
+{
+  "product": "16-test",
+  "reported_completion": 80,
+  "expected_completion": 80,
+  "reported_status": "ready",
+  "expected_status": "ready",
+  "match": true
+}
