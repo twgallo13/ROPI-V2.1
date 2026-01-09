@@ -1,0 +1,54 @@
+{
+  "id": "sku",
+  "name": "SKU",
+  "category": "sku_core",
+  "value": "SKU-15-test"
+}
+{
+  "id": "style_id",
+  "name": "Style ID",
+  "category": "sku_core",
+  "value": null
+}
+{
+  "id": "mpn",
+  "name": "MPN",
+  "category": "sku_core",
+  "value": "19-test"
+}
+{
+  "id": "name",
+  "name": "Product Name",
+  "category": "sku_core",
+  "value": "Mens Accy"
+}
+{
+  "id": "slug",
+  "name": "URL Slug",
+  "category": "sku_core",
+  "value": null
+}
+{
+  "id": "brand",
+  "name": "Brand",
+  "category": "sku_core",
+  "value": "ICE CREAM"
+}
+{
+  "id": "website",
+  "name": "Websites",
+  "category": "sku_core",
+  "value": null
+}
+{
+  "id": "product_is_active",
+  "name": "Product Is Active",
+  "category": "sku_core",
+  "value": null
+}
+{
+  "id": "status",
+  "name": "Status",
+  "category": "sku_core",
+  "value": "draft"
+}

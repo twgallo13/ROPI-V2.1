@@ -1,0 +1,31 @@
+{
+  "mpn": "19-test",
+  "rulesVersion": 4,
+  "completionPct": 80,
+  "operatorExplanation": {
+    "summary": "Export ready: product 80% complete (threshold: 80%)",
+    "completionBreakdown": [
+      {
+        "segmentId": "core-attributes",
+        "segmentName": "Core Product Attributes",
+        "score": 100,
+        "weightPct": 80,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "seo-attributes",
+        "segmentName": "SEO & Marketing",
+        "score": 0,
+        "weightPct": 20,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "media-attributes",
+        "segmentName": "Media & Images",
+        "score": 0,
+        "weightPct": 0,
+        "missingAttributes": []
+      }
+    ]
+  }
+}

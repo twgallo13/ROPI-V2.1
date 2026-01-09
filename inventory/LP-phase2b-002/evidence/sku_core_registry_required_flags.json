@@ -1,0 +1,54 @@
+{
+  "id": "sku",
+  "name": "SKU",
+  "required_for_completion": true,
+  "category": "sku_core"
+}
+{
+  "id": "style_id",
+  "name": "Style ID",
+  "required_for_completion": false,
+  "category": "sku_core"
+}
+{
+  "id": "mpn",
+  "name": "MPN",
+  "required_for_completion": true,
+  "category": "sku_core"
+}
+{
+  "id": "name",
+  "name": "Product Name",
+  "required_for_completion": true,
+  "category": "sku_core"
+}
+{
+  "id": "slug",
+  "name": "URL Slug",
+  "required_for_completion": false,
+  "category": "sku_core"
+}
+{
+  "id": "brand",
+  "name": "Brand",
+  "required_for_completion": true,
+  "category": "sku_core"
+}
+{
+  "id": "website",
+  "name": "Websites (Multi-select)",
+  "required_for_completion": true,
+  "category": "sku_core"
+}
+{
+  "id": "product_is_active",
+  "name": "Product Is Active",
+  "required_for_completion": true,
+  "category": "sku_core"
+}
+{
+  "id": "status",
+  "name": "Status",
+  "required_for_completion": false,
+  "category": "sku_core"
+}

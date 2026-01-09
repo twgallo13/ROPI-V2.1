@@ -1,0 +1,23 @@
+{
+  "id": "core-attributes",
+  "name": "Core Product Attributes",
+  "ruleType": "ALL_REQUIRED",
+  "enabled": true,
+  "appliesTo": {
+    "mode": "ALL_PRODUCTS",
+    "sites": []
+  },
+  "weightPct": 80,
+  "attributeSelector": {
+    "source": "REGISTRY",
+    "categories": [
+      "sku_core",
+      "classification"
+    ],
+    "requirementFlag": "required_for_completion",
+    "siteAware": false,
+    "includeInternalOnly": true,
+    "excludeAttributeIds": [],
+    "staticAttributeIds": []
+  }
+}
