@@ -227,7 +227,7 @@ function ProductHeader({
             <div className="product-header__field product-header__field--secondary">
               <span className="product-header__label">RIC Color</span>
               <span className="product-header__value product-header__value--muted">
-                {product.attributes?.color || product.color || '—'}
+                {product.attributes?.color || '—'}
               </span>
             </div>
 
