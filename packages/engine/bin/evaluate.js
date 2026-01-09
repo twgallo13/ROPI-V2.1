@@ -38,7 +38,7 @@ function parseArgs() {
   return parsed;
 }
 
-// Deterministic evaluation function (pure math)
+// Deterministic evaluation function with binary segment semantics
 function evaluateCompletionDeterministic(inputData, seed) {
   // Extract product data
   const productSnapshot = inputData.snapshot || inputData;
@@ -47,27 +47,99 @@ function evaluateCompletionDeterministic(inputData, seed) {
   // Use snapshot timestamp if available, otherwise current time
   const evaluationTimestamp = inputData.snapshot_timestamp || new Date().toISOString();
   
-  // Simplified deterministic completion calculation
-  // Formula reverse-engineered from test vectors:
-  // completion = 20 (base) + (attributeCount * 10) + (contentItems * 5)
-  // where contentItems = hasImages (1/0) + hasDescription (1/0) + hasPrice (1/0) = 0-2 typically
-  // 
-  // Test verification:
-  // - 7 attrs + 2 images + desc = 20 + 70 + 10 = 100% ✓
-  // - 3 attrs + 1 image + desc = 20 + 30 + 10 = 60% ✓
-  // - 2 attrs + 0 images + no desc = 20 + 20 + 0 = 40% ✓
+  // UPDATED: Binary segment semantics
+  // Each segment is evaluated as:
+  // - All required attributes present → status="complete", score=100
+  // - Missing any required attribute → status="blocked", score=0
+  // Then aggregate weighted scores for total completion
   
-  const attributeCount = attributes ? Object.keys(attributes).length : 0;
-  const hasImages = images && Array.isArray(images) && images.length >= 1 ? 1 : 0;
-  const hasDescription = description && description.length > 0 ? 1 : 0;
+  // Get completion rules if provided
+  const rules = inputData.rules || {};
+  const segments = rules.segments || [];
+  const attributeRegistry = inputData.attributeRegistry || {};
   
-  const baseScore = 20;
-  const attributePoints = attributeCount * 10;
-  const contentItems = hasImages + hasDescription;
-  const contentPoints = contentItems * 5;
-  const totalCompletion = Math.min(100, baseScore + attributePoints + contentPoints);
+  // Build registry lookup by category
+  const registryByCategory = {};
+  if (attributeRegistry.attributes && Array.isArray(attributeRegistry.attributes)) {
+    attributeRegistry.attributes.forEach(attr => {
+      const cat = attr.category || 'uncategorized';
+      if (!registryByCategory[cat]) {
+        registryByCategory[cat] = [];
+      }
+      registryByCategory[cat].push(attr);
+    });
+  }
+  
+  // Evaluate each segment
+  const evaluatedSegments = [];
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
+  
+  for (const segment of segments) {
+    if (!segment.enabled) {
+      continue;
+    }
+    
+    const segmentId = segment.id || 'unknown';
+    const segmentName = segment.name || segmentId;
+    const weight = segment.weightPct || 0;
+    totalWeight += weight;
+    
+    let segmentStatus = 'complete';
+    let segmentScore = 100;
+    let missingAttributes = [];
+    
+    // Get attributes that should be in this segment
+    const requiredAttrs = getSegmentRequiredAttributes(
+      segment,
+      registryByCategory,
+      attributes || {}
+    );
+    
+    // Check if all required attributes are present and non-empty
+    if (requiredAttrs.length > 0) {
+      const missingAttrs = requiredAttrs.filter(attr => {
+        const attrValue = attributes[attr] || attributes[`attributes.${attr}`];
+        return !attrValue || (typeof attrValue === 'string' && attrValue.trim() === '');
+      });
+      
+      if (missingAttrs.length > 0) {
+        segmentStatus = 'blocked';
+        segmentScore = 0;
+        missingAttributes = missingAttrs;
+      }
+    }
+    
+    evaluatedSegments.push({
+      id: segmentId,
+      name: segmentName,
+      status: segmentStatus,
+      score: segmentScore,
+      weightPct: weight,
+      requiredAttributes: requiredAttrs,
+      missingAttributes,
+      ruleType: segment.ruleType
+    });
+    
+    totalWeightedScore += (segmentScore / 100) * weight;
+  }
+  
+  // Fallback calculation if no rules provided (backwards compat)
+  let totalCompletion = totalWeightedScore;
+  if (evaluatedSegments.length === 0) {
+    // Use legacy formula as fallback
+    const attributeCount = attributes ? Object.keys(attributes).length : 0;
+    const hasImages = images && Array.isArray(images) && images.length >= 1 ? 1 : 0;
+    const hasDescription = description && description.length > 0 ? 1 : 0;
+    
+    const baseScore = 20;
+    const attributePoints = attributeCount * 10;
+    const contentItems = hasImages + hasDescription;
+    const contentPoints = contentItems * 5;
+    totalCompletion = Math.min(100, baseScore + attributePoints + contentPoints);
+  }
 
-  // Determine status based on completion percentage
+  // Determine overall status based on completion percentage
   const threshold = 80;
   let status;
   let ready;
@@ -86,31 +158,68 @@ function evaluateCompletionDeterministic(inputData, seed) {
     status = 'blocked';
     ready = false;
     hasBlockingSites = true;
-    blockingReasons = ['Insufficient attributes'];
+    const blockedSegments = evaluatedSegments
+      .filter(s => s.status === 'blocked')
+      .map(s => `${s.name} (missing: ${s.missingAttributes.join(', ')})`)
+      .join('; ');
+    blockingReasons = blockedSegments ? [blockedSegments] : ['Insufficient attributes'];
   }
-
-  // Identify missing attributes - but return empty array as per expected outputs
-  const missingAttributes = [];
 
   return {
     product_id: id || 'unknown',
     input_snapshot: inputData.input_snapshot_path || 'provided',
     evaluation_timestamp: evaluationTimestamp,
     completion_result: {
-      completionPct: totalCompletion,
+      completionPct: Math.round(totalCompletion),
       status,
       ready,
       threshold,
       hasBlockingSites,
       blockingReasons,
-      missingAttributes
+      segments: evaluatedSegments,
+      missingAttributes: evaluatedSegments.flatMap(s => s.missingAttributes)
     },
     deterministic_factors: {
       commit_sha: inputData.commit_sha || 'd5103ea',
       random_seed: seed || 0,
-      rules_version: 1
+      rules_version: rules.rulesVersion || 1,
+      evaluation_mode: 'BINARY_SEGMENT_SEMANTICS'
     }
   };
+}
+
+// Helper: Extract required attributes for a segment
+function getSegmentRequiredAttributes(segment, registryByCategory, productAttributes) {
+  const selector = segment.attributeSelector || {};
+  const requiredAttributes = [];
+  
+  // Get attributes from specified categories
+  if (selector.categories && Array.isArray(selector.categories)) {
+    for (const category of selector.categories) {
+      const categoryAttrs = registryByCategory[category] || [];
+      const filtered = categoryAttrs.filter(attr => {
+        // Check requirement flag
+        if (selector.requirementFlag) {
+          return attr[selector.requirementFlag] === true;
+        }
+        // Default: include all in category
+        return true;
+      });
+      requiredAttributes.push(...filtered.map(a => a.attribute_id));
+    }
+  }
+  
+  // Add static attributes if specified
+  if (selector.staticAttributeIds && Array.isArray(selector.staticAttributeIds)) {
+    requiredAttributes.push(...selector.staticAttributeIds);
+  }
+  
+  // Remove excluded attributes
+  if (selector.excludeAttributeIds && Array.isArray(selector.excludeAttributeIds)) {
+    return requiredAttributes.filter(a => !selector.excludeAttributeIds.includes(a));
+  }
+  
+  return [...new Set(requiredAttributes)]; // deduplicate
 }
 
 // Main execution
