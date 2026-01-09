@@ -5,8 +5,8 @@
   "phase": "phase2b",
   "generated_at": "2026-01-09T04:00:00Z",
   "branch": "feature/lp-phase2b-001-ui-export-gate",
-  "prNumber": null,
-  "prUrl": null,
+  "prNumber": 470,
+  "prUrl": "https://github.com/twgallo13/ROPI-V2.1/pull/470",
   "ai_reentry_confirmation": {
     "lisa_confirm": "Lisa read and confirms AI_BOOTSTRAP.md and GOVERNANCE.md and authorizes Phase 2B start per LP-phase2a-001 completion.",
     "homer_confirm": "Homer read AI_BOOTSTRAP.md and GOVERNANCE.md and will comply with AI re-entry constraints for LP-phase2b-001.",
