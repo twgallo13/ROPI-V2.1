@@ -200,6 +200,7 @@ function ProductsPage() {
     sortDir,
     setSortDir,
     refresh,
+    bulkDeleteProducts,
   } = useProducts({
     limit: itemsPerPage,
     autoLoad: true,
@@ -393,7 +394,16 @@ function ProductsPage() {
           break;
         case 'delete':
           if (confirm(`Delete ${ids.length} products? This cannot be undone.`)) {
-            alert(`Delete ${ids.length} products (not yet implemented)`);
+            const idsArray = Array.from(ids);
+            bulkDeleteProducts(idsArray)
+              .then(() => {
+                alert(`Successfully deleted ${ids.length} products`);
+                setSelectedIds(new Set());
+              })
+              .catch((error: Error) => {
+                alert(`Failed to delete products: ${error.message}`);
+              });
+            return; // Don't clear selection yet, will clear on success
           }
           break;
       }
@@ -401,7 +411,7 @@ function ProductsPage() {
       // Clear selection after action
       setSelectedIds(new Set());
     },
-    [selectedIds]
+    [selectedIds, bulkDeleteProducts]
   );
 
   // Check if any filters are active

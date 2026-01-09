@@ -108,26 +108,15 @@ export function ProductsTable({
                 aria-label="Select all visible products"
               />
             </th>
-            <th className="products-table__th products-table__th--sku">
+            <th className="products-table__th products-table__th--mpn">
               <button
                 type="button"
                 className="products-table__sort-btn"
-                onClick={() => onSort('sku')}
-                aria-label="Sort by SKU"
+                onClick={() => onSort('mpn')}
+                aria-label="Sort by MPN"
               >
-                SKU
-                <SortIndicator field="sku" currentField={sortBy} direction={sortDir} />
-              </button>
-            </th>
-            <th className="products-table__th products-table__th--name">
-              <button
-                type="button"
-                className="products-table__sort-btn"
-                onClick={() => onSort('name')}
-                aria-label="Sort by Name"
-              >
-                Name
-                <SortIndicator field="name" currentField={sortBy} direction={sortDir} />
+                MPN
+                <SortIndicator field="mpn" currentField={sortBy} direction={sortDir} />
               </button>
             </th>
             <th className="products-table__th products-table__th--brand">
@@ -139,6 +128,17 @@ export function ProductsTable({
               >
                 Brand
                 <SortIndicator field="brand" currentField={sortBy} direction={sortDir} />
+              </button>
+            </th>
+            <th className="products-table__th products-table__th--name">
+              <button
+                type="button"
+                className="products-table__sort-btn"
+                onClick={() => onSort('name')}
+                aria-label="Sort by Name"
+              >
+                Name
+                <SortIndicator field="name" currentField={sortBy} direction={sortDir} />
               </button>
             </th>
             <th className="products-table__th products-table__th--department">
@@ -155,6 +155,17 @@ export function ProductsTable({
                 <SortIndicator field="status" currentField={sortBy} direction={sortDir} />
               </button>
             </th>
+            <th className="products-table__th products-table__th--updated">
+              <button
+                type="button"
+                className="products-table__sort-btn"
+                onClick={() => onSort('updatedAt')}
+                aria-label="Sort by Updated"
+              >
+                Updated
+                <SortIndicator field="updatedAt" currentField={sortBy} direction={sortDir} />
+              </button>
+            </th>
             <th className="products-table__th products-table__th--date">
               <button
                 type="button"
@@ -164,17 +175,6 @@ export function ProductsTable({
               >
                 Import Date
                 <SortIndicator field="createdAt" currentField={sortBy} direction={sortDir} />
-              </button>
-            </th>
-            <th className="products-table__th products-table__th--date">
-              <button
-                type="button"
-                className="products-table__sort-btn"
-                onClick={() => onSort('updatedAt')}
-                aria-label="Sort by Updated"
-              >
-                Updated
-                <SortIndicator field="updatedAt" currentField={sortBy} direction={sortDir} />
               </button>
             </th>
           </tr>
@@ -193,18 +193,18 @@ export function ProductsTable({
                   aria-label={`Select ${product.name || product.sku || product.id}`}
                 />
               </td>
-              <td className="products-table__td products-table__td--sku">
+              <td className="products-table__td products-table__td--mpn">
                 <Link to={`/products/${product.id}`} className="products-table__link">
-                  {product.sku || product.id}
+                  {product.mpn || product.sku || '—'}
                 </Link>
+              </td>
+              <td className="products-table__td products-table__td--brand">
+                {product.brand || '—'}
               </td>
               <td className="products-table__td products-table__td--name">
                 <Link to={`/products/${product.id}`} className="products-table__link">
                   {product.name || 'Unnamed Product'}
                 </Link>
-              </td>
-              <td className="products-table__td products-table__td--brand">
-                {product.brand || '—'}
               </td>
               <td className="products-table__td products-table__td--department">
                 {product.department || '—'}
@@ -216,11 +216,11 @@ export function ProductsTable({
                   </span>
                 )}
               </td>
-              <td className="products-table__td products-table__td--date">
-                {formatDate(product.createdAt)}
+              <td className="products-table__td products-table__td--updated">
+                {formatDate(product.updatedAt)}
               </td>
               <td className="products-table__td products-table__td--date">
-                {formatDate(product.updatedAt)}
+                {formatDate(product.createdAt)}
               </td>
             </tr>
           ))}
