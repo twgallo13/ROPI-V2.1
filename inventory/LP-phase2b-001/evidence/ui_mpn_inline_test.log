@@ -1,0 +1,35 @@
+🖥️   ✅ Firebase initialized successfully
+🖥️   Sentry DSN not configured - error monitoring disabled
+🖥️   🔐 Auth state changed: No user
+🖥️   🔐 Auth state changed: User: theo@shiekh.com
+🖥️   ✅ Email sign-in successful: theo@shiekh.com
+🖥️   🔐 Admin check for theo@shiekh.com: ✅ Admin (via custom claims)
+🖥️   📧 Email verified for theo@shiekh.com: ✅ Yes
+🖥️   ✅ Firebase initialized successfully
+🖥️   Sentry DSN not configured - error monitoring disabled
+⏳ Waiting 15 seconds for component to fully render...
+🖥️   [ProductEditorPage] Product ID from URL: 18-test
+🖥️   [ProductEditorPage] CODE VERSION: 2026-01-09-v3-MPN-FIX
+🖥️   [useProduct] Loading product 18-test, Firebase available: true
+🖥️   [useProduct] Setting up Firestore listener for product 18-test...
+🖥️   🔐 Auth state changed: User: theo@shiekh.com
+🖥️   🔐 Admin check for theo@shiekh.com: ✅ Admin (via custom claims)
+🖥️   📧 Email verified for theo@shiekh.com: ✅ Yes
+🖥️   [useProduct] Firestore snapshot for product 18-test: exists=true, pendingUpdate= null
+🖥️   [useProduct] Product data received, keys: [attributes, ageGroup, roUploadBatchId, lastReceived, ricsCategory, dimensions, ricsColor, firstReceived, rics_color, sku]
+🖥️   [ProductEditorPage] Product ID from URL: 18-test
+🖥️   [ProductEditorPage] CODE VERSION: 2026-01-09-v3-MPN-FIX
+🖥️   [CompletionPanel] productIdentifiers: undefined
+🖥️   [CompletionPanel] Fetching completion for product: 18-test
+🖥️   [ProductEditorPage] Product ID from URL: 18-test
+🖥️   [ProductEditorPage] CODE VERSION: 2026-01-09-v3-MPN-FIX
+🖥️   [CompletionPanel] productIdentifiers: undefined
+🖥️   [CompletionPanel] API returned data: {productIdentifiers: Object, ready: true, completionPct: 80, threshold: 80, hasBlockingSites: false}
+🖥️   [CompletionPanel] productIdentifiers field: {mpn: 18-test, productId: 18-test}
+🖥️   [CompletionPanel] productIdentifiers: {mpn: 18-test, productId: 18-test}
+📊 Found 1 MPN elements
+  [1] MPN: "18-test"
+📦 Found 2 elements with text "18-test"
+📸 Screenshot saved to /tmp/mpn-inline-verification.png
+
+✅ SUCCESS: MPN element found!

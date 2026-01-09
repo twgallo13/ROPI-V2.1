@@ -1,0 +1,110 @@
+
+Running 4 tests using 1 worker
+
+  ✘  1 [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0001 (ready): MPN displayed, product_id NOT visible (475ms)
+  ✘  2 [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0004 (partial): MPN displayed, product_id NOT visible (547ms)
+  ✘  3 [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0007 (blocked): MPN displayed, product_id NOT visible (520ms)
+  ✘  4 [chromium] › e2e/completion-mpn-display.spec.ts:128:3 › LP-phase2b-001: MPN Display Verification › MPN assertion: product_id must never appear in tooltips or aria-labels (477ms)
+
+
+  1) [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0001 (ready): MPN displayed, product_id NOT visible 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/
+    Call log:
+    [2m  - navigating to "http://localhost:5173/", waiting until "load"[22m
+
+
+      33 |   test.beforeEach(async ({ page }) => {
+      34 |     // Navigate and sign in
+    > 35 |     await page.goto(BASE_URL);
+         |                ^
+      36 |     await page.waitForLoadState('networkidle');
+      37 |
+      38 |     const signInBtn = page.locator('[data-testid="signin-trigger"], button:has-text("Sign In")').first();
+        at /workspaces/ROPI-V2.1/packages/web/e2e/completion-mpn-display.spec.ts:35:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--6fe83-ayed-product-id-NOT-visible-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--6fe83-ayed-product-id-NOT-visible-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0004 (partial): MPN displayed, product_id NOT visible 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/
+    Call log:
+    [2m  - navigating to "http://localhost:5173/", waiting until "load"[22m
+
+
+      33 |   test.beforeEach(async ({ page }) => {
+      34 |     // Navigate and sign in
+    > 35 |     await page.goto(BASE_URL);
+         |                ^
+      36 |     await page.waitForLoadState('networkidle');
+      37 |
+      38 |     const signInBtn = page.locator('[data-testid="signin-trigger"], button:has-text("Sign In")').first();
+        at /workspaces/ROPI-V2.1/packages/web/e2e/completion-mpn-display.spec.ts:35:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--1517b-ayed-product-id-NOT-visible-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--1517b-ayed-product-id-NOT-visible-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0007 (blocked): MPN displayed, product_id NOT visible 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/
+    Call log:
+    [2m  - navigating to "http://localhost:5173/", waiting until "load"[22m
+
+
+      33 |   test.beforeEach(async ({ page }) => {
+      34 |     // Navigate and sign in
+    > 35 |     await page.goto(BASE_URL);
+         |                ^
+      36 |     await page.waitForLoadState('networkidle');
+      37 |
+      38 |     const signInBtn = page.locator('[data-testid="signin-trigger"], button:has-text("Sign In")').first();
+        at /workspaces/ROPI-V2.1/packages/web/e2e/completion-mpn-display.spec.ts:35:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--b3068-ayed-product-id-NOT-visible-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--b3068-ayed-product-id-NOT-visible-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › e2e/completion-mpn-display.spec.ts:128:3 › LP-phase2b-001: MPN Display Verification › MPN assertion: product_id must never appear in tooltips or aria-labels 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/
+    Call log:
+    [2m  - navigating to "http://localhost:5173/", waiting until "load"[22m
+
+
+      33 |   test.beforeEach(async ({ page }) => {
+      34 |     // Navigate and sign in
+    > 35 |     await page.goto(BASE_URL);
+         |                ^
+      36 |     await page.waitForLoadState('networkidle');
+      37 |
+      38 |     const signInBtn = page.locator('[data-testid="signin-trigger"], button:has-text("Sign In")').first();
+        at /workspaces/ROPI-V2.1/packages/web/e2e/completion-mpn-display.spec.ts:35:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--5c43c--in-tooltips-or-aria-labels-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/completion-mpn-display-LP--5c43c--in-tooltips-or-aria-labels-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0001 (ready): MPN displayed, product_id NOT visible 
+    [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0004 (partial): MPN displayed, product_id NOT visible 
+    [chromium] › e2e/completion-mpn-display.spec.ts:54:5 › LP-phase2b-001: MPN Display Verification › Product product-0007 (blocked): MPN displayed, product_id NOT visible 
+    [chromium] › e2e/completion-mpn-display.spec.ts:128:3 › LP-phase2b-001: MPN Display Verification › MPN assertion: product_id must never appear in tooltips or aria-labels 

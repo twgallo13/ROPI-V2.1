@@ -1,0 +1,21 @@
+🚀 Starting MPN UI verification...
+📍 Target: https://ropi-aoss-staging.web.app
+🔐 Signing in...
+✅ Signed in successfully
+📦 Navigating to product 18-test...
+🔍 Looking for MPN display (waiting up to 10s)...
+📸 Screenshot saved: /tmp/mpn-verification.png
+
+📊 Found 0 MPN elements with data-testid
+
+📦 Found 0 elements containing exact text "18-test"
+
+🔍 Found 0 elements containing "UNKNOWN-MPN"
+
+✅ MPN VERIFICATION RESULTS:
+   - MPN elements by testid: 0
+   - Elements displaying MPN value: 0
+   - product_id visible in UI: ✅ PASS
+
+❌ FAILURE: MPN display rule violated
+   Need: MPN visible (0 found) AND product_id NOT visible
