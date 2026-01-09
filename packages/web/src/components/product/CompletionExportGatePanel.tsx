@@ -31,6 +31,11 @@ export interface ProductLevelReadiness {
 }
 
 export interface CompletionEvaluationResult {
+  // LP-phase2b-001: Product identification (MPN-first, product_id internal only)
+  productIdentifiers?: {
+    mpn: string;           // Canonical user-facing identifier
+    productId: string;     // Internal lookup key (admin debug only)
+  };
   ready: boolean;
   completionPct: number;
   threshold: number;
@@ -135,6 +140,21 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
     <div className="completion-export-gate-panel">
       <div className="panel-header">
         <h3 className="panel-title">{isBlocked ? '🚫' : '✅'} Completion / Export</h3>
+        {/* LP-phase2b-001: Display MPN (never product_id) */}
+        {completion?.productIdentifiers?.mpn && (
+          <div className="panel-mpn" data-testid="completion-panel-mpn" style={{
+            fontSize: '0.9em',
+            color: '#666',
+            fontFamily: 'monospace',
+            backgroundColor: '#f5f5f5',
+            padding: '2px 6px',
+            borderRadius: '3px',
+            marginLeft: 'auto',
+            marginRight: '8px'
+          }}>
+            {completion.productIdentifiers.mpn}
+          </div>
+        )}
         <button className="refresh-button" onClick={loadCompletion} title="Refresh">
           ↻
         </button>
