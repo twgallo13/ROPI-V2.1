@@ -359,6 +359,14 @@ function resolveAttributes(
   const attributeIds: string[] = [];
 
   const canonicalRequirementFlag = normalizeRequirementFlag(selector.requirementFlag);
+  
+  // DEBUG: Log for sku_core category
+  const isSkuCore = selector.categories.includes('sku_core');
+  if (isSkuCore) {
+    console.error('[RESOLVE_DEBUG] Resolving sku_core attributes');
+    console.error('[RESOLVE_DEBUG] canonicalRequirementFlag:', canonicalRequirementFlag);
+    console.error('[RESOLVE_DEBUG] Registry size:', Object.keys(registry).length);
+  }
 
   for (const [attrId, attr] of Object.entries(registry)) {
     // Skip if in exclusion list
@@ -375,6 +383,12 @@ function resolveAttributes(
     if (attr.category && !selector.categories.includes(attr.category)) {
       continue;
     }
+    
+    // DEBUG: Log sku_core matches before requirement check
+    if (isSkuCore && attr.category === 'sku_core') {
+      const flagValue = getNormalizedRequirementFlagValue(attr, canonicalRequirementFlag || 'required_for_completion');
+      console.error(`[RESOLVE_DEBUG] ${attrId}: category=sku_core, required_for_completion=${attr.required_for_completion}, flagValue=${flagValue}`);
+    }
 
     // Check requirement flag
     if (canonicalRequirementFlag && !getNormalizedRequirementFlagValue(attr, canonicalRequirementFlag)) {
@@ -384,6 +398,10 @@ function resolveAttributes(
     // Note: Media and pricing categories are excluded by configuration, not code
 
     attributeIds.push(attrId);
+  }
+  
+  if (isSkuCore) {
+    console.error('[RESOLVE_DEBUG] Resolved sku_core attributes:', attributeIds);
   }
 
   return attributeIds;
