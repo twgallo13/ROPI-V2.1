@@ -76,6 +76,8 @@ import {
   generateSuggestionsHandler,
   applySuggestionHandler,
   getProductCompletionHandler,
+  deleteProductHandler,
+  bulkDeleteProductsHandler,
 } from './endpoints/products';
 
 // LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe handlers
@@ -261,6 +263,9 @@ api.post('/products/:productId/apply', applyHandler);
 api.get('/products/:productId/observation', getProductObservationHandler);
 api.patch('/products/:productId/observation', patchProductObservationHandler);
 api.delete('/products/:productId/observation', deleteProductObservationHandler);
+// LP-products-list-remediation-006: Delete endpoints
+api.delete('/products/:productId', deleteProductHandler);
+api.post('/products/bulk-delete', bulkDeleteProductsHandler);
 
 /**
  * Observations endpoints (LP-1.1.1)
