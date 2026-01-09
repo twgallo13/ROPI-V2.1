@@ -88,11 +88,13 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
       />
     );
 
-    // Should show N/A for missing brand/category
-    expect(container.textContent).toContain('N/A');
+    // Phase 2C: Header now shows only Tab 0 metadata fields (MPN, status, inventory, etc.)
+    // Brand/category are editable fields shown in tab content, not header
+    // Should render without errors even when brand/category are missing
+    expect(container.querySelector('.product-header')).toBeInTheDocument();
   });
 
-  it('displays SKU and name correctly', () => {
+  it('displays MPN (or SKU fallback) correctly', () => {
     const product = {
       id: 'TEST-1',
       sku: 'MY-SKU-123',
@@ -111,8 +113,9 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
       />
     );
 
+    // Phase 2C: Header shows MPN (falls back to SKU when MPN missing)
+    // Product name is in tab content, not header
     expect(screen.getByText('MY-SKU-123')).toBeInTheDocument();
-    expect(screen.getByText('My Product Name')).toBeInTheDocument();
   });
 
   it('renders website chips when websites array is provided', () => {
@@ -134,11 +137,12 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
       />
     );
 
-    expect(screen.getByText('shiekh.com')).toBeInTheDocument();
-    expect(screen.getByText('example.com')).toBeInTheDocument();
+    // Website badges show first+last char (e.g., shiekh → SH, example → EE)
+    expect(screen.getByText('SH')).toBeInTheDocument();
+    expect(screen.getByText('EE')).toBeInTheDocument();
   });
 
-  it('disables Publish button when exportReadiness.overall < 80', () => {
+  it('disables Publish button when canPublish is false', () => {
     const product = {
       id: 'TEST-1',
       sku: 'TEST-SKU',
@@ -154,14 +158,16 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
         onSave={mockOnSave}
         onPublish={mockOnPublish}
         onBack={mockOnBack}
+        canPublish={false}
+        publishReadinessLoading={false}
       />
     );
 
-    const publishButton = screen.getByText('Publish');
+    const publishButton = screen.getByTestId('publish-button');
     expect(publishButton).toBeDisabled();
   });
 
-  it('enables Publish button when exportReadiness.overall >= 80', () => {
+  it('enables Publish button when canPublish is true', () => {
     const product = {
       id: 'TEST-1',
       sku: 'TEST-SKU',
@@ -177,10 +183,12 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
         onSave={mockOnSave}
         onPublish={mockOnPublish}
         onBack={mockOnBack}
+        canPublish={true}
+        publishReadinessLoading={false}
       />
     );
 
-    const publishButton = screen.getByText('Publish');
+    const publishButton = screen.getByTestId('publish-button');
     expect(publishButton).not.toBeDisabled();
   });
 
@@ -207,7 +215,7 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
     expect(mockOnBack).toHaveBeenCalled();
   });
 
-  it('renders unknown status when status is invalid', () => {
+  it('renders Draft status when status is invalid (fallback)', () => {
     const product = {
       id: 'TEST-1',
       sku: 'TEST-SKU',
@@ -226,6 +234,7 @@ describe('ProductHeader with missing fields (LP-3.0.2)', () => {
       />
     );
 
-    expect(container.textContent).toContain('Unknown');
+    // Phase 2C: Invalid status falls back to 'draft' in statusConfig
+    expect(container.textContent).toContain('Draft');
   });
 });

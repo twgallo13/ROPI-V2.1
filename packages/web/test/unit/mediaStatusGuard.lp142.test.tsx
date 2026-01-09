@@ -56,8 +56,8 @@ describe('LP-1.4.2: Media Status Guard', () => {
         );
       }).not.toThrow();
 
-      // Should show "Media Complete" label
-      expect(screen.getByLabelText('Media Complete')).toBeInTheDocument();
+      // Should show "Media present" label
+      expect(screen.getByLabelText('Media present')).toBeInTheDocument();
     });
 
     it('renders without crash when media_status is undefined (fallback to missing)', () => {
@@ -82,8 +82,8 @@ describe('LP-1.4.2: Media Status Guard', () => {
         );
       }).not.toThrow();
 
-      // Should show "No Media" label (fallback)
-      expect(screen.getByLabelText('No Media')).toBeInTheDocument();
+      // Should show "No media uploaded" label (fallback)
+      expect(screen.getByLabelText('No media uploaded')).toBeInTheDocument();
     });
 
     it('renders without crash when media_status is an unknown string (LP-1.4.2 fix)', () => {
@@ -108,8 +108,8 @@ describe('LP-1.4.2: Media Status Guard', () => {
         );
       }).not.toThrow();
 
-      // Should fallback to "No Media" label
-      expect(screen.getByLabelText('No Media')).toBeInTheDocument();
+      // Should fallback to "No media uploaded" label
+      expect(screen.getByLabelText('No media uploaded')).toBeInTheDocument();
     });
 
     it('applies correct CSS class for unknown media_status (fallback to missing)', () => {

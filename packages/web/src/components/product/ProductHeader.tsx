@@ -81,12 +81,12 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 };
 
 /**
- * Media status icon mapping
+ * Media status icon mapping (active/dim states only)
  */
-const mediaStatusConfig: Record<string, { icon: string; label: string; className: string }> = {
-  'complete': { icon: '✓', label: 'Media Complete', className: 'media-status--complete' },
-  'partial': { icon: '◐', label: 'Media Partial', className: 'media-status--partial' },
-  'missing': { icon: '○', label: 'No Media', className: 'media-status--missing' },
+const mediaStatusConfig: Record<string, { icon: string; className: string }> = {
+  'complete': { icon: '●', className: 'media-status--complete' },
+  'partial': { icon: '●', className: 'media-status--complete' },
+  'missing': { icon: '○', className: 'media-status--missing' },
 };
 
 /**
@@ -95,6 +95,16 @@ const mediaStatusConfig: Record<string, { icon: string; label: string; className
 function formatNumber(num?: number): string {
   if (num === undefined || num === null) return '—';
   return num.toLocaleString();
+}
+
+/**
+ * Get website badge text (first + last char before .com)
+ * Example: shiekh.com → "SK", karmaloop.com → "KP"
+ */
+function getWebsiteBadgeText(website: string): string {
+  const baseName = website.split('.')[0];
+  if (baseName.length < 2) return baseName.substring(0, 2).toUpperCase();
+  return `${baseName[0]}${baseName[baseName.length - 1]}`.toUpperCase();
 }
 
 function ProductHeader({ 
@@ -136,142 +146,176 @@ function ProductHeader({
 
   return (
     <header className="product-header" role="banner" aria-label="Product Header">
-      {/* LP-export-completion-fix-1.0.0: Actionable guidance banner for missing sites */}
-      {noSitesBlocking && (
-        <div 
-          className="product-header__guidance-banner product-header__guidance-banner--warning"
-          role="alert"
-          data-testid="sites-guidance-banner"
-        >
-          <span className="product-header__guidance-icon">⚠️</span>
-          <span className="product-header__guidance-message">
-            <strong>Export Blocked:</strong> No sites selected for this product. 
-            Select at least one website to enable export.
-          </span>
-          {onSelectSites && (
-            <button
-              className="product-header__guidance-action"
-              onClick={onSelectSites}
-              data-testid="select-sites-button"
-            >
-              Select Sites
-            </button>
-          )}
-        </div>
-      )}
-      
-      {/* Navigation Row */}
-      <div className="product-header__nav">
-        <button 
-          onClick={onBack} 
-          className="product-header__back-btn"
-          aria-label="Back to Products List"
-        >
-          ← Back to Products
-        </button>
+      {/* ===== ZONE 1: PAGE ACTIONS (Utility Bar) ===== */}
+      <div className="product-header__utility-bar">
+        {/* LP-export-completion-fix-1.0.0: Actionable guidance banner for missing sites */}
+        {noSitesBlocking && (
+          <div 
+            className="product-header__guidance-banner product-header__guidance-banner--warning"
+            role="alert"
+            data-testid="sites-guidance-banner"
+          >
+            <span className="product-header__guidance-icon">⚠️</span>
+            <span className="product-header__guidance-message">
+              <strong>Export Blocked:</strong> No sites selected for this product. 
+              Select at least one website to enable export.
+            </span>
+            {onSelectSites && (
+              <button
+                className="product-header__guidance-action"
+                onClick={onSelectSites}
+                data-testid="select-sites-button"
+              >
+                Select Sites
+              </button>
+            )}
+          </div>
+        )}
         
-        <div className="product-header__actions">
+        {/* Navigation Row */}
+        <div className="product-header__nav">
           <button 
-            onClick={onSave}
-            className="product-header__btn product-header__btn--secondary"
+            onClick={onBack} 
+            className="product-header__back-btn"
+            aria-label="Back to Products List"
           >
-            Save Draft
+            ← Back to Products
           </button>
-          <button 
-            onClick={onPublish}
-            className="product-header__btn product-header__btn--primary"
-            disabled={publishDisabled}
-            title={publishTitle}
-            data-testid="publish-button"
-          >
-            {publishLabel}
-          </button>
+          
+          <div className="product-header__actions">
+            <button 
+              onClick={onSave}
+              className="product-header__btn product-header__btn--secondary"
+            >
+              Save Draft
+            </button>
+            <button 
+              onClick={onPublish}
+              className="product-header__btn product-header__btn--primary"
+              disabled={publishDisabled}
+              title={publishTitle}
+              data-testid="publish-button"
+            >
+              {publishLabel}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Tab 0: Persistent Metadata Bar (Read-Only) */}
-      <div className="product-header__metadata-bar">
-        {/* Status Badge */}
-        <div className="product-header__field">
-          <span className="product-header__label">Status</span>
-          <span className={`product-header__badge ${status.className}`} role="status">
-            {status.label}
-          </span>
-        </div>
+      {/* ===== ZONE 2: PRODUCT CONTEXT (Metadata) ===== */}
+      <div className="product-header__context">
+        <div className="product-header__metadata-bar">
+          {/* Group 1: Core Identity */}
+          <div className="product-header__group product-header__group--identity">
+            {/* MPN (Read-Only Text Reference) */}
+            <div className="product-header__field">
+              <span className="product-header__label">MPN</span>
+              <span className="product-header__value product-header__value--mono">
+                {product.mpn || product.sku || '—'}
+              </span>
+            </div>
 
-        {/* MPN (Read-Only Text Reference) */}
-        <div className="product-header__field">
-          <span className="product-header__label">MPN</span>
-          <span className="product-header__value product-header__value--mono">
-            {product.mpn || product.sku || '—'}
-          </span>
-        </div>
+            {/* RIC Category (Merchandising Context) */}
+            <div className="product-header__field product-header__field--secondary">
+              <span className="product-header__label">RIC Category</span>
+              <span className="product-header__value product-header__value--muted">
+                {product.category || '—'}
+              </span>
+            </div>
 
-        {/* Product Is Active Badge */}
-        <div className="product-header__field">
-          <span className="product-header__label">Active</span>
-          <span 
-            className={`product-header__badge ${isActive ? 'badge--active' : 'badge--inactive'}`}
-            role="status"
-            aria-label={isActive ? 'Product is active' : 'Product is inactive'}
-          >
-            {isActive ? 'Active' : 'Inactive'}
-          </span>
-        </div>
+            {/* RIC Color (Merchandising Context) */}
+            <div className="product-header__field product-header__field--secondary">
+              <span className="product-header__label">RIC Color</span>
+              <span className="product-header__value product-header__value--muted">
+                {product.attributes?.color || product.color || '—'}
+              </span>
+            </div>
 
-        {/* Last Received Date */}
-        <div className="product-header__field">
-          <span className="product-header__label">Last Received</span>
-          <span className="product-header__value" data-testid="header-last-received">
-            {lastDisplay}
-          </span>
-        </div>
+            {/* Status Badge */}
+            <div className="product-header__field">
+              <span className="product-header__label">Status</span>
+              <span className={`product-header__badge ${status.className}`} role="status">
+                {status.label}
+              </span>
+            </div>
 
-        {/* Inventory Section */}
-        <div className="product-header__field product-header__field--inventory">
-          <span className="product-header__label">Inventory</span>
-          <div className="product-header__inventory-group">
-            <span className="product-header__inv-item" title="Total Inventory">
-              <span className="product-header__inv-label">Total:</span>
-              <span className="product-header__inv-value">{formatNumber(product.total_inv)}</span>
-            </span>
-            <span className="product-header__inv-item" title="Warehouse Inventory">
-              <span className="product-header__inv-label">WHS:</span>
-              <span className="product-header__inv-value">{formatNumber(product.warehouse_inv)}</span>
-            </span>
-            <span className="product-header__inv-item" title="Store Inventory">
-              <span className="product-header__inv-label">Store:</span>
-              <span className="product-header__inv-value">{formatNumber(product.store_inv)}</span>
-            </span>
+            {/* Product Is Active Badge */}
+            <div className="product-header__field">
+              <span className="product-header__label">Active</span>
+              <span 
+                className={`product-header__badge ${isActive ? 'badge--active' : 'badge--inactive'}`}
+                role="status"
+                aria-label={isActive ? 'Product is active' : 'Product is inactive'}
+              >
+                {isActive ? 'Active' : 'Inactive'}
+              </span>
+            </div>
           </div>
-        </div>
 
-        {/* Media Status Icon */}
-        <div className="product-header__field">
-          <span className="product-header__label">Media</span>
-          <span 
-            className={`product-header__media-status ${mediaStatus.className}`}
-            title={mediaStatus.label}
-            role="status"
-            aria-label={mediaStatus.label}
-          >
-            <span className="product-header__media-icon">{mediaStatus.icon}</span>
-          </span>
-        </div>
+          {/* Group 2: Operational Health */}
+          <div className="product-header__group product-header__group--operations">
+            {/* Last Received Date */}
+            <div className="product-header__field">
+              <span className="product-header__label">Last Received</span>
+              <span className="product-header__value" data-testid="header-last-received">
+                {lastDisplay}
+              </span>
+            </div>
 
-        {/* Website Chips */}
-        <div className="product-header__field product-header__field--websites">
-          <span className="product-header__label">Websites</span>
-          <div className="product-header__website-chips">
-            {(product.websites ?? []).length > 0 ? (
-              (product.websites ?? []).map(website => (
-                <span key={website} className="product-header__website-chip">
-                  {website}
+            {/* Inventory Section */}
+            <div className="product-header__field product-header__field--inventory">
+              <span className="product-header__label">Inventory</span>
+              <div className="product-header__inventory-group">
+                <span className="product-header__inv-item" title="Total Inventory">
+                  <span className="product-header__inv-label">Total:</span>
+                  <span className="product-header__inv-value">{formatNumber(product.total_inv)}</span>
                 </span>
-              ))
-            ) : (
-              <span className="product-header__no-websites">No websites</span>
-            )}
+                <span className="product-header__inv-item" title="Warehouse Inventory">
+                  <span className="product-header__inv-label">WHS:</span>
+                  <span className="product-header__inv-value">{formatNumber(product.warehouse_inv)}</span>
+                </span>
+                <span className="product-header__inv-item" title="Store Inventory">
+                  <span className="product-header__inv-label">Store:</span>
+                  <span className="product-header__inv-value">{formatNumber(product.store_inv)}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Group 3: Publishing Readiness */}
+          <div className="product-header__group product-header__group--publishing">
+            {/* Media Status Icon */}
+            <div className="product-header__field">
+              <span className="product-header__label">Media</span>
+              <span 
+                className={`product-header__media-status ${mediaStatus.className}`}
+                title={mediaStatus.icon === '●' ? 'Media present' : 'No media uploaded'}
+                role="status"
+                aria-label={mediaStatus.icon === '●' ? 'Media present' : 'No media uploaded'}
+              >
+                {mediaStatus.icon}
+              </span>
+            </div>
+
+            {/* Website Chips */}
+            <div className="product-header__field product-header__field--websites">
+              <span className="product-header__label">Websites</span>
+              <div className="product-header__website-chips">
+                {(product.websites ?? []).length > 0 ? (
+                  (product.websites ?? []).map(website => (
+                    <span 
+                      key={website} 
+                      className="product-header__website-chip"
+                      title={website}
+                    >
+                      {getWebsiteBadgeText(website)}
+                    </span>
+                  ))
+                ) : (
+                  <span className="product-header__no-websites">No websites</span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
