@@ -1,0 +1,18 @@
+{
+  "_comment": "Expected output template - to be populated with actual expected results",
+  "product_id": "sample-0001",
+  "input_snapshot": "inventory/LP-phase2a-001/tests/inputs/sample-0001.json",
+  "evaluation_timestamp": null,
+  "completion_result": {
+    "overall_percentage": null,
+    "status": "ready|blocked|partial",
+    "required_attributes_status": {},
+    "missing_required_attributes": [],
+    "recommendations": []
+  },
+  "deterministic_factors": {
+    "commit_sha": "d5103ea",
+    "random_seed": null,
+    "rules_version": null
+  }
+}

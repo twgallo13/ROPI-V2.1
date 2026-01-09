@@ -1,0 +1,25 @@
+{
+  "_comment": "Sample test input template - to be populated with actual product data",
+  "product_id": "sample-0001",
+  "snapshot_timestamp": "2026-01-08T21:35:41Z",
+  "snapshot_commit_sha": "d5103ea",
+  "product_data": {
+    "id": "sample-0001",
+    "title": "Sample Product",
+    "attributes": {
+      "brand": "Sample Brand",
+      "category": "Sample Category",
+      "color": "Red",
+      "size": "M"
+    },
+    "completeness_factors": {
+      "has_images": true,
+      "has_description": true,
+      "has_price": true
+    }
+  },
+  "test_purpose": "Deterministic completion engine evaluation test",
+  "expected_completion_percentage": null,
+  "expected_missing_attributes": [],
+  "random_seed": null
+}

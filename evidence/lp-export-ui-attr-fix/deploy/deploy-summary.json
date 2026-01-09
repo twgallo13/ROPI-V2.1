@@ -1,0 +1,18 @@
+{
+  "deployRunId": 20777003252,
+  "deployRunURL": "https://github.com/twgallo13/ROPI-V2.1/actions/runs/20777003252",
+  "deployStatus": "success",
+  "deployedCommitSHA": "8e0b80c805f1c30defad6e8f11ffe13f09f2aa0b",
+  "deployedAt": "2026-01-07T09:40:18Z",
+  "createdAt": "2026-01-07T09:36:42Z",
+  "serviceAccountUsed": "ropi-aoss-deployer@***.iam.gserviceaccount.com",
+  "stagingURLs": {
+    "stable": "https://ropi-aoss-staging.web.app",
+    "preview": "https://ropi-aoss-staging--aoss-main-staging-66cwdo2b.web.app"
+  },
+  "secretsUsed": [
+    "GCP_SA_KEY_BASE64",
+    "VITE_FIREBASE_API_KEY"
+  ],
+  "hostingVersion": "projects/***/sites/ropi-aoss-staging/versions/159c707b9a6a94bc"
+}

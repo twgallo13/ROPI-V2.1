@@ -1,0 +1,121 @@
+{
+  "lp_id": "LP-completion-readiness-007",
+  "lp_title": "Live updates & operator explainability flow",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "live_update_workflow_documentation": {
+      "description": "Documentation of live-update or refresh workflow",
+      "document_path": "",
+      "workflow_steps": [],
+      "timestamp": ""
+    },
+    "operator_help_text": {
+      "description": "Operator help text explaining operatorExplanation actionable items",
+      "help_text_location": "",
+      "help_text_content": "",
+      "timestamp": ""
+    },
+    "vvp_sequence_attribute_change": {
+      "description": "VVP sequence: change attribute → refresh → product reflects change",
+      "vvp_reference": "evidence/completion-readiness/vvp/live-update-attribute-change.md",
+      "timeline_artifact": "artifacts/LP-completion-readiness-007/timeline.md",
+      "screenshots_dir": "artifacts/LP-completion-readiness-007/screenshots",
+      "timeline": {
+        "t0_initial_state": {
+          "product_id": "",
+          "attribute_id": "",
+          "attribute_value": "",
+          "product_evaluation": {},
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "t1_attribute_change": {
+          "change_description": "",
+          "new_attribute_value": "",
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "t2_refresh_trigger": {
+          "refresh_method": "",
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "t3_product_reflects_change": {
+          "product_evaluation": {},
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "total_elapsed_seconds": null
+      }
+    },
+    "vvp_sequence_rule_change": {
+      "description": "VVP sequence: change rule → refresh → export reflects change",
+      "vvp_reference": "evidence/completion-readiness/vvp/live-update-rule-change.md",
+      "timeline": {
+        "t0_initial_state": {
+          "catalog_readiness": {},
+          "completion_rules": {},
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "t1_rule_change": {
+          "change_description": "",
+          "new_rule_value": "",
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "t2_refresh_trigger": {
+          "refresh_method": "",
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "t3_export_reflects_change": {
+          "catalog_readiness": {},
+          "screenshot": "",
+          "timestamp": ""
+        },
+        "total_elapsed_seconds": null
+      }
+    },
+    "operator_explanation_actionability": {
+      "description": "Operator explanation provides actionable items",
+      "sample_explanations": [
+        {
+          "scenario": "",
+          "explanation_text": "",
+          "actionable_items": [],
+          "is_actionable": false
+        }
+      ],
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "VVP sequence: change attribute/rule → refresh/live update → product/export reflect change; operator explanation provides actions. HES with timeline",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/web/src/hooks/useExportCompletion.ts"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

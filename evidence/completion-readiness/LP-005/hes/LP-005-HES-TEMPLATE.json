@@ -1,0 +1,71 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-005",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/api/src/services/completionDrivenExportReadiness.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/api/src/endpoints/export.ts",
+      "action": "modified"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": "https://staging.yourapp.com",
+    "deployedAt": null
+  },
+  "verification": {
+    "readiness_conservative_policy": {
+      "status": "PENDING",
+      "evidence": "calculateCompletionDrivenExportReadiness implements ANY blocked product → export blocked policy"
+    },
+    "readiness_payload_conforms": {
+      "status": "PENDING",
+      "evidence": "Readiness payload conforms to CompletionDrivenExportReadiness TypeScript interface"
+    },
+    "readiness_operator_explanation": {
+      "status": "PENDING",
+      "evidence": "Readiness payload includes actionable operatorExplanation"
+    },
+    "blocked_scenario_423": {
+      "status": "PENDING",
+      "evidence": "Server logs showing POST /api/admin/exports/dry-run and GET /api/admin/exports/readiness return 423 with readiness payload when blocked"
+    },
+    "ready_scenario_200": {
+      "status": "PENDING",
+      "evidence": "Server logs showing POST /api/admin/exports/dry-run and GET /api/admin/exports/readiness return 200 when ready"
+    },
+    "export_ui_blocked_vvp": {
+      "status": "PENDING",
+      "evidence": "VVP screenshots showing Export UI in blocked state with operator explanation"
+    },
+    "export_ui_ready_vvp": {
+      "status": "PENDING",
+      "evidence": "VVP screenshots showing Export UI in ready state"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-005: Export readiness service & export gate enforcement",
+    "Goal: Ensure export readiness implements conservative policy (ANY blocked product → export blocked)",
+    "Tasks:",
+    "  1. Validate calculateCompletionDrivenExportReadiness for catalog-level conservative blocking",
+    "  2. Execute dry-run and readiness endpoints for blocked and ready scenarios",
+    "Acceptance:",
+    "  - readiness payload conforms to CompletionDrivenExportReadiness",
+    "  - Endpoints return 423 when blocked and 200 when ready"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "commit_sha": "d5103ea",
+  "random_seed": 12445,
+  "product_id": "product-0001",
+  "test_index": 1,
+  "snapshot_timestamp": "2026-01-08T21:45:00Z",
+  "snapshot": {
+    "id": "product-0001",
+    "title": "Test Product 1",
+    "attributes": {
+      "brand": "Test Brand",
+      "category": "Footwear",
+      "color": "Black",
+      "size": "10",
+      "gender": "Men",
+      "material": "Leather",
+      "sku": "SKU-product-0001"
+    },
+    "images": [
+      "image1.jpg",
+      "image2.jpg"
+    ],
+    "description": "Complete product description with all details",
+    "price": 99.99
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-completion-readiness-001",
+  "date": "YYYY-MM-DD",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "prUrl": null,
+  "mergeCommitSha": null,
+  "mergedAt": null,
+  "filesChanged": [
+    {
+      "path": "packages/api/src/tasks/syncAttributeRegistry.ts",
+      "action": "modified"
+    },
+    {
+      "path": "packages/sdk/config/attributeRegistry.json",
+      "action": "modified"
+    }
+  ],
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "runId": null,
+    "runUrl": null,
+    "stagingUrl": "https://staging.yourapp.com",
+    "deployedAt": null
+  },
+  "verification": {
+    "registry_file_sha": {
+      "status": "PENDING",
+      "evidence": "SHA of packages/sdk/config/attributeRegistry.json: <insert sha>"
+    },
+    "registry_version_matches": {
+      "status": "PENDING",
+      "evidence": "settings/attributesMeta.registry_version === packages/sdk/config/attributeRegistry.json version"
+    },
+    "sync_execution": {
+      "status": "PENDING",
+      "evidence": "runSyncAttributeRegistry(dryRun=false) log output showing successful sync"
+    },
+    "verify_script_output": {
+      "status": "PENDING",
+      "evidence": "scripts/verify-attributes-meta.js output confirming version match"
+    },
+    "firestore_meta_snapshot": {
+      "status": "PENDING",
+      "evidence": "Firestore snapshot of settings/attributesMeta showing registry_version, syncedAt, syncedBy"
+    },
+    "sample_attribute_snapshot": {
+      "status": "PENDING",
+      "evidence": "At least one sample doc under settings/attributes/keys/ with definition_version === registry.version, syncedAt, syncedBy"
+    }
+  },
+  "deviations": [],
+  "result": "PENDING",
+  "notes": [
+    "This HES template corresponds to LP-completion-readiness-001: Registry sync & verification",
+    "Goal: Ensure packages/sdk/config/attributeRegistry.json is canonical and reliably synced to Firestore",
+    "Tasks:",
+    "  1. Harden syncAttributeRegistry.ts to prefer packaged registry JSON",
+    "  2. Execute runSyncAttributeRegistry(dryRun=false) in staging",
+    "  3. Run scripts/verify-attributes-meta.js against staging Firestore",
+    "Acceptance:",
+    "  - settings/attributesMeta.registry_version equals registry JSON version",
+    "  - At least one attribute doc has definition_version === registry.version with syncedAt/syncedBy"
+  ]
+}

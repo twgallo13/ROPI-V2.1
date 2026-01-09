@@ -1,0 +1,160 @@
+{
+  "lp_id": "LP-completion-readiness-006",
+  "lp_title": "Admin UI: Export Settings editor & Attributes Console write-through",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "export_settings_page_persistence": {
+      "description": "ExportSettingsPage persists validated rules to Firestore",
+      "component_file": "packages/web/src/pages/settings/ExportSettingsPage.tsx",
+      "vvp_reference": "evidence/completion-readiness/vvp/export-settings-persistence.md",
+      "screenshots_dir": "artifacts/LP-completion-readiness-006/screenshots",
+      "test_scenario": {
+        "before_edit": {
+          "firestore_path": "settings/exportSettings",
+          "artifact_file": "artifacts/LP-completion-readiness-006/export-settings-edit-before.json",
+          "snapshot": {},
+          "timestamp": ""
+        },
+        "ui_edit": {
+          "description": "Edit made in Export Settings UI",
+          "changes": {},
+          "timestamp": ""
+        },
+        "after_edit": {
+          "firestore_path": "settings/exportSettings",
+          "artifact_file": "artifacts/LP-completion-readiness-006/export-settings-edit-after.json",
+          "snapshot": {},
+          "timestamp": ""
+        },
+        "persistence_verified": false
+      }
+    },
+    "attribute_detail_panel_toggles": {
+      "description": "AttributeDetailPanel toggles required_for_completion / required_for_export",
+      "component_file": "packages/web/src/components/AttributeDetailPanel.tsx",
+      "vvp_reference": "evidence/completion-readiness/vvp/attributes-console-toggles.md",
+      "test_scenario_completion_flag": {
+        "attribute_id": "",
+        "before_toggle": {
+          "firestore_path": "settings/attributes/keys/{attributeId}",
+          "artifact_file": "artifacts/LP-completion-readiness-006/attribute-<id>-before.json",
+          "required_for_completion": null,
+          "snapshot": {},
+          "timestamp": ""
+        },
+        "ui_toggle": {
+          "description": "Toggle required_for_completion flag",
+          "new_value": null,
+          "timestamp": ""
+        },
+        "after_toggle": {
+          "firestore_path": "settings/attributes/keys/{attributeId}",
+          "artifact_file": "artifacts/LP-completion-readiness-006/attribute-<id>-after.json",
+          "required_for_completion": null,
+          "snapshot": {},
+          "timestamp": ""
+        },
+        "audit_event": {
+          "event_id": "",
+          "event_type": "",
+          "user": "",
+          "changes": {},
+          "timestamp": ""
+        },
+        "toggle_verified": false
+      },
+      "test_scenario_export_flag": {
+        "attribute_id": "",
+        "before_toggle": {
+          "firestore_path": "settings/attributes/keys/{attributeId}",
+          "required_for_export": null,
+          "snapshot": {},
+          "timestamp": ""
+        },
+        "ui_toggle": {
+          "description": "Toggle required_for_export flag",
+          "new_value": null,
+          "timestamp": ""
+        },
+        "after_toggle": {
+          "firestore_path": "settings/attributes/keys/{attributeId}",
+          "required_for_export": null,
+          "snapshot": {},
+          "timestamp": ""
+        },
+        "audit_event": {
+          "event_id": "",
+          "event_type": "",
+          "user": "",
+          "changes": {},
+          "timestamp": ""
+        },
+        "toggle_verified": false
+      }
+    },
+    "evaluation_outcome_change": {
+      "description": "Attribute flag toggle changes evaluation outcome",
+      "scenario": {
+        "product_id": "",
+        "attribute_id": "",
+        "before_toggle": {
+          "required_for_completion": false,
+          "product_evaluation": {
+            "ready": true,
+            "completionPct": null,
+            "blockingReasons": []
+          },
+          "timestamp": ""
+        },
+        "toggle_action": {
+          "set_required_for_completion": true,
+          "timestamp": ""
+        },
+        "after_toggle": {
+          "required_for_completion": true,
+          "product_evaluation": {
+            "ready": false,
+            "completionPct": null,
+            "blockingReasons": []
+          },
+          "timestamp": ""
+        },
+        "evaluation_change_verified": false
+      }
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "UI edit → Firestore doc change",
+      "verified": false,
+      "notes": ""
+    },
+    {
+      "criterion": "Attribute flag toggles change evaluation outcome (HES before/after)",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/web/src/pages/settings/ExportSettingsPage.tsx",
+    "packages/web/src/components/AttributeDetailPanel.tsx"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

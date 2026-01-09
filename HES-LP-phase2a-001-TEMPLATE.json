@@ -1,0 +1,56 @@
+{
+  "from": "Homer",
+  "to": "Lisa",
+  "lp": "LP-phase2a-001",
+  "phase": "phase2a",
+  "generated_at": "",
+  "branch": "feature/lp-phase2a-001-completion-engine",
+  "prNumber": null,
+  "prUrl": null,
+  
+  "ai_reentry_confirmation": {
+    "lisa_confirm": "",
+    "homer_confirm": "",
+    "ai_bootstrap_commit_sha": "",
+    "governance_commit_sha": ""
+  },
+  
+  "preconditions": [],
+  
+  "inventory_snapshot_before": {
+    "description": "State of completion rules and related systems before implementation",
+    "captured_at": null,
+    "firestore_collections": [],
+    "api_endpoints_existing": []
+  },
+  
+  "commands_executed": [],
+  
+  "evidence_links": {
+    "unit_tests": "",
+    "api_tests": "",
+    "persistence_tests": "",
+    "ci_runs": [],
+    "deterministic_evaluation": ""
+  },
+  
+  "sample_checks": [],
+  
+  "vvp": {
+    "unit_verification": {
+      "status": "",
+      "evidence_path": ""
+    },
+    "integration_verification": {
+      "status": "",
+      "evidence_path": ""
+    },
+    "consistency_verification": {
+      "status": "",
+      "evidence_path": ""
+    }
+  },
+  
+  "result": "",
+  "result_details": ""
+}

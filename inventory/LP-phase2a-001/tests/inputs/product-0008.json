@@ -1,0 +1,18 @@
+{
+  "commit_sha": "d5103ea",
+  "random_seed": 13145,
+  "product_id": "product-0008",
+  "test_index": 8,
+  "snapshot_timestamp": "2026-01-08T21:45:00Z",
+  "snapshot": {
+    "id": "product-0008",
+    "title": "Test Product 8",
+    "attributes": {
+      "brand": "Test Brand",
+      "category": "Footwear"
+    },
+    "images": [],
+    "description": "",
+    "price": 49.99
+  }
+}

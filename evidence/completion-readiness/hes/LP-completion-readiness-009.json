@@ -1,0 +1,107 @@
+{
+  "lp_id": "LP-completion-readiness-009",
+  "lp_title": "No-legacy-fallbacks enforcement & normalization check",
+  "owner": "Homer",
+  "verification_date": "YYYY-MM-DD",
+  "verifier": "Homer",
+  "result": "PENDING",
+  "branch": "governance/lp-sequential-numbering-2026-01-07",
+  "prNumber": null,
+  "commitShas": [],
+  "ciRuns": [],
+  "deployInfo": {
+    "staging_deploy_sha": "",
+    "staging_deploy_timestamp": "",
+    "staging_url": "https://ropi-aoss-staging.web.app"
+  },
+  "evidence": {
+    "normalization_audit": {
+      "description": "Audit of attributesService.fromFirestore normalization",
+      "service_file": "packages/api/src/services/attributesService.ts",
+      "fromFirestore_function": {
+        "handles_required_for_completion": false,
+        "handles_required_for_export": false,
+        "handles_required_for_publish": false,
+        "normalization_logic": "",
+        "audit_notes": ""
+      },
+      "timestamp": ""
+    },
+    "completion_engine_normalized_flags": {
+      "description": "Completion engine uses normalized flags via getNormalizedRequirementFlagValue",
+      "engine_file": "packages/api/src/services/completionEvaluationEngine.ts",
+      "getNormalizedRequirementFlagValue_function": {
+        "implementation": "",
+        "used_in_evaluation": false,
+        "audit_notes": ""
+      },
+      "timestamp": ""
+    },
+    "legacy_field_toggle_tests": {
+      "description": "Tests toggling legacy fields to confirm evaluations use canonical fields",
+      "test_file": "",
+      "log_file": "artifacts/LP-completion-readiness-009/test-legacy-normalization.log",
+      "test_scenarios": [
+        {
+          "scenario": "Set legacy field only (e.g., old requirementFlags.required_for_completion)",
+          "artifact_file": "artifacts/LP-completion-readiness-009/attribute-legacy-doc.json",
+          "eval_result_file": "artifacts/LP-completion-readiness-009/eval-result.json",
+          "canonical_field_value": null,
+          "legacy_field_value": null,
+          "evaluation_uses_canonical": false,
+          "test_result": "",
+          "timestamp": ""
+        },
+        {
+          "scenario": "Set both legacy and canonical fields with conflicting values",
+          "canonical_field_value": null,
+          "legacy_field_value": null,
+          "evaluation_uses_canonical": false,
+          "test_result": "",
+          "timestamp": ""
+        },
+        {
+          "scenario": "Set canonical field only",
+          "canonical_field_value": null,
+          "legacy_field_value": null,
+          "evaluation_result": "",
+          "test_result": "",
+          "timestamp": ""
+        }
+      ],
+      "all_tests_passed": false,
+      "timestamp": ""
+    },
+    "no_silent_fallback_verification": {
+      "description": "Verify no silent legacy fallback behavior",
+      "code_search_results": {
+        "search_patterns": [
+          "requirementFlags",
+          "required_for_completion fallback",
+          "required_for_export fallback"
+        ],
+        "files_reviewed": [],
+        "fallback_code_found": false,
+        "audit_notes": ""
+      },
+      "timestamp": ""
+    }
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "HES demonstrating normalization and evaluation using normalized flags",
+      "verified": false,
+      "notes": ""
+    }
+  ],
+  "authoritative_refs": [
+    "packages/api/src/services/attributesService.ts",
+    "packages/api/src/services/completionEvaluationEngine.ts (getNormalizedRequirementFlagValue)"
+  ],
+  "verification_notes": "",
+  "sign_off": {
+    "homer_approved": false,
+    "approval_date": "",
+    "final_result": "PENDING"
+  }
+}

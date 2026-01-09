@@ -1,0 +1,14 @@
+
+# GLOBAL Mode Toggle Evidence
+
+**Timestamp:** 2026-01-08T11:04:04.710Z
+**Actor:** HES-C-automation (Homer)
+**Firestore Path:** settings/exportSettings
+**Field:** exportGlobalMode
+**Value Set:** false
+**Method:** Firebase Admin SDK (Node.js script)
+
+## Verification
+
+Firestore document updated successfully.
+Wait 30 seconds for cache refresh before API calls.
