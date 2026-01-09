@@ -135,6 +135,9 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   const completionBreakdown = operatorExplanation?.completionBreakdown ?? [];
   const siteStatus = operatorExplanation?.siteStatus ?? [];
   const actionRequired = operatorExplanation?.actionRequired ?? [];
+  
+  // LP-phase2b-001: Debug logging for MPN verification
+  console.log('[CompletionPanel] productIdentifiers:', completion?.productIdentifiers);
 
   return (
     <div className="completion-export-gate-panel">
