@@ -330,7 +330,6 @@ function evaluateSegment(
         : Math.round((completedCount / totalAttributes) * 100))
     : 100;
 
-  const isDebugProduct = product.productId === '14-test';
   if (isDebugProduct) {
     console.error(`[EVAL_DEBUG] Segment ${segment.id} final: completedCount=${completedCount}/${totalAttributes}, score=${score}`);
   }
