@@ -219,7 +219,7 @@ function ProductHeader({
             <div className="product-header__field product-header__field--secondary">
               <span className="product-header__label">RIC Category</span>
               <span className="product-header__value product-header__value--muted">
-                {product.category || '—'}
+                {product.attributes?.rics_category || '—'}
               </span>
             </div>
 
@@ -227,7 +227,7 @@ function ProductHeader({
             <div className="product-header__field product-header__field--secondary">
               <span className="product-header__label">RIC Color</span>
               <span className="product-header__value product-header__value--muted">
-                {product.attributes?.color || '—'}
+                {product.attributes?.rics_color || '—'}
               </span>
             </div>
 
