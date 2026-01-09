@@ -648,20 +648,31 @@ async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> 
   const path = require('path');
   
   // Try multiple paths to find the registry JSON
+  // In Cloud Functions, files are deployed relative to the functions directory
   const possiblePaths = [
+    // Local development / build output
     path.resolve(__dirname, '../config/attributeRegistry.json'),
+    path.resolve(__dirname, 'config/attributeRegistry.json'),
+    path.join(__dirname, '../config/attributeRegistry.json'),
+    path.join(__dirname, 'config/attributeRegistry.json'),
+    // Cloud Functions deployment paths
+    path.resolve(process.cwd(), 'config/attributeRegistry.json'),
+    path.resolve(process.cwd(), 'dist/config/attributeRegistry.json'),
+    // Workspace root paths (for monorepo)
     path.resolve(__dirname, '../../config/attributeRegistry.json'),
     path.resolve(__dirname, '../../../sdk/config/attributeRegistry.json'),
-    path.resolve(process.cwd(), 'dist/config/attributeRegistry.json'),
   ];
   
   let registryData;
+  let loadedFrom;
   for (const registryPath of possiblePaths) {
     try {
-      const fileContent = fs.readFileSync(registryPath, 'utf8');
-      registryData = JSON.parse(fileContent);
-      console.log(`[loadAttributeRegistryForCompletion] Loaded registry from: ${registryPath}`);
-      break;
+      if (fs.existsSync(registryPath)) {
+        const fileContent = fs.readFileSync(registryPath, 'utf8');
+        registryData = JSON.parse(fileContent);
+        loadedFrom = registryPath;
+        break;
+      }
     } catch (e) {
       // Try next path
       continue;
@@ -669,6 +680,11 @@ async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> 
   }
   
   if (!registryData || !registryData.attributes) {
+    console.error('[loadAttributeRegistryForCompletion] Failed to find registry. Tried paths:');
+    possiblePaths.forEach(p => {
+      const exists = fs.existsSync(p);
+      console.error(`  ${exists ? '✓' : '✗'} ${p}`);
+    });
     throw new Error('Failed to load authoritative attribute registry from any known path');
   }
   
@@ -688,7 +704,7 @@ async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> 
     } as AttributeType;
   }
   
-  console.log(`[loadAttributeRegistryForCompletion] Loaded ${Object.keys(registry).length} attributes from SDK registry`);
+  console.log(`[loadAttributeRegistryForCompletion] Loaded ${Object.keys(registry).length} attributes from: ${loadedFrom}`);
   
   return registry;
 }
