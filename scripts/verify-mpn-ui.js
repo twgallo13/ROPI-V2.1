@@ -9,7 +9,7 @@ const { chromium } = require('playwright');
 const STAGING_URL = process.env.PREVIEW_URL || 'https://ropi-aoss-staging.web.app';
 const EMAIL = 'theo@shiekh.com';
 const PASSWORD = 'Admin@1234';
-const TEST_PRODUCT = process.env.TEST_PRODUCT || '3-test'; // Known staging product
+const TEST_PRODUCT = process.env.TEST_PRODUCT || '123'; // Product ID that actually exists
 
 async function verifyMpnDisplay() {
   console.log('🚀 Starting MPN UI verification...');
@@ -70,6 +70,17 @@ async function verifyMpnDisplay() {
     const elementsWithMpn = await page.locator(`:text-is("${TEST_PRODUCT}")`).all();
     console.log(`\n📦 Found ${elementsWithMpn.length} elements containing exact text "${TEST_PRODUCT}"`);
     
+    // Also search for "UNKNOWN-MPN" since product 123 has that
+    const unknownMpnElements = await page.locator(':text("UNKNOWN-MPN")').all();
+    console.log(`\n🔍 Found ${unknownMpnElements.length} elements containing "UNKNOWN-MPN"`);
+    
+    for (let i = 0; i < unknownMpnElements.length; i++) {
+      const text = await unknownMpnElements[i].textContent();
+      const tagName = await unknownMpnElements[i].evaluate(el => el.tagName);
+      const className = await unknownMpnElements[i].getAttribute('class') || '';
+      const testId = await unknownMpnElements[i].getAttribute('data-testid') || '';
+      console.log(`  [${i + 1}] <${tagName}> class="${className}" testid="${testId}" text="${text}"`);
+    }
     for (let i = 0; i < elementsWithMpn.length; i++) {
       const tagName = await elementsWithMpn[i].evaluate(el => el.tagName);
       const className = await elementsWithMpn[i].getAttribute('class') || '';

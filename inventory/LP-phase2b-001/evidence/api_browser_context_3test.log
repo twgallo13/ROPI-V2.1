@@ -1,0 +1,15 @@
+🚀 Capturing API response in browser context...
+📍 Target: https://ropi-aoss-staging.web.app
+📦 Product: 3-test
+
+🔐 Signing in...
+✅ Signed in successfully
+
+📦 Navigating to /products/3-test...
+⏳ Waiting for completion API call...
+🖥️  Browser Console: [CompletionPanel] productIdentifiers: undefined
+
+📊 RESULTS:
+   API calls captured: 0
+
+❌ FAILURE: No API calls captured
