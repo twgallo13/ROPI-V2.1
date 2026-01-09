@@ -270,7 +270,8 @@ function evaluateSegment(
   // Debug logging for troubleshooting
   const isDebugProduct = product.productId === '14-test';
   if (isDebugProduct) {
-    console.error(`[EVAL_DEBUG] Segment ${segment.id}: resolved ${totalAttributes} attributes:`, attributeIds.slice(0, 10));
+    console.error(`[EVAL_DEBUG] Segment ${segment.id}: resolved ${totalAttributes} attributes:`, attributeIds);
+    console.error(`[EVAL_DEBUG] Segment ${segment.id}: ruleType=${segment.ruleType}, selectedSites=${JSON.stringify(selectedSites)}`);
   }
   
   if (totalAttributes === 0) {
@@ -438,7 +439,7 @@ function hasAttributeValueForSite(
   if (value === undefined || value === null || value === '') {
     const isDebug = product.productId === '14-test';
     if (isDebug) {
-      console.error(`[EVAL_DEBUG] ${attributeId}: missing (value=${value})`);
+      console.error(`[EVAL_DEBUG] ${attributeId}: MISSING (value=${JSON.stringify(value)})`);
     }
     return false;
   }
@@ -451,7 +452,7 @@ function hasAttributeValueForSite(
     if (attributeSite && attributeSite !== site) {
       const isDebug = product.productId === '14-test';
       if (isDebug) {
-        console.error(`[EVAL_DEBUG] ${attributeId}: not applicable to site ${site} (applies to ${attributeSite})`);
+        console.error(`[EVAL_DEBUG] ${attributeId}: N/A for site ${site} (applies to ${attributeSite})`);
       }
       return true; // Not applicable to this site, consider complete
     }
@@ -459,7 +460,7 @@ function hasAttributeValueForSite(
 
   const isDebug = product.productId === '14-test';
   if (isDebug) {
-    console.error(`[EVAL_DEBUG] ${attributeId}: present (value=${value})`);
+    console.error(`[EVAL_DEBUG] ${attributeId}: PRESENT (value=${JSON.stringify(value).slice(0, 50)})`);
   }
   // For non-site-aware attributes or site-aware attributes with scalar values
   return true;
