@@ -75,6 +75,23 @@ function evaluateCompletionDeterministic(inputData, seed) {
   let totalWeightedScore = 0;
   let totalWeight = 0;
   
+  // Build complete attributes object from all sources
+  const allAttrs = {};
+  
+  // Add all top-level fields from snapshot (direct attributes)
+  if (productSnapshot && typeof productSnapshot === 'object') {
+    for (const [key, value] of Object.entries(productSnapshot)) {
+      if (key !== 'id' && key !== 'images' && key !== 'description' && key !== 'price' && key !== 'attributes') {
+        allAttrs[key] = value;
+      }
+    }
+  }
+  
+  // Also include any nested attributes object
+  if (attributes && typeof attributes === 'object') {
+    Object.assign(allAttrs, attributes);
+  }
+  
   for (const segment of segments) {
     if (!segment.enabled) {
       continue;
@@ -93,14 +110,21 @@ function evaluateCompletionDeterministic(inputData, seed) {
     const requiredAttrs = getSegmentRequiredAttributes(
       segment,
       registryByCategory,
-      attributes || {}
+      allAttrs
     );
     
     // Check if all required attributes are present and non-empty
     if (requiredAttrs.length > 0) {
       const missingAttrs = requiredAttrs.filter(attr => {
-        const attrValue = attributes[attr] || attributes[`attributes.${attr}`];
-        return !attrValue || (typeof attrValue === 'string' && attrValue.trim() === '');
+        const attrValue = allAttrs[attr];
+        // Attribute is missing if: null, undefined, empty string, or false
+        if (attrValue === null || attrValue === undefined) {
+          return true;
+        }
+        if (typeof attrValue === 'string' && attrValue.trim() === '') {
+          return true;
+        }
+        return false;
       });
       
       if (missingAttrs.length > 0) {
