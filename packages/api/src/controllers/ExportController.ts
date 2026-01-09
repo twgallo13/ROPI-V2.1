@@ -3,8 +3,10 @@
 
 import { Request, Response } from 'express';
 import { ExportGateEnforcer } from '../lib/export/ExportGateEnforcer';
+import { evaluateProductCompletion } from '../services/completionDrivenExportReadiness';
+import { getFirestore } from 'firebase-admin/firestore';
 
-// Mock interfaces for dependencies (to be replaced with actual imports)
+// Real interfaces for dependencies
 interface CompletionEngine {
   evaluate(productId: string, productData: any, selectedSites: string[]): Promise<any>;
 }
@@ -13,38 +15,48 @@ interface AttributeRegistry {
   getAttributeTypes(): Promise<any>;
 }
 
-// Simple mock implementations
-class MockCompletionEngine implements CompletionEngine {
+// Real completion engine implementation using the production evaluator
+class RealCompletionEngine implements CompletionEngine {
   async evaluate(productId: string, productData: any, selectedSites: string[]) {
-    // Simple mock logic for demonstration
-    const hasDescription = productData.description && productData.description.trim();
-    const hasSeoTitle = productData.seo_title && productData.seo_title.trim(); 
-    const hasSeoDescription = productData.seo_description && productData.seo_description.trim();
-    
-    const missingAttributes = [];
-    if (!hasDescription) missingAttributes.push('description');
-    if (!hasSeoTitle) missingAttributes.push('seo_title');
-    if (!hasSeoDescription) missingAttributes.push('seo_description');
-    
-    const hasBlockingReasons = missingAttributes.length > 0;
-    const rawCompletionPct = hasBlockingReasons ? 50 : 90;
-    const totalCompletionPct = hasBlockingReasons ? 0 : rawCompletionPct;
-    
-    return {
-      totalCompletionPct,
-      siteCompletions: selectedSites.map(siteId => ({
-        siteId,
-        completionPct: rawCompletionPct,
-        missingAttributes: hasBlockingReasons ? missingAttributes : []
-      })),
-      siteBlockingReasons: hasBlockingReasons ? [{ site: selectedSites[0], missingAttributes }] : []
-    };
+    try {
+      // Use the actual production evaluator
+      const result = await evaluateProductCompletion(productId, productData, selectedSites);
+      
+      return {
+        totalCompletionPct: result.completionPct,
+        siteCompletions: selectedSites.map(siteId => ({
+          siteId,
+          completionPct: result.completionPct,
+          missingAttributes: result.missingAttributes || []
+        })),
+        siteBlockingReasons: result.siteBlockingReasons || []
+      };
+    } catch (error) {
+      console.error('[RealCompletionEngine] Evaluation failed:', error);
+      // Fallback to conservative default: 0% if evaluation fails
+      return {
+        totalCompletionPct: 0,
+        siteCompletions: selectedSites.map(siteId => ({
+          siteId,
+          completionPct: 0,
+          missingAttributes: []
+        })),
+        siteBlockingReasons: []
+      };
+    }
   }
 }
 
-class MockAttributeRegistry implements AttributeRegistry {
+class RealAttributeRegistry implements AttributeRegistry {
   async getAttributeTypes() {
-    return {};
+    try {
+      const db = getFirestore();
+      const snapshot = await db.collection('settings').doc('attributesMeta').get();
+      return snapshot.data() || {};
+    } catch (error) {
+      console.error('[RealAttributeRegistry] Failed to load attributes:', error);
+      return {};
+    }
   }
 }
 
@@ -54,8 +66,8 @@ export class ExportController {
   private attributeRegistry: AttributeRegistry;
 
   constructor() {
-    this.attributeRegistry = new MockAttributeRegistry();
-    this.completionEngine = new MockCompletionEngine();
+    this.attributeRegistry = new RealAttributeRegistry();
+    this.completionEngine = new RealCompletionEngine();
     this.enforcer = new ExportGateEnforcer(this.completionEngine, this.attributeRegistry);
   }
 
