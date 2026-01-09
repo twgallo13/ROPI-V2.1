@@ -1,0 +1,31 @@
+{
+  "flag_name": "features.completion.phase2b.enabled",
+  "type": "boolean",
+  "environments": {
+    "staging": {
+      "enabled": true,
+      "deployed_at": "2026-01-09T04:00:00Z",
+      "deployed_by": "Homer",
+      "rollout_percentage": 100
+    },
+    "preview": {
+      "enabled": true,
+      "deployed_at": "2026-01-09T04:00:00Z",
+      "deployed_by": "Homer",
+      "rollout_percentage": 100
+    },
+    "production": {
+      "enabled": false,
+      "note": "Awaiting VVP approval before production deployment"
+    }
+  },
+  "description": "Enable Phase 2B UI components: CompletionCard, ExportGatePanel, GlobalModeCard",
+  "owner": "Lisa (Phase Owner)",
+  "related_lp": "LP-phase2b-001",
+  "rollback_time": "<5 minutes",
+  "verification": {
+    "staging_check": "Feature flag verified active on staging environment",
+    "preview_check": "Feature flag verified active on preview environment",
+    "status": "SATISFIED"
+  }
+}

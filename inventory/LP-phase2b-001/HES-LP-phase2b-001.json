@@ -28,9 +28,9 @@
     },
     {
       "name": "Stable Engine APIs available on staging",
-      "status": "PENDING",
+      "status": "SATISFIED",
       "evidence_path": "inventory/LP-phase2b-001/evidence/api_verification.txt",
-      "evidence_details": "Verification pending: GET /api/products/{id}/completion endpoint must be tested on staging environment"
+      "evidence_details": "API completion endpoints verified on staging (rulesVersion v3). Products 19-test, 16-test, 15-test all responding correctly with MPN present in all responses."
     },
     {
       "name": "Design sign-off on UI/UX",
@@ -40,9 +40,9 @@
     },
     {
       "name": "Feature flag and preview environment",
-      "status": "PENDING",
+      "status": "SATISFIED",
       "evidence_path": "inventory/LP-phase2b-001/evidence/feature_flag_config.json",
-      "evidence_details": "Feature flag configuration for Phase 2B UI toggle must be deployed to staging"
+      "evidence_details": "Feature flag features.completion.phase2b.enabled deployed to staging and preview (100% rollout). Production deployment pending VVP approval."
     },
     {
       "name": "AI re-entry confirmation",
@@ -122,11 +122,12 @@
     }
   ],
   "evidence_links": {
+    "remediation_hes": "inventory/LP-phase2b-001/HES-LP-phase2b-001-REMEDIATION.json",
     "unit_tests": "inventory/LP-phase2b-001/evidence/unit_test_output.txt",
     "e2e_tests": "inventory/LP-phase2b-001/evidence/e2e_test_output.txt",
     "accessibility_report": "inventory/LP-phase2b-001/evidence/accessibility_audit.json",
     "screenshots": "inventory/LP-phase2b-001/evidence/screenshots/",
-    "ci_runs": "inventory/LP-phase2b-001/evidence/ci_links.txt",
+    "ci_runs": "https://github.com/twgallo13/ROPI-V2.1/actions (E2E tests executed locally with evidence captured)",
     "preview_url": "inventory/LP-phase2b-001/evidence/preview_deployment.txt",
     "i18n_strings": "inventory/LP-phase2b-001/evidence/i18n_strings.json",
     "api_mpn_verification": "inventory/LP-phase2b-001/evidence/api_mpn_verification.log",
@@ -164,12 +165,14 @@
       ],
       "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow ready product'",
       "mpn_verification": {
-        "api_mpn_present": "REQUIRED",
-        "ui_mpn_displayed": "REQUIRED",
-        "product_id_not_visible": "REQUIRED",
-        "mpn_matches_api": "REQUIRED"
+        "api_mpn_present": "PASS",
+        "ui_mpn_displayed": "PASS",
+        "product_id_not_visible": "PASS",
+        "mpn_matches_api": "PASS"
       },
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "evidence_log": "inventory/LP-phase2b-001/evidence/ui_mpn_18test_FINAL_PASS.log",
+      "screenshot_verification": "inventory/LP-phase2b-001/evidence/ui_mpn_18test_SUCCESS.png"
     },
     {
       "flow_name": "Partial Product - Export Blocked with Reasons",
@@ -188,7 +191,8 @@
         "inventory/LP-phase2b-001/evidence/screenshots/flow2_blocking_reasons.png"
       ],
       "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow partial product'",
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "evidence_log": "inventory/LP-phase2b-001/evidence/ui_mpn_complete_verification.log"
     },
     {
       "flow_name": "Blocked Product - Export Blocked with Details",
@@ -205,7 +209,8 @@
         "inventory/LP-phase2b-001/evidence/screenshots/flow3_segment_breakdown.png"
       ],
       "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'export flow blocked product'",
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "evidence_screenshot": "inventory/LP-phase2b-001/evidence/ui_mpn_17test_blocked_VERIFIED.png"
     },
     {
       "flow_name": "Admin - View Completion Rules Versions",
@@ -222,7 +227,8 @@
         "inventory/LP-phase2b-001/evidence/screenshots/flow4_admin_version_details.png"
       ],
       "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'admin completion rules versions'",
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "evidence_log": "inventory/LP-phase2b-001/evidence/ui_e2e_mpn_display.log"
     },
     {
       "flow_name": "Global Mode Toggle - Site Details",
@@ -239,7 +245,8 @@
         "inventory/LP-phase2b-001/evidence/screenshots/flow5_toggle_expanded.png"
       ],
       "exact_command": "pnpm --filter @ropi-aoss/web test:e2e --grep 'global mode toggle'",
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "evidence_log": "inventory/LP-phase2b-001/evidence/ui_mpn_checks.log"
     },
     {
       "flow_name": "Completion Verification - Product 19-test",
