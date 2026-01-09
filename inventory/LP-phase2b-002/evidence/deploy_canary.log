@@ -1,0 +1,496 @@
+deploy-staging	Set up job	﻿2026-01-09T12:55:46.9595710Z Current runner version: '2.330.0'
+deploy-staging	Set up job	2026-01-09T12:55:46.9622053Z ##[group]Runner Image Provisioner
+deploy-staging	Set up job	2026-01-09T12:55:46.9623384Z Hosted Compute Agent
+deploy-staging	Set up job	2026-01-09T12:55:46.9624085Z Version: 20251211.462
+deploy-staging	Set up job	2026-01-09T12:55:46.9624759Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+deploy-staging	Set up job	2026-01-09T12:55:46.9625616Z Build Date: 2025-12-11T16:28:49Z
+deploy-staging	Set up job	2026-01-09T12:55:46.9626399Z Worker ID: {912b0a45-5079-46e2-8ca9-601bea0b6685}
+deploy-staging	Set up job	2026-01-09T12:55:46.9627178Z ##[endgroup]
+deploy-staging	Set up job	2026-01-09T12:55:46.9627856Z ##[group]Operating System
+deploy-staging	Set up job	2026-01-09T12:55:46.9628496Z Ubuntu
+deploy-staging	Set up job	2026-01-09T12:55:46.9629454Z 24.04.3
+deploy-staging	Set up job	2026-01-09T12:55:46.9630034Z LTS
+deploy-staging	Set up job	2026-01-09T12:55:46.9630576Z ##[endgroup]
+deploy-staging	Set up job	2026-01-09T12:55:46.9631206Z ##[group]Runner Image
+deploy-staging	Set up job	2026-01-09T12:55:46.9631857Z Image: ubuntu-24.04
+deploy-staging	Set up job	2026-01-09T12:55:46.9632494Z Version: 20260105.202.1
+deploy-staging	Set up job	2026-01-09T12:55:46.9633949Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260105.202/images/ubuntu/Ubuntu2404-Readme.md
+deploy-staging	Set up job	2026-01-09T12:55:46.9635418Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260105.202
+deploy-staging	Set up job	2026-01-09T12:55:46.9636743Z ##[endgroup]
+deploy-staging	Set up job	2026-01-09T12:55:46.9638064Z ##[group]GITHUB_TOKEN Permissions
+deploy-staging	Set up job	2026-01-09T12:55:46.9640241Z Contents: read
+deploy-staging	Set up job	2026-01-09T12:55:46.9640896Z Metadata: read
+deploy-staging	Set up job	2026-01-09T12:55:46.9641582Z Packages: read
+deploy-staging	Set up job	2026-01-09T12:55:46.9642171Z ##[endgroup]
+deploy-staging	Set up job	2026-01-09T12:55:46.9644645Z Secret source: Actions
+deploy-staging	Set up job	2026-01-09T12:55:46.9645611Z Prepare workflow directory
+deploy-staging	Set up job	2026-01-09T12:55:46.9977901Z Prepare all required actions
+deploy-staging	Set up job	2026-01-09T12:55:47.0027379Z Getting action download info
+deploy-staging	Set up job	2026-01-09T12:55:47.4643616Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+deploy-staging	Set up job	2026-01-09T12:55:47.5737091Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+deploy-staging	Set up job	2026-01-09T12:55:47.7622155Z Complete job name: deploy-staging
+deploy-staging	Checkout code	﻿2026-01-09T12:55:47.8372508Z ##[group]Run actions/checkout@v4
+deploy-staging	Checkout code	2026-01-09T12:55:47.8373636Z with:
+deploy-staging	Checkout code	2026-01-09T12:55:47.8374134Z   repository: twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2026-01-09T12:55:47.8374913Z   token: ***
+deploy-staging	Checkout code	2026-01-09T12:55:47.8375377Z   ssh-strict: true
+deploy-staging	Checkout code	2026-01-09T12:55:47.8375848Z   ssh-user: git
+deploy-staging	Checkout code	2026-01-09T12:55:47.8376326Z   persist-credentials: true
+deploy-staging	Checkout code	2026-01-09T12:55:47.8376852Z   clean: true
+deploy-staging	Checkout code	2026-01-09T12:55:47.8377323Z   sparse-checkout-cone-mode: true
+deploy-staging	Checkout code	2026-01-09T12:55:47.8377866Z   fetch-depth: 1
+deploy-staging	Checkout code	2026-01-09T12:55:47.8378310Z   fetch-tags: false
+deploy-staging	Checkout code	2026-01-09T12:55:47.8378781Z   show-progress: true
+deploy-staging	Checkout code	2026-01-09T12:55:47.8379244Z   lfs: false
+deploy-staging	Checkout code	2026-01-09T12:55:47.8379679Z   submodules: false
+deploy-staging	Checkout code	2026-01-09T12:55:47.8380153Z   set-safe-directory: true
+deploy-staging	Checkout code	2026-01-09T12:55:47.8380871Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:47.9458209Z Syncing repository: twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2026-01-09T12:55:47.9460016Z ##[group]Getting Git version info
+deploy-staging	Checkout code	2026-01-09T12:55:47.9460816Z Working directory is '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+deploy-staging	Checkout code	2026-01-09T12:55:47.9461861Z [command]/usr/bin/git version
+deploy-staging	Checkout code	2026-01-09T12:55:47.9536750Z git version 2.52.0
+deploy-staging	Checkout code	2026-01-09T12:55:47.9563171Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:47.9577530Z Temporarily overriding HOME='/home/runner/work/_temp/4855162b-badf-410c-94aa-9d37e9a03860' before making global git config changes
+deploy-staging	Checkout code	2026-01-09T12:55:47.9578989Z Adding repository directory to the temporary git global config as a safe directory
+deploy-staging	Checkout code	2026-01-09T12:55:47.9590494Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Checkout code	2026-01-09T12:55:47.9629476Z Deleting the contents of '/home/runner/work/ROPI-V2.1/ROPI-V2.1'
+deploy-staging	Checkout code	2026-01-09T12:55:47.9633263Z ##[group]Initializing the repository
+deploy-staging	Checkout code	2026-01-09T12:55:47.9637096Z [command]/usr/bin/git init /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Checkout code	2026-01-09T12:55:47.9752332Z hint: Using 'master' as the name for the initial branch. This default branch name
+deploy-staging	Checkout code	2026-01-09T12:55:47.9753661Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+deploy-staging	Checkout code	2026-01-09T12:55:47.9754661Z hint: to use in all of your new repositories, which will suppress this warning,
+deploy-staging	Checkout code	2026-01-09T12:55:47.9755481Z hint: call:
+deploy-staging	Checkout code	2026-01-09T12:55:47.9756261Z hint:
+deploy-staging	Checkout code	2026-01-09T12:55:47.9757374Z hint: 	git config --global init.defaultBranch <name>
+deploy-staging	Checkout code	2026-01-09T12:55:47.9758094Z hint:
+deploy-staging	Checkout code	2026-01-09T12:55:47.9758710Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+deploy-staging	Checkout code	2026-01-09T12:55:47.9759674Z hint: 'development'. The just-created branch can be renamed via this command:
+deploy-staging	Checkout code	2026-01-09T12:55:47.9760449Z hint:
+deploy-staging	Checkout code	2026-01-09T12:55:47.9760880Z hint: 	git branch -m <name>
+deploy-staging	Checkout code	2026-01-09T12:55:47.9761381Z hint:
+deploy-staging	Checkout code	2026-01-09T12:55:47.9762357Z hint: Disable this message with "git config set advice.defaultBranchName false"
+deploy-staging	Checkout code	2026-01-09T12:55:47.9763786Z Initialized empty Git repository in /home/runner/work/ROPI-V2.1/ROPI-V2.1/.git/
+deploy-staging	Checkout code	2026-01-09T12:55:47.9768408Z [command]/usr/bin/git remote add origin https://github.com/twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2026-01-09T12:55:47.9800435Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:47.9801268Z ##[group]Disabling automatic garbage collection
+deploy-staging	Checkout code	2026-01-09T12:55:47.9804777Z [command]/usr/bin/git config --local gc.auto 0
+deploy-staging	Checkout code	2026-01-09T12:55:47.9831516Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:47.9832304Z ##[group]Setting up auth
+deploy-staging	Checkout code	2026-01-09T12:55:47.9838693Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy-staging	Checkout code	2026-01-09T12:55:47.9867557Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy-staging	Checkout code	2026-01-09T12:55:48.0208816Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy-staging	Checkout code	2026-01-09T12:55:48.0240097Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy-staging	Checkout code	2026-01-09T12:55:48.0458467Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+deploy-staging	Checkout code	2026-01-09T12:55:48.0488202Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+deploy-staging	Checkout code	2026-01-09T12:55:48.0720160Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+deploy-staging	Checkout code	2026-01-09T12:55:48.0754873Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:48.0755939Z ##[group]Fetching the repository
+deploy-staging	Checkout code	2026-01-09T12:55:48.0763771Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +041f3fa589246ee413822e79c9282fe2db77ac30:refs/remotes/origin/aoss-main
+deploy-staging	Checkout code	2026-01-09T12:55:49.3313779Z From https://github.com/twgallo13/ROPI-V2.1
+deploy-staging	Checkout code	2026-01-09T12:55:49.3315278Z  * [new ref]         041f3fa589246ee413822e79c9282fe2db77ac30 -> origin/aoss-main
+deploy-staging	Checkout code	2026-01-09T12:55:49.3346308Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:49.3348305Z ##[group]Determining the checkout info
+deploy-staging	Checkout code	2026-01-09T12:55:49.3350418Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:49.3354511Z [command]/usr/bin/git sparse-checkout disable
+deploy-staging	Checkout code	2026-01-09T12:55:49.3394867Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+deploy-staging	Checkout code	2026-01-09T12:55:49.3421021Z ##[group]Checking out the ref
+deploy-staging	Checkout code	2026-01-09T12:55:49.3425484Z [command]/usr/bin/git checkout --progress --force -B aoss-main refs/remotes/origin/aoss-main
+deploy-staging	Checkout code	2026-01-09T12:55:49.5684005Z Switched to a new branch 'aoss-main'
+deploy-staging	Checkout code	2026-01-09T12:55:49.5686530Z branch 'aoss-main' set up to track 'origin/aoss-main'.
+deploy-staging	Checkout code	2026-01-09T12:55:49.5704212Z ##[endgroup]
+deploy-staging	Checkout code	2026-01-09T12:55:49.5742724Z [command]/usr/bin/git log -1 --format=%H
+deploy-staging	Checkout code	2026-01-09T12:55:49.5764790Z 041f3fa589246ee413822e79c9282fe2db77ac30
+deploy-staging	Setup Node.js 20	﻿2026-01-09T12:55:49.6011396Z ##[group]Run actions/setup-node@v4
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.6011962Z with:
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.6012349Z   node-version: 20
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.6012901Z   always-auth: false
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.6013322Z   check-latest: false
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.6013894Z   token: ***
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.6014284Z ##[endgroup]
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.7777781Z Found in cache @ /opt/hostedtoolcache/node/20.19.6/x64
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:49.7784275Z ##[group]Environment details
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:50.1245775Z node: v20.19.6
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:50.1247250Z npm: 10.8.2
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:50.1248245Z yarn: 1.22.22
+deploy-staging	Setup Node.js 20	2026-01-09T12:55:50.1249329Z ##[endgroup]
+deploy-staging	Enable corepack and prepare pnpm	﻿2026-01-09T12:55:50.1366200Z ##[group]Run corepack enable
+deploy-staging	Enable corepack and prepare pnpm	2026-01-09T12:55:50.1366629Z [36;1mcorepack enable[0m
+deploy-staging	Enable corepack and prepare pnpm	2026-01-09T12:55:50.1366995Z [36;1mcorepack prepare pnpm@8 --activate[0m
+deploy-staging	Enable corepack and prepare pnpm	2026-01-09T12:55:50.1412300Z shell: /usr/bin/bash -e {0}
+deploy-staging	Enable corepack and prepare pnpm	2026-01-09T12:55:50.1412646Z ##[endgroup]
+deploy-staging	Enable corepack and prepare pnpm	2026-01-09T12:55:50.5679182Z Preparing pnpm@8 for immediate activation...
+deploy-staging	Install dependencies	﻿2026-01-09T12:55:51.1299560Z ##[group]Run if [ -f package.json ]; then
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1299975Z [36;1mif [ -f package.json ]; then[0m
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1300252Z [36;1m  pnpm install[0m
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1300493Z [36;1melse[0m
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1300837Z [36;1m  echo "No package.json found, skipping dependency installation"[0m
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1301225Z [36;1mfi[0m
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1335840Z shell: /usr/bin/bash -e {0}
+deploy-staging	Install dependencies	2026-01-09T12:55:51.1336125Z ##[endgroup]
+deploy-staging	Install dependencies	2026-01-09T12:55:51.6113250Z Scope: all 6 workspace projects
+deploy-staging	Install dependencies	2026-01-09T12:55:51.6738403Z  WARN  Ignoring not compatible lockfile at /home/runner/work/ROPI-V2.1/ROPI-V2.1/pnpm-lock.yaml
+deploy-staging	Install dependencies	2026-01-09T12:55:51.8484536Z Progress: resolved 1, reused 0, downloaded 0, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:52.0919977Z  WARN  deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+deploy-staging	Install dependencies	2026-01-09T12:55:52.6070916Z packages/web                             |  WARN  deprecated @types/react-window@2.0.0
+deploy-staging	Install dependencies	2026-01-09T12:55:52.9933272Z Progress: resolved 49, reused 0, downloaded 44, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:54.1031872Z Progress: resolved 61, reused 0, downloaded 60, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:55.1490748Z Progress: resolved 113, reused 0, downloaded 108, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:56.2815261Z Progress: resolved 149, reused 0, downloaded 138, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:57.2836034Z Progress: resolved 298, reused 0, downloaded 258, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:58.3450992Z Progress: resolved 377, reused 0, downloaded 324, added 0
+deploy-staging	Install dependencies	2026-01-09T12:55:59.3448988Z Progress: resolved 453, reused 0, downloaded 395, added 0
+deploy-staging	Install dependencies	2026-01-09T12:56:00.3470234Z Progress: resolved 620, reused 0, downloaded 511, added 0
+deploy-staging	Install dependencies	2026-01-09T12:56:01.3478286Z Progress: resolved 840, reused 0, downloaded 722, added 0
+deploy-staging	Install dependencies	2026-01-09T12:56:01.5806972Z  WARN  7 deprecated subdependencies found: @humanwhocodes/config-array@0.13.0, @humanwhocodes/object-schema@2.0.3, glob@7.2.3, inflight@1.0.6, lodash.get@4.4.2, node-domexception@1.0.0, rimraf@3.0.2
+deploy-staging	Install dependencies	2026-01-09T12:56:01.6640465Z Packages: +769
+deploy-staging	Install dependencies	2026-01-09T12:56:01.6651128Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+deploy-staging	Install dependencies	2026-01-09T12:56:02.3486465Z Progress: resolved 848, reused 0, downloaded 769, added 384
+deploy-staging	Install dependencies	2026-01-09T12:56:02.5354404Z Progress: resolved 848, reused 0, downloaded 769, added 769, done
+deploy-staging	Install dependencies	2026-01-09T12:56:02.6857078Z .../node_modules/@firebase/util postinstall$ node ./postinstall.js
+deploy-staging	Install dependencies	2026-01-09T12:56:02.6864667Z .../node_modules/protobufjs postinstall$ node scripts/postinstall
+deploy-staging	Install dependencies	2026-01-09T12:56:02.7286794Z .../node_modules/@firebase/util postinstall: Done
+deploy-staging	Install dependencies	2026-01-09T12:56:02.7454262Z .../node_modules/protobufjs postinstall: Done
+deploy-staging	Install dependencies	2026-01-09T12:56:02.7704313Z .../esbuild@0.27.2/node_modules/esbuild postinstall$ node install.js
+deploy-staging	Install dependencies	2026-01-09T12:56:02.7707158Z .../node_modules/@sentry/cli postinstall$ node ./scripts/install.js
+deploy-staging	Install dependencies	2026-01-09T12:56:02.7709816Z .../esbuild@0.21.5/node_modules/esbuild postinstall$ node install.js
+deploy-staging	Install dependencies	2026-01-09T12:56:02.8333605Z .../esbuild@0.27.2/node_modules/esbuild postinstall: Done
+deploy-staging	Install dependencies	2026-01-09T12:56:02.8451194Z .../esbuild@0.21.5/node_modules/esbuild postinstall: Done
+deploy-staging	Install dependencies	2026-01-09T12:56:02.8683116Z .../node_modules/@sentry/cli postinstall: Done
+deploy-staging	Install dependencies	2026-01-09T12:56:02.8811668Z .../node_modules/puppeteer postinstall$ node install.mjs
+deploy-staging	Install dependencies	2026-01-09T12:56:02.9959453Z .../node_modules/puppeteer postinstall: **INFO** Skipping Firefox download as instructed.
+deploy-staging	Install dependencies	2026-01-09T12:56:06.7179935Z .../node_modules/puppeteer postinstall: chrome-headless-shell (143.0.7499.169) downloaded to /home/runner/.cache/puppeteer/chrome-headless-shell/linux-143.0.7499.169
+deploy-staging	Install dependencies	2026-01-09T12:56:07.7739698Z .../node_modules/puppeteer postinstall: chrome (143.0.7499.169) downloaded to /home/runner/.cache/puppeteer/chrome/linux-143.0.7499.169
+deploy-staging	Install dependencies	2026-01-09T12:56:07.7835759Z .../node_modules/puppeteer postinstall: Done
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1535663Z 
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1536264Z dependencies:
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1536898Z + @notionhq/client 3.1.3 (5.6.0 is available)
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1537480Z + json2csv 6.0.0-alpha.2
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1538484Z + zod 3.25.76 (4.3.5 is available)
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1538808Z 
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1538985Z devDependencies:
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1539513Z + @firebase/rules-unit-testing 5.0.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1540083Z + @google-cloud/firestore 8.1.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1540676Z + eslint 8.57.1 (9.39.2 is available) deprecated
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1541202Z + firebase 12.7.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1541614Z + firebase-admin 13.6.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1542045Z + playwright 1.57.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1542503Z + pnpm 8.15.9 (10.27.0 is available)
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1543340Z + prettier 2.8.8 (3.7.4 is available)
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1543830Z + puppeteer 24.34.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1544234Z + typescript 5.9.3
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1544611Z + yargs 18.0.0
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1544837Z 
+deploy-staging	Install dependencies	2026-01-09T12:56:09.1551313Z Done in 17.9s
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	﻿2026-01-09T12:56:09.2691599Z ##[group]Run if [ -z "$VITE_FIREBASE_API_KEY" ]; then
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2692066Z [36;1mif [ -z "$VITE_FIREBASE_API_KEY" ]; then[0m
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2692426Z [36;1m  echo "::error::VITE_FIREBASE_API_KEY is empty"[0m
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2692728Z [36;1m  exit 1[0m
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2693191Z [36;1mfi[0m
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2693407Z [36;1mKEY_LEN="${#VITE_FIREBASE_API_KEY}"[0m
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2693769Z [36;1mecho "VITE_FIREBASE_API_KEY present (length: $KEY_LEN)"[0m
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2726812Z shell: /usr/bin/bash -e {0}
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2727061Z env:
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2727477Z   VITE_FIREBASE_API_KEY: ***
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2727718Z ##[endgroup]
+deploy-staging	Debug ensure VITE_FIREBASE_API_KEY present	2026-01-09T12:56:09.2783743Z VITE_FIREBASE_API_KEY present (length: 39)
+deploy-staging	Build SDK package	﻿2026-01-09T12:56:09.2807672Z ##[group]Run set -euo pipefail
+deploy-staging	Build SDK package	2026-01-09T12:56:09.2808010Z [36;1mset -euo pipefail[0m
+deploy-staging	Build SDK package	2026-01-09T12:56:09.2808301Z [36;1mecho "Building @ropi-aoss/sdk package..."[0m
+deploy-staging	Build SDK package	2026-01-09T12:56:09.2808642Z [36;1mpnpm --filter @ropi-aoss/sdk build[0m
+deploy-staging	Build SDK package	2026-01-09T12:56:09.2840898Z shell: /usr/bin/bash -e {0}
+deploy-staging	Build SDK package	2026-01-09T12:56:09.2841160Z ##[endgroup]
+deploy-staging	Build SDK package	2026-01-09T12:56:09.2894239Z Building @ropi-aoss/sdk package...
+deploy-staging	Build SDK package	2026-01-09T12:56:09.6523258Z 
+deploy-staging	Build SDK package	2026-01-09T12:56:09.6524322Z > @ropi-aoss/sdk@0.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/sdk
+deploy-staging	Build SDK package	2026-01-09T12:56:09.6525272Z > tsup
+deploy-staging	Build SDK package	2026-01-09T12:56:09.6525490Z 
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9814169Z [34mCLI[39m Building entry: src/index.ts
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9827581Z [34mCLI[39m Using tsconfig: tsconfig.json
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9828199Z [34mCLI[39m tsup v8.5.1
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9829252Z [34mCLI[39m Using tsup config: /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/sdk/tsup.config.ts
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9844576Z [34mCLI[39m Target: es2020
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9857101Z [34mCJS[39m Build start
+deploy-staging	Build SDK package	2026-01-09T12:56:09.9858867Z [34mESM[39m Build start
+deploy-staging	Build SDK package	2026-01-09T12:56:10.3473233Z [32mCJS[39m [1mdist/index.js [22m[32m127.07 KB[39m
+deploy-staging	Build SDK package	2026-01-09T12:56:10.3481258Z [32mCJS[39m ⚡️ Build success in 362ms
+deploy-staging	Build SDK package	2026-01-09T12:56:10.3482110Z [32mESM[39m [1mdist/index.mjs [22m[32m122.64 KB[39m
+deploy-staging	Build SDK package	2026-01-09T12:56:10.3483022Z [32mESM[39m ⚡️ Build success in 362ms
+deploy-staging	Build packages/web	﻿2026-01-09T12:56:10.3758769Z ##[group]Run set -euo pipefail
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3759097Z [36;1mset -euo pipefail[0m
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3759380Z [36;1mecho "Building @ropi-aoss/web package..."[0m
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3759738Z [36;1mecho "Current working directory: $(pwd)"[0m
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3760059Z [36;1mpnpm --filter @ropi-aoss/web build[0m
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3792540Z shell: /usr/bin/bash -e {0}
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3793005Z env:
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3793432Z   VITE_FIREBASE_API_KEY: ***
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3793760Z   VITE_FIREBASE_AUTH_DOMAIN: ***
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3794211Z   VITE_FIREBASE_PROJECT_ID: ***
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3794539Z   VITE_FIREBASE_STORAGE_BUCKET: ***.firebasestorage.app
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3794881Z   VITE_FIREBASE_MESSAGING_SENDER_ID: ***
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3795231Z   VITE_FIREBASE_APP_ID: ***
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3795451Z ##[endgroup]
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3851047Z Building @ropi-aoss/web package...
+deploy-staging	Build packages/web	2026-01-09T12:56:10.3856044Z Current working directory: /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Build packages/web	2026-01-09T12:56:10.7577210Z 
+deploy-staging	Build packages/web	2026-01-09T12:56:10.7578138Z > @ropi-aoss/web@1.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web
+deploy-staging	Build packages/web	2026-01-09T12:56:10.7578734Z > tsc && vite build
+deploy-staging	Build packages/web	2026-01-09T12:56:10.7578911Z 
+deploy-staging	Build packages/web	2026-01-09T12:56:20.1886523Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+deploy-staging	Build packages/web	2026-01-09T12:56:20.2427336Z transforming...
+deploy-staging	Build packages/web	2026-01-09T12:56:24.8386874Z [32m✓[39m 727 modules transformed.
+deploy-staging	Build packages/web	2026-01-09T12:56:25.3123886Z rendering chunks...
+deploy-staging	Build packages/web	2026-01-09T12:56:25.4631829Z [1m[33m[plugin:vite:reporter][39m[22m [33m[plugin vite:reporter] 
+deploy-staging	Build packages/web	2026-01-09T12:56:25.4636462Z (!) /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/services/observations.ts is dynamically imported by /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/components/product/ObservationsPanel.tsx, /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/pages/ObservationsPage.tsx, /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/pages/ObservationsPage.tsx, /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/pages/ObservationsPage.tsx but also statically imported by /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/components/product/ObservationsPanel.tsx, /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/web/src/pages/ObservationsPage.tsx, dynamic import will not move module into another chunk.
+deploy-staging	Build packages/web	2026-01-09T12:56:25.4639891Z [39m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.4936258Z computing gzip size...
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5256148Z [2mdist/[22m[32mindex.html                 [39m[1m[2m    0.46 kB[22m[1m[22m[2m │ gzip:   0.30 kB[22m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5257338Z [2mdist/[22m[2massets/[22m[35mindex-CtZChVDJ.css  [39m[1m[2m  243.50 kB[22m[1m[22m[2m │ gzip:  37.40 kB[22m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5258836Z [2mdist/[22m[2massets/[22m[36mindex-CzcWD_9z.js   [39m[1m[2m  390.85 kB[22m[1m[22m[2m │ gzip: 103.31 kB[22m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5260348Z [2mdist/[22m[2massets/[22m[36mindex-eRH2Kmdr.js   [39m[1m[33m1,336.83 kB[39m[22m[2m │ gzip: 343.60 kB[22m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5261257Z [33m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5261872Z (!) Some chunks are larger than 500 kB after minification. Consider:
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5262714Z - Using dynamic import() to code-split the application
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5264355Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5265961Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+deploy-staging	Build packages/web	2026-01-09T12:56:25.5266800Z [32m✓ built in 5.31s[39m
+deploy-staging	Build packages/api	﻿2026-01-09T12:56:25.5979400Z ##[group]Run set -euo pipefail
+deploy-staging	Build packages/api	2026-01-09T12:56:25.5979756Z [36;1mset -euo pipefail[0m
+deploy-staging	Build packages/api	2026-01-09T12:56:25.5980101Z [36;1mecho "Building @ropi-aoss/api package for Cloud Functions..."[0m
+deploy-staging	Build packages/api	2026-01-09T12:56:25.5980504Z [36;1mpnpm --filter @ropi-aoss/api build[0m
+deploy-staging	Build packages/api	2026-01-09T12:56:25.5980819Z [36;1mecho "✅ API package built successfully"[0m
+deploy-staging	Build packages/api	2026-01-09T12:56:25.6013800Z shell: /usr/bin/bash -e {0}
+deploy-staging	Build packages/api	2026-01-09T12:56:25.6014063Z ##[endgroup]
+deploy-staging	Build packages/api	2026-01-09T12:56:25.6065170Z Building @ropi-aoss/api package for Cloud Functions...
+deploy-staging	Build packages/api	2026-01-09T12:56:25.9759869Z 
+deploy-staging	Build packages/api	2026-01-09T12:56:25.9760747Z > @ropi-aoss/api@0.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/api
+deploy-staging	Build packages/api	2026-01-09T12:56:25.9761389Z > node esbuild.config.js
+deploy-staging	Build packages/api	2026-01-09T12:56:25.9761603Z 
+deploy-staging	Build packages/api	2026-01-09T12:56:26.2147266Z 
+deploy-staging	Build packages/api	2026-01-09T12:56:26.2149993Z   dist/index.js      2.3mb ⚠️
+deploy-staging	Build packages/api	2026-01-09T12:56:26.2150501Z   dist/index.js.map  4.3mb
+deploy-staging	Build packages/api	2026-01-09T12:56:26.2150703Z 
+deploy-staging	Build packages/api	2026-01-09T12:56:26.2150837Z ⚡ Done in 201ms
+deploy-staging	Build packages/api	2026-01-09T12:56:26.2306065Z ✅ API package built successfully
+deploy-staging	Verify build output	﻿2026-01-09T12:56:26.2333350Z ##[group]Run set -euo pipefail
+deploy-staging	Verify build output	2026-01-09T12:56:26.2333695Z [36;1mset -euo pipefail[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2333985Z [36;1mecho "Current working directory: $(pwd)"[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2334281Z [36;1mecho ""[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2334504Z [36;1mecho "Listing packages/web:"[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2334776Z [36;1mls -lah packages/web[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2335009Z [36;1mecho ""[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2335222Z [36;1mecho "Listing packages/web/dist:"[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2335499Z [36;1mls -lah packages/web/dist[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2335730Z [36;1mecho ""[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2335974Z [36;1mif [ ! -f packages/web/dist/index.html ]; then[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2336417Z [36;1m  echo "::error::Build artifacts missing: packages/web/dist/index.html not found"[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2336819Z [36;1m  exit 1[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2337005Z [36;1mfi[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2337331Z [36;1mecho "✅ Build verification passed: packages/web/dist ready for deployment"[0m
+deploy-staging	Verify build output	2026-01-09T12:56:26.2370430Z shell: /usr/bin/bash -e {0}
+deploy-staging	Verify build output	2026-01-09T12:56:26.2370690Z ##[endgroup]
+deploy-staging	Verify build output	2026-01-09T12:56:26.2425476Z Current working directory: /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Verify build output	2026-01-09T12:56:26.2425965Z 
+deploy-staging	Verify build output	2026-01-09T12:56:26.2426090Z Listing packages/web:
+deploy-staging	Verify build output	2026-01-09T12:56:26.2439688Z total 72K
+deploy-staging	Verify build output	2026-01-09T12:56:26.2440024Z drwxr-xr-x 10 runner runner 4.0K Jan  9 12:56 .
+deploy-staging	Verify build output	2026-01-09T12:56:26.2440434Z drwxr-xr-x  7 runner runner 4.0K Jan  9 12:55 ..
+deploy-staging	Verify build output	2026-01-09T12:56:26.2440876Z -rw-r--r--  1 runner runner  651 Jan  9 12:55 .env.e2e.example
+deploy-staging	Verify build output	2026-01-09T12:56:26.2441305Z drwxr-xr-x  3 runner runner 4.0K Jan  9 12:56 dist
+deploy-staging	Verify build output	2026-01-09T12:56:26.2441872Z drwxr-xr-x  2 runner runner 4.0K Jan  9 12:55 e2e
+deploy-staging	Verify build output	2026-01-09T12:56:26.2442275Z -rw-r--r--  1 runner runner  358 Jan  9 12:55 index.html
+deploy-staging	Verify build output	2026-01-09T12:56:26.2442695Z drwxr-xr-x 12 runner runner 4.0K Jan  9 12:56 node_modules
+deploy-staging	Verify build output	2026-01-09T12:56:26.2443349Z -rw-r--r--  1 runner runner 1.6K Jan  9 12:55 package.json
+deploy-staging	Verify build output	2026-01-09T12:56:26.2443827Z drwxr-xr-x  4 runner runner 4.0K Jan  9 12:55 playwright-report
+deploy-staging	Verify build output	2026-01-09T12:56:26.2444345Z -rw-r--r--  1 runner runner 2.3K Jan  9 12:55 playwright.config.ts
+deploy-staging	Verify build output	2026-01-09T12:56:26.2444790Z drwxr-xr-x  2 runner runner 4.0K Jan  9 12:55 public
+deploy-staging	Verify build output	2026-01-09T12:56:26.2445176Z drwxr-xr-x 14 runner runner 4.0K Jan  9 12:55 src
+deploy-staging	Verify build output	2026-01-09T12:56:26.2445553Z drwxr-xr-x  4 runner runner 4.0K Jan  9 12:55 test
+deploy-staging	Verify build output	2026-01-09T12:56:26.2445962Z drwxr-xr-x  6 runner runner 4.0K Jan  9 12:55 test-results
+deploy-staging	Verify build output	2026-01-09T12:56:26.2446397Z -rw-r--r--  1 runner runner  843 Jan  9 12:55 tsconfig.json
+deploy-staging	Verify build output	2026-01-09T12:56:26.2446846Z -rw-r--r--  1 runner runner  213 Jan  9 12:55 tsconfig.node.json
+deploy-staging	Verify build output	2026-01-09T12:56:26.2447287Z -rw-r--r--  1 runner runner  355 Jan  9 12:55 vite.config.ts
+deploy-staging	Verify build output	2026-01-09T12:56:26.2447718Z -rw-r--r--  1 runner runner  512 Jan  9 12:55 vitest.config.ts
+deploy-staging	Verify build output	2026-01-09T12:56:26.2447965Z 
+deploy-staging	Verify build output	2026-01-09T12:56:26.2448077Z Listing packages/web/dist:
+deploy-staging	Verify build output	2026-01-09T12:56:26.2453947Z total 56K
+deploy-staging	Verify build output	2026-01-09T12:56:26.2454271Z drwxr-xr-x  3 runner runner 4.0K Jan  9 12:56 .
+deploy-staging	Verify build output	2026-01-09T12:56:26.2454689Z drwxr-xr-x 10 runner runner 4.0K Jan  9 12:56 ..
+deploy-staging	Verify build output	2026-01-09T12:56:26.2455082Z drwxr-xr-x  2 runner runner 4.0K Jan  9 12:56 assets
+deploy-staging	Verify build output	2026-01-09T12:56:26.2455535Z -rw-r--r--  1 runner runner  38K Jan  9 12:56 attributeRegistry.json
+deploy-staging	Verify build output	2026-01-09T12:56:26.2456255Z -rw-r--r--  1 runner runner  456 Jan  9 12:56 index.html
+deploy-staging	Verify build output	2026-01-09T12:56:26.2476004Z 
+deploy-staging	Verify build output	2026-01-09T12:56:26.2476747Z ✅ Build verification passed: packages/web/dist ready for deployment
+deploy-staging	Setup gcloud authentication	﻿2026-01-09T12:56:26.2501254Z ##[group]Run set -euo pipefail
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2501588Z [36;1mset -euo pipefail[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2501866Z [36;1mif [ -z "${GCP_SA_KEY_BASE64:-}" ]; then[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2502286Z [36;1m  echo "::error::GCP_SA_KEY_BASE64 secret not set in 'staging' environment"[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2502676Z [36;1m  exit 1[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2503113Z [36;1mfi[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2503364Z [36;1mecho "Decoding service account key..."[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2503772Z [36;1mecho "$GCP_SA_KEY_BASE64" | base64 --decode > "$HOME/gcloud-key.json"[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2504435Z [36;1mexport GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2504900Z [36;1msudo apt-get update && sudo apt-get install -y google-cloud-cli[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2505438Z [36;1mgcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2506217Z [36;1mgcloud config set project ***[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2506631Z [36;1mecho "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-key.json" >> $GITHUB_ENV[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2507084Z [36;1mecho "Active gcloud account:"[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2507449Z [36;1mgcloud auth list --filter=status:ACTIVE --format="value(account)"[0m
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2537817Z shell: /usr/bin/bash -e {0}
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2538108Z env:
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2632072Z   GCP_SA_KEY_BASE64: ***
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2632333Z ##[endgroup]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.2685962Z Decoding service account key...
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.3513345Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.3768247Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.3780674Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.3844168Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.3845662Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5095385Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1690 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5266992Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [312 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5290180Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [175 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5310824Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 c-n-f Metadata [15.8 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5322518Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1510 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5421148Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [307 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5438155Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [378 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5466171Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [31.5 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5478535Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2418 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5596631Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [551 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5788530Z Hit:22 https://packages.microsoft.com/repos/azure-cli noble InRelease
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.5809781Z Get:23 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6062393Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6071953Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6083257Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [7316 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6089885Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [10.5 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6097071Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [216 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6106389Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6274217Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1399 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6349106Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [227 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6370845Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [21.5 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6383455Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 c-n-f Metadata [9716 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6394510Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [920 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6456668Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [208 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6480555Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [71.3 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6492524Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [19.6 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.6940582Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [2290 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7056561Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [525 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7092613Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7101885Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [6188 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7111446Z Get:36 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [212 B]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7268102Z Get:37 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [59.7 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7309621Z Get:38 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [78.0 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:26.7364581Z Get:39 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [11.4 kB]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:35.5528726Z Fetched 13.6 MB in 2s (8823 kB/s)
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:36.3583949Z Reading package lists...
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:36.3913044Z Reading package lists...
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:36.5993413Z Building dependency tree...
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:36.6001268Z Reading state information...
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:36.7843447Z google-cloud-cli is already the newest version (550.0.0-0).
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:36.7844398Z 0 upgraded, 0 newly installed, 0 to remove and 74 not upgraded.
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:41.4996356Z Activated service account credentials for: [ropi-aoss-deployer@***.iam.gserviceaccount.com]
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:43.7266579Z Updated property [core/project].
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:43.8165444Z Active gcloud account:
+deploy-staging	Setup gcloud authentication	2026-01-09T12:56:44.3184132Z ropi-aoss-deployer@***.iam.gserviceaccount.com
+deploy-staging	Install Firebase CLI	﻿2026-01-09T12:56:44.3945063Z ##[group]Run npm install -g firebase-tools@13
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:44.3945436Z [36;1mnpm install -g firebase-tools@13[0m
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:44.3977637Z shell: /usr/bin/bash -e {0}
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:44.3977882Z env:
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:44.3978156Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:44.3978493Z ##[endgroup]
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:54.9144794Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:59.1385098Z 
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:59.1385678Z added 655 packages in 15s
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:59.1386079Z 
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:59.1386381Z 83 packages are looking for funding
+deploy-staging	Install Firebase CLI	2026-01-09T12:56:59.1386937Z   run `npm fund` for details
+deploy-staging	Deploy to stable staging site	﻿2026-01-09T12:56:59.1700850Z ##[group]Run set -euo pipefail
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1701200Z [36;1mset -euo pipefail[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1701595Z [36;1mecho "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1702013Z [36;1m[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1702291Z [36;1m# LP-0.1.3: Deploy preview channel (fail-fast, no tolerance)[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1703162Z [36;1mfirebase hosting:channel:deploy aoss-main-staging --project *** --json[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1703587Z [36;1m[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1703833Z [36;1m# Deploy functions and hosting to stable staging[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1704213Z [36;1m# LP-0.1.3.fix: Add timeouts to prevent runaway deploys[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1704782Z [36;1m# LP-export-deploy-fix-1.0.0: Add --force to allow deletion of orphaned functions in non-interactive CI[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1705343Z [36;1mecho "Deploying Cloud Functions (20m timeout)..."[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1705828Z [36;1mtimeout 20m firebase deploy --only functions --project *** --json --force[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1706450Z [36;1m[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1706673Z [36;1mecho "Deploying hosting (10m timeout)..."[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1707156Z [36;1mtimeout 10m firebase deploy --only hosting:aoss-staging --project *** --json[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1707675Z [36;1mecho "Stable staging URL: https://ropi-aoss-staging.web.app"[0m
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1740694Z shell: /usr/bin/bash -e {0}
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1740953Z env:
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1741393Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1741946Z ##[endgroup]
+deploy-staging	Deploy to stable staging site	2026-01-09T12:56:59.1794035Z Using GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6762986Z {
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6763464Z   "status": "success",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6763857Z   "result": {
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6764222Z     "aoss-staging": {
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6764679Z       "target": "aoss-staging",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6765196Z       "site": "ropi-aoss-staging",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6766056Z       "url": "https://ropi-aoss-staging--aoss-main-staging-66cwdo2b.web.app",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6766784Z       "version": "",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6767267Z       "expireTime": "2026-01-16T12:57:01.349055278Z"
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6767738Z     }
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.6768025Z   }
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:04.7019553Z }Deploying Cloud Functions (20m timeout)...
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.0550180Z 
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.0551150Z > @ropi-aoss/api@0.0.0 build /home/runner/work/ROPI-V2.1/ROPI-V2.1/packages/api
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.0551799Z > node esbuild.config.js
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.0552020Z 
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.2803093Z 
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.2805408Z   dist/index.js      2.3mb ⚠️
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.2807441Z   dist/index.js.map  4.3mb
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.2811897Z 
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:07.2812382Z ⚡ Done in 189ms
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:20.4168712Z {
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:20.4169150Z   "status": "success",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:20.4169547Z   "result": {}
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:20.4532079Z }Deploying hosting (10m timeout)...
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:24.2118379Z {
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:24.2118865Z   "status": "success",
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:24.2119284Z   "result": {
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:24.2122304Z     "hosting": "projects/***/sites/ropi-aoss-staging/versions/726bc2c4f9bdfee7"
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:24.2123037Z   }
+deploy-staging	Deploy to stable staging site	2026-01-09T12:57:24.2373952Z }Stable staging URL: https://ropi-aoss-staging.web.app
+deploy-staging	Smoke check stable staging	﻿2026-01-09T12:57:24.2410801Z ##[group]Run set -e
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2411258Z [36;1mset -e[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2411718Z [36;1mecho "Waiting briefly for hosting to warm up..."[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2412278Z [36;1msleep 3[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2413731Z [36;1mSTATUS=$(curl -s -o /dev/null -w '%{http_code}' https://ropi-aoss-staging.web.app || true)[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2414660Z [36;1mecho "HTTP status: $STATUS"[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2415143Z [36;1mif [ "$STATUS" != "200" ]; then[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2415881Z [36;1m  echo "::warning::Staging returned HTTP $STATUS. Check hosting logs and content."[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2416610Z [36;1mfi[0m
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2450771Z shell: /usr/bin/bash -e {0}
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2451044Z env:
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2451323Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2451674Z ##[endgroup]
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:24.2506564Z Waiting briefly for hosting to warm up...
+deploy-staging	Smoke check stable staging	2026-01-09T12:57:27.4633187Z HTTP status: 200
+deploy-staging	Cleanup credentials	﻿2026-01-09T12:57:27.4660851Z ##[group]Run rm -f "$HOME/gcloud-key.json"
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4661197Z [36;1mrm -f "$HOME/gcloud-key.json"[0m
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4661483Z [36;1mecho "Key file removed from runner"[0m
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4694211Z shell: /usr/bin/bash -e {0}
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4694452Z env:
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4694724Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/gcloud-key.json
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4695058Z ##[endgroup]
+deploy-staging	Cleanup credentials	2026-01-09T12:57:27.4756131Z Key file removed from runner
+deploy-staging	Post Setup Node.js 20	﻿2026-01-09T12:57:27.4818057Z Post job cleanup.
+deploy-staging	Post Checkout code	﻿2026-01-09T12:57:27.6494285Z Post job cleanup.
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7496318Z [command]/usr/bin/git version
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7533855Z git version 2.52.0
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7579340Z Temporarily overriding HOME='/home/runner/work/_temp/c772a340-3902-4266-a4ac-d74491066b50' before making global git config changes
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7580877Z Adding repository directory to the temporary git global config as a safe directory
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7586106Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ROPI-V2.1/ROPI-V2.1
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7627667Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7659900Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7892215Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7913749Z http.https://github.com/.extraheader
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7926423Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.7957483Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.8180834Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+deploy-staging	Post Checkout code	2026-01-09T12:57:27.8211801Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+deploy-staging	Complete job	﻿2026-01-09T12:57:27.8546506Z Cleaning up orphan processes
