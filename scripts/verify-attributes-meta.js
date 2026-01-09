@@ -19,6 +19,7 @@
 const admin = require('firebase-admin');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 // Parse arguments
 const args = process.argv.slice(2);
@@ -44,11 +45,16 @@ if (!skipFirestore) {
 const registryPath = path.resolve(__dirname, '../packages/sdk/config/attributeRegistry.json');
 let localRegistry;
 let verLocal;
+let localSHA;
 
 try {
-  localRegistry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  const registryContent = fs.readFileSync(registryPath, 'utf8');
+  localRegistry = JSON.parse(registryContent);
   verLocal = localRegistry.version;
+  // Compute SHA hash of the file content for comparison with Firestore
+  localSHA = crypto.createHash('sha1').update(registryContent).digest('hex');
   console.log('📦 Local attributeRegistry.json version:', verLocal);
+  console.log('📦 Local attributeRegistry.json SHA:', localSHA);
 } catch (err) {
   console.error('❌ Failed to read local attributeRegistry.json:', err.message);
   process.exit(2);
@@ -103,11 +109,20 @@ const db = admin.firestore();
   console.log('📄 settings/attributesMeta:', JSON.stringify(meta, null, 2));
 
   console.log('\n📦 Local attributeRegistry.json version:', verLocal);
+  console.log('📦 Local attributeRegistry.json SHA:', localSHA);
   
-  if (meta.registry_version === verLocal) {
-    console.log('✅ OK: registry_version matches local file.');
+  // Compare registry_version with both SHA and semantic version for flexibility
+  // Firestore may store either a SHA hash or a semantic version string
+  const firestoreVersion = meta.registry_version;
+  
+  if (firestoreVersion === localSHA || firestoreVersion === verLocal) {
+    console.log('✅ OK: registry_version matches local file (SHA or version).');
   } else {
-    console.error('❌ MISMATCH: registry_version (' + meta.registry_version + ') != local file version (' + verLocal + ')');
+    console.error('❌ MISMATCH: registry_version (' + firestoreVersion + ') does not match');
+    console.error('   Local SHA: ' + localSHA);
+    console.error('   Local version: ' + verLocal);
+    console.error('\n💡 To fix this, run:');
+    console.error('   node packages/api/scripts/align_registry_version.mjs --apply --project ropi-bccee');
     process.exit(1);
   }
 
