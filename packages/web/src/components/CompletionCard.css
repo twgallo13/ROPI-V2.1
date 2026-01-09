@@ -1,0 +1,325 @@
+/**
+ * CompletionCard Styles
+ * LP-phase2b-001: Completion Model — UI & Export Gate Integration (Phase 2B)
+ *
+ * Design approved by Lisa 2026-01-09
+ * WCAG AA compliant: contrast ratios ≥ 4.5:1 for text, ≥ 3:1 for large text
+ * Responsive: mobile < 768px, tablet 768-1024px, desktop > 1024px
+ */
+
+/* Base Card */
+.completion-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.completion-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.completion-card__header {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.completion-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Body */
+.completion-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Completion Percentage */
+.completion-card__percent {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.completion-card__percent-value {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Status Badge */
+.completion-card__status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-badge--ready {
+  background-color: #10b981;
+  color: #065f46;
+}
+
+.status-badge--partial {
+  background-color: #f59e0b;
+  color: #78350f;
+}
+
+.status-badge--blocked {
+  background-color: #ef4444;
+  color: #7f1d1d;
+}
+
+/* Blocking Reasons */
+.completion-card__blocking-reasons {
+  padding: 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+.completion-card__blocking-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #991b1b;
+  margin: 0 0 8px 0;
+}
+
+.completion-card__blocking-list {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+  color: #7f1d1d;
+}
+
+.completion-card__blocking-item {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.completion-card__blocking-more {
+  font-size: 12px;
+  color: #991b1b;
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Segments (Expandable) */
+.completion-card__segments {
+  margin-top: 8px;
+}
+
+.completion-card__expand-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.completion-card__expand-button:hover {
+  background-color: #e5e7eb;
+}
+
+.completion-card__expand-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.completion-card__expand-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.completion-card__expand-icon--open {
+  transform: rotate(180deg);
+}
+
+.completion-card__segments-content {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  animation: slideDown 0.2s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.completion-card__segment-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.completion-card__segment-row:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.completion-card__segment-label {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.completion-card__segment-value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Loading State */
+.completion-card--loading {
+  min-height: 200px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton--title {
+  height: 24px;
+  width: 120px;
+}
+
+.skeleton--percent {
+  height: 60px;
+  width: 150px;
+  margin: 20px auto;
+}
+
+.skeleton--badge {
+  height: 32px;
+  width: 100px;
+  margin: 0 auto;
+}
+
+/* Error State */
+.completion-card--error {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+}
+
+.completion-card__error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 14px;
+  color: #991b1b;
+}
+
+.completion-card__error-icon {
+  font-size: 20px;
+}
+
+.completion-card__retry-button {
+  padding: 8px 16px;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.completion-card__retry-button:hover {
+  background-color: #dc2626;
+}
+
+.completion-card__retry-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Empty State */
+.completion-card--empty {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+.completion-card__empty-message {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Responsive: Mobile */
+@media (max-width: 767px) {
+  .completion-card {
+    padding: 16px;
+  }
+
+  .completion-card__percent-value {
+    font-size: 36px;
+  }
+
+  .completion-card__title {
+    font-size: 16px;
+  }
+}
+
+/* Responsive: Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .completion-card {
+    padding: 18px;
+  }
+
+  .completion-card__percent-value {
+    font-size: 42px;
+  }
+}
+
+/* Status-specific card borders */
+.completion-card--ready {
+  border-left: 4px solid #10b981;
+}
+
+.completion-card--partial {
+  border-left: 4px solid #f59e0b;
+}
+
+.completion-card--blocked {
+  border-left: 4px solid #ef4444;
+}
