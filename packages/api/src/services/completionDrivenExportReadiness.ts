@@ -25,7 +25,6 @@ import {
   type CompletionRulesConfig
 } from './completionRulesService';
 import { loadExportableAttributes, type ProductDocument } from './exportService';
-import { loadRegistryMap } from './attributeValidator';
 import type { AttributeType } from '../../../sdk/src/schema/attribute';
 
 // ============================================================================
@@ -643,15 +642,42 @@ export async function calculateCompletionDrivenExportReadiness(
  * Load attribute registry formatted for completion evaluation
  */
 async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> {
-  // Load the authoritative SDK attribute registry directly
-  // This preserves required_for_completion flags needed for completion evaluation
-  const registryMap = await loadRegistryMap();
+  // Load the authoritative SDK attribute registry JSON directly
+  // This preserves ALL fields including category, required_for_completion, etc.
+  const fs = require('fs');
+  const path = require('path');
+  
+  // Try multiple paths to find the registry JSON
+  const possiblePaths = [
+    path.resolve(__dirname, '../config/attributeRegistry.json'),
+    path.resolve(__dirname, '../../config/attributeRegistry.json'),
+    path.resolve(__dirname, '../../../sdk/config/attributeRegistry.json'),
+    path.resolve(process.cwd(), 'dist/config/attributeRegistry.json'),
+  ];
+  
+  let registryData;
+  for (const registryPath of possiblePaths) {
+    try {
+      const fileContent = fs.readFileSync(registryPath, 'utf8');
+      registryData = JSON.parse(fileContent);
+      console.log(`[loadAttributeRegistryForCompletion] Loaded registry from: ${registryPath}`);
+      break;
+    } catch (e) {
+      // Try next path
+      continue;
+    }
+  }
+  
+  if (!registryData || !registryData.attributes) {
+    throw new Error('Failed to load authoritative attribute registry from any known path');
+  }
+  
   const registry: AttributeRegistry = {};
   
-  for (const [id, attr] of registryMap) {
-    // Convert to completion engine format, preserving required_for_completion flag
-    registry[id] = {
-      attribute_id: id,
+  for (const attr of registryData.attributes) {
+    // Convert to completion engine format, preserving ALL SDK fields
+    registry[attr.attribute_id] = {
+      attribute_id: attr.attribute_id,
       label: attr.label,
       category: attr.category || 'general',
       data_type: attr.data_type || 'string',
@@ -661,6 +687,8 @@ async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> 
       internalOnly: attr.internalOnly === true
     } as AttributeType;
   }
+  
+  console.log(`[loadAttributeRegistryForCompletion] Loaded ${Object.keys(registry).length} attributes from SDK registry`);
   
   return registry;
 }
