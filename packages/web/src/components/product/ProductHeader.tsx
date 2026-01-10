@@ -21,9 +21,6 @@ import './ProductHeader.css';
  * Empty state ("No websites") displays when websites array is empty/undefined.
  */
 
-// TEMPORARY: Build verification for commit 61458f2
-console.log('[ProductHeader] COMMIT: 61458f2 | Layout: 3-line horizontal ops');
-
 /**
  * LP-export-completion-fix-1.0.0: Blocking reason structure
  */

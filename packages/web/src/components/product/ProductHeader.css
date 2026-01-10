@@ -49,10 +49,10 @@
 }
 
 .product-header__row--operations {
-  display: grid;
-  grid-template-columns: minmax(260px, max-content) minmax(320px, 1fr);
-  align-items: start;
-  column-gap: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
 }
 
 /* ============================================
@@ -224,9 +224,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 0;
   flex-shrink: 0;
-  width: max-content;
 }
 
 .product-header__inventory-grid {
@@ -254,8 +252,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex: 1;
-  min-width: 0;
+  flex-shrink: 0;
 }
 
 .product-header__icon-row {
