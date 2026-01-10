@@ -103,7 +103,7 @@
       "category": "Technical",
       "data_type": "text",
       "required_for_completion": false,
-      "required_for_export": true,
+      "required_for_export": false,
       "import_required": false,
       "ai_usage_notes": "Required for web export",
       "status": "active",
