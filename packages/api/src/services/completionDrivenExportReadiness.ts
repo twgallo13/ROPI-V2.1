@@ -673,6 +673,11 @@ function convertToProductSnapshot(product: ProductDocument): ProductSnapshot {
     ...(product.descriptive_color !== undefined && product.descriptive_color !== null && { descriptive_color: product.descriptive_color }),
     ...(product.material !== undefined && product.material !== null && { material: product.material }),
     ...(product.fit !== undefined && product.fit !== null && { fit: product.fit }),
+    // Dimension fields (added for LP-export-readiness-1.1.0)
+    ...(product.height !== undefined && product.height !== null && { height: product.height }),
+    ...(product.length !== undefined && product.length !== null && { length: product.length }),
+    ...(product.width !== undefined && product.width !== null && { width: product.width }),
+    ...(product.weight !== undefined && product.weight !== null && { weight: product.weight }),
   };
   
   return {

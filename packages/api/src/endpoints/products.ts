@@ -125,8 +125,25 @@ export async function patchProductAttributesHandler(req: Request, res: Response)
         updatedAt: now,
       };
       
+      // List of attributes that should also be mirrored to top-level fields
+      // This ensures consistency between legacy top-level fields and attributes object
+      const topLevelMirroredFields = new Set([
+        'name', 'brand', 'sku', 'mpn',
+        'category', 'department', 'gender', 'age_group',
+        'primary_color', 'descriptive_color',
+        'material', 'fit',
+        'height', 'length', 'width', 'weight', // Dimension fields
+        'class', 'gtin', 'website' // Other commonly used top-level fields
+      ]);
+      
       for (const [key, value] of Object.entries(validatedAttrs)) {
+        // Always update in attributes object
         updatePayload[`attributes.${key}`] = value;
+        
+        // Also update top-level field if it's in the mirrored list
+        if (topLevelMirroredFields.has(key)) {
+          updatePayload[key] = value;
+        }
       }
 
       await productRef.update(updatePayload);
