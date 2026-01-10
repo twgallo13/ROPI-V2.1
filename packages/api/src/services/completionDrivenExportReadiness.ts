@@ -651,11 +651,33 @@ async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> 
 /**
  * Convert ProductDocument to ProductSnapshot for completion engine
  * CORRECTION: Use MPN as primary identifier (product.id deprecated)
+ * 
+ * CRITICAL: Merges top-level fields (name, brand, sku, etc.) into attributes object
+ * because completion engine only checks product.attributes[attributeId].
+ * Top-level fields take precedence over attributes.* duplicates.
  */
 function convertToProductSnapshot(product: ProductDocument): ProductSnapshot {
+  // Merge top-level fields into attributes (top-level takes precedence)
+  const mergedAttributes = {
+    ...(product.attributes || {}),
+    // Override with top-level fields if they exist (these are the canonical values)
+    ...(product.name !== undefined && product.name !== null && { name: product.name }),
+    ...(product.brand !== undefined && product.brand !== null && { brand: product.brand }),
+    ...(product.sku !== undefined && product.sku !== null && { sku: product.sku }),
+    ...(product.mpn !== undefined && product.mpn !== null && { mpn: product.mpn }),
+    ...(product.category !== undefined && product.category !== null && { category: product.category }),
+    ...(product.department !== undefined && product.department !== null && { department: product.department }),
+    ...(product.gender !== undefined && product.gender !== null && { gender: product.gender }),
+    ...(product.age_group !== undefined && product.age_group !== null && { age_group: product.age_group }),
+    ...(product.primary_color !== undefined && product.primary_color !== null && { primary_color: product.primary_color }),
+    ...(product.descriptive_color !== undefined && product.descriptive_color !== null && { descriptive_color: product.descriptive_color }),
+    ...(product.material !== undefined && product.material !== null && { material: product.material }),
+    ...(product.fit !== undefined && product.fit !== null && { fit: product.fit }),
+  };
+  
   return {
     productId: product.mpn || 'UNKNOWN-MPN',
-    attributes: product.attributes || {},
+    attributes: mergedAttributes,
     sites: extractSelectedSites(product)
   };
 }
