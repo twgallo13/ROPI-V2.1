@@ -1,0 +1,42 @@
+{
+  "attribute_id": "scom_regular_price",
+  "label": "SCOM Regular Price",
+  "external_header": "SCOM Regular Price",
+  "category": "Technical",
+  "data_type": "currency",
+  "allowed_values": [],
+  "synonyms": [
+    {
+      "alias": "scomRegularPrice",
+      "canonical": "scomRegularPrice"
+    },
+    {
+      "alias": "scom-regular-price",
+      "canonical": "scom-regular-price"
+    },
+    {
+      "alias": "ScomRegularPrice",
+      "canonical": "ScomRegularPrice"
+    },
+    {
+      "alias": "scom.regular.price",
+      "canonical": "scom.regular.price"
+    },
+    {
+      "alias": "scomregularprice",
+      "canonical": "scomregularprice"
+    }
+  ],
+  "required_for_completion": false,
+  "required_for_export": false,
+  "import_required": false,
+  "ai_usage_notes": "",
+  "status": "active",
+  "source": "json",
+  "exportable": true,
+  "requiredForExport": false,
+  "internalOnly": false,
+  "export": true,
+  "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+  "updatedAt": "2026-01-10T00:14:01.694Z"
+}

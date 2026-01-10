@@ -1,0 +1,4 @@
+=== SYNC TASK STATUS CHECK ===
+URL: POST https://ropi-aoss-staging.web.app/api/syncAttributeRegistry
+Time: Sat Jan 10 04:34:19 UTC 2026
+

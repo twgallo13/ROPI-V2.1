@@ -1,0 +1,58 @@
+{
+  "productIdentifiers": {
+    "mpn": "18-test",
+    "productId": "18-test"
+  },
+  "ready": true,
+  "completionPct": 75,
+  "threshold": 75,
+  "hasBlockingSites": false,
+  "blockingReasons": [],
+  "operatorExplanation": {
+    "summary": "Export ready: product 75% complete (threshold: 75%)",
+    "blockingIssues": [],
+    "completionBreakdown": [
+      {
+        "segmentId": "core-identifiers",
+        "segmentName": "Product Core",
+        "score": 0,
+        "weightPct": 25,
+        "missingAttributes": [
+          "class",
+          "name",
+          "sku"
+        ]
+      },
+      {
+        "segmentId": "classification",
+        "segmentName": "Attribute Details",
+        "score": 100,
+        "weightPct": 25,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "demographics-color",
+        "segmentName": "AI Describe",
+        "score": 100,
+        "weightPct": 25,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "materials-fit",
+        "segmentName": "Technical",
+        "score": 100,
+        "weightPct": 25,
+        "missingAttributes": []
+      }
+    ],
+    "siteStatus": [
+      {
+        "site": "shiekh.com",
+        "blocked": false
+      }
+    ],
+    "actionRequired": []
+  },
+  "evaluationTimestamp": "2026-01-10T04:34:19.004Z",
+  "rulesVersion": 7
+}

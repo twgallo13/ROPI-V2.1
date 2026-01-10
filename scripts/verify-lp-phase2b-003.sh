@@ -52,7 +52,7 @@ ADMIN_FILE="$EVIDENCE_DIR/admin_attr_fetch_scom_regular_price.json"
 curl -s \
   -H "Authorization: Bearer $STAGING_API_TOKEN" \
   -H "Content-Type: application/json" \
-  "$STAGING_BASE/api/admin/settings/attributes/keys/scom_regular_price" \
+  "$STAGING_BASE/api/admin/settings/attributes/scom_regular_price" \
   | jq . > "$ADMIN_FILE"
 
 echo "✓ Saved to: $ADMIN_FILE"
@@ -83,7 +83,7 @@ EVALUATOR_FILE="$EVIDENCE_DIR/evaluator_status.json"
 curl -s \
   -H "Authorization: Bearer $STAGING_API_TOKEN" \
   -H "Content-Type: application/json" \
-  "$STAGING_BASE/api/evaluator/status" \
+  "$STAGING_BASE/api/admin/evaluator/status" \
   | jq . > "$EVALUATOR_FILE"
 
 echo "✓ Saved to: $EVALUATOR_FILE"

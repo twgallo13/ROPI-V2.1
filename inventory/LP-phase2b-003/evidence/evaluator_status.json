@@ -1,5 +1,1 @@
-{
-  "error": "INVALID_AUTH_TOKEN",
-  "reason": "missing_or_invalid_token",
-  "message": "Valid authentication token required. Include Authorization: Bearer <token> header or __session cookie."
-}
+{"status":"operational","registry":{"source":"firestore","last_refresh":"2026-01-10T04:34:08.851Z","attribute_count":121,"load_duration_ms":625,"cache_valid":true,"error":null},"timestamp":"2026-01-10T04:34:09.181Z"}
