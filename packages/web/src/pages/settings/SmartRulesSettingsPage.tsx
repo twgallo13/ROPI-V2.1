@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import PageLayout from '@/components/common/PageLayout';
 import { RuleBuilder } from '@/components/smartRules/RuleBuilder';
 import { RuleTestConsole } from '@/components/smartRules/RuleTestConsole';
@@ -257,6 +258,8 @@ type TabType = 'rules' | 'packs' | 'test' | 'activity';
 // ============================================================================
 
 function SmartRulesSettingsPage() {
+  // Set page title for Smart Rules admin
+  usePageTitle('Smart Rules');
   const navigate = useNavigate();
   
   // State

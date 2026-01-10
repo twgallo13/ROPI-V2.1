@@ -10,6 +10,7 @@
  */
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useAttributes, type Attribute, attributeIdExists } from '../../hooks/useAttributes';
 import { toastError, toastSuccess } from '../../lib/notifications';
 import { toSnakeCase } from '../../lib/stringUtils';
@@ -395,6 +396,8 @@ function normalizeLegacyAttribute(attr: Attribute): Attribute {
 }
 
 export default function AttributesConsole() {
+  // Ensure page title is set for Attributes console
+  usePageTitle('Attributes');
   const {
     attributes,
     loading,

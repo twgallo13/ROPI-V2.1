@@ -10,6 +10,8 @@
 
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../lib/apiFetch';
+import PageLayout from '@/components/common/PageLayout';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import './PermissionsPage.css';
 
 interface PermissionsMatrix {
@@ -46,6 +48,8 @@ const PERMISSION_DESCRIPTIONS: Record<string, string> = {
 };
 
 export function PermissionsPage() {
+  // Set page title even if data fails to load
+  usePageTitle('Permissions');
   const [permissions, setPermissions] = useState<PermissionsMatrix | null>(null);
   const [originalPermissions, setOriginalPermissions] = useState<PermissionsMatrix | null>(null);
   const [loading, setLoading] = useState(true);
@@ -152,17 +156,21 @@ export function PermissionsPage() {
 
   if (loading) {
     return (
-      <div className="permissions-page">
-        <div className="loading">Loading permissions...</div>
-      </div>
+      <PageLayout title="Permissions">
+        <div className="permissions-page">
+          <div className="loading">Loading permissions...</div>
+        </div>
+      </PageLayout>
     );
   }
 
   if (!permissions) {
     return (
-      <div className="permissions-page">
-        <div className="error">Failed to load permissions</div>
-      </div>
+      <PageLayout title="Permissions">
+        <div className="permissions-page">
+          <div className="error">Failed to load permissions</div>
+        </div>
+      </PageLayout>
     );
   }
 
@@ -171,7 +179,8 @@ export function PermissionsPage() {
   ).sort();
 
   return (
-    <div className="permissions-page">
+    <PageLayout title="Permissions">
+      <div className="permissions-page">
       <h1>Role Permissions Matrix</h1>
       <p className="subtitle">
         Define what each role can access and perform in the system
@@ -244,7 +253,8 @@ export function PermissionsPage() {
           ℹ️ Currently using default permissions
         </div>
       )}
-    </div>
+      </div>
+    </PageLayout>
   );
 }
 

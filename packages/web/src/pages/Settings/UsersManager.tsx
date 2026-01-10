@@ -10,6 +10,7 @@
 import { useState } from 'react';
 import PageLayout from '@/components/common/PageLayout';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useUsers, type User, type CreateUserData, type UpdateUserData } from '@/hooks/useUsers';
 import { useAuth } from '@/contexts/AuthProvider';
 import './UsersManager.css';
@@ -23,6 +24,8 @@ interface UserFormData {
 }
 
 function UsersManager() {
+  // Ensure page title is set for Users management
+  usePageTitle('Users');
   const { currentUser } = useAuth();
   const { 
     users, 
