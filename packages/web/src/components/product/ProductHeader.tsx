@@ -155,9 +155,8 @@ function ProductHeader({
         </div>
       )}
 
-      <div className="product-header__container">
-        <div className="product-header__rows">
-          {/* LINE 1 — Identity + Actions (Single Baseline) */}
+      <div className="product-header__rows">
+        {/* LINE 1 — Identity + Actions (Single Baseline) */}
           <div className="product-header__row product-header__row--identity">
             <div className="product-header__identity-left">
               <span className="product-header__label product-header__label--inline">MPN</span>
@@ -200,45 +199,46 @@ function ProductHeader({
             </div>
           </div>
 
-          {/* LINE 2 — Merchandising Context */}
-          <div className="product-header__row product-header__row--merch">
-            <div className="product-header__merch-stack">
-              <div className="product-header__merch-line">
-                <span className="product-header__label">RIC Color</span>
-                <span className="product-header__value product-header__value--muted">
-                  {product.attributes?.rics_color || '—'}
-                </span>
-              </div>
-              <div className="product-header__merch-line">
-                <span className="product-header__label">RIC Category</span>
-                <span className="product-header__value product-header__value--muted">
-                  {product.attributes?.rics_category || '—'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* LINE 3 — Operational Health (Two Columns) */}
-          <div className="product-header__row product-header__row--operations">
-            <div className="product-header__ops-left">
-              <div className="product-header__last">
-                <span className="product-header__label">Last Received</span>
-                <span className="product-header__value product-header__value--last" data-testid="header-last-received">
-                  {lastDisplay}
-                </span>
-              </div>
-
-              <div className="product-header__inventory-grid">
-                <span className="product-header__inv-label">Total Inventory</span>
-                <span className="product-header__inv-label">WHS</span>
-                <span className="product-header__inv-label">Store</span>
-                <span className="product-header__inv-value">{formatNumber(product.total_inv)}</span>
-                <span className="product-header__inv-value">{formatNumber(product.warehouse_inv)}</span>
-                <span className="product-header__inv-value">{formatNumber(product.store_inv)}</span>
+          {/* LINE 2 — Metadata Row (Two Columns: Merch Context | Operational Health) */}
+          <div className="product-header__row product-header__row--metadata">
+            <div className="product-header__metadata-left">
+              <div className="product-header__merch-stack">
+                <div className="product-header__merch-line">
+                  <span className="product-header__label">RIC Color</span>
+                  <span className="product-header__value product-header__value--muted">
+                    {product.attributes?.rics_color || '—'}
+                  </span>
+                </div>
+                <div className="product-header__merch-line">
+                  <span className="product-header__label">RIC Category</span>
+                  <span className="product-header__value product-header__value--muted">
+                    {product.attributes?.rics_category || '—'}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="product-header__ops-right">
+            <div className="product-header__metadata-center">
+              <div className="product-header__ops-block">
+                <div className="product-header__last">
+                  <span className="product-header__label">Last Received</span>
+                  <span className="product-header__value product-header__value--last" data-testid="header-last-received">
+                    {lastDisplay}
+                  </span>
+                </div>
+
+                <div className="product-header__inventory-grid">
+                  <span className="product-header__inv-label">Total Inventory</span>
+                  <span className="product-header__inv-label">WHS</span>
+                  <span className="product-header__inv-label">Store</span>
+                  <span className="product-header__inv-value">{formatNumber(product.total_inv)}</span>
+                  <span className="product-header__inv-value">{formatNumber(product.warehouse_inv)}</span>
+                  <span className="product-header__inv-value">{formatNumber(product.store_inv)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="product-header__metadata-right">
               <div className="product-header__icon-row">
                 {(product.websites ?? []).length > 0 ? (
                   (product.websites ?? []).map(website => (
@@ -273,7 +273,6 @@ function ProductHeader({
             </div>
           </div>
         </div>
-      </div>
     </header>
   );
 }

@@ -23,21 +23,14 @@
   border-bottom: 1px solid var(--color-border, #e5e7eb);
 }
 
-/* Container that matches main content width */
-.product-header__container {
-  max-width: 1220px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-xl, 1.5rem);
-}
-
 /* ============================================
-   LAYOUT: THREE ROWS (Identity, Merch, Operations)
+   LAYOUT: TWO ROWS (Identity, Metadata)
    ============================================ */
 .product-header__rows {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 0 14px;
+  padding: 12px var(--spacing-xl, 1.5rem) 14px;
 }
 
 .product-header__row {
@@ -52,15 +45,10 @@
   align-items: center;
 }
 
-.product-header__row--merch {
-  align-items: flex-start;
-}
-
-.product-header__row--operations {
+.product-header__row--metadata {
   display: flex;
   align-items: flex-start;
   gap: 32px;
-  width: 100%;
 }
 
 /* ============================================
@@ -78,9 +66,8 @@
   font-size: 0.875rem;
   color: var(--color-text-secondary, #6b7280);
   font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 .product-header__spacer {
@@ -230,6 +217,10 @@
 /* ============================================
    MERCH CONTEXT (RIC COLOR/CATEGORY)
    ============================================ */
+.product-header__metadata-left {
+  flex-shrink: 0;
+}
+
 .product-header__merch-stack {
   display: flex;
   flex-direction: column;
@@ -244,14 +235,30 @@
 
 /* ============================================
    OPERATIONS (LAST RECEIVED + INVENTORY)
-   Two-column layout: Left = Last Received + Inventory, Right = Icons
    ============================================ */
-.product-header__ops-left {
+.product-header__metadata-center {
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
+.product-header__ops-block {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* ============================================
+   OPERATIONS (LAST RECEIVED + INVENTORY)
+   ============================================ */
+.product-header__metadata-center {
   flex-shrink: 0;
-  width: 320px;
+  margin-left: 20px;
+}
+
+.product-header__ops-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .product-header__inventory-grid {
@@ -275,11 +282,15 @@
   font-variant-numeric: tabular-nums;
 }
 
-.product-header__ops-right {
+/* ============================================
+   METADATA RIGHT (ICONS)
+   ============================================ */
+.product-header__metadata-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex: 1;
+  margin-left: auto;
 }
 
 .product-header__icon-row {
@@ -375,6 +386,17 @@
 /* ============================================
    RESPONSIVE ADJUSTMENTS
    ============================================ */
+@media (max-width: 1024px) {
+  .product-header__row--metadata {
+    flex-wrap: wrap;
+  }
+
+  .product-header__metadata-center {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
 @media (max-width: 768px) {
   .product-header__rows {
     padding: 12px 14px 14px;
@@ -387,11 +409,9 @@
     gap: 10px;
   }
 
-  .product-header__row--operations {
-    display: flex;
+  .product-header__row--metadata {
     flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
+    gap: 12px;
   }
 
   .product-header__identity-left {
@@ -407,12 +427,14 @@
     flex: 1;
   }
 
-  .product-header__ops-left {
-    max-width: 100%;
+  .product-header__metadata-left,
+  .product-header__metadata-center,
+  .product-header__metadata-right {
+    width: 100%;
   }
 
-  .product-header__ops-right {
-    width: 100%;
+  .product-header__metadata-right {
+    justify-content: flex-start;
   }
 
   .product-header__icon-row {
