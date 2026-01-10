@@ -205,7 +205,7 @@ async function evaluateCatalogCompletion(
     );
     
     evaluations.push({
-      productId: product.id,
+      productId: product.mpn || 'UNKNOWN-MPN',
       completionPct: result.totalCompletionPct,
       hasBlockingSites: result.hasBlockingSites,
       siteBlockingReasons: result.siteBlockingReasons,
@@ -450,13 +450,14 @@ function aggregateSegmentScoresBest(scoresPerSite: SegmentScore[][]): SegmentSco
 /**
  * Extract product identifiers for API response
  * LP-phase2b-001: MPN is canonical, product_id is internal only
+ * CORRECTION: Use MPN as primary identifier (product.id deprecated)
  */
 function extractProductIdentifiers(product: ProductDocument): {
   mpn: string;
   productId: string;
 } {
   const mpn = product.mpn || 'UNKNOWN-MPN';
-  const productId = product.id;
+  const productId = mpn;  // Use MPN as product identifier
   return { mpn, productId };
 }
 
@@ -649,10 +650,11 @@ async function loadAttributeRegistryForCompletion(): Promise<AttributeRegistry> 
 
 /**
  * Convert ProductDocument to ProductSnapshot for completion engine
+ * CORRECTION: Use MPN as primary identifier (product.id deprecated)
  */
 function convertToProductSnapshot(product: ProductDocument): ProductSnapshot {
   return {
-    productId: product.id || 'unknown',
+    productId: product.mpn || 'UNKNOWN-MPN',
     attributes: product.attributes || {},
     sites: extractSelectedSites(product)
   };

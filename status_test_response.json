@@ -1,0 +1,1 @@
+{"error":"INVALID_AUTH_TOKEN","reason":"missing_or_invalid_token","message":"Valid authentication token required. Include Authorization: Bearer <token> header or __session cookie."}

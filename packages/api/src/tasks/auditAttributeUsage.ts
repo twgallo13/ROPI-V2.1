@@ -164,7 +164,7 @@ async function scanProductAttributes(): Promise<Map<string, AttributeUsage>> {
           if (!attrs[key]) {
             usage.usageCount++;
             if (usage.sampleProductIds.length < 3) {
-              usage.sampleProductIds.push(product.id || doc.id);
+              usage.sampleProductIds.push(product.mpn || doc.id);
             }
           }
         }

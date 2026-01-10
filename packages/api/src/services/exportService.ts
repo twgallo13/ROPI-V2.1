@@ -604,7 +604,7 @@ export function validateProductForExport(
       code: 'MISSING_REQUIRED_EXPORT_FIELD',
       message: 'MPN is required for export',
       attributeId: 'mpn',
-      productId: product.id,
+      productId: product.mpn || 'UNKNOWN-MPN',
     });
     missingRequiredFields.push('mpn');
   }
@@ -620,7 +620,7 @@ export function validateProductForExport(
         code: 'MISSING_REQUIRED_EXPORT_FIELD',
         message: `Required field '${def.label || id}' is missing for export`,
         attributeId: id,
-        productId: product.id,
+        productId: product.mpn || 'UNKNOWN-MPN',
       });
       missingRequiredFields.push(id);
     }
@@ -654,7 +654,7 @@ export function validateBatchForExport(
 
   for (const product of products) {
     const result = validateProductForExport(product, attributes);
-    byProduct.set(product.id, result);
+    byProduct.set(product.mpn || 'UNKNOWN-MPN', result);
     
     if (result.valid) {
       validCount++;
@@ -742,7 +742,7 @@ export function buildExportRow(
   return {
     rowNumber,
     mpn: product.mpn || '',
-    productId: product.id,
+    productId: product.mpn || 'UNKNOWN-MPN',
     exportReady: readiness.ready,
     missingAttributes: readiness.missingAttributes,
     warnings,

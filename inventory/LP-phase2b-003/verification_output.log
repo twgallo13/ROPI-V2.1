@@ -1,0 +1,38 @@
+LP-phase2b-003 Verification Script
+====================================
+
+[1/5] Fetching admin attribute (scom_regular_price)...
+✓ Saved to: inventory/LP-phase2b-003/evidence/admin_attr_fetch_scom_regular_price.json
+
+✗ FAIL: Attribute missing id field
+✗ WARNING: No metadata object (may be empty if never synced)
+
+[2/5] Fetching evaluator status...
+✓ Saved to: inventory/LP-phase2b-003/evidence/evaluator_status.json
+
+✗ FAIL: Evaluator not loading from firestore
+  Expected: {source: 'firestore'} or {attributeSourceMetadata: {source: 'firestore'}}
+  Got: {
+  "status": "operational",
+  "registry": {
+    "source": "uninitialized",
+    "last_refresh": null,
+    "attribute_count": 0,
+    "load_duration_ms": 0,
+    "cache_valid": false,
+    "error": null
+  },
+  "timestamp": "2026-01-10T04:33:07.810Z"
+}
+
+[3/5] Fetching product completion (productId=18-test)...
+✓ Saved to: inventory/LP-phase2b-003/evidence/api_product_18-test_completion.json
+
+✗ FAIL: No completion_result field
+✗ WARNING: No evaluator_metadata field
+
+[4/5] Checking sync task status (should return 403 SYNC_DISABLED)...
+=== SYNC TASK STATUS CHECK ===
+URL: POST https://ropi-aoss-staging.web.app/api/syncAttributeRegistry
+Time: Sat Jan 10 04:33:09 UTC 2026
+
