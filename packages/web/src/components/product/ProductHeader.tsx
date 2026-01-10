@@ -159,14 +159,6 @@ function ProductHeader({
         {/* LINE 1 — Identity (Hero) */}
         <div className="product-header__row product-header__row--identity">
           <div className="product-header__identity-left">
-            <button 
-              onClick={onBack} 
-              className="product-header__back-btn"
-              aria-label="Back to Products List"
-            >
-              ← Back to Products
-            </button>
-
             <div className="product-header__mpn-line">
               <span className="product-header__label product-header__label--inline">MPN</span>
               <span className="product-header__value product-header__value--mono product-header__value--mpn">
@@ -176,9 +168,21 @@ function ProductHeader({
                 {status.label}
               </span>
             </div>
+            <span className="product-header__product-name">
+              {product.name || '—'}
+            </span>
           </div>
 
+          <div className="product-header__spacer" />
+
           <div className="product-header__actions">
+            <button 
+              onClick={onBack} 
+              className="product-header__back-btn"
+              aria-label="Back to Products List"
+            >
+              ← Back to Products
+            </button>
             <button 
               onClick={onSave}
               className="product-header__btn product-header__btn--secondary"

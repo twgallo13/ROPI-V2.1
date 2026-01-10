@@ -42,6 +42,8 @@
 
 .product-header__row--identity {
   padding-bottom: 4px;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .product-header__row--merch {
@@ -60,9 +62,20 @@
    ============================================ */
 .product-header__identity-left {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.product-header__product-name {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.product-header__spacer {
+  flex: 1;
 }
 
 .product-header__mpn-line {
@@ -80,11 +93,14 @@
   color: var(--color-text-primary, #1f2937);
   font-size: 0.875rem;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .product-header__actions {
   display: flex;
   gap: 10px;
+  flex-shrink: 0;
+  align-items: center;
 }
 
 .product-header__btn {
