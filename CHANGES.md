@@ -75,3 +75,17 @@
 5. **RetailOps CSV Import** - Import to CoreProduct transformation
 6. **E2E Auth Fixes** - SignInModal flow test updates
 7. **CI Validator Enhancement** - Support for integration branch naming
+
+---
+
+## aoss.v0.6.3 — 2026-01-10
+
+### UI Enhancements
+
+**Changes:**
+- Phase 2C: Product Header readability improvements and consolidated two-row layout
+	- Row 1: MPN + Product Name + Badge on the left, Actions on the right
+	- Row 2: RIC fields, Inventory grid, and icon row
+- Dynamic browser tab titles via `usePageTitle` hook (e.g., "Products – ROPI AOSS", "Settings – ROPI AOSS")
+
+**Deployment:** Staging deployed via GitHub Actions
