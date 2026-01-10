@@ -215,19 +215,23 @@
 
 /* ============================================
    OPERATIONS (LAST RECEIVED + INVENTORY)
+   Two-column layout: Left = Last Received + Inventory, Right = Icons
    ============================================ */
 .product-header__ops-left {
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  flex-shrink: 0;
+  max-width: 320px;
 }
 
 .product-header__inventory-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(72px, 1fr));
-  gap: 4px 12px;
+  grid-template-columns: repeat(3, minmax(68px, auto));
+  gap: 4px 10px;
   align-items: end;
+  width: fit-content;
 }
 
 .product-header__inv-label {
@@ -248,13 +252,14 @@
   align-items: center;
   justify-content: flex-end;
   flex: 1;
+  min-width: 0;
 }
 
 .product-header__icon-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
 }
 
@@ -367,11 +372,16 @@
     flex: 1;
   }
 
+  .product-header__ops-left {
+    max-width: 100%;
+  }
+
   .product-header__ops-right {
     width: 100%;
   }
 
   .product-header__icon-row {
+    flex-wrap: wrap;
     justify-content: flex-start;
   }
 
