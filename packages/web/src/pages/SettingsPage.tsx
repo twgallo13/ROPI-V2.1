@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { settingsNavConfig } from '@/config/nav';
 import PageLayout from '@/components/common/PageLayout';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import './SettingsPage.css';
 
 /**
@@ -12,6 +13,8 @@ import './SettingsPage.css';
  * This hub provides access to all AOSS configuration and administration areas.
  */
 function SettingsPage() {
+  usePageTitle('Settings');
+  
   return (
     <PageLayout title="Settings Hub">
       <div className="settings-grid">

@@ -1,4 +1,5 @@
 import PageLayout from '@/components/common/PageLayout';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 /**
  * AOSS Hub (Home) Page
@@ -13,6 +14,8 @@ import PageLayout from '@/components/common/PageLayout';
  * - System status indicators
  */
 function HomePage() {
+  usePageTitle('Home');
+  
   return (
     <PageLayout title="AOSS Hub">
       <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)' }}>

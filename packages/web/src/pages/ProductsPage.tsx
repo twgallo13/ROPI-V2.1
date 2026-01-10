@@ -25,6 +25,7 @@ import PageLayout from '@/components/common/PageLayout';
 import { Pagination } from '@/components/common/Pagination';
 import { ProductsTable, BulkActionToolbar } from '@/components/products';
 import { useProducts, type ProductSummary, type ProductFilters } from '@/hooks/useProducts';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import './ProductsPage.css';
 
 // Department enum values from attributeRegistry.json
@@ -167,6 +168,9 @@ function ProductCard({ product, selected, onSelect }: ProductCardProps) {
  * Products Page Component
  */
 function ProductsPage() {
+  // Set page title
+  usePageTitle('Products');
+  
   // View mode state (table is default)
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   

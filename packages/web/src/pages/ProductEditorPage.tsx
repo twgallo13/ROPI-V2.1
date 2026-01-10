@@ -2,6 +2,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useProduct } from '../hooks/useProduct';
 import { useProductCompletion } from '../hooks/useProductCompletion';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { isFirebaseAvailable } from '../firebaseConfig';
 import ProductHeader from '../components/product/ProductHeader';
 import CoreInformationTab from '../components/product/CoreInformationTab';
@@ -64,6 +65,10 @@ function ProductEditorPage() {
     applySuggestion,
     ignoreSuggestion,
   } = useProduct(id);
+
+  // Set page title with product name or MPN
+  const productTitle = product?.name || product?.mpn || 'Product';
+  usePageTitle(`${productTitle} – Product Edit`);
 
   // LP-export-unlock-1.0.0: Fetch product completion for publish gating
   const { 

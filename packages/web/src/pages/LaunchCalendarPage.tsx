@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PageLayout from '@/components/common/PageLayout';
 import { useAuth } from '@/hooks/useAuth';
 import { useLaunchSignup } from '@/hooks/useLaunchSignup';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import SignInModal from '@/components/Auth/SignInModal';
 
 /**
@@ -57,6 +58,8 @@ const mockLaunches = [
 ];
 
 function LaunchCalendarPage() {
+  usePageTitle('Launch Calendar');
+  
   const { currentUser, loading: authLoading } = useAuth();
   const { signupForLaunch, loading: signupLoading } = useLaunchSignup();
   

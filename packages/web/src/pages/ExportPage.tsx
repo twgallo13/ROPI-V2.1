@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PageLayout from '@/components/common/PageLayout';
 import { ExportBlockedModal } from '@/components/export/ExportBlockedModal';
 import { useExportCompletion } from '@/hooks/useExportCompletion';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { getAuthHeaders } from '@/lib/authHeaders';
 
 /**
@@ -21,6 +22,8 @@ import { getAuthHeaders } from '@/lib/authHeaders';
  */
 
 function ExportPage() {
+  usePageTitle('Export');
+  
   const { loading, error, completion, exportReady, exportBlocked, refresh } = useExportCompletion();
   const [exporting, setExporting] = useState(false);
   const [selectedSite, setSelectedSite] = useState('ropi-web');

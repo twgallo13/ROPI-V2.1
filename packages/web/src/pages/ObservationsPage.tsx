@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { syncLocalToFirestore } from '../services/observations';
 import { authFetch } from '../services/authFetch';
 import { Observation, ObservationSeverity, ObservationStatus, ObservationCreator } from '../types/observation';
@@ -30,6 +31,8 @@ import ObservationsAddModal from '../components/observations/ObservationsAddModa
  * - Product Completion Workflows: https://www.notion.so/2ba45ee1ec5a80698690f9492961ed8b
  */
 function ObservationsPage() {
+  usePageTitle('Observations');
+  
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   

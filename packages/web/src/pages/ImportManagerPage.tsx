@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import PageLayout from '@/components/common/PageLayout';
 import { useAuth } from '@/contexts/AuthProvider';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { db } from '@/firebaseConfig';
 import { ImportUploadStep } from '@/components/import/ImportUploadStep';
 import { ImportMappingStep } from '@/components/import/ImportMappingStep';
@@ -43,6 +44,8 @@ interface ColumnMappingConfig {
 }
 
 function ImportManagerPage() {
+  usePageTitle('Import Manager');
+  
   const { currentUser, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<ImportStep>('history');

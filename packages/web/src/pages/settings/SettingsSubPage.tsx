@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
 import { settingsNavConfig } from '@/config/nav';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import ExportSettingsPage from './ExportSettingsPage';
 
 interface SettingsSubPageProps {
@@ -22,13 +23,15 @@ interface SettingsSubPageProps {
  */
 function SettingsSubPage({ section }: SettingsSubPageProps) {
   const navigate = useNavigate();
+  const setting = settingsNavConfig.find(s => s.id === section);
+  
+  // Set page title
+  usePageTitle(setting ? setting.label : 'Settings');
   
   // Route to specialized pages
   if (section === 'export-settings') {
     return <ExportSettingsPage />;
   }
-  
-  const setting = settingsNavConfig.find(s => s.id === section);
   
   if (!setting) {
     return (
