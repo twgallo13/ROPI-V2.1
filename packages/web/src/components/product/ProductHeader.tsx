@@ -207,8 +207,8 @@ function ProductHeader({
         <div className="product-header__metadata-bar">
           {/* Group 1: Core Identity */}
           <div className="product-header__group product-header__group--identity">
-            {/* MPN (Read-Only Text Reference) */}
-            <div className="product-header__field">
+            {/* MPN (Read-Only Text Reference) - Primary emphasis */}
+            <div className="product-header__field product-header__field--mpn">
               <span className="product-header__label">MPN</span>
               <span className="product-header__value product-header__value--mono">
                 {product.mpn || product.sku || '—'}
