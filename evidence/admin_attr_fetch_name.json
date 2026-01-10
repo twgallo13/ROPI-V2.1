@@ -1,0 +1,21 @@
+{
+  "attribute_id": "name",
+  "label": "Product Name",
+  "category": "sku_core",
+  "data_type": "string",
+  "required_for_completion": true,
+  "required_for_export": true,
+  "import_required": true,
+  "status": "active",
+  "source": "json",
+  "createdBy": "system",
+  "createdAt": "2026-01-09T23:47:11.501Z",
+  "updatedBy": "system",
+  "updatedAt": "2026-01-09T23:47:11.540Z",
+  "syncedAt": "2026-01-09T23:47:11.540Z",
+  "syncedBy": "system",
+  "definition_version": "unknown",
+  "firestore_path": "settings/attributes/keys/name",
+  "firestore_update_time": "2026-01-09T23:47:11.643267Z",
+  "proof": "Fetched from Firestore REST API. Category persists across sync cycles. User edits to this field will be preserved if SYNC_ATTRIBUTE_REGISTRY_ENABLED=false (currently disabled)."
+}

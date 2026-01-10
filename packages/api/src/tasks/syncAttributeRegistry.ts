@@ -199,8 +199,22 @@ async function loadRegistryFromNotion(): Promise<AttributeDefinition[] | null> {
 /**
  * Derive attributes from existing product documents
  * Scans products collection and extracts unique attribute keys
+ * 
+ * [LP-phase2b-003-REMEDIATION]: DISABLED
+ * Derivation from products can cause uncontrolled attribute creation.
+ * Only sync from authoritative JSON registry or Firestore-managed sources.
  */
 async function deriveAttributesFromProducts(): Promise<AttributeDefinition[]> {
+  // [LP-phase2b-003-REMEDIATION]: Block auto-creation from products
+  console.warn('⚠️ [deriveAttributesFromProducts] DISABLED for LP-phase2b-003 remediation');
+  console.warn('   Attributes must be explicitly defined in attributeRegistry.json');
+  console.warn('   To re-enable auto-derivation, set ALLOW_DERIVE_FROM_PRODUCTS=true in env');
+  
+  const allowDerive = process.env.ALLOW_DERIVE_FROM_PRODUCTS === 'true';
+  if (!allowDerive) {
+    return [];
+  }
+
   const db = admin.firestore();
   const derived: Map<string, AttributeDefinition> = new Map();
 
@@ -253,7 +267,7 @@ async function deriveAttributesFromProducts(): Promise<AttributeDefinition[]> {
  * Main sync function - loads registry and upserts to Firestore
  */
 // LP-1.1.0: Add dryRun parameter (default false for CLI, apiApp.ts defaults true)
-export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResult> {
+export async function runSyncAttributeRegistry(dryRun = false, forceOverwrite = false): Promise<SyncResult> {
   const result: SyncResult = {
     created: 0,
     updated: 0,
@@ -308,6 +322,13 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
 
   // Process each attribute
   for (const attr of registry) {
+    // Skip deprecated attributes (they should not be synced back)
+    if (attr.status === 'deprecated') {
+      result.skipped++;
+      console.log(`  [SKIP] Deprecated attribute (will not overwrite): ${attr.attribute_id}`);
+      continue;
+    }
+
     // Ensure we write to settings/attributes/keys/{attribute_id}
     const docRef = db.doc(`settings/attributes/keys/${attr.attribute_id}`);
     
@@ -328,7 +349,9 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
         continue;
       }
 
-      // LP-service-account-ropi-deploy-1.0.0: Build payload with sync metadata & definition_version
+      // LP-phase2b-003-REMEDIATION: Non-destructive upsert
+      // On update: preserve user-edited fields unless force=true
+      // Key protected fields: category, required_for_completion, required_for_export
       const payload = {
         ...attr,
         definition_version: registryVersion,
@@ -339,6 +362,27 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
       };
       
       if (existingDoc.exists) {
+        const existingData = existingDoc.data();
+        
+        // If not forcing overwrite, preserve user-customized fields from Firestore
+        if (!forceOverwrite && existingData) {
+          // Preserve: category (if user-set), required_for_completion (if user-set)
+          if (existingData.category && existingData.category !== attr.category) {
+            console.log(`    ⚠️ Preserving user-edited category for ${attr.attribute_id}: "${existingData.category}" (would be "${attr.category}")`);
+            payload.category = existingData.category;
+          }
+          if (existingData.required_for_completion !== undefined && 
+              existingData.required_for_completion !== attr.required_for_completion) {
+            console.log(`    ⚠️ Preserving user-edited required_for_completion for ${attr.attribute_id}: ${existingData.required_for_completion}`);
+            payload.required_for_completion = existingData.required_for_completion;
+          }
+          if (existingData.required_for_export !== undefined && 
+              existingData.required_for_export !== attr.required_for_export) {
+            console.log(`    ⚠️ Preserving user-edited required_for_export for ${attr.attribute_id}: ${existingData.required_for_export}`);
+            payload.required_for_export = existingData.required_for_export;
+          }
+        }
+        
         // Update existing attribute (merge to preserve any local customizations)
         await docRef.set(payload, { merge: true });
         
@@ -387,6 +431,7 @@ export async function runSyncAttributeRegistry(dryRun = false): Promise<SyncResu
         lastSyncedBy: process.env.SYNC_CALLER || 'system',
         totalAttributes: registry.length,
         dryRun: false,
+        forceOverwrite: forceOverwrite,
       }, { merge: true });
       console.log('✅ Wrote settings/attributesMeta');
     } else {

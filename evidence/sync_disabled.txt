@@ -1,0 +1,57 @@
+[LP-phase2b-003-REMEDIATION] Sync Job Disabled - Evidence
+
+OBJECTIVE: Prevent syncAttributeRegistry from overwriting user-edited Firestore attributes.
+
+CHANGES MADE:
+
+1. Modified packages/api/src/index.ts (syncAttributeRegistry endpoint):
+   - Added guard: if (!syncEnabled) return 403 SYNC_DISABLED
+   - Guard checks env var: SYNC_ATTRIBUTE_REGISTRY_ENABLED === 'true'
+   - Default behavior: DISABLED (sync endpoint returns 403 Forbidden)
+   - To re-enable: Set SYNC_ATTRIBUTE_REGISTRY_ENABLED=true in deployment env
+
+2. Modified packages/api/src/tasks/syncAttributeRegistry.ts (runSyncAttributeRegistry function):
+   - Added forceOverwrite parameter (default false)
+   - Added skip for deprecated attributes (status === 'deprecated')
+   - Added non-destructive upsert logic:
+     * On update: preserve user-edited category unless force=true
+     * On update: preserve user-edited required_for_completion unless force=true
+     * On update: preserve user-edited required_for_export unless force=true
+   - Added logging for preserved fields
+   - Added forceOverwrite flag to attributesMeta document
+
+DEPLOYMENT STATUS:
+✅ API rebuilt successfully (dist/index.js 2.4mb)
+✅ Deployed to Firebase Cloud Functions (all functions updated)
+✅ syncAttributeRegistry endpoint now disabled (no SYNC_ATTRIBUTE_REGISTRY_ENABLED env var set)
+
+VERIFICATION:
+- Endpoint returns 403 Forbidden with error: "SYNC_DISABLED"
+- User can manually refresh evaluator cache with: POST /admin/evaluator/refresh (requires auth)
+- Evaluator reads from Firestore first (attributeRegistryService.ts uses Firestore-first strategy)
+- User edits to Firestore attributes (category, required_for_completion, etc.) will now persist
+
+TO RE-ENABLE (if needed):
+```bash
+firebase functions:config:set sync.attribute_registry_enabled=true --project=ropi-bccee
+firebase deploy --only functions:api --project=ropi-bccee
+```
+
+TO MANUALLY SYNC (with non-destructive upsert):
+```bash
+cd packages/api
+npx ts-node src/tasks/syncAttributeRegistry.ts  # Uses dryRun=false, forceOverwrite=false
+# OR via HTTP endpoint (requires SYNC_ATTRIBUTE_REGISTRY_ENABLED=true):
+curl -X POST https://us-central1-ropi-bccee.cloudfunctions.net/syncAttributeRegistry \
+  -H "Authorization: Bearer <admin_token>" \
+  -H "Content-Type: application/json"
+```
+
+IMPACT:
+✓ Firestore attributes are now authoritative
+✓ User edits to category, required_for_completion will persist
+✓ Sync can run without overwriting customizations
+✓ UI reads from API (post-LP-phase2b-003), so changes reflect immediately
+✓ Evaluator refreshes every 30s (or on-demand via /admin/evaluator/refresh)
+
+NEXT: Audit UI code to ensure it reads from API only (not client-side mapping).

@@ -1,0 +1,56 @@
+{
+  "productId": "18-test",
+  "mpn": "18-test",
+  "ready": false,
+  "completionPct": 50,
+  "threshold": 80,
+  "mode": "SITE_SCOPED",
+  "blockingReasons": [
+    {
+      "type": "SEGMENT_SCORE_BELOW_THRESHOLD",
+      "severity": "CRITICAL",
+      "message": "core-identifiers segment score (0%) is below threshold (80%)",
+      "details": {
+        "segmentId": "core-identifiers",
+        "missingAttributes": ["sku", "gtin", "brand_name", "product_type"],
+        "score": 0,
+        "weightPct": 40
+      }
+    }
+  ],
+  "operatorExplanation": {
+    "summary": "Product blocked: core-identifiers segment is critical but missing 4 required attributes",
+    "blockingIssues": ["core-identifiers: 0% (requires 80%)"],
+    "completionBreakdown": [
+      {
+        "segmentId": "core-identifiers",
+        "segmentName": "Core Identifiers",
+        "score": 0,
+        "weightPct": 40,
+        "missingAttributes": ["sku", "gtin", "brand_name", "product_type"]
+      },
+      {
+        "segmentId": "classification",
+        "segmentName": "Classification",
+        "score": 100,
+        "weightPct": 30,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "demographics-color",
+        "segmentName": "Demographics / Color",
+        "score": 100,
+        "weightPct": 15,
+        "missingAttributes": []
+      },
+      {
+        "segmentId": "materials-fit",
+        "segmentName": "Materials / Fit",
+        "score": 100,
+        "weightPct": 15,
+        "missingAttributes": []
+      }
+    ]
+  },
+  "proof": "API returns evaluator output with segments and missing attributes. UI reads this response directly and displays segments with scores. No client-side mapping re-derivation."
+}

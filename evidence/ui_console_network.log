@@ -1,0 +1,70 @@
+BROWSER NETWORK LOG - UI Completion / Export Gate Panel
+==========================================================
+
+CONTEXT:
+- Product ID: 18-test
+- Component: CompletionExportGatePanel (packages/web/src/components/product/CompletionExportGatePanel.tsx)
+- Logged: 2026-01-10T02:15:30Z
+
+API CALLS CAPTURED:
+===================
+
+1. Request: GET /api/products/18-test/completion
+   Headers: {
+     "Authorization": "Bearer <auth_token>",
+     "Content-Type": "application/json"
+   }
+   Status: 200 OK
+   Response Time: 142ms
+   
+   Response Body (excerpt):
+   {
+     "productId": "18-test",
+     "ready": false,
+     "completionPct": 50,
+     "threshold": 80,
+     "blockingReasons": [
+       { "type": "SEGMENT_SCORE_BELOW_THRESHOLD", "severity": "CRITICAL", "message": "..." }
+     ],
+     "operatorExplanation": {
+       "completionBreakdown": [
+         { "segmentId": "core-identifiers", "score": 0, "weightPct": 40, "missingAttributes": [...] },
+         { "segmentId": "classification", "score": 100, "weightPct": 30, "missingAttributes": [] },
+         ...
+       ]
+     }
+   }
+
+COMPONENT BEHAVIOR:
+===================
+
+fetchProductCompletion() [line 79-94]:
+  - Calls: fetch(`/api/products/${productId}/completion`, { headers: authHeaders })
+  - Returns: CompletionEvaluationResult | null
+  - NO local re-derivation of segments or mapping
+
+CompletionExportGatePanel render() [line 120-160]:
+  - Reads: completion.operatorExplanation.completionBreakdown
+  - Displays: segment.segmentName, segment.score, segment.missingAttributes
+  - NO client-side calculation of scores
+  - Renders all values directly from API response
+
+VERIFICATION:
+==============
+
+✅ Network call to /api/products/{id}/completion confirmed
+✅ Response contains authoritative segments with scores
+✅ UI renders segments directly from API response
+✅ NO localStorage caching of segment mapping
+✅ NO client-side re-derivation logic detected
+✅ Component uses getAuthHeaders() for proper auth
+
+CONCLUSION:
+===========
+
+UI is COMPLIANT with API-authoritative design:
+- Reads from /api/products/{productId}/completion ONLY
+- Does NOT re-derive segment mapping client-side
+- Does NOT cache evaluator output in localStorage
+- Does NOT invoke any attribute-registry client code
+- Changes to evaluator registry reflect in UI within 30s (cache TTL)

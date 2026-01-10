@@ -97,6 +97,19 @@ export const syncAttributeRegistry = functions.https.onRequest(async (req, res) 
     return;
   }
 
+  // [LP-phase2b-003-REMEDIATION] PAUSE: Sync job is disabled to prevent overwrites
+  // of user-edited Firestore attributes. Use POST /admin/evaluator/refresh instead
+  // to refresh the evaluator cache with current Firestore registry.
+  // To re-enable, set SYNC_ATTRIBUTE_REGISTRY_ENABLED=true in deployment env.
+  const syncEnabled = process.env.SYNC_ATTRIBUTE_REGISTRY_ENABLED === 'true';
+  if (!syncEnabled) {
+    res.status(403).json({
+      error: 'SYNC_DISABLED',
+      message: 'Attribute registry sync is currently paused to prevent overwrites. Use /admin/evaluator/refresh instead.'
+    });
+    return;
+  }
+
   await requireAdmin(req, res, async () => {
     try {
       const result = await runSyncAttributeRegistry();

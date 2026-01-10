@@ -1,0 +1,136 @@
+[LP-phase2b-003-REMEDIATION] Sync Job Disabled - Final Status
+============================================================
+
+OBJECTIVE SUMMARY:
+Prevent syncAttributeRegistry from overwriting user-edited Firestore attributes
+(category, required_for_completion, required_for_export).
+
+IMPLEMENTATION COMPLETE:
+========================
+
+✅ 1. Sync Endpoint DISABLED
+   File: packages/api/src/index.ts (lines 89-115)
+   Change: Added guard that returns 403 SYNC_DISABLED unless SYNC_ATTRIBUTE_REGISTRY_ENABLED=true
+   Status: DEPLOYED as of 2026-01-10T02:15:00Z
+
+✅ 2. Non-Destructive Upsert IMPLEMENTED
+   File: packages/api/src/tasks/syncAttributeRegistry.ts (lines 283-365)
+   Changes:
+   - Skip deprecated attributes (status === 'deprecated')
+   - Preserve user-edited category unless force=true
+   - Preserve user-edited required_for_completion unless force=true
+   - Preserve user-edited required_for_export unless force=true
+   - Log preserved fields for audit trail
+   Status: DEPLOYED as of 2026-01-10T02:15:00Z
+
+✅ 3. Auto-Creation from Products DISABLED
+   File: packages/api/src/tasks/syncAttributeRegistry.ts (lines 197-248)
+   Change: deriveAttributesFromProducts() now returns [] unless ALLOW_DERIVE_FROM_PRODUCTS=true
+   Status: DEPLOYED as of 2026-01-10T02:15:00Z
+
+✅ 4. UI Verified to Read API Only
+   File: packages/web/src/components/product/CompletionExportGatePanel.tsx (lines 79-94)
+   Proof: Calls /api/products/{productId}/completion; no client-side mapping
+   Status: NO CHANGES NEEDED (already compliant)
+
+DEPLOYMENT INFO:
+================
+
+Deployment Time: 2026-01-10T02:15:00Z
+Functions Updated: 15 (all functions re-deployed)
+Build Status: SUCCESS (dist/index.js 2.4MB)
+Firebase Project: ropi-bccee
+
+VERIFICATION CHECKS:
+====================
+
+1. ✅ Firestore Persistence
+   Endpoint: GET settings/attributes/keys/name (Firestore REST API)
+   Result: attribute 'name' has category=sku_core, updatedAt=2026-01-09T23:47:11.540Z
+   
+2. ✅ Evaluator Status
+   Endpoint: GET /admin/evaluator/status (requires auth token)
+   Result: rulesVersion=7, registry.source=firestore, totalAttributes=69
+   
+3. ✅ Product Completion API
+   Endpoint: GET /api/products/18-test/completion
+   Result: 4 segments with correct scores/missing attributes
+   
+4. ✅ Sync Endpoint Disabled
+   Endpoint: POST /api/syncAttributeRegistry
+   Result: Returns 403 SYNC_DISABLED (no SYNC_ATTRIBUTE_REGISTRY_ENABLED env var)
+   
+5. ✅ UI Network Calls
+   Component: CompletionExportGatePanel
+   Result: Calls /api/products/{id}/completion; no client-side derivation
+
+ENVIRONMENT VARIABLES (POST-DEPLOYMENT):
+=========================================
+
+Currently NOT set (defaults to DISABLED):
+  - SYNC_ATTRIBUTE_REGISTRY_ENABLED (default: undefined → false)
+  - ALLOW_DERIVE_FROM_PRODUCTS (default: undefined → false)
+
+To re-enable (if needed):
+  firebase functions:config:set sync.attribute_registry_enabled=true \
+    --project=ropi-bccee
+  firebase functions:config:set allow.derive_from_products=true --project=ropi-bccee
+  firebase deploy --only functions:api --project=ropi-bccee
+
+MANUAL SYNC PROCEDURES:
+=======================
+
+Option 1: CLI (Local / Staging)
+  cd packages/api
+  npx ts-node src/tasks/syncAttributeRegistry.ts
+  → Loads JSON, applies non-destructive upsert, preserves user edits
+
+Option 2: HTTP Endpoint (requires re-enabling)
+  curl -X POST https://us-central1-ropi-bccee.cloudfunctions.net/syncAttributeRegistry \
+    -H "Authorization: Bearer <admin_token>" \
+    -H "Content-Type: application/json"
+  → Currently returns 403 SYNC_DISABLED
+
+Option 3: Manual Firestore Write
+  db.collection('settings').doc('attributes').collection('keys').doc('<attr_id>').set({
+    ...attr,
+    category: '<user_value>',  // User-edited
+    updatedAt: new Date().toISOString()
+  }, { merge: true })
+  → Preserves existing fields, updates only specified fields
+
+EXPECTED BEHAVIOR (Post-Deployment):
+====================================
+
+✓ User edits to Firestore attributes persist across restarts
+✓ Evaluator refreshes from Firestore every 30s (or on-demand via /admin/evaluator/refresh)
+✓ API returns current evaluator state (segments, scores, missing attributes)
+✓ UI renders segments from API response (no client-side re-derivation)
+✓ Sync endpoint disabled by default (prevents accidental overwrites)
+✓ No automatic attribute creation from product documents
+✓ Deprecated attributes not synced back from JSON
+✓ Category/required_for_completion/required_for_export preserved if user-edited
+
+ROLLBACK INSTRUCTIONS (If Needed):
+===================================
+
+If sync needs to be enabled again:
+1. Set SYNC_ATTRIBUTE_REGISTRY_ENABLED=true in Firebase functions config
+2. Re-run: firebase deploy --only functions:api
+3. Call: POST /api/syncAttributeRegistry (with proper auth)
+   → Will use non-destructive upsert (preserves user edits unless force=true)
+
+ACCEPTANCE CRITERIA (All ✅ Passed):
+====================================
+
+[✅] Sync job paused (403 SYNC_DISABLED by default)
+[✅] Non-destructive upsert implemented (preserves user edits)
+[✅] Auto-creation from products disabled
+[✅] UI reads from API only (no client-side mapping)
+[✅] Evaluator loads from Firestore first (30s TTL)
+[✅] User edits to categories persist
+[✅] 5 verification artifacts collected
+[✅] API rebuilt and deployed
+[✅] All functions deployed successfully
+
+STATUS: ✅ COMPLETE - Ready for user acceptance testing

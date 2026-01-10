@@ -1,0 +1,27 @@
+{
+  "status": "OK",
+  "timestamp": "2026-01-10T02:15:00Z",
+  "evaluator": {
+    "rulesVersion": "7",
+    "registry": {
+      "source": "firestore",
+      "path": "settings/attributes/keys",
+      "totalAttributes": 69,
+      "lastLoadedAt": "2026-01-10T02:15:00Z",
+      "cacheExpiresAt": "2026-01-10T02:15:30Z"
+    },
+    "evaluationTimestamp": "2026-01-10T02:15:00Z"
+  },
+  "firestore": {
+    "attributesMeta": {
+      "registry_version": "unknown",
+      "registry_source": "json",
+      "lastSyncedAt": "2026-01-09T23:47:11Z",
+      "totalAttributes": 69,
+      "dryRun": false,
+      "forceOverwrite": false
+    },
+    "attributes_keys_collection_size": 69
+  },
+  "note": "Firestore-first registry loading enabled. Sync endpoint disabled (returns 403 SYNC_DISABLED unless SYNC_ATTRIBUTE_REGISTRY_ENABLED=true). Cache TTL: 30 seconds. Evaluator reads from settings/attributes/keys on every 30s refresh."
+}

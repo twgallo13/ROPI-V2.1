@@ -1,0 +1,29 @@
+{
+  "segmentId": "core-identifiers",
+  "segmentName": "Product Core",
+  "score": 0,
+  "missingAttributes": [
+    "category",
+    "class",
+    "name",
+    "sku"
+  ]
+}
+{
+  "segmentId": "classification",
+  "segmentName": "Attribute Details",
+  "score": 100,
+  "missingAttributes": []
+}
+{
+  "segmentId": "demographics-color",
+  "segmentName": "AI Describe",
+  "score": 100,
+  "missingAttributes": []
+}
+{
+  "segmentId": "materials-fit",
+  "segmentName": "Technical",
+  "score": 100,
+  "missingAttributes": []
+}

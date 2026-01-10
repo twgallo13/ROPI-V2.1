@@ -1389,6 +1389,7 @@
       "description": "Product department (department / category grouping). Added to support Smart Rules targeting.",
       "data_type": "string",
       "import": true,
+      "status": "deprecated",
       "exportable": true,
       "requiredForExport": false,
       "internalOnly": false,

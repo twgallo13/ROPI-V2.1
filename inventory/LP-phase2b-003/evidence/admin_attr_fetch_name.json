@@ -1,0 +1,118 @@
+{
+  "name": "projects/ropi-bccee/databases/(default)/documents/settings/attributes/keys/name",
+  "fields": {
+    "import_required": {
+      "booleanValue": false
+    },
+    "export": {
+      "booleanValue": true
+    },
+    "source": {
+      "stringValue": "json"
+    },
+    "label": {
+      "stringValue": "Product Name"
+    },
+    "syncedBy": {
+      "stringValue": "system"
+    },
+    "internalOnly": {
+      "booleanValue": false
+    },
+    "systemFlag": {
+      "booleanValue": false
+    },
+    "importerColumns": {
+      "arrayValue": {
+        "values": [
+          {
+            "stringValue": "name"
+          }
+        ]
+      }
+    },
+    "requiredForExport": {
+      "booleanValue": true
+    },
+    "allowed_values": {
+      "arrayValue": {}
+    },
+    "canonicalPath": {
+      "stringValue": "sku_core.name"
+    },
+    "bulkEditable": {
+      "booleanValue": false
+    },
+    "aliases": {
+      "arrayValue": {}
+    },
+    "updatedBy": {
+      "stringValue": "system"
+    },
+    "required_for_completion": {
+      "booleanValue": true
+    },
+    "syncedAt": {
+      "stringValue": "2026-01-02T03:06:39.517Z"
+    },
+    "definition_version": {
+      "stringValue": "1.1.0"
+    },
+    "status": {
+      "stringValue": "active"
+    },
+    "external_header": {
+      "stringValue": "Name"
+    },
+    "version": {
+      "stringValue": "1.1.0"
+    },
+    "category": {
+      "stringValue": "sku_core"
+    },
+    "synonyms": {
+      "arrayValue": {
+        "values": [
+          {
+            "stringValue": "Name"
+          }
+        ]
+      }
+    },
+    "attribute_id": {
+      "stringValue": "name"
+    },
+    "dataType": {
+      "stringValue": "text"
+    },
+    "required": {
+      "booleanValue": true
+    },
+    "required_for_export": {
+      "booleanValue": true
+    },
+    "original_id": {
+      "stringValue": "name"
+    },
+    "ai_usage_notes": {
+      "stringValue": ""
+    },
+    "exportable": {
+      "booleanValue": true
+    },
+    "description": {
+      "stringValue": "Product name"
+    },
+    "updatedAt": {
+      "timestampValue": "2026-01-09T23:47:11.540Z"
+    },
+    "data_type": {
+      "stringValue": "string"
+    },
+    "canonical": {
+      "booleanValue": true
+    }
+  },
+  "createTime": "2025-11-21T20:45:06.746016Z",
+  "updateTime": "2026-01-09T23:47:11.643267Z"
+}
