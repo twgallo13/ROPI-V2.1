@@ -23,6 +23,13 @@
   border-bottom: 1px solid var(--color-border, #e5e7eb);
 }
 
+/* Container that matches main content width */
+.product-header__container {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl, 1.5rem);
+}
+
 /* ============================================
    LAYOUT: THREE ROWS (Identity, Merch, Operations)
    ============================================ */
@@ -30,7 +37,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 16px 14px;
+  padding: 12px 0 14px;
 }
 
 .product-header__row {
@@ -42,8 +49,7 @@
 
 .product-header__row--identity {
   padding-bottom: 4px;
-  align-items: flex-start;
-  gap: 20px;
+  align-items: center;
 }
 
 .product-header__row--merch {
@@ -53,25 +59,28 @@
 .product-header__row--operations {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: 32px;
   width: 100%;
 }
 
 /* ============================================
-   IDENTITY LINE (MPN + STATUS + ACTIONS)
+   IDENTITY LINE (MPN + NAME + BADGE | ACTIONS)
    ============================================ */
 .product-header__identity-left {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
-  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
 .product-header__product-name {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--color-text-secondary, #6b7280);
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-header__spacer {
@@ -82,7 +91,8 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .product-header__back-btn {
@@ -239,26 +249,27 @@
 .product-header__ops-left {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
+  width: 320px;
 }
 
 .product-header__inventory-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(68px, auto));
-  gap: 4px 10px;
+  gap: 2px 10px;
   align-items: end;
   width: fit-content;
 }
 
 .product-header__inv-label {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--color-text-tertiary, #9ca3af);
   font-weight: 500;
 }
 
 .product-header__inv-value {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--color-text-primary, #1f2937);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -268,7 +279,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-shrink: 0;
+  flex: 1;
 }
 
 .product-header__icon-row {
@@ -277,6 +288,7 @@
   gap: 10px;
   flex-wrap: nowrap;
   justify-content: flex-end;
+  white-space: nowrap;
 }
 
 .product-header__active-dot {

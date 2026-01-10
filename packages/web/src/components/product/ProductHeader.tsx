@@ -155,121 +155,121 @@ function ProductHeader({
         </div>
       )}
 
-      <div className="product-header__rows">
-        {/* LINE 1 — Identity (Hero) */}
-        <div className="product-header__row product-header__row--identity">
-          <div className="product-header__identity-left">
-            <div className="product-header__mpn-line">
+      <div className="product-header__container">
+        <div className="product-header__rows">
+          {/* LINE 1 — Identity + Actions (Single Baseline) */}
+          <div className="product-header__row product-header__row--identity">
+            <div className="product-header__identity-left">
               <span className="product-header__label product-header__label--inline">MPN</span>
               <span className="product-header__value product-header__value--mono product-header__value--mpn">
                 {product.mpn || product.sku || '—'}
+              </span>
+              <span className="product-header__product-name">
+                {product.name || '—'}
               </span>
               <span className={`product-header__badge ${status.className}`} role="status">
                 {status.label}
               </span>
             </div>
-            <span className="product-header__product-name">
-              {product.name || '—'}
-            </span>
-          </div>
 
-          <div className="product-header__spacer" />
+            <div className="product-header__spacer" />
 
-          <div className="product-header__actions">
-            <button 
-              onClick={onBack} 
-              className="product-header__back-btn"
-              aria-label="Back to Products List"
-            >
-              ← Back to Products
-            </button>
-            <button 
-              onClick={onSave}
-              className="product-header__btn product-header__btn--secondary"
-            >
-              Save Draft
-            </button>
-            <button 
-              onClick={onPublish}
-              className="product-header__btn product-header__btn--primary"
-              disabled={publishDisabled}
-              title={publishTitle}
-              data-testid="publish-button"
-            >
-              {publishLabel}
-            </button>
-          </div>
-        </div>
-
-        {/* LINE 2 — Merchandising Context */}
-        <div className="product-header__row product-header__row--merch">
-          <div className="product-header__merch-stack">
-            <div className="product-header__merch-line">
-              <span className="product-header__label">RIC Color</span>
-              <span className="product-header__value product-header__value--muted">
-                {product.attributes?.rics_color || '—'}
-              </span>
-            </div>
-            <div className="product-header__merch-line">
-              <span className="product-header__label">RIC Category</span>
-              <span className="product-header__value product-header__value--muted">
-                {product.attributes?.rics_category || '—'}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* LINE 3 — Operational Health */}
-        <div className="product-header__row product-header__row--operations">
-          <div className="product-header__ops-left">
-            <div className="product-header__last">
-              <span className="product-header__label">Last Received</span>
-              <span className="product-header__value product-header__value--last" data-testid="header-last-received">
-                {lastDisplay}
-              </span>
-            </div>
-
-            <div className="product-header__inventory-grid">
-              <span className="product-header__inv-label">Total Inventory</span>
-              <span className="product-header__inv-label">WHS</span>
-              <span className="product-header__inv-label">Store</span>
-              <span className="product-header__inv-value">{formatNumber(product.total_inv)}</span>
-              <span className="product-header__inv-value">{formatNumber(product.warehouse_inv)}</span>
-              <span className="product-header__inv-value">{formatNumber(product.store_inv)}</span>
-            </div>
-          </div>
-
-          <div className="product-header__ops-right">
-            <div className="product-header__icon-row">
-              {(product.websites ?? []).length > 0 ? (
-                (product.websites ?? []).map(website => (
-                  <span 
-                    key={website} 
-                    className="product-header__website-chip"
-                    title={website}
-                  >
-                    {getWebsiteBadgeText(website)}
-                  </span>
-                ))
-              ) : (
-                <span className="product-header__no-websites">No websites</span>
-              )}
-
-              <span 
-                className={`product-header__active-dot ${isActive ? 'active' : 'inactive'}`}
-                title={`Status: ${isActive ? 'Active' : 'Inactive'}`}
-                aria-label={`Status: ${isActive ? 'Active' : 'Inactive'}`}
-                role="status"
-              />
-
-              <span 
-                className={`product-header__media-status ${mediaStatus.className}`}
-                title={mediaStatus.icon === '●' ? 'Media present' : 'No media uploaded'}
-                role="status"
-                aria-label={mediaStatus.icon === '●' ? 'Media present' : 'No media uploaded'}
+            <div className="product-header__actions">
+              <button 
+                onClick={onBack} 
+                className="product-header__back-btn"
+                aria-label="Back to Products List"
               >
-                {mediaStatus.icon}
-              </span>
+                ← Back to Products
+              </button>
+              <button 
+                onClick={onSave}
+                className="product-header__btn product-header__btn--secondary"
+              >
+                Save Draft
+              </button>
+              <button 
+                onClick={onPublish}
+                className="product-header__btn product-header__btn--primary"
+                disabled={publishDisabled}
+                title={publishTitle}
+                data-testid="publish-button"
+              >
+                {publishLabel}
+              </button>
+            </div>
+          </div>
+
+          {/* LINE 2 — Merchandising Context */}
+          <div className="product-header__row product-header__row--merch">
+            <div className="product-header__merch-stack">
+              <div className="product-header__merch-line">
+                <span className="product-header__label">RIC Color</span>
+                <span className="product-header__value product-header__value--muted">
+                  {product.attributes?.rics_color || '—'}
+                </span>
+              </div>
+              <div className="product-header__merch-line">
+                <span className="product-header__label">RIC Category</span>
+                <span className="product-header__value product-header__value--muted">
+                  {product.attributes?.rics_category || '—'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* LINE 3 — Operational Health (Two Columns) */}
+          <div className="product-header__row product-header__row--operations">
+            <div className="product-header__ops-left">
+              <div className="product-header__last">
+                <span className="product-header__label">Last Received</span>
+                <span className="product-header__value product-header__value--last" data-testid="header-last-received">
+                  {lastDisplay}
+                </span>
+              </div>
+
+              <div className="product-header__inventory-grid">
+                <span className="product-header__inv-label">Total Inventory</span>
+                <span className="product-header__inv-label">WHS</span>
+                <span className="product-header__inv-label">Store</span>
+                <span className="product-header__inv-value">{formatNumber(product.total_inv)}</span>
+                <span className="product-header__inv-value">{formatNumber(product.warehouse_inv)}</span>
+                <span className="product-header__inv-value">{formatNumber(product.store_inv)}</span>
+              </div>
+            </div>
+
+            <div className="product-header__ops-right">
+              <div className="product-header__icon-row">
+                {(product.websites ?? []).length > 0 ? (
+                  (product.websites ?? []).map(website => (
+                    <span 
+                      key={website} 
+                      className="product-header__website-chip"
+                      title={website}
+                    >
+                      {getWebsiteBadgeText(website)}
+                    </span>
+                  ))
+                ) : (
+                  <span className="product-header__no-websites">No websites</span>
+                )}
+
+                <span 
+                  className={`product-header__active-dot ${isActive ? 'active' : 'inactive'}`}
+                  title={`Status: ${isActive ? 'Active' : 'Inactive'}`}
+                  aria-label={`Status: ${isActive ? 'Active' : 'Inactive'}`}
+                  role="status"
+                />
+
+                <span 
+                  className={`product-header__media-status ${mediaStatus.className}`}
+                  title={mediaStatus.icon === '●' ? 'Media present' : 'No media uploaded'}
+                  role="status"
+                  aria-label={mediaStatus.icon === '●' ? 'Media present' : 'No media uploaded'}
+                >
+                  {mediaStatus.icon}
+                </span>
+              </div>
             </div>
           </div>
         </div>
