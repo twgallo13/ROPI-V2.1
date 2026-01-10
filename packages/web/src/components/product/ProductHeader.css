@@ -4,9 +4,10 @@
  * Sticky header bar styles for Tab 0 (Product Header).
  * All fields are read-only metadata from external systems.
  * 
- * Layout Structure:
- * - Zone 1: Utility Bar (Page Actions) — Navigation & publish controls
- * - Zone 2: Product Context — Grouped metadata (Identity | Operations | Publishing)
+ * Layout Structure (3 lines):
+ * - Line 1: Identity (MPN + workflow status + actions)
+ * - Line 2: Merchandising context (RIC Color, RIC Category)
+ * - Line 3: Operational health (Last Received + Inventory grid, icon row)
  * 
  * Styling Pass: Minimal decoration, typography hierarchy, 12-16px vertical rhythm
  */
@@ -23,25 +24,53 @@
 }
 
 /* ============================================
-   ZONE 1: UTILITY BAR (Page Actions)
+   LAYOUT: THREE ROWS (Identity, Merch, Operations)
    ============================================ */
-.product-header__utility-bar {
-  background: var(--color-background, #ffffff);
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+.product-header__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px 14px;
 }
 
-/* ============================================
-   NAVIGATION ROW
-   ============================================ */
-.product-header__nav {
+.product-header__row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
+  gap: 16px;
+}
+
+.product-header__row--identity {
+  padding-bottom: 4px;
+}
+
+.product-header__row--merch {
+  align-items: flex-start;
+}
+
+.product-header__row--operations {
+  align-items: flex-start;
+}
+
+/* ============================================
+   IDENTITY LINE (MPN + STATUS + ACTIONS)
+   ============================================ */
+.product-header__identity-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.product-header__mpn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .product-header__back-btn {
-  padding: 8px 16px;
+  padding: 8px 14px;
   background: var(--color-background, #ffffff);
   border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 6px;
@@ -50,13 +79,9 @@
   cursor: pointer;
 }
 
-.product-header__back-btn:hover {
-  background: var(--color-background-hover, #f9fafb);
-}
-
 .product-header__actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .product-header__btn {
@@ -74,17 +99,9 @@
   border: 1px solid var(--color-border, #e5e7eb);
 }
 
-.product-header__btn--secondary:hover {
-  background: var(--color-background-hover, #f9fafb);
-}
-
 .product-header__btn--primary {
   background: var(--color-primary, #3b82f6);
   color: white;
-}
-
-.product-header__btn--primary:hover:not(:disabled) {
-  background: var(--color-primary-dark, #2563eb);
 }
 
 .product-header__btn--primary:disabled {
@@ -93,93 +110,20 @@
 }
 
 /* ============================================
-   ZONE 2: PRODUCT CONTEXT (Metadata)
+   FIELD TYPOGRAPHY
    ============================================ */
-.product-header__context {
-  background: var(--color-background, #ffffff);
-}
-
-.product-header__metadata-bar {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  padding: 0;
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-/* ============================================
-   METADATA GROUPS (Spacing-based hierarchy)
-   ============================================ */
-.product-header__group {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 16px 24px;
-  border-right: 1px solid var(--color-border, #e5e7eb);
-}
-
-.product-header__group:last-child {
-  flex: 1;
-  border-right: none;
-}
-
-.product-header__metadata-bar::-webkit-scrollbar {
-  height: 4px;
-}
-
-.product-header__metadata-bar::-webkit-scrollbar-thumb {
-  background: var(--color-border, #e5e7eb);
-  border-radius: 2px;
-}
-
-/* ============================================
-   FIELD CONTAINERS
-   ============================================ */
-.product-header__field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: fit-content;
-}
-
-/* MPN Field - Primary emphasis (largest, bold) */
-.product-header__field--mpn .product-header__value {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--color-text-primary, #111827);
-}
-
-/* RIC Category and RIC Color - Secondary muted text */
-.product-header__field--secondary {
-  font-size: 0.8125rem;
-}
-
-.product-header__field--secondary .product-header__label {
-  font-size: 0.6875rem;
-  color: var(--color-text-tertiary, #9ca3af);
-}
-
-.product-header__field--secondary .product-header__value {
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary, #6b7280);
-}
-
-.product-header__field--inventory {
-  min-width: 180px;
-}
-
-.product-header__field--websites {
-  flex: 1;
-  min-width: 150px;
-}
-
 .product-header__label {
   font-size: 0.6875rem;
   color: var(--color-text-tertiary, #9ca3af);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.product-header__label--inline {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.75rem;
 }
 
 .product-header__value {
@@ -190,15 +134,28 @@
 
 .product-header__value--mono {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.875rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #111827);
   background: transparent;
   padding: 0;
   border: none;
 }
 
+.product-header__value--mpn {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
 .product-header__value--muted {
   color: var(--color-text-secondary, #6b7280);
   font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+.product-header__value--last {
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 /* ============================================
@@ -242,29 +199,77 @@
 }
 
 /* ============================================
-   INVENTORY GROUP
+   MERCH CONTEXT (RIC COLOR/CATEGORY)
    ============================================ */
-.product-header__inventory-group {
+.product-header__merch-stack {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.product-header__inv-item {
+.product-header__merch-line {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.8125rem;
+  gap: 8px;
+  align-items: baseline;
+}
+
+/* ============================================
+   OPERATIONS (LAST RECEIVED + INVENTORY)
+   ============================================ */
+.product-header__ops-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.product-header__inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(72px, 1fr));
+  gap: 4px 12px;
+  align-items: end;
 }
 
 .product-header__inv-label {
+  font-size: 0.75rem;
   color: var(--color-text-tertiary, #9ca3af);
   font-weight: 500;
 }
 
 .product-header__inv-value {
+  font-size: 0.8125rem;
   color: var(--color-text-primary, #1f2937);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+.product-header__ops-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.product-header__icon-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.product-header__active-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #22c55e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-header__active-dot.inactive {
+  background: #ef4444;
 }
 
 /* ============================================
@@ -338,57 +343,40 @@
    RESPONSIVE ADJUSTMENTS
    ============================================ */
 @media (max-width: 768px) {
-  /* Utility bar adjustments */
-  .product-header__nav {
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 12px 16px;
+  .product-header__rows {
+    padding: 12px 14px 14px;
+    gap: 10px;
   }
-  
-  .product-header__back-btn {
-    flex: 1 1 100%;
-    text-align: center;
+
+  .product-header__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
-  
+
+  .product-header__identity-left {
+    width: 100%;
+  }
+
   .product-header__actions {
-    flex: 1;
+    width: 100%;
     justify-content: stretch;
   }
-  
+
   .product-header__btn {
     flex: 1;
   }
-  
-  /* Metadata groups stack vertically */
-  .product-header__metadata-bar {
-    flex-direction: column;
+
+  .product-header__ops-right {
+    width: 100%;
   }
-  
-  .product-header__group {
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 12px 16px;
-    border-right: none;
-    border-bottom: 1px solid var(--color-border, #e5e7eb);
+
+  .product-header__icon-row {
+    justify-content: flex-start;
   }
-  
-  .product-header__group:last-child {
-    border-bottom: none;
-  }
-  
-  .product-header__field--inventory {
-    flex: 1 1 100%;
-  }
-  
-  .product-header__inventory-group {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  
-  /* Media status remains icon-only on mobile */
-  .product-header__media-status {
-    width: 24px;
-    height: 24px;
+
+  .product-header__inventory-grid {
+    grid-template-columns: repeat(3, minmax(64px, 1fr));
   }
 }
 
