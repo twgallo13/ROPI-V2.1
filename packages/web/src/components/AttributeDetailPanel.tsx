@@ -17,7 +17,6 @@ import ValuesManager, {
   valuesToPayload,
 } from './ValuesManager';
 import AuditTab from './AuditTab';
-import Toggle from './Toggle';
 import styles from '../pages/Settings/AttributesConsole.module.css';
 
 export interface AttributeDetailPanelProps {
