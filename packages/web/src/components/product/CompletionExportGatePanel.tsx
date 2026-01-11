@@ -9,9 +9,11 @@
  */
 
 import { useEffect, useState } from 'react';
-import { getAuthHeaders } from '../../lib/authHeaders';
+import { authFetch } from '../../services/authFetch';
 import { GlobalModeCard } from '../export/GlobalModeCard';
 import './CompletionExportGatePanel.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 export interface SegmentScore {
   segmentId: string;
@@ -80,11 +82,8 @@ async function fetchProductCompletion(
   productId: string
 ): Promise<CompletionEvaluationResult | null> {
   try {
-    const authHeaders = await getAuthHeaders();
-    const response = await fetch(`/api/products/${productId}/completion`, {
-      headers: {
-        ...authHeaders,
-      },
+    const response = await authFetch(`${API_BASE}/api/products/${productId}/completion`, {
+      method: 'GET',
     });
 
     if (!response.ok) {

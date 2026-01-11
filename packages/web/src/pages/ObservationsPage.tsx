@@ -5,6 +5,9 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { syncLocalToFirestore } from '../services/observations';
 import { authFetch } from '../services/authFetch';
 import { Observation, ObservationSeverity, ObservationStatus, ObservationCreator } from '../types/observation';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 import { listProductObservations, ProductObservation, useProductObservationSRoT } from '../services/productObservations';
 import { useAuth } from '../hooks/useAuth';
 import { isFirebaseAvailable } from '../firebaseConfig';
@@ -141,7 +144,7 @@ function ObservationsPage() {
   // SRoT resolve: clear product observation (deterministic)
   async function handleResolveProductObservation(productId: string) {
     try {
-      const resp = await authFetch(`/api/products/${productId}/observation`, {
+      const resp = await authFetch(`${API_BASE}/api/products/${productId}/observation`, {
         method: 'DELETE',
       });
       if (!resp.ok) {
@@ -201,7 +204,7 @@ function ObservationsPage() {
         if (newObservation.description) {
           tags.push(`desc:${newObservation.description.substring(0, 200)}`);
         }
-        const resp = await authFetch(`/api/products/${newObservation.productId}/observation`, {
+        const resp = await authFetch(`${API_BASE}/api/products/${newObservation.productId}/observation`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { getAuthHeaders } from '@/lib/authHeaders';
 import './ImportConfirmStep.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 interface ColumnMappingConfig {
   [sourceColumn: string]: string;
 }
@@ -75,7 +77,7 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
       // Call import API
       // LP-ATTR-1.3.1.1: Use relative URL to leverage hosting rewrites (/api/** → api function)
       // This ensures CORS works correctly through same-origin request
-      const response = await fetch('/api/importCSV', {
+      const response = await fetch(`${API_BASE}/api/importCSV`, {
         method: 'POST',
         headers: uploadHeaders,
         body: formData,
@@ -103,7 +105,7 @@ export function ImportConfirmStep({ file, mappings, onImportComplete, onBack }: 
         warningCount: uploadResult.warningCount || 0,
       });
 
-      const processResponse = await fetch('/api/processImportBatch', {
+      const processResponse = await fetch(`${API_BASE}/api/processImportBatch`, {
         method: 'POST',
         headers: {
           ...authHeaders,

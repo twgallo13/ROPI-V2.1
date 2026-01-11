@@ -9,6 +9,8 @@ import { authFetch } from '../../services/authFetch';
 import { useProductObservationSRoT } from '../../services/productObservations';
 import './ObservationsPanel.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 /**
  * Observations Panel - Product Editor Sidebar
  * 
@@ -113,7 +115,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
 
     try {
       // Call the new product observation endpoint with authFetch
-      const response = await authFetch(`/api/products/${productId}/observation`, {
+      const response = await authFetch(`${API_BASE}/api/products/${productId}/observation`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +157,7 @@ function ObservationsPanel({ productId }: ObservationsPanelProps) {
     try {
       if (useSRoT) {
         // SRoT: Clear product observation via DELETE endpoint
-        const resp = await authFetch(`/api/products/${productId}/observation`, {
+        const resp = await authFetch(`${API_BASE}/api/products/${productId}/observation`, {
           method: 'DELETE',
         });
         if (!resp.ok) {

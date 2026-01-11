@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getAuthHeaders } from '../lib/authHeaders';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 /**
  * Blocking reason returned by the completion API
@@ -97,7 +98,7 @@ export interface UseExportCompletionResult {
 async function fetchExportCompletion(): Promise<CompletionEvaluationResult | null> {
   const authHeaders = await getAuthHeaders();
 
-  const response = await fetch('/api/admin/exports/readiness', {
+  const response = await fetch(`${API_BASE}/api/admin/exports/readiness`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

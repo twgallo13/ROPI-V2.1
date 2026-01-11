@@ -10,7 +10,7 @@
 
 import { getAuthHeaders } from './authHeaders';
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 interface ApiFetchOptions extends Omit<RequestInit, 'headers'> {
   headers?: Record<string, string>;

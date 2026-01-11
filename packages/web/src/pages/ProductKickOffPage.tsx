@@ -12,6 +12,8 @@ import { useAttributeRegistry } from '../hooks/useAttributeRegistry';
 import { usePageTitle } from '../hooks/usePageTitle';
 import './ProductKickOffPage.css';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 interface CoreAttributes {
   brand: string;
   name: string; // Product Name
@@ -87,7 +89,7 @@ function ProductKickOffPage() {
 
     try {
       // Send PATCH request to update attributes
-      const response = await authFetch(`/api/products/${mpn}`, {
+      const response = await authFetch(`${API_BASE}/api/products/${mpn}`, {
         method: 'PATCH',
         body: JSON.stringify({ attributes }),
       });

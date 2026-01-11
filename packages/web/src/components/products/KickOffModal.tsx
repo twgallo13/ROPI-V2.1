@@ -8,7 +8,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAttributeRegistry } from '../../hooks/useAttributeRegistry';
+import { authFetch } from '../../services/authFetch';
 import './KickOffModal.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 interface KickOffModalProps {
   isOpen: boolean;
@@ -78,11 +81,8 @@ export function KickOffModal({ isOpen, onClose, mpn }: KickOffModalProps) {
 
     try {
       // Send PATCH request to update attributes
-      const response = await fetch(`/api/products/${mpn}/attributes`, {
+      const response = await authFetch(`${API_BASE}/api/products/${mpn}/attributes`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ attributes }),
       });
 

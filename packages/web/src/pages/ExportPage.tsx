@@ -3,7 +3,8 @@ import PageLayout from '@/components/common/PageLayout';
 import { ExportBlockedModal } from '@/components/export/ExportBlockedModal';
 import { useExportCompletion } from '@/hooks/useExportCompletion';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { getAuthHeaders } from '@/lib/authHeaders';
+import { getAuthHeaders } from '../lib/authHeaders';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 /**
  * Export Manager Page
@@ -45,7 +46,7 @@ function ExportPage() {
       // In GLOBAL mode, send site: 'GLOBAL'; in SITE_SCOPED, send selected site
       const siteValue = exportMode === 'GLOBAL' ? 'GLOBAL' : selectedSite;
 
-      const response = await fetch('/api/admin/exports/dry-run', {
+      const response = await fetch(`${API_BASE}/api/admin/exports/dry-run`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -7,7 +7,9 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { getAuthHeaders } from '../lib/authHeaders';
+import { authFetch } from '../services/authFetch';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 /**
  * Product completion evaluation result from API
@@ -62,14 +64,8 @@ export interface UseProductCompletionResult {
  * Fetch product-level completion from API
  */
 async function fetchProductCompletion(productId: string): Promise<ProductCompletionResult | null> {
-  const authHeaders = await getAuthHeaders();
-
-  const response = await fetch(`/api/products/${productId}/completion`, {
+  const response = await authFetch(`${API_BASE}/api/products/${productId}/completion`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders,
-    },
   });
 
   if (!response.ok) {
