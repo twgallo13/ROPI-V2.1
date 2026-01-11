@@ -194,7 +194,7 @@ export function ProductsTable({
                 />
               </td>
               <td className="products-table__td products-table__td--mpn">
-                <Link to={`/products/${product.id}`} className="products-table__link">
+                <Link to={`/products/${product.mpn || product.id}`} className="products-table__link">
                   {product.mpn || product.sku || '—'}
                 </Link>
               </td>
@@ -202,7 +202,7 @@ export function ProductsTable({
                 {product.brand || '—'}
               </td>
               <td className="products-table__td products-table__td--name">
-                <Link to={`/products/${product.id}`} className="products-table__link">
+                <Link to={`/products/${product.mpn || product.id}`} className="products-table__link">
                   {product.name || 'Unnamed Product'}
                 </Link>
               </td>

@@ -48,6 +48,15 @@ export async function patchProductAttributesHandler(req: Request, res: Response)
       return;
     }
 
+    // Harden: Forbid mpn/normalized_mpn changes - MPN is immutable
+    if (attrs.mpn !== undefined || attrs.normalized_mpn !== undefined) {
+      res.status(400).json({ 
+        error: 'MPN_IMMUTABLE', 
+        message: 'MPN and normalized_mpn fields are immutable and cannot be modified' 
+      });
+      return;
+    }
+
     // Validate that all attribute keys exist in the registry
     const invalidKeys: string[] = [];
     const validatedAttrs: Record<string, unknown> = {};
@@ -127,8 +136,9 @@ export async function patchProductAttributesHandler(req: Request, res: Response)
       
       // List of attributes that should also be mirrored to top-level fields
       // This ensures consistency between legacy top-level fields and attributes object
+      // Note: 'mpn' removed from mirrored fields - MPN is immutable after creation
       const topLevelMirroredFields = new Set([
-        'name', 'brand', 'sku', 'mpn',
+        'name', 'brand', 'sku',
         'category', 'department', 'gender', 'age_group',
         'primary_color', 'descriptive_color',
         'material', 'fit',
@@ -167,7 +177,8 @@ export async function patchProductAttributesHandler(req: Request, res: Response)
 /**
  * GET /products/:productId
  * 
- * Retrieve a single product by ID.
+ * Retrieve a single product by ID or MPN.
+ * First tries direct document lookup, then falls back to MPN lookup.
  */
 export async function getProductHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
@@ -182,10 +193,24 @@ export async function getProductHandler(req: Request, res: Response) {
     }
 
     const db = admin.firestore();
-    const productRef = db.collection('products').doc(productId);
 
     try {
-      const productDoc = await productRef.get();
+      // First, try direct document lookup (for document ID or normalized MPN)
+      let productRef = db.collection('products').doc(productId);
+      let productDoc = await productRef.get();
+      
+      if (!productDoc.exists) {
+        // Fallback: try to normalize as MPN and lookup
+        try {
+          const normalizedMpn = normalizeMpn(productId);
+          if (normalizedMpn && normalizedMpn !== productId) {
+            productRef = db.collection('products').doc(normalizedMpn);
+            productDoc = await productRef.get();
+          }
+        } catch (error) {
+          // Ignore normalization errors, continue with not found
+        }
+      }
       
       if (!productDoc.exists) {
         res.status(404).json({ 

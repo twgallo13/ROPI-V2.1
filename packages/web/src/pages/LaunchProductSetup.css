@@ -1,0 +1,349 @@
+/**
+ * Launch Product Setup Styles
+ */
+
+.launch-setup {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.launch-setup__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.launch-setup__title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.launch-setup__subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.launch-setup__form {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.launch-setup__section {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.launch-setup__section:last-of-type {
+  border-bottom: none;
+}
+
+.launch-setup__section-title {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.launch-setup__requirement {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+  font-style: italic;
+}
+
+.launch-setup__field {
+  margin-bottom: 1rem;
+}
+
+.launch-setup__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.launch-setup__input,
+.launch-setup__textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.launch-setup__input:focus,
+.launch-setup__textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.launch-setup__input:disabled,
+.launch-setup__textarea:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.launch-setup__textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.launch-setup__upload-label {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.launch-setup__upload-label:hover {
+  background-color: #2563eb;
+}
+
+.launch-setup__upload-input {
+  display: none;
+}
+
+.launch-setup__upload-help {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.launch-setup__uploads {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+}
+
+.launch-setup__uploads-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.launch-setup__upload-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.launch-setup__upload-item:last-child {
+  border-bottom: none;
+}
+
+.launch-setup__upload-filename {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #374151;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launch-setup__upload-progress {
+  width: 100px;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.launch-setup__upload-progress-bar {
+  height: 100%;
+  background-color: #3b82f6;
+  transition: width 0.2s;
+}
+
+.launch-setup__upload-status {
+  width: 32px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.launch-setup__upload-status--uploading {
+  color: #3b82f6;
+}
+
+.launch-setup__upload-status--completed {
+  color: #059669;
+}
+
+.launch-setup__upload-status--error {
+  color: #dc2626;
+}
+
+.launch-setup__images {
+  margin-top: 1rem;
+}
+
+.launch-setup__images-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.launch-setup__images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.launch-setup__image-item {
+  position: relative;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  text-align: center;
+}
+
+.launch-setup__image-placeholder {
+  margin-bottom: 0.5rem;
+  color: #6b7280;
+  display: flex;
+  justify-content: center;
+}
+
+.launch-setup__image-filename {
+  font-size: 0.75rem;
+  color: #374151;
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.launch-setup__image-remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.launch-setup__image-remove:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.launch-setup__image-remove:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.launch-setup__error {
+  margin: 1rem 1.5rem;
+  padding: 0.75rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.launch-setup__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+}
+
+.launch-setup__button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.launch-setup__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.launch-setup__button--secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.launch-setup__button--secondary:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.launch-setup__button--primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.launch-setup__button--primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.launch-setup__spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .launch-setup {
+    padding: 1rem 0.5rem;
+  }
+  
+  .launch-setup__images-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .launch-setup__actions {
+    flex-direction: column-reverse;
+  }
+  
+  .launch-setup__button {
+    width: 100%;
+    justify-content: center;
+  }
+}

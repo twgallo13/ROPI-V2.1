@@ -77,7 +77,7 @@ service cloud.firestore {
     }
     
     // ========================================
-    // PRODUCTS COLLECTION (LP-2.1.4 — Lockdown)
+    // PRODUCTS COLLECTION (LP-2.1.4 — Lockdown + MPN Enforcement)
     // ========================================
     // Related Notion docs:
     // - Section 2.1 — Product Schema
@@ -86,15 +86,29 @@ service cloud.firestore {
     // LP-2.1.4: Lock down direct client writes to products/*
     // All product attribute updates must go through server API endpoints.
     // This prevents unexpected attribute mutation from client-side code.
+    //
+    // MPN Enforcement Rules:
+    // - On create: normalized_mpn must equal productId and mpn must be present
+    // - On update: mpn and normalized_mpn are immutable
     match /products/{productId} {
       // Read: authenticated users can read products
       allow read: if request.auth != null;
       
-      // Write: only admins (server/service accounts with admin role or metadata allow-list)
-      // Client updates MUST call API endpoints (PATCH /api/products/:mpn/attributes)
-      // Uses existing isAdmin() (custom claims) and isAdminViaMetadata() (metadata/admins doc)
-      allow write: if request.auth != null 
-                   && (isAdmin() || isAdminViaMetadata());
+      // Create: enforce document ID = normalized_mpn and require mpn
+      allow create: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && request.resource.data.mpn is string
+                    && request.resource.data.normalized_mpn == productId;
+      
+      // Update: enforce mpn immutability and admin access
+      allow update: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && resource.data.mpn == request.resource.data.mpn
+                    && resource.data.normalized_mpn == request.resource.data.normalized_mpn;
+      
+      // Delete: admin only
+      allow delete: if request.auth != null 
+                    && (isAdmin() || isAdminViaMetadata());
     }
     
     // ========================================

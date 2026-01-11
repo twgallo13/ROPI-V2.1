@@ -6,9 +6,12 @@
 
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { authFetch } from '../services/authFetch';
 import PageLayout from '@/components/common/PageLayout';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import './LaunchProductSetup.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 interface LaunchData {
   launchDate: string;
@@ -106,11 +109,8 @@ function LaunchProductSetup() {
   const uploadImage = async (file: File, uploadId: string) => {
     try {
       // Step 1: Get signed upload URL
-      const signResponse = await fetch(`/api/products/${mpn}/images/sign`, {
+      const signResponse = await authFetch(`${API_BASE}/api/products/${mpn}/images/sign`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           filename: file.name,
           contentType: file.type,
@@ -152,11 +152,8 @@ function LaunchProductSetup() {
       });
 
       // Step 3: Register image metadata
-      const registerResponse = await fetch(`/api/products/${mpn}/images`, {
+      const registerResponse = await authFetch(`${API_BASE}/api/products/${mpn}/images`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           gsPath,
           filename: file.name,
@@ -201,11 +198,8 @@ function LaunchProductSetup() {
     setError(null);
 
     try {
-      const response = await fetch(`/api/products/${mpn}/launch`, {
+      const response = await authFetch(`${API_BASE}/api/products/${mpn}/launch`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           isLaunch: true,
           launchDate: launchData.launchDate,

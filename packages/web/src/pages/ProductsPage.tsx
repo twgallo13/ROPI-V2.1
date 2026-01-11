@@ -23,7 +23,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '@/components/common/PageLayout';
 import { Pagination } from '@/components/common/Pagination';
-import { ProductsTable, BulkActionToolbar } from '@/components/products';
+import { ProductsTable, BulkActionToolbar, MPNModal } from '@/components/products';
 import { useProducts, type ProductSummary, type ProductFilters } from '@/hooks/useProducts';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import './ProductsPage.css';
@@ -78,7 +78,7 @@ function ProductCard({ product, selected, onSelect }: ProductCardProps) {
       </div>
 
       <Link
-        to={`/products/${id}`}
+        to={`/products/${product.mpn || product.id}`}
         className="product-card__link"
         aria-label={`View product ${name || sku || id}`}
       >
@@ -173,6 +173,9 @@ function ProductsPage() {
   
   // View mode state (table is default)
   const [viewMode, setViewMode] = useState<ViewMode>('table');
+  
+  // Modal states
+  const [showMpnModal, setShowMpnModal] = useState(false);
   
   // Selection state
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -429,36 +432,54 @@ function ProductsPage() {
           <div className="products-page__title-row">
             <h1 className="products-page__title">Products</h1>
             
-            {/* View Mode Toggle */}
-            <div className="products-page__view-toggle" role="group" aria-label="View mode">
+            <div className="products-page__header-actions">
+              {/* Create New Product Button */}
               <button
                 type="button"
-                className={`products-page__view-btn ${viewMode === 'table' ? 'products-page__view-btn--active' : ''}`}
-                onClick={() => setViewMode('table')}
-                aria-pressed={viewMode === 'table'}
-                title="Table view"
+                className="products-page__create-btn"
+                onClick={() => setShowMpnModal(true)}
+                aria-label="Create new product"
+                title="Create new product"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <line x1="3" y1="9" x2="21" y2="9" />
-                  <line x1="3" y1="15" x2="21" y2="15" />
-                  <line x1="9" y1="3" x2="9" y2="21" />
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="16" />
+                  <line x1="8" y1="12" x2="16" y2="12" />
                 </svg>
+                Create New Product
               </button>
-              <button
-                type="button"
-                className={`products-page__view-btn ${viewMode === 'cards' ? 'products-page__view-btn--active' : ''}`}
-                onClick={() => setViewMode('cards')}
-                aria-pressed={viewMode === 'cards'}
-                title="Card view"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="14" y="14" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                </svg>
-              </button>
+              
+              {/* View Mode Toggle */}
+              <div className="products-page__view-toggle" role="group" aria-label="View mode">
+                <button
+                  type="button"
+                  className={`products-page__view-btn ${viewMode === 'table' ? 'products-page__view-btn--active' : ''}`}
+                  onClick={() => setViewMode('table')}
+                  aria-pressed={viewMode === 'table'}
+                  title="Table view"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="3" y1="15" x2="21" y2="15" />
+                    <line x1="9" y1="3" x2="9" y2="21" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className={`products-page__view-btn ${viewMode === 'cards' ? 'products-page__view-btn--active' : ''}`}
+                  onClick={() => setViewMode('cards')}
+                  aria-pressed={viewMode === 'cards'}
+                  title="Card view"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -789,6 +810,12 @@ function ProductsPage() {
           </>
         )}
       </div>
+      
+      {/* Modals */}
+      <MPNModal 
+        isOpen={showMpnModal}
+        onClose={() => setShowMpnModal(false)}
+      />
     </PageLayout>
   );
 }

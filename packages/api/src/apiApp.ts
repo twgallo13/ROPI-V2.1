@@ -86,6 +86,24 @@ import {
   bulkDeleteProductsHandler,
 } from './endpoints/products';
 
+// Create Product handler
+import {
+  createProductHandler,
+} from './endpoints/createProduct';
+
+// Product Images handlers
+import {
+  signImageUploadHandler,
+  registerImageHandler,
+  getImageViewUrlHandler,
+} from './endpoints/productImages';
+
+// Product Launch handlers
+import {
+  createLaunchHandler,
+  getLaunchHandler,
+} from './endpoints/productLaunch';
+
 // LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe handlers
 import {
   describeHandler,
@@ -158,7 +176,13 @@ const app: Application = express();
 const api: Router = Router();
 
 // Allow CORS from any origin (handlers themselves perform requireAdmin where needed)
-app.use(cors({ origin: true }));
+const corsOptions = {
+  origin: true,
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 // LP-ATTR-1.3.1.1: Apply JSON body parser only to non-multipart routes
 // Import endpoints (importCSV, importDryRun) handle multipart/form-data with Busboy
@@ -267,6 +291,7 @@ api.patch('/users/me', updateMeHandler);
 /**
  * Products endpoints
  */
+api.post('/products', createProductHandler);
 api.get('/products', listProductsHandler);
 // LP-obs-studio-cleanup-1.1.0: Register search-mpn BEFORE :productId to avoid route shadowing
 api.get('/products/search-mpn', searchProductsByMpnHandler);
@@ -276,6 +301,15 @@ api.post('/products/bulk-delete', bulkDeleteProductsHandler);
   api.get('/products/:productId/completion', getProductCompletionHandler);
   api.get('/products/:productId', getProductHandler);
 api.patch('/products/:productId/attributes', patchProductAttributesHandler);
+
+// Image upload endpoints - use :mpn parameter for MPN-based routing
+api.post('/products/:mpn/images/sign', signImageUploadHandler);
+api.post('/products/:mpn/images', registerImageHandler);
+api.get('/products/:mpn/images/:imageId/url', getImageViewUrlHandler);
+
+// Launch endpoints - use :mpn parameter for MPN-based routing  
+api.post('/products/:mpn/launch', createLaunchHandler);
+api.get('/products/:mpn/launch', getLaunchHandler);
 // LP-obs-studio-cleanup-1.4.0: Observation-based suggestions endpoints
 api.post('/products/:productId/suggestions', generateSuggestionsHandler);
 api.post('/products/:productId/apply-suggestion', applySuggestionHandler);

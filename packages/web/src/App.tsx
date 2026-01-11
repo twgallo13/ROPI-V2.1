@@ -19,6 +19,8 @@ import AttributesTable from './pages/Settings/AttributesTable';
 import UsersManager from './pages/Settings/UsersManager';
 import ProfilePage from './pages/Settings/ProfilePage';
 import PermissionsPage from './pages/Settings/PermissionsPage';
+import ProductKickOffPage from './pages/ProductKickOffPage';
+import LaunchProductSetup from './pages/LaunchProductSetup';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
         <Route path="home" element={<HomePage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/:id" element={<ProductEditorPage />} />
+        <Route path="products/:mpn/kickoff" element={<ProductKickOffPage />} />
+        <Route path="products/:mpn/launch-setup" element={<LaunchProductSetup />} />
         <Route path="launch-calendar" element={<LaunchCalendarPage />} />
         <Route path="import" element={<ImportManagerPage />} />
         <Route path="import/batches/:batchId" element={<ImportBatchDetailPage />} />

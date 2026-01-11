@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Test - MPN Product Creation</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #f0fff0; border-color: #90EE90; }
+        .error { background-color: #fff0f0; border-color: #ffcccb; }
+        .pending { background-color: #f0f8ff; border-color: #87ceeb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .status { font-weight: bold; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Authentication Test for MPN-Based Product Creation</h1>
+    
+    <div class="test-section pending" id="auth-section">
+        <h3>Step 1: Firebase Authentication</h3>
+        <p><strong>Status:</strong> <span id="auth-status">Not signed in</span></p>
+        <button onclick="signInTest()">Sign In as Test User</button>
+        <button onclick="signOut()">Sign Out</button>
+        <pre id="user-info"></pre>
+    </div>
+    
+    <div class="test-section" id="api-section">
+        <h3>Step 2: Test API Call with Authorization Header</h3>
+        <p><strong>Status:</strong> <span id="api-status">Waiting for authentication</span></p>
+        <button onclick="testCreateProduct()" disabled id="test-button">Test Create Product API</button>
+        <div style="margin: 10px 0;">
+            <label for="test-mpn">Test MPN:</label>
+            <input type="text" id="test-mpn" value="TEST-AUTH-" style="padding: 5px; margin-left: 10px;" placeholder="Enter test MPN">
+            <script>
+                // Generate random suffix for testing
+                document.getElementById('test-mpn').value = 'TEST-AUTH-' + Math.floor(Math.random() * 10000);
+            </script>
+        </div>
+        <pre id="api-response"></pre>
+    </div>
+
+    <div class="test-section" id="headers-section">
+        <h3>Step 3: Verify Request Headers</h3>
+        <p>Expected: <code>Authorization: Bearer &lt;firebase_id_token&gt;</code></p>
+        <p><strong>Status:</strong> <span id="headers-status">Pending</span></p>
+        <pre id="headers-info"></pre>
+    </div>
+
+    <script type="module">
+        // Firebase config for staging
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, signOut as firebaseSignOut, onAuthStateChanged, getIdToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1aYB4AfqU5n1YfSOtLX5nbEYbnlTfcZ8",
+            authDomain: "ropi-bccee.firebaseapp.com",
+            projectId: "ropi-bccee",
+            storageBucket: "ropi-bccee.firebasestorage.app",
+            messagingSenderId: "892791174441",
+            appId: "1:892791174441:web:2ea5843a253b167d12b338"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        let currentUser = null;
+        let currentToken = null;
+
+        // Monitor auth state
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            const authStatus = document.getElementById('auth-status');
+            const userInfo = document.getElementById('user-info');
+            const testButton = document.getElementById('test-button');
+            const authSection = document.getElementById('auth-section');
+
+            if (user) {
+                try {
+                    currentToken = await getIdToken(user, true); // Force refresh
+                    authStatus.textContent = `Signed in as: ${user.email}`;
+                    userInfo.textContent = `UID: ${user.uid}\nEmail: ${user.email}\nToken: ${currentToken.substr(0, 50)}...`;
+                    testButton.disabled = false;
+                    authSection.className = 'test-section success';
+                } catch (error) {
+                    authStatus.textContent = 'Error getting token: ' + error.message;
+                    authSection.className = 'test-section error';
+                }
+            } else {
+                authStatus.textContent = 'Not signed in';
+                userInfo.textContent = '';
+                testButton.disabled = true;
+                currentToken = null;
+                authSection.className = 'test-section pending';
+            }
+        });
+
+        // Test sign in function
+        window.signInTest = async () => {
+            try {
+                // Test with a known admin account - replace with actual staging admin credentials
+                const email = prompt('Enter admin email:') || 'theo@shiekh.com';
+                const password = prompt('Enter password:');
+                
+                if (!password) {
+                    alert('Password required for testing');
+                    return;
+                }
+                
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log('✅ Sign in successful:', userCredential.user.email);
+            } catch (error) {
+                console.error('❌ Sign in failed:', error);
+                alert('Sign in failed: ' + error.message);
+            }
+        };
+
+        window.signOut = async () => {
+            try {
+                await firebaseSignOut(auth);
+                document.getElementById('api-section').className = 'test-section';
+                document.getElementById('api-status').textContent = 'Waiting for authentication';
+                document.getElementById('api-response').textContent = '';
+                document.getElementById('headers-section').className = 'test-section';
+                document.getElementById('headers-status').textContent = 'Pending';
+                document.getElementById('headers-info').textContent = '';
+            } catch (error) {
+                console.error('Sign out error:', error);
+            }
+        };
+
+        window.testCreateProduct = async () => {
+            if (!currentUser || !currentToken) {
+                alert('Please sign in first');
+                return;
+            }
+
+            const apiSection = document.getElementById('api-section');
+            const apiStatus = document.getElementById('api-status');
+            const apiResponse = document.getElementById('api-response');
+            const headersSection = document.getElementById('headers-section');
+            const headersStatus = document.getElementById('headers-status');
+            const headersInfo = document.getElementById('headers-info');
+            
+            const mpn = document.getElementById('test-mpn').value.trim();
+            
+            if (!mpn) {
+                alert('Please enter a test MPN');
+                return;
+            }
+
+            apiStatus.textContent = 'Testing API call...';
+            apiSection.className = 'test-section pending';
+
+            try {
+                const url = 'https://us-central1-ropi-bccee.cloudfunctions.net/api/products';
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${currentToken}`
+                };
+
+                // Show request headers being sent
+                headersInfo.textContent = `Request URL: ${url}
+Request Headers:
+${Object.entries(headers).map(([k, v]) => `  ${k}: ${k === 'Authorization' ? v.substr(0, 30) + '...' : v}`).join('\n')}
+
+Body: ${JSON.stringify({ mpn }, null, 2)}`;
+                headersStatus.textContent = 'Request sent with Authorization header';
+                headersSection.className = 'test-section success';
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ mpn })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    apiStatus.textContent = `✅ SUCCESS (${response.status})`;
+                    apiSection.className = 'test-section success';
+                    apiResponse.textContent = `Response Status: ${response.status} ${response.statusText}
+Response Body:
+${JSON.stringify(data, null, 2)}`;
+                } else {
+                    apiStatus.textContent = `❌ API Error (${response.status})`;
+                    apiSection.className = 'test-section error';
+                    apiResponse.textContent = `Response Status: ${response.status} ${response.statusText}
+Response Body:
+${JSON.stringify(data, null, 2)}`;
+                }
+
+            } catch (error) {
+                apiStatus.textContent = '❌ Network Error';
+                apiSection.className = 'test-section error';
+                apiResponse.textContent = `Network Error: ${error.message}`;
+                console.error('API test error:', error);
+            }
+        };
+    </script>
+</body>
+</html>

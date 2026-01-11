@@ -1,0 +1,220 @@
+/**
+ * Product Kick-off Page Styles
+ */
+
+.kickoff {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.kickoff__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.kickoff__title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.kickoff__subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.kickoff__form {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.kickoff__section {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.kickoff__section:last-of-type {
+  border-bottom: none;
+}
+
+.kickoff__section-title {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.kickoff__field-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.kickoff__field {
+  margin-bottom: 1rem;
+}
+
+.kickoff__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.kickoff__input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.kickoff__input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.kickoff__input:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.kickoff__checkbox-field {
+  margin-bottom: 1rem;
+}
+
+.kickoff__checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.kickoff__checkbox {
+  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  cursor: pointer;
+}
+
+.kickoff__checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.kickoff__checkbox-text {
+  font-weight: 500;
+  color: #374151;
+}
+
+.kickoff__checkbox-help {
+  margin: 0.25rem 0 0 1.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.kickoff__error {
+  margin: 1rem 1.5rem;
+  padding: 0.75rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.kickoff__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.kickoff__button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.kickoff__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.kickoff__button--secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.kickoff__button--secondary:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.kickoff__button--primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.kickoff__button--primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.kickoff__spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .kickoff {
+    padding: 1rem 0.5rem;
+  }
+  
+  .kickoff__field-group {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .kickoff__actions {
+    flex-direction: column-reverse;
+  }
+  
+  .kickoff__button {
+    width: 100%;
+    justify-content: center;
+  }
+}
