@@ -157,3 +157,61 @@ button.danger:hover {
   border-radius: 4px;
   margin-bottom: 1rem;
 }
+
+/* Table Container with scrolling support */
+.tableContainer {
+  width: 100%;
+  /* Allow both horizontal and vertical scroll inside the container.
+     Vertical scrolling enables the header to be sticky relative to this container
+     rather than the whole page. max-height keeps the table usable on tall lists. */
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(100vh - 240px); /* adjust as necessary for your header/footer */
+}
+
+.settingsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.settingsTable th,
+.settingsTable td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(15,23,32,0.08);
+}
+
+.settingsTable th {
+  font-weight: 600;
+  color: rgba(15,23,32,0.8);
+  background-color: rgba(2,6,23,0.02);
+}
+
+.settingsTable tbody tr:hover {
+  background-color: rgba(2,6,23,0.02);
+}
+
+/* Zebra striping: subtle alternating background for readability */
+.settingsTable tbody tr:nth-child(even) {
+  background-color: rgba(2,6,23,0.01);
+}
+
+/* Sticky header: stays visible when vertical scrolling the .tableContainer */
+.settingsTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  backdrop-filter: blur(4px); /* subtle readability improvement */
+  background-color: #ffffff; /* solid background to avoid transparency issues */
+  /* Keep header visually elevated */
+  box-shadow: 0 1px 0 rgba(15,23,32,0.04);
+}
+
+/* Center the AI Use checkbox column */
+.settingsTable th:last-child,
+.settingsTable td:last-child {
+  text-align: center;
+  width: 80px;
+}
