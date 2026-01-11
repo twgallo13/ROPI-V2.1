@@ -14,8 +14,10 @@
  */
 
 import { useEffect, useState } from 'react';
-import { getAuthHeaders } from '../../lib/authHeaders';
+import { authFetch } from '../../services/authFetch';
 import './CompletionRulesPage.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 interface CompletionRulesVersion {
   rulesVersion: number;
@@ -42,11 +44,9 @@ interface CompletionRulesConfig {
 }
 
 async function fetchCompletionRulesVersions(): Promise<CompletionRulesVersion[]> {
-  const authHeaders = await getAuthHeaders();
-  const response = await fetch('/api/admin/completion-rules/versions', {
+  const response = await authFetch(`${API_BASE}/api/admin/completion-rules/versions`, {
     headers: {
       'Content-Type': 'application/json',
-      ...authHeaders,
     },
   });
 
@@ -58,15 +58,13 @@ async function fetchCompletionRulesVersions(): Promise<CompletionRulesVersion[]>
 }
 
 async function fetchCompletionRulesConfig(version?: number): Promise<CompletionRulesConfig> {
-  const authHeaders = await getAuthHeaders();
   const url = version
-    ? `/api/admin/completion-rules/versions/${version}`
-    : '/api/admin/completion-rules/config';
+    ? `${API_BASE}/api/admin/completion-rules/versions/${version}`
+    : `${API_BASE}/api/admin/completion-rules/config`;
 
-  const response = await fetch(url, {
+  const response = await authFetch(url, {
     headers: {
       'Content-Type': 'application/json',
-      ...authHeaders,
     },
   });
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Test - Fixed</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+</head>
+<body>
+    <h1>Authentication Test - Fixed Version</h1>
+    <div id="status">Testing authentication...</div>
+    <div id="results"></div>
+
+    <script>
+        // Firebase config for ropi-bccee
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2WOGjNKr8W5fhUzTWfzJgYGCtjxhYO-Y",
+            authDomain: "ropi-bccee.firebaseapp.com",
+            projectId: "ropi-bccee"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        async function testAuthentication() {
+            const statusEl = document.getElementById('status');
+            const resultsEl = document.getElementById('results');
+
+            try {
+                // Wait for auth state
+                await new Promise((resolve, reject) => {
+                    const unsubscribe = auth.onAuthStateChanged(user => {
+                        unsubscribe();
+                        if (user) {
+                            resolve(user);
+                        } else {
+                            reject(new Error('User not signed in'));
+                        }
+                    });
+
+                    // Timeout after 5 seconds
+                    setTimeout(() => {
+                        unsubscribe();
+                        reject(new Error('Auth state timeout'));
+                    }, 5000);
+                });
+
+                const user = auth.currentUser;
+                statusEl.innerHTML = `✅ User authenticated: ${user.email}`;
+
+                // Get ID token
+                const token = await user.getIdToken();
+                
+                // Test API call with proper authentication
+                const apiBase = 'https://us-central1-ropi-bccee.cloudfunctions.net/api';
+                
+                resultsEl.innerHTML += '<h3>Testing API Calls:</h3>';
+                
+                // Test 1: Product creation (this was the failing endpoint)
+                try {
+                    const response = await fetch(`${apiBase}/api/products`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            mpn: 'TEST-AUTH-' + Date.now()
+                        })
+                    });
+
+                    resultsEl.innerHTML += `<p>✅ POST /api/products: ${response.status} (${response.ok ? 'OK' : 'Error'})</p>`;
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        resultsEl.innerHTML += `<p>Error details: ${errorText}</p>`;
+                    }
+                } catch (error) {
+                    resultsEl.innerHTML += `<p>❌ POST /api/products failed: ${error.message}</p>`;
+                }
+
+                // Test 2: Health check
+                try {
+                    const healthResponse = await fetch(`${apiBase}/api/health`);
+                    resultsEl.innerHTML += `<p>✅ GET /api/health: ${healthResponse.status} (${healthResponse.ok ? 'OK' : 'Error'})</p>`;
+                } catch (error) {
+                    resultsEl.innerHTML += `<p>❌ GET /api/health failed: ${error.message}</p>`;
+                }
+
+            } catch (error) {
+                statusEl.innerHTML = `❌ Authentication failed: ${error.message}`;
+                resultsEl.innerHTML = '<p>Please sign in first at <a href="https://ropi-aoss-staging.web.app" target="_blank">https://ropi-aoss-staging.web.app</a></p>';
+            }
+        }
+
+        // Start test when page loads
+        testAuthentication();
+    </script>
+</body>
+</html>

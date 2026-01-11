@@ -88,10 +88,10 @@ function ProductKickOffPage() {
     setError(null);
 
     try {
-      // Send PATCH request to update attributes
-      const response = await authFetch(`${API_BASE}/api/products/${mpn}`, {
+      // Send PATCH request to update attributes using the existing attributes endpoint
+      const response = await authFetch(`${API_BASE}/api/products/${mpn}/attributes`, {
         method: 'PATCH',
-        body: JSON.stringify({ attributes }),
+        body: JSON.stringify(attributes),
       });
 
       const data = await response.json();
