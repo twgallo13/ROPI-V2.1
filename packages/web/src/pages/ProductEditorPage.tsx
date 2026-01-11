@@ -206,7 +206,7 @@ function ProductEditorPage() {
           {/* Right Sidebar with Panels */}
           <div className="product-sidebar">
             <CompletionExportGatePanel
-              productId={id}
+              productId={normalizedProductId}
             />
             
             <ObservationsPanel
