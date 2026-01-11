@@ -103,8 +103,11 @@ service cloud.firestore {
       // Update: enforce mpn immutability and admin access
       allow update: if request.auth != null
                     && (isAdmin() || isAdminViaMetadata())
-                    && resource.data.mpn == request.resource.data.mpn
-                    && resource.data.normalized_mpn == request.resource.data.normalized_mpn;
+                    && (
+                      // Allow updates that don't change mpn or normalized_mpn
+                      (!('mpn' in request.resource.data) || resource.data.mpn == request.resource.data.mpn)
+                      && (!('normalized_mpn' in request.resource.data) || resource.data.normalized_mpn == request.resource.data.normalized_mpn)
+                    );
       
       // Delete: admin only
       allow delete: if request.auth != null 

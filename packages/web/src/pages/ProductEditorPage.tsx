@@ -1,9 +1,21 @@
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useProduct } from '../hooks/useProduct';
 import { useProductCompletion } from '../hooks/useProductCompletion';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { isFirebaseAvailable } from '../firebaseConfig';
+
+// Local MPN normalizer (matches SDK version)
+function normalizeMpn(mpn: string): string {
+  if (!mpn) return '';
+  
+  return mpn
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 import ProductHeader from '../components/product/ProductHeader';
 import CoreInformationTab from '../components/product/CoreInformationTab';
 import ProductAttributesTab from '../components/product/ProductAttributesTab';
@@ -41,12 +53,19 @@ function ProductEditorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>('core');
 
-  // Debug: Log product ID from URL
+  // Normalize the MPN from URL to ensure correct Firestore document lookup
+  // MPN is canonical truth - document IDs are normalized MPNs
+  const normalizedProductId = useMemo(() => {
+    return id ? normalizeMpn(id) : null;
+  }, [id]);
+
+  // Debug: Log product ID from URL and normalized version
   console.debug('[ProductEditorPage] Product ID from URL:', id);
+  console.debug('[ProductEditorPage] Normalized Product ID:', normalizedProductId);
   console.debug('[ProductEditorPage] CODE VERSION: 2026-01-09-v3-MPN-FIX');
 
   // Defensive: Require product ID in URL
-  if (!id) {
+  if (!id || !normalizedProductId) {
     return (
       <div className="product-editor-error">
         <h2>No product ID in URL</h2>
@@ -64,7 +83,7 @@ function ProductEditorPage() {
     updateFields,
     applySuggestion,
     ignoreSuggestion,
-  } = useProduct(id);
+  } = useProduct(normalizedProductId);
 
   // Set page title with product name or MPN
   const productTitle = product?.name || product?.mpn || 'Product';
@@ -74,7 +93,7 @@ function ProductEditorPage() {
   const { 
     loading: completionLoading, 
     canPublish 
-  } = useProductCompletion(id);
+  } = useProductCompletion(normalizedProductId);
 
   // Sync tab with URL query param
   useEffect(() => {
