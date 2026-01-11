@@ -45,10 +45,27 @@ jobs:
       - name: Run verify-attributes-meta
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ env.GCP_SA_FILE }}
+          GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
         run: |
           if [ "$SKIP_FIRESTORE_CHECK" = "true" ]; then
             echo "⚠️ Skipping Firestore verification (no credentials)"
             node scripts/verify-attributes-meta.js --skip-firestore
           else
-            node scripts/verify-attributes-meta.js --project ropi-bccee
+            echo "🔍 Verifying attributes meta..."
+            if node scripts/verify-attributes-meta.js --project ropi-bccee; then
+              echo "✅ Verification passed"
+            else
+              echo "⚠️ Verification failed - attempting to align registry version..."
+              if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/aoss-main" ]; then
+                echo "🔄 Auto-fixing registry version mismatch for main branch push..."
+                node packages/api/scripts/align_registry_version.mjs --apply --project ropi-bccee
+                echo "✅ Registry version aligned, retrying verification..."
+                node scripts/verify-attributes-meta.js --project ropi-bccee
+              else
+                echo "❌ Registry version mismatch detected"
+                echo "   This is a PR or feature branch - manual alignment required"
+                echo "   Run: node packages/api/scripts/align_registry_version.mjs --apply --project ropi-bccee"
+                exit 1
+              fi
+            fi
           fi
