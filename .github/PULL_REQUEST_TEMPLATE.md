@@ -1,88 +1,65 @@
-<!-- PR Template: Lisa-controlled PR -->
-<!-- LP-observations-consolidation-1.5.0: Updated with LP requirements -->
+## Summary of Changes
 
-LP: LP-<PhaseSlug>-<SemVer>
-PhaseSlug: <phase-slug>
+<!-- Provide a clear, concise description of what this PR does -->
 
----
 
-### PVS Tag
-PVS-<MAJOR.MINOR.PATCH>
 
-### Task Goal
-(One sentence)
+## Files Changed
 
-### Exact actions performed
-- File A changed
-- File B added
-- Script X run (local dry-run)
+<!-- List the key files modified in this PR -->
 
-### Files changed / diff summary
-(Short bullets or list)
+| File | Change Type | Description |
+|------|-------------|-------------|
+|      |             |             |
 
-### References
-- Issues: #xxx
-- Docs: docs/lisa/xxx.md
-- Prior PRs: #123
+## Acceptance Criteria
 
-### Expected Outputs / Artifacts
-(What should exist after merge: e.g., routes fixed, UI changes)
+<!-- Check all that apply -->
 
-## Phase Readiness
-<!-- Required: Attach Phase Readiness Declaration or link to phase documentation -->
-- [ ] Phase readiness check passed
-- [ ] Firestore meta version matches registry
+- [ ] Code compiles without errors
+- [ ] All existing tests pass
+- [ ] New tests added for new functionality
+- [ ] Code follows project conventions and style guidelines
+- [ ] No console errors or warnings introduced
+- [ ] Changes reviewed locally before submitting PR
 
-### Acceptance Criteria
-- [ ] PR title begins with `LP: LP-<PhaseSlug>-<SemVer>` or `PVS-<MAJOR.MINOR.PATCH>`
-- [ ] PR has label `lp:<phaseSlug>-<semver>`
-- [ ] Branch name follows convention
-- [ ] Commit messages include LP/PVS tag
-- [ ] CI checks green
-- [ ] Manual test steps performed & pass
+## Tests Added or Updated
 
-### Testing Instructions
-1. Step 1
-2. Step 2
+<!-- Describe any tests you added or modified -->
 
-### Merge Strategy
-Squash / Rebase / Merge Commit — (chosen by Lisa)
+- [ ] Unit tests
+- [ ] Integration tests
+- [ ] E2E tests
+- [ ] No tests required (explain why)
 
-### Reviewer checklist (for Lisa)
-- [ ] Meets PR template
-- [ ] Tests pass
-- [ ] Code style / lint
-- [ ] Schema validated
+**Test details:**
 
-- [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs` | `infra`
+
+
+## Documentation Updated
+
+<!-- Check if documentation was updated -->
+
+- [ ] README updated (if applicable)
+- [ ] Code comments added for complex logic
+- [ ] API documentation updated (if applicable)
+- [ ] No documentation changes required
+
+## Labels Checklist
+
+<!-- Ensure your PR has the required labels before requesting review -->
+
+- [ ] **Type label**: `feature` | `bugfix` | `hotfix` | `chore` | `docs`
 - [ ] **Area label**: `frontend` | `backend` | `infra` | `api` | `sdk`
 - [ ] **Priority label**: `p0-critical` | `p1-high` | `p2-medium` | `p3-low`
-- [ ] **LP label**: `lp:<phaseSlug>-<semver>`
 
 ## Pre-Merge Checklist
 
 - [ ] PR targets `aoss-main` branch
-- [ ] Branch follows naming convention: `feature/<slug>` or `fix/<slug>`
-- [ ] CI checks pass (lp-lint, pr-hes-checker, phase-readiness-check)
+- [ ] Branch follows naming convention: `feature/<slug>`
+- [ ] CI checks pass
 - [ ] Code review approved
-- [ ] HES JSON posted (for Homer-executed LPs)
 - [ ] **Branch will be deleted after merge**
-
----
-
-## HES (Homer Execution Summary)
-<!-- After execution, Homer will paste HES JSON here or in a comment -->
-<!-- Required for merge - must include: from, to, lp, actions, outcome -->
-
-```json
-{
-  "from": "Homer",
-  "to": "Lisa",
-  "lp": "LP-<PhaseSlug>-<SemVer>",
-  "actions": [],
-  "outcome": "PENDING"
-}
-```
 
 ---
 
