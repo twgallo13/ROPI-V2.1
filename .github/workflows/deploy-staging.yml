@@ -104,22 +104,41 @@ jobs:
           echo "Decoding service account key..."
           echo "$GCP_SA_KEY_BASE64" | base64 --decode > "$HOME/gcloud-key.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcloud-key.json"
+          
+          # Install gcloud CLI
+          echo "Installing Google Cloud CLI..."
           sudo apt-get update && sudo apt-get install -y google-cloud-cli
+          
+          # Authenticate and configure
+          echo "Authenticating with Google Cloud..."
           gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud config set project ropi-bccee
           echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-key.json" >> $GITHUB_ENV
+          
+          # Verify authentication
+          echo "Verifying authentication..."
           echo "Active gcloud account:"
           gcloud auth list --filter=status:ACTIVE --format="value(account)"
+          echo "Current gcloud project:"
+          gcloud config get-value project
 
       - name: Install Firebase CLI
-        run: npm install -g firebase-tools@13
+        run: npm install -g firebase-tools@15
 
       - name: Deploy to stable staging site
         run: |
           set -euo pipefail
           echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+          echo "Firebase CLI version:"
+          firebase --version
+
+          # Verify build artifacts before deploying
+          echo "Verifying build artifacts..."
+          ls -la packages/web/dist/ || (echo "::error::Web build artifacts missing" && exit 1)
+          ls -la packages/api/dist/ || (echo "::error::API build artifacts missing" && exit 1)
 
           # LP-0.1.3: Deploy preview channel (fail-fast, no tolerance)
+          echo "Deploying to preview channel..."
           firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json
 
           # Deploy functions and hosting to stable staging
