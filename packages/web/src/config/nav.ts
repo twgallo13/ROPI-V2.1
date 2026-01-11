@@ -127,6 +127,12 @@ export const settingsNavConfig: NavItem[] = [
     icon: '🏷️',
   },
   {
+    id: 'attributes-table',
+    label: 'Attribute Table',
+    route: '/settings/attributes/table',
+    icon: '📋',
+  },
+  {
     id: 'users',
     label: 'Users',
     route: '/settings/users',

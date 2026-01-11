@@ -105,6 +105,7 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   const [error, setError] = useState<string | null>(null);
   const [expandedSite, setExpandedSite] = useState<string | null>(null);
   const [advancedExpanded, setAdvancedExpanded] = useState(false);
+  const [expandedSegment, setExpandedSegment] = useState<string | null>(null);
 
   useEffect(() => {
     loadCompletion();
@@ -146,25 +147,18 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
   return (
     <div className="completion-export-gate-panel">
       <div className="panel-header">
-        <h3 className="panel-title">{isBlocked ? '🚫' : '✅'} Completion / Export</h3>
-        {/* LP-phase2b-001: Display MPN (never product_id) */}
+        <div className="header-top">
+          <h3 className="panel-title">{isBlocked ? '🚫' : '✅'} Completion / Export</h3>
+          <button className="refresh-button-prominent" onClick={loadCompletion} title="Refresh completion data">
+            ↻ Refresh
+          </button>
+        </div>
+        {/* LP-phase2b-001: Display MPN on its own line */}
         {completion?.productIdentifiers?.mpn && (
-          <div className="panel-mpn" data-testid="completion-panel-mpn" style={{
-            fontSize: '0.9em',
-            color: '#666',
-            fontFamily: 'monospace',
-            backgroundColor: '#f5f5f5',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            marginLeft: 'auto',
-            marginRight: '8px'
-          }}>
-            {completion.productIdentifiers.mpn}
+          <div className="panel-mpn" data-testid="completion-panel-mpn">
+            <span className="mpn-label">MPN:</span> {completion.productIdentifiers.mpn}
           </div>
         )}
-        <button className="refresh-button" onClick={loadCompletion} title="Refresh">
-          ↻
-        </button>
       </div>
 
       {loading && <div className="panel-loading">Loading completion data...</div>}
@@ -355,20 +349,54 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
             <div className="segment-section">
               <h4 className="section-title">Completion by Segment</h4>
               <div className="segments-list">
-                {completionBreakdown.map((segment) => (
-                  <div key={segment.segmentId} className="segment-item">
-                    <div className="segment-header">
-                      <div className="segment-name">{segment.segmentName}</div>
-                      <div className="segment-weight">Weight: {segment.weightPct}%</div>
-                    </div>
-                    <div className="segment-score">Score: {segment.score}%</div>
-                    {segment.missingAttributes.length > 0 && (
-                      <div className="segment-missing">
-                        Missing: {segment.missingAttributes.join(', ')}
+                {completionBreakdown
+                  .filter((segment) => segment.segmentName && segment.segmentName.trim() !== '')
+                  .map((segment) => {
+                    const isExpanded = expandedSegment === segment.segmentId;
+                    const hasMissing = segment.missingAttributes && segment.missingAttributes.length > 0;
+                    
+                    return (
+                      <div key={segment.segmentId} className="segment-item">
+                        <div className="segment-main">
+                          <div className="segment-info">
+                            <div className="segment-name-row">
+                              <span className="segment-name">{segment.segmentName}</span>
+                              <span className="segment-weight">Weight: {segment.weightPct}%</span>
+                            </div>
+                            <div className="segment-score-row">
+                              <span className="segment-score">
+                                Score: {segment.score !== undefined && segment.score !== null ? `${segment.score}%` : 'N/A'}
+                              </span>
+                              {hasMissing && (
+                                <button
+                                  className="segment-details-toggle"
+                                  onClick={() => setExpandedSegment(isExpanded ? null : segment.segmentId)}
+                                  aria-expanded={isExpanded}
+                                >
+                                  {isExpanded ? '▼' : '▶'} Details
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        {isExpanded && hasMissing && (
+                          <div className="segment-details">
+                            <div className="attribute-status">
+                              <div className="missing-attributes">
+                                <strong className="status-label missing-label">Missing:</strong>
+                                <ul className="attribute-list">
+                                  {segment.missingAttributes.map((attr, idx) => (
+                                    <li key={idx} className="missing-item">❌ {attr}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    );
+                  })
+                }
               </div>
             </div>
           )}

@@ -17,6 +17,7 @@ import ValuesManager, {
   valuesToPayload,
 } from './ValuesManager';
 import AuditTab from './AuditTab';
+import Toggle from './Toggle';
 import styles from '../pages/Settings/AttributesConsole.module.css';
 
 export interface AttributeDetailPanelProps {
@@ -446,6 +447,24 @@ function AiSeoTab({
             <p className={styles.formHelp}>
               Guidance for AI models on how to interpret and use this attribute
             </p>
+          </div>
+        </div>
+        
+        {/* AI Use Toggle */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>AI Permission</h4>
+          <div className={styles.settingRow}>
+            <div>
+              <div className={styles.settingLabel}>AI Use</div>
+              <div className={styles.settingDescription}>
+                Allow AI agents and templates to use this attribute when generating content.
+              </div>
+            </div>
+            <Toggle
+              id="toggle-ai-use"
+              checked={Boolean(formData.ai_use)}
+              onChange={(checked) => onChange({ ...formData, ai_use: checked })}
+            />
           </div>
         </div>
         

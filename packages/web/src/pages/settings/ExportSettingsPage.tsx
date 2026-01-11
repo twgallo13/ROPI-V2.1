@@ -58,6 +58,9 @@ interface SegmentEditorProps {
   onRemove: () => void;
   canRemove: boolean;
   allSites: string[];
+  segmentIndex: number;
+  customLabel?: string;
+  onLabelChange: (label: string) => void;
 }
 
 function SegmentEditor({
@@ -66,6 +69,9 @@ function SegmentEditor({
   onRemove,
   canRemove,
   allSites,
+  segmentIndex,
+  customLabel,
+  onLabelChange,
 }: SegmentEditorProps) {
   const appliesToMode = segment.appliesTo?.mode || 'ALL_PRODUCTS';
   const appliesToSites = segment.appliesTo?.sites || [];
@@ -93,9 +99,15 @@ function SegmentEditor({
   return (
     <div className="segment-card">
       <div className="segment-header">
-        <div>
-          <h4 className="segment-name">{segment.name}</h4>
-          <div className="segment-id">ID: {segment.id}</div>
+        <div className="segment-name-container">
+          <input
+            type="text"
+            className="segment-label-input"
+            value={customLabel || ''}
+            placeholder={`Segment ${segmentIndex + 1}`}
+            onChange={(e) => onLabelChange(e.target.value)}
+            title="Custom label for this segment"
+          />
         </div>
         <div className="segment-controls">
           <label className="toggle-label">
@@ -404,6 +416,8 @@ export default function ExportSettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  // Custom labels for segments (stored in local state, not persisted to backend)
+  const [customLabels, setCustomLabels] = useState<Record<string, string>>({});
 
   // Sample sites (in real app, fetch from registry)
   const allSites = ['shiekh', 'karmaloop', 'mltd', 'sangremia'];
@@ -432,6 +446,15 @@ export default function ExportSettingsPage() {
       const normalized = normalizeRules(data);
       setRules(normalized);
       setValidationErrors(validateRules(normalized));
+      // Initialize custom labels from segment names
+      const labels: Record<string, string> = {};
+      normalized.segments.forEach((segment) => {
+        if (segment.name && !segment.name.match(/^Segment \d+$/)) {
+          // Only set custom label if it's not a default "Segment N" name
+          labels[segment.id] = segment.name;
+        }
+      });
+      setCustomLabels(labels);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to load rules';
       setError(message);
@@ -474,8 +497,8 @@ export default function ExportSettingsPage() {
       const appliesToSites = segment.appliesTo?.sites || [];
       const selector = segment.attributeSelector;
 
-      if (!segment.id || !segment.name) {
-        errors.push(`Segment "${segmentLabel}" must have an id and name`);
+      if (!segment.id) {
+        errors.push(`Segment "${segmentLabel}" must have an id`);
       }
 
       if (
@@ -546,12 +569,18 @@ export default function ExportSettingsPage() {
     try {
       setSaving(true);
       setError(null);
+      setSuccess(null);
       await saveCompletionRules(rules);
-      setSuccess('Completion rules saved successfully');
-      setTimeout(() => setSuccess(null), 3000);
+      setSuccess('✓ Configuration saved successfully');
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => setSuccess(null), 5000);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save rules';
       setError(message);
+      // Scroll to top to show error
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSaving(false);
     }
@@ -594,6 +623,21 @@ export default function ExportSettingsPage() {
   return (
     <PageLayout title="Export Settings">
       <div className="export-settings-container">
+        {/* Top Action Bar with Save Button and Messages */}
+        <div className="top-action-bar">
+          <div className="action-bar-content">
+            <button
+              className="btn btn-primary"
+              onClick={handleSave}
+              disabled={saving || validationErrors.length > 0}
+            >
+              {saving ? 'Saving...' : 'Save Changes'}
+            </button>
+            {error && <div className="alert alert-error compact">{error}</div>}
+            {success && <div className="alert alert-success compact">{success}</div>}
+          </div>
+        </div>
+
         {/* Header */}
         <div className="settings-header">
           <h1>Completion Rules Configuration</h1>
@@ -602,20 +646,6 @@ export default function ExportSettingsPage() {
             directly affect whether products can be exported.
           </p>
         </div>
-
-        {/* Governance Notice */}
-        <div className="governance-notice">
-          <strong>⚠️ This affects export blocking</strong>
-          <p>
-            Completion is the <strong>single canonical gate</strong> to export. The rules you
-            configure here determine which products are blocked from export. Changes take
-            effect immediately.
-          </p>
-        </div>
-
-        {/* Error/Success Messages */}
-        {error && <div className="alert alert-error">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
 
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
@@ -669,6 +699,22 @@ export default function ExportSettingsPage() {
               <SegmentEditor
                 key={segment.id}
                 segment={segment}
+                segmentIndex={index}
+                customLabel={customLabels[segment.id]}
+                onLabelChange={(label) => {
+                  // Update both custom labels state and the actual segment.name field
+                  setCustomLabels(prev => ({
+                    ...prev,
+                    [segment.id]: label
+                  }));
+                  // Update the segment name in the backend data
+                  const newSegments = [...rules.segments];
+                  newSegments[index] = {
+                    ...segment,
+                    name: label || `Segment ${index + 1}`
+                  };
+                  setRules(normalizeRules({ ...rules, segments: newSegments }));
+                }}
                 onChange={(updated) => updateSegment(index, updated)}
                 onRemove={() => removeSegment(index)}
                 canRemove={rules.segments.length > 1}
@@ -680,10 +726,12 @@ export default function ExportSettingsPage() {
           {/* Weight Summary */}
           <div className="weight-summary">
             <h4>Weight Distribution</h4>
-            {rules.segments.map((segment) => (
+            {rules.segments.map((segment, idx) => {
+              const displayLabel = customLabels[segment.id] || `Segment ${idx + 1}`;
+              return (
               <div key={segment.id} className="weight-bar-row">
                 <span className="weight-label">
-                  {segment.name} {!segment.enabled && '(disabled)'}
+                  {displayLabel} {!segment.enabled && '(disabled)'}
                 </span>
                 <div className="weight-bar-container">
                   <div
@@ -694,7 +742,8 @@ export default function ExportSettingsPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
             <div className="weight-total">
               Total (enabled):{' '}
               <strong>
@@ -704,35 +753,6 @@ export default function ExportSettingsPage() {
                   .toFixed(1)}
                 %
               </strong>
-            </div>
-          </div>
-        </div>
-
-        {/* Exclusions Notice */}
-        <div className="settings-section">
-          <h2>Exclusions</h2>
-          <p className="section-description">
-            The following attribute categories are <strong>excluded by governance</strong> and
-            will never block export:
-          </p>
-          <div className="exclusions-grid">
-            <div className="exclusion-card">
-              <h4>Media</h4>
-              <p className="reason">{rules.exclusions.media.reason}</p>
-              <p className="status">
-                {rules.exclusions.media.affectsCompletion
-                  ? '❌ Affects completion'
-                  : '✅ Does NOT affect completion'}
-              </p>
-            </div>
-            <div className="exclusion-card">
-              <h4>Pricing</h4>
-              <p className="reason">{rules.exclusions.pricing.reason}</p>
-              <p className="status">
-                {rules.exclusions.pricing.affectsCompletion
-                  ? '❌ Affects completion'
-                  : '✅ Does NOT affect completion'}
-              </p>
             </div>
           </div>
         </div>
@@ -762,13 +782,6 @@ export default function ExportSettingsPage() {
 
         {/* Actions */}
         <div className="actions">
-          <button
-            className="btn btn-primary"
-            onClick={handleSave}
-            disabled={saving || validationErrors.length > 0}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
           <button className="btn btn-secondary" onClick={() => navigate('/settings')}>
             Back to Settings
           </button>

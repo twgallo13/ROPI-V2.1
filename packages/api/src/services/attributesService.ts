@@ -118,6 +118,7 @@ function fromFirestore(doc: admin.firestore.DocumentSnapshot): AttributeType | n
     required_for_export: data.required_for_export ?? data.requiredForExport ?? data.export ?? false,
     import_required: data.import_required ?? data.importRequired ?? false,
     ai_usage_notes: data.ai_usage_notes ?? data.aiUsageNotes ?? data.description,
+    ai_use: data.ai_use ?? data.aiUse ?? false,
     status: data.status ?? 'active',
     source: data.source,
     createdBy: data.createdBy ?? data.audit?.createdBy,

@@ -333,9 +333,14 @@ export async function runSyncAttributeRegistry(dryRun = false, forceOverwrite = 
     const docRef = db.doc(`settings/attributes/keys/${attr.attribute_id}`);
     
     try {
+      // --- START: preserve admin-edited fields on sync (Lisa v1.0.0) ---
       const existingDoc = await docRef.get();
       const now = new Date().toISOString();
-      
+
+      // Fields we preserve from existing admin edits during a registry sync.
+      // Add additional admin-editable fields here if required later.
+      const PRESERVE_FIELDS: string[] = ['ai_use'];
+
       // LP-1.1.0: Skip writes when dryRun is true
       if (dryRun) {
         if (existingDoc.exists) {
@@ -349,58 +354,63 @@ export async function runSyncAttributeRegistry(dryRun = false, forceOverwrite = 
         continue;
       }
 
-      // LP-phase2b-003-REMEDIATION: Non-destructive upsert
-      // On update: preserve user-edited fields unless force=true
-      // Key protected fields: category, required_for_completion, required_for_export
-      const payload = {
-        ...attr,
+      // Canonical payload derived from registry
+      const registryPayload: Record<string, unknown> = {
+        attribute_id: attr.attribute_id,
+        label: attr.label,
+        external_header: attr.external_header,
+        category: attr.category,
+        data_type: attr.data_type,
+        allowed_values: attr.allowed_values,
+        synonyms: attr.synonyms,
+        required_for_completion: attr.required_for_completion ?? false,
+        required_for_export: attr.required_for_export ?? false,
+        import_required: attr.import_required ?? false,
+        ai_usage_notes: attr.ai_usage_notes,
+        ai_use: attr.ai_use ?? false,
+        status: attr.status ?? 'active',
+        source: resolvedSource,
         definition_version: registryVersion,
-        updatedBy: 'system',
-        updatedAt: now,
         syncedAt: now,
-        syncedBy: process.env.SYNC_CALLER || 'system',
+        syncedBy: 'system:sync',
       };
-      
+
       if (existingDoc.exists) {
-        const existingData = existingDoc.data();
-        
-        // If not forcing overwrite, preserve user-customized fields from Firestore
-        if (!forceOverwrite && existingData) {
-          // Preserve: category (if user-set), required_for_completion (if user-set)
-          if (existingData.category && existingData.category !== attr.category) {
-            console.log(`    ⚠️ Preserving user-edited category for ${attr.attribute_id}: "${existingData.category}" (would be "${attr.category}")`);
-            payload.category = existingData.category;
-          }
-          if (existingData.required_for_completion !== undefined && 
-              existingData.required_for_completion !== attr.required_for_completion) {
-            console.log(`    ⚠️ Preserving user-edited required_for_completion for ${attr.attribute_id}: ${existingData.required_for_completion}`);
-            payload.required_for_completion = existingData.required_for_completion;
-          }
-          if (existingData.required_for_export !== undefined && 
-              existingData.required_for_export !== attr.required_for_export) {
-            console.log(`    ⚠️ Preserving user-edited required_for_export for ${attr.attribute_id}: ${existingData.required_for_export}`);
-            payload.required_for_export = existingData.required_for_export;
+        // Preserve admin-edited fields from existing doc unless forceOverwrite
+        const existingData = existingDoc.data() || {};
+
+        // Normalize legacy property shapes (aiUse -> ai_use)
+        if (existingData.aiUse !== undefined && existingData.ai_use === undefined) {
+          existingData.ai_use = existingData.aiUse;
+        }
+
+        if (!forceOverwrite) {
+          for (const key of PRESERVE_FIELDS) {
+            if (existingData[key] !== undefined) {
+              registryPayload[key] = existingData[key];
+            }
           }
         }
-        
-        // Update existing attribute (merge to preserve any local customizations)
-        await docRef.set(payload, { merge: true });
-        
+
+        registryPayload['updatedAt'] = now;
+        registryPayload['updatedBy'] = 'system:sync';
+
+        // Use update() to avoid wiping unrelated server-managed fields
+        await docRef.update(registryPayload);
         result.updated++;
-        console.log(`  ↻ Updated: ${attr.attribute_id}`);
+        result.attributes.push(attr.attribute_id);
+        console.log(`  [UPDATE] ${attr.attribute_id}`);
       } else {
-        // Create new attribute (include createdBy/createdAt)
-        await docRef.set({
-          ...payload,
-          createdBy: 'system',
-          createdAt: now,
-        });
-        
+        // Create new doc
+        registryPayload['createdAt'] = now;
+        registryPayload['createdBy'] = 'system:sync';
+
+        await docRef.set(registryPayload);
         result.created++;
-        console.log(`  ✓ Created: ${attr.attribute_id}`);
+        result.attributes.push(attr.attribute_id);
+        console.log(`  [CREATE] ${attr.attribute_id}`);
       }
-      
-      result.attributes.push(attr.attribute_id);
+      // --- END: preserve admin-edited fields on sync ---
     } catch (error: unknown) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const msg = `Failed to sync ${attr.attribute_id}: ${errorMsg}`;
