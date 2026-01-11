@@ -449,6 +449,24 @@ function AiSeoTab({
           </div>
         </div>
         
+        {/* AI Use Toggle */}
+        <div className={styles.settingsGroup}>
+          <h4 className={styles.settingsGroupTitle}>AI Permission</h4>
+          <div className={styles.settingRow}>
+            <div>
+              <div className={styles.settingLabel}>AI Use</div>
+              <div className={styles.settingDescription}>
+                Allow AI agents and templates to use this attribute when generating content.
+              </div>
+            </div>
+            <Toggle
+              id="toggle-ai-use"
+              checked={Boolean(formData.ai_use)}
+              onChange={(checked) => onChange({ ...formData, ai_use: checked })}
+            />
+          </div>
+        </div>
+        
         {/* Category Assignment */}
         <div className={styles.settingsGroup}>
           <h4 className={styles.settingsGroupTitle}>Category</h4>

@@ -897,16 +897,25 @@ function generateOperatorExplanation(
     summary = `Export ready: product ${completionResult.totalCompletionPct}% complete (threshold: ${rules.exportUnlockThresholdPct}%)`;
   }
   
+  const completionBreakdown = completionResult.segmentResults.map(segment => ({
+    segmentId: segment.segmentId,
+    segmentName: segment.segmentName,
+    score: segment.score,
+    weightPct: segment.weightPct,
+    missingAttributes: segment.missingAttributes
+  }));
+
+  // Debug log to track segment names
+  console.log('[CompletionBreakdown] Segments being returned:', completionBreakdown.map(s => ({
+    id: s.segmentId,
+    name: s.segmentName,
+    score: s.score
+  })));
+
   return {
     summary,
     blockingIssues,
-    completionBreakdown: completionResult.segmentResults.map(segment => ({
-      segmentId: segment.segmentId,
-      segmentName: segment.segmentName,
-      score: segment.score,
-      weightPct: segment.weightPct,
-      missingAttributes: segment.missingAttributes
-    })),
+    completionBreakdown,
     siteStatus: selectedSites.map(site => {
       const siteBlocking = completionResult.siteBlockingReasons.find(b => b.site === site);
       if (siteBlocking) {

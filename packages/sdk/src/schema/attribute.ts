@@ -63,6 +63,8 @@ export const AttributeSchema = z.object({
   required_for_export: z.boolean().optional().default(false),
   import_required: z.boolean().optional().default(false),
   ai_usage_notes: z.string().optional(),
+  /** Whether the attribute can be used by AI agents/templates. Defaults to false if absent. */
+  ai_use: z.boolean().optional().default(false),
   status: z.enum(['active', 'deprecated', 'hidden']).optional().default('active'),
   // LP-3.0.4: Added 'repo' to source enum for repository-sourced attributes
   source: z.enum(['notion', 'derived', 'json', 'repo']).optional(),

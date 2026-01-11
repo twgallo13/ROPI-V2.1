@@ -15,6 +15,7 @@ import SettingsPage from './pages/SettingsPage';
 import SettingsSubPage from './pages/settings/SettingsSubPage';
 import SmartRulesSettingsPage from './pages/settings/SmartRulesSettingsPage';
 import AttributesConsole from './pages/Settings/AttributesConsole';
+import AttributesTable from './pages/Settings/AttributesTable';
 import UsersManager from './pages/Settings/UsersManager';
 import ProfilePage from './pages/Settings/ProfilePage';
 import PermissionsPage from './pages/Settings/PermissionsPage';
@@ -44,6 +45,7 @@ function App() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="settings/permissions" element={<PermissionsPage />} />
         <Route path="settings/attributes" element={<AttributesConsole />} />
+        <Route path="settings/attributes/table" element={<AttributesTable />} />
         <Route path="settings/users" element={<UsersManager />} />
         <Route path="settings/profile" element={<ProfilePage />} />
         <Route path="settings/ai-templates" element={<SettingsSubPage section="ai-templates" />} />

@@ -1,0 +1,511 @@
+diff --git a/packages/sdk/src/schema/attribute.ts b/packages/sdk/src/schema/attribute.ts
+index 1234567..abcdefg 100644
+--- a/packages/sdk/src/schema/attribute.ts
++++ b/packages/sdk/src/schema/attribute.ts
+@@ -15,6 +15,8 @@ export const AttributeSchema = z.object({
+   import_required: z.boolean().optional().default(false),
+   /** AI usage notes and recommendations for this attribute. */
+   ai_usage_notes: z.string().optional(),
++  /** Whether the attribute can be used by AI agents/templates. Defaults to false if absent. */
++  ai_use: z.boolean().optional().default(false),
+   status: z.enum(['active', 'deprecated', 'hidden']).optional().default('active'),
+   // metadata
+   source: z.string().optional(),
+
+diff --git a/packages/api/src/services/attributesService.ts b/packages/api/src/services/attributesService.ts
+index 1234567..abcdefg 100644
+--- a/packages/api/src/services/attributesService.ts
++++ b/packages/api/src/services/attributesService.ts
+@@ -45,6 +45,7 @@ export const attributesService = {
+     import_required: data.import_required ?? data.importRequired ?? false,
+     ai_usage_notes: data.ai_usage_notes ?? data.aiUsageNotes ?? data.description,
++    ai_use: data.ai_use ?? data.aiUse ?? false,
+     status: data.status ?? 'active',
+     // metadata
+     source: data.source,
+
+diff --git a/packages/api/src/tasks/syncAttributeRegistry.ts b/packages/api/src/tasks/syncAttributeRegistry.ts
+index 1234567..abcdefg 100644
+--- a/packages/api/src/tasks/syncAttributeRegistry.ts
++++ b/packages/api/src/tasks/syncAttributeRegistry.ts
+@@ -82,6 +82,10 @@ export async function runSyncAttributeRegistry({
+   }
+ 
+   for (const attr of registry.attributes) {
++    // --- START: preserve admin-edited fields on sync (Lisa v1.0.0) ---
++    const existingDoc = await docRef.get();
++    const now = new Date().toISOString();
++
++    // Fields we preserve from existing admin edits during a registry sync.
++    // Add additional admin-editable fields here if required later.
++    const PRESERVE_FIELDS: string[] = ['ai_use'];
++
++    // Respect dry-run mode
+     if (dryRun) {
+       if (existingDoc.exists) {
+         result.skipped++;
+@@ -93,34 +97,65 @@ export async function runSyncAttributeRegistry({
+       result.attributes.push(attr.attribute_id);
+       continue;
+     }
+-    
+-    // Build payload to write
+-    const payload: Record<string, unknown> = {
++
++    // Canonical payload derived from registry
++    const registryPayload: Record<string, unknown> = {
+       attribute_id: attr.attribute_id,
+       label: attr.label,
+       external_header: attr.external_header,
+@@ -106,13 +110,6 @@ export async function runSyncAttributeRegistry({
+       import_required: attr.import_required ?? false,
+       ai_usage_notes: attr.ai_usage_notes,
+       status: attr.status ?? 'active',
+       source: resolvedSource,
+       definition_version: registryVersion,
+       syncedAt: now,
+       syncedBy: 'system:sync',
+     };
+
+     if (existingDoc.exists) {
+-      // Update existing
+-      payload.updatedAt = now;
+-      payload.updatedBy = 'system:sync';
+-      await docRef.update(payload);
++      // Preserve admin-edited fields from existing doc unless forceOverwrite
++      const existingData = existingDoc.data() || {};
++
++      // Normalize legacy property shapes (aiUse -> ai_use)
++      if (existingData.aiUse !== undefined && existingData.ai_use === undefined) {
++        existingData.ai_use = existingData.aiUse;
++      }
++
++      if (!forceOverwrite) {
++        for (const key of PRESERVE_FIELDS) {
++          if (existingData[key] !== undefined) {
++            registryPayload[key] = existingData[key];
++          }
++        }
++      }
++
++      registryPayload['updatedAt'] = now;
++      registryPayload['updatedBy'] = 'system:sync';
++
++      // Use update() to avoid wiping unrelated server-managed fields
++      await docRef.update(registryPayload);
+       result.updated++;
+       result.attributes.push(attr.attribute_id);
+       console.log(`  [UPDATE] ${attr.attribute_id}`);
+     } else {
+-      // Create new doc
+-      payload.createdAt = now;
+-      payload.createdBy = 'system:sync';
+-      payload.updatedAt = now;
+-      payload.updatedBy = 'system:sync';
+-      // default preserved/optional admin fields
+-      if ((payload as any).ai_use === undefined) {
+-        (payload as any).ai_use = false;
++      // For creates, ensure preserved fields have safe defaults
++      for (const key of PRESERVE_FIELDS) {
++        if ((registryPayload as any)[key] === undefined) {
++          (registryPayload as any)[key] = false;
++        }
+       }
+-      await docRef.create(payload);
++      registryPayload['createdAt'] = now;
++      registryPayload['createdBy'] = 'system:sync';
++      registryPayload['updatedAt'] = now;
++      registryPayload['updatedBy'] = 'system:sync';
++      await docRef.create(registryPayload);
+       result.created++;
+       result.attributes.push(attr.attribute_id);
+       console.log(`  [CREATE] ${attr.attribute_id}`);
+     }
++    // --- END: preserve admin-edited fields on sync ---
+   }
+ 
+   console.log(`\n✅ Sync complete! ${result.created} created, ${result.updated} updated, ${result.skipped} skipped`);
+
+diff --git a/packages/web/src/hooks/useAttributes.ts b/packages/web/src/hooks/useAttributes.ts
+index 1234567..abcdefg 100644
+--- a/packages/web/src/hooks/useAttributes.ts
++++ b/packages/web/src/hooks/useAttributes.ts
+@@ -18,6 +18,7 @@ export interface Attribute {
+   required_for_export?: boolean;
+   import_required?: boolean;
+   ai_usage_notes?: string;
++  ai_use?: boolean;
+   status?: 'active' | 'deprecated' | 'hidden';
+   // metadata
+   source?: string;
+
+diff --git a/packages/web/src/config/nav.ts b/packages/web/src/config/nav.ts
+index 1234567..abcdefg 100644
+--- a/packages/web/src/config/nav.ts
++++ b/packages/web/src/config/nav.ts
+@@ -45,6 +45,11 @@ export const settingsNavItems: NavItem[] = [
+     route: '/settings/attributes',
+     icon: '🏷️',
+   },
++  {
++    id: 'attributes-table',
++    label: 'Attribute Table',
++    route: '/settings/attributes/table',
++    icon: '📋',
++  },
+   {
+     id: 'catalog-requirements',
+     label: 'Catalog Requirements',
+
+diff --git a/packages/web/src/App.tsx b/packages/web/src/App.tsx
+index 1234567..abcdefg 100644
+--- a/packages/web/src/App.tsx
++++ b/packages/web/src/App.tsx
+@@ -28,6 +28,7 @@ import NotFound from './pages/NotFound';
+ 
+ // Settings imports
+ import AttributesConsole from './pages/Settings/AttributesConsole';
++import AttributesTable from './pages/Settings/AttributesTable';
+ import CatalogRequirements from './pages/Settings/CatalogRequirements';
+ import CompletionRules from './pages/Settings/CompletionRules';
+ import ExportGates from './pages/Settings/ExportGates';
+@@ -75,6 +76,7 @@ function App() {
+         <Route path="products/import" element={<ImportProducts />} />
+         {/* Settings Routes */}
+         <Route path="settings/attributes" element={<AttributesConsole />} />
++        <Route path="settings/attributes/table" element={<AttributesTable />} />
+         <Route path="settings/catalog-requirements" element={<CatalogRequirements />} />
+         <Route path="settings/completion-rules" element={<CompletionRules />} />
+         <Route path="settings/export-gates" element={<ExportGates />} />
+
+diff --git a/packages/web/src/pages/Settings/AttributesTable.tsx b/packages/web/src/pages/Settings/AttributesTable.tsx
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/packages/web/src/pages/Settings/AttributesTable.tsx
+@@ -0,0 +1,181 @@
++/* AttributesTable - settings/attributes/table
++ * Implements search, sort, pagination, AI Use quick toggle
++ */
++import { useMemo, useState, useCallback } from 'react';
++import { useAttributes, type Attribute } from '../../hooks/useAttributes';
++import { toastError, toastSuccess } from '../../lib/notifications';
++import '../../pages/Settings/Settings.css';
++
++const PAGE_SIZES = [25, 50, 75, 100];
++
++function SortIndicator({ dir }: { dir: 'asc' | 'desc' | null }) {
++  if (!dir) return null;
++  return <span style={{ marginLeft: 6 }}>{dir === 'asc' ? '▲' : '▼'}</span>;
++}
++
++export default function AttributesTable() {
++  const {
++    attributes = [],
++    loading,
++    error,
++    fetchAttributes,
++    updateAttribute,
++  } = useAttributes() as any;
++
++  const [q, setQ] = useState('');
++  const [sortKey, setSortKey] = useState<string>('label');
++  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
++  const [pageSize, setPageSize] = useState<number>(25);
++  const [pageIndex, setPageIndex] = useState<number>(0);
++  const [updatingId, setUpdatingId] = useState<string | null>(null);
++
++  const filtered = useMemo(() => {
++    const term = q.trim().toLowerCase();
++    let items = attributes || [];
++    if (term) {
++      items = items.filter((a: Attribute) =>
++        (a.label || '').toLowerCase().includes(term) ||
++        (a.category || '').toLowerCase().includes(term)
++      );
++    }
++    items = [...items].sort((a: any, b: any) => {
++      const av = (a[sortKey as keyof Attribute] ?? '') as any;
++      const bv = (b[sortKey as keyof Attribute] ?? '') as any;
++      const na = typeof av === 'boolean' ? (av ? 1 : 0) : String(av || '').toLowerCase();
++      const nb = typeof bv === 'boolean' ? (bv ? 1 : 0) : String(bv || '').toLowerCase();
++      if (na < nb) return sortDir === 'asc' ? -1 : 1;
++      if (na > nb) return sortDir === 'asc' ? 1 : -1;
++      return 0;
++    });
++    return items;
++  }, [attributes, q, sortKey, sortDir]);
++
++  const pageCount = Math.max(1, Math.ceil((filtered?.length || 0) / pageSize));
++  const pageItems = filtered?.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize) || [];
++
++  const toggleSort = (key: string) => {
++    if (sortKey === key) setSortDir(prev => (prev === 'asc' ? 'desc' : 'asc'));
++    else {
++      setSortKey(key);
++      setSortDir('asc');
++    }
++  };
++
++  const handleToggleAiUse = useCallback(async (attr: Attribute) => {
++    const id = attr.attribute_id;
++    const newVal = !Boolean(attr.ai_use);
++    setUpdatingId(id);
++    try {
++      const res = await updateAttribute(id, { ai_use: newVal });
++      if (!res || !res.ok) {
++        const err = (res && res.error) || 'Unknown error';
++        toastError(`Failed to update AI Use: ${err}`);
++      } else {
++        toastSuccess(`AI Use ${newVal ? 'enabled' : 'disabled'} for ${attr.label || id}`);
++      }
++    } catch (err: any) {
++      toastError(String(err.message || err || 'Update failed'));
++    } finally {
++      setUpdatingId(null);
++    }
++  }, [updateAttribute]);
++
++  if (loading) {
++    return (
++      <div className="settings-page">
++        <h1>Attribute Table</h1>
++        <div className="loadingInline"><div className="spinner" /> Loading attributes...</div>
++      </div>
++    );
++  }
++
++  if (error) {
++    return (
++      <div className="settings-page">
++        <h1>Attribute Table</h1>
++        <div className="errorState">
++          <p>Error loading attributes: {String(error)}</p>
++          <button className="btnPrimary" onClick={() => fetchAttributes()}>Retry</button>
++        </div>
++      </div>
++    );
++  }
++
++  return (
++    <div className="settings-page">
++      <h1>Attribute Table</h1>
++
++      <div className="tableControls" style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
++        <input
++          type="search"
++          placeholder="Search Attribute Name or Category"
++          value={q}
++          onChange={(e) => { setQ(e.target.value); setPageIndex(0); }}
++          className="formInput"
++          style={{ width: 320 }}
++        />
++        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
++          <label>Rows:</label>
++          <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPageIndex(0); }}>
++            {PAGE_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
++          </select>
++        </div>
++      </div>
++
++      <table className="settingsTable" aria-label="Attributes table">
++        <thead>
++          <tr>
++            <th onClick={() => toggleSort('label')} style={{ cursor: 'pointer' }}>Attribute Name <SortIndicator dir={sortKey === 'label' ? sortDir : null} /></th>
++            <th onClick={() => toggleSort('attribute_id')} style={{ cursor: 'pointer' }}>Attribute ID <SortIndicator dir={sortKey === 'attribute_id' ? sortDir : null} /></th>
++            <th onClick={() => toggleSort('category')} style={{ cursor: 'pointer' }}>Category <SortIndicator dir={sortKey === 'category' ? sortDir : null} /></th>
++            <th onClick={() => toggleSort('status')} style={{ cursor: 'pointer' }}>Status <SortIndicator dir={sortKey === 'status' ? sortDir : null} /></th>
++            <th onClick={() => toggleSort('data_type')} style={{ cursor: 'pointer' }}>Type <SortIndicator dir={sortKey === 'data_type' ? sortDir : null} /></th>
++            <th onClick={() => toggleSort('required_for_completion')} style={{ cursor: 'pointer' }}>Required for Completion <SortIndicator dir={sortKey === 'required_for_completion' ? sortDir : null}/></th>
++            <th onClick={() => toggleSort('required_for_export')} style={{ cursor: 'pointer' }}>Required for Export <SortIndicator dir={sortKey === 'required_for_export' ? sortDir : null}/></th>
++            <th onClick={() => toggleSort('import_required')} style={{ cursor: 'pointer' }}>Required for Import <SortIndicator dir={sortKey === 'import_required' ? sortDir : null}/></th>
++            <th onClick={() => toggleSort('ai_use')} style={{ cursor: 'pointer' }}>AI Use <SortIndicator dir={sortKey === 'ai_use' ? sortDir : null}/></th>
++          </tr>
++        </thead>
++        <tbody>
++          {pageItems.length === 0 ? (
++            <tr>
++              <td colSpan={9}>
++                <div style={{ padding: 24, textAlign: 'center' }}>No attributes match your query.</div>
++              </td>
++            </tr>
++          ) : pageItems.map((attr: Attribute) => (
++            <tr key={attr.attribute_id}>
++              <td>{attr.label}</td>
++              <td>{attr.attribute_id}</td>
++              <td>{attr.category || '-'}</td>
++              <td>{attr.status || '-'}</td>
++              <td>{attr.data_type || '-'}</td>
++              <td style={{ textAlign: 'center' }}>{attr.required_for_completion ? 'Yes' : 'No'}</td>
++              <td style={{ textAlign: 'center' }}>{attr.required_for_export ? 'Yes' : 'No'}</td>
++              <td style={{ textAlign: 'center' }}>{attr.import_required ? 'Yes' : 'No'}</td>
++              <td style={{ textAlign: 'center' }}>
++                <input
++                  type="checkbox"
++                  checked={Boolean(attr.ai_use)}
++                  disabled={updatingId === attr.attribute_id}
++                  onChange={() => handleToggleAiUse(attr)}
++                  aria-label={`AI Use for ${attr.label}`}
++                />
++              </td>
++            </tr>
++          ))}
++        </tbody>
++      </table>
++
++      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, alignItems: 'center' }}>
++        <div>Page {pageIndex + 1} of {pageCount} — {filtered?.length ?? 0} total</div>
++        <div>
++          <button className="btnSecondary" disabled={pageIndex === 0} onClick={() => setPageIndex(p => Math.max(0, p - 1))}>Prev</button>
++          <button className="btnPrimary" style={{ marginLeft: 8 }} disabled={pageIndex + 1 >= pageCount} onClick={() => setPageIndex(p => Math.min(pageCount - 1, p + 1))}>Next</button>
++        </div>
++      </div>
++    </div>
++  );
++}
+
+diff --git a/packages/web/src/components/AttributeDetailPanel.tsx b/packages/web/src/components/AttributeDetailPanel.tsx
+index 1234567..abcdefg 100644
+--- a/packages/web/src/components/AttributeDetailPanel.tsx
++++ b/packages/web/src/components/AttributeDetailPanel.tsx
+@@ -23,7 +23,7 @@ interface AttributeDetailPanelProps {
+   onClose: () => void;
+ }
+ 
+-const TABS = ['overview', 'values', 'behavior'] as const;
++const TABS = ['overview', 'values', 'behavior', 'ai-seo'] as const;
+ type TabId = typeof TABS[number];
+ 
+ export default function AttributeDetailPanel({
+@@ -60,6 +60,7 @@ export default function AttributeDetailPanel({
+           <button className={cn(styles.tab, activeTab === 'overview' && styles.active)} onClick={() => setActiveTab('overview')}>Overview</button>
+           <button className={cn(styles.tab, activeTab === 'values' && styles.active)} onClick={() => setActiveTab('values')}>Values</button>
+           <button className={cn(styles.tab, activeTab === 'behavior' && styles.active)} onClick={() => setActiveTab('behavior')}>Behavior</button>
++          <button className={cn(styles.tab, activeTab === 'ai-seo' && styles.active)} onClick={() => setActiveTab('ai-seo')}>AI & SEO</button>
+         </div>
+       </div>
+ 
+@@ -67,6 +68,7 @@ export default function AttributeDetailPanel({
+         {activeTab === 'overview' && <OverviewTab formData={formData} onChange={onChange} isCreating={isCreating} />}
+         {activeTab === 'values' && <ValuesTab formData={formData} onChange={onChange} />}
+         {activeTab === 'behavior' && <BehaviorTab formData={formData} onChange={onChange} />}
++        {activeTab === 'ai-seo' && <AiSeoTab formData={formData} onChange={onChange} />}
+       </div>
+ 
+       <div className={styles.footer}>
+@@ -262,3 +264,31 @@ function BehaviorTab({
+     </div>
+   );
+ }
++
++// AI & SEO tab
++function AiSeoTab({
++  formData,
++  onChange,
++}: {
++  formData: Partial<Attribute>;
++  onChange: (data: Partial<Attribute>) => void;
++}) {
++  return (
++    <div className={styles.tabPanel} data-testid="tab-panel-ai-seo">
++      <div className={styles.card}>
++        <h3 className={styles.cardTitle}>AI & SEO</h3>
++        <div className={styles.settingsGroup}>
++          <div className={styles.settingRow}>
++            <div>
++              <div className={styles.settingLabel}>AI Use</div>
++              <div className={styles.settingDescription}>
++                Allow AI agents and templates to use this attribute when generating content.
++              </div>
++            </div>
++            <Toggle
++              id="toggle-ai-use"
++              checked={Boolean(formData.ai_use)}
++              onChange={(checked) => onChange({ ...formData, ai_use: checked })}
++            />
++          </div>
++        </div>
++      </div>
++    </div>
++  );
++}
+
+diff --git a/scripts/set-ai-use-defaults.js b/scripts/set-ai-use-defaults.js
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/scripts/set-ai-use-defaults.js
+@@ -0,0 +1,43 @@
++/**
++ * Optional migration: set ai_use:false on all attributes that lack the field.
++ * RUN THIS ONLY IF YOU WANT ai_use TO BE PRESENT IN EVERY DOCUMENT.
++ * Homer should run this with service account credentials (DO NOT RUN LOCALLY WITHOUT CREDENTIALS).
++ */
++const admin = require('firebase-admin');
++
++if (!admin.apps.length) {
++  admin.initializeApp();
++}
++
++async function run() {
++  const db = admin.firestore();
++  const col = db.collection('settings/attributes/keys');
++  const snapshot = await col.get();
++  console.log(`Found ${snapshot.size} attribute docs`);
++  let batch = db.batch();
++  let opCount = 0;
++  const BATCH_LIMIT = 500;
++
++  for (const doc of snapshot.docs) {
++    const data = doc.data();
++    if (data.ai_use === undefined) {
++      batch.update(doc.ref, { ai_use: false });
++      opCount++;
++    }
++    if (opCount >= BATCH_LIMIT) {
++      await batch.commit();
++      console.log(`Committed ${opCount} updates`);
++      batch = db.batch();
++      opCount = 0;
++    }
++  }
++
++  if (opCount > 0) {
++    await batch.commit();
++    console.log(`Committed ${opCount} updates`);
++  }
++
++  console.log('Done');
++  process.exit(0);
++}
++
++run().catch(err => {
++  console.error('Migration failed:', err);
++  process.exit(1);
++});
+
+diff --git a/packages/sdk/test/attribute.schema.test.ts b/packages/sdk/test/attribute.schema.test.ts
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/packages/sdk/test/attribute.schema.test.ts
+@@ -0,0 +1,20 @@
++import { AttributeSchema } from '../src/schema/attribute';
++import { z } from 'zod';
++
++test('AttributeSchema accepts ai_use and defaults to false', () => {
++  const parsed = AttributeSchema.parse({
++    attribute_id: 'test_attr',
++    label: 'Test Attr',
++    data_type: 'string',
++  } as any);
++  expect(parsed.ai_use).toBe(false);
++
++  const parsedTrue = AttributeSchema.parse({
++    attribute_id: 'test_attr2',
++    label: 'Test Attr 2',
++    data_type: 'string',
++    ai_use: true,
++  } as any);
++  expect(parsedTrue.ai_use).toBe(true);
++});
