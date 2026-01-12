@@ -111,6 +111,11 @@ import {
   applyHandler,
 } from './endpoints/describe';
 
+// AI Describe Feature - Registry-based AI product description generation
+import {
+  aiDescribeHandler,
+} from './endpoints/aiDescribe';
+
 // LP-obs-studio-cleanup-1.6.6: Product-level observation handlers
 import {
   patchProductObservationHandler,
@@ -317,6 +322,8 @@ api.post('/products/:mpn/apply-suggestion', resolveProductIdentifier, applySugge
 // LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe endpoints
 api.post('/products/:mpn/describe', resolveProductIdentifier, describeHandler);
 api.post('/products/:mpn/apply', resolveProductIdentifier, applyHandler);
+// AI Describe Feature - Registry-based AI product description generation
+api.post('/products/:mpn/ai-describe', resolveProductIdentifier, aiDescribeHandler);
 // LP-obs-studio-cleanup-1.6.6: Product-level observation endpoints
 api.get('/products/:mpn/observation', resolveProductIdentifier, getProductObservationHandler);
 api.patch('/products/:mpn/observation', resolveProductIdentifier, patchProductObservationHandler);
