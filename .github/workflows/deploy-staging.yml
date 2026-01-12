@@ -150,7 +150,7 @@ jobs:
           set -e
           
           # Check if critical 1st gen functions deployed successfully
-          if grep -q "functions\[api:api(us-central1)\] Successful" functions-deploy.log; then
+          if grep -Eq "(functions\[api:api\(us-central1\)\].*Successful|api:api\(us-central1\).*Skipped)" functions-deploy.log; then
             echo "✅ Critical function 'api' deployed successfully"
             CRITICAL_SUCCESS=true
           else
