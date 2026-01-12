@@ -72,11 +72,12 @@ interface ProductObservation {
  */
 export async function patchProductObservationHandler(req: Request, res: Response) {
   await requireAuth(req, res, async () => {
-    const productId = req.params.productId;
+    // Get product reference from resolveProductIdentifier middleware
+    const productRef = res.locals.productDocRef;
     const body = req.body as ProductObservationBody;
 
     // Validate required fields
-    if (!productId) {
+    if (!productRef) {
       res.status(400).json({
         error: 'MISSING_PRODUCT_ID',
         message: 'Product ID is required',
@@ -108,13 +109,13 @@ export async function patchProductObservationHandler(req: Request, res: Response
     const images = body.images || [];
 
     try {
-      const productRef = db.collection('products').doc(productId);
+      // Use the resolved product reference from middleware (already exists check done)
       const productDoc = await productRef.get();
 
       if (!productDoc.exists) {
         res.status(404).json({
           error: 'PRODUCT_NOT_FOUND',
-          message: `Product '${productId}' not found`,
+          message: `Product '${productRef.id}' not found`,
         });
         return;
       }
@@ -176,7 +177,7 @@ export async function patchProductObservationHandler(req: Request, res: Response
         action,
         appliedBy: actor,
         actorEmail,
-        productId,
+        productId: productRef.id,
         payload: {
           tags: body.tags,
           images: images,
@@ -191,7 +192,7 @@ export async function patchProductObservationHandler(req: Request, res: Response
 
       res.status(200).json({
         success: true,
-        productId,
+        productId: productRef.id,
         observation,
       });
     } catch (error) {
@@ -211,9 +212,10 @@ export async function patchProductObservationHandler(req: Request, res: Response
  */
 export async function getProductObservationHandler(req: Request, res: Response) {
   await requireAuth(req, res, async () => {
-    const productId = req.params.productId;
+    // Get product reference from resolveProductIdentifier middleware
+    const productRef = res.locals.productDocRef;
 
-    if (!productId) {
+    if (!productRef) {
       res.status(400).json({
         error: 'MISSING_PRODUCT_ID',
         message: 'Product ID is required',
@@ -221,15 +223,13 @@ export async function getProductObservationHandler(req: Request, res: Response) 
       return;
     }
 
-    const db = admin.firestore();
-
     try {
-      const productDoc = await db.collection('products').doc(productId).get();
+      const productDoc = await productRef.get();
 
       if (!productDoc.exists) {
         res.status(404).json({
           error: 'PRODUCT_NOT_FOUND',
-          message: `Product '${productId}' not found`,
+          message: `Product '${productRef.id}' not found`,
         });
         return;
       }
@@ -238,7 +238,7 @@ export async function getProductObservationHandler(req: Request, res: Response) 
       const observation = productData.observation || { tags: [], images: [], updatedAt: null, updatedBy: null };
 
       res.status(200).json({
-        productId,
+        productId: productRef.id,
         observation,
       });
     } catch (error) {
@@ -258,9 +258,10 @@ export async function getProductObservationHandler(req: Request, res: Response) 
  */
 export async function deleteProductObservationHandler(req: Request, res: Response) {
   await requireAuth(req, res, async () => {
-    const productId = req.params.productId;
+    // Get product reference from resolveProductIdentifier middleware
+    const productRef = res.locals.productDocRef;
 
-    if (!productId) {
+    if (!productRef) {
       res.status(400).json({
         error: 'MISSING_PRODUCT_ID',
         message: 'Product ID is required',
@@ -268,16 +269,13 @@ export async function deleteProductObservationHandler(req: Request, res: Respons
       return;
     }
 
-    const db = admin.firestore();
-
     try {
-      const productRef = db.collection('products').doc(productId);
       const productDoc = await productRef.get();
 
       if (!productDoc.exists) {
         res.status(404).json({
           error: 'PRODUCT_NOT_FOUND',
-          message: `Product '${productId}' not found`,
+          message: `Product '${productRef.id}' not found`,
         });
         return;
       }
@@ -310,7 +308,7 @@ export async function deleteProductObservationHandler(req: Request, res: Respons
         type: 'observation.clear',
         appliedBy: actor,
         actorEmail,
-        productId,
+        productId: productRef.id,
         previousTags,
         timestamp: now,
       });
@@ -319,7 +317,7 @@ export async function deleteProductObservationHandler(req: Request, res: Respons
 
       res.status(200).json({
         success: true,
-        productId,
+        productId: productRef.id,
         observation,
       });
     } catch (error) {

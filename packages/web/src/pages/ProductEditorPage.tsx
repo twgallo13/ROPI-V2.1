@@ -202,7 +202,7 @@ function ProductEditorPage() {
             />
             
             <ObservationsPanel
-              productId={product.id}
+              productId={productId}
             />
             
             <SmartSuggestionsPanel
