@@ -18,6 +18,7 @@ esbuild.build({
   sourcemap: true,
   alias: {
     '@ropi-aoss/sdk': path.resolve(__dirname, '../sdk/src/index.ts'),
+    '@ropi-aoss/shared': path.resolve(__dirname, '../shared/src/index.ts'),
   },
   external: [
     // Firebase and core dependencies (provided by Cloud Functions runtime)

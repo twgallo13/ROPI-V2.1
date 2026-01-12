@@ -8,6 +8,7 @@
 
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
+import { normalizeMPN, getProductDocRefByMPN } from '@ropi-aoss/shared';
 import { requireAdmin } from '../middleware/auth';
 import { validateSmartRule, RuleSchema } from '@ropi-aoss/sdk';
 import { processImportWithSmartRules } from '../functions/smartRulesImport';
@@ -142,13 +143,22 @@ export async function getImportEvalHandler(req: Request, res: Response) {
       
       const db = admin.firestore();
       
-      // Fetch product
-      const productDoc = await db.collection('products').doc(productId).get();
+      // Use canonical MPN resolution instead of direct document lookup
+      const productRef = await getProductDocRefByMPN(db, productId); // productId is actually MPN in this context
       
+      if (!productRef) {
+        res.status(404).json({ 
+          error: 'PRODUCT_NOT_FOUND', 
+          message: `Product not found for identifier: ${productId}` 
+        });
+        return;
+      }
+      
+      const productDoc = await productRef.get();
       if (!productDoc.exists) {
         res.status(404).json({ 
           error: 'PRODUCT_NOT_FOUND', 
-          message: `Product ${productId} not found` 
+          message: `Product document missing for identifier: ${productId}` 
         });
         return;
       }

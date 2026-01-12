@@ -17,7 +17,9 @@
   - Contains: staging parameterization + canonical MPN remediation system
 
 ## STEP 2: DEPLOY TO STAGING (ropi-bccee/aoss-staging) ⏳ IN PROGRESS
-- [⏳] Deploy Firestore rules: firebase deploy --project=ropi-bccee --only firestore:rules
+- [✅] Deploy Firestore rules: firebase deploy --project=ropi-bccee --only firestore:rules
+- [✅] Deploy Firestore indexes: firebase deploy --project=ropi-bccee --only firestore:indexes
+- [⏳] Build and deploy functions: firebase deploy --project=ropi-bccee --only functions
 - [ ] Deploy Firestore indexes: firebase deploy --project=aoss-main --only firestore:indexes  
 - [ ] Build and deploy functions: firebase deploy --project=aoss-main --only functions
 - [ ] Build and deploy hosting: firebase deploy --project=aoss-main --only hosting

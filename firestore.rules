@@ -87,29 +87,50 @@ service cloud.firestore {
     // All product attribute updates must go through server API endpoints.
     // This prevents unexpected attribute mutation from client-side code.
     //
-    // MPN Enforcement Rules:
-    // - On create: normalized_mpn must equal productId and mpn must be present
-    // - On update: mpn and normalized_mpn are immutable
+    // MPN Enforcement Rules (Updated for Canonical MPN LP):
+    // - On create: mpn_normalized must equal productId and mpn must be present
+    // - On update: mpn and mpn_normalized are immutable
+    // - All documents must maintain mpn_normalized field consistency
     match /products/{productId} {
       // Read: authenticated users can read products
       allow read: if request.auth != null;
       
-      // Create: enforce document ID = normalized_mpn and require mpn
+      // Create: enforce document ID = mpn_normalized and require mpn
       allow create: if request.auth != null
                     && (isAdmin() || isAdminViaMetadata())
                     && request.resource.data.mpn is string
-                    && request.resource.data.normalized_mpn == productId;
+                    && request.resource.data.mpn_normalized is string
+                    && request.resource.data.mpn_normalized == productId;
       
       // Update: enforce mpn immutability and admin access
       allow update: if request.auth != null
                     && (isAdmin() || isAdminViaMetadata())
                     && (
-                      // Allow updates that don't change mpn or normalized_mpn
+                      // Allow updates that don't change mpn or mpn_normalized
                       (!('mpn' in request.resource.data) || resource.data.mpn == request.resource.data.mpn)
-                      && (!('normalized_mpn' in request.resource.data) || resource.data.normalized_mpn == request.resource.data.normalized_mpn)
+                      && (!('mpn_normalized' in request.resource.data) || resource.data.mpn_normalized == request.resource.data.mpn_normalized)
                     );
       
       // Delete: admin only
+      allow delete: if request.auth != null 
+                    && (isAdmin() || isAdminViaMetadata());
+    }
+
+    // ========================================
+    // PRODUCT MAPPINGS COLLECTION (Canonical MPN LP)
+    // ========================================
+    // Explicit mapping collection for MPN normalization
+    // Document ID: normalized_mpn
+    // Data: { productDocId: string, createdAt: timestamp, source: string }
+    match /product_mappings/{mpn} {
+      // Read: authenticated users can read mappings for product resolution
+      allow read: if request.auth != null;
+      
+      // Create/Update: admin and system services (for migration and legacy lookup)
+      allow create, update: if request.auth != null 
+                            && (isAdmin() || isAdminViaMetadata());
+      
+      // Delete: admin only (for cleanup)
       allow delete: if request.auth != null 
                     && (isAdmin() || isAdminViaMetadata());
     }

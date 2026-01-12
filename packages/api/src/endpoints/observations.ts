@@ -12,8 +12,7 @@
 
 import * as admin from 'firebase-admin';
 import type { Request, Response } from 'express';
-import { requireAuth, type AuthenticatedRequest } from '../middleware/auth';
-// Using direct path to SDK config - esbuild alias for @ropi-aoss/sdk points to index.ts, not package root
+import { requireAuth, type AuthenticatedRequest } from '../middleware/auth';import { normalizeMPN, getProductDocRefByMPN } from '@ropi-aoss/shared';// Using direct path to SDK config - esbuild alias for @ropi-aoss/sdk points to index.ts, not package root
 import attributeRegistry from '../../../sdk/config/attributeRegistry.json';
 
 // Valid top-level product fields
@@ -157,22 +156,22 @@ export async function createObservationHandler(req: Request, res: Response) {
     const now = admin.firestore.FieldValue.serverTimestamp();
 
     try {
-      // Look up product by MPN to get productId
-      const productsSnapshot = await db
-        .collection('products')
-        .where('mpn', '==', body.product_mpn)
-        .limit(1)
-        .get();
-
+      // Use canonical MPN resolution instead of direct query
+      const normalizedMpn = normalizeMPN(body.product_mpn);
       let productId: string | null = null;
-      if (!productsSnapshot.empty) {
-        productId = productsSnapshot.docs[0].id;
+      
+      if (normalizedMpn) {
+        const productRef = await getProductDocRefByMPN(db, normalizedMpn);
+        if (productRef) {
+          productId = productRef.id;
+        }
       }
 
       // Create observation document
       const observationData = {
         productId: productId,
         product_mpn: body.product_mpn,
+        mpn_normalized: normalizedMpn, // Add normalized MPN for consistent queries
         title: body.text.substring(0, 100), // Use first 100 chars as title
         body: body.description || '',
         text: body.text,
@@ -225,8 +224,17 @@ export async function listObservationsHandler(req: Request, res: Response) {
       let query: admin.firestore.Query = db.collection('observations');
 
       if (productMpn) {
-        query = query.where('product_mpn', '==', productMpn);
+        // First try normalized MPN query for new observations
+        const normalizedMpn = normalizeMPN(productMpn);
+        if (normalizedMpn) {
+          query = query.where('mpn_normalized', '==', normalizedMpn);
+        } else {
+          // Fallback to legacy product_mpn field
+          query = query.where('product_mpn', '==', productMpn);
+        }
       } else if (productId) {
+        // Legacy productId support - log for monitoring
+        console.warn('[observations] Using legacy productId filter:', productId);
         query = query.where('productId', '==', productId);
       }
 

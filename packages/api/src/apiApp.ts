@@ -10,6 +10,7 @@
 import express, { Application, Router } from 'express';
 import cors from 'cors';
 import { requireAdmin } from './middleware/auth';
+import { resolveProductIdentifier } from './lib/resolveProductIdentifier';
 
 // Admin handlers
 import {
@@ -298,30 +299,30 @@ api.get('/products/search-mpn', searchProductsByMpnHandler);
 api.get('/products/by-mpn/:mpn', getProductByMpnHandler);
 // LP-products-list-remediation-006: Register bulk-delete BEFORE :productId routes
 api.post('/products/bulk-delete', bulkDeleteProductsHandler);
-  api.get('/products/:productId/completion', getProductCompletionHandler);
-  api.get('/products/:productId', getProductHandler);
-api.patch('/products/:productId/attributes', patchProductAttributesHandler);
+  api.get('/products/:mpn/completion', resolveProductIdentifier, getProductCompletionHandler);
+  api.get('/products/:mpn', resolveProductIdentifier, getProductHandler);
+api.patch('/products/:mpn/attributes', resolveProductIdentifier, patchProductAttributesHandler);
 
 // Image upload endpoints - use :mpn parameter for MPN-based routing
-api.post('/products/:mpn/images/sign', signImageUploadHandler);
-api.post('/products/:mpn/images', registerImageHandler);
-api.get('/products/:mpn/images/:imageId/url', getImageViewUrlHandler);
+api.post('/products/:mpn/images/sign', resolveProductIdentifier, signImageUploadHandler);
+api.post('/products/:mpn/images', resolveProductIdentifier, registerImageHandler);
+api.get('/products/:mpn/images/:imageId/url', resolveProductIdentifier, getImageViewUrlHandler);
 
 // Launch endpoints - use :mpn parameter for MPN-based routing  
-api.post('/products/:mpn/launch', createLaunchHandler);
-api.get('/products/:mpn/launch', getLaunchHandler);
+api.post('/products/:mpn/launch', resolveProductIdentifier, createLaunchHandler);
+api.get('/products/:mpn/launch', resolveProductIdentifier, getLaunchHandler);
 // LP-obs-studio-cleanup-1.4.0: Observation-based suggestions endpoints
-api.post('/products/:productId/suggestions', generateSuggestionsHandler);
-api.post('/products/:productId/apply-suggestion', applySuggestionHandler);
+api.post('/products/:mpn/suggestions', resolveProductIdentifier, generateSuggestionsHandler);
+api.post('/products/:mpn/apply-suggestion', resolveProductIdentifier, applySuggestionHandler);
 // LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe endpoints
-api.post('/products/:productId/describe', describeHandler);
-api.post('/products/:productId/apply', applyHandler);
+api.post('/products/:mpn/describe', resolveProductIdentifier, describeHandler);
+api.post('/products/:mpn/apply', resolveProductIdentifier, applyHandler);
 // LP-obs-studio-cleanup-1.6.6: Product-level observation endpoints
-api.get('/products/:productId/observation', getProductObservationHandler);
-api.patch('/products/:productId/observation', patchProductObservationHandler);
-api.delete('/products/:productId/observation', deleteProductObservationHandler);
+api.get('/products/:mpn/observation', resolveProductIdentifier, getProductObservationHandler);
+api.patch('/products/:mpn/observation', resolveProductIdentifier, patchProductObservationHandler);
+api.delete('/products/:mpn/observation', resolveProductIdentifier, deleteProductObservationHandler);
 // LP-products-list-remediation-006: Delete single product
-api.delete('/products/:productId', deleteProductHandler);
+api.delete('/products/:mpn', resolveProductIdentifier, deleteProductHandler);
 
 /**
  * Observations endpoints (LP-1.1.1)
