@@ -1,0 +1,46 @@
+=== USER CLAIMS CAPTURE - ropi-bccee ===
+Date: 2026-01-12T08:53:25.527Z
+Project: ropi-bccee
+User: theo@shiekhshoes.org
+
+User UID: sPgXgUARnVRmGzZOIS9hGCneX0G2
+
+Custom Claims:
+{
+  "role": "admin"
+}
+
+Admin Document (metadata/admins):
+{
+  "emails": [
+    "theo@shiekhshoes.org",
+    "theo@shiekh.com"
+  ],
+  "updatedAt": {
+    "_seconds": 1764694118,
+    "_nanoseconds": 418000000
+  },
+  "updatedBy": "system"
+}
+
+=== EXPORT DATA ===
+{
+  "timestamp": "2026-01-12T08:53:39.855Z",
+  "project": "ropi-bccee",
+  "userEmail": "theo@shiekhshoes.org",
+  "userUID": "sPgXgUARnVRmGzZOIS9hGCneX0G2",
+  "customClaims": {
+    "role": "admin"
+  },
+  "adminDocument": {
+    "emails": [
+      "theo@shiekhshoes.org",
+      "theo@shiekh.com"
+    ],
+    "updatedAt": {
+      "_seconds": 1764694118,
+      "_nanoseconds": 418000000
+    },
+    "updatedBy": "system"
+  }
+}

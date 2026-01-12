@@ -1,0 +1,46 @@
+=== SAVE FAILURE DIAGNOSIS ===
+Date: 2026-01-12
+Project: ropi-bccee
+User: theo@shiekhshoes.org
+
+ROOT CAUSE: MISSING AUTHENTICATION TOKEN
+
+DIAGNOSIS: The save failure is due to MISSING AUTHENTICATION, not rules or claims issues.
+
+EVIDENCE ANALYSIS:
+
+1. **CLIENT REQUEST:** PATCH /api/products/109-test/attributes
+   - Missing Authorization header
+   - No session cookie provided
+   - Request made without authentication
+
+2. **SERVER RESPONSE:** HTTP 401
+   - Error: "INVALID_AUTH_TOKEN" 
+   - Reason: "missing_or_invalid_token"
+   - Message: "Valid authentication token required. Include Authorization: Bearer <token> header or __session cookie."
+
+3. **USER CLAIMS STATUS:** ✅ VALID
+   - User UID: sPgXgUARnVRmGzZOIS9hGCneX0G2
+   - Custom Claims: { "role": "admin" }
+   - Admin Document: Contains theo@shiekhshoes.org in emails array
+   - Claims are properly configured
+
+4. **FIRESTORE RULES:** ✅ CONFIGURED CORRECTLY
+   - isAdmin() function checks request.auth.token.role == 'admin'
+   - isAdminViaMetadata() provides fallback for staging
+   - Rules expect authenticated requests
+
+5. **ADMIN SDK:** ✅ WORKS
+   - Admin SDK can read/write product 109-test
+   - Full database access confirmed
+   - Bypasses authentication as expected
+
+DEFINITIVE CAUSE: **AUTHENTICATION** - The client is making API calls without including authentication tokens (Authorization header or session cookie). The user has valid admin claims, but the request never reaches the authorization layer because it lacks authentication entirely.
+
+REQUIRED FIX: Ensure the staging UI includes proper authentication tokens in API requests.
+
+NOT CAUSED BY:
+- ❌ Rules (rules are correctly configured to allow admin access)
+- ❌ Claims (user has valid admin role claim)  
+- ❌ Wrong path (correct API endpoint targeted)
+- ❌ Collection issues (correct products collection)

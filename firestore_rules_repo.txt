@@ -1,0 +1,336 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========================================
+    // HELPER FUNCTIONS
+    // ========================================
+    
+    /**
+     * Check if user is admin via custom claims (production) or metadata fallback (staging)
+     * 
+     * PROMPT_018C_vB: IAM via Custom Claims
+     */
+    function isAdmin() {
+      // Priority 1: Custom claims (production)
+      return request.auth != null && request.auth.token.role == 'admin';
+    }
+    
+    /**
+     * Check if user is admin via metadata/admins fallback (staging only)
+     * 
+     * Note: This requires reading metadata/admins, which should only be used
+     * as a fallback when custom claims are not set.
+     */
+    function isAdminViaMetadata() {
+      return request.auth != null 
+             && exists(/databases/$(database)/documents/metadata/admins)
+             && request.auth.token.email in get(/databases/$(database)/documents/metadata/admins).data.emails;
+    }
+    
+    /**
+     * Check if user has a write-capable role that requires email verification
+     * 
+     * PROMPT_018C_vB: Email Verification Policy
+     * Roles: admin, merch, buyer, photographer
+     */
+    function requiresEmailVerification() {
+      return request.auth != null 
+             && (
+               request.auth.token.role == 'admin'
+               || request.auth.token.role == 'merch'
+               || request.auth.token.role == 'buyer'
+               || request.auth.token.role == 'photographer'
+             );
+    }
+    
+    /**
+     * Check if email is verified (production enforcement)
+     * 
+     * For staging: This check is advisory (client shows banner)
+     * For production: This check blocks writes for write-capable roles
+     */
+    function isEmailVerified() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    
+    // ========================================
+    // OBSERVATIONS COLLECTION (LP-observations-srot-1.0.0 — Read-Only)
+    // ========================================
+    // Related Notion docs:
+    // - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+    // - Section 9 — Security & IAM: https://www.notion.so/2b845ee1ec5a81739de7fc1743de9a33
+    //
+    // LP-observations-srot-1.0.0: Legacy observations collection is now READ-ONLY.
+    // All observation writes must go through the product.observation SRoT endpoint:
+    //   PATCH /api/products/:productId/observation
+    // Legacy collection is kept for backward-compatible reads during migration.
+    match /observations/{observationId} {
+      // Allow authenticated users to read all observations (migration period)
+      allow read: if request.auth != null;
+      
+      // DEPRECATED: Client writes blocked. Use /api/products/:productId/observation
+      // Server-side writes are allowed via Admin SDK (bypasses rules)
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // ========================================
+    // PRODUCTS COLLECTION (LP-2.1.4 — Lockdown + MPN Enforcement)
+    // ========================================
+    // Related Notion docs:
+    // - Section 2.1 — Product Schema
+    // - Section 9 — Security & IAM
+    //
+    // LP-2.1.4: Lock down direct client writes to products/*
+    // All product attribute updates must go through server API endpoints.
+    // This prevents unexpected attribute mutation from client-side code.
+    //
+    // MPN Enforcement Rules (Updated for Canonical MPN LP):
+    // - On create: mpn_normalized must equal productId and mpn must be present
+    // - On update: mpn and mpn_normalized are immutable
+    // - All documents must maintain mpn_normalized field consistency
+    match /products/{productId} {
+      // Read: authenticated users can read products
+      allow read: if request.auth != null;
+      
+      // Create: enforce document ID = mpn_normalized and require mpn
+      allow create: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && request.resource.data.mpn is string
+                    && request.resource.data.mpn_normalized is string
+                    && request.resource.data.mpn_normalized == productId;
+      
+      // Update: enforce mpn immutability and admin access
+      allow update: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && (
+                      // Allow updates that don't change mpn or mpn_normalized
+                      (!('mpn' in request.resource.data) || resource.data.mpn == request.resource.data.mpn)
+                      && (!('mpn_normalized' in request.resource.data) || resource.data.mpn_normalized == request.resource.data.mpn_normalized)
+                    );
+      
+      // Delete: admin only
+      allow delete: if request.auth != null 
+                    && (isAdmin() || isAdminViaMetadata());
+    }
+
+    // ========================================
+    // PRODUCT MAPPINGS COLLECTION (Canonical MPN LP)
+    // ========================================
+    // Explicit mapping collection for MPN normalization
+    // Document ID: normalized_mpn
+    // Data: { productDocId: string, createdAt: timestamp, source: string }
+    match /product_mappings/{mpn} {
+      // Read: authenticated users can read mappings for product resolution
+      allow read: if request.auth != null;
+      
+      // Create/Update: admin and system services (for migration and legacy lookup)
+      allow create, update: if request.auth != null 
+                            && (isAdmin() || isAdminViaMetadata());
+      
+      // Delete: admin only (for cleanup)
+      allow delete: if request.auth != null 
+                    && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // ========================================
+    // LAUNCH SIGNUPS COLLECTION (PROMPT_018C_vB)
+    // ========================================
+    // Related Notion docs:
+    // - Section 7 — Launch Calendar: https://www.notion.so/27e45ee1ec5a81ecac18fa5c2bf3842e
+    // - Launch Calendar DB Schema: https://www.notion.so/29745ee1ec5a80be8b83f113074a1837
+    // - PROMPT_018C_vB Spec: Sprint B — Launch Calendar Signup Flow
+    //
+    // Document ID format: `${launchId}_${sha256(email || uid)}` (idempotent)
+    // Supports both account-based and public email signups
+    match /launchSignups/{signupId} {
+      // Allow authenticated users to create account-based signups
+      // Validate required fields and ensure userUid matches auth.uid (if present)
+      allow create: if (
+                      // Account-based signup (requires auth)
+                      (request.auth != null
+                       && request.resource.data.userUid == request.auth.uid
+                       && request.resource.data.source == 'aoss-web'
+                       && request.resource.data.keys().hasAll(['launchId', 'productId', 'userUid', 'createdAt', 'source', 'status'])
+                       && request.resource.data.status == 'active')
+                      // Public email signup (no auth required, if enabled)
+                      || (request.resource.data.userUid == null
+                          && request.resource.data.source == 'public-form'
+                          && request.resource.data.keys().hasAll(['launchId', 'productId', 'email', 'createdAt', 'source', 'status'])
+                          && request.resource.data.status == 'active')
+                    );
+      
+      // Allow users to read their own signups (account-based only)
+      // Allow admins to read all signups
+      allow read: if request.auth != null
+                  && (
+                    (isAdmin() || isAdminViaMetadata())
+                    || resource.data.userUid == request.auth.uid
+                  );
+      
+      // Allow users to cancel their own signups (change status to 'cancelled')
+      // Allow admins to update any signup
+      allow update: if request.auth != null
+                    && (
+                      (isAdmin() || isAdminViaMetadata())
+                      || (resource.data.userUid == request.auth.uid
+                          && request.resource.data.status == 'cancelled'
+                          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']))
+                    );
+      
+      // No deletes (signups are immutable, use status='cancelled' instead)
+      allow delete: if false;
+    }
+    
+    // ========================================
+    // METADATA COLLECTION (PROMPT_018B)
+    // ========================================
+    // Contains admin allow-list and other system metadata
+    // Read-only for authenticated users (no writes via client)
+    match /metadata/{docId} {
+      // Allow authenticated users to read metadata (for admin detection)
+      allow read: if request.auth != null;
+      
+      // No client writes to metadata (only via server/scripts)
+      allow write: if false;
+    }
+    
+    // ========================================
+    // IMPORT BATCHES COLLECTION (PROMPT_019A_vA)
+    // ========================================
+    // Related Notion docs:
+    // - Section 3.1 — Import Engine Row Schema
+    // - Section 3.2 — Import Normalization Rules
+    // - ROPI API overview (/api/import)
+    //
+    // Import batches store metadata about CSV imports from RetailOps
+    // Only admins can write; admins and merch roles can read
+    match /import_batches/{batchId} {
+      // Allow admins and merch roles to read batch metadata
+      allow read: if request.auth != null
+                  && (
+                    (isAdmin() || isAdminViaMetadata())
+                    || request.auth.token.role == 'merch'
+                  );
+      
+      // Only admins can create/update batches (typically via Cloud Functions)
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+      
+      // Import rows subcollection
+      match /rows/{rowId} {
+        // Allow admins and merch roles to read import rows
+        allow read: if request.auth != null
+                    && (
+                      (isAdmin() || isAdminViaMetadata())
+                      || request.auth.token.role == 'merch'
+                    );
+        
+        // Only admins can write import rows (via Cloud Functions)
+        allow write: if request.auth != null
+                     && (isAdmin() || isAdminViaMetadata());
+      }
+    }
+    
+    // ========================================
+    // SETTINGS COLLECTION (Lisa v0.2.0-rc)
+    // ========================================
+    // Related Notion docs:
+    // - Admin UI Build Spec — Settings CRUD
+    // - Section 2.2 — Attribute Validation Schema
+    //
+    // Settings store configuration for Attributes, Smart Rules, AI Templates
+    // Admin-only read/write access
+    
+    // Attributes subcollection: settings/attributes/keys/{attributeId}
+    match /settings/attributes/keys/{attributeId} {
+      // Only admins can read attribute definitions
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      
+      // Only admins can write attribute definitions
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // Smart Rules subcollection: settings/smartRules/rules/{ruleId}
+    match /settings/smartRules/rules/{ruleId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow create, update: if request.auth != null
+                            && (isAdmin() || isAdminViaMetadata());
+      allow delete: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && !(resource.data.meta.protected == true);
+    }
+    
+    // Rule Packs: settings/smartRules/packs/{packId}
+    // Admins can list/read/write rule packs. Packs are used to group rules.
+    match /settings/smartRules/packs/{packId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // Smart Rules Audit: settings/smartRules/audit/{auditId}
+    // Admins can read audit activity; only admins/server may create audit entries.
+    match /settings/smartRules/audit/{auditId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      // Writes to audit should be created by server-side processes or admins only.
+      allow create: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata());
+      // Prevent client-side updates/deletes of audit entries.
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // AI Templates subcollection: settings/aiTemplates/templates/{templateKey}
+    match /settings/aiTemplates/templates/{templateKey} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // ========================================
+    // COMPLETION RULES CONFIGURATION (LP-completion-model-export-gate-1.0.0)
+    // ========================================
+    // Authoritative configuration document for completion evaluation engine
+    // - Canonical path: settings/exportSettings (top-level doc with completionRules field)
+    // - Versioned snapshots: settings/exportSettings/completionRulesVersions/{rulesVersion}
+    // - Audit trail: settings/exportSettings/completionRulesAudit/{eventId}
+    
+    match /settings/exportSettings {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    match /settings/exportSettings/completionRulesVersions/{rulesVersion} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    match /settings/exportSettings/completionRulesAudit/{eventId} {
+      allow read: if request.auth != null
+                  && (isAdmin() || isAdminViaMetadata());
+      allow write: if request.auth != null
+                   && (isAdmin() || isAdminViaMetadata());
+    }
+    
+    // ========================================
+    // DEFAULT DENY
+    // ========================================
+    // Deny access to all other collections by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,80 @@
+=== FIRESTORE RULES DEBUG CHECK ===
+Date: Mon Jan 12 09:00:47 UTC 2026
+Project: ropi-bccee
+Target: products collection access
+
+=== RULES ANALYSIS ===
+    // - Workflow W1 — Observations: https://www.notion.so/2b845ee1ec5a81b5a4a6d3ea439ec277
+    // - Section 9 — Security & IAM: https://www.notion.so/2b845ee1ec5a81739de7fc1743de9a33
+    //
+    // LP-observations-srot-1.0.0: Legacy observations collection is now READ-ONLY.
+    // All observation writes must go through the product.observation SRoT endpoint:
+    //   PATCH /api/products/:productId/observation
+    // Legacy collection is kept for backward-compatible reads during migration.
+    match /observations/{observationId} {
+      // Allow authenticated users to read all observations (migration period)
+      allow read: if request.auth != null;
+      
+      // DEPRECATED: Client writes blocked. Use /api/products/:productId/observation
+      // Server-side writes are allowed via Admin SDK (bypasses rules)
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // ========================================
+    // PRODUCTS COLLECTION (LP-2.1.4 — Lockdown + MPN Enforcement)
+    // ========================================
+    // Related Notion docs:
+    // - Section 2.1 — Product Schema
+    // - Section 9 — Security & IAM
+    //
+    // LP-2.1.4: Lock down direct client writes to products/*
+    // All product attribute updates must go through server API endpoints.
+    // This prevents unexpected attribute mutation from client-side code.
+    //
+    // MPN Enforcement Rules (Updated for Canonical MPN LP):
+    // - On create: mpn_normalized must equal productId and mpn must be present
+    // - On update: mpn and mpn_normalized are immutable
+    // - All documents must maintain mpn_normalized field consistency
+    match /products/{productId} {
+      // Read: authenticated users can read products
+      allow read: if request.auth != null;
+      
+      // Create: enforce document ID = mpn_normalized and require mpn
+      allow create: if request.auth != null
+                    && (isAdmin() || isAdminViaMetadata())
+                    && request.resource.data.mpn is string
+                    && request.resource.data.mpn_normalized is string
+                    && request.resource.data.mpn_normalized == productId;
+      
+      // Update: enforce mpn immutability and admin access
+
+=== ADMIN CHECK FUNCTIONS ===
+    function isAdmin() {
+      // Priority 1: Custom claims (production)
+      return request.auth != null && request.auth.token.role == 'admin';
+    }
+    
+    /**
+     * Check if user is admin via metadata/admins fallback (staging only)
+     * 
+     * Note: This requires reading metadata/admins, which should only be used
+     * as a fallback when custom claims are not set.
+     */
+    function isAdminViaMetadata() {
+      return request.auth != null 
+             && exists(/databases/$(database)/documents/metadata/admins)
+             && request.auth.token.email in get(/databases/$(database)/documents/metadata/admins).data.emails;
+    }
+    
+    /**
+     * Check if user has a write-capable role that requires email verification
+     * 
+     * PROMPT_018C_vB: Email Verification Policy
+     * Roles: admin, merch, buyer, photographer
+     */
+    function requiresEmailVerification() {
+      return request.auth != null 
+             && (
+               request.auth.token.role == 'admin'
