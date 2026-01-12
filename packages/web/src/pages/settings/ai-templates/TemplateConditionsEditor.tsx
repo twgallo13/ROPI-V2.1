@@ -21,7 +21,9 @@ const COMMON_ATTRIBUTES = [
 ];
 
 function TemplateConditionsEditor({ conditions, onChange }: TemplateConditionsEditorProps) {
-  const [showAddForm, setShowAddForm] = useState(false);
+  // Future enhancement placeholder - keeping for potential add form UI
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_showAddForm, setShowAddForm] = useState(false);
 
   function generateConditionId(): string {
     return `cond_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

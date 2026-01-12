@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { apiFetch } from '../../lib/api';
+import { apiFetch } from '@/lib/apiFetch';
 
 interface TestPreviewModalProps {
   isOpen: boolean;
@@ -80,7 +80,7 @@ function TestPreviewModal({
 
     try {
       // First, test the template logic
-      const previewResponse = await apiFetch('/admin/ai-templates/preview', {
+      const previewData = await apiFetch<any>('/admin/ai-templates/preview', {
         method: 'POST',
         body: JSON.stringify({
           templateKey: templateKey || 'test_template',
@@ -93,8 +93,6 @@ function TestPreviewModal({
           }
         })
       });
-
-      const previewData = await previewResponse.json();
 
       setProduct(previewData.product || { id: 'test', mpn: testMpn, site: testSite });
       setGeneratedPrompt(previewData.generatedPrompt || 'Error generating prompt');

@@ -66,15 +66,6 @@ function AITemplatesPage() {
     }
   }
 
-  function handleTemplateCreated() {
-    loadTemplates();
-    setShowCreateForm(false);
-  }
-
-  function handleTemplateUpdated() {
-    loadTemplates();
-  }
-
   if (loading) {
     return (
       <PageLayout title="AI Templates">
@@ -113,14 +104,7 @@ function AITemplatesPage() {
   if (selectedTemplate || showCreateForm) {
     return (
       <PageLayout title={selectedTemplate ? `Edit Template: ${selectedTemplate}` : 'Create AI Template'}>
-        <AITemplateBuilder 
-          templateKey={selectedTemplate}
-          onSave={selectedTemplate ? handleTemplateUpdated : handleTemplateCreated}
-          onCancel={() => {
-            setSelectedTemplate(null);
-            setShowCreateForm(false);
-          }}
-        />
+        <AITemplateBuilder />
       </PageLayout>
     );
   }
@@ -231,7 +215,13 @@ function AITemplatesPage() {
                       key={template.key}
                       style={{
                         borderBottom: '1px solid var(--color-border, #eee)',
-                        ':hover': { backgroundColor: 'var(--color-bg-hover, #f5f5f5)' }
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-bg-hover, #f5f5f5)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
                       }}
                     >
                       <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>
