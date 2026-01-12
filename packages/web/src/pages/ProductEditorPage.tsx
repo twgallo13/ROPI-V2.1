@@ -49,19 +49,18 @@ function ProductEditorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>('core');
 
-  // Normalize the MPN from URL to ensure correct API endpoint routing
-  // MPN is canonical truth - use normalized MPN for all API calls
-  const normalizedMpn = useMemo(() => {
-    return id ? normalizeMPN(id) : null;
-  }, [id]);
+  // CRITICAL: Use URL parameter AS-IS for Firestore document lookup
+  // Document IDs in Firestore are stored as lowercase (e.g., "104-test")
+  // Backend resolveProductIdentifier handles normalization for API endpoints
+  // Frontend must use exact document ID from URL to find product in Firestore
+  const productId = id;
 
-  // Debug: Log product ID from URL and normalized version
-  console.debug('[ProductEditorPage] Product ID from URL:', id);
-  console.debug('[ProductEditorPage] Normalized MPN:', normalizedMpn);
-  console.debug('[ProductEditorPage] CODE VERSION: 2026-01-12-MPN-CANONICAL-FIX');
+  // Debug: Log product ID from URL
+  console.debug('[ProductEditorPage] Product ID from URL:', productId);
+  console.debug('[ProductEditorPage] CODE VERSION: 2026-01-12-CASE-SENSITIVE-FIX');
 
   // Defensive: Require product ID in URL
-  if (!id || !normalizedMpn) {
+  if (!productId) {
     return (
       <div className="product-editor-error">
         <h2>No product ID in URL</h2>
@@ -79,7 +78,7 @@ function ProductEditorPage() {
     updateFields,
     applySuggestion,
     ignoreSuggestion,
-  } = useProduct(normalizedMpn);
+  } = useProduct(productId);
 
   // Set page title with product name or MPN
   const productTitle = product?.name || product?.mpn || 'Product';
@@ -89,7 +88,7 @@ function ProductEditorPage() {
   const { 
     loading: completionLoading, 
     canPublish 
-  } = useProductCompletion(normalizedMpn);
+  } = useProductCompletion(productId);
 
   // Sync tab with URL query param
   useEffect(() => {
@@ -105,18 +104,18 @@ function ProductEditorPage() {
   };
 
   const handleSave = async () => {
-    // CRITICAL FIX: Use URL MPN (normalizedMpn) as document ID, NOT product.id from state
+    // CRITICAL FIX: Use URL MPN (productId) as document ID, NOT product.id from state
     // This prevents saving to wrong ID when product state contains mock/fallback data
-    if (product && normalizedMpn) {
-      const productToSave = { ...product, id: normalizedMpn, mpn: normalizedMpn };
+    if (product && productId) {
+      const productToSave = { ...product, id: productId, mpn: productId };
       const success = await saveProduct(productToSave);
       // LP-1.4.6.4: Accurate save feedback based on actual persistence target
       const target = isFirebaseAvailable() ? 'Firestore' : 'localStorage';
       if (success) {
-        console.log(`[ProductEditorPage] Product ${normalizedMpn} saved to ${target}`);
+        console.log(`[ProductEditorPage] Product ${productId} saved to ${target}`);
         alert(`Product saved to ${target}`);
       } else {
-        console.error(`[ProductEditorPage] Failed to save product ${normalizedMpn} to ${target}`);
+        console.error(`[ProductEditorPage] Failed to save product ${productId} to ${target}`);
         alert(`Failed to save product to ${target}. Check console for details.`);
       }
     }
@@ -205,7 +204,7 @@ function ProductEditorPage() {
           {/* Right Sidebar with Panels */}
           <div className="product-sidebar">
             <CompletionExportGatePanel
-              productId={normalizedMpn}
+              productId={productId}
             />
             
             <ObservationsPanel
