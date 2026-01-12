@@ -1,10 +1,9 @@
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useProduct } from '../hooks/useProduct';
 import { useProductCompletion } from '../hooks/useProductCompletion';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { isFirebaseAvailable } from '../firebaseConfig';
-// import { normalizeMPN } from '@ropi-aoss/shared';
 
 // Note: Temporarily commented out for staging deployment
 import ProductHeader from '../components/product/ProductHeader';
@@ -20,11 +19,6 @@ import { CompletionExportGatePanel } from '../components/product/CompletionExpor
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { safeArray } from '../lib/productUtils';
 import './ProductEditorPage.css';
-
-// Simple MPN normalization for staging (to be replaced with shared function)
-const normalizeMPN = (mpn: string): string => {
-  return mpn.trim().toUpperCase().replace(/\s+/g, '-');
-};
 
 /**
  * Product Editor Page — AOSS_PRODUCT_EDITOR_LAYOUT_v1.1, LP-export-unlock-1.0.0
