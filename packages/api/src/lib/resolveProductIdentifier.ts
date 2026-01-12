@@ -3,9 +3,8 @@ import { Request, Response, NextFunction } from 'express'
 import admin from 'firebase-admin'
 import { normalizeMPN, getProductDocRefByMPN } from '@ropi-aoss/shared'
 
-const db = admin.firestore()
-
 export async function resolveProductIdentifier(req: Request, res: Response, next: NextFunction) {
+  const db = admin.firestore();
   try {
     const rawId = (req.params.mpn || req.params.id || req.query.id || '').toString()
     if (!rawId) return res.status(400).json({ error: 'Missing product identifier' })
