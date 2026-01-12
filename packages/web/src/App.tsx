@@ -21,6 +21,7 @@ import ProfilePage from './pages/Settings/ProfilePage';
 import PermissionsPage from './pages/Settings/PermissionsPage';
 import ProductKickOffPage from './pages/ProductKickOffPage';
 import LaunchProductSetup from './pages/LaunchProductSetup';
+import AITemplateBuilder from './pages/settings/ai-templates/AITemplateBuilder';
 
 function App() {
   return (
@@ -53,6 +54,8 @@ function App() {
         <Route path="settings/users" element={<UsersManager />} />
         <Route path="settings/profile" element={<ProfilePage />} />
         <Route path="settings/ai-templates" element={<SettingsSubPage section="ai-templates" />} />
+        <Route path="settings/ai-templates/new" element={<AITemplateBuilder />} />
+        <Route path="settings/ai-templates/edit/:templateKey" element={<AITemplateBuilder />} />
         <Route path="settings/search" element={<SettingsSubPage section="search" />} />
         <Route path="settings/import-settings" element={<SettingsSubPage section="import-settings" />} />
         <Route path="settings/export-settings" element={<SettingsSubPage section="export-settings" />} />

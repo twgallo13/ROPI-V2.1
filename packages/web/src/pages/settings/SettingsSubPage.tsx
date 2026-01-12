@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import PageLayout from '@/components/common/PageLayout';
-import { settingsNavConfig } from '@/config/nav';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import PageLayout from '../../components/common/PageLayout';
+import { settingsNavConfig } from '../../config/nav';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import ExportSettingsPage from './ExportSettingsPage';
+import AITemplatesPage from './ai-templates/AITemplatesPage';
 
 interface SettingsSubPageProps {
   section: string;
@@ -31,6 +32,10 @@ function SettingsSubPage({ section }: SettingsSubPageProps) {
   // Route to specialized pages
   if (section === 'export-settings') {
     return <ExportSettingsPage />;
+  }
+  
+  if (section === 'ai-templates') {
+    return <AITemplatesPage />;
   }
   
   if (!setting) {
