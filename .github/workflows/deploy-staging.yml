@@ -137,13 +137,10 @@ jobs:
           ls -la packages/web/dist/ || (echo "::error::Web build artifacts missing" && exit 1)
           ls -la packages/api/dist/ || (echo "::error::API build artifacts missing" && exit 1)
 
-          # LP-0.1.3: Deploy preview channel (fail-fast, no tolerance)
-          echo "Deploying to preview channel..."
-          firebase hosting:channel:deploy aoss-main-staging --project ropi-bccee --json
-
           # Deploy functions and hosting to stable staging
           # LP-0.1.3.fix: Add timeouts to prevent runaway deploys
           # LP-export-deploy-fix-1.0.0: Add --force to allow deletion of orphaned functions in non-interactive CI
+          # LP-DEPLOY-FIX: Skip preview channel deploy to avoid hosting target issues
           echo "Deploying Cloud Functions (20m timeout)..."
           timeout 20m firebase deploy --only functions --project ropi-bccee --json --force
 
