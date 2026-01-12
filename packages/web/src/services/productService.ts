@@ -13,7 +13,7 @@
 import { db, isFirebaseAvailable } from '../firebaseConfig';
 import {
   doc,
-  updateDoc,
+  setDoc,
   serverTimestamp,
   arrayUnion,
 } from 'firebase/firestore';
@@ -178,7 +178,7 @@ export async function updateFieldWithProvenance(
       updateData.activityLog = arrayUnion(activityEntry);
     }
 
-    await updateDoc(productRef, updateData);
+    await setDoc(productRef, updateData, { merge: true });
 
     console.log(`[productService] Updated ${fieldPath} with human provenance`, {
       productId,
@@ -241,7 +241,7 @@ export async function updateFieldsWithProvenance(
       updateData.activityLog = arrayUnion(...activityEntries);
     }
 
-    await updateDoc(productRef, updateData);
+    await setDoc(productRef, updateData, { merge: true });
 
     console.log(`[productService] Batch updated ${updates.length} fields with human provenance`, {
       productId,

@@ -105,15 +105,18 @@ function ProductEditorPage() {
   };
 
   const handleSave = async () => {
-    if (product) {
-      const success = await saveProduct(product);
+    // CRITICAL FIX: Use URL MPN (normalizedMpn) as document ID, NOT product.id from state
+    // This prevents saving to wrong ID when product state contains mock/fallback data
+    if (product && normalizedMpn) {
+      const productToSave = { ...product, id: normalizedMpn, mpn: normalizedMpn };
+      const success = await saveProduct(productToSave);
       // LP-1.4.6.4: Accurate save feedback based on actual persistence target
       const target = isFirebaseAvailable() ? 'Firestore' : 'localStorage';
       if (success) {
-        console.log(`[ProductEditorPage] Product ${product.id} saved to ${target}`);
+        console.log(`[ProductEditorPage] Product ${normalizedMpn} saved to ${target}`);
         alert(`Product saved to ${target}`);
       } else {
-        console.error(`[ProductEditorPage] Failed to save product ${product.id} to ${target}`);
+        console.error(`[ProductEditorPage] Failed to save product ${normalizedMpn} to ${target}`);
         alert(`Failed to save product to ${target}. Check console for details.`);
       }
     }

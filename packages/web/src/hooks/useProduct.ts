@@ -3,7 +3,6 @@ import type { Product, Observation, NewObservation, FieldProvenance, ActivityLog
 import { isFirebaseAvailable, db, auth } from '../firebaseConfig';
 import {
   doc,
-  updateDoc,
   setDoc,
   onSnapshot,
   Unsubscribe,
@@ -357,9 +356,9 @@ export function useProduct(productId: string) {
               } as Product;
               setProduct(productWithMergedAttrs);
             } else {
-              // Fall back to mock data if product not found
-              console.warn(`[useProduct] Product ${productId} not found in Firestore, using mock data`);
-              setProduct(mockProductData as Product);
+              // DO NOT fall back to mock data - return null to allow creation with correct ID
+              console.warn(`[useProduct] Product ${productId} not found in Firestore - returning null to allow creation`);
+              setProduct(null);
             }
             setLoading(false);
           }, (error) => {
@@ -511,8 +510,8 @@ export function useProduct(productId: string) {
           updatePayload['activityLog'] = arrayUnion(activityLogEntry);
         }
 
-        // Firestore accepts nested paths as keys: updateDoc(ref, { 'attributes.color': 'Red' })
-        await updateDoc(ref, updatePayload);
+        // Firestore accepts nested paths as keys with merge for upsert: setDoc(ref, { 'attributes.color': 'Red' }, { merge: true })
+        await setDoc(ref, updatePayload, { merge: true });
       } else {
         await saveProduct(updatedProduct);
       }
@@ -561,10 +560,10 @@ export function useProduct(productId: string) {
 
       if (isFirebaseAvailable() && db) {
         const ref = doc(db, 'products', product.id);
-        await updateDoc(ref, {
+        await setDoc(ref, {
           ...updates,
           exportReadiness: newReadiness,
-        });
+        }, { merge: true });
       } else {
         // Persist full product if no db
         await saveProduct(updatedProduct);

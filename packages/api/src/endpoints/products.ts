@@ -978,8 +978,12 @@ export async function getProductCompletionHandler(req: Request, res: Response) {
     // Get product reference from resolveProductIdentifier middleware
     const productRef = res.locals.productDocRef;
     const mpnNormalized = res.locals.mpn_normalized;
+    const mpnOriginal = req.params.mpn;
+    
+    console.log(`[getProductCompletionHandler] MPN from URL: "${mpnOriginal}", normalized: "${mpnNormalized}", productRef:`, productRef?.path || 'null');
     
     if (!productRef) {
+      console.error(`[getProductCompletionHandler] No productRef for MPN "${mpnOriginal}"`);
       res.status(400).json({ 
         error: 'MISSING_PRODUCT_ID', 
         message: 'Product ID is required' 
@@ -991,9 +995,10 @@ export async function getProductCompletionHandler(req: Request, res: Response) {
     const productDoc = await productRef.get();
 
     if (!productDoc.exists) {
+      console.error(`[getProductCompletionHandler] Product not found: "${mpnOriginal}" (normalized: "${mpnNormalized}"), path: ${productRef.path}`);
       res.status(404).json({ 
         error: 'PRODUCT_NOT_FOUND', 
-        message: `Product not found` 
+        message: `Product not found: ${mpnOriginal}` 
       });
       return;
     }
