@@ -9,7 +9,7 @@
 ## Phase Overview
 
 - [x] **Phase 1**: Setup & branches ✅
-- [ ] **Phase 2**: Backend implementation (Describe endpoint, Gemini integration, registry enforcement)
+- [x] **Phase 2**: Backend implementation (Describe endpoint, Gemini integration, registry enforcement) ✅
 - [ ] **Phase 3**: Admin UI (aiInput, AITemplate fields + Test Preview)
 - [ ] **Phase 4**: Frontend (Tab 5 — AI Actions)
 - [ ] **Phase 5**: Data migration & infra (aiInput backfill, secrets, indexes)

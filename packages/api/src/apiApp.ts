@@ -116,6 +116,19 @@ import {
   aiDescribeHandler,
 } from './endpoints/aiDescribe';
 
+// AI Describe Admin endpoints
+import {
+  adminAITemplatePreviewHandler,
+} from './endpoints/admin/aiDescribePreview';
+import {
+  updateAttributeAiInputHandler,
+  listAITemplatesHandler,
+  createAITemplateHandler,
+  getAITemplateHandler,
+  updateAITemplateHandler,
+  deleteAITemplateHandler,
+} from './endpoints/admin/aiDescribeSettings';
+
 // LP-obs-studio-cleanup-1.6.6: Product-level observation handlers
 import {
   patchProductObservationHandler,
@@ -252,6 +265,20 @@ api.patch('/admin/settings/users/:uid', updateUserHandler);
 api.delete('/admin/settings/users/:uid', deleteUserHandler);
 api.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
 api.get('/admin/settings/roles', getRolesHandler);
+
+/**
+ * AI Describe Admin endpoints
+ */
+// Attribute aiInput flag management
+api.patch('/admin/attributes/:attributeId/ai-input', requireAdmin, updateAttributeAiInputHandler);
+// AI Template management
+api.get('/admin/ai-templates', requireAdmin, listAITemplatesHandler);
+api.post('/admin/ai-templates', requireAdmin, createAITemplateHandler);
+api.get('/admin/ai-templates/:templateKey', requireAdmin, getAITemplateHandler);
+api.patch('/admin/ai-templates/:templateKey', requireAdmin, updateAITemplateHandler);
+api.delete('/admin/ai-templates/:templateKey', requireAdmin, deleteAITemplateHandler);
+// AI Template preview (render-only)
+api.get('/admin/ai-templates/:templateKey/preview', requireAdmin, adminAITemplatePreviewHandler);
 
 /**
  * Admin Permissions endpoints
