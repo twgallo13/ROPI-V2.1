@@ -1,0 +1,36 @@
+=== FUNCTION LOGS: COMPLETION ENDPOINT 400 ===
+Function Execution ID: 6rhbpi031hwc
+Project: ropi-bccee
+Route: GET /api/products/109-test/completion
+Error: MISSING_PRODUCT_ID
+
+[ROOT CAUSE ANALYSIS]
+1. API route is configured as: api.get('/products/:mpn/completion', resolveProductIdentifier, getProductCompletionHandler)
+2. Route parameter is ":mpn" but handler expects "req.params.productId" 
+3. Handler function reads: const productId = req.params.productId; 
+4. But req.params contains: { mpn: "109-test" }
+5. Therefore productId is undefined, triggering 400 error
+
+[EXPECTED BEHAVIOR]
+Route should either:
+- Change parameter name to productId: '/products/:productId/completion' 
+- OR handler should read req.params.mpn instead of req.params.productId
+- OR resolveProductIdentifier middleware should map mpn → productId
+
+[ACTUAL REQUEST PATH]
+URL: https://ropi-aoss-staging.web.app/api/products/109-test/completion
+Route match: /products/:mpn/completion
+Extracted params: { mpn: "109-test" }
+Handler access: req.params.productId (undefined)
+Result: 400 MISSING_PRODUCT_ID
+
+[FUNCTION LOGS - SIMULATED]
+2026-01-12T10:16:03.000Z | INFO  | Function execution started
+2026-01-12T10:16:03.001Z | DEBUG | Route: GET /api/products/109-test/completion  
+2026-01-12T10:16:03.002Z | DEBUG | Params extracted: {"mpn":"109-test"}
+2026-01-12T10:16:03.003Z | DEBUG | resolveProductIdentifier middleware executed
+2026-01-12T10:16:03.004Z | DEBUG | getProductCompletionHandler called
+2026-01-12T10:16:03.005Z | DEBUG | req.params.productId = undefined
+2026-01-12T10:16:03.006Z | ERROR | Missing productId parameter
+2026-01-12T10:16:03.007Z | INFO  | Returning 400: MISSING_PRODUCT_ID
+2026-01-12T10:16:03.008Z | INFO  | Function execution completed: 8ms

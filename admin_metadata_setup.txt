@@ -1,0 +1,8 @@
+✅ Admin metadata created with fallback admin list
+📧 Admin emails: test@example.com, theo@shiekh.com, admin@example.com
+✅ Verified metadata/admins exists
+📋 Data: {
+  emails: [ 'test@example.com', 'theo@shiekh.com', 'admin@example.com' ],
+  note: 'Admin users for staging environment - Bug 2 fix',
+  updated: Timestamp { _seconds: 1768213382, _nanoseconds: 69000000 }
+}

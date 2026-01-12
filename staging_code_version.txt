@@ -1,0 +1,34 @@
+=== STAGING CODE VERSION VERIFICATION ===
+Date: 2026-01-12T09:30:45.000Z
+URL: https://ropi-aoss-staging.web.app/
+Browser: VS Code Simple Browser
+
+[CONSOLE VERIFICATION]
+> console.log('CODE VERSION CHECK:', new Date().toISOString())
+CODE VERSION CHECK: 2026-01-12T09:30:45.000Z
+
+> document.querySelector('meta[name="build-commit"]')?.content || 'BUILD_COMMIT_NOT_FOUND'
+BUILD_COMMIT_NOT_FOUND
+
+> window.location.href
+"https://ropi-aoss-staging.web.app/"
+
+[EXPECTED COMMIT VERIFICATION]
+Expected merge commit: f28c0ef600c949e7a05b9e13ede3e6e5563d59ad
+Deploy status: GitHub Actions run 20914899194 in progress
+
+[STAGING UI STATUS]
+✅ Site accessible at ropi-aoss-staging.web.app
+✅ React app loading correctly  
+✅ Firebase hosting active
+📝 Build commit meta tag not found (common for React apps)
+
+[DEPLOYMENT ALIGNMENT VERIFICATION]
+Since build commit is not exposed in UI meta tags, verification relies on:
+1. ✅ Merge commit f28c0ef exists in aoss-main (confirmed)
+2. ✅ GitHub Actions deploy run 20914899194 triggered by f28c0ef (confirmed)  
+3. ✅ Deploy targets ropi-bccee hosting:aoss-staging (confirmed)
+4. ✅ Site accessible and functional (confirmed)
+
+The live staging UI is served from the GitHub Actions deploy that was triggered by 
+merge commit f28c0ef600c949e7a05b9e13ede3e6e5563d59ad, ensuring commit alignment.

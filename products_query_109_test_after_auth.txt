@@ -1,0 +1,29 @@
+=== PRODUCTS QUERY 109-test AFTER AUTH ===
+Date: 2026-01-12T09:29:17.888Z
+Project: ropi-bccee
+
+✅ Product 109-test found
+ID: 109-test
+MPN: undefined
+Attributes keys: [
+  'rics_color',
+  'rics_long_desc',
+  'media_status',
+  'rics_short_description',
+  'age_group',
+  'rics_category',
+  'department'
+]
+Status flags: {
+  uploaded_to_ro: false,
+  ready_for_export: false,
+  validation_status: 'valid'
+}
+Last updated: N/A
+
+Sample attributes:
+  - rics_color : BLACK
+  - rics_long_desc : running sweatpants
+  - media_status : 223452-5234-5234-5
+  - rics_short_description : running sweatpants
+  - age_group : Adult

@@ -1,0 +1,10 @@
+3092f65 fix: correct request body format for PATCH /api/products/:id/attributes
+812ad31 fix: resolve staging deployment workflow failures
+20985ea merge: integrate aoss-staging-integration changes into aoss-main
+f749aa9 fix: resolve PATCH 404 errors in product setup
+b53e29c fix: use normalized product ID for CompletionPanel API calls
+2e2c6b2 fix: auto-resolve registry version mismatches in phase readiness check workflow
+83df4d4 fix: resolve MPN normalization and Firestore permissions issues
+6ef8503 fix: resolve authentication 401 errors and double /api/ URL paths
+d28cb3f Fix: Add Firebase Auth token to API calls and update CORS
+4ece0f8 Merge branch 'feature/attributes-table-ai-use' into aoss-main

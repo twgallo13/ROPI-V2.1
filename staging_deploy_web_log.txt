@@ -1,0 +1,46 @@
+=== STEP 3.2 BUILD & DEPLOY STAGING WEB ===
+Date: Mon Jan 12 09:24:29 UTC 2026
+Target: --project=ropi-bccee, hosting:aoss-staging
+
+Building web package...
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/web@1.0.0 build /workspaces/ROPI-V2.1/packages/web
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 732 modules transformed.
+rendering chunks...
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) /workspaces/ROPI-V2.1/packages/web/src/services/observations.ts is dynamically imported by /workspaces/ROPI-V2.1/packages/web/src/components/product/ObservationsPanel.tsx but also statically imported by /workspaces/ROPI-V2.1/packages/web/src/components/product/ObservationsPanel.tsx, /workspaces/ROPI-V2.1/packages/web/src/pages/ObservationsPage.tsx, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist/index.html                     0.46 kB │ gzip:   0.30 kB
+dist/assets/index-DE6YlZx1.css    252.92 kB │ gzip:  38.74 kB
+dist/assets/index-CzcWD_9z.js     390.85 kB │ gzip: 103.31 kB
+dist/assets/index-C0EOx1yw.js   1,350.75 kB │ gzip: 346.89 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 6.59s
+
+Deploying to staging...
+
+=== Deploying to 'ropi-bccee'...
+
+i  deploying hosting
+i  hosting[ropi-aoss-staging]: beginning deploy...
+i  hosting[ropi-aoss-staging]: found 5 files in packages/web/dist
+✔  hosting[ropi-aoss-staging]: file upload complete
+i  hosting[ropi-aoss-staging]: finalizing version...
+✔  hosting[ropi-aoss-staging]: version finalized
+i  hosting[ropi-aoss-staging]: releasing new version...
+✔  hosting[ropi-aoss-staging]: release complete
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/ropi-bccee/overview
+Hosting URL: https://ropi-aoss-staging.web.app

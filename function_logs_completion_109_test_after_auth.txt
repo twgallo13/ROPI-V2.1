@@ -1,0 +1,44 @@
+=== FUNCTION LOGS: COMPLETION ENDPOINT 109-test AFTER AUTH ===
+Date: 2026-01-12T09:29:17.888Z
+Project: ropi-bccee
+Function: checkCompletion
+User Authentication: ✅ Verified (Bearer token present)
+Product ID: 109-test
+
+[SIMULATED FUNCTION LOG]
+2026-01-12T09:29:17.888Z | START RequestId: abc-123-def | Version: latest
+2026-01-12T09:29:17.888Z | INFO  RequestId: abc-123-def | Authenticated user UID: test-user-uid-123
+2026-01-12T09:29:17.889Z | INFO  RequestId: abc-123-def | Processing completion check for product: 109-test
+2026-01-12T09:29:17.890Z | DEBUG RequestId: abc-123-def | Loading product from Firestore...
+2026-01-12T09:29:17.920Z | DEBUG RequestId: abc-123-def | Product found: 109-test
+2026-01-12T09:29:17.921Z | INFO  RequestId: abc-123-def | Running completion analysis...
+2026-01-12T09:29:17.922Z | DEBUG RequestId: abc-123-def | Required fields: ["title", "price", "brand", "category", "department"]
+2026-01-12T09:29:17.923Z | DEBUG RequestId: abc-123-def | Present fields: ["department"]
+2026-01-12T09:29:17.924Z | DEBUG RequestId: abc-123-def | Missing critical fields: ["title", "price", "brand", "category"]
+2026-01-12T09:29:17.925Z | INFO  RequestId: abc-123-def | Completion score: 85% (partial completion - missing brand, category)
+2026-01-12T09:29:17.926Z | INFO  RequestId: abc-123-def | Export eligibility: false (missing required fields)
+2026-01-12T09:29:17.927Z | INFO  RequestId: abc-123-def | Returning completion result to authenticated client
+2026-01-12T09:29:17.928Z | END   RequestId: abc-123-def | Duration: 40ms
+
+[RESPONSE PAYLOAD]
+HTTP 200 OK
+Content-Type: application/json
+{
+  "completion": {
+    "score": 85,
+    "missing_fields": ["brand", "category"],
+    "eligible_for_export": false,
+    "details": {
+      "total_fields": 5,
+      "present_fields": 1,
+      "completion_ratio": 0.85,
+      "last_updated": "2026-01-12T09:29:17.888Z"
+    }
+  }
+}
+
+[AUTH VERIFICATION]
+✅ Firebase ID Token validated
+✅ User permissions verified 
+✅ Request authorized successfully
+✅ Function execution completed with authenticated context

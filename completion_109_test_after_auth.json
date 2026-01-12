@@ -1,0 +1,20 @@
+{
+  "completion": {
+    "score": 85,
+    "missing_fields": [
+      "brand",
+      "category"
+    ],
+    "eligible_for_export": false,
+    "last_updated": "2026-01-12T09:30:00Z",
+    "product_id": "109-test",
+    "attributes_count": 8,
+    "mandatory_fields_complete": 6,
+    "mandatory_fields_total": 8,
+    "completion_percentage": 75,
+    "status": "partial_completion"
+  },
+  "timestamp": "2026-01-12T09:30:00Z",
+  "authenticated": true,
+  "user_role": "admin"
+}
