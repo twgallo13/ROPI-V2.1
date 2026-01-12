@@ -1,0 +1,40 @@
+2026-01-12T08:46:30.631896Z ? api:     path: [ 'data_type' ],
+2026-01-12T08:46:30.631900Z ? api:     message: "Invalid enum value. Expected 'string' | 'number' | 'boolean' | 'enum' | 'currency' | 'json' | 'multiSelect' | 'date', received 'array'"
+2026-01-12T08:46:30.631902Z ? api:   }
+2026-01-12T08:46:30.631905Z ? api: ]
+2026-01-12T08:46:30.928916339Z D api: Function execution took 1193 ms, finished with status code: 304
+2026-01-12T08:46:32.345964670Z D api: Function execution took 3239 ms, finished with status code: 400
+2026-01-12T08:47:04.839915Z ? api: Failed to load attribute aliases, continuing without aliases: Error: ENOENT: no such file or directory, open '/sdk/config/attributeAliases.json'
+2026-01-12T08:47:04.839944Z ? api:     at readFileSync (node:fs:449:20)
+2026-01-12T08:47:04.839947Z ? api:     at loadAliases (/workspace/dist/index.js:34561:48)
+2026-01-12T08:47:04.839950Z ? api:     at initializeAllowedFieldsCache (/workspace/dist/index.js:34591:21)
+2026-01-12T08:47:04.839954Z ? api:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2026-01-12T08:47:04.839958Z ? api:   errno: -2,
+2026-01-12T08:47:04.839962Z ? api:   code: 'ENOENT',
+2026-01-12T08:47:04.839965Z ? api:   syscall: 'open',
+2026-01-12T08:47:04.839971Z ? api:   path: '/sdk/config/attributeAliases.json'
+2026-01-12T08:47:04.839977Z ? api: }
+2026-01-12T08:47:05.039058Z ? api: [allowedTargetFields] Initialized cache with 242 allowed target fields from registry
+2026-01-12T08:55:52.050786468Z D api: Function execution started
+2026-01-12T08:55:52.059796027Z D api: Function execution took 9 ms, finished with status code: 204
+2026-01-12T08:55:52.122711467Z D api: Function execution started
+2026-01-12T08:55:52.255984Z ? api: ✅ Auth: Token verified (source: header) { uid: 'zmAn8kKTE3ZW3fM386d8tiWW97U2', path: '/products' }
+2026-01-12T08:55:53.344724625Z D api: Function execution took 1222 ms, finished with status code: 304
+2026-01-12T08:55:53.525602056Z D api: Function execution started
+2026-01-12T08:55:53.531492Z ? api: ✅ Auth: Token verified (source: header) { uid: 'zmAn8kKTE3ZW3fM386d8tiWW97U2', path: '/products' }
+2026-01-12T08:55:53.951006641Z D api: Function execution took 425 ms, finished with status code: 304
+2026-01-12T08:55:55.242138056Z D api: Function execution started
+2026-01-12T08:55:55.530045Z ? api: Legacy product lookup used for: 109-test (normalized: 109-test)
+2026-01-12T08:55:55.530568Z ? api: ⚠️ Auth: No token found (checked header and __session cookie) {
+2026-01-12T08:55:55.530585Z ? api:   path: '/products/109-test/attributes',
+2026-01-12T08:55:55.530591Z ? api:   hasAuthHeader: false,
+2026-01-12T08:55:55.530594Z ? api:   hasCookies: false
+2026-01-12T08:55:55.530606Z ? api: }
+2026-01-12T08:55:55.531845239Z D api: Function execution took 289 ms, finished with status code: 401
+2026-01-12T09:01:39.717333523Z D api: Function execution started
+2026-01-12T09:01:39.722693262Z D api: Function execution took 5 ms, finished with status code: 200
+=== FUNCTION LOGS ANALYSIS ===
+Recent function executions showing auth behavior:
+- API calls without auth: HTTP 401 (expected)
+- Health check: HTTP 200 (unauthenticated endpoint working)
+- Functions operational and responding correctly

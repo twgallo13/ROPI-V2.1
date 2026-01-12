@@ -1,0 +1,12 @@
+file_path,line_number,code_snippet,usage_type,resolution_action,comment,commit_sha
+packages/api/src/endpoints/products.ts,191,"const productId = req.params.productId;",url_parameter,left_intentional_with_doc,Express route parameter for /products/:productId - used for MPN lookup via resolveProductIdentifier middleware,d56c424
+packages/api/src/endpoints/products.ts,205,"let productRef = db.collection('products').doc(productId);",lookup_by_mpn,left_intentional_with_doc,Uses productId (which is the MPN) for direct Firestore document lookup,d56c424
+packages/api/src/endpoints/products.ts,575,"productId: doc.id",document_id,left_intentional_with_doc,Internal Firestore document ID included in API response,d56c424
+packages/api/src/endpoints/observations.ts,172,"productId: productId",firestore_field,left_intentional_with_doc,Observations collection uses productId field to link to product documents,d56c424
+packages/api/src/functions/smartRulesCallables.ts,189,"productId: string",function_parameter,left_intentional_with_doc,Cloud Function parameter for Smart Rules operations,d56c424
+packages/api/src/lib/completionDrivenExportReadiness.ts,56,"productId: string",internal_lookup,left_intentional_with_doc,Internal field in productIdentifiers object for admin debugging,d56c424
+packages/api/src/lib/resolveProductIdentifier.ts,4,"getProductDocRefByMPN } from '@ropi-aoss/shared'",shared_utility,replaced_with_mpn,Import uses shared canonical MPN utilities,fb897ef
+packages/api/src/endpoints/adminSmartRules.ts,11,"getProductDocRefByMPN } from '@ropi-aoss/shared'",shared_utility,replaced_with_mpn,Import uses shared canonical MPN utilities,fb897ef
+packages/api/src/endpoints/observations.ts,15,"getProductDocRefByMPN } from '@ropi-aoss/shared'",shared_utility,replaced_with_mpn,Import uses shared canonical MPN utilities,fb897ef
+packages/api/dist/index.js,various,"various productId references",compiled_output,left_intentional_with_doc,Compiled JavaScript output containing productId references from source,d56c424
+packages/api/test/,various,"productId: 'test-product-123'",test_data,left_intentional_with_doc,Test fixtures and mock data using productId for internal testing,d56c424

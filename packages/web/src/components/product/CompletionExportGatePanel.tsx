@@ -75,7 +75,7 @@ export interface CompletionEvaluationResult {
 }
 
 interface CompletionExportGatePanelProps {
-  productId: string;
+  productId: string; // Actually expects normalized MPN - kept as productId for compatibility
 }
 
 async function fetchProductCompletion(
@@ -115,7 +115,7 @@ export function CompletionExportGatePanel({ productId }: CompletionExportGatePan
     try {
       setLoading(true);
       setError(null);
-      console.log('[CompletionPanel] Fetching completion for product:', productId);
+      console.log('[CompletionPanel] Fetching completion for normalized MPN:', productId);
       const data = await fetchProductCompletion(productId);
       console.log('[CompletionPanel] API returned data:', data);
       console.log('[CompletionPanel] productIdentifiers field:', data?.productIdentifiers);

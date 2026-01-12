@@ -1,0 +1,171 @@
+[2026-01-12T06:10:39.911Z] Field "/functions" in "firebase.json" is possibly invalid: must be object
+[2026-01-12T06:10:39.911Z] Field "/functions" in "firebase.json" is possibly invalid: must be object
+[2026-01-12T06:10:39.912Z] Object "/functions/0" in "firebase.json" has unknown property: {"additionalProperty":"packageManager"}
+[2026-01-12T06:10:39.912Z] Object "/functions/0" in "firebase.json" is missing required property: {"missingProperty":"remoteSource"}
+[2026-01-12T06:10:39.912Z] Field "/functions/0" in "firebase.json" is possibly invalid: must match a schema in anyOf
+[2026-01-12T06:10:39.912Z] Field "/functions" in "firebase.json" is possibly invalid: must match a schema in anyOf
+[2026-01-12T06:10:39.915Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[2026-01-12T06:10:39.915Z] > authorizing via signed-in user (theo@shiekhshoes.org)
+[2026-01-12T06:10:39.915Z] [iam] checking project ropi-bccee for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[2026-01-12T06:10:39.916Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:39.916Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:39.917Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee:testIamPermissions [none]
+[2026-01-12T06:10:39.918Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee:testIamPermissions x-goog-quota-user=projects/ropi-bccee
+[2026-01-12T06:10:39.918Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[2026-01-12T06:10:40.185Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee:testIamPermissions 200
+[2026-01-12T06:10:40.185Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[2026-01-12T06:10:40.186Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:40.186Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:40.186Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/ropi-bccee/serviceAccounts/ropi-bccee@appspot.gserviceaccount.com:testIamPermissions [none]
+[2026-01-12T06:10:40.186Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/ropi-bccee/serviceAccounts/ropi-bccee@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[2026-01-12T06:10:40.514Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/ropi-bccee/serviceAccounts/ropi-bccee@appspot.gserviceaccount.com:testIamPermissions 200
+[2026-01-12T06:10:40.514Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/ropi-bccee/serviceAccounts/ropi-bccee@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+
+=== Deploying to 'ropi-bccee'...
+
+i  deploying functions 
+Running command: pnpm --filter @ropi-aoss/api build
+packages/api                             |  WARN  Unsupported engine: wanted: {"node":"20"} (current: {"node":"v24.12.0","pnpm":"8.15.9"})
+
+> @ropi-aoss/api@0.0.0 build /workspaces/ROPI-V2.1/packages/api
+> node esbuild.config.js
+
+
+  dist/index.js      2.4mb ⚠️
+  dist/index.js.map  4.4mb
+
+⚡ Done in 266ms
+Running command: node -e "const fs=require('fs');const path=require('path');const src=path.resolve('packages/sdk/config/attributeRegistry.json');const destDir=path.resolve('packages/api/dist/config');if(!fs.existsSync(src)){console.error('❌ Authoritative registry missing at',src);process.exit(1);}if(!fs.existsSync(destDir))fs.mkdirSync(destDir,{recursive:true});fs.copyFileSync(src,path.join(destDir,'attributeRegistry.json'));console.log('✅ Copied registry to',path.join(destDir,'attributeRegistry.json'))"
+⚠  Warning: Your command contains '=', it may result in the command not running. Please consider removing it. 
+✔  functions: Finished running predeploy script. 
+[2026-01-12T06:10:41.406Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:41.406Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:41.406Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee [none]
+[2026-01-12T06:10:41.543Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee 200
+[2026-01-12T06:10:41.543Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/ropi-bccee {"projectNumber":"892791174441","projectId":"ropi-bccee","lifecycleState":"ACTIVE","name":"ROPI","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-11-05T23:48:06.960118Z","parent":{"type":"organization","id":"541709594750"}}
+i  functions: preparing codebase api for deployment 
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[2026-01-12T06:10:41.545Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:41.545Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:41.546Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/ropi-bccee/adminSdkConfig [none]
+[2026-01-12T06:10:41.834Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/ropi-bccee/adminSdkConfig 200
+[2026-01-12T06:10:41.834Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/ropi-bccee/adminSdkConfig {"projectId":"ropi-bccee","storageBucket":"ropi-bccee.firebasestorage.app"}
+[2026-01-12T06:10:41.834Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:41.835Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:41.835Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs [none]
+[2026-01-12T06:10:42.010Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs 200
+[2026-01-12T06:10:42.010Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs {"configs":[{"name":"projects/ropi-bccee/configs/gemini"},{"name":"projects/ropi-bccee/configs/logging"},{"name":"projects/ropi-bccee/configs/product"}]}
+[2026-01-12T06:10:42.010Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.010Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.011Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.011Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.011Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.011Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.011Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/gemini/variables [none]
+[2026-01-12T06:10:42.012Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/logging/variables [none]
+[2026-01-12T06:10:42.013Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/product/variables [none]
+[2026-01-12T06:10:42.163Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/product/variables 200
+[2026-01-12T06:10:42.163Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/product/variables {"variables":[{"name":"projects/ropi-bccee/configs/product/variables/images_bucket","updateTime":"2026-01-11T06:51:36.891369950Z"}]}
+[2026-01-12T06:10:42.164Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.164Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.164Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/product/variables/images_bucket [none]
+[2026-01-12T06:10:42.171Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/logging/variables 200
+[2026-01-12T06:10:42.171Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/logging/variables {"variables":[{"name":"projects/ropi-bccee/configs/logging/variables/sampling_rate","updateTime":"2026-01-02T21:36:18.503114592Z"}]}
+[2026-01-12T06:10:42.171Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.172Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.172Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/logging/variables/sampling_rate [none]
+[2026-01-12T06:10:42.174Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/gemini/variables 200
+[2026-01-12T06:10:42.174Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/gemini/variables {"variables":[{"name":"projects/ropi-bccee/configs/gemini/variables/api_key","updateTime":"2025-11-11T09:55:02.063968052Z"}]}
+[2026-01-12T06:10:42.174Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.174Z] Checked if tokens are valid: true, expires at: 1768200385552
+[2026-01-12T06:10:42.174Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/gemini/variables/api_key [none]
+[2026-01-12T06:10:42.309Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/product/variables/images_bucket 200
+[2026-01-12T06:10:42.310Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/product/variables/images_bucket {"name":"projects/ropi-bccee/configs/product/variables/images_bucket","updateTime":"2026-01-11T06:51:36.891369950Z","text":"ropi-bccee.firebasestorage.app"}
+[2026-01-12T06:10:42.315Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/gemini/variables/api_key 200
+[2026-01-12T06:10:42.315Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/gemini/variables/api_key {"name":"projects/ropi-bccee/configs/gemini/variables/api_key","updateTime":"2025-11-11T09:55:02.063968052Z","text":"AIzaSyAISgrsonzuui3hpeTCxeRpnb1Venq3I1s"}
+[2026-01-12T06:10:42.326Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/logging/variables/sampling_rate 200
+[2026-01-12T06:10:42.326Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/ropi-bccee/configs/logging/variables/sampling_rate {"name":"projects/ropi-bccee/configs/logging/variables/sampling_rate","updateTime":"2026-01-02T21:36:18.503114592Z","text":"1.0"}
+[2026-01-12T06:10:42.327Z] Validating nodejs source
+⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[2026-01-12T06:10:42.817Z] > [functions] package.json contents: {
+  "name": "@ropi-aoss/api",
+  "version": "0.0.0",
+  "description": "Firebase Cloud Functions for ROPI AOSS API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "postbuild": "mkdir -p dist/config && cp -f ../sdk/config/attributeRegistry.json dist/config/attributeRegistry.json || true",
+    "build:types": "tsc --emitDeclarationOnly || true",
+    "lint": "eslint src --ext .ts || true",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:export-gate": "vitest run --reporter=verbose src/lib/export/ src/controllers/ExportController.test.ts",
+    "clean": "rm -rf dist",
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions",
+    "sync:attributes": "node dist/tasks/syncAttributeRegistry.js",
+    "migrate:products-to-attributes": "node dist/tasks/migrateProductsToAttributes.js",
+    "normalize:attributes": "node dist/tasks/normalizeProductAttributeValues.js"
+  },
+  "dependencies": {
+    "@google-cloud/logging": "^11.0.0",
+    "@google-cloud/storage": "^7.18.0",
+    "busboy": "^1.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^6.1.1",
+    "handlebars": "^4.7.8",
+    "papaparse": "^5.4.1",
+    "uuid": "^9.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/busboy": "^1.5.0",
+    "@types/cors": "^2.8.0",
+    "@types/express": "^4.17.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^18.0.0",
+    "@types/papaparse": "^5.3.0",
+    "@types/supertest": "^6.0.3",
+    "@types/uuid": "^9.0.0",
+    "esbuild": "^0.27.1",
+    "supertest": "^7.1.4",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": "20"
+  }
+}
+[2026-01-12T06:10:42.817Z] Building nodejs source
+i  functions: Loading and analyzing source code for codebase api to determine what to deploy 
+[2026-01-12T06:10:42.818Z] Could not find functions.yaml. Must use http discovery
+[2026-01-12T06:10:42.824Z] Found firebase-functions binary at '/workspaces/ROPI-V2.1/packages/api/node_modules/.bin/firebase-functions'
+Serving at port 8836
+
+FirebaseAppError: The default Firebase app does not exist. Make sure you call initializeApp() before using any of the Firebase services.
+    at AppStore.getApp (/workspaces/ROPI-V2.1/node_modules/.pnpm/firebase-admin@13.6.0/node_modules/firebase-admin/lib/app/lifecycle.js:79:19)
+    at FirebaseNamespaceInternals.app (/workspaces/ROPI-V2.1/node_modules/.pnpm/firebase-admin@13.6.0/node_modules/firebase-admin/lib/app/firebase-namespace.js:54:35)
+    at FirebaseNamespace.app (/workspaces/ROPI-V2.1/node_modules/.pnpm/firebase-admin@13.6.0/node_modules/firebase-admin/lib/app/firebase-namespace.js:256:30)
+    at FirebaseNamespace.ensureApp (/workspaces/ROPI-V2.1/node_modules/.pnpm/firebase-admin@13.6.0/node_modules/firebase-admin/lib/app/firebase-namespace.js:266:24)
+    at FirebaseNamespace.fn (/workspaces/ROPI-V2.1/node_modules/.pnpm/firebase-admin@13.6.0/node_modules/firebase-admin/lib/app/firebase-namespace.js:136:25)
+    at Object.<anonymous> (/workspaces/ROPI-V2.1/packages/api/dist/index.js:50442:40)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12) {
+  errorInfo: {
+    code: 'app/no-app',
+    message: 'The default Firebase app does not exist. Make sure you call initializeApp() before using any of the Firebase services.'
+  },
+  codePrefix: 'app'
+}
+
+[2026-01-12T06:10:43.354Z] Got response code 400; body Failed to generate manifest from function source: The default Firebase app does not exist. Make sure you call initializeApp() before using any of the Firebase services.
+
+Error: Functions codebase could not be analyzed successfully. It may have a syntax or runtime error

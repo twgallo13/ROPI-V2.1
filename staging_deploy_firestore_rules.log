@@ -1,0 +1,8 @@
+
+=== Deploying to 'aoss-main'...
+
+i  deploying firestore
+i  firestore: ensuring required API firestore.googleapis.com is enabled...
+
+Error: Request to https://serviceusage.googleapis.com/v1/projects/aoss-main/services/firestore.googleapis.com had HTTP Error: 403, Project 'aoss-main' not found or permission denied.
+Help Token: AcxmRmJ_Y8tXP1JL6FOuNaIN-rKTTZ79q7akiLtu7XDv5hRNPI7MeaRPnS2BX4nND-bcnGDIipq4EyDCGTt_NXPBmgyh7JFY2HUqNHuk_x50DrNv

@@ -28,12 +28,15 @@ import {
  */
 export async function patchProductAttributesHandler(req: Request, res: Response) {
   await requireAdmin(req, res, async () => {
-    const productId = req.params.productId;
+    // Use productDocRef from resolveProductIdentifier middleware
+    const productDocRef = res.locals.productDocRef;
+    const mpnNormalized = res.locals.mpn_normalized;
+    const legacyLookup = res.locals.legacy_lookup;
     
-    if (!productId) {
-      res.status(400).json({ 
-        error: 'MISSING_PRODUCT_ID', 
-        message: 'Product ID is required' 
+    if (!productDocRef) {
+      res.status(500).json({ 
+        error: 'MISSING_PRODUCT_REF', 
+        message: 'Product reference not resolved by middleware' 
       });
       return;
     }
@@ -110,7 +113,8 @@ export async function patchProductAttributesHandler(req: Request, res: Response)
     }
 
     const db = admin.firestore();
-    const productRef = db.collection('products').doc(productId);
+    // Use productDocRef from resolveProductIdentifier middleware
+    const productRef = productDocRef;
 
     try {
       // Check if product exists
@@ -118,7 +122,9 @@ export async function patchProductAttributesHandler(req: Request, res: Response)
       if (!productDoc.exists) {
         res.status(404).json({ 
           error: 'PRODUCT_NOT_FOUND', 
-          message: `Product '${productId}' not found` 
+          message: `Product not found for identifier (mpn_normalized: ${mpnNormalized})`,
+          mpn_normalized: mpnNormalized,
+          legacy_lookup: legacyLookup
         });
         return;
       }

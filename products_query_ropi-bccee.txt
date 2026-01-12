@@ -1,0 +1,195 @@
+=== PRODUCTS QUERY - ropi-bccee ===
+Date: 2026-01-12T08:19:36.532Z
+Project: ropi-bccee
+
+FOUND: 109-test document exists
+Data: {
+  "roUploadBatchId": null,
+  "statusFlags": {
+    "uploaded_to_ro": false,
+    "ready_for_export": false,
+    "validation_status": "valid"
+  },
+  "attributes": {
+    "rics_color": "BLACK",
+    "rics_long_desc": "running sweatpants",
+    "media_status": "223452-5234-5234-5",
+    "rics_short_description": "running sweatpants",
+    "age_group": "Adult",
+    "rics_category": "Apparel||Womens||Pants||Casual",
+    "department": "Clothing"
+  },
+  "inventory": {
+    "store_inv": 16,
+    "warehouse_inv": 8
+  },
+  "roUploadDate": null,
+  "pricing": {
+    "scom_sale_price": 0,
+    "currency": "USD",
+    "scom_regular_price": 0
+  },
+  "core": {
+    "createdAt": "2026-01-12T07:15:16.186Z",
+    "normalized_mpn": "109-TEST",
+    "lastReceived": "12/24/2025",
+    "mpn": "109-test",
+    "sku": "SKU-109-test",
+    "title": "Apparel - Womens - Pants - Casual",
+    "brand": "Test Brand-101-test",
+    "firstReceived": "12/26/2025",
+    "status": "draft",
+    "updatedAt": "2026-01-12T07:16:23.357Z"
+  },
+  "provenance": {
+    "age_group": {
+      "reason": "matched on 'Apparel||Womens||Pants||Casual'",
+      "input": {
+        "matchedValue": "Apparel||Womens||Pants||Casual",
+        "ricsCategory": "Apparel||Womens||Pants||Casual"
+      },
+      "ruleName": "Men 2 Gender",
+      "source": "smartRule",
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "appliedAt": "2026-01-12T07:16:23.435Z"
+    },
+    "department": {
+      "reason": "matched on 'Apparel||Womens||Pants||Casual'",
+      "input": {
+        "matchedValue": "Apparel||Womens||Pants||Casual",
+        "ricsCategory": "Apparel||Womens||Pants||Casual"
+      },
+      "ruleName": "Apparel",
+      "source": "smartRule",
+      "ruleId": "rule_1767350520854_xpfska",
+      "appliedAt": "2026-01-12T07:16:23.435Z"
+    }
+  },
+  "_smartRulesSkipUntil": 1768202193436,
+  "_appliedRules": {
+    "age_group": {
+      "confidence": 0.9,
+      "ruleId": "rule_1767353025831_ap2zq7",
+      "appliedAt": "2026-01-12T07:16:23.435Z"
+    },
+    "department": {
+      "confidence": 0.9,
+      "ruleId": "rule_1767350520854_xpfska",
+      "appliedAt": "2026-01-12T07:16:23.435Z"
+    }
+  },
+  "_smartRulesRanAt": "2026-01-12T07:16:23.435Z",
+  "_meta": {
+    "source": "csv",
+    "importedAt": "2026-01-12T07:16:20.657Z",
+    "normalizedAt": "2026-01-12T07:16:23.357Z",
+    "validatedAt": "2026-01-12T07:16:23.357Z"
+  },
+  "_activityLog": [
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-12T07:15:16.223Z",
+      "details": {
+        "ruleId": "rule_1767350520854_xpfska",
+        "ruleName": "Apparel",
+        "targetField": "department",
+        "value": "Clothing",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Womens||Pants||Casual",
+          "matchedValue": "Apparel||Womens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-12T07:15:16.223Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Womens||Pants||Casual",
+          "matchedValue": "Apparel||Womens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-12T07:16:23.435Z",
+      "details": {
+        "ruleId": "rule_1767350520854_xpfska",
+        "ruleName": "Apparel",
+        "targetField": "department",
+        "value": "Clothing",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Womens||Pants||Casual",
+          "matchedValue": "Apparel||Womens||Pants||Casual"
+        }
+      }
+    },
+    {
+      "actor": "system:smartRulesEngine",
+      "action": "smartrule_auto_apply",
+      "timestamp": "2026-01-12T07:16:23.435Z",
+      "details": {
+        "ruleId": "rule_1767353025831_ap2zq7",
+        "ruleName": "Men 2 Gender",
+        "targetField": "age_group",
+        "value": "Adult",
+        "confidence": 0.9,
+        "input": {
+          "ricsCategory": "Apparel||Womens||Pants||Casual",
+          "matchedValue": "Apparel||Womens||Pants||Casual"
+        }
+      }
+    }
+  ]
+}
+
+=== PRODUCT COUNT VERIFICATION ===
+Total products found (sample): 38
+Product ID: 1-test | MPN: 1-test | Type: N/A
+Product ID: 101-test | MPN: 101-test | Type: N/A
+Product ID: 102-test | MPN: 102-test | Type: N/A
+Product ID: 103-test | MPN: 103-test | Type: N/A
+Product ID: 104-test | MPN: 104-test | Type: N/A
+Product ID: 105-test | MPN: 105-test | Type: N/A
+Product ID: 106-test | MPN: 106-test | Type: N/A
+Product ID: 107-test | MPN: 107-test | Type: N/A
+Product ID: 108-test | MPN: 108-test | Type: N/A
+Product ID: 109-test | MPN: N/A | Type: N/A
+Product ID: 110-test | MPN: N/A | Type: N/A
+Product ID: 111-test | MPN: N/A | Type: N/A
+Product ID: 112-test | MPN: N/A | Type: N/A
+Product ID: 1234-TEST-POPUP | MPN: 1234-test-popup | Type: N/A
+Product ID: 1234-TEST-POPUPA | MPN: 1234-test-popupA | Type: N/A
+Product ID: 1234-TEST-POPUPAB | MPN: 1234-test-popupAb | Type: N/A
+Product ID: 15-test | MPN: 15-test | Type: N/A
+Product ID: 17-test | MPN: 17-test | Type: N/A
+Product ID: 211737-90h1-8a | MPN: 211737-90H1-8a | Type: N/A
+Product ID: 211737-90h1-8ab | MPN: 211737-90H1-8ab | Type: N/A
+Product ID: 4-test | MPN: 4-test | Type: N/A
+Product ID: 451-9103-blk18 | MPN: 451-9103-BLK18 | Type: N/A
+Product ID: 451-9103-blk18a | MPN: 451-9103-BLK18a | Type: N/A
+Product ID: 451-9201-blk18 | MPN: 451-9201-BLK18 | Type: N/A
+Product ID: 451-9201-blk18a | MPN: 451-9201-BLK18a | Type: N/A
+Product ID: 451-9204-blk18 | MPN: 451-9204-BLK18 | Type: N/A
+Product ID: 451-9204-blk18a | MPN: 451-9204-BLK18a | Type: N/A
+Product ID: 5-test | MPN: 5-test | Type: N/A
+Product ID: 7-test | MPN: 7-test | Type: N/A
+Product ID: 8-test | MPN: 8-test | Type: N/A
+Product ID: 9-test | MPN: 9-test | Type: N/A
+Product ID: TEST-ROPI-PRODUCT-1 | MPN: test-ropi-product-1 | Type: N/A
+Product ID: hQx1asCHICCgcs2cEC9j | MPN: test-dimensions-1768032902201 | Type: N/A
+Product ID: product_guardrail_test_1767442442 | MPN: N/A | Type: N/A
+Product ID: s5-test-product-provenance | MPN: S5-TEST-001 | Type: N/A
+Product ID: smoke-test-product-1767334195776 | MPN: SMOKE-TEST-MPN-001 | Type: N/A
+Product ID: smoke-test-product-autoapply-1767334197224 | MPN: SMOKE-TEST-AUTOAPPLY-001 | Type: N/A
+Product ID: smoke-test-product-pack-1767334198266 | MPN: SMOKE-TEST-PACK-001 | Type: N/A

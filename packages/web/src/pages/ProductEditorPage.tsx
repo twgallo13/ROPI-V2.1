@@ -4,18 +4,9 @@ import { useProduct } from '../hooks/useProduct';
 import { useProductCompletion } from '../hooks/useProductCompletion';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { isFirebaseAvailable } from '../firebaseConfig';
+// import { normalizeMPN } from '@ropi-aoss/shared';
 
-// Local MPN normalizer (matches SDK version)
-function normalizeMpn(mpn: string): string {
-  if (!mpn) return '';
-  
-  return mpn
-    .trim()
-    .toUpperCase()
-    .replace(/[^A-Z0-9-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+// Note: Temporarily commented out for staging deployment
 import ProductHeader from '../components/product/ProductHeader';
 import CoreInformationTab from '../components/product/CoreInformationTab';
 import ProductAttributesTab from '../components/product/ProductAttributesTab';
@@ -29,6 +20,11 @@ import { CompletionExportGatePanel } from '../components/product/CompletionExpor
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { safeArray } from '../lib/productUtils';
 import './ProductEditorPage.css';
+
+// Simple MPN normalization for staging (to be replaced with shared function)
+const normalizeMPN = (mpn: string): string => {
+  return mpn.trim().toUpperCase().replace(/\s+/g, '-');
+};
 
 /**
  * Product Editor Page — AOSS_PRODUCT_EDITOR_LAYOUT_v1.1, LP-export-unlock-1.0.0
@@ -53,23 +49,23 @@ function ProductEditorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>('core');
 
-  // Normalize the MPN from URL to ensure correct Firestore document lookup
-  // MPN is canonical truth - document IDs are normalized MPNs
-  const normalizedProductId = useMemo(() => {
-    return id ? normalizeMpn(id) : null;
+  // Normalize the MPN from URL to ensure correct API endpoint routing
+  // MPN is canonical truth - use normalized MPN for all API calls
+  const normalizedMpn = useMemo(() => {
+    return id ? normalizeMPN(id) : null;
   }, [id]);
 
   // Debug: Log product ID from URL and normalized version
   console.debug('[ProductEditorPage] Product ID from URL:', id);
-  console.debug('[ProductEditorPage] Normalized Product ID:', normalizedProductId);
-  console.debug('[ProductEditorPage] CODE VERSION: 2026-01-09-v3-MPN-FIX');
+  console.debug('[ProductEditorPage] Normalized MPN:', normalizedMpn);
+  console.debug('[ProductEditorPage] CODE VERSION: 2026-01-12-MPN-CANONICAL-FIX');
 
   // Defensive: Require product ID in URL
-  if (!id || !normalizedProductId) {
+  if (!id || !normalizedMpn) {
     return (
       <div className="product-editor-error">
         <h2>No product ID in URL</h2>
-        <p>Please use /products/:id</p>
+        <p>Please use /products/:mpn where :mpn is a valid product MPN</p>
         <button onClick={() => navigate('/products')}>Back to Products</button>
       </div>
     );
@@ -83,7 +79,7 @@ function ProductEditorPage() {
     updateFields,
     applySuggestion,
     ignoreSuggestion,
-  } = useProduct(normalizedProductId);
+  } = useProduct(normalizedMpn);
 
   // Set page title with product name or MPN
   const productTitle = product?.name || product?.mpn || 'Product';
@@ -93,7 +89,7 @@ function ProductEditorPage() {
   const { 
     loading: completionLoading, 
     canPublish 
-  } = useProductCompletion(normalizedProductId);
+  } = useProductCompletion(normalizedMpn);
 
   // Sync tab with URL query param
   useEffect(() => {
@@ -206,7 +202,7 @@ function ProductEditorPage() {
           {/* Right Sidebar with Panels */}
           <div className="product-sidebar">
             <CompletionExportGatePanel
-              productId={normalizedProductId}
+              productId={normalizedMpn}
             />
             
             <ObservationsPanel
