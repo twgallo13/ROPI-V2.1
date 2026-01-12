@@ -204,6 +204,9 @@ importers:
       '@ropi-aoss/sdk':
         specifier: workspace:*
         version: link:../sdk
+      '@ropi-aoss/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@sentry/react':
         specifier: ^10.28.0
         version: 10.32.1(react@18.3.1)

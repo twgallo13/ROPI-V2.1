@@ -1,0 +1,27 @@
+🔄 MPN Migration Script
+Mode: APPLY
+Batch Size: 200
+Timestamp: 2026-01-12T06:03:37.010Z
+
+📊 Analyzing products collection...
+Found 34 products to process
+
+Processing 1 batches of up to 200 documents each...
+
+📦 Processing batch 1 (34 documents)...
+✅ Committed batch 1: 33 updates, 33 mappings
+   Updated: 33, Mapped: 33, Skipped: 1, Errors: 0
+
+📄 Missing MPN report: /tmp/missing_mpn_2026-01-12T06-03-37-011Z.csv
+
+🎯 Migration Summary:
+   Mode: APPLY
+   Total Documents: 34
+   Updated: 33
+   Mappings Created: 33
+   Skipped (No MPN): 1
+   Errors: 0
+   Execution Time: 2s
+   Detailed Report: /tmp/migration_report_2026-01-12T06-03-37-011Z.json
+
+✅ Migration completed successfully
