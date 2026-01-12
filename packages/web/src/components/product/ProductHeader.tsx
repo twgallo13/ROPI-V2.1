@@ -159,6 +159,9 @@ function ProductHeader({
         {/* LINE 1 — Identity + Actions (Single Baseline) */}
           <div className="product-header__row product-header__row--identity">
             <div className="product-header__identity-left">
+              <span className={`product-header__badge ${status.className}`} role="status">
+                {status.label}
+              </span>
               <span className="product-header__label product-header__label--inline">MPN</span>
               <span className="product-header__value product-header__value--mono product-header__value--mpn">
                 {product.mpn || product.sku || '—'}
@@ -166,12 +169,7 @@ function ProductHeader({
               <span className="product-header__product-name">
                 {product.name || '—'}
               </span>
-              <span className={`product-header__badge ${status.className}`} role="status">
-                {status.label}
-              </span>
             </div>
-
-            <div className="product-header__spacer" />
 
             <div className="product-header__actions">
               <button 
