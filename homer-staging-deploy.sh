@@ -12,8 +12,8 @@ echo "Target: STAGING (aoss-main) ONLY"
 echo ""
 
 # Staging configuration
-PROJECT_ID="aoss-main"
-STAGING_URL="https://ropi-aoss-staging.web.app"
+PROJECT_ID="ropi-bccee"
+STAGING_TARGET="aoss-staging"
 
 echo "📋 STAGING DEPLOYMENT CONFIGURATION"
 echo "Project ID: $PROJECT_ID"

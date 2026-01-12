@@ -13,10 +13,10 @@
 ### STEP A - Deploy Firestore Rules & Indexes (STAGING)
 ```bash
 # Deploy rules (enables mpn_normalized field enforcement) - STAGING
-firebase deploy --only firestore:rules --project=aoss-main
+firebase deploy --only firestore:rules --project=ropi-bccee
 
 # Deploy indexes (optimizes mpn_normalized queries) - STAGING  
-firebase deploy --only firestore:indexes --project=aoss-main
+firebase deploy --only firestore:indexes --project=ropi-bccee
 ```
 
 ### STEP B - Deploy API Functions (with middleware) - STAGING
@@ -25,7 +25,7 @@ firebase deploy --only firestore:indexes --project=aoss-main
 pnpm --filter @ropi-aoss/api build
 
 # Deploy Cloud Functions (includes resolveProductIdentifier middleware) - STAGING
-firebase deploy --only functions --project=aoss-main
+firebase deploy --only functions --project=ropi-bccee
 ```
 
 ### STEP C - Deploy Web Application - STAGING
@@ -34,16 +34,16 @@ firebase deploy --only functions --project=aoss-main
 pnpm --filter @ropi-aoss/web build
 
 # Deploy hosting (includes shared MPN normalization) - STAGING
-firebase deploy --only hosting --project=aoss-main
+firebase deploy --only hosting:aoss-staging --project=ropi-bccee
 ```
 
 ### STEP D - Execute Data Migration - STAGING  
 ```bash
 # Apply migration in staging (idempotent, batched)
-node packages/api/scripts/migrate_mpn.js --apply --batch-size=200 --project=aoss-main > /tmp/migration_apply_aoss-main.json
+node packages/api/scripts/migrate_mpn.js --apply --batch-size=200 --project=ropi-bccee > /tmp/migration_apply_staging.json
 
 # Verify results
-cat /tmp/migration_apply_aoss-main.json | grep -E "(updated|missing|errors)"
+cat /tmp/migration_apply_staging.json | grep -E "(updated|missing|errors)"
 ```
 
 ### STEP E - Post-Deploy Verification - STAGING

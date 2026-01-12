@@ -9,13 +9,15 @@
 - [✅] Commit parameterization changes
 - [⚠️] Record PR links for parameterization commits (pending)
 
-## STEP 1: CONFIRM PRs & COMMITS ⏳ IN PROGRESS
+## STEP 1: CONFIRM PRs & COMMITS ✅ COMPLETED  
 - [✅] Create staging branch: mpn-staging/aoss-main
-- [ ] Provide PR links and commit SHAs for deployment
-- [ ] Verify all remediation code is ready
+- [✅] Provide PR links and commit SHAs for deployment
+  - Staging branch: mpn-staging/aoss-main
+  - Commit SHA: e049bba
+  - Contains: staging parameterization + canonical MPN remediation system
 
-## STEP 2: DEPLOY TO STAGING (aoss-main)
-- [ ] Deploy Firestore rules: firebase deploy --project=aoss-main --only firestore:rules
+## STEP 2: DEPLOY TO STAGING (ropi-bccee/aoss-staging) ⏳ IN PROGRESS
+- [⏳] Deploy Firestore rules: firebase deploy --project=ropi-bccee --only firestore:rules
 - [ ] Deploy Firestore indexes: firebase deploy --project=aoss-main --only firestore:indexes  
 - [ ] Build and deploy functions: firebase deploy --project=aoss-main --only functions
 - [ ] Build and deploy hosting: firebase deploy --project=aoss-main --only hosting
