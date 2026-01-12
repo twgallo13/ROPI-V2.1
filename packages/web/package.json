@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ropi-aoss/sdk": "workspace:*",
+    "@ropi-aoss/shared": "workspace:*",
     "@sentry/react": "^10.28.0",
     "@sentry/vite-plugin": "^4.6.1",
     "@zxing/library": "^0.21.3",

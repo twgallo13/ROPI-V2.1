@@ -19,7 +19,14 @@
 ## STEP 2: DEPLOY TO STAGING (ropi-bccee/aoss-staging) ⏳ IN PROGRESS
 - [✅] Deploy Firestore rules: firebase deploy --project=ropi-bccee --only firestore:rules
 - [✅] Deploy Firestore indexes: firebase deploy --project=ropi-bccee --only firestore:indexes
-- [⏳] Build and deploy functions: firebase deploy --project=ropi-bccee --only functions
+- [❌] Build and deploy functions: firebase deploy --project=ropi-bccee --only functions (ERROR: analysis issue)
+- [✅] Build and deploy web: firebase deploy --project=ropi-bccee --only hosting:aoss-staging
+- [✅] Run migration: node packages/api/scripts/migrate_mpn.js --apply --batch-size=200
+  - Results: 33/34 updated successfully, 1 missing MPN (test product)
+  - Migration report: /tmp/migration_apply_staging.json
+
+## STEP 3: RESOLVE MISSING MPN PRODUCT ⏳ IN PROGRESS  
+- [⏳] Document exclusion: product_guardrail_test_1767442442 (test product)
 - [ ] Deploy Firestore indexes: firebase deploy --project=aoss-main --only firestore:indexes  
 - [ ] Build and deploy functions: firebase deploy --project=aoss-main --only functions
 - [ ] Build and deploy hosting: firebase deploy --project=aoss-main --only hosting
