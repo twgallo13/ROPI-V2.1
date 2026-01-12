@@ -10,11 +10,12 @@
 
 - [x] **Phase 1**: Setup & branches ✅
 - [x] **Phase 2**: Backend implementation (Describe endpoint, Gemini integration, registry enforcement) ✅
-- [ ] **Phase 3**: Admin UI (aiInput, AITemplate fields + Test Preview)
-- [ ] **Phase 4**: Frontend (Tab 5 — AI Actions)
-- [ ] **Phase 5**: Data migration & infra (aiInput backfill, secrets, indexes)
-- [ ] **Phase 6**: QA / Integration tests in staging
-- [ ] **Phase 7**: Cutover checklist & staging validation
+- [x] **Phase 3**: Admin backend (aiInput, AITemplate APIs + Test Preview) ✅
+- [ ] **Phase 4**: Admin UI (AttributeEditor, AITemplate builder UI components)
+- [ ] **Phase 5**: Frontend (Tab 5 — AI Actions)
+- [ ] **Phase 6**: Data migration & infra (aiInput backfill, secrets, indexes)
+- [ ] **Phase 7**: QA / Integration tests in staging
+- [ ] **Phase 8**: Cutover checklist & staging validation
 
 ## Phase 1: Setup & branches ✅
 
@@ -369,11 +370,61 @@ If blocked by permissions, missing secrets, index errors, or deployment issues:
 | Phase | Status | Owner | PR Link | Deploy Time | Notes |
 |-------|--------|--------|---------|-------------|--------|
 | 1. Setup | ✅ Complete | - | - | - | Feature branch created |
-| 2. Backend | 🔄 In Progress | Homer | - | - | - |
-| 3. Admin UI | 📋 To Do | - | - | - | - |
-| 4. Frontend | 📋 To Do | - | - | - | - |
-| 5. Data/Infra | 📋 To Do | - | - | - | - |
-| 6. QA Tests | 📋 To Do | - | - | - | - |
-| 7. Staging | 📋 To Do | - | - | - | - |
+| 2. Backend | ✅ Complete | Backend | [#TBD](commits/a4d1aca) | - | AI Describe endpoint + Gemini integration |
+| 3. Admin Backend | ✅ Complete | Backend | [#TBD](commits/f89c274) | - | Admin APIs for aiInput flags & templates |
+| 4. Admin UI | 🔄 Next | Frontend | - | - | AttributeEditor & AITemplate builder |
+| 5. Frontend | 📋 To Do | Frontend | - | - | Tab 5 — AI Actions |
+| 6. Data/Infra | 📋 To Do | DevOps | - | - | Secrets, indexes, backfill |
+| 7. QA Tests | 📋 To Do | QA | - | - | Staging integration tests |
+| 8. Staging | 📋 To Do | All | - | - | Deploy & validation |
 
-**Next Action**: Begin Phase 2 - Backend implementation starting with `describe.ts` endpoint
+---
+
+## ✅ COMPLETED PHASES SUMMARY
+
+### Phase 1: Setup & Branches ✅
+- Created feature branch: `feature/aoss-ai-describe`
+- Implementation plan document created
+- Project structure established
+
+### Phase 2: Backend Implementation ✅
+**🔗 Endpoint Created**: `POST /api/products/:mpn/ai-describe`
+
+**📁 Files Added**:
+- `packages/api/src/endpoints/aiDescribe.ts` - Main AI Describe endpoint
+- `packages/api/src/lib/geminiClient.ts` - Gemini AI integration with Secret Manager
+- `packages/api/src/lib/settingsHelpers.ts` - Registry & template loading with caching
+- `packages/api/src/lib/aiActionLog.ts` - Comprehensive audit logging
+- `packages/api/src/lib/promptHelpers.ts` - Prompt rendering & response parsing
+- `packages/api/src/endpoints/aiDescribe.test.ts` - Unit tests
+
+**🎯 Key Features**:
+- Registry-only attribute filtering (`aiInput: true` OR `aiUsage: ['productDescriptions']`)
+- Template-based prompt generation with site-specific matching
+- Blocked responses (409) when required attributes missing
+- Full error handling for API keys, rate limits, network issues  
+- Performance tracking with `elapsedMs` and token counts
+- Async audit logging that doesn't block API responses
+
+### Phase 3: Admin Backend ✅  
+**🔗 Admin Endpoints Created**:
+- `PATCH /admin/attributes/:attributeId/ai-input` - Update aiInput flags
+- `GET/POST/PATCH/DELETE /admin/ai-templates/*` - Full AI template CRUD
+- `GET /admin/ai-templates/:templateKey/preview` - Render-only preview
+
+**📁 Files Added**:
+- `packages/api/src/endpoints/admin/aiDescribeSettings.ts` - Admin CRUD APIs
+- `packages/api/src/endpoints/admin/aiDescribePreview.ts` - Template preview
+- `packages/api/src/endpoints/admin/aiDescribeSettings.test.ts` - Admin tests
+
+**🎯 Admin Features**:
+- Template priority management with site-specific matching
+- Include/exclude observations and attribute notes controls
+- Admin-only sensitive data masking (cost, margin, etc.)
+- Matched conditions debugging for template troubleshooting
+- Comprehensive audit logging to `admin_action_log` collection
+- Registry and template cache invalidation on updates
+
+**🔄 Next Action**: Begin Phase 4 - Admin UI implementation starting with AttributeEditor components
+
+---
