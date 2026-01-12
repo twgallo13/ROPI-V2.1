@@ -975,9 +975,11 @@ export async function searchProductsByMpnHandler(req: Request, res: Response) {
  */
 export async function getProductCompletionHandler(req: Request, res: Response) {
   try {
-    const productId = req.params.productId;
+    // Get product reference from resolveProductIdentifier middleware
+    const productRef = res.locals.productDocRef;
+    const mpnNormalized = res.locals.mpn_normalized;
     
-    if (!productId) {
+    if (!productRef) {
       res.status(400).json({ 
         error: 'MISSING_PRODUCT_ID', 
         message: 'Product ID is required' 
@@ -985,14 +987,13 @@ export async function getProductCompletionHandler(req: Request, res: Response) {
       return;
     }
 
-    // Fetch product from Firestore
-    const db = admin.firestore();
-    const productDoc = await db.collection('products').doc(productId).get();
+    // Fetch product data using the resolved reference
+    const productDoc = await productRef.get();
 
     if (!productDoc.exists) {
       res.status(404).json({ 
         error: 'PRODUCT_NOT_FOUND', 
-        message: `Product ${productId} not found` 
+        message: `Product not found` 
       });
       return;
     }
@@ -1002,7 +1003,7 @@ export async function getProductCompletionHandler(req: Request, res: Response) {
     // Calculate completion-driven export readiness
     // LP-export-site-triage-1.0.0: Pass ProductDocument (not productId string)
     // Ensure id is included as ProductDocument requires it
-    const productWithId = { id: productId, ...productData } as import('../services/exportService').ProductDocument;
+    const productWithId = { id: productDoc.id, ...productData } as import('../services/exportService').ProductDocument;
     const readiness = await calculateCompletionDrivenExportReadiness(productWithId);
 
     // Return readiness payload
