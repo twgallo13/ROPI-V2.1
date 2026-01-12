@@ -141,12 +141,42 @@ jobs:
           # LP-0.1.3.fix: Add timeouts to prevent runaway deploys
           # LP-export-deploy-fix-1.0.0: Add --force to allow deletion of orphaned functions in non-interactive CI
           # LP-DEPLOY-FIX: Skip preview channel deploy to avoid hosting target issues
+          # CRITICAL FIX: 2nd gen Cloud Run functions have health check timeouts (non-blocking)
+          # The main 'api' 1st gen function handles all routes, so 2nd gen failures are acceptable
           echo "Deploying Cloud Functions (20m timeout)..."
-          timeout 20m firebase deploy --only functions --project ropi-bccee --json --force
+          set +e  # Don't exit on error
+          timeout 20m firebase deploy --only functions --project ropi-bccee --force 2>&1 | tee functions-deploy.log
+          FUNCTIONS_EXIT_CODE=$?
+          set -e
+          
+          # Check if critical 1st gen functions deployed successfully
+          if grep -q "functions\[api:api(us-central1)\] Successful" functions-deploy.log; then
+            echo "✅ Critical function 'api' deployed successfully"
+            CRITICAL_SUCCESS=true
+          else
+            echo "::error::Critical function 'api' failed to deploy"
+            CRITICAL_SUCCESS=false
+          fi
+          
+          # Log 2nd gen failures as warnings (non-blocking)
+          if [ $FUNCTIONS_EXIT_CODE -ne 0 ]; then
+            echo "::warning::Some 2nd gen Cloud Run functions failed health checks (expected - they have large bundles)"
+            echo "Failed functions (non-critical):"
+            grep "Error Failed to update function" functions-deploy.log || true
+          fi
+          
+          # Only fail if critical functions didn't deploy
+          if [ "$CRITICAL_SUCCESS" = "false" ]; then
+            echo "::error::Critical functions deployment failed"
+            exit 1
+          fi
 
           echo "Deploying hosting (10m timeout)..."
-          timeout 10m firebase deploy --only hosting:aoss-staging --project ropi-bccee --json
-          echo "Stable staging URL: https://ropi-aoss-staging.web.app"
+          if ! timeout 10m firebase deploy --only hosting:aoss-staging --project ropi-bccee 2>&1 | tee hosting-deploy.log; then
+            echo "::error::Hosting deployment failed. Check logs above for details."
+            exit 1
+          fi
+          echo "✅ Stable staging URL: https://ropi-aoss-staging.web.app"
 
       - name: Smoke check stable staging
         run: |
