@@ -1,0 +1,35 @@
+2026-01-12T08:09:22.068272201Z D api: Function execution started
+2026-01-12T08:09:22.500829356Z D api: Function execution took 432 ms, finished with status code: 204
+2026-01-12T08:09:22.571443989Z D api: Function execution started
+2026-01-12T08:09:22.611978Z ? api: ✅ Auth: Token verified (source: header) { uid: 'zmAn8kKTE3ZW3fM386d8tiWW97U2', path: '/products' }
+2026-01-12T08:09:23.998432Z ? api: Failed to load attribute aliases, continuing without aliases: Error: ENOENT: no such file or directory, open '/sdk/config/attributeAliases.json'
+2026-01-12T08:09:23.998444Z ? api:     at readFileSync (node:fs:449:20)
+2026-01-12T08:09:23.998447Z ? api:     at loadAliases (/workspace/dist/index.js:34561:48)
+2026-01-12T08:09:23.998451Z ? api:     at initializeAllowedFieldsCache (/workspace/dist/index.js:34591:21)
+2026-01-12T08:09:23.998453Z ? api:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2026-01-12T08:09:23.998456Z ? api:   errno: -2,
+2026-01-12T08:09:23.998458Z ? api:   code: 'ENOENT',
+2026-01-12T08:09:23.998460Z ? api:   syscall: 'open',
+2026-01-12T08:09:23.998463Z ? api:   path: '/sdk/config/attributeAliases.json'
+2026-01-12T08:09:23.998465Z ? api: }
+2026-01-12T08:09:23.998601Z ? api: [allowedTargetFields] Initialized cache with 242 allowed target fields from registry
+2026-01-12T08:09:24.300406578Z D api: Function execution took 1728 ms, finished with status code: 200
+2026-01-12T08:09:24.488722101Z D api: Function execution started
+2026-01-12T08:09:24.496616Z ? api: ✅ Auth: Token verified (source: header) { uid: 'zmAn8kKTE3ZW3fM386d8tiWW97U2', path: '/products' }
+2026-01-12T08:09:24.807171042Z D api: Function execution took 318 ms, finished with status code: 304
+2026-01-12T08:19:55.255117982Z D api: Function execution started
+2026-01-12T08:19:55.648632Z ? api: Legacy product lookup used for: 109-test (normalized: 109-test)
+2026-01-12T08:19:55.651284692Z D api: Function execution took 396 ms, finished with status code: 400
+2026-01-12T08:22:03.697920526Z D api: Function execution started
+2026-01-12T08:22:03.706188Z ? api: ⚠️ Token verification failed (source: header): FirebaseAuthError: Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
+2026-01-12T08:22:03.706213Z ? api:     at /workspace/node_modules/firebase-admin/lib/auth/token-verifier.js:177:23
+2026-01-12T08:22:03.706218Z ? api:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2026-01-12T08:22:03.706222Z ? api:   errorInfo: {
+2026-01-12T08:22:03.706226Z ? api:     code: 'auth/argument-error',
+2026-01-12T08:22:03.706231Z ? api:     message: 'Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+2026-01-12T08:22:03.706234Z ? api:   },
+2026-01-12T08:22:03.706238Z ? api:   codePrefix: 'auth'
+2026-01-12T08:22:03.706248Z ? api: }
+2026-01-12T08:22:03.707729925Z D api: Function execution took 9 ms, finished with status code: 401
+2026-01-12T08:22:16.438108266Z D api: Function execution started
+2026-01-12T08:22:16.444720436Z D api: Function execution took 6 ms, finished with status code: 200
