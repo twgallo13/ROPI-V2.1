@@ -102,6 +102,15 @@ function stripUndefinedDeep(obj: any): any {
       cleaned[key] = stripUndefinedDeep(value);
     }
   }
+  
+  // Log what was stripped (only if there were undefined values)
+  const originalKeys = Object.keys(obj);
+  const cleanedKeys = Object.keys(cleaned);
+  if (originalKeys.length !== cleanedKeys.length) {
+    const strippedKeys = originalKeys.filter(k => !cleanedKeys.includes(k));
+    console.log('🧹 STRIPPED UNDEFINED KEYS:', strippedKeys);
+  }
+  
   return cleaned;
 }
 
@@ -288,8 +297,15 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
  */
 export async function createAITemplateHandler(req: Request, res: Response) {
   try {
+    console.log('📝 CREATE TEMPLATE REQUEST:', {
+      body: req.body,
+      userId: req.user?.uid
+    });
+    
     // Normalize legacy UI field names to canonical backend names
     const normalizedBody = normalizeTemplateFields(req.body);
+    
+    console.log('🔄 NORMALIZED BODY:', normalizedBody);
     
     const {
       key,
@@ -307,6 +323,7 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     } = normalizedBody;
     
     if (!key || typeof key !== 'string') {
+      console.warn('⚠️ VALIDATION FAILED: Missing or invalid key', { key, type: typeof key });
       return res.status(400).json({
         status: 'error',
         message: 'key is required and must be a string'
@@ -314,6 +331,7 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     }
     
     if (!prompt || typeof prompt !== 'string') {
+      console.warn('⚠️ VALIDATION FAILED: Missing or invalid prompt', { prompt, type: typeof prompt });
       return res.status(400).json({
         status: 'error',
         message: 'prompt is required and must be a string'
@@ -379,9 +397,20 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     });
     
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    // Log to both structured logger and console for visibility
+    console.error('❌ CREATE TEMPLATE ERROR:', {
+      message: errorMsg,
+      stack: errorStack,
+      requestBody: req.body,
+      userId: req.user?.uid
+    });
+    
     logger.error('Error creating AI template', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
+      error: errorMsg,
+      stack: errorStack,
       key: req.body.key,
       userId: req.user?.uid
     });
@@ -530,9 +559,20 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     });
     
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    console.error('❌ UPDATE TEMPLATE ERROR:', {
+      message: errorMsg,
+      stack: errorStack,
+      templateKey: req.params.templateKey,
+      requestBody: req.body,
+      userId: req.user?.uid
+    });
+    
     logger.error('Error updating AI template', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
+      error: errorMsg,
+      stack: errorStack,
       templateKey: req.params.templateKey,
       userId: req.user?.uid
     });
