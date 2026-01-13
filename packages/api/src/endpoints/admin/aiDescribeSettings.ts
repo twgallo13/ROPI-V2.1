@@ -26,16 +26,16 @@ function normalizeTemplateFields(body: any) {
   if (body.requiredAttributes !== undefined) normalized.requiredAttributes = body.requiredAttributes;
   
   // Handle prompt field (accept both prompt and prompt_body)
-  if (body.prompt) {
+  if (body.prompt !== undefined) {
     normalized.prompt = body.prompt;
-  } else if (body.prompt_body) {
+  } else if (body.prompt_body !== undefined) {
     normalized.prompt = body.prompt_body;
   }
   
   // Handle modelSettings (accept both modelSettings and model_settings)
-  if (body.modelSettings) {
+  if (body.modelSettings !== undefined) {
     normalized.modelSettings = body.modelSettings;
-  } else if (body.model_settings) {
+  } else if (body.model_settings !== undefined) {
     normalized.modelSettings = body.model_settings;
   }
   
@@ -340,8 +340,8 @@ export async function createAITemplateHandler(req: Request, res: Response) {
       includeName: Boolean(includeName),
       requiredAttributes: Array.isArray(requiredAttributes) ? requiredAttributes : [],
       conditions: Array.isArray(conditions) ? conditions : [],
-      prompt,
-      modelSettings: typeof modelSettings === 'object' ? modelSettings : {},
+      prompt: prompt || '',  // Ensure prompt is never undefined
+      modelSettings: (typeof modelSettings === 'object' && modelSettings !== null) ? modelSettings : {},
       createdAt: Timestamp.now(),
       createdBy: req.user?.uid,
       updatedAt: Timestamp.now(),
