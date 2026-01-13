@@ -2,7 +2,10 @@
 import { Request, Response } from 'express';
 import { getFirestore } from 'firebase-admin/firestore';
 
-const firestore = getFirestore();
+// Lazy Firestore getter to ensure app is initialized
+function getDb() {
+  return getFirestore();
+}
 import { callGemini } from '../lib/geminiClient';
 import { loadRegistry, loadTemplate, loadTemplateForSite } from '../lib/settingsHelpers';
 import { writeAIActionLog } from '../lib/aiActionLog';
@@ -34,7 +37,7 @@ import { logger } from '../lib/logger';
  */
 async function resolveProductDocIdByMPN(mpn: string): Promise<string | null> {
   try {
-    const q = await firestore.collection('products').where('mpn', '==', mpn).limit(1).get();
+    const q = await getDb().collection('products').where('mpn', '==', mpn).limit(1).get();
     if (q.empty) {
       return null;
     }
@@ -83,7 +86,7 @@ export async function aiDescribeHandler(req: Request, res: Response) {
     }
 
     // Load product data
-    const productSnap = await firestore.collection('products').doc(docId).get();
+    const productSnap = await getDb().collection('products').doc(docId).get();
     if (!productSnap.exists) {
       return res.status(404).json({ 
         status: 'error', 

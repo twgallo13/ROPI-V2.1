@@ -1,7 +1,10 @@
 // packages/api/src/lib/settingsHelpers.ts
 import { getFirestore } from 'firebase-admin/firestore';
 
-const firestore = getFirestore();
+// Lazy Firestore getter to ensure app is initialized
+function getDb() {
+  return getFirestore();
+}
 import { logger } from './logger';
 
 /**
@@ -73,7 +76,7 @@ export async function loadRegistry(): Promise<Record<string, RegistryAttribute>>
 
   try {
     logger.info('Loading registry from Firestore');
-    const registrySnap = await firestore.collection('registry').get();
+    const registrySnap = await getDb().collection('registry').get();
     
     const registry: Record<string, RegistryAttribute> = {};
     registrySnap.docs.forEach(doc => {
@@ -126,7 +129,7 @@ async function loadTemplates(): Promise<Record<string, AITemplate>> {
     logger.info('Loading AI templates from Firestore');
     
     // Load from ai_templates collection (or wherever templates are stored)
-    const templatesSnap = await firestore.collection('ai_templates').get();
+    const templatesSnap = await getDb().collection('ai_templates').get();
     
     const templates: Record<string, AITemplate> = {};
     templatesSnap.docs.forEach(doc => {

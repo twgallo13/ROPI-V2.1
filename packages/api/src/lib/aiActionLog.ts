@@ -1,7 +1,10 @@
 // packages/api/src/lib/aiActionLog.ts
 import { getFirestore } from 'firebase-admin/firestore';
 
-const firestore = getFirestore();
+// Lazy Firestore getter to ensure app is initialized
+function getDb() {
+  return getFirestore();
+}
 import { logger } from './logger';
 
 /**
@@ -36,11 +39,11 @@ export async function writeAIActionLog(entry: AIActionLogEntry): Promise<void> {
     const logEntry: AIActionLogEntry = {
       ...entry,
       status: 'success',
-      timestamp: firestore.Timestamp.now()
+      timestamp: getDb().Timestamp.now()
     };
 
     // Add to ai_action_log collection
-    const docRef = await firestore.collection('ai_action_log').add(logEntry);
+    const docRef = await getDb().collection('ai_action_log').add(logEntry);
     
     logger.info('AI Action Log entry written', {
       docId: docRef.id,
@@ -84,10 +87,10 @@ export async function writeAIActionLogBlocked(
       status: 'blocked',
       error: `Missing required attributes: ${missingAttributes.join(', ')}`,
       missingAttributes,
-      timestamp: firestore.Timestamp.now()
+      timestamp: getDb().Timestamp.now()
     };
 
-    const docRef = await firestore.collection('ai_action_log').add(logEntry);
+    const docRef = await getDb().collection('ai_action_log').add(logEntry);
     
     logger.info('AI Action Log blocked entry written', {
       docId: docRef.id,
@@ -130,10 +133,10 @@ export async function writeAIActionLogError(
       model: 'n/a',
       status: 'error',
       error: errorMessage,
-      timestamp: firestore.Timestamp.now()
+      timestamp: getDb().Timestamp.now()
     };
 
-    const docRef = await firestore.collection('ai_action_log').add(logEntry);
+    const docRef = await getDb().collection('ai_action_log').add(logEntry);
     
     logger.info('AI Action Log error entry written', {
       docId: docRef.id,
@@ -165,7 +168,7 @@ export async function queryAIActionLog(options: {
   limit?: number;
 }) {
   try {
-    let query = firestore.collection('ai_action_log') as any;
+    let query = getDb().collection('ai_action_log') as any;
 
     // Apply filters
     if (options.mpn) {
@@ -185,11 +188,11 @@ export async function queryAIActionLog(options: {
     }
 
     if (options.startDate) {
-      query = query.where('timestamp', '>=', firestore.Timestamp.fromDate(options.startDate));
+      query = query.where('timestamp', '>=', getDb().Timestamp.fromDate(options.startDate));
     }
     
     if (options.endDate) {
-      query = query.where('timestamp', '<=', firestore.Timestamp.fromDate(options.endDate));
+      query = query.where('timestamp', '<=', getDb().Timestamp.fromDate(options.endDate));
     }
 
     // Order by timestamp and limit
