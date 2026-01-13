@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '@/lib/apiFetch';
 import PageLayout from '@/components/common/PageLayout';
-import AITemplateBuilder from './AITemplateBuilder';
 
 interface AITemplate {
   key: string;
@@ -41,11 +41,10 @@ interface TemplateListResponse {
 }
 
 function AITemplatesPage() {
+  const navigate = useNavigate();
   const [templates, setTemplates] = useState<AITemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     loadTemplates();
@@ -100,15 +99,6 @@ function AITemplatesPage() {
     );
   }
 
-  // Show template builder if editing
-  if (selectedTemplate || showCreateForm) {
-    return (
-      <PageLayout title={selectedTemplate ? `Edit Template: ${selectedTemplate}` : 'Create AI Template'}>
-        <AITemplateBuilder />
-      </PageLayout>
-    );
-  }
-
   // Template list view
   return (
     <PageLayout title="AI Templates">
@@ -122,7 +112,7 @@ function AITemplatesPage() {
         }}>
           <h2 style={{ margin: 0 }}>AI Template Management</h2>
           <button
-            onClick={() => setShowCreateForm(true)}
+            onClick={() => navigate('/settings/ai-templates/new')}
             style={{
               padding: '0.75rem 1.5rem',
               backgroundColor: 'var(--color-primary, #007bff)',
@@ -270,7 +260,7 @@ function AITemplatesPage() {
                       </td>
                       <td style={{ padding: '0.75rem', textAlign: 'center' }}>
                         <button
-                          onClick={() => setSelectedTemplate(template.key)}
+                          onClick={() => navigate(`/settings/ai-templates/edit/${template.key}`)}
                           style={{
                             padding: '0.375rem 0.75rem',
                             backgroundColor: 'var(--color-secondary, #6c757d)',

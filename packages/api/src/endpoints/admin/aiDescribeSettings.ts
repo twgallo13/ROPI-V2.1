@@ -52,13 +52,30 @@ function normalizeTemplateFields(body: any) {
 /**
  * Recursively remove undefined values from objects (Firestore rejects undefined)
  * This prevents 500 errors when objects contain undefined fields
+ * 
+ * IMPORTANT: Preserves Firestore special types:
+ * - Timestamp objects (from firebase-admin/firestore)
+ * - Date objects
+ * - FieldValue sentinels (if used)
  */
 function stripUndefinedDeep(obj: any): any {
   if (obj === null || obj === undefined) return null;
+  
+  // Preserve Firestore Timestamp objects - they have a toDate() method
+  if (typeof obj === 'object' && typeof obj.toDate === 'function') {
+    return obj;
+  }
+  
+  // Preserve Date objects
+  if (obj instanceof Date) {
+    return obj;
+  }
+  
   if (typeof obj !== 'object') return obj;
   if (Array.isArray(obj)) {
     return obj.map(item => stripUndefinedDeep(item)).filter(item => item !== undefined);
   }
+  
   const cleaned: any = {};
   for (const [key, value] of Object.entries(obj)) {
     if (value !== undefined) {
@@ -119,7 +136,7 @@ export async function updateAttributeAiInputHandler(req: Request, res: Response)
     // Update aiInput flag
     await getDb().collection('registry').doc(attributeId).update({
       aiInput,
-      updatedAt: getDb().Timestamp.now(),
+      updatedAt: Timestamp.now(),
       updatedBy: req.user?.uid
     });
     
