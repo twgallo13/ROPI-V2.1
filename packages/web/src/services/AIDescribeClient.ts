@@ -162,13 +162,13 @@ class AIDescribeClient {
    * Returns one result per target with candidates and SEO.
    */
   async describe(
-    productId: string,
+    mpn: string,
     request: DescribeRequest
   ): Promise<DescribeResponse> {
     const headers = await getAuthHeaders();
     
     const response = await fetch(
-      `${this.baseUrl}/api/products/${productId}/describe`,
+      `${this.baseUrl}/api/products/${mpn}/describe`,
       {
         method: 'POST',
         headers,
@@ -190,13 +190,13 @@ class AIDescribeClient {
    * LP-obs-studio-cleanup-1.6.5: Multi-target suggestions.
    */
   async suggestions(
-    productId: string,
+    mpn: string,
     request: SuggestionsRequest
   ): Promise<SuggestionsResponse> {
     const headers = await getAuthHeaders();
     
     const response = await fetch(
-      `${this.baseUrl}/api/products/${productId}/suggestions`,
+      `${this.baseUrl}/api/products/${mpn}/suggestions`,
       {
         method: 'POST',
         headers,
@@ -218,13 +218,13 @@ class AIDescribeClient {
    * LP-obs-studio-cleanup-1.6.5: Target-scoped apply with audit logging.
    */
   async apply(
-    productId: string,
+    mpn: string,
     request: ApplyRequest
   ): Promise<ApplyResponse> {
     const headers = await getAuthHeaders();
     
     const response = await fetch(
-      `${this.baseUrl}/api/products/${productId}/apply`,
+      `${this.baseUrl}/api/products/${mpn}/apply`,
       {
         method: 'POST',
         headers,

@@ -110,8 +110,8 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
 
   // LP-obs-studio-cleanup-1.4.0: Request suggestions from observations
   const handleRequestSuggestions = async () => {
-    if (!product?.id) return;
-    const result = await generateSuggestions(product.id, autoResolve);
+    if (!product?.mpn && !product?.sku) return;
+    const result = await generateSuggestions(product.mpn || product.sku, autoResolve);
     if (result && result.meta.autoAppliedCount > 0) {
       // Notify user of auto-applied suggestions
       const newEntry: AIHistoryEntry = {
@@ -128,8 +128,8 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
 
   // LP-obs-studio-cleanup-1.4.0: Apply a single suggestion
   const handleApplySuggestion = async (suggestion: typeof suggestions[0]) => {
-    if (!product?.id) return;
-    const success = await applySuggestion(product.id, suggestion);
+    if (!product?.mpn && !product?.sku) return;
+    const success = await applySuggestion(product.mpn || product.sku, suggestion);
     if (success) {
       // Update local state via onUpdate
       onUpdate(`attributes.${suggestion.attributeId}`, suggestion.suggestedValue);
@@ -188,7 +188,7 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
       setJobProgress({ status: 'generating', progress: 30, message: 'Generating descriptions...', startTime });
 
       // Call the aggregated describe API
-      const response = await aiDescribeClient.describe(product.id, request);
+      const response = await aiDescribeClient.describe(product.mpn || product.sku, request);
 
       setJobProgress({ status: 'generating', progress: 70, message: 'Processing results...', startTime });
 
@@ -249,10 +249,10 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
 
   // LP-obs-studio-cleanup-1.6.5: Apply candidate for a target
   const handleApplyCandidate = useCallback(async (targetId: string, candidate: Candidate) => {
-    if (!product?.id) return;
+    if (!product?.mpn && !product?.sku) return;
 
     try {
-      await aiDescribeClient.apply(product.id, {
+      await aiDescribeClient.apply(product.mpn || product.sku, {
         target: targetId,
         action: 'description',
         payload: {
@@ -310,7 +310,7 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
 
   // LP-obs-studio-cleanup-1.6.5: Regenerate for a specific target
   const handleTryAgain = useCallback(async (targetId: string) => {
-    if (!product?.id) return;
+    if (!product?.mpn && !product?.sku) return;
 
     setTargetStatuses(prev => {
       const newStatuses = new Map(prev);
@@ -328,7 +328,7 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
         options: { candidates: 3, aggregate: true },
       };
 
-      const response = await aiDescribeClient.describe(product.id, request);
+      const response = await aiDescribeClient.describe(product.mpn || product.sku, request);
 
       if (response.results.length > 0) {
         const result = response.results[0];
@@ -365,10 +365,10 @@ function AIActionsTab({ product, onUpdate }: AIActionsTabProps) {
 
   // LP-obs-studio-cleanup-1.6.5: Apply SEO for a target
   const handleApplySEO = useCallback(async (targetId: string, seo: SEOData) => {
-    if (!product?.id) return;
+    if (!product?.mpn && !product?.sku) return;
 
     try {
-      await aiDescribeClient.apply(product.id, {
+      await aiDescribeClient.apply(product.mpn || product.sku, {
         target: targetId,
         action: 'seo',
         payload: { seo },
