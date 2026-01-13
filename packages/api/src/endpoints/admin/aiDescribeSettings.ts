@@ -14,29 +14,30 @@ function getDb() {
  * This is a temporary shim to support the current UI while maintaining backend standards
  */
 function normalizeTemplateFields(body: any) {
-  const normalized = { ...body };
+  const normalized: any = {};
   
   // Map legacy field names to canonical ones
-  if (body.prompt_body !== undefined) {
-    normalized.prompt = body.prompt_body;
-    delete normalized.prompt_body;
-  }
-  if (body.model_settings !== undefined) {
-    normalized.modelSettings = body.model_settings;
-    delete normalized.model_settings;
-  }
-  if (body.include_attributes !== undefined) {
-    normalized.includeAttributeNotes = body.include_attributes;
-    delete normalized.include_attributes;
-  }
-  if (body.include_name !== undefined) {
-    normalized.includeName = body.include_name;
-    delete normalized.include_name;
-  }
-  if (body.include_observations !== undefined) {
-    normalized.includeObservations = body.include_observations;
-    delete normalized.include_observations;
-  }
+  normalized.key = body.key;
+  normalized.title = body.title;
+  normalized.status = body.status;
+  normalized.priority = body.priority;
+  normalized.site = body.site;
+  normalized.conditions = body.conditions;
+  normalized.requiredAttributes = body.requiredAttributes;
+  
+  // Handle prompt field (accept both prompt and prompt_body)
+  normalized.prompt = body.prompt || body.prompt_body;
+  
+  // Handle modelSettings (accept both modelSettings and model_settings)
+  normalized.modelSettings = body.modelSettings || body.model_settings;
+  
+  // Handle include flags (accept both formats)
+  normalized.includeAttributeNotes = body.includeAttributeNotes ?? body.include_attributes;
+  normalized.includeName = body.includeName ?? body.include_name;
+  normalized.includeObservations = body.includeObservations ?? body.include_observations;
+  
+  // Note: include_rules and include_custom_attributes are ignored for now
+  // (not implemented in backend)
   
   // Generate key from title if missing
   if (!normalized.key && normalized.title) {
@@ -204,10 +205,26 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     const snapshot = await query.get();
     
     // Get templates and sort in memory by priority (desc) then key (asc)
-    const templates = snapshot.docs.map(doc => ({
-      key: doc.id,
-      ...doc.data()
-    })).sort((a, b) => {
+    const templates = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        key: doc.id,
+        title: data.title,
+        status: data.status || 'active',
+        priority: data.priority || 0,
+        site: data.site,
+        conditions: data.conditions || [],
+        requiredAttributes: data.requiredAttributes || [],
+        // Legacy UI field names for compatibility
+        prompt_body: data.prompt,
+        model_settings: data.modelSettings || {},
+        include_attributes: data.includeAttributeNotes || false,
+        include_name: data.includeName || false,
+        include_observations: data.includeObservations || false,
+        includeObservations: data.includeObservations || false,
+        includeAttributeNotes: data.includeAttributeNotes || false
+      };
+    }).sort((a, b) => {
       // First sort by priority (desc)
       if (b.priority !== a.priority) {
         return (b.priority || 0) - (a.priority || 0);
@@ -371,9 +388,25 @@ export async function getAITemplateHandler(req: Request, res: Response) {
       });
     }
     
+    const data = doc.data();
+    
+    // Convert backend format to UI format for compatibility
     const template = {
       key: doc.id,
-      ...doc.data()
+      title: data?.title,
+      status: data?.status || 'active',
+      priority: data?.priority || 0,
+      site: data?.site,
+      conditions: data?.conditions || [],
+      requiredAttributes: data?.requiredAttributes || [],
+      // Legacy UI field names
+      prompt_body: data?.prompt,
+      model_settings: data?.modelSettings || {},
+      include_attributes: data?.includeAttributeNotes || false,
+      include_name: data?.includeName || false,
+      include_observations: data?.includeObservations || false,
+      include_rules: false,
+      include_custom_attributes: false
     };
     
     return res.json({
