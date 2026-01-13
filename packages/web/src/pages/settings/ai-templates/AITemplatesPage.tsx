@@ -250,7 +250,7 @@ function AITemplatesPage() {
                             ? 'var(--color-success, #155724)' 
                             : 'var(--color-warning, #856404)',
                         }}>
-                          {template.status.toUpperCase()}
+                          {(template.status ?? 'disabled').toUpperCase()}
                         </span>
                       </td>
                       <td style={{ padding: '0.75rem', textAlign: 'center' }}>
