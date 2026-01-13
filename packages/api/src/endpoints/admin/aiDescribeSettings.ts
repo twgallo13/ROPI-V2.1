@@ -234,6 +234,8 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
     
+    console.log('📋 LIST TEMPLATES REQUEST:', { limit, offset, userId: req.user?.uid });
+    
     // Query only by priority to avoid composite index requirement
     let query = getDb().collection('ai_templates')
       .orderBy('priority', 'desc');
@@ -247,6 +249,8 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     query = query.limit(limit);
     
     const snapshot = await query.get();
+    
+    console.log('📋 TEMPLATES QUERY RESULT:', { count: snapshot.size, limit, offset });
     
     // Get templates and sort in memory by priority (desc) then key (asc)
     const templates = snapshot.docs.map(doc => {
@@ -281,6 +285,8 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
       return (a.key || '').localeCompare(b.key || '');
     });
     
+    console.log('✅ TEMPLATES SORTED:', { count: templates.length, keys: templates.map(t => t.key) });
+    
     return res.json({
       status: 'ok',
       templates,
@@ -293,9 +299,18 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     });
     
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    console.error('❌ LIST TEMPLATES ERROR:', {
+      message: errorMsg,
+      stack: errorStack,
+      userId: req.user?.uid
+    });
+    
     logger.error('Error listing AI templates', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
+      error: errorMsg,
+      stack: errorStack,
       userId: req.user?.uid
     });
     
@@ -447,9 +462,12 @@ export async function getAITemplateHandler(req: Request, res: Response) {
   try {
     const templateKey = req.params.templateKey;
     
+    console.log('📖 GET TEMPLATE REQUEST:', { templateKey, userId: req.user?.uid });
+    
     const doc = await getDb().collection('ai_templates').doc(templateKey).get();
     
     if (!doc.exists) {
+      console.warn('⚠️ TEMPLATE NOT FOUND:', { templateKey });
       return res.status(404).json({
         status: 'error',
         message: `template '${templateKey}' not found`
@@ -457,6 +475,7 @@ export async function getAITemplateHandler(req: Request, res: Response) {
     }
     
     const data = doc.data();
+    console.log('✅ FOUND TEMPLATE DOC:', { templateKey, hasPrompt: !!data?.prompt, hasTitle: !!data?.title });
     
     // Convert backend format to UI format for compatibility
     const template = {
@@ -481,14 +500,26 @@ export async function getAITemplateHandler(req: Request, res: Response) {
       include_custom_attributes: false
     };
     
+    console.log('✅ TEMPLATE RESPONSE READY:', { key: template.key, hasPromptBody: !!template.prompt_body });
+    
     return res.json({
       status: 'ok',
       template
     });
     
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    console.error('❌ GET TEMPLATE ERROR:', {
+      message: errorMsg,
+      stack: errorStack,
+      templateKey: req.params.templateKey,
+      userId: req.user?.uid
+    });
+    
     logger.error('Error getting AI template', {
-      error: error.message,
+      error: errorMsg,
       templateKey: req.params.templateKey,
       userId: req.user?.uid
     });
