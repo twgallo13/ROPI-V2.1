@@ -63,9 +63,6 @@ importers:
       '@google/generative-ai':
         specifier: ^0.21.0
         version: 0.21.0
-      '@ropi-aoss/shared':
-        specifier: workspace:*
-        version: link:../shared
       busboy:
         specifier: ^1.6.0
         version: 1.6.0
