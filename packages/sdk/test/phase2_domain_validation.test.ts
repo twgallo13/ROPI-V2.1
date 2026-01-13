@@ -254,7 +254,7 @@ describe('validateProductWithDomains', () => {
     attributes: {
       gender: "Men's",
       primary_color: 'Black',
-      department: 'Mens', // Valid value per registry
+      department: 'Clothing', // Valid value per SDK registry
     },
   };
 
