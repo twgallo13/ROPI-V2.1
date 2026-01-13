@@ -4,7 +4,10 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { logger } from '../../lib/logger';
 import { clearRegistryCache, clearTemplatesCache } from '../../lib/settingsHelpers';
 
-const firestore = getFirestore();
+// Lazy Firestore getter to ensure app is initialized
+function getDb() {
+  return getFirestore();
+}
 
 /**
  * Admin AI Describe Settings Endpoints
@@ -46,7 +49,7 @@ export async function updateAttributeAiInputHandler(req: Request, res: Response)
     }
     
     // Check if attribute exists
-    const attrDoc = await firestore.collection('registry').doc(attributeId).get();
+    const attrDoc = await getDb().collection('registry').doc(attributeId).get();
     if (!attrDoc.exists) {
       return res.status(404).json({
         status: 'error',
@@ -55,9 +58,9 @@ export async function updateAttributeAiInputHandler(req: Request, res: Response)
     }
     
     // Update aiInput flag
-    await firestore.collection('registry').doc(attributeId).update({
+    await getDb().collection('registry').doc(attributeId).update({
       aiInput,
-      updatedAt: firestore.Timestamp.now(),
+      updatedAt: getDb().Timestamp.now(),
       updatedBy: req.user?.uid
     });
     
@@ -65,12 +68,12 @@ export async function updateAttributeAiInputHandler(req: Request, res: Response)
     clearRegistryCache();
     
     // Write admin action log
-    await firestore.collection('admin_action_log').add({
+    await getDb().collection('admin_action_log').add({
       action: 'update_attribute_ai_input',
       attributeId,
       aiInput,
       userId: req.user?.uid,
-      timestamp: firestore.Timestamp.now(),
+      timestamp: getDb().Timestamp.now(),
       type: 'attribute_management'
     });
     
@@ -109,7 +112,7 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
     
-    let query = firestore.collection('ai_templates')
+    let query = getDb().collection('ai_templates')
       .orderBy('priority', 'desc')
       .orderBy('key', 'asc');
     
@@ -186,7 +189,7 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     }
     
     // Check if template key already exists
-    const existingDoc = await firestore.collection('ai_templates').doc(key).get();
+    const existingDoc = await getDb().collection('ai_templates').doc(key).get();
     if (existingDoc.exists) {
       return res.status(409).json({
         status: 'error',
@@ -204,24 +207,24 @@ export async function createAITemplateHandler(req: Request, res: Response) {
       conditions: Array.isArray(conditions) ? conditions : [],
       prompt,
       modelSettings: typeof modelSettings === 'object' ? modelSettings : {},
-      createdAt: firestore.Timestamp.now(),
+      createdAt: getDb().Timestamp.now(),
       createdBy: req.user?.uid,
-      updatedAt: firestore.Timestamp.now(),
+      updatedAt: getDb().Timestamp.now(),
       updatedBy: req.user?.uid
     };
     
-    await firestore.collection('ai_templates').doc(key).set(templateData);
+    await getDb().collection('ai_templates').doc(key).set(templateData);
     
     // Clear templates cache
     clearTemplatesCache();
     
     // Write admin action log
-    await firestore.collection('admin_action_log').add({
+    await getDb().collection('admin_action_log').add({
       action: 'create_ai_template',
       templateKey: key,
       templateData,
       userId: req.user?.uid,
-      timestamp: firestore.Timestamp.now(),
+      timestamp: getDb().Timestamp.now(),
       type: 'ai_template_management'
     });
     
@@ -260,7 +263,7 @@ export async function getAITemplateHandler(req: Request, res: Response) {
   try {
     const templateKey = req.params.templateKey;
     
-    const doc = await firestore.collection('ai_templates').doc(templateKey).get();
+    const doc = await getDb().collection('ai_templates').doc(templateKey).get();
     
     if (!doc.exists) {
       return res.status(404).json({
@@ -304,7 +307,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     const updates = req.body;
     
     // Check if template exists
-    const doc = await firestore.collection('ai_templates').doc(templateKey).get();
+    const doc = await getDb().collection('ai_templates').doc(templateKey).get();
     if (!doc.exists) {
       return res.status(404).json({
         status: 'error',
@@ -319,7 +322,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     ];
     
     const sanitizedUpdates: any = {
-      updatedAt: firestore.Timestamp.now(),
+      updatedAt: getDb().Timestamp.now(),
       updatedBy: req.user?.uid
     };
     
@@ -336,18 +339,18 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
       });
     }
     
-    await firestore.collection('ai_templates').doc(templateKey).update(sanitizedUpdates);
+    await getDb().collection('ai_templates').doc(templateKey).update(sanitizedUpdates);
     
     // Clear templates cache
     clearTemplatesCache();
     
     // Write admin action log
-    await firestore.collection('admin_action_log').add({
+    await getDb().collection('admin_action_log').add({
       action: 'update_ai_template',
       templateKey,
       updates: sanitizedUpdates,
       userId: req.user?.uid,
-      timestamp: firestore.Timestamp.now(),
+      timestamp: getDb().Timestamp.now(),
       type: 'ai_template_management'
     });
     
@@ -386,7 +389,7 @@ export async function deleteAITemplateHandler(req: Request, res: Response) {
     const templateKey = req.params.templateKey;
     
     // Check if template exists
-    const doc = await firestore.collection('ai_templates').doc(templateKey).get();
+    const doc = await getDb().collection('ai_templates').doc(templateKey).get();
     if (!doc.exists) {
       return res.status(404).json({
         status: 'error',
@@ -402,17 +405,17 @@ export async function deleteAITemplateHandler(req: Request, res: Response) {
       });
     }
     
-    await firestore.collection('ai_templates').doc(templateKey).delete();
+    await getDb().collection('ai_templates').doc(templateKey).delete();
     
     // Clear templates cache
     clearTemplatesCache();
     
     // Write admin action log
-    await firestore.collection('admin_action_log').add({
+    await getDb().collection('admin_action_log').add({
       action: 'delete_ai_template',
       templateKey,
       userId: req.user?.uid,
-      timestamp: firestore.Timestamp.now(),
+      timestamp: getDb().Timestamp.now(),
       type: 'ai_template_management'
     });
     

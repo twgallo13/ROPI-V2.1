@@ -5,7 +5,10 @@ import { loadRegistry, loadTemplate, loadTemplateForSite } from '../../lib/setti
 import { renderPrompt } from '../../lib/promptHelpers';
 import { logger } from '../../lib/logger';
 
-const firestore = getFirestore();
+// Lazy Firestore getter to ensure app is initialized
+function getDb() {
+  return getFirestore();
+}
 
 /**
  * Admin AI Template Preview Endpoint
@@ -32,7 +35,7 @@ interface AdminPreviewOptions {
  * Resolve product by MPN for admin preview
  */
 async function resolveProductForPreview(mpn: string) {
-  const q = await firestore.collection('products').where('mpn', '==', mpn).limit(1).get();
+  const q = await getDb().collection('products').where('mpn', '==', mpn).limit(1).get();
   if (q.empty) return null;
   
   const productDoc = q.docs[0];
@@ -77,11 +80,11 @@ async function writeAdminActionLog(entry: {
   try {
     const logEntry = {
       ...entry,
-      timestamp: firestore.Timestamp.now(),
+      timestamp: getDb().Timestamp.now(),
       type: 'admin_ai_template_preview'
     };
     
-    await firestore.collection('admin_action_log').add(logEntry);
+    await getDb().collection('admin_action_log').add(logEntry);
     
     logger.info('Admin Action Log entry written for AI template preview', {
       templateKey: entry.templateKey,
