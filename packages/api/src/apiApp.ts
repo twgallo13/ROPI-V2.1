@@ -119,6 +119,7 @@ import {
 // AI Describe Admin endpoints
 import {
   adminAITemplatePreviewHandler,
+  adminAITemplateTestPreviewHandler,
 } from './endpoints/admin/aiDescribePreview';
 import {
   updateAttributeAiInputHandler,
@@ -278,6 +279,7 @@ api.get('/admin/ai-templates/:templateKey', requireAdmin, getAITemplateHandler);
 api.patch('/admin/ai-templates/:templateKey', requireAdmin, updateAITemplateHandler);
 api.delete('/admin/ai-templates/:templateKey', requireAdmin, deleteAITemplateHandler);
 // AI Template preview (render-only)
+api.post('/admin/ai-templates/preview', requireAdmin, adminAITemplateTestPreviewHandler);
 api.get('/admin/ai-templates/:templateKey/preview', requireAdmin, adminAITemplatePreviewHandler);
 
 /**

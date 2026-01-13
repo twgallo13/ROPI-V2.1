@@ -315,4 +315,142 @@ function evaluateCondition(condition: any, context: any): boolean {
   }
 }
 
+/**
+ * Admin AI Template Test Preview Endpoint
+ * 
+ * POST /admin/ai-templates/preview
+ * 
+ * Provides testing of template configurations that haven't been saved yet.
+ * Accepts template data in request body and renders preview without calling LLM.
+ */
+export async function adminAITemplateTestPreviewHandler(req: Request, res: Response) {
+  const startTime = Date.now();
+  
+  try {
+    const { templateKey, promptBody, conditions, modelSettings, testProduct } = req.body;
+    
+    if (!testProduct?.mpn) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'missing testProduct.mpn in request body'
+      });
+    }
+    
+    if (!promptBody) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'missing promptBody in request body'
+      });
+    }
+    
+    // Create a temporary template object from the request
+    const testTemplate = {
+      key: templateKey || 'test_template',
+      priority: 1000,
+      promptBody,
+      conditions: conditions || [],
+      modelSettings: modelSettings || {
+        model: 'gemini-1.5-flash',
+        temperature: 0.3,
+        maxTokens: 1000
+      },
+      includeObservations: true,
+      includeAttributeNotes: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    // Load product by MPN
+    const productResult = await resolveProductForPreview(testProduct.mpn);
+    if (!productResult) {
+      return res.status(404).json({
+        status: 'error',
+        message: `product with mpn '${testProduct.mpn}' not found`
+      });
+    }
+    
+    // Apply admin masking
+    const maskedProduct = applyAdminMasking(productResult.data, true);
+    
+    // Evaluate conditions using the same logic as the main preview
+    const conditionsMatch = testTemplate.conditions.map(condition => {
+      const matches = evaluateCondition(condition, maskedProduct);
+      return {
+        condition,
+        matches,
+        reason: matches ? 'Condition satisfied' : 'Condition not met'
+      };
+    });
+    
+    // Check if template would match (all conditions must pass)
+    const allConditionsMatch = conditionsMatch.every(cm => cm.matches);
+    
+    // Generate prompt if conditions match
+    let generatedPrompt = '';
+    if (allConditionsMatch) {
+      try {
+        // Load registry for prompt rendering
+        const registry = await loadRegistry();
+        generatedPrompt = await renderPrompt(testTemplate.promptBody, maskedProduct, registry);
+      } catch (error) {
+        logger.warn('Error rendering prompt in test preview', { error });
+        generatedPrompt = 'Error rendering prompt: ' + (error instanceof Error ? error.message : 'Unknown error');
+      }
+    } else {
+      generatedPrompt = 'Template conditions do not match this product';
+    }
+    
+    // Write admin action log
+    await getDb().collection('admin_action_log').add({
+      action: 'test_ai_template_preview',
+      templateKey: testTemplate.key,
+      productId: productResult.id,
+      mpn: testProduct.mpn,
+      conditionsMatch: allConditionsMatch,
+      userId: req.user?.uid,
+      timestamp: getDb().Timestamp.now(),
+      type: 'ai_template_management'
+    });
+    
+    logger.info('AI template test preview generated', {
+      templateKey: testTemplate.key,
+      productId: productResult.id,
+      mpn: testProduct.mpn,
+      conditionsMatch: allConditionsMatch,
+      promptLength: generatedPrompt.length,
+      processingTime: Date.now() - startTime,
+      userId: req.user?.uid
+    });
+    
+    return res.json({
+      status: 'ok',
+      product: {
+        id: productResult.id,
+        mpn: testProduct.mpn,
+        site: maskedProduct.site || testProduct.site,
+        ...maskedProduct
+      },
+      generatedPrompt,
+      conditionsMatch,
+      meta: {
+        processingTime: Date.now() - startTime,
+        templateKey: testTemplate.key,
+        allConditionsMatch
+      }
+    });
+    
+  } catch (error) {
+    logger.error('Error generating AI template test preview', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: req.user?.uid
+    });
+    
+    return res.status(500).json({
+      status: 'error',
+      code: 'INTERNAL_ERROR',
+      message: 'Failed to generate template test preview'
+    });
+  }
+}
+
 export default adminAITemplatePreviewHandler;
