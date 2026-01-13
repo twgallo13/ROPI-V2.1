@@ -50,6 +50,25 @@ function normalizeTemplateFields(body: any) {
 }
 
 /**
+ * Recursively remove undefined values from objects (Firestore rejects undefined)
+ * This prevents 500 errors when objects contain undefined fields
+ */
+function stripUndefinedDeep(obj: any): any {
+  if (obj === null || obj === undefined) return null;
+  if (typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(item => stripUndefinedDeep(item)).filter(item => item !== undefined);
+  }
+  const cleaned: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      cleaned[key] = stripUndefinedDeep(value);
+    }
+  }
+  return cleaned;
+}
+
+/**
  * Admin AI Describe Settings Endpoints
  * 
  * Provides CRUD operations for:
@@ -266,7 +285,10 @@ export async function createAITemplateHandler(req: Request, res: Response) {
       updatedBy: req.user?.uid
     };
     
-    await getDb().collection('ai_templates').doc(key).set(templateData);
+    // Strip undefined values from nested objects before Firestore write (Firestore rejects undefined)
+    const cleanedTemplateData = stripUndefinedDeep(templateData);
+    
+    await getDb().collection('ai_templates').doc(key).set(cleanedTemplateData);
     
     // Clear templates cache
     clearTemplatesCache();
@@ -275,7 +297,7 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     await getDb().collection('admin_action_log').add({
       action: 'create_ai_template',
       templateKey: key,
-      templateData,
+      templateData: cleanedTemplateData,
       userId: req.user?.uid,
       timestamp: Timestamp.now(),
       type: 'ai_template_management'
@@ -395,7 +417,10 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
       });
     }
     
-    await getDb().collection('ai_templates').doc(templateKey).update(sanitizedUpdates);
+    // Strip undefined values from nested objects before Firestore write (Firestore rejects undefined)
+    const cleanedUpdates = stripUndefinedDeep(sanitizedUpdates);
+    
+    await getDb().collection('ai_templates').doc(templateKey).update(cleanedUpdates);
     
     // Clear templates cache
     clearTemplatesCache();
@@ -404,7 +429,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     await getDb().collection('admin_action_log').add({
       action: 'update_ai_template',
       templateKey,
-      updates: sanitizedUpdates,
+      updates: cleanedUpdates,
       userId: req.user?.uid,
       timestamp: Timestamp.now(),
       type: 'ai_template_management'
