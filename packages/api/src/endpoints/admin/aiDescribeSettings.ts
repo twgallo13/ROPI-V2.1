@@ -236,10 +236,13 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     
     const {
       key,
+      title,
+      status = 'active',
       priority = 0,
       site,
       includeObservations = false,
       includeAttributeNotes = false,
+      includeName = false,
       requiredAttributes = [],
       conditions = [],
       prompt,
@@ -271,10 +274,13 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     
     const templateData = {
       key,
+      title: title || key,
+      status: status || 'active',
       priority: typeof priority === 'number' ? priority : 0,
       site: site || null,
       includeObservations: Boolean(includeObservations),
       includeAttributeNotes: Boolean(includeAttributeNotes),
+      includeName: Boolean(includeName),
       requiredAttributes: Array.isArray(requiredAttributes) ? requiredAttributes : [],
       conditions: Array.isArray(conditions) ? conditions : [],
       prompt,
@@ -395,7 +401,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     
     // Sanitize updates
     const allowedFields = [
-      'priority', 'site', 'includeObservations', 'includeAttributeNotes',
+      'title', 'status', 'priority', 'site', 'includeObservations', 'includeAttributeNotes',
       'requiredAttributes', 'conditions', 'prompt', 'modelSettings', 'includeName'
     ];
     
