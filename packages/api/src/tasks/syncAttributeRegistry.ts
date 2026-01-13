@@ -355,18 +355,19 @@ export async function runSyncAttributeRegistry(dryRun = false, forceOverwrite = 
       }
 
       // Canonical payload derived from registry
+      // Filter out undefined values to prevent Firestore validation errors
       const registryPayload: Record<string, unknown> = {
         attribute_id: attr.attribute_id,
         label: attr.label,
         external_header: attr.external_header,
         category: attr.category,
         data_type: attr.data_type,
-        allowed_values: attr.allowed_values,
-        synonyms: attr.synonyms,
+        ...(attr.allowed_values !== undefined && { allowed_values: attr.allowed_values }),
+        ...(attr.synonyms !== undefined && { synonyms: attr.synonyms }),
         required_for_completion: attr.required_for_completion ?? false,
         required_for_export: attr.required_for_export ?? false,
         import_required: attr.import_required ?? false,
-        ai_usage_notes: attr.ai_usage_notes,
+        ...(attr.ai_usage_notes !== undefined && { ai_usage_notes: attr.ai_usage_notes }),
         ai_use: attr.ai_use ?? false,
         status: attr.status ?? 'active',
         source: resolvedSource,

@@ -60,6 +60,12 @@ importers:
       '@google-cloud/storage':
         specifier: ^7.18.0
         version: 7.18.0
+      '@google/generative-ai':
+        specifier: ^0.21.0
+        version: 0.21.0
+      '@ropi-aoss/shared':
+        specifier: workspace:*
+        version: link:../shared
       busboy:
         specifier: ^1.6.0
         version: 1.6.0
@@ -1606,6 +1612,11 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  /@google/generative-ai@0.21.0:
+    resolution: {integrity: sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==}
+    engines: {node: '>=18.0.0'}
+    dev: false
 
   /@grpc/grpc-js@1.14.3:
     resolution: {integrity: sha512-Iq8QQQ/7X3Sac15oB6p0FmUg/klxQvXLeileoqrTRGJYLV+/9tubbr9ipz0GKHjmXVsgFPo/+W+2cA8eNcR+XA==}

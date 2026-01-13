@@ -68,11 +68,9 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
       expect(result).toHaveProperty('updated');
       expect(result).toHaveProperty('errors');
       expect(result).toHaveProperty('attributes');
-      // Note: Some errors expected due to registry format variations (undefined allowed_values)
-      // This is acceptable for test sync as core functionality still works
-      expect(result.errors.length).toBeGreaterThanOrEqual(0);
+      expect(result.errors).toHaveLength(0);
 
-      // Verify at least some attributes were created despite sync warnings
+      // Verify at least some attributes were created
       expect(result.created).toBeGreaterThan(0);
       expect(result.attributes.length).toBeGreaterThan(0);
     });
@@ -105,16 +103,14 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
     it('should be idempotent - running twice should update instead of fail', async () => {
       // First sync
       const firstResult = await runSyncAttributeRegistry();
-      // Allow sync errors due to registry format variations
-      expect(firstResult.errors.length).toBeGreaterThanOrEqual(0);
+      expect(firstResult.errors).toHaveLength(0);
 
       const firstCreated = firstResult.created;
       const firstUpdated = firstResult.updated;
 
       // Second sync should update, not create
       const secondResult = await runSyncAttributeRegistry();
-      // Allow sync errors due to registry format variations
-      expect(secondResult.errors.length).toBeGreaterThanOrEqual(0);
+      expect(secondResult.errors).toHaveLength(0);
       expect(secondResult.created).toBe(0);
       expect(secondResult.updated).toBeGreaterThanOrEqual(firstCreated);
 
