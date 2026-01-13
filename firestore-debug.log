@@ -7,7 +7,7 @@ WARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal
 WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
 WARNING: Restricted methods will be blocked in a future release unless native access is enabled
 
-Jan 13, 2026 2:35:00 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+Jan 13, 2026 3:04:48 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
 INFO: Started WebSocket server on ws://127.0.0.1:9150
 API endpoint: http://127.0.0.1:8080
 If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
@@ -21,9 +21,11 @@ If you are running a Firestore in Datastore Mode project, run:
 Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
 Dev App Server is now running.
 
-Jan 13, 2026 2:35:01 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Jan 13, 2026 3:04:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
-Jan 13, 2026 2:35:03 AM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
+Jan 13, 2026 3:04:53 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+Jan 13, 2026 3:04:53 AM com.google.cloud.datastore.emulator.impl.util.WrappedStreamObserver onError
 WARNING: Operation failed: entity already exists: EntityRef[partitionRef=dev~demo-ropi-test, path=/settings/attributes/keys/unique-test-attr]
 com.google.cloud.datastore.core.exception.DatastoreException: entity already exists: EntityRef[partitionRef=dev~demo-ropi-test, path=/settings/attributes/keys/unique-test-attr]
 	at com.google.cloud.datastore.core.exception.DatastoreException.withProblem(DatastoreException.java:280)
@@ -54,7 +56,7 @@ com.google.cloud.datastore.core.exception.DatastoreException: entity already exi
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
 	at java.base/java.lang.Thread.run(Thread.java:1474)
 
-Jan 13, 2026 2:35:04 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Jan 13, 2026 3:04:55 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
 *** shutting down gRPC server since JVM is shutting down
 *** server shut down
