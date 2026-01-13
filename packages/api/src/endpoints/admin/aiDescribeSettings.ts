@@ -1,6 +1,6 @@
 // packages/api/src/endpoints/admin/aiDescribeSettings.ts
 import { Request, Response } from 'express';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { logger } from '../../lib/logger';
 import { clearRegistryCache, clearTemplatesCache } from '../../lib/settingsHelpers';
 
@@ -90,7 +90,8 @@ export async function updateAttributeAiInputHandler(req: Request, res: Response)
     
   } catch (error) {
     logger.error('Error updating attribute aiInput flag', {
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
       attributeId: req.params.attributeId,
       userId: req.user?.uid
     });
@@ -112,9 +113,9 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
     
+    // Query only by priority to avoid composite index requirement
     let query = getDb().collection('ai_templates')
-      .orderBy('priority', 'desc')
-      .orderBy('key', 'asc');
+      .orderBy('priority', 'desc');
     
     if (offset > 0) {
       // For pagination, you'd typically use startAfter with a document snapshot
@@ -126,10 +127,18 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     
     const snapshot = await query.get();
     
+    // Get templates and sort in memory by priority (desc) then key (asc)
     const templates = snapshot.docs.map(doc => ({
       key: doc.id,
       ...doc.data()
-    }));
+    })).sort((a, b) => {
+      // First sort by priority (desc)
+      if (b.priority !== a.priority) {
+        return (b.priority || 0) - (a.priority || 0);
+      }
+      // Then sort by key (asc) for consistent ordering
+      return (a.key || '').localeCompare(b.key || '');
+    });
     
     return res.json({
       status: 'ok',
@@ -144,7 +153,8 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
     
   } catch (error) {
     logger.error('Error listing AI templates', {
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
       userId: req.user?.uid
     });
     
@@ -207,9 +217,9 @@ export async function createAITemplateHandler(req: Request, res: Response) {
       conditions: Array.isArray(conditions) ? conditions : [],
       prompt,
       modelSettings: typeof modelSettings === 'object' ? modelSettings : {},
-      createdAt: getDb().Timestamp.now(),
+      createdAt: Timestamp.now(),
       createdBy: req.user?.uid,
-      updatedAt: getDb().Timestamp.now(),
+      updatedAt: Timestamp.now(),
       updatedBy: req.user?.uid
     };
     
@@ -224,7 +234,7 @@ export async function createAITemplateHandler(req: Request, res: Response) {
       templateKey: key,
       templateData,
       userId: req.user?.uid,
-      timestamp: getDb().Timestamp.now(),
+      timestamp: Timestamp.now(),
       type: 'ai_template_management'
     });
     
@@ -242,7 +252,8 @@ export async function createAITemplateHandler(req: Request, res: Response) {
     
   } catch (error) {
     logger.error('Error creating AI template', {
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
       key: req.body.key,
       userId: req.user?.uid
     });
@@ -322,7 +333,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     ];
     
     const sanitizedUpdates: any = {
-      updatedAt: getDb().Timestamp.now(),
+      updatedAt: Timestamp.now(),
       updatedBy: req.user?.uid
     };
     
@@ -350,7 +361,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
       templateKey,
       updates: sanitizedUpdates,
       userId: req.user?.uid,
-      timestamp: getDb().Timestamp.now(),
+      timestamp: Timestamp.now(),
       type: 'ai_template_management'
     });
     
@@ -367,7 +378,8 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     
   } catch (error) {
     logger.error('Error updating AI template', {
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
       templateKey: req.params.templateKey,
       userId: req.user?.uid
     });
@@ -415,7 +427,7 @@ export async function deleteAITemplateHandler(req: Request, res: Response) {
       action: 'delete_ai_template',
       templateKey,
       userId: req.user?.uid,
-      timestamp: getDb().Timestamp.now(),
+      timestamp: Timestamp.now(),
       type: 'ai_template_management'
     });
     
@@ -431,7 +443,8 @@ export async function deleteAITemplateHandler(req: Request, res: Response) {
     
   } catch (error) {
     logger.error('Error deleting AI template', {
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
       templateKey: req.params.templateKey,
       userId: req.user?.uid
     });
