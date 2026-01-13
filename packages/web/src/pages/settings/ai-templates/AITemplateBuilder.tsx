@@ -77,7 +77,20 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
       setLoading(true);
       const data = await apiFetch<AITemplate>(`/api/admin/ai-templates/${templateKey}`);
       if (data) {
-        setTemplate(data);
+        // Ensure model_settings exists with defaults
+        const safeTemplate = {
+          ...data,
+          model_settings: data.model_settings || {
+            model: 'gemini-1.5-flash',
+            max_tokens: 1024,
+            temperature: 0.7
+          },
+          prompt_body: data.prompt_body || '',
+          conditions: data.conditions || [],
+          status: data.status || 'active',
+          priority: data.priority || 0
+        };
+        setTemplate(safeTemplate);
       }
     } catch (err) {
       setError(`Failed to load template: ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -386,10 +399,10 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
                 Model
               </label>
               <select
-                value={template.model_settings.model}
+                value={template.model_settings?.model || 'gemini-1.5-flash'}
                 onChange={(e) => setTemplate(prev => ({ 
                   ...prev, 
-                  model_settings: { ...prev.model_settings, model: e.target.value }
+                  model_settings: { ...(prev.model_settings || {}), model: e.target.value }
                 }))}
                 style={{
                   width: '100%',
@@ -410,10 +423,10 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
               </label>
               <input
                 type="number"
-                value={template.model_settings.max_tokens}
+                value={template.model_settings?.max_tokens || 1024}
                 onChange={(e) => setTemplate(prev => ({ 
                   ...prev, 
-                  model_settings: { ...prev.model_settings, max_tokens: parseInt(e.target.value) || 300 }
+                  model_settings: { ...(prev.model_settings || {}), max_tokens: parseInt(e.target.value) || 300 }
                 }))}
                 min="50"
                 max="8192"
@@ -432,10 +445,10 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
               </label>
               <input
                 type="number"
-                value={template.model_settings.temperature}
+                value={template.model_settings?.temperature || 0.7}
                 onChange={(e) => setTemplate(prev => ({ 
                   ...prev, 
-                  model_settings: { ...prev.model_settings, temperature: parseFloat(e.target.value) || 0 }
+                  model_settings: { ...(prev.model_settings || {}), temperature: parseFloat(e.target.value) || 0 }
                 }))}
                 min="0"
                 max="2"

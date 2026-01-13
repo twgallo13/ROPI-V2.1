@@ -209,15 +209,19 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
       const data = doc.data();
       return {
         key: doc.id,
-        title: data.title,
+        title: data.title || doc.id,
         status: data.status || 'active',
         priority: data.priority || 0,
-        site: data.site,
+        site: data.site || null,
         conditions: data.conditions || [],
         requiredAttributes: data.requiredAttributes || [],
         // Legacy UI field names for compatibility
-        prompt_body: data.prompt,
-        model_settings: data.modelSettings || {},
+        prompt_body: data.prompt || '',
+        model_settings: {
+          model: data.modelSettings?.model || 'gemini-1.5-flash',
+          max_tokens: data.modelSettings?.max_tokens || 1024,
+          temperature: data.modelSettings?.temperature || 0.7
+        },
         include_attributes: data.includeAttributeNotes || false,
         include_name: data.includeName || false,
         include_observations: data.includeObservations || false,
@@ -393,15 +397,19 @@ export async function getAITemplateHandler(req: Request, res: Response) {
     // Convert backend format to UI format for compatibility
     const template = {
       key: doc.id,
-      title: data?.title,
+      title: data?.title || doc.id,
       status: data?.status || 'active',
       priority: data?.priority || 0,
-      site: data?.site,
+      site: data?.site || null,
       conditions: data?.conditions || [],
       requiredAttributes: data?.requiredAttributes || [],
       // Legacy UI field names
-      prompt_body: data?.prompt,
-      model_settings: data?.modelSettings || {},
+      prompt_body: data?.prompt || '',
+      model_settings: {
+        model: data?.modelSettings?.model || 'gemini-1.5-flash',
+        max_tokens: data?.modelSettings?.max_tokens || 1024,
+        temperature: data?.modelSettings?.temperature || 0.7
+      },
       include_attributes: data?.includeAttributeNotes || false,
       include_name: data?.includeName || false,
       include_observations: data?.includeObservations || false,
