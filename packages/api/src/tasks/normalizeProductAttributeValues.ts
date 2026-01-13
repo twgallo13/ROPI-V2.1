@@ -59,7 +59,10 @@ if (!admin.apps.length) {
   }
 }
 
-// Initialize db inside function to avoid module-level execution\nfunction getDb() {\n  return admin.firestore();\n}
+// Initialize db inside function to avoid module-level execution
+function getDb() {
+  return admin.firestore();
+}
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
