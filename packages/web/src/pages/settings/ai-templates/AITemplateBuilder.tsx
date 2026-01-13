@@ -75,7 +75,7 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
     
     try {
       setLoading(true);
-      const data = await apiFetch<AITemplate>(`/admin/ai-templates/${templateKey}`);
+      const data = await apiFetch<AITemplate>(`/api/admin/ai-templates/${templateKey}`);
       if (data) {
         setTemplate(data);
       }
@@ -125,8 +125,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
       const templateData = { ...template };
 
       const endpoint = isEditing 
-        ? `/admin/ai-templates/${templateKey}` 
-        : '/admin/ai-templates';
+        ? `/api/admin/ai-templates/${templateKey}` 
+        : '/api/admin/ai-templates';
       const method = isEditing ? 'PUT' : 'POST';
 
       await apiFetch<any>(endpoint, {

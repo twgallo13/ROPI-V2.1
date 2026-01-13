@@ -80,7 +80,7 @@ function TestPreviewModal({
 
     try {
       // First, test the template logic
-      const previewData = await apiFetch<any>('/admin/ai-templates/preview', {
+      const previewData = await apiFetch<any>('/api/admin/ai-templates/preview', {
         method: 'POST',
         body: JSON.stringify({
           templateKey: templateKey || 'test_template',

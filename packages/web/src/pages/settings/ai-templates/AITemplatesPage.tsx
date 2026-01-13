@@ -55,7 +55,7 @@ function AITemplatesPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiFetch<TemplateListResponse>('/admin/ai-templates');
+      const response = await apiFetch<TemplateListResponse>('/api/admin/ai-templates');
       if (response?.templates) {
         setTemplates(response.templates);
       }
