@@ -52,6 +52,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      - name: Build Shared (dependency for API)
+        run: pnpm --filter @ropi-aoss/shared build
+
       - name: Build SDK (dependency for API)
         run: pnpm --filter @ropi-aoss/sdk build
 

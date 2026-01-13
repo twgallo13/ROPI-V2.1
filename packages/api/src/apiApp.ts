@@ -111,6 +111,24 @@ import {
   applyHandler,
 } from './endpoints/describe';
 
+// AI Describe Feature - Registry-based AI product description generation
+import {
+  aiDescribeHandler,
+} from './endpoints/aiDescribe';
+
+// AI Describe Admin endpoints
+import {
+  adminAITemplatePreviewHandler,
+} from './endpoints/admin/aiDescribePreview';
+import {
+  updateAttributeAiInputHandler,
+  listAITemplatesHandler,
+  createAITemplateHandler,
+  getAITemplateHandler,
+  updateAITemplateHandler,
+  deleteAITemplateHandler,
+} from './endpoints/admin/aiDescribeSettings';
+
 // LP-obs-studio-cleanup-1.6.6: Product-level observation handlers
 import {
   patchProductObservationHandler,
@@ -249,6 +267,20 @@ api.post('/admin/settings/users/:uid/reset-password', resetPasswordHandler);
 api.get('/admin/settings/roles', getRolesHandler);
 
 /**
+ * AI Describe Admin endpoints
+ */
+// Attribute aiInput flag management
+api.patch('/admin/attributes/:attributeId/ai-input', requireAdmin, updateAttributeAiInputHandler);
+// AI Template management
+api.get('/admin/ai-templates', requireAdmin, listAITemplatesHandler);
+api.post('/admin/ai-templates', requireAdmin, createAITemplateHandler);
+api.get('/admin/ai-templates/:templateKey', requireAdmin, getAITemplateHandler);
+api.patch('/admin/ai-templates/:templateKey', requireAdmin, updateAITemplateHandler);
+api.delete('/admin/ai-templates/:templateKey', requireAdmin, deleteAITemplateHandler);
+// AI Template preview (render-only)
+api.get('/admin/ai-templates/:templateKey/preview', requireAdmin, adminAITemplatePreviewHandler);
+
+/**
  * Admin Permissions endpoints
  */
 api.get('/admin/permissions', requireAdmin, getPermissionsHandler);
@@ -317,6 +349,8 @@ api.post('/products/:mpn/apply-suggestion', resolveProductIdentifier, applySugge
 // LP-obs-studio-cleanup-1.6.5: Aggregated multi-target describe endpoints
 api.post('/products/:mpn/describe', resolveProductIdentifier, describeHandler);
 api.post('/products/:mpn/apply', resolveProductIdentifier, applyHandler);
+// AI Describe Feature - Registry-based AI product description generation
+api.post('/products/:mpn/ai-describe', resolveProductIdentifier, aiDescribeHandler);
 // LP-obs-studio-cleanup-1.6.6: Product-level observation endpoints
 api.get('/products/:mpn/observation', resolveProductIdentifier, getProductObservationHandler);
 api.patch('/products/:mpn/observation', resolveProductIdentifier, patchProductObservationHandler);

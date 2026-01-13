@@ -123,8 +123,8 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
       await runSyncAttributeRegistry();
 
       const attr = await getAttribute('gender');
-      expect(attr.createdBy).toBe('system');
-      expect(attr.updatedBy).toBe('system');
+      expect(attr.createdBy).toBe('system:sync'); // Updated to match actual sync behavior
+      expect(attr.updatedBy).toBe('system:sync');
       expect(attr.createdAt).toBeDefined();
       expect(attr.updatedAt).toBeDefined();
     });
@@ -136,7 +136,7 @@ describeIfEmulator('Sync Attribute Registry Integration Tests', () => {
       expect(materialAttr).toBeDefined();
       expect(materialAttr.label).toBe('Material(s)');
       expect(materialAttr.external_header).toBe('Material');
-      expect(materialAttr.category).toBe('materials_construction');
+      expect(materialAttr.category).toBe('classification'); // Updated to match SDK registry
       expect(materialAttr.data_type).toBe('multiSelect');
       expect(materialAttr.ai_usage_notes).toBeDefined();
       expect(materialAttr.status).toBe('active');

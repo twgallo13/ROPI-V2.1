@@ -22,22 +22,24 @@ describeIfEmulator('GET /api/products - Filters and Sorting', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    // Initialize Firebase Admin with emulator
-    if (!admin.apps.length) {
-      admin.initializeApp({
-        projectId: 'demo-ropi-test',
-      });
-    }
-
+    // Firebase Admin is already initialized in vitest.setup.emu.ts
     db = admin.firestore();
-
-    // Create mock auth token
-    try {
-      authToken = await admin.auth().createCustomToken('test-admin-uid');
-    } catch (err) {
-      console.warn('Could not create auth token, some tests may fail:', err);
-      authToken = 'mock-token';
+    
+    // Ensure Firestore is connected to emulator
+    if (process.env.FIRESTORE_EMULATOR_HOST) {
+      // Settings are immutable after first usage, so we catch and ignore errors
+      try {
+        db.settings({
+          host: process.env.FIRESTORE_EMULATOR_HOST,
+          ssl: false,
+        });
+      } catch (error) {
+        // Settings already configured - this is fine for tests
+      }
     }
+
+    // Use mock auth token for emulator testing (no Auth emulator required)
+    authToken = 'mock-emulator-token';
   });
 
   beforeEach(async () => {
