@@ -8,7 +8,7 @@
 
 import type { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
-import { normalizeMPN, getProductDocRefByMPN } from '@ropi-aoss/shared';
+import { normalizeMPN, getProductDocRefByMPN } from '../lib/productKey';
 import { requireAdmin } from '../middleware/auth';
 import { validateSmartRule, RuleSchema } from '@ropi-aoss/sdk';
 import { processImportWithSmartRules } from '../functions/smartRulesImport';

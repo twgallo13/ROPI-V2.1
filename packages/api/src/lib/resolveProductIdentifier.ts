@@ -1,7 +1,7 @@
 // packages/api/src/lib/resolveProductIdentifier.ts
 import { Request, Response, NextFunction } from 'express'
 import admin from 'firebase-admin'
-import { normalizeMPN } from '@ropi-aoss/shared'
+import { normalizeMPN } from './productKey'
 
 /**
  * Resolves product identifier from request params to Firestore document reference.

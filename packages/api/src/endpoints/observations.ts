@@ -12,7 +12,9 @@
 
 import * as admin from 'firebase-admin';
 import type { Request, Response } from 'express';
-import { requireAuth, type AuthenticatedRequest } from '../middleware/auth';import { normalizeMPN, getProductDocRefByMPN } from '@ropi-aoss/shared';// Using direct path to SDK config - esbuild alias for @ropi-aoss/sdk points to index.ts, not package root
+import { requireAuth, type AuthenticatedRequest } from '../middleware/auth';
+import { normalizeMPN, getProductDocRefByMPN } from '../lib/productKey';
+// Using direct path to SDK config - esbuild alias for @ropi-aoss/sdk points to index.ts, not package root
 import attributeRegistry from '../../../sdk/config/attributeRegistry.json';
 
 // Valid top-level product fields
