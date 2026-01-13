@@ -16,6 +16,17 @@ function getDb() {
 function normalizeTemplateFields(body: any) {
   const normalized: any = {};
   
+  // Log received body for debugging
+  console.log('📨 RAW REQUEST BODY:', {
+    hasKey: Object.prototype.hasOwnProperty.call(body, 'key'),
+    hasTitle: Object.prototype.hasOwnProperty.call(body, 'title'),
+    hasPrompt: Object.prototype.hasOwnProperty.call(body, 'prompt'),
+    hasPromptBody: Object.prototype.hasOwnProperty.call(body, 'prompt_body'),
+    hasModelSettings: Object.prototype.hasOwnProperty.call(body, 'modelSettings'),
+    hasModel_settings: Object.prototype.hasOwnProperty.call(body, 'model_settings'),
+    keys: Object.keys(body)
+  });
+  
   // Only set fields that are actually present (avoid undefined)
     if (Object.prototype.hasOwnProperty.call(body, 'key')) normalized.key = body.key;
     if (Object.prototype.hasOwnProperty.call(body, 'title')) normalized.title = body.title;
@@ -39,24 +50,28 @@ function normalizeTemplateFields(body: any) {
     normalized.modelSettings = body.model_settings;
   }
   
-  // Handle include flags (accept both formats, only set if defined)
+  // Handle includeAttributeNotes (accept both formats, and normalize legacy include_attributes)
     if (Object.prototype.hasOwnProperty.call(body, 'includeAttributeNotes')) {
     normalized.includeAttributeNotes = body.includeAttributeNotes;
     } else if (Object.prototype.hasOwnProperty.call(body, 'include_attributes')) {
     normalized.includeAttributeNotes = body.include_attributes;
   }
   
+  // Handle includeName (accept both formats)
     if (Object.prototype.hasOwnProperty.call(body, 'includeName')) {
     normalized.includeName = body.includeName;
     } else if (Object.prototype.hasOwnProperty.call(body, 'include_name')) {
     normalized.includeName = body.include_name;
   }
   
+  // Handle includeObservations (accept both formats)
     if (Object.prototype.hasOwnProperty.call(body, 'includeObservations')) {
     normalized.includeObservations = body.includeObservations;
     } else if (Object.prototype.hasOwnProperty.call(body, 'include_observations')) {
     normalized.includeObservations = body.include_observations;
   }
+
+  // NOTE: include_rules and include_custom_attributes are UI-only fields not stored in Firestore
   
   // Generate key from title if missing
   if (!normalized.key && normalized.title) {
@@ -66,6 +81,7 @@ function normalizeTemplateFields(body: any) {
       .replace(/^_+|_+$/g, '');
   }
   
+  console.log('✅ NORMALIZED BODY:', normalized);
   return normalized;
 }
 
