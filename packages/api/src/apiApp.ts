@@ -277,6 +277,7 @@ api.get('/admin/ai-templates', requireAdmin, listAITemplatesHandler);
 api.post('/admin/ai-templates', requireAdmin, createAITemplateHandler);
 api.get('/admin/ai-templates/:templateKey', requireAdmin, getAITemplateHandler);
 api.patch('/admin/ai-templates/:templateKey', requireAdmin, updateAITemplateHandler);
+api.put('/admin/ai-templates/:templateKey', requireAdmin, updateAITemplateHandler); // Temporary alias for UI compatibility
 api.delete('/admin/ai-templates/:templateKey', requireAdmin, deleteAITemplateHandler);
 // AI Template preview (render-only)
 api.post('/admin/ai-templates/preview', requireAdmin, adminAITemplateTestPreviewHandler);

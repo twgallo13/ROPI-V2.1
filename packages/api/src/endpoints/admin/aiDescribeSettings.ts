@@ -10,6 +10,46 @@ function getDb() {
 }
 
 /**
+ * Normalize legacy UI field names to canonical backend field names
+ * This is a temporary shim to support the current UI while maintaining backend standards
+ */
+function normalizeTemplateFields(body: any) {
+  const normalized = { ...body };
+  
+  // Map legacy field names to canonical ones
+  if (body.prompt_body !== undefined) {
+    normalized.prompt = body.prompt_body;
+    delete normalized.prompt_body;
+  }
+  if (body.model_settings !== undefined) {
+    normalized.modelSettings = body.model_settings;
+    delete normalized.model_settings;
+  }
+  if (body.include_attributes !== undefined) {
+    normalized.includeAttributeNotes = body.include_attributes;
+    delete normalized.include_attributes;
+  }
+  if (body.include_name !== undefined) {
+    normalized.includeName = body.include_name;
+    delete normalized.include_name;
+  }
+  if (body.include_observations !== undefined) {
+    normalized.includeObservations = body.include_observations;
+    delete normalized.include_observations;
+  }
+  
+  // Generate key from title if missing
+  if (!normalized.key && normalized.title) {
+    normalized.key = normalized.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+  }
+  
+  return normalized;
+}
+
+/**
  * Admin AI Describe Settings Endpoints
  * 
  * Provides CRUD operations for:
@@ -172,6 +212,9 @@ export async function listAITemplatesHandler(req: Request, res: Response) {
  */
 export async function createAITemplateHandler(req: Request, res: Response) {
   try {
+    // Normalize legacy UI field names to canonical backend names
+    const normalizedBody = normalizeTemplateFields(req.body);
+    
     const {
       key,
       priority = 0,
@@ -182,7 +225,7 @@ export async function createAITemplateHandler(req: Request, res: Response) {
       conditions = [],
       prompt,
       modelSettings = {}
-    } = req.body;
+    } = normalizedBody;
     
     if (!key || typeof key !== 'string') {
       return res.status(400).json({
@@ -315,7 +358,9 @@ export async function getAITemplateHandler(req: Request, res: Response) {
 export async function updateAITemplateHandler(req: Request, res: Response) {
   try {
     const templateKey = req.params.templateKey;
-    const updates = req.body;
+    
+    // Normalize legacy UI field names to canonical backend names
+    const normalizedBody = normalizeTemplateFields(req.body);
     
     // Check if template exists
     const doc = await getDb().collection('ai_templates').doc(templateKey).get();
@@ -329,7 +374,7 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     // Sanitize updates
     const allowedFields = [
       'priority', 'site', 'includeObservations', 'includeAttributeNotes',
-      'requiredAttributes', 'conditions', 'prompt', 'modelSettings'
+      'requiredAttributes', 'conditions', 'prompt', 'modelSettings', 'includeName'
     ];
     
     const sanitizedUpdates: any = {
@@ -338,8 +383,8 @@ export async function updateAITemplateHandler(req: Request, res: Response) {
     };
     
     allowedFields.forEach(field => {
-      if (updates.hasOwnProperty(field)) {
-        sanitizedUpdates[field] = updates[field];
+      if (normalizedBody.hasOwnProperty(field)) {
+        sanitizedUpdates[field] = normalizedBody[field];
       }
     });
     
