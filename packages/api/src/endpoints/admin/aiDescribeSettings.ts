@@ -17,44 +17,44 @@ function normalizeTemplateFields(body: any) {
   const normalized: any = {};
   
   // Only set fields that are actually present (avoid undefined)
-  if (body.key !== undefined) normalized.key = body.key;
-  if (body.title !== undefined) normalized.title = body.title;
-  if (body.status !== undefined) normalized.status = body.status;
-  if (body.priority !== undefined) normalized.priority = body.priority;
-  if (body.site !== undefined) normalized.site = body.site;
-  if (body.conditions !== undefined) normalized.conditions = body.conditions;
-  if (body.requiredAttributes !== undefined) normalized.requiredAttributes = body.requiredAttributes;
+    if (Object.prototype.hasOwnProperty.call(body, 'key')) normalized.key = body.key;
+    if (Object.prototype.hasOwnProperty.call(body, 'title')) normalized.title = body.title;
+    if (Object.prototype.hasOwnProperty.call(body, 'status')) normalized.status = body.status;
+    if (Object.prototype.hasOwnProperty.call(body, 'priority')) normalized.priority = body.priority;
+    if (Object.prototype.hasOwnProperty.call(body, 'site')) normalized.site = body.site;
+    if (Object.prototype.hasOwnProperty.call(body, 'conditions')) normalized.conditions = body.conditions;
+    if (Object.prototype.hasOwnProperty.call(body, 'requiredAttributes')) normalized.requiredAttributes = body.requiredAttributes;
   
   // Handle prompt field (accept both prompt and prompt_body)
-  if (body.prompt !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(body, 'prompt')) {
     normalized.prompt = body.prompt;
-  } else if (body.prompt_body !== undefined) {
+    } else if (Object.prototype.hasOwnProperty.call(body, 'prompt_body')) {
     normalized.prompt = body.prompt_body;
   }
   
   // Handle modelSettings (accept both modelSettings and model_settings)
-  if (body.modelSettings !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(body, 'modelSettings')) {
     normalized.modelSettings = body.modelSettings;
-  } else if (body.model_settings !== undefined) {
+    } else if (Object.prototype.hasOwnProperty.call(body, 'model_settings')) {
     normalized.modelSettings = body.model_settings;
   }
   
   // Handle include flags (accept both formats, only set if defined)
-  if (body.includeAttributeNotes !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(body, 'includeAttributeNotes')) {
     normalized.includeAttributeNotes = body.includeAttributeNotes;
-  } else if (body.include_attributes !== undefined) {
+    } else if (Object.prototype.hasOwnProperty.call(body, 'include_attributes')) {
     normalized.includeAttributeNotes = body.include_attributes;
   }
   
-  if (body.includeName !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(body, 'includeName')) {
     normalized.includeName = body.includeName;
-  } else if (body.include_name !== undefined) {
+    } else if (Object.prototype.hasOwnProperty.call(body, 'include_name')) {
     normalized.includeName = body.include_name;
   }
   
-  if (body.includeObservations !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(body, 'includeObservations')) {
     normalized.includeObservations = body.includeObservations;
-  } else if (body.include_observations !== undefined) {
+    } else if (Object.prototype.hasOwnProperty.call(body, 'include_observations')) {
     normalized.includeObservations = body.include_observations;
   }
   
