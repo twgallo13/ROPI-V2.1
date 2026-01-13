@@ -16,28 +16,47 @@ function getDb() {
 function normalizeTemplateFields(body: any) {
   const normalized: any = {};
   
-  // Map legacy field names to canonical ones
-  normalized.key = body.key;
-  normalized.title = body.title;
-  normalized.status = body.status;
-  normalized.priority = body.priority;
-  normalized.site = body.site;
-  normalized.conditions = body.conditions;
-  normalized.requiredAttributes = body.requiredAttributes;
+  // Only set fields that are actually present (avoid undefined)
+  if (body.key !== undefined) normalized.key = body.key;
+  if (body.title !== undefined) normalized.title = body.title;
+  if (body.status !== undefined) normalized.status = body.status;
+  if (body.priority !== undefined) normalized.priority = body.priority;
+  if (body.site !== undefined) normalized.site = body.site;
+  if (body.conditions !== undefined) normalized.conditions = body.conditions;
+  if (body.requiredAttributes !== undefined) normalized.requiredAttributes = body.requiredAttributes;
   
   // Handle prompt field (accept both prompt and prompt_body)
-  normalized.prompt = body.prompt || body.prompt_body;
+  if (body.prompt) {
+    normalized.prompt = body.prompt;
+  } else if (body.prompt_body) {
+    normalized.prompt = body.prompt_body;
+  }
   
   // Handle modelSettings (accept both modelSettings and model_settings)
-  normalized.modelSettings = body.modelSettings || body.model_settings;
+  if (body.modelSettings) {
+    normalized.modelSettings = body.modelSettings;
+  } else if (body.model_settings) {
+    normalized.modelSettings = body.model_settings;
+  }
   
-  // Handle include flags (accept both formats)
-  normalized.includeAttributeNotes = body.includeAttributeNotes ?? body.include_attributes;
-  normalized.includeName = body.includeName ?? body.include_name;
-  normalized.includeObservations = body.includeObservations ?? body.include_observations;
+  // Handle include flags (accept both formats, only set if defined)
+  if (body.includeAttributeNotes !== undefined) {
+    normalized.includeAttributeNotes = body.includeAttributeNotes;
+  } else if (body.include_attributes !== undefined) {
+    normalized.includeAttributeNotes = body.include_attributes;
+  }
   
-  // Note: include_rules and include_custom_attributes are ignored for now
-  // (not implemented in backend)
+  if (body.includeName !== undefined) {
+    normalized.includeName = body.includeName;
+  } else if (body.include_name !== undefined) {
+    normalized.includeName = body.include_name;
+  }
+  
+  if (body.includeObservations !== undefined) {
+    normalized.includeObservations = body.includeObservations;
+  } else if (body.include_observations !== undefined) {
+    normalized.includeObservations = body.include_observations;
+  }
   
   // Generate key from title if missing
   if (!normalized.key && normalized.title) {

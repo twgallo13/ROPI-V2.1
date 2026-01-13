@@ -80,6 +80,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
         // Ensure model_settings exists with defaults
         const safeTemplate = {
           ...data,
+          key: data.key || templateKey || '',
+          title: data.title || data.key || '',
           model_settings: data.model_settings || {
             model: 'gemini-1.5-flash',
             max_tokens: 1024,
