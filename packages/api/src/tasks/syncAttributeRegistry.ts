@@ -34,6 +34,7 @@ interface AttributeDefinition {
   required_for_export?: boolean;
   import_required?: boolean;
   ai_usage_notes?: string;
+  ai_use?: boolean;
   status?: 'active' | 'deprecated' | 'hidden';
   source?: 'notion' | 'derived' | 'json';
 }
@@ -359,8 +360,8 @@ export async function runSyncAttributeRegistry(dryRun = false, forceOverwrite = 
       const registryPayload: Record<string, unknown> = {
         attribute_id: attr.attribute_id,
         label: attr.label,
-        external_header: attr.external_header,
-        category: attr.category,
+        ...(attr.external_header !== undefined && { external_header: attr.external_header }),
+        ...(attr.category !== undefined && { category: attr.category }),
         data_type: attr.data_type,
         ...(attr.allowed_values !== undefined && { allowed_values: attr.allowed_values }),
         ...(attr.synonyms !== undefined && { synonyms: attr.synonyms }),
@@ -405,6 +406,8 @@ export async function runSyncAttributeRegistry(dryRun = false, forceOverwrite = 
         // Create new doc
         registryPayload['createdAt'] = now;
         registryPayload['createdBy'] = 'system:sync';
+        registryPayload['updatedAt'] = now;
+        registryPayload['updatedBy'] = 'system:sync';
 
         await docRef.set(registryPayload);
         result.created++;
