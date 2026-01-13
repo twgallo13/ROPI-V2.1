@@ -61,7 +61,10 @@ if (!admin.apps.length) {
   }
 }
 
-const db = admin.firestore();
+// Initialize db inside function to avoid module-level execution
+function getDb() {
+  return admin.firestore();
+}
 
 // Registry attribute keys to migrate from top-level to attributes map
 const REGISTRY_ATTRIBUTE_KEYS = [
@@ -181,7 +184,7 @@ async function migrateProductsToAttributes(): Promise<void> {
     const remaining = LIMIT ? Math.min(BATCH_SIZE, LIMIT - totalProcessed) : BATCH_SIZE;
     console.log(`\n📦 Processing batch ${batchNumber}...`);
 
-    let query = db.collection('products').limit(remaining);
+    let query = getDb().collection('products').limit(remaining);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }

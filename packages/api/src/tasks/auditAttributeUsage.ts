@@ -20,7 +20,10 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
-const db = admin.firestore();
+// Initialize db inside function to avoid module-level execution
+function getDb() {
+  return admin.firestore();
+}
 
 interface AttributeUsage {
   attribute_id: string;
@@ -94,7 +97,7 @@ async function scanProductAttributes(): Promise<Map<string, AttributeUsage>> {
   const batchSize = 500;
   
   while (true) {
-    let query = db.collection('products')
+    let query = getDb().collection('products')
       .orderBy(admin.firestore.FieldPath.documentId())
       .limit(batchSize);
     

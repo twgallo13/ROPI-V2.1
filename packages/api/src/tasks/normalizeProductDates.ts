@@ -61,7 +61,10 @@ if (!admin.apps.length) {
   }
 }
 
-const db = admin.firestore();
+// Initialize db inside function to avoid module-level execution
+function getDb() {
+  return admin.firestore();
+}
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
@@ -224,7 +227,7 @@ async function normalizeDates(): Promise<void> {
     const remaining = LIMIT ? Math.min(BATCH_SIZE, LIMIT - processedTotal) : BATCH_SIZE;
     if (remaining <= 0) break;
 
-    let q = db.collection('products').limit(remaining);
+    let q = getDb().collection('products').limit(remaining);
     if (lastDoc) q = q.startAfter(lastDoc);
     
     const snap = await q.get();
@@ -305,7 +308,7 @@ async function normalizeDates(): Promise<void> {
           if (DRY_RUN) {
             console.log(`[DRY] ${doc.id}: will update ${Object.keys(attributeUpdates).join(', ')}`);
           } else {
-            await db.collection('products').doc(doc.id).update(payload);
+            await getDb().collection('products').doc(doc.id).update(payload);
             console.log(`[APPLY] ${doc.id}: updated ${Object.keys(attributeUpdates).join(', ')}`);
           }
 

@@ -59,7 +59,7 @@ if (!admin.apps.length) {
   }
 }
 
-const db = admin.firestore();
+// Initialize db inside function to avoid module-level execution\nfunction getDb() {\n  return admin.firestore();\n}
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
@@ -250,7 +250,7 @@ async function normalizeProductAttributeValues(): Promise<void> {
     const remaining = LIMIT ? Math.min(BATCH_SIZE, LIMIT - totalProcessed) : BATCH_SIZE;
     console.log(`\n📦 Processing batch ${batchNumber}...`);
 
-    let query = db.collection('products').limit(remaining);
+    let query = getDb().collection('products').limit(remaining);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }
