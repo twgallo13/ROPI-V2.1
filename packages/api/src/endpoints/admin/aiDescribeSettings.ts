@@ -475,9 +475,10 @@ export async function getAITemplateHandler(req: Request, res: Response) {
     }
     
     const data = doc.data();
-    console.log('✅ FOUND TEMPLATE DOC:', { templateKey, hasPrompt: !!data?.prompt, hasTitle: !!data?.title });
+    console.log('✅ FOUND TEMPLATE DOC:', { templateKey, hasPrompt: !!data?.prompt, hasTitle: !!data?.title, modelSettings: data?.modelSettings });
     
     // Convert backend format to UI format for compatibility
+    const modelSettings = data?.modelSettings || {};
     const template = {
       key: doc.id,
       title: data?.title || doc.id,
@@ -489,9 +490,9 @@ export async function getAITemplateHandler(req: Request, res: Response) {
       // Legacy UI field names
       prompt_body: data?.prompt || '',
       model_settings: {
-        model: data?.modelSettings?.model || 'gemini-1.5-flash',
-        max_tokens: data?.modelSettings?.max_tokens || 1024,
-        temperature: data?.modelSettings?.temperature || 0.7
+        model: modelSettings.model || 'gemini-1.5-flash',
+        max_tokens: modelSettings.max_tokens || 1024,
+        temperature: modelSettings.temperature || 0.7
       },
       include_attributes: data?.includeAttributeNotes || false,
       include_name: data?.includeName || false,
@@ -500,12 +501,9 @@ export async function getAITemplateHandler(req: Request, res: Response) {
       include_custom_attributes: false
     };
     
-    console.log('✅ TEMPLATE RESPONSE READY:', { key: template.key, hasPromptBody: !!template.prompt_body });
+    console.log('✅ TEMPLATE RESPONSE READY:', { key: template.key, hasPromptBody: !!template.prompt_body, modelSettings: template.model_settings });
     
-    return res.json({
-      status: 'ok',
-      template
-    });
+    return res.json(template);
     
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
