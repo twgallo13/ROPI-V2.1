@@ -76,6 +76,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
     try {
       setLoading(true);
       const data = await apiFetch<AITemplate>(`/api/admin/ai-templates/${templateKey}`);
+      console.log('Loaded template data:', data);
+      
       if (data) {
         // Ensure model_settings exists with defaults
         const safeTemplate = {
@@ -92,10 +94,13 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
           status: data.status || 'active',
           priority: data.priority || 0
         };
+        console.log('Setting template state:', safeTemplate);
         setTemplate(safeTemplate);
       }
     } catch (err) {
-      setError(`Failed to load template: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Load template error:', errorMsg, err);
+      setError(`Failed to load template: ${errorMsg}`);
     } finally {
       setLoading(false);
     }
@@ -132,27 +137,33 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
     setValidationErrors(validationErrors);
     
     if (validationErrors.length > 0) {
+      console.error('Validation errors:', validationErrors);
       setSaving(false);
       return;
     }
 
     try {
       const templateData = { ...template };
+      console.log('Saving template:', templateData);
 
       const endpoint = isEditing 
         ? `/api/admin/ai-templates/${templateKey}` 
         : '/api/admin/ai-templates';
       const method = isEditing ? 'PUT' : 'POST';
 
-      await apiFetch<any>(endpoint, {
+      const response = await apiFetch<any>(endpoint, {
         method,
         body: JSON.stringify(templateData)
       });
+      
+      console.log('Save response:', response);
 
       // Navigate back to templates list
       navigate('/settings/ai-templates');
     } catch (err) {
-      setError(`Failed to save template: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Save error:', errorMsg, err);
+      setError(`Failed to save template: ${errorMsg}`);
     } finally {
       setSaving(false);
     }
