@@ -243,10 +243,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
       <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+            <label htmlFor="template-key" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
               Template Key *
             </label>
             <input
+              id="template-key"
+              name="template-key"
               type="text"
               value={template.key}
               onChange={(e) => setTemplate(prev => ({ ...prev, key: e.target.value }))}
@@ -263,10 +265,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+            <label htmlFor="template-title" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
               Title
             </label>
             <input
+              id="template-title"
+              name="template-title"
               type="text"
               value={template.title || ''}
               onChange={(e) => setTemplate(prev => ({ ...prev, title: e.target.value }))}
@@ -284,10 +288,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+            <label htmlFor="template-status" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
               Status
             </label>
             <select
+              id="template-status"
+              name="template-status"
               value={template.status}
               onChange={(e) => setTemplate(prev => ({ ...prev, status: e.target.value as 'active' | 'disabled' }))}
               style={{
@@ -303,10 +309,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
             </select>
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+            <label htmlFor="template-priority" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
               Priority
             </label>
             <input
+              id="template-priority"
+              name="template-priority"
               type="number"
               value={template.priority}
               onChange={(e) => setTemplate(prev => ({ ...prev, priority: parseInt(e.target.value) || 0 }))}
@@ -328,6 +336,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <input
+                id="include-name"
+                name="include_name"
                 type="checkbox"
                 checked={template.include_name}
                 onChange={(e) => setTemplate(prev => ({ ...prev, include_name: e.target.checked }))}
@@ -336,6 +346,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <input
+                id="include-attributes"
+                name="include_attributes"
                 type="checkbox"
                 checked={template.include_attributes}
                 onChange={(e) => setTemplate(prev => ({ ...prev, include_attributes: e.target.checked }))}
@@ -344,6 +356,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <input
+                id="include-rules"
+                name="include_rules"
                 type="checkbox"
                 checked={template.include_rules}
                 onChange={(e) => setTemplate(prev => ({ ...prev, include_rules: e.target.checked }))}
@@ -352,6 +366,8 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <input
+                id="include-custom-attributes"
+                name="include_custom_attributes"
                 type="checkbox"
                 checked={template.include_custom_attributes}
                 onChange={(e) => setTemplate(prev => ({ ...prev, include_custom_attributes: e.target.checked }))}
@@ -369,10 +385,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+          <label htmlFor="prompt-body" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
             Prompt Body *
           </label>
           <textarea
+            id="prompt-body"
+            name="prompt-body"
             value={template.prompt_body}
             onChange={(e) => setTemplate(prev => ({ ...prev, prompt_body: e.target.value }))}
             placeholder="Enter the AI prompt template. Use placeholders like {product.name}, {site}, {attributes}, etc."
@@ -397,10 +415,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
           <h4 style={{ margin: '0 0 0.75rem 0' }}>Model Settings</h4>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+              <label htmlFor="model" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
                 Model
               </label>
               <select
+                id="model"
+                name="model"
                 value={template.model_settings?.model || 'gemini-1.5-flash'}
                 onChange={(e) => setTemplate(prev => ({ 
                   ...prev, 
@@ -420,10 +440,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+              <label htmlFor="max-tokens" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
                 Max Tokens
               </label>
               <input
+                id="max-tokens"
+                name="max_tokens"
                 type="number"
                 value={template.model_settings?.max_tokens || 1024}
                 onChange={(e) => setTemplate(prev => ({ 
@@ -442,10 +464,12 @@ function AITemplateBuilder(_props: AITemplateBuilderProps = {}) {
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+              <label htmlFor="temperature" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
                 Temperature
               </label>
               <input
+                id="temperature"
+                name="temperature"
                 type="number"
                 value={template.model_settings?.temperature || 0.7}
                 onChange={(e) => setTemplate(prev => ({ 
