@@ -1,0 +1,151 @@
+{
+  "primary_color": {
+    "attribute_id": "primary_color",
+    "label": "Primary Color",
+    "external_header": "Color",
+    "category": "Appearance",
+    "data_type": "enum",
+    "allowed_values": [
+      "Black",
+      "White",
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Orange",
+      "Purple",
+      "Pink",
+      "Brown",
+      "Gray",
+      "Navy",
+      "Beige",
+      "Cream",
+      "Gold",
+      "Silver",
+      "Multi"
+    ],
+    "required_for_completion": true,
+    "required_for_export": true,
+    "import_required": true,
+    "ai_usage_notes": "Primary visible color for search and filtering. Use standardized color names.",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:18.043Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.320Z",
+    "deprecationReason": "Consolidated as duplicate (same label)",
+    "replacedBy": "descriptive.primaryColor",
+    "deprecated": true,
+    "deprecatedAt": "2025-12-09T08:43:45.716Z",
+    "status": "deprecated",
+    "synonyms": [
+      "color",
+      "main_color",
+      "colour",
+      "primaryColor",
+      "primary-color",
+      "PrimaryColor",
+      "primary.color",
+      "primarycolor",
+      "Color",
+      "mainColor",
+      "main-color",
+      "MainColor",
+      "main.color",
+      "Colour"
+    ]
+  },
+  "age_group": {
+    "attribute_id": "age_group",
+    "label": "Age Group",
+    "external_header": "Age Group",
+    "category": "Demographics",
+    "data_type": "enum",
+    "allowed_values": [
+      "Adult",
+      "Kids",
+      "Infant",
+      "Toddler",
+      "Teen"
+    ],
+    "required_for_completion": true,
+    "required_for_export": true,
+    "import_required": false,
+    "ai_usage_notes": "Used for Google Shopping feed and age-appropriate product descriptions.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:17.705Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.132Z",
+    "synonyms": [
+      "ageGroup",
+      "age-group",
+      "AgeGroup",
+      "age.group",
+      "agegroup",
+      "Age-group"
+    ]
+  },
+  "rics_source.brand": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS brand",
+    "rules": [],
+    "label": "Brand",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "rics_source.brand",
+    "category": "Source",
+    "export": true,
+    "key": "brand",
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "updatedAt": "2025-12-16T08:24:14.155Z"
+  },
+  "descriptive.gender": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Gender (Men's, Women's, Unisex)",
+    "rules": [
+      "SD-005"
+    ],
+    "label": "Gender",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [
+      "gender"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.gender",
+    "category": "Descriptive",
+    "export": true,
+    "key": "gender",
+    "allowed_values": [
+      "Men's",
+      "Women's",
+      "Unisex",
+      "Boys",
+      "Girls",
+      "Kids",
+      "Subscription"
+    ],
+    "required_for_export": true,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "enum",
+    "source": "json",
+    "required_for_completion": true,
+    "ai_usage_notes": "Gender (Men's, Women's, Unisex)",
+    "status": "active",
+    "updatedAt": "2025-12-19T19:25:04.118Z"
+  }
+}
