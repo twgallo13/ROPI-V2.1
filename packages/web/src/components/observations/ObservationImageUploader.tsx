@@ -3,11 +3,12 @@
  * 
  * LP-1.1.1: Image capture and upload for observations.
  * LP-obs-studio-cleanup-1.7.0: Resumable uploads with progress, telemetry, and robust error handling.
+ * LP-observations-consolidation-1.1.0: Enhanced retry/backoff, CORS handling, and preflight error recovery.
  * Supports camera capture and file selection with preview.
  */
 
 import { useState, useRef, useCallback } from 'react';
-import { ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, UploadTask, UploadMetadata } from 'firebase/storage';
 import { storage, isStorageAvailable } from '../../firebaseConfig';
 import './ObservationImageUploader.css';
 
@@ -29,6 +30,38 @@ function emitTelemetry(name: string, data?: Record<string, unknown>): void {
   if (telemetryCallback) {
     telemetryCallback({ name, data });
   }
+}
+
+// LP-observations-consolidation-1.1.0: Retry configuration
+const MAX_UPLOAD_RETRIES = 3;
+const INITIAL_RETRY_DELAY_MS = 1000;
+
+/**
+ * LP-observations-consolidation-1.1.0: Exponential backoff delay calculator
+ */
+function getRetryDelay(retryCount: number): number {
+  return INITIAL_RETRY_DELAY_MS * Math.pow(2, retryCount);
+}
+
+/**
+ * LP-observations-consolidation-1.1.0: Check if error is retryable
+ * CORS/preflight errors and network errors are retryable
+ */
+function isRetryableError(error: unknown): boolean {
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase();
+    // Network errors, CORS, and storage quota errors
+    return (
+      message.includes('network') ||
+      message.includes('cors') ||
+      message.includes('preflight') ||
+      message.includes('timeout') ||
+      message.includes('connection') ||
+      message.includes('storage/retry-limit-exceeded') ||
+      message.includes('storage/server-file-wrong-size')
+    );
+  }
+  return false;
 }
 
 export interface ImageFile {
@@ -103,10 +136,14 @@ export default function ObservationImageUploader({
   // LP-obs-studio-cleanup-1.7.0: Track active uploads for cancellation
   const activeUploadsRef = useRef<Map<string, UploadTask>>(new Map());
 
-  // LP-obs-studio-cleanup-1.7.0: Upload single image with resumable upload and progress
+  /**
+   * LP-observations-consolidation-1.1.0: Upload single image with resumable upload, progress, and retry/backoff
+   * Handles CORS/preflight errors gracefully with exponential backoff
+   */
   const uploadImage = useCallback(async (
     imageFile: ImageFile,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    retryCount: number = 0
   ): Promise<ImageFile> => {
     if (!imageFile.file) {
       return { ...imageFile, status: 'error', error: 'No file to upload' };
@@ -128,6 +165,7 @@ export default function ObservationImageUploader({
       productMpn, 
       fileSize,
       fileName: imageFile.file.name,
+      retryCount,
     });
 
     return new Promise((resolve) => {
@@ -138,8 +176,18 @@ export default function ObservationImageUploader({
         const storagePath = `observations/${sanitizedMpn}/${timestamp}_${imageFile.file!.name}`;
         const storageRef = ref(storage!, storagePath);
         
+        // LP-observations-consolidation-1.1.0: Set explicit metadata with Content-Type for CORS
+        const metadata: UploadMetadata = {
+          contentType: imageFile.file!.type || 'image/jpeg',
+          customMetadata: {
+            productMpn: sanitizedMpn,
+            uploadedAt: new Date().toISOString(),
+            originalFileName: imageFile.file!.name,
+          },
+        };
+        
         // LP-obs-studio-cleanup-1.7.0: Use resumable upload with progress tracking
-        const uploadTask = uploadBytesResumable(storageRef, imageFile.file!);
+        const uploadTask = uploadBytesResumable(storageRef, imageFile.file!, metadata);
         
         // Store reference for potential cancellation
         activeUploadsRef.current.set(imageFile.id, uploadTask);
@@ -160,16 +208,35 @@ export default function ObservationImageUploader({
               onProgress(percent);
             }
           },
-          (error) => {
-            // Error callback
+          async (error) => {
+            // Error callback - LP-observations-consolidation-1.1.0: Handle with retry
             console.error('Upload error:', error);
             activeUploadsRef.current.delete(imageFile.id);
+            
+            const errorCode = (error as { code?: string }).code || error.message;
             
             emitTelemetry('upload.error', { 
               imageId: imageFile.id, 
               productMpn,
-              error: error.code || error.message,
+              error: errorCode,
+              retryCount,
             });
+            
+            // LP-observations-consolidation-1.1.0: Retry with exponential backoff for retryable errors
+            if (isRetryableError(error) && retryCount < MAX_UPLOAD_RETRIES) {
+              const delay = getRetryDelay(retryCount);
+              emitTelemetry('upload.retry_scheduled', { 
+                imageId: imageFile.id, 
+                productMpn,
+                retryCount: retryCount + 1,
+                delayMs: delay,
+              });
+              
+              await new Promise(r => setTimeout(r, delay));
+              const retryResult = await uploadImage(imageFile, onProgress, retryCount + 1);
+              resolve(retryResult);
+              return;
+            }
             
             resolve({
               ...imageFile,
@@ -188,6 +255,7 @@ export default function ObservationImageUploader({
                 productMpn,
                 url: downloadUrl,
                 fileSize,
+                retryCount,
               });
               
               resolve({
