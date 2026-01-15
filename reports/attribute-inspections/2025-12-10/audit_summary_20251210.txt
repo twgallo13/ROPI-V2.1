@@ -1,0 +1,19 @@
+Attribute Unknown Audit - 20251210
+Project: ropi-bccee
+Generated: 2025-12-11T01:16:21.725702Z
+
+Total products scanned: 87
+Known attribute keys: 11
+Unknown attribute keys: 11
+
+Top 10 Unknown Keys:
+  1. style: 64 products
+  2. descriptive.gender: 34 products
+  3. materials: 8 products
+  4. descriptive.material: 6 products
+  5. waterproof: 3 products
+  6. sustainable: 2 products
+  7. pattern: 1 products
+  8. silhouette: 1 products
+  9. secondaryColor: 1 products
+  10. descriptive.heelType: 1 products

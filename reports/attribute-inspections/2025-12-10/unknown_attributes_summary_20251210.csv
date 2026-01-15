@@ -1,0 +1,12 @@
+unknown_key,product_count,distinct_values_count,top_3_values,top_3_counts,example_skus,candidate_canonical,candidate_score,candidate_method
+style,64,11, | {'id': '14943667'} | {'id': 'Classic Unfurgettable Clog'},54 | 1 | 1,14943667 | 14943678 | 207012-001,styleId,40,substring
+descriptive.gender,34,9, | Mens | Men's,18 | 5 | 4,14943667 | 211116-001 | 7J236,gender,60,prefix_strip
+materials,8,3, | ['Synthetic'] | ['Man-Made'],5 | 2 | 1,14943667 | AMBRA-23 | FD ZAHARA-S-BLK,material,40,substring
+descriptive.material,6,4,Leather | Canvas | Suede,3 | 1 | 1,SKU-1001 | SKU-1002 | SKU-1003,material,60,prefix_strip
+waterproof,3,2, | True,2 | 1,TEST-RUN-001 | TEST-SNK-002 | TEST-BOOT-003,,,
+sustainable,2,2,True | ,1 | 1,TEST-RUN-001 | TEST-BOOT-003,,,
+pattern,1,1,Solid,1,NK-AIR-MAX-270-BLK-10,,,
+silhouette,1,1,Low Top,1,NK-AIR-MAX-270-BLK-10,,,
+secondaryColor,1,1,White,1,TEST-RUN-001,Color,40,substring
+descriptive.heelType,1,1,Block,1,TEST-BOOT-003,heelType,60,prefix_strip
+descriptive.heelHeight,1,1,2 inches,1,TEST-BOOT-003,heelHeight,60,prefix_strip
