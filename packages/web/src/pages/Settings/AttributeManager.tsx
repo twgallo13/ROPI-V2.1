@@ -100,7 +100,9 @@ export default function AttributeManager() {
   const [saveDetails, setSaveDetails] = useState<Array<{ path: string; message: string }> | null>(null);
 
   // LP-3.0.10: Auto-generate attribute_id from label when blank, ensure uniqueness
+  // LP-3.0.11: Added defensive logging to diagnose save issues
   const handleSave = async () => {
+    console.debug('[AttributeManager] handleSave started', { editingId, formData });
     setFormError(null);
     setSaveDetails(null);
     setFieldErrors({});
@@ -110,6 +112,7 @@ export default function AttributeManager() {
       // Basic label check
       const label = (formData.label || '').trim();
       if (!label) {
+        console.warn('[AttributeManager] Save aborted: label is empty');
         setFieldError('label', 'Label is required.');
         setSaving(false);
         return;
@@ -122,7 +125,9 @@ export default function AttributeManager() {
       if (!rawId) {
         // Derive from label
         const baseId = toSnakeCase(label);
+        console.debug('[AttributeManager] Auto-generated ID from label:', { label, baseId });
         if (!baseId) {
+          console.warn('[AttributeManager] Save aborted: could not derive ID from label');
           setFormError('Could not derive Attribute ID; please enter one manually.');
           setSaving(false);
           return;
@@ -158,8 +163,10 @@ export default function AttributeManager() {
 
       if (editingId) {
         // LP-3.0.1: Handle structured response from updateAttribute
+        console.debug('[AttributeManager] Calling updateAttribute', { editingId, formData });
         const result = await updateAttribute(editingId, formData);
         if (!result?.ok) {
+          console.error('[AttributeManager] updateAttribute failed:', result);
           setFormError(result.error || 'Save failed');
           setSaveDetails(result.details || null);
           if (result.details) {
@@ -168,16 +175,20 @@ export default function AttributeManager() {
           toastError(result.error || 'Failed to update attribute');
           return;
         }
+        console.debug('[AttributeManager] updateAttribute succeeded:', result);
         toastSuccess(`Updated attribute '${editingId}'`);
       } else {
         const toCreate = { ...formData, attribute_id: normalizedId } as Omit<Attribute, 'createdAt' | 'updatedAt'>;
+        console.debug('[AttributeManager] Calling createAttribute', { toCreate });
         const created = await createAttribute(toCreate);
+        console.debug('[AttributeManager] createAttribute succeeded:', created);
         setRecentlyCreatedId(created.attribute_id);
         toastSuccess(`Created attribute '${created.attribute_id}'`);
       }
 
       handleCancel();
     } catch (err: unknown) {
+      console.error('[AttributeManager] handleSave error:', err);
       const message = err instanceof Error ? err.message : 'Failed to save attribute';
       setFormError(message);
       toastError(message);

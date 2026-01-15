@@ -1,0 +1,13 @@
+[2025-12-23T02:14:52.550Z] [log] ✅ Firebase initialized successfully
+[2025-12-23T02:14:52.554Z] [warn] Sentry DSN not configured - error monitoring disabled
+[2025-12-23T02:14:52.622Z] [log] 🔐 Auth state changed: No user
+[2025-12-23T02:14:53.540Z] [log] ✅ Firebase initialized successfully
+[2025-12-23T02:14:53.543Z] [warn] Sentry DSN not configured - error monitoring disabled
+[2025-12-23T02:14:53.580Z] [log] 🔐 Auth state changed: No user
+[2025-12-23T02:14:59.522Z] [error] Failed to load resource: the server responded with a status of 401 ()
+[2025-12-23T02:14:59.522Z] [error] ❌ Email sign-in failed: JSHandle@error
+[2025-12-23T02:14:59.523Z] [error] [Auth Error] Firebase: Error (auth/request-had-invalid-authentication-credentials.-expected-oauth-2-access-token,-login-cookie-or-other-valid-authentication-credential.-see-https://developers.google.com/identity/sign-in/web/devconsole-project.). JSHandle@object
+[2025-12-23T02:15:01.550Z] [error] Error fetching attributes: NotAuthenticated: User not signed in. Please sign in to access admin features.
+[2025-12-23T02:15:04.579Z] [log] ✅ Firebase initialized successfully
+[2025-12-23T02:15:04.583Z] [warn] Sentry DSN not configured - error monitoring disabled
+[2025-12-23T02:15:04.606Z] [log] 🔐 Auth state changed: No user
