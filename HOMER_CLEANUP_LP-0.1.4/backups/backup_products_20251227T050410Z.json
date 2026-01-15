@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-12-27T05:04:11.535Z",
+  "collections": {
+    "products": {
+      "error": "Unable to detect a Project Id in the current environment. \nTo learn more about authentication and Google APIs, visit: \nhttps://cloud.google.com/docs/authentication/getting-started"
+    }
+  }
+}
