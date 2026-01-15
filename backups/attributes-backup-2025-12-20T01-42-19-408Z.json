@@ -1,0 +1,4256 @@
+{
+  "a_i_generated.descriptionBlocks": {
+    "dataType": "object",
+    "usage": [],
+    "description": "HTML blocks per section",
+    "rules": [],
+    "label": "Description Blocks",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.descriptionBlocks",
+    "category": "AI",
+    "export": true,
+    "key": "descriptionBlocks",
+    "audit": {
+      "updatedBy": "system",
+      "version": "1.1",
+      "updatedAt": "2025-11-22T22:21:16.371Z"
+    },
+    "ai": {
+      "can_write": true
+    },
+    "id": "a_i_generated.descriptionBlocks"
+  },
+  "a_i_generated.descriptionHtml": {
+    "dataType": "string",
+    "usage": [],
+    "description": "AI-generated HTML description",
+    "rules": [],
+    "label": "Description Html",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.descriptionHtml",
+    "category": "AI",
+    "export": true,
+    "key": "descriptionHtml"
+  },
+  "a_i_generated.ropiScore": {
+    "dataType": "number",
+    "usage": [],
+    "description": "ROPI validation score (0-10)",
+    "rules": [],
+    "label": "Ropi Score",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.ropiScore",
+    "category": "AI",
+    "export": true,
+    "key": "ropiScore"
+  },
+  "a_i_generated.seoName": {
+    "dataType": "string",
+    "usage": [],
+    "description": "AI-generated SEO name",
+    "rules": [],
+    "label": "Seo Name",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.seoName",
+    "category": "AI",
+    "export": true,
+    "key": "seoName"
+  },
+  "a_i_generated.smartDetectSummary": {
+    "dataType": "object",
+    "usage": [],
+    "description": "Smart Detect autofill summary",
+    "rules": [],
+    "label": "Smart Detect Summary",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.smartDetectSummary",
+    "category": "AI",
+    "export": true,
+    "key": "smartDetectSummary"
+  },
+  "a_i_generated.templateKey": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Template used for generation",
+    "rules": [],
+    "label": "Template Key",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.templateKey",
+    "category": "AI",
+    "export": true,
+    "key": "templateKey"
+  },
+  "a_i_generated.templateOverrideKey": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Manual template override",
+    "rules": [],
+    "label": "Template Override Key",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.templateOverrideKey",
+    "category": "AI",
+    "export": true,
+    "key": "templateOverrideKey"
+  },
+  "a_i_generated.validationFlags": {
+    "dataType": "array",
+    "usage": [],
+    "description": "Validation warnings/errors",
+    "rules": [],
+    "label": "Validation Flags",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "a_i_generated.validationFlags",
+    "category": "AI",
+    "export": true,
+    "key": "validationFlags"
+  },
+  "age_group": {
+    "attribute_id": "age_group",
+    "label": "Age Group",
+    "external_header": "Age Group",
+    "category": "Demographics",
+    "data_type": "enum",
+    "allowed_values": [
+      "Adult",
+      "Kids",
+      "Infant",
+      "Toddler",
+      "Teen"
+    ],
+    "required_for_completion": true,
+    "required_for_export": true,
+    "import_required": false,
+    "ai_usage_notes": "Used for Google Shopping feed and age-appropriate product descriptions.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:17.705Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.132Z",
+    "synonyms": [
+      "ageGroup",
+      "age-group",
+      "AgeGroup",
+      "age.group",
+      "agegroup",
+      "Age-group"
+    ]
+  },
+  "brand": {
+    "export": true,
+    "bulkEditable": false,
+    "importerColumns": [
+      "brand"
+    ],
+    "canonicalPath": "sku_core.brand",
+    "description": "Brand name",
+    "allowed_values": [],
+    "synonyms": [
+      "Brand"
+    ],
+    "ai_usage_notes": ""
+  },
+  "care_instructions": {
+    "attribute_id": "care_instructions",
+    "label": "Care Instructions",
+    "external_header": "Care",
+    "category": "Product Info",
+    "data_type": "string",
+    "synonyms": [
+      "care",
+      "cleaning_instructions"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Cleaning and care instructions for the product.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:21.023Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:33.620Z"
+  },
+  "category": {
+    "export": true,
+    "bulkEditable": false,
+    "importerColumns": [
+      "category"
+    ],
+    "canonicalPath": "sku_core.category",
+    "description": "Category (e.g., \"Running Shoes\", \"T-Shirts\")",
+    "allowed_values": [],
+    "synonyms": [
+      "Category"
+    ],
+    "ai_usage_notes": ""
+  },
+  "class": {
+    "importerColumns": [
+      "class"
+    ],
+    "canonicalPath": "sku_core.class",
+    "description": "Class (e.g., \"Athletic\", \"Casual\")",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Class"
+    ],
+    "ai_usage_notes": ""
+  },
+  "closure": {
+    "deprecated_in_favor_of": "closure_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:16.142Z"
+  },
+  "closure-type": {
+    "deprecated_in_favor_of": "closure_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:15.855Z"
+  },
+  "closure.type": {
+    "deprecated_in_favor_of": "closure_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:16.000Z"
+  },
+  "closureType": {
+    "importerColumns": [
+      "closure_type"
+    ],
+    "canonicalPath": "descriptive.closureType",
+    "description": "Closure Type (Lace-up, Slip-on, Velcro)",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "closure_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:15.782Z"
+  },
+  "closure_type": {
+    "attribute_id": "closure_type",
+    "label": "Closure Type",
+    "external_header": "Closure",
+    "category": "Construction",
+    "data_type": "enum",
+    "allowed_values": [
+      "Lace-Up",
+      "Slip-On",
+      "Buckle",
+      "Zipper",
+      "Velcro",
+      "Elastic",
+      "Button",
+      "Hook & Loop",
+      "Toggle"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "How the product fastens or closes.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:20.220Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:32.888Z",
+    "synonyms": [
+      "closure",
+      "fastening",
+      "closureType",
+      "closure-type",
+      "ClosureType",
+      "closure.type",
+      "closuretype",
+      "Closure",
+      "Fastening"
+    ]
+  },
+  "closuretype": {
+    "deprecated_in_favor_of": "closure_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:16.071Z"
+  },
+  "collection-name": {
+    "deprecated_in_favor_of": "collection_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:24.923Z"
+  },
+  "collection.name": {
+    "deprecated_in_favor_of": "collection_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:25.069Z"
+  },
+  "collectionName": {
+    "deprecated_in_favor_of": "collection_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:24.852Z"
+  },
+  "collection_name": {
+    "allowed_values": [],
+    "attribute_id": "collection_name",
+    "label": "collection_name",
+    "status": "active",
+    "synonyms": [
+      "collectionName",
+      "collection-name",
+      "CollectionName",
+      "collection.name",
+      "collectionname"
+    ],
+    "ai_usage_notes": ""
+  },
+  "collectionname": {
+    "deprecated_in_favor_of": "collection_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:25.139Z"
+  },
+  "colour": {
+    "deprecated_in_favor_of": "primary_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:11.617Z"
+  },
+  "coreProduct": {
+    "canonicalPath": "sku_core.coreProduct",
+    "description": "Marks main styles that persist across seasons",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false
+  },
+  "country-of-origin": {
+    "deprecated_in_favor_of": "made_in",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:22.800Z"
+  },
+  "country.of.origin": {
+    "deprecated_in_favor_of": "made_in",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:22.946Z"
+  },
+  "countryOfOrigin": {
+    "deprecated_in_favor_of": "made_in",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:22.727Z"
+  },
+  "custom-message": {
+    "deprecated_in_favor_of": "custom_message",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:41.729Z"
+  },
+  "custom.message": {
+    "deprecated_in_favor_of": "custom_message",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:41.870Z"
+  },
+  "custom2": {
+    "importerColumns": [
+      "custom2"
+    ],
+    "canonicalPath": "technical.custom2",
+    "description": "Custom field 2",
+    "bulkEditable": false,
+    "export": true
+  },
+  "custom3": {
+    "importerColumns": [
+      "custom3"
+    ],
+    "canonicalPath": "technical.custom3",
+    "description": "Custom field 3",
+    "bulkEditable": false,
+    "export": true
+  },
+  "customMessage": {
+    "deprecated_in_favor_of": "custom_message",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:41.657Z"
+  },
+  "custom_message": {
+    "allowed_values": [],
+    "attribute_id": "custom_message",
+    "label": "custom_message",
+    "status": "active",
+    "synonyms": [
+      "customMessage",
+      "custom-message",
+      "CustomMessage",
+      "custom.message",
+      "custommessage"
+    ],
+    "ai_usage_notes": ""
+  },
+  "custommessage": {
+    "deprecated_in_favor_of": "custom_message",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:41.943Z"
+  },
+  "cut-type": {
+    "deprecated_in_favor_of": "cut_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:17.066Z"
+  },
+  "cutType": {
+    "importerColumns": [
+      "cut_type"
+    ],
+    "canonicalPath": "descriptive.cutType",
+    "description": "Cut Type (Low, Mid, High)",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "cut_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:16.993Z"
+  },
+  "cut_type": {
+    "allowed_values": [],
+    "attribute_id": "cut_type",
+    "label": "cut_type",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "cutType",
+      "cut-type",
+      "CutType",
+      "cut.type",
+      "cuttype"
+    ]
+  },
+  "cuttype": {
+    "deprecated_in_favor_of": "cut_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:17.289Z"
+  },
+  "department": {
+    "importerColumns": [
+      "department"
+    ],
+    "canonicalPath": "sku_core.department",
+    "description": "Department (e.g., \"Footwear\", \"Apparel\")",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Department"
+    ],
+    "ai_usage_notes": ""
+  },
+  "description": {
+    "canonicalPath": "descriptive.description",
+    "description": "Long description (ROPI HTML output)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false
+  },
+  "description-karmaloop": {
+    "deprecated_in_favor_of": "description_karmaloop",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:28.649Z"
+  },
+  "description-mltd": {
+    "deprecated_in_favor_of": "description_mltd",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:29.580Z"
+  },
+  "description-sangremia": {
+    "deprecated_in_favor_of": "description_sangremia",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:30.504Z"
+  },
+  "description-shiekh": {
+    "deprecated_in_favor_of": "description_shiekh",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:27.714Z"
+  },
+  "description.karmaloop": {
+    "deprecated_in_favor_of": "description_karmaloop",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:28.815Z"
+  },
+  "description.mltd": {
+    "deprecated_in_favor_of": "description_mltd",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:29.728Z"
+  },
+  "description.sangremia": {
+    "deprecated_in_favor_of": "description_sangremia",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:30.647Z"
+  },
+  "description.shiekh": {
+    "deprecated_in_favor_of": "description_shiekh",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:27.861Z"
+  },
+  "descriptionBlocks": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.descriptionBlocks",
+    "description": "HTML blocks per section",
+    "bulkEditable": false,
+    "export": true
+  },
+  "descriptionHtml": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.descriptionHtml",
+    "description": "AI-generated HTML description",
+    "bulkEditable": false,
+    "export": true
+  },
+  "descriptionKarmaloop": {
+    "deprecated_in_favor_of": "description_karmaloop",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:28.575Z"
+  },
+  "descriptionMltd": {
+    "deprecated_in_favor_of": "description_mltd",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:29.509Z"
+  },
+  "descriptionSangremia": {
+    "deprecated_in_favor_of": "description_sangremia",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:30.433Z"
+  },
+  "descriptionShiekh": {
+    "deprecated_in_favor_of": "description_shiekh",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:27.641Z"
+  },
+  "description_karmaloop": {
+    "allowed_values": [],
+    "attribute_id": "description_karmaloop",
+    "label": "description_karmaloop",
+    "status": "active",
+    "synonyms": [
+      "descriptionKarmaloop",
+      "description-karmaloop",
+      "DescriptionKarmaloop",
+      "description.karmaloop",
+      "descriptionkarmaloop"
+    ],
+    "ai_usage_notes": ""
+  },
+  "description_mltd": {
+    "allowed_values": [],
+    "attribute_id": "description_mltd",
+    "label": "description_mltd",
+    "status": "active",
+    "synonyms": [
+      "descriptionMltd",
+      "description-mltd",
+      "DescriptionMltd",
+      "description.mltd",
+      "descriptionmltd"
+    ],
+    "ai_usage_notes": ""
+  },
+  "description_sangremia": {
+    "allowed_values": [],
+    "attribute_id": "description_sangremia",
+    "label": "description_sangremia",
+    "status": "active",
+    "synonyms": [
+      "descriptionSangremia",
+      "description-sangremia",
+      "DescriptionSangremia",
+      "description.sangremia",
+      "descriptionsangremia"
+    ],
+    "ai_usage_notes": ""
+  },
+  "description_shiekh": {
+    "allowed_values": [],
+    "attribute_id": "description_shiekh",
+    "label": "description_shiekh",
+    "status": "active",
+    "synonyms": [
+      "descriptionShiekh",
+      "description-shiekh",
+      "DescriptionShiekh",
+      "description.shiekh",
+      "descriptionshiekh"
+    ],
+    "ai_usage_notes": ""
+  },
+  "descriptionkarmaloop": {
+    "deprecated_in_favor_of": "description_karmaloop",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:28.887Z"
+  },
+  "descriptionmltd": {
+    "deprecated_in_favor_of": "description_mltd",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:29.800Z"
+  },
+  "descriptionsangremia": {
+    "deprecated_in_favor_of": "description_sangremia",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:30.735Z"
+  },
+  "descriptionshiekh": {
+    "deprecated_in_favor_of": "description_shiekh",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:27.936Z"
+  },
+  "descriptive.cutType": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Cut Type (Low, Mid, High)",
+    "rules": [
+      "SD-008"
+    ],
+    "label": "Cut Type",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "cut_type"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.cutType",
+    "category": "Descriptive",
+    "export": true,
+    "key": "cutType"
+  },
+  "descriptive.description": {
+    "dataType": "string",
+    "usage": [],
+    "rules": [],
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.description",
+    "category": "Descriptive",
+    "export": true,
+    "key": "description",
+    "foundation": true,
+    "id": "description",
+    "bulkEditable": false,
+    "ai": {
+      "can_write": true,
+      "confidenceThreshold": 0.4,
+      "use": [
+        "enrichment",
+        "template_selection"
+      ]
+    },
+    "audit": {
+      "updatedBy": "system",
+      "version": "1.10",
+      "updatedAt": "2025-11-22T19:46:12.761Z"
+    },
+    "validation": {
+      "required": false
+    },
+    "description": "Long description (ROPI HTML output)",
+    "label": "Description"
+  },
+  "descriptive.descriptiveColor": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Descriptive Color (free-text manufacturer color)",
+    "rules": [],
+    "label": "Descriptive Color",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "descriptive_color"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.descriptiveColor",
+    "category": "Descriptive",
+    "export": true,
+    "key": "descriptiveColor"
+  },
+  "descriptive.familySizing": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "Family sizing available",
+    "rules": [],
+    "label": "Family Sizing",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.familySizing",
+    "category": "Descriptive",
+    "export": true,
+    "key": "familySizing"
+  },
+  "descriptive.fit": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Fit description",
+    "rules": [],
+    "label": "Fit",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [
+      "fit"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.fit",
+    "category": "Descriptive",
+    "export": true,
+    "key": "fit"
+  },
+  "descriptive.gender": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Gender (Men's, Women's, Unisex)",
+    "rules": [
+      "SD-005"
+    ],
+    "label": "Gender",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [
+      "gender"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.gender",
+    "category": "Descriptive",
+    "export": true,
+    "key": "gender",
+    "allowed_values": [
+      "Men's",
+      "Women's",
+      "Unisex",
+      "Boys",
+      "Girls",
+      "Kids",
+      "Subscription"
+    ],
+    "required_for_export": true,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "enum",
+    "source": "json",
+    "required_for_completion": true,
+    "ai_usage_notes": "Gender (Men's, Women's, Unisex)",
+    "status": "active",
+    "updatedAt": "2025-12-19T19:25:04.118Z"
+  },
+  "descriptive.heelHeight": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Heel Height (numeric)",
+    "rules": [],
+    "label": "Heel Height",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.heelHeight",
+    "category": "Descriptive",
+    "export": true,
+    "key": "heelHeight"
+  },
+  "descriptive.heelType": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Heel Type (Stiletto, Block, Wedge)",
+    "rules": [
+      "SD-010"
+    ],
+    "label": "Heel Type",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.heelType",
+    "category": "Descriptive",
+    "export": true,
+    "key": "heelType"
+  },
+  "descriptive.keywords": {
+    "dataType": "array",
+    "usage": [],
+    "description": "Keywords/tags",
+    "rules": [],
+    "label": "Keywords",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "keywords"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.keywords",
+    "category": "Descriptive",
+    "export": true,
+    "key": "keywords"
+  },
+  "descriptive.league": {
+    "dataType": "string",
+    "usage": [],
+    "description": "League (NFL, NBA, etc.)",
+    "rules": [],
+    "label": "League",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "league"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.league",
+    "category": "Descriptive",
+    "export": true,
+    "key": "league"
+  },
+  "descriptive.madeIn": {
+    "dataType": "array",
+    "usage": [],
+    "description": "Countries of origin",
+    "rules": [],
+    "label": "Made In",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.madeIn",
+    "category": "Descriptive",
+    "export": true,
+    "key": "madeIn"
+  },
+  "descriptive.material": {
+    "dataType": "array",
+    "usage": [],
+    "normalizationNote": "Materials stored as deduped arrays in canonical schema",
+    "description": "Materials (multi-select array)",
+    "rules": [
+      "SD-007"
+    ],
+    "label": "Material",
+    "legacyPaths": [
+      "materials"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "material",
+      "materials"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.material",
+    "category": "Descriptive",
+    "export": true,
+    "key": "material",
+    "allowed_values": [
+      "Cotton"
+    ],
+    "required_for_export": true,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "enum",
+    "source": "json",
+    "required_for_completion": false,
+    "ai_usage_notes": "Materials (multi-select array)",
+    "status": "active",
+    "updatedAt": "2025-12-19T20:00:48.694Z"
+  },
+  "descriptive.metaDescription": {
+    "dataType": "string",
+    "usage": [],
+    "description": "SEO meta description (≤155 chars)",
+    "rules": [],
+    "label": "Meta Description",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.metaDescription",
+    "category": "Descriptive",
+    "export": true,
+    "key": "metaDescription"
+  },
+  "descriptive.metaName": {
+    "dataType": "string",
+    "usage": [],
+    "description": "SEO meta name (≤60 chars)",
+    "rules": [],
+    "label": "Meta Name",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.metaName",
+    "category": "Descriptive",
+    "export": true,
+    "key": "metaName"
+  },
+  "descriptive.outsoleMaterial": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Outsole Material",
+    "rules": [],
+    "label": "Outsole Material",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.outsoleMaterial",
+    "category": "Descriptive",
+    "export": true,
+    "key": "outsoleMaterial"
+  },
+  "descriptive.platformHeight": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Platform Height",
+    "rules": [],
+    "label": "Platform Height",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.platformHeight",
+    "category": "Descriptive",
+    "export": true,
+    "key": "platformHeight"
+  },
+  "descriptive.primaryColor": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Primary Color",
+    "rules": [
+      "SD-006"
+    ],
+    "label": "Primary Color",
+    "legacyPaths": [
+      "primaryColor"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.primaryColor",
+    "category": "Descriptive",
+    "export": true,
+    "key": "primaryColor",
+    "audit": {
+      "updatedBy": "system",
+      "version": "1.1",
+      "updatedAt": "2025-11-22T19:36:07.458Z"
+    },
+    "id": "descriptive.primaryColor",
+    "importerColumns": [
+      "rics_color",
+      "primary_color"
+    ]
+  },
+  "descriptive.shoeHeightMap": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Shoe Height Map (Low, Mid, High)",
+    "rules": [],
+    "label": "Shoe Height Map",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.shoeHeightMap",
+    "category": "Descriptive",
+    "export": true,
+    "key": "shoeHeightMap"
+  },
+  "descriptive.slug": {
+    "dataType": "string",
+    "usage": [],
+    "description": "URL slug",
+    "rules": [],
+    "label": "Slug",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.slug",
+    "category": "Descriptive",
+    "export": true,
+    "key": "slug"
+  },
+  "descriptive.sportsTeam": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Sports Team name",
+    "rules": [],
+    "label": "Sports Team",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "sports_team"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "descriptive.sportsTeam",
+    "category": "Descriptive",
+    "export": true,
+    "key": "sportsTeam"
+  },
+  "descriptiveColor": {
+    "importerColumns": [
+      "descriptive_color"
+    ],
+    "canonicalPath": "descriptive.descriptiveColor",
+    "description": "Descriptive Color (free-text manufacturer color)",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "descriptive_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:12.361Z"
+  },
+  "descriptive_color": {
+    "allowed_values": [],
+    "attribute_id": "descriptive_color",
+    "label": "descriptive_color",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "descriptiveColor",
+      "descriptive-color",
+      "DescriptiveColor",
+      "descriptive.color",
+      "descriptivecolor"
+    ]
+  },
+  "descriptivecolor": {
+    "deprecated_in_favor_of": "descriptive_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:12.657Z"
+  },
+  "dropshipName": {
+    "canonicalPath": "sku_core.dropshipName",
+    "export": true,
+    "importerColumns": [
+      "product_is_dropship_name",
+      "Product Is Dropship.Name",
+      "Product Is Dropship Name",
+      "dropship_name",
+      "dropship name"
+    ],
+    "description": "Dropship supplier name",
+    "bulkEditable": false
+  },
+  "end_of_life_date": {
+    "attribute_id": "end_of_life_date",
+    "label": "End of Life Date",
+    "external_header": "EOL Date",
+    "category": "Lifecycle",
+    "data_type": "date",
+    "synonyms": [
+      "eol_date",
+      "discontinue_date"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Date when the product will be discontinued.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:21.925Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:34.528Z"
+  },
+  "expedited-override-shipping": {
+    "deprecated_in_favor_of": "expedited_override_shipping",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:40.802Z"
+  },
+  "expedited.override.shipping": {
+    "deprecated_in_favor_of": "expedited_override_shipping",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:40.949Z"
+  },
+  "expeditedOverrideShipping": {
+    "canonicalPath": "technical.expeditedOverrideShipping",
+    "description": "Expedited shipping override (Money)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "expedited_override_shipping",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:40.731Z"
+  },
+  "expedited_override_shipping": {
+    "allowed_values": [],
+    "attribute_id": "expedited_override_shipping",
+    "label": "expedited_override_shipping",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "expeditedOverrideShipping",
+      "expedited-override-shipping",
+      "ExpeditedOverrideShipping",
+      "expedited.override.shipping",
+      "expeditedoverrideshipping"
+    ]
+  },
+  "expeditedoverrideshipping": {
+    "deprecated_in_favor_of": "expedited_override_shipping",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:41.020Z"
+  },
+  "fabric": {
+    "deprecated_in_favor_of": "material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:13.916Z"
+  },
+  "family-sizing": {
+    "deprecated_in_favor_of": "family_sizing",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:02.318Z"
+  },
+  "family.sizing": {
+    "deprecated_in_favor_of": "family_sizing",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:02.459Z"
+  },
+  "familySizing": {
+    "canonicalPath": "descriptive.familySizing",
+    "description": "Family sizing available",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "family_sizing",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:02.246Z"
+  },
+  "family_sizing": {
+    "allowed_values": [],
+    "attribute_id": "family_sizing",
+    "label": "family_sizing",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "familySizing",
+      "family-sizing",
+      "FamilySizing",
+      "family.sizing",
+      "familysizing"
+    ]
+  },
+  "familysizing": {
+    "deprecated_in_favor_of": "family_sizing",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:02.531Z"
+  },
+  "fast-fashion": {
+    "deprecated_in_favor_of": "fast_fashion",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:25.839Z"
+  },
+  "fast.fashion": {
+    "deprecated_in_favor_of": "fast_fashion",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:25.984Z"
+  },
+  "fastFashion": {
+    "importerColumns": [
+      "fastfashion",
+      "fast_fashion"
+    ],
+    "canonicalPath": "launch.fastFashion",
+    "description": "Fast fashion flag",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "fast_fashion",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:25.765Z"
+  },
+  "fast_fashion": {
+    "allowed_values": [],
+    "attribute_id": "fast_fashion",
+    "label": "fast_fashion",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "fastFashion",
+      "fast-fashion",
+      "FastFashion",
+      "fast.fashion",
+      "fastfashion"
+    ]
+  },
+  "fastening": {
+    "deprecated_in_favor_of": "closure_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:16.291Z"
+  },
+  "fastfashion": {
+    "deprecated_in_favor_of": "fast_fashion",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:26.056Z"
+  },
+  "features": {
+    "attribute_id": "features",
+    "label": "Features",
+    "external_header": "Features",
+    "category": "Features",
+    "data_type": "multiSelect",
+    "allowed_values": [
+      "Cushioned",
+      "Arch Support",
+      "Memory Foam",
+      "Non-Slip",
+      "Breathable",
+      "Lightweight",
+      "Orthopedic",
+      "Shock Absorbing",
+      "Moisture Wicking",
+      "Removable Insole"
+    ],
+    "synonyms": [
+      "product_features",
+      "benefits"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Key product features for marketing and filtering. Multiple values allowed.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:21.160Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:33.766Z"
+  },
+  "first-received": {
+    "deprecated_in_favor_of": "first_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:03.585Z"
+  },
+  "first.received": {
+    "deprecated_in_favor_of": "first_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:03.733Z"
+  },
+  "firstReceived": {
+    "importerColumns": [
+      "first_received"
+    ],
+    "canonicalPath": "technical.firstReceived",
+    "description": "First received date (ISO string)",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "first_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:03.515Z"
+  },
+  "first_received": {
+    "allowed_values": [],
+    "attribute_id": "first_received",
+    "label": "first_received",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "firstReceived",
+      "first-received",
+      "FirstReceived",
+      "first.received",
+      "firstreceived"
+    ]
+  },
+  "firstreceived": {
+    "deprecated_in_favor_of": "first_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:03.804Z"
+  },
+  "fit": {
+    "importerColumns": [
+      "fit"
+    ],
+    "canonicalPath": "descriptive.fit",
+    "description": "Fit description",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Fit"
+    ],
+    "ai_usage_notes": ""
+  },
+  "gtin": {
+    "attribute_id": "gtin",
+    "label": "GTIN/UPC",
+    "external_header": "GTIN",
+    "category": "Identifiers",
+    "data_type": "string",
+    "required_for_completion": false,
+    "required_for_export": true,
+    "import_required": false,
+    "ai_usage_notes": "Global Trade Item Number. Required for many export channels like Google Shopping.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:21.303Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:33.931Z",
+    "allowed_values": [],
+    "synonyms": [
+      "upc",
+      "ean",
+      "barcode",
+      "Gtin"
+    ]
+  },
+  "heel-height": {
+    "deprecated_in_favor_of": "heel_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:18.353Z"
+  },
+  "heel-type": {
+    "deprecated_in_favor_of": "heel_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:20.184Z"
+  },
+  "heel.height": {
+    "deprecated_in_favor_of": "heel_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:18.497Z"
+  },
+  "heel.type": {
+    "deprecated_in_favor_of": "heel_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:20.327Z"
+  },
+  "heelHeight": {
+    "canonicalPath": "descriptive.heelHeight",
+    "description": "Heel Height (numeric)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "heel_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:18.279Z"
+  },
+  "heelType": {
+    "canonicalPath": "descriptive.heelType",
+    "description": "Heel Type (Stiletto, Block, Wedge)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "heel_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:20.112Z"
+  },
+  "heelheight": {
+    "deprecated_in_favor_of": "heel_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:18.568Z"
+  },
+  "heeltype": {
+    "deprecated_in_favor_of": "heel_type",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:20.414Z"
+  },
+  "height": {
+    "importerColumns": [
+      "height"
+    ],
+    "canonicalPath": "technical.height",
+    "description": "Shipping height",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Height"
+    ],
+    "ai_usage_notes": ""
+  },
+  "hide-image-date": {
+    "deprecated_in_favor_of": "hide_image_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:36.392Z"
+  },
+  "hide.image.date": {
+    "deprecated_in_favor_of": "hide_image_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:36.546Z"
+  },
+  "hideImageDate": {
+    "canonicalPath": "technical.hideImageDate",
+    "description": "Image embargo date (ISO string)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "hide_image_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:36.315Z"
+  },
+  "hide_image_date": {
+    "allowed_values": [],
+    "attribute_id": "hide_image_date",
+    "label": "hide_image_date",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "hideImageDate",
+      "hide-image-date",
+      "HideImageDate",
+      "hide.image.date",
+      "hideimagedate"
+    ]
+  },
+  "hideimagedate": {
+    "deprecated_in_favor_of": "hide_image_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:36.619Z"
+  },
+  "hype": {
+    "importerColumns": [
+      "hype"
+    ],
+    "canonicalPath": "launch.hype",
+    "description": "High-priority or limited drop",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Hype"
+    ],
+    "ai_usage_notes": ""
+  },
+  "keywords": {
+    "importerColumns": [
+      "keywords"
+    ],
+    "canonicalPath": "descriptive.keywords",
+    "description": "Keywords/tags",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Keywords"
+    ],
+    "ai_usage_notes": ""
+  },
+  "kl-post-date": {
+    "deprecated_in_favor_of": "kl_post_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:01.383Z"
+  },
+  "kl.post.date": {
+    "deprecated_in_favor_of": "kl_post_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:01.540Z"
+  },
+  "klPostDate": {
+    "canonicalPath": "launch.klPostDate",
+    "description": "KL post date (ISO string)",
+    "bulkEditable": false,
+    "export": true,
+    "importerColumns": [
+      "kl_post_date",
+      "KL Post Date",
+      "KL_POST_DATE",
+      "klPostDate"
+    ],
+    "deprecated_in_favor_of": "kl_post_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:01.312Z"
+  },
+  "kl_post_date": {
+    "allowed_values": [],
+    "attribute_id": "kl_post_date",
+    "label": "kl_post_date",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "klPostDate",
+      "kl-post-date",
+      "KlPostDate",
+      "kl.post.date",
+      "klpostdate"
+    ]
+  },
+  "klpostdate": {
+    "deprecated_in_favor_of": "kl_post_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:01.614Z"
+  },
+  "last-received": {
+    "deprecated_in_favor_of": "last_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:04.499Z"
+  },
+  "last.received": {
+    "deprecated_in_favor_of": "last_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:04.651Z"
+  },
+  "lastReceived": {
+    "canonicalPath": "technical.lastReceived",
+    "description": "Last received date (ISO string)",
+    "bulkEditable": false,
+    "export": true,
+    "importerColumns": [
+      "last_received",
+      "Last Received",
+      "lastReceived"
+    ],
+    "deprecated_in_favor_of": "last_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:04.424Z"
+  },
+  "last_received": {
+    "allowed_values": [],
+    "attribute_id": "last_received",
+    "label": "last_received",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "lastReceived",
+      "last-received",
+      "LastReceived",
+      "last.received",
+      "lastreceived"
+    ]
+  },
+  "lastreceived": {
+    "deprecated_in_favor_of": "last_received",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:04.726Z"
+  },
+  "launch-date": {
+    "deprecated_in_favor_of": "launch_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:00.412Z"
+  },
+  "launch.date": {
+    "deprecated_in_favor_of": "launch_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:00.580Z"
+  },
+  "launch.fastFashion": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "Fast fashion flag",
+    "rules": [],
+    "label": "Fast Fashion",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "fastfashion",
+      "fast_fashion"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "launch.fastFashion",
+    "category": "Launch",
+    "export": true,
+    "key": "fastFashion"
+  },
+  "launch.hype": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "High-priority or limited drop",
+    "rules": [],
+    "label": "Hype",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "hype"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "launch.hype",
+    "category": "Launch",
+    "export": true,
+    "key": "hype"
+  },
+  "launch.klPostDate": {
+    "dataType": "string",
+    "usage": [],
+    "description": "KL post date (ISO string)",
+    "rules": [],
+    "label": "Kl Post Date",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "launch.klPostDate",
+    "category": "Launch",
+    "export": true,
+    "key": "klPostDate",
+    "importerColumns": [
+      "kl_post_date",
+      "KL Post Date",
+      "KL_POST_DATE",
+      "klPostDate"
+    ]
+  },
+  "launch.newCollection": {
+    "dataType": "string",
+    "usage": [],
+    "normalizationNote": "Canonicalized from legacy \"collection\" field",
+    "description": "Product collection (Air Force 1, Dunk, etc.)",
+    "rules": [],
+    "label": "New Collection",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "collection",
+      "new_collection"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "launch.newCollection",
+    "category": "Launch",
+    "export": true,
+    "key": "newCollection"
+  },
+  "launchDate": {
+    "importerColumns": [
+      "launch_date"
+    ],
+    "canonicalPath": "launch.launchDate",
+    "description": "Launch date (ISO string)",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "launch_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:00.321Z"
+  },
+  "launch_date": {
+    "attribute_id": "launch_date",
+    "label": "Launch Date",
+    "external_header": "Launch Date",
+    "category": "Lifecycle",
+    "data_type": "date",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Date when the product launches or becomes available.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:21.777Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:34.378Z",
+    "allowed_values": [],
+    "synonyms": [
+      "release_date",
+      "available_date",
+      "launchDate",
+      "launch-date",
+      "LaunchDate",
+      "launch.date",
+      "launchdate"
+    ]
+  },
+  "launchdate": {
+    "deprecated_in_favor_of": "launch_date",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:00.677Z"
+  },
+  "league": {
+    "importerColumns": [
+      "league"
+    ],
+    "canonicalPath": "descriptive.league",
+    "description": "League (NFL, NBA, etc.)",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "League"
+    ],
+    "ai_usage_notes": ""
+  },
+  "length": {
+    "importerColumns": [
+      "length"
+    ],
+    "canonicalPath": "technical.length",
+    "description": "Shipping length",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Length"
+    ],
+    "ai_usage_notes": ""
+  },
+  "longDescription": {
+    "canonicalPath": "rics_source.longDescription",
+    "description": "RICS long description",
+    "export": true,
+    "importerColumns": [
+      "rics_long_description",
+      "RICS Long Desc",
+      "RICS Long Description"
+    ],
+    "bulkEditable": false
+  },
+  "madeIn": {
+    "canonicalPath": "descriptive.madeIn",
+    "description": "Countries of origin",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "made_in",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:22.292Z"
+  },
+  "made_in": {
+    "allowed_values": [],
+    "attribute_id": "made_in",
+    "label": "made_in",
+    "status": "active",
+    "synonyms": [
+      "madeIn",
+      "made_in",
+      "origin",
+      "coo",
+      "country_of_origin",
+      "made-in",
+      "MadeIn",
+      "made.in",
+      "madein",
+      "countryOfOrigin",
+      "country-of-origin",
+      "CountryOfOrigin",
+      "country.of.origin"
+    ],
+    "ai_usage_notes": "Country where the product was manufactured. Required for some export channels.\n---\nCountry where the product was manufactured. Required for some export channels."
+  },
+  "madein": {
+    "deprecated_in_favor_of": "made_in",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:22.585Z"
+  },
+  "main-color": {
+    "deprecated_in_favor_of": "primary_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:11.382Z"
+  },
+  "mainColor": {
+    "deprecated_in_favor_of": "primary_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:11.310Z"
+  },
+  "main_color": {
+    "deprecated_in_favor_of": "primary_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:11.223Z"
+  },
+  "map": {
+    "importerColumns": [
+      "map"
+    ],
+    "canonicalPath": "pricing.map",
+    "description": "Minimum Advertised Price",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Map"
+    ],
+    "ai_usage_notes": ""
+  },
+  "media-status": {
+    "deprecated_in_favor_of": "media_status",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:35.466Z"
+  },
+  "mediaStatus": {
+    "canonicalPath": "technical.mediaStatus",
+    "description": "Media status (\"Images Ready\", \"Pending\", etc.)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "media_status",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:35.394Z"
+  },
+  "media_status": {
+    "allowed_values": [],
+    "attribute_id": "media_status",
+    "label": "media_status",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "mediaStatus",
+      "media-status",
+      "MediaStatus",
+      "media.status",
+      "mediastatus"
+    ]
+  },
+  "mediastatus": {
+    "deprecated_in_favor_of": "media_status",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:35.689Z"
+  },
+  "meta-description": {
+    "deprecated_in_favor_of": "meta_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:32.349Z"
+  },
+  "meta-name": {
+    "deprecated_in_favor_of": "meta_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:31.441Z"
+  },
+  "meta.description": {
+    "deprecated_in_favor_of": "meta_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:32.510Z"
+  },
+  "meta.name": {
+    "deprecated_in_favor_of": "meta_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:31.581Z"
+  },
+  "metaDescription": {
+    "canonicalPath": "descriptive.metaDescription",
+    "description": "SEO meta description (≤155 chars)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "meta_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:32.277Z"
+  },
+  "metaName": {
+    "canonicalPath": "descriptive.metaName",
+    "description": "SEO meta name (≤60 chars)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "meta_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:31.363Z"
+  },
+  "meta_description": {
+    "allowed_values": [],
+    "attribute_id": "meta_description",
+    "label": "meta_description",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "metaDescription",
+      "meta-description",
+      "MetaDescription",
+      "meta.description",
+      "metadescription"
+    ]
+  },
+  "meta_name": {
+    "allowed_values": [],
+    "attribute_id": "meta_name",
+    "label": "meta_name",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "metaName",
+      "meta-name",
+      "MetaName",
+      "meta.name",
+      "metaname"
+    ]
+  },
+  "metadescription": {
+    "deprecated_in_favor_of": "meta_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:32.583Z"
+  },
+  "metaname": {
+    "deprecated_in_favor_of": "meta_name",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:31.651Z"
+  },
+  "mpn": {
+    "importerColumns": [
+      "mpn"
+    ],
+    "canonicalPath": "sku_core.mpn",
+    "description": "Manufacturer Part Number (Product ID)",
+    "bulkEditable": false,
+    "export": true,
+    "updatedBy": "system",
+    "import_required": false,
+    "label": "MPN",
+    "source": "json",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "external_header": "MPN",
+    "attribute_id": "mpn",
+    "data_type": "string",
+    "category": "Identifiers",
+    "ai_usage_notes": "Manufacturer Part Number for product identification.",
+    "status": "active",
+    "updatedAt": "2025-12-09T00:56:34.082Z",
+    "allowed_values": [],
+    "synonyms": [
+      "manufacturer_part_number",
+      "Mpn"
+    ]
+  },
+  "name": {
+    "importerColumns": [
+      "rics_short_desc",
+      "name"
+    ],
+    "canonicalPath": "sku_core.name",
+    "description": "Product name",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Name"
+    ],
+    "ai_usage_notes": ""
+  },
+  "newCollection": {
+    "importerColumns": [
+      "collection",
+      "new_collection"
+    ],
+    "canonicalPath": "launch.newCollection",
+    "description": "Product collection (Air Force 1, Dunk, etc.)",
+    "bulkEditable": false,
+    "export": true
+  },
+  "occasion": {
+    "attribute_id": "occasion",
+    "label": "Occasion",
+    "external_header": "Occasion",
+    "category": "Usage",
+    "data_type": "multiSelect",
+    "allowed_values": [
+      "Everyday",
+      "Work",
+      "Formal",
+      "Party",
+      "Athletic",
+      "Outdoor",
+      "Beach",
+      "Travel",
+      "Wedding",
+      "Date Night"
+    ],
+    "synonyms": [
+      "use_case",
+      "when_to_wear"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Occasions where the product is appropriate. Multiple values allowed.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:19.405Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:32.110Z"
+  },
+  "outsole-material": {
+    "deprecated_in_favor_of": "outsole_material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:14.673Z"
+  },
+  "outsole.material": {
+    "deprecated_in_favor_of": "outsole_material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:14.820Z"
+  },
+  "outsoleMaterial": {
+    "canonicalPath": "descriptive.outsoleMaterial",
+    "description": "Outsole Material",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "outsole_material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:14.602Z"
+  },
+  "outsole_material": {
+    "allowed_values": [],
+    "attribute_id": "outsole_material",
+    "label": "outsole_material",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "outsoleMaterial",
+      "outsole-material",
+      "OutsoleMaterial",
+      "outsole.material",
+      "outsolematerial"
+    ]
+  },
+  "outsolematerial": {
+    "deprecated_in_favor_of": "outsole_material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:14.894Z"
+  },
+  "pattern": {
+    "attribute_id": "pattern",
+    "label": "Pattern",
+    "external_header": "Pattern",
+    "category": "Appearance",
+    "data_type": "enum",
+    "allowed_values": [
+      "Solid",
+      "Striped",
+      "Plaid",
+      "Floral",
+      "Animal Print",
+      "Geometric",
+      "Abstract",
+      "Camo",
+      "Tie-Dye",
+      "Polka Dot",
+      "Paisley"
+    ],
+    "synonyms": [
+      "print",
+      "design"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Visual pattern on the product. Helps with search and styling recommendations.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:19.037Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.819Z"
+  },
+  "platform-height": {
+    "deprecated_in_favor_of": "platform_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:19.266Z"
+  },
+  "platform.height": {
+    "deprecated_in_favor_of": "platform_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:19.412Z"
+  },
+  "platformHeight": {
+    "canonicalPath": "descriptive.platformHeight",
+    "description": "Platform Height",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "platform_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:19.187Z"
+  },
+  "platform_height": {
+    "allowed_values": [],
+    "attribute_id": "platform_height",
+    "label": "platform_height",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "platformHeight",
+      "platform-height",
+      "PlatformHeight",
+      "platform.height",
+      "platformheight"
+    ]
+  },
+  "platformheight": {
+    "deprecated_in_favor_of": "platform_height",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:19.483Z"
+  },
+  "pricing.map": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Minimum Advertised Price",
+    "rules": [],
+    "label": "Map",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "map"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "pricing.map",
+    "category": "Pricing",
+    "export": true,
+    "key": "map"
+  },
+  "pricing.promo": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "Promotional flag",
+    "rules": [],
+    "label": "Promo",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "promo"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "pricing.promo",
+    "category": "Pricing",
+    "export": true,
+    "key": "promo"
+  },
+  "pricing.scomRegularPrice": {
+    "dataType": "number",
+    "usage": [],
+    "description": "SCOM regular price",
+    "rules": [],
+    "label": "Scom Regular Price",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "scom_regular"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "pricing.scomRegularPrice",
+    "category": "Pricing",
+    "export": true,
+    "key": "scomRegularPrice"
+  },
+  "pricing.scomSalePrice": {
+    "dataType": "number",
+    "usage": [],
+    "description": "SCOM sale price",
+    "rules": [],
+    "label": "Scom Sale Price",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "scom_sale"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "pricing.scomSalePrice",
+    "category": "Pricing",
+    "export": true,
+    "key": "scomSalePrice"
+  },
+  "primary-color": {
+    "deprecated_in_favor_of": "primary_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:10.789Z"
+  },
+  "primary.color": {
+    "deprecated_in_favor_of": "primary_color",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:10.936Z"
+  },
+  "primary_color": {
+    "attribute_id": "primary_color",
+    "label": "Primary Color",
+    "external_header": "Color",
+    "category": "Appearance",
+    "data_type": "enum",
+    "allowed_values": [
+      "Black",
+      "White",
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Orange",
+      "Purple",
+      "Pink",
+      "Brown",
+      "Gray",
+      "Navy",
+      "Beige",
+      "Cream",
+      "Gold",
+      "Silver",
+      "Multi"
+    ],
+    "required_for_completion": true,
+    "required_for_export": true,
+    "import_required": true,
+    "ai_usage_notes": "Primary visible color for search and filtering. Use standardized color names.",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:18.043Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.320Z",
+    "deprecationReason": "Consolidated as duplicate (same label)",
+    "replacedBy": "descriptive.primaryColor",
+    "deprecated": true,
+    "deprecatedAt": "2025-12-09T08:43:45.716Z",
+    "status": "deprecated",
+    "synonyms": [
+      "color",
+      "main_color",
+      "colour",
+      "primaryColor",
+      "primary-color",
+      "PrimaryColor",
+      "primary.color",
+      "primarycolor",
+      "Color",
+      "mainColor",
+      "main-color",
+      "MainColor",
+      "main.color",
+      "Colour"
+    ]
+  },
+  "product-is-active": {
+    "deprecated_in_favor_of": "product_is_active",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:59.037Z"
+  },
+  "product.is.active": {
+    "deprecated_in_favor_of": "product_is_active",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:59.192Z"
+  },
+  "productIsActive": {
+    "canonicalPath": "sku_core.productIsActive",
+    "description": "Toggles product visibility",
+    "export": true,
+    "importerColumns": [
+      "product_is_active",
+      "Product Is Active",
+      "is_active"
+    ],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "product_is_active",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:58.964Z"
+  },
+  "productIsDropship": {
+    "importerColumns": [
+      "product_is_dropship",
+      "is_dropship"
+    ],
+    "canonicalPath": "sku_core.productIsDropship",
+    "description": "Indicates if product is dropshipped",
+    "bulkEditable": true,
+    "export": true
+  },
+  "product_is_active": {
+    "allowed_values": [],
+    "attribute_id": "product_is_active",
+    "label": "product_is_active",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "productIsActive",
+      "product-is-active",
+      "ProductIsActive",
+      "product.is.active",
+      "productisactive"
+    ]
+  },
+  "promo": {
+    "importerColumns": [
+      "promo"
+    ],
+    "canonicalPath": "pricing.promo",
+    "description": "Promotional flag",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [],
+    "synonyms": [
+      "Promo"
+    ],
+    "ai_usage_notes": ""
+  },
+  "rics": {
+    "canonicalPath": "source.rics",
+    "description": "RICS system data",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false
+  },
+  "rics-long-desc": {
+    "deprecated_in_favor_of": "rics_long_desc",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:33.650Z"
+  },
+  "rics-short-description": {
+    "deprecated_in_favor_of": "rics_short_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:34.565Z"
+  },
+  "rics.long.desc": {
+    "deprecated_in_favor_of": "rics_long_desc",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:33.795Z"
+  },
+  "rics.short.description": {
+    "deprecated_in_favor_of": "rics_short_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:34.711Z"
+  },
+  "ricsLongDesc": {
+    "deprecated_in_favor_of": "rics_long_desc",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:33.577Z"
+  },
+  "ricsShortDescription": {
+    "deprecated_in_favor_of": "rics_short_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:34.492Z"
+  },
+  "rics_long_desc": {
+    "allowed_values": [],
+    "attribute_id": "rics_long_desc",
+    "label": "rics_long_desc",
+    "status": "active",
+    "synonyms": [
+      "ricsLongDesc",
+      "rics-long-desc",
+      "RicsLongDesc",
+      "rics.long.desc",
+      "ricslongdesc"
+    ],
+    "ai_usage_notes": ""
+  },
+  "rics_short_description": {
+    "allowed_values": [],
+    "attribute_id": "rics_short_description",
+    "label": "rics_short_description",
+    "status": "active",
+    "synonyms": [
+      "ricsShortDescription",
+      "rics-short-description",
+      "RicsShortDescription",
+      "rics.short.description",
+      "ricsshortdescription"
+    ],
+    "ai_usage_notes": ""
+  },
+  "rics_source.brand": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS brand",
+    "rules": [],
+    "label": "Brand",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "rics_source.brand",
+    "category": "Source",
+    "export": true,
+    "key": "brand",
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "updatedAt": "2025-12-16T08:24:14.155Z"
+  },
+  "rics_source.category": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS category",
+    "rules": [],
+    "label": "Category",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "rics_source.category",
+    "category": "Source",
+    "export": true,
+    "key": "category",
+    "importerColumns": [
+      "rics_category",
+      "RICS Category",
+      "category"
+    ]
+  },
+  "rics_source.color": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS color",
+    "rules": [],
+    "label": "Color",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "rics_source.color",
+    "category": "Source",
+    "export": true,
+    "key": "color",
+    "importerColumns": [
+      "RICS Color",
+      "rics_color",
+      "RICS_COLOR",
+      "RICS Source.Color",
+      "Color"
+    ],
+    "allowed_values": [
+      "Beige",
+      "Black",
+      "Blue",
+      "Bronze",
+      "Brown",
+      "Clear",
+      "Cream",
+      "Cyan",
+      "Gray",
+      "Grey",
+      "Floral",
+      "Gold",
+      "Green",
+      "Metallic",
+      "Multi Color",
+      "None",
+      "Off-White",
+      "Orange",
+      "Red",
+      "Pink",
+      "Print",
+      "Purple",
+      "Silver",
+      "Turquoise",
+      "Transparent",
+      "Wheat",
+      "White",
+      "Yellow",
+      "N/A",
+      "Multicoloured",
+      "Navy"
+    ],
+    "required_for_export": true,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "enum",
+    "source": "json",
+    "required_for_completion": false,
+    "ai_usage_notes": "RICS color",
+    "status": "active",
+    "updatedAt": "2025-12-19T19:58:03.993Z"
+  },
+  "rics_source.longDescription": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS long description",
+    "rules": [],
+    "label": "Long Description",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "rics_source.longDescription",
+    "category": "Source",
+    "export": true,
+    "key": "longDescription",
+    "importerColumns": [
+      "rics_long_description",
+      "RICS Long Desc",
+      "RICS Long Description"
+    ]
+  },
+  "rics_source.shortDescription": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS short description",
+    "rules": [],
+    "label": "Short Description",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "rics_source.shortDescription",
+    "category": "Source",
+    "export": true,
+    "key": "shortDescription",
+    "importerColumns": [
+      "rics_short_description",
+      "RICS Short Description",
+      "rics_short_desc"
+    ]
+  },
+  "ricslongdesc": {
+    "deprecated_in_favor_of": "rics_long_desc",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:33.866Z"
+  },
+  "ricsshortdescription": {
+    "deprecated_in_favor_of": "rics_short_description",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:34.782Z"
+  },
+  "ropiScore": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.ropiScore",
+    "description": "ROPI validation score (0-10)",
+    "bulkEditable": false,
+    "export": true
+  },
+  "scom-regular-price": {
+    "deprecated_in_favor_of": "scom_regular_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:37.678Z"
+  },
+  "scom-sale-price": {
+    "deprecated_in_favor_of": "scom_sale_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:38.587Z"
+  },
+  "scom.regular.price": {
+    "deprecated_in_favor_of": "scom_regular_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:37.823Z"
+  },
+  "scom.sale.price": {
+    "deprecated_in_favor_of": "scom_sale_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:38.731Z"
+  },
+  "scomRegularPrice": {
+    "importerColumns": [
+      "scom_regular"
+    ],
+    "canonicalPath": "pricing.scomRegularPrice",
+    "description": "SCOM regular price",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "scom_regular_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:37.599Z"
+  },
+  "scomSalePrice": {
+    "importerColumns": [
+      "scom_sale"
+    ],
+    "canonicalPath": "pricing.scomSalePrice",
+    "description": "SCOM sale price",
+    "bulkEditable": false,
+    "export": true,
+    "deprecated_in_favor_of": "scom_sale_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:38.513Z"
+  },
+  "scom_regular_price": {
+    "allowed_values": [],
+    "attribute_id": "scom_regular_price",
+    "label": "scom_regular_price",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "scomRegularPrice",
+      "scom-regular-price",
+      "ScomRegularPrice",
+      "scom.regular.price",
+      "scomregularprice"
+    ]
+  },
+  "scom_sale_price": {
+    "allowed_values": [],
+    "attribute_id": "scom_sale_price",
+    "label": "scom_sale_price",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "scomSalePrice",
+      "scom-sale-price",
+      "ScomSalePrice",
+      "scom.sale.price",
+      "scomsaleprice"
+    ]
+  },
+  "scomregularprice": {
+    "deprecated_in_favor_of": "scom_regular_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:37.896Z"
+  },
+  "scomsaleprice": {
+    "deprecated_in_favor_of": "scom_sale_price",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:38.803Z"
+  },
+  "season": {
+    "attribute_id": "season",
+    "label": "Season",
+    "external_header": "Season",
+    "category": "Usage",
+    "data_type": "multiSelect",
+    "allowed_values": [
+      "Spring",
+      "Summer",
+      "Fall",
+      "Winter",
+      "All Season"
+    ],
+    "synonyms": [
+      "seasonal"
+    ],
+    "required_for_completion": false,
+    "required_for_export": true,
+    "import_required": false,
+    "ai_usage_notes": "Recommended seasons for the product. Affects marketing and recommendations.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:19.582Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:32.271Z"
+  },
+  "secondary_color": {
+    "attribute_id": "secondary_color",
+    "label": "Secondary Color",
+    "external_header": "Secondary Color",
+    "category": "Appearance",
+    "data_type": "enum",
+    "allowed_values": [
+      "Black",
+      "White",
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Orange",
+      "Purple",
+      "Pink",
+      "Brown",
+      "Gray",
+      "Navy",
+      "Beige",
+      "Cream",
+      "Gold",
+      "Silver",
+      "Multi",
+      "None"
+    ],
+    "synonyms": [
+      "accent_color"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Secondary or accent color if applicable. Set to 'None' for single-color items.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:18.422Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.480Z"
+  },
+  "seoName": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.seoName",
+    "description": "AI-generated SEO name",
+    "bulkEditable": false,
+    "export": true
+  },
+  "sex": {
+    "deprecated_in_favor_of": "gender",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:07.983Z"
+  },
+  "shoe-height-map": {
+    "deprecated_in_favor_of": "shoe_height_map",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:21.115Z"
+  },
+  "shoe-width": {
+    "deprecated_in_favor_of": "shoe_width",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:06.486Z"
+  },
+  "shoe.height.map": {
+    "deprecated_in_favor_of": "shoe_height_map",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:21.260Z"
+  },
+  "shoe.width": {
+    "deprecated_in_favor_of": "shoe_width",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:06.631Z"
+  },
+  "shoeHeightMap": {
+    "canonicalPath": "descriptive.shoeHeightMap",
+    "description": "Shoe Height Map (Low, Mid, High)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "shoe_height_map",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:21.044Z"
+  },
+  "shoeWidth": {
+    "deprecated_in_favor_of": "shoe_width",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:06.408Z"
+  },
+  "shoe_height_map": {
+    "allowed_values": [],
+    "attribute_id": "shoe_height_map",
+    "label": "shoe_height_map",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "shoeHeightMap",
+      "shoe-height-map",
+      "ShoeHeightMap",
+      "shoe.height.map",
+      "shoeheightmap"
+    ]
+  },
+  "shoe_width": {
+    "allowed_values": [],
+    "attribute_id": "shoe_width",
+    "label": "shoe_width",
+    "status": "active",
+    "synonyms": [
+      "shoeWidth",
+      "shoe-width",
+      "ShoeWidth",
+      "shoe.width",
+      "shoewidth"
+    ],
+    "ai_usage_notes": ""
+  },
+  "shoeheightmap": {
+    "deprecated_in_favor_of": "shoe_height_map",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:21.334Z"
+  },
+  "shortDescription": {
+    "canonicalPath": "rics_source.shortDescription",
+    "description": "RICS short description",
+    "export": true,
+    "importerColumns": [
+      "rics_short_description",
+      "RICS Short Description",
+      "rics_short_desc"
+    ],
+    "bulkEditable": false
+  },
+  "sku": {
+    "canonicalPath": "sku_core.sku",
+    "description": "SKU (Variant ID)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "allowed_values": [],
+    "synonyms": [
+      "Sku"
+    ],
+    "ai_usage_notes": ""
+  },
+  "sku_core.class": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Class (e.g., \"Athletic\", \"Casual\")",
+    "rules": [
+      "SD-002"
+    ],
+    "label": "Class",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [
+      "class"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.class",
+    "category": "Core",
+    "export": true,
+    "key": "class",
+    "allowed_values": [
+      "Accessories",
+      "Activewear",
+      "Art",
+      "Athletic",
+      "Backpacks",
+      "Bag",
+      "Bags",
+      "Bearings",
+      "Belts",
+      "Bikes",
+      "Boat Shoes",
+      "Body",
+      "Boots",
+      "Bottoms",
+      "Box Set",
+      "Bra",
+      "Bras",
+      "Casual",
+      "Charge",
+      "Charger",
+      "Clogs",
+      "Clothing",
+      "Cosmetics",
+      "costume",
+      "Crop Top",
+      "Decks",
+      "Denim",
+      "Digital Gift Card",
+      "Dress",
+      "Dresses",
+      "Dressy",
+      "Electronics",
+      "Electronics & Camera's",
+      "Eyewear",
+      "Face Mask",
+      "Flats",
+      "Footwear",
+      "Glasses",
+      "Gloves",
+      "Griptape",
+      "Grooming & Fragrance",
+      "Hair Accessories",
+      "Hair Clips",
+      "Handbags",
+      "Hat",
+      "Hat Care",
+      "Hats",
+      "Headphones",
+      "Headwear",
+      "High Heels",
+      "Home Decor",
+      "Hoodies",
+      "Hosiery",
+      "Hot Shit",
+      "Jacket",
+      "Jackets",
+      "Jeans",
+      "Jerseys",
+      "Jewelry",
+      "Jumpers",
+      "Keychains",
+      "Kitchen & Bar",
+      "Knee High Boots",
+      "Knit Tops",
+      "Lanyard",
+      "Laptop & Tablet Cases",
+      "Leggings",
+      "Legwear",
+      "Lifestyle",
+      "Lingerie",
+      "Loungewear",
+      "Makeup",
+      "Media Cases",
+      "Mylar Bags",
+      "Moccasin",
+      "Office",
+      "Onesies",
+      "Outdoors",
+      "Outerwear",
+      "Oxford",
+      "Panties",
+      "Pants",
+      "Phone Case",
+      "Platform",
+      "Polo",
+      "Purses",
+      "Robe",
+      "Romper",
+      "Running",
+      "Sandal",
+      "Sandals",
+      "Scarves",
+      "Shirts",
+      "Shoe Care",
+      "Shoe Charms",
+      "Shoe Cleaner",
+      "Shoe Laces",
+      "Shoes",
+      "Shorts",
+      "Skirt",
+      "Skirts",
+      "Slip-on",
+      "Slippers",
+      "Sneakers",
+      "Socks",
+      "Socks & Underwear",
+      "Soles",
+      "Sport Bras",
+      "Stationary",
+      "Stickers",
+      "Subscription",
+      "Sunglasses",
+      "Sweaters",
+      "Sweatpants",
+      "Sweatshirt",
+      "Sweatshirts",
+      "Swimwear",
+      "Tank Tops",
+      "Tops",
+      "Toys & Gifts",
+      "Tracksuits",
+      "Tray",
+      "Trucks",
+      "T-shirts",
+      "Underwear",
+      "Vests",
+      "Wallets",
+      "Watches",
+      "Wedges"
+    ],
+    "required_for_export": true,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "enum",
+    "source": "json",
+    "required_for_completion": true,
+    "ai_usage_notes": "Class (e.g., \"Athletic\", \"Casual\")",
+    "status": "active",
+    "updatedAt": "2025-12-19T19:57:09.157Z"
+  },
+  "sku_core.coreProduct": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "Marks main styles that persist across seasons",
+    "rules": [],
+    "label": "Core Product",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.coreProduct",
+    "category": "Core",
+    "export": true,
+    "key": "coreProduct",
+    "required_for_export": false,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "boolean",
+    "source": "json",
+    "required_for_completion": false,
+    "ai_usage_notes": "1",
+    "status": "active",
+    "updatedAt": "2025-12-19T10:13:28.363Z"
+  },
+  "sku_core.department": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Department (e.g., \"Footwear\", \"Apparel\")",
+    "rules": [
+      "SD-001"
+    ],
+    "label": "Department",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [
+      "department"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.department",
+    "category": "Core",
+    "export": true,
+    "key": "department",
+    "foundation": true,
+    "id": "sku_core.department",
+    "validation": {
+      "allowedValuesRef": "settings/lists/departments"
+    },
+    "audit": {
+      "updatedBy": "system",
+      "version": "1.3",
+      "updatedAt": "2025-11-23T02:26:42.793Z"
+    },
+    "required_for_export": true,
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "import_required": false,
+    "external_header": "",
+    "data_type": "enum",
+    "source": "json",
+    "required_for_completion": true,
+    "ai_usage_notes": "Department (e.g., \"Footwear\", \"Apparel\")",
+    "status": "active",
+    "updatedAt": "2025-12-19T12:35:15.751Z",
+    "allowed_values": [
+      "Clothing",
+      "Footwear",
+      "Accessories"
+    ]
+  },
+  "sku_core.dropshipName": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Dropship supplier name",
+    "rules": [],
+    "label": "Dropship Name",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "product_is_dropship_name",
+      "Product Is Dropship.Name",
+      "Product Is Dropship Name",
+      "dropship_name",
+      "dropship name"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.dropshipName",
+    "category": "Core",
+    "export": true,
+    "key": "dropshipName"
+  },
+  "sku_core.name": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Product name",
+    "rules": [
+      "SD-005",
+      "SD-008",
+      "SD-009",
+      "SD-010"
+    ],
+    "label": "Name",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [
+      "rics_short_desc",
+      "name"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.name",
+    "category": "Core",
+    "export": true,
+    "key": "name"
+  },
+  "sku_core.productIsActive": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "Toggles product visibility",
+    "rules": [],
+    "label": "Product Is Active",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.productIsActive",
+    "category": "Core",
+    "export": true,
+    "key": "productIsActive",
+    "importerColumns": [
+      "product_is_active",
+      "Product Is Active",
+      "is_active"
+    ]
+  },
+  "sku_core.sku": {
+    "dataType": "string",
+    "usage": [],
+    "description": "SKU (Variant ID)",
+    "rules": [],
+    "label": "Sku",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.sku",
+    "category": "Core",
+    "export": true,
+    "key": "sku"
+  },
+  "sku_core.styleId": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Style ID (links colorways)",
+    "rules": [],
+    "label": "Style Id",
+    "legacyPaths": [],
+    "required": true,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "sku_core.styleId",
+    "category": "Core",
+    "export": true,
+    "key": "styleId"
+  },
+  "slug": {
+    "canonicalPath": "descriptive.slug",
+    "description": "URL slug",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "allowed_values": [],
+    "synonyms": [
+      "Slug"
+    ],
+    "ai_usage_notes": ""
+  },
+  "smartDetectSummary": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.smartDetectSummary",
+    "description": "Smart Detect autofill summary",
+    "bulkEditable": false,
+    "export": true
+  },
+  "source.rics": {
+    "dataType": "string",
+    "usage": [],
+    "description": "RICS system data",
+    "rules": [],
+    "label": "Rics",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "source.rics",
+    "category": "Source",
+    "export": true,
+    "key": "rics"
+  },
+  "sports-team": {
+    "deprecated_in_favor_of": "sports_team",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:24.013Z"
+  },
+  "sports_team": {
+    "allowed_values": [],
+    "attribute_id": "sports_team",
+    "label": "sports_team",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "sportsTeam",
+      "sports-team",
+      "SportsTeam",
+      "sports.team",
+      "sportsteam"
+    ]
+  },
+  "sportsteam": {
+    "deprecated_in_favor_of": "sports_team",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:24.228Z"
+  },
+  "standard-shipping-override": {
+    "deprecated_in_favor_of": "standard_shipping_override",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:39.881Z"
+  },
+  "standard.shipping.override": {
+    "deprecated_in_favor_of": "standard_shipping_override",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:40.028Z"
+  },
+  "standardShippingOverride": {
+    "canonicalPath": "technical.standardShippingOverride",
+    "description": "Standard shipping override (Money)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "standard_shipping_override",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:39.807Z"
+  },
+  "standard_shipping_override": {
+    "allowed_values": [],
+    "attribute_id": "standard_shipping_override",
+    "label": "standard_shipping_override",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "standardShippingOverride",
+      "standard-shipping-override",
+      "StandardShippingOverride",
+      "standard.shipping.override",
+      "standardshippingoverride"
+    ]
+  },
+  "standardshippingoverride": {
+    "deprecated_in_favor_of": "standard_shipping_override",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:40.100Z"
+  },
+  "status": {
+    "canonicalPath": "technical.status",
+    "description": "Canonical product status",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "allowed_values": [],
+    "synonyms": [
+      "Status"
+    ],
+    "ai_usage_notes": ""
+  },
+  "store-inv": {
+    "deprecated_in_favor_of": "store_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:44.503Z"
+  },
+  "store.inv": {
+    "deprecated_in_favor_of": "store_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:44.646Z"
+  },
+  "store1": {
+    "importerColumns": [
+      "store1"
+    ],
+    "canonicalPath": "technical.store1",
+    "description": "Store 1 inventory",
+    "bulkEditable": false,
+    "export": true
+  },
+  "store4": {
+    "importerColumns": [
+      "store4"
+    ],
+    "canonicalPath": "technical.store4",
+    "description": "Store 4 inventory",
+    "bulkEditable": false,
+    "export": true
+  },
+  "storeInv": {
+    "canonicalPath": "technical.storeInv",
+    "description": "Store inventory total",
+    "bulkEditable": false,
+    "export": true,
+    "importerColumns": [
+      "store_inv",
+      "Store Inv",
+      "storeInv"
+    ],
+    "deprecated_in_favor_of": "store_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:44.418Z"
+  },
+  "store_inv": {
+    "allowed_values": [],
+    "attribute_id": "store_inv",
+    "label": "store_inv",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "storeInv",
+      "store-inv",
+      "StoreInv",
+      "store.inv",
+      "storeinv"
+    ]
+  },
+  "storeinv": {
+    "deprecated_in_favor_of": "store_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:44.717Z"
+  },
+  "style": {
+    "attribute_id": "style",
+    "label": "Style",
+    "external_header": "Style",
+    "category": "Classification",
+    "data_type": "enum",
+    "allowed_values": [
+      "Casual",
+      "Athletic",
+      "Dress",
+      "Outdoor",
+      "Work",
+      "Fashion",
+      "Comfort",
+      "Performance",
+      "Classic",
+      "Modern",
+      "Vintage",
+      "Streetwear"
+    ],
+    "synonyms": [
+      "product_style",
+      "look"
+    ],
+    "required_for_completion": true,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Overall style classification. Used for categorization and recommendations.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:19.217Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:31.960Z"
+  },
+  "style-id": {
+    "deprecated_in_favor_of": "style_id",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:54.515Z"
+  },
+  "style.id": {
+    "deprecated_in_favor_of": "style_id",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:54.671Z"
+  },
+  "styleId": {
+    "canonicalPath": "sku_core.styleId",
+    "description": "Style ID (links colorways)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "style_id",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:54.398Z"
+  },
+  "style_id": {
+    "allowed_values": [],
+    "attribute_id": "style_id",
+    "label": "style_id",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "styleId",
+      "style-id",
+      "StyleId",
+      "style.id",
+      "styleid"
+    ]
+  },
+  "styleid": {
+    "deprecated_in_favor_of": "style_id",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:49:54.765Z"
+  },
+  "sustainable": {
+    "attribute_id": "sustainable",
+    "label": "Sustainable",
+    "external_header": "Eco-Friendly",
+    "category": "Features",
+    "data_type": "boolean",
+    "synonyms": [
+      "eco_friendly",
+      "green",
+      "sustainable_materials"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Whether the product uses sustainable materials or manufacturing.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:20.684Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:33.317Z"
+  },
+  "target-gender": {
+    "deprecated_in_favor_of": "gender",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:08.270Z"
+  },
+  "target.gender": {
+    "deprecated_in_favor_of": "gender",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:08.425Z"
+  },
+  "targetGender": {
+    "deprecated_in_favor_of": "gender",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:08.199Z"
+  },
+  "target_gender": {
+    "deprecated_in_favor_of": "gender",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:08.125Z"
+  },
+  "tax-class": {
+    "deprecated_in_favor_of": "tax_class",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:26.765Z"
+  },
+  "tax.class": {
+    "deprecated_in_favor_of": "tax_class",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:26.916Z"
+  },
+  "taxClass": {
+    "canonicalPath": "technical.taxClass",
+    "description": "Taxable toggle (true = Taxable Goods)",
+    "export": true,
+    "importerColumns": [],
+    "bulkEditable": false,
+    "deprecated_in_favor_of": "tax_class",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:26.694Z"
+  },
+  "tax_class": {
+    "allowed_values": [],
+    "attribute_id": "tax_class",
+    "label": "tax_class",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "taxClass",
+      "tax-class",
+      "TaxClass",
+      "tax.class",
+      "taxclass"
+    ]
+  },
+  "taxclass": {
+    "deprecated_in_favor_of": "tax_class",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:27.002Z"
+  },
+  "technical.custom2": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Custom field 2",
+    "rules": [],
+    "label": "Custom2",
+    "legacyPaths": [
+      "custom2"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "custom2"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.custom2",
+    "category": "Technical",
+    "export": true,
+    "key": "custom2",
+    "updatedBy": "zmAn8kKTE3ZW3fM386d8tiWW97U2",
+    "updatedAt": "2025-12-11T10:43:17.904Z"
+  },
+  "technical.custom3": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Custom field 3",
+    "rules": [],
+    "label": "Custom3",
+    "legacyPaths": [
+      "custom3"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "custom3"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.custom3",
+    "category": "Technical",
+    "export": true,
+    "key": "custom3"
+  },
+  "technical.expeditedOverrideShipping": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Expedited shipping override (Money)",
+    "rules": [],
+    "label": "Expedited Override Shipping",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.expeditedOverrideShipping",
+    "category": "Technical",
+    "export": true,
+    "key": "expeditedOverrideShipping"
+  },
+  "technical.firstReceived": {
+    "dataType": "string",
+    "usage": [],
+    "description": "First received date (ISO string)",
+    "rules": [],
+    "label": "First Received",
+    "legacyPaths": [
+      "firstReceived"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "first_received"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.firstReceived",
+    "category": "Technical",
+    "export": true,
+    "key": "firstReceived"
+  },
+  "technical.height": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Shipping height",
+    "rules": [],
+    "label": "Height",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "height"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.height",
+    "category": "Technical",
+    "export": true,
+    "key": "height"
+  },
+  "technical.hideImageDate": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Image embargo date (ISO string)",
+    "rules": [],
+    "label": "Hide Image Date",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.hideImageDate",
+    "category": "Technical",
+    "export": true,
+    "key": "hideImageDate"
+  },
+  "technical.lastReceived": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Last received date (ISO string)",
+    "rules": [],
+    "label": "Last Received",
+    "legacyPaths": [
+      "lastReceived"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.lastReceived",
+    "category": "Technical",
+    "export": true,
+    "key": "lastReceived",
+    "importerColumns": [
+      "last_received",
+      "Last Received",
+      "lastReceived"
+    ]
+  },
+  "technical.length": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Shipping length",
+    "rules": [],
+    "label": "Length",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "length"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.length",
+    "category": "Technical",
+    "export": true,
+    "key": "length"
+  },
+  "technical.mediaStatus": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Media status (\"Images Ready\", \"Pending\", etc.)",
+    "rules": [],
+    "label": "Media Status",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.mediaStatus",
+    "category": "Technical",
+    "export": true,
+    "key": "mediaStatus"
+  },
+  "technical.standardShippingOverride": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Standard shipping override (Money)",
+    "rules": [],
+    "label": "Standard Shipping Override",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.standardShippingOverride",
+    "category": "Technical",
+    "export": true,
+    "key": "standardShippingOverride"
+  },
+  "technical.status": {
+    "dataType": "string",
+    "usage": [],
+    "description": "Canonical product status",
+    "rules": [],
+    "label": "Status",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.status",
+    "category": "Technical",
+    "export": true,
+    "key": "status"
+  },
+  "technical.store1": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Store 1 inventory",
+    "rules": [],
+    "label": "Store1",
+    "legacyPaths": [
+      "store1"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "store1"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.store1",
+    "category": "Technical",
+    "export": true,
+    "key": "store1"
+  },
+  "technical.store4": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Store 4 inventory",
+    "rules": [],
+    "label": "Store4",
+    "legacyPaths": [
+      "store4"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "store4"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.store4",
+    "category": "Technical",
+    "export": true,
+    "key": "store4"
+  },
+  "technical.storeInv": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Store inventory total",
+    "rules": [],
+    "label": "Store Inv",
+    "legacyPaths": [
+      "storeInv"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.storeInv",
+    "category": "Technical",
+    "export": true,
+    "key": "storeInv",
+    "importerColumns": [
+      "store_inv",
+      "Store Inv",
+      "storeInv"
+    ]
+  },
+  "technical.taxClass": {
+    "dataType": "boolean",
+    "usage": [],
+    "description": "Taxable toggle (true = Taxable Goods)",
+    "rules": [],
+    "label": "Tax Class",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.taxClass",
+    "category": "Technical",
+    "export": true,
+    "key": "taxClass"
+  },
+  "technical.totalInv": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Total inventory",
+    "rules": [],
+    "label": "Total Inv",
+    "legacyPaths": [
+      "totalInv"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "total_inv"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.totalInv",
+    "category": "Technical",
+    "export": true,
+    "key": "totalInv"
+  },
+  "technical.variantCount": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Number of variants",
+    "rules": [],
+    "label": "Variant Count",
+    "legacyPaths": [
+      "variantCount"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.variantCount",
+    "category": "Technical",
+    "key": "variantCount",
+    "importerColumns": [],
+    "export": false
+  },
+  "technical.warehouseInv": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Warehouse inventory",
+    "rules": [],
+    "label": "Warehouse Inv",
+    "legacyPaths": [
+      "warehouseInv"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.warehouseInv",
+    "category": "Technical",
+    "export": true,
+    "key": "warehouseInv",
+    "importerColumns": [
+      "warehouse_inv",
+      "Warehouse Inv",
+      "warehouseInv",
+      "WHS inv",
+      "whs_inv"
+    ]
+  },
+  "technical.website": {
+    "dataType": "array",
+    "usage": [],
+    "description": "Website availability",
+    "rules": [],
+    "label": "Website",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "website"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.website",
+    "category": "Technical",
+    "export": true,
+    "key": "website"
+  },
+  "technical.weight": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Shipping weight",
+    "rules": [],
+    "label": "Weight",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "weight"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.weight",
+    "category": "Technical",
+    "export": true,
+    "key": "weight"
+  },
+  "technical.whsInv": {
+    "dataType": "number",
+    "usage": [],
+    "description": "WHS inventory",
+    "rules": [],
+    "label": "Whs Inv",
+    "legacyPaths": [
+      "whsInv"
+    ],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "whs_inv"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.whsInv",
+    "category": "Technical",
+    "export": true,
+    "key": "whsInv"
+  },
+  "technical.width": {
+    "dataType": "number",
+    "usage": [],
+    "description": "Shipping width",
+    "rules": [],
+    "label": "Width",
+    "legacyPaths": [],
+    "required": false,
+    "systemFlag": false,
+    "importerColumns": [
+      "width"
+    ],
+    "examples": {
+      "sampleValues": []
+    },
+    "canonicalPath": "technical.width",
+    "category": "Technical",
+    "export": true,
+    "key": "width"
+  },
+  "templateKey": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.templateKey",
+    "description": "Template used for generation",
+    "bulkEditable": false,
+    "export": true
+  },
+  "templateOverrideKey": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.templateOverrideKey",
+    "description": "Manual template override",
+    "bulkEditable": false,
+    "export": true
+  },
+  "toe_style": {
+    "attribute_id": "toe_style",
+    "label": "Toe Style",
+    "external_header": "Toe Style",
+    "category": "Construction",
+    "data_type": "enum",
+    "allowed_values": [
+      "Round",
+      "Pointed",
+      "Square",
+      "Almond",
+      "Peep Toe",
+      "Open Toe",
+      "Cap Toe",
+      "Moc Toe"
+    ],
+    "synonyms": [
+      "toe_shape",
+      "toe_type"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Shape of the toe box for footwear.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:20.084Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:32.727Z"
+  },
+  "total-inv": {
+    "deprecated_in_favor_of": "total_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:42.630Z"
+  },
+  "total.inv": {
+    "deprecated_in_favor_of": "total_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:42.778Z"
+  },
+  "total_inv": {
+    "allowed_values": [],
+    "attribute_id": "total_inv",
+    "label": "total_inv",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "totalInv",
+      "total-inv",
+      "TotalInv",
+      "total.inv",
+      "totalinv"
+    ]
+  },
+  "upper-material": {
+    "deprecated_in_favor_of": "material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:13.698Z"
+  },
+  "upper.material": {
+    "deprecated_in_favor_of": "material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:13.842Z"
+  },
+  "upperMaterial": {
+    "deprecated_in_favor_of": "material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:13.628Z"
+  },
+  "upper_material": {
+    "deprecated_in_favor_of": "material",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:13.555Z"
+  },
+  "validationFlags": {
+    "importerColumns": [],
+    "canonicalPath": "a_i_generated.validationFlags",
+    "description": "Validation warnings/errors",
+    "bulkEditable": false,
+    "export": true
+  },
+  "variantCount": {
+    "canonicalPath": "technical.variantCount",
+    "description": "Number of variants",
+    "bulkEditable": false,
+    "importerColumns": [],
+    "export": false
+  },
+  "warehouse-inv": {
+    "deprecated_in_favor_of": "warehouse_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:43.567Z"
+  },
+  "warehouse.inv": {
+    "deprecated_in_favor_of": "warehouse_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:43.708Z"
+  },
+  "warehouseInv": {
+    "canonicalPath": "technical.warehouseInv",
+    "description": "Warehouse inventory",
+    "bulkEditable": false,
+    "export": true,
+    "importerColumns": [
+      "warehouse_inv",
+      "Warehouse Inv",
+      "warehouseInv",
+      "WHS inv",
+      "whs_inv"
+    ],
+    "deprecated_in_favor_of": "warehouse_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:43.494Z"
+  },
+  "warehouse_inv": {
+    "allowed_values": [],
+    "attribute_id": "warehouse_inv",
+    "label": "warehouse_inv",
+    "ai_usage_notes": "",
+    "status": "active",
+    "synonyms": [
+      "warehouseInv",
+      "warehouse-inv",
+      "WarehouseInv",
+      "warehouse.inv",
+      "warehouseinv"
+    ]
+  },
+  "warehouseinv": {
+    "deprecated_in_favor_of": "warehouse_inv",
+    "status": "deprecated",
+    "deprecatedAt": "2025-12-10T22:50:43.784Z"
+  },
+  "waterproof": {
+    "attribute_id": "waterproof",
+    "label": "Waterproof",
+    "external_header": "Waterproof",
+    "category": "Features",
+    "data_type": "boolean",
+    "synonyms": [
+      "water_resistant",
+      "water_proof"
+    ],
+    "required_for_completion": false,
+    "required_for_export": false,
+    "import_required": false,
+    "ai_usage_notes": "Whether the product is waterproof or water-resistant.",
+    "status": "active",
+    "source": "json",
+    "createdBy": "system",
+    "createdAt": "2025-12-09T00:56:20.533Z",
+    "updatedBy": "system",
+    "updatedAt": "2025-12-09T00:56:33.176Z"
+  },
+  "website": {
+    "importerColumns": [
+      "website"
+    ],
+    "canonicalPath": "technical.website",
+    "description": "Website availability",
+    "export": true,
+    "bulkEditable": false,
+    "allowed_values": [],
+    "synonyms": [
+      "Website"
+    ],
+    "ai_usage_notes": ""
+  },
+  "weight": {
+    "importerColumns": [
+      "weight"
+    ],
+    "canonicalPath": "technical.weight",
+    "description": "Shipping weight",
+    "bulkEditable": false,
+    "export": true,
+    "updatedBy": "system",
+    "import_required": false,
+    "label": "Weight (oz)",
+    "source": "json",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "external_header": "Weight",
+    "attribute_id": "weight",
+    "data_type": "number",
+    "category": "Measurements",
+    "ai_usage_notes": "Product weight in ounces. Used for shipping calculations.",
+    "status": "active",
+    "updatedAt": "2025-12-09T00:56:34.222Z",
+    "allowed_values": [],
+    "synonyms": [
+      "product_weight",
+      "item_weight",
+      "Weight"
+    ]
+  },
+  "whsInv": {
+    "importerColumns": [
+      "whs_inv"
+    ],
+    "canonicalPath": "technical.whsInv",
+    "description": "WHS inventory",
+    "bulkEditable": false,
+    "export": true
+  },
+  "width": {
+    "importerColumns": [
+      "width"
+    ],
+    "canonicalPath": "technical.width",
+    "description": "Shipping width",
+    "bulkEditable": false,
+    "export": true,
+    "allowed_values": [
+      "Narrow",
+      "Standard",
+      "Wide",
+      "Extra Wide"
+    ],
+    "updatedBy": "system",
+    "import_required": false,
+    "label": "Width",
+    "source": "json",
+    "required_for_completion": false,
+    "required_for_export": false,
+    "external_header": "Width",
+    "attribute_id": "width",
+    "data_type": "enum",
+    "category": "Measurements",
+    "ai_usage_notes": "Width sizing option for footwear.",
+    "updatedAt": "2025-12-09T00:56:33.029Z",
+    "deprecationReason": "Consolidated as duplicate (same label)",
+    "replacedBy": "technical.width",
+    "deprecated": true,
+    "deprecatedAt": "2025-12-09T08:43:46.579Z",
+    "status": "deprecated",
+    "synonyms": [
+      "shoe_width",
+      "fit_width",
+      "Width"
+    ]
+  }
+}
